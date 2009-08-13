@@ -1,0 +1,8 @@
+<?php
+
+
+$handleInit = create_function('', 'echo "hi";');
+
+$handleInit(); 
+
+?>
