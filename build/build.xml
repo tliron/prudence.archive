@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<project name="Prudence" default="build">
+
+	<property name="src" value="../modules/com.threecrickets.prudence/src" />
+	<property name="lib" value="../libraries" />
+	<property name="deploy" value="../modules/com.threecrickets.prudence/deploy" />
+	<property name="dist" value="./distribution" />
+	<property name="content" value="${dist}/content" />
+	<property name="tmp" value="./tmp" />
+
+	<target name="compile" description="Compile Prudence code">
+		<mkdir dir="${tmp}" />
+		<javac srcdir="${src}" destdir="${tmp}" target="1.5">
+			<classpath>
+				<fileset dir="${lib}/scripturian/lib" />
+				<fileset dir="${lib}/restlet/lib" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="javadoc" description="Create Prudence API docs">
+		<javadoc access="protected" author="true" excludepackagenames="**.internal.*" destdir="${content}/web/static/javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" sourcepath="${src}" splitindex="true" use="true" version="true" windowtitle="Prudence 1.0" doctitle="Prudence 1.0" verbose="true">
+			<link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
+			<link href="http://java.sun.com/javase/6/docs/api/" />
+			<link href="http://www.threecrickets.com/scripturian/api/" />
+			<classpath>
+				<fileset dir="${lib}/jsr223/lib" />
+				<fileset dir="${lib}/scripturian/lib" />
+				<fileset dir="${lib}/restlet/lib" />
+			</classpath>
+			<bottom>
+				<![CDATA[<i>Copyright &#169; 2009 <a target="_top" href="http://www.threecrickets.com/">Three Crickets LLC</a>.</i>]]>
+			</bottom>
+		</javadoc>
+	</target>
+	
+	<target name="jar" depends="compile" description="Create Prudence jar">
+		<mkdir dir="${content}/lib" />
+		<jar destfile="${content}/lib/com.threecrickets.prudence.jar" basedir="${tmp}" />
+	</target>
+	
+	<target name="licenses" description="Fetch licences">
+		<copy todir="${content}/licenses/grizzly">
+			<fileset dir="${lib}/grizzly/license" />
+		</copy>
+		<copy todir="${content}/licenses/groovy">
+			<fileset dir="${lib}/groovy/license" />
+		</copy>
+		<copy todir="${content}/licenses/jepp">
+			<fileset dir="${lib}/jepp/license" />
+		</copy>
+		<copy todir="${content}/licenses/jruby">
+			<fileset dir="${lib}/jruby/license" />
+		</copy>
+		<copy todir="${content}/licenses/json">
+			<fileset dir="${lib}/json/license" />
+		</copy>
+		<copy todir="${content}/licenses/jsr223">
+			<fileset dir="${lib}/jsr223/license" />
+		</copy>
+		<copy todir="${content}/licenses/jython">
+			<fileset dir="${lib}/jython/license" />
+		</copy>
+		<copy todir="${content}/licenses/log4j">
+			<fileset dir="${lib}/log4j/license" />
+		</copy>
+		<copy todir="${content}/licenses/quercus">
+			<fileset dir="${lib}/quercus/license" />
+		</copy>
+		<copy todir="${content}/licenses/restlet">
+			<fileset dir="${lib}/restlet/license" />
+		</copy>
+		<copy todir="${content}/licenses/rhino">
+			<fileset dir="${lib}/rhino/license" />
+		</copy>
+		<copy todir="${content}/licenses/scripturian">
+			<fileset dir="${lib}/scripturian/license" />
+		</copy>
+		<copy todir="${content}/licenses/servlet">
+			<fileset dir="${lib}/servlet/license" />
+		</copy>
+		<copy todir="${content}/licenses/slf4j">
+			<fileset dir="${lib}/slf4j/license" />
+		</copy>
+		<copy todir="${content}/licenses/velocity">
+			<fileset dir="${lib}/velocity/license" />
+		</copy>
+	</target>
+	
+	<target name="libraries" depends="jar" description="Fetch libraries">
+		<copy todir="${content}/lib">
+			<fileset dir="${lib}/grizzly/lib" />
+			<fileset dir="${lib}/groovy/lib" />
+			<fileset dir="${lib}/jepp/lib" />
+			<fileset dir="${lib}/jruby/lib" />
+			<fileset dir="${lib}/json/lib" />
+			<fileset dir="${lib}/jsr223/lib" />
+			<fileset dir="${lib}/jython/lib" />
+			<fileset dir="${lib}/log4j/lib" />
+			<fileset dir="${lib}/quercus/lib" />
+			<fileset dir="${lib}/restlet/lib" />
+			<fileset dir="${lib}/rhino/lib" />
+			<fileset dir="${lib}/scripturian/lib" />
+			<fileset dir="${lib}/servlet/lib" />
+			<fileset dir="${lib}/slf4j/lib" />
+			<fileset dir="${lib}/velocity/lib" />
+			<fileset file="${lib}/versions.txt" />
+		</copy>
+	</target>
+
+	<target name="src" description="Fetch Prudence source">
+		<copy todir="${content}/src">
+			<fileset dir="${src}" />
+		</copy>
+	</target>
+
+	<target name="deploy" depends="src, javadoc" description="Fetch deployment">
+		<copy todir="${content}">
+			<fileset dir="${deploy}" excludes="log/" />
+		</copy>
+	</target>
+	
+	<target name="package" depends="libraries, licenses, deploy" description="Create Prudence zips">
+		<zip destfile="${dist}/prudence.zip">
+			<fileset dir="${content}" excludes="src/, lib/cachedir/, resources/jython/*.class" />
+		</zip>
+		<zip destfile="${dist}/prudence-standalone.zip">
+			<fileset dir="${content}" includes="license.txt, copyright.txt, src/, lib/com.threecrickets.prudence.jar" />
+			<fileset dir="${content}/web/static" includes="javadoc/" />
+		</zip>
+	</target>
+	
+	<target name="build" depends="package" description="Build distributions" />
+	
+	<target name="clean" description="Clean">
+		<delete dir="${tmp}" />
+		<delete dir="${dist}" />
+	</target>
+	
+	<target name="rebuild" depends="clean, build" description="Clean and build distribution" />
+	
+</project>

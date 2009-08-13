@@ -1,0 +1,133 @@
+<%rhino-nonjdk
+
+//
+// This script starts a REST component with an HTTP server. The attached application supports scripted
+// resources and a directory containing both static files and dynamic scripts. It is intended to be run via
+// com.threecrickets.scripturian.ScriptedMain, which can be set as the main class in your wrapper.conf.
+//
+// See conf/application.conf for more information, and edit it to configure your setup. You may also edit
+// this file to control your REST component and application. 
+//
+
+// Important! The version of Rhino included with the JDK has an overly simplified version of JavaAdapter,
+// so that it's impossible to extend classes. To boot-strap our REST application, we need to extend it,
+// and so we absolutely must use the non-JDK version of Rhino. Annoyingly, there's no simple way to disable
+// the built-in version of Rhino, and so Mozilla had to add the "rhino-nonjdk" engine name as a workaround.
+// We'll go ahead and set that as our default engine name.
+
+script.container.defaultEngineName = 'rhino-nonjdk';
+
+%><%& 'conf/prudence.conf' %><%
+
+importClass(
+	java.io.File,
+	javax.script.ScriptEngineManager,
+	org.restlet.Application,
+	org.restlet.Component,
+	org.restlet.resource.Directory,
+	org.restlet.routing.Router,
+	org.restlet.routing.Redirector,
+	org.restlet.data.Protocol,
+	org.restlet.data.Reference,
+	org.restlet.util.Template,
+	com.threecrickets.prudence.ScriptedResource,
+	com.threecrickets.prudence.ScriptedTextResource,
+	com.threecrickets.scripturian.file.ScriptFileSource);
+
+//
+// Logging
+//
+
+java.util.logging.LogManager.logManager.reset();
+try {
+org.slf4j.bridge.SLF4JBridgeHandler.install();
+} catch(x) {}
+
+try {
+org.apache.log4j.PropertyConfigurator.configure('conf/logging.conf');
+} catch(x) {}
+
+//
+// Component and Server
+//
+
+var component = new Component();
+component.servers.add(Protocol.HTTP, serverPort);
+component.clients.add(Protocol.FILE);
+component.logService.loggerName = componentWebLoggerName;
+
+//
+// Application
+//
+
+// Note: this use of JavaAdapter does not work with the version of Rhino shipped with the JDK!
+
+var application = new JavaAdapter(Application, {
+
+	createRoot: function() {
+		var context = this.context;
+		var classLoader = this.getClass().classLoader;
+
+		var directory = new Directory(context, new File(staticWebBasePath).toURI());
+		directory.listingAllowed = staticWebDirectoryListingAllowed;
+
+		var router = new Router(context);
+		router.attach(resourceBaseURL, classLoader.loadClass('com.threecrickets.prudence.ScriptedResource'));
+		router.attach(scriptedWebBaseURL, classLoader.loadClass('com.threecrickets.prudence.ScriptedTextResource'));
+		router.attach(staticWebBaseURL, directory);
+
+		// Redirect to trailing slashes
+		for(var i in urlAddTrailingSlash) {
+			var url = urlAddTrailingSlash[i];
+			router.attach(url, new Redirector(context, url + '/', Redirector.MODE_CLIENT_PERMANENT)).matchingMode = Template.MODE_EQUALS;
+		}
+		
+		return router;
+	}
+});
+
+application.name = applicationName;
+application.description = applicationDescription;
+application.author = applicationAuthor;
+application.owner = applicationOwner;
+application.statusService.homeRef = new Reference(applicationHomeURL);
+application.statusService.contactEmail = applicationContactEmail;
+
+// The context will not be created until we attach the application
+component.defaultHost.attach(application);
+
+application.context.logger = applicationLoggerName;
+
+//
+// Context
+//
+
+var attributes = application.context.attributes;
+var scriptEngineManager = new ScriptEngineManager();
+
+// ScriptedResource
+
+attributes.put('com.threecrickets.prudence.ScriptedResource.scriptEngineManager', scriptEngineManager);
+attributes.put('com.threecrickets.prudence.ScriptedResource.defaultScriptEngineName', script.container.defaultEngineName);
+attributes.put('com.threecrickets.prudence.ScriptedResource.extension', resourceExtension);
+attributes.put('com.threecrickets.prudence.ScriptedResource.defaultName', resourceDefaultName);
+attributes.put('com.threecrickets.prudence.ScriptedResource.scriptSource',
+	new ScriptFileSource(new File(resourceBasePath), resourceDefaultName, resourceExtension, resourceMinimumTimeBetweenValidityChecks));
+attributes.put('com.threecrickets.prudence.ScriptedResource.sourceViewable', resourceSourceViewable);
+
+// ScriptedTextResource
+
+attributes.put('com.threecrickets.prudence.ScriptedTextResource.scriptEngineManager', scriptEngineManager);
+attributes.put('com.threecrickets.prudence.ScriptedTextResource.defaultScriptEngineName', script.container.defaultEngineName);
+attributes.put('com.threecrickets.prudence.ScriptedTextResource.defaultName', scriptedWebDefaultScript);
+attributes.put('com.threecrickets.prudence.ScriptedTextResource.scriptSource',
+	 new ScriptFileSource(new File(scriptedWebBasePath), scriptedWebDefaultScript, null, scriptedWebMinimumTimeBetweenValidityChecks));
+attributes.put('com.threecrickets.prudence.ScriptedTextResource.sourceViewable', scriptedWebSourceViewable);
+
+//
+// Start
+//
+
+component.start();
+
+%>main.script finished

@@ -1,0 +1,44 @@
+<% script.cacheDuration = 5000; var prudenceDemoBasePath = script.meta.get('prudenceDemoBasePath'); %><%& prudenceDemoBasePath + 'header.fragment' %>
+
+<h2>About Prudence</h2>
+
+<p>
+Prudence is a platform for creating scalable web applications
+and network services using dynamic scripting languages and proven
+<a href="http://en.wikipedia.org/wiki/Representational_State_Transfer">REST</a> principles.
+Your application can support thin clients (HTML) and rich clients (AJAX), with anything in between.
+You can also create pure REST services with no user interaction.
+</p><p>
+Languages supported are JavaScript, PHP, Python, Ruby, Groovy and Velocity, and anything
+else supported by the <a href="http://www.threecrickets.com/scripturian">Scripturian</a> project.
+</p><p>
+A complete, ready-to-rumble platform is ready for you to <a href="download.page">download</a>, for which the
+only requirement is Java 5. It includes plenty of example code, a scalable HTTP server, and robust
+logging facilities.
+</p><p>
+For Java developers, Prudence is also available as a standalone library, which you can embed in
+your application.
+</p>
+
+<h3>Features</h3>
+<p>
+In addition to making it very easy to create REST resources (see <a href="resource-demos.page">demos</a>), 
+Prudence allows embedding scriptlets within HTML pages, similarly to PHP, JSP and ASP (see <a href="scriptlet-demos.page">demos</a>),
+with support for high-performance streaming and caching of results.
+</p><p>
+You can see your changes happen on-the-fly without any compilation: Prudence picks up your
+edits and makes sure to update its cached code base. Development is quick, powerful and fun!
+</p>
+
+<h3>With Diligence and Prudence</h3>
+<p>
+We at <a href="http://www.threecrickets.com/">Three Crickets</a> originally designed Prudence to
+help us create our own products. It is an optional component in our super-scalable data-driving platform,
+<a href="http://www.threecrickets.com/diligenceandprudence/">Diligence and Prudence</a>.
+The combination is a complete stack for easily creating scalable, data-driven applications in the scripting
+language of your choice. We used this stack to build <a href="http://www.threecrickets.com/sneeze/">Sneeze!</a> in
+just 10 days, using nothing but JavaScript!
+</p>
+
+
+<%& prudenceDemoBasePath + 'footer.fragment' %>
