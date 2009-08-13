@@ -76,9 +76,6 @@
 		<copy todir="${content}/licenses/scripturian">
 			<fileset dir="${lib}/scripturian/license" />
 		</copy>
-		<copy todir="${content}/licenses/servlet">
-			<fileset dir="${lib}/servlet/license" />
-		</copy>
 		<copy todir="${content}/licenses/slf4j">
 			<fileset dir="${lib}/slf4j/license" />
 		</copy>
@@ -101,7 +98,6 @@
 			<fileset dir="${lib}/restlet/lib" />
 			<fileset dir="${lib}/rhino/lib" />
 			<fileset dir="${lib}/scripturian/lib" />
-			<fileset dir="${lib}/servlet/lib" />
 			<fileset dir="${lib}/slf4j/lib" />
 			<fileset dir="${lib}/velocity/lib" />
 			<fileset file="${lib}/versions.txt" />
