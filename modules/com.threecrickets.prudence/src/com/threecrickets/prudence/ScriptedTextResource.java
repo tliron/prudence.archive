@@ -25,24 +25,22 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.restlet.Context;
+import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
 import org.restlet.data.Status;
-
-import com.threecrickets.prudence.internal.ExposedScriptedTextResourceContainer;
-import com.threecrickets.prudence.internal.RepresentableString;
-import com.threecrickets.prudence.internal.ScriptUtils;
-
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
+import com.threecrickets.prudence.internal.ExposedScriptedTextResourceContainer;
+import com.threecrickets.prudence.internal.RepresentableString;
+import com.threecrickets.prudence.internal.PrudenceUtils;
 import com.threecrickets.scripturian.CompositeScript;
 import com.threecrickets.scripturian.ScriptContextController;
 import com.threecrickets.scripturian.ScriptSource;
@@ -510,7 +508,7 @@ public class ScriptedTextResource extends ServerResource
 	public Representation get( Variant variant ) throws ResourceException
 	{
 		Request request = getRequest();
-		String name = ScriptUtils.getRelativePart( request, getDefaultName() );
+		String name = PrudenceUtils.getRelativePart( request, getDefaultName() );
 
 		try
 		{

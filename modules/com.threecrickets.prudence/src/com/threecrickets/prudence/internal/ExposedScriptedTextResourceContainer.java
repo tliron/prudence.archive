@@ -19,18 +19,16 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.script.ScriptException;
 
+import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-
-import com.threecrickets.prudence.ScriptedTextResource;
-
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 
+import com.threecrickets.prudence.ScriptedTextResource;
 import com.threecrickets.scripturian.CompositeScript;
 import com.threecrickets.scripturian.CompositeScriptContext;
 import com.threecrickets.scripturian.ScriptSource;

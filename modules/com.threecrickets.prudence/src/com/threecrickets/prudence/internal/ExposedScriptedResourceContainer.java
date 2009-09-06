@@ -347,7 +347,7 @@ public class ExposedScriptedResourceContainer
 	 */
 	public Object invoke( String entryPointName ) throws ResourceException
 	{
-		String name = ScriptUtils.getRelativePart( this.resource.getRequest(), this.resource.getDefaultName() );
+		String name = PrudenceUtils.getRelativePart( this.resource.getRequest(), this.resource.getDefaultName() );
 
 		try
 		{

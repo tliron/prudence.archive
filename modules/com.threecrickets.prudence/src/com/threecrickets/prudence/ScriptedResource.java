@@ -20,22 +20,20 @@ import java.util.concurrent.ConcurrentMap;
 import javax.script.ScriptEngineManager;
 
 import org.restlet.Context;
+import org.restlet.Request;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
-import org.restlet.data.Request;
 import org.restlet.data.Status;
-
-import com.threecrickets.prudence.internal.ExposedScriptedResourceContainer;
-import com.threecrickets.prudence.internal.ScriptUtils;
-
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
+import com.threecrickets.prudence.internal.ExposedScriptedResourceContainer;
+import com.threecrickets.prudence.internal.PrudenceUtils;
 import com.threecrickets.scripturian.CompositeScript;
 import com.threecrickets.scripturian.ScriptContextController;
 import com.threecrickets.scripturian.ScriptSource;
@@ -685,7 +683,7 @@ public class ScriptedResource extends ServerResource
 		if( isSourceViewable() && TRUE.equals( request.getResourceRef().getQueryAsForm().getFirstValue( SOURCE ) ) )
 		{
 			// Represent script source
-			String name = ScriptUtils.getRelativePart( request, getDefaultName() );
+			String name = PrudenceUtils.getRelativePart( request, getDefaultName() );
 			try
 			{
 				return new StringRepresentation( getScriptSource().getScriptDescriptor( name ).getText() );

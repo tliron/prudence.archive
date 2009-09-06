@@ -11,14 +11,14 @@
 
 package com.threecrickets.prudence.internal;
 
-import org.restlet.data.Request;
+import org.restlet.Request;
 
 /**
  * Utility methods for Prudence.
  * 
  * @author Tal Liron
  */
-public abstract class ScriptUtils
+public abstract class PrudenceUtils
 {
 	/**
 	 * Retrieves that part of the resource reference between the base reference
@@ -54,7 +54,7 @@ public abstract class ScriptUtils
 	/**
 	 * Private constructor.
 	 */
-	private ScriptUtils()
+	private PrudenceUtils()
 	{
 	}
 }
