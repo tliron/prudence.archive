@@ -29,7 +29,7 @@ importClass(
 	org.restlet.routing.Redirector,
 	org.restlet.data.Protocol,
 	org.restlet.data.Reference,
-	org.restlet.util.Template,
+	org.restlet.routing.Template,
 	com.threecrickets.prudence.ScriptedResource,
 	com.threecrickets.prudence.ScriptedTextResource,
 	com.threecrickets.scripturian.file.ScriptFileSource);
