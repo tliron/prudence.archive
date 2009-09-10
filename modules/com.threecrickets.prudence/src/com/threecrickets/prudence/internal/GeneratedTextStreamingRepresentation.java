@@ -19,21 +19,21 @@ import javax.script.ScriptException;
 
 import org.restlet.data.Language;
 
-import com.threecrickets.prudence.ScriptedTextResource;
+import com.threecrickets.prudence.GeneratedTextResource;
 
 import org.restlet.representation.WriterRepresentation;
 
-import com.threecrickets.scripturian.CompositeScript;
-import com.threecrickets.scripturian.CompositeScriptContext;
-import com.threecrickets.scripturian.ScriptContextController;
+import com.threecrickets.scripturian.Document;
+import com.threecrickets.scripturian.DocumentContext;
+import com.threecrickets.scripturian.ScriptletController;
 
 /**
- * Representation used in streaming mode of {@link ScriptedTextResource}.
+ * Representation used in streaming mode of {@link GeneratedTextResource}.
  * 
  * @author Tal Liron
  * @ScriptedTextResource
  */
-class ScriptedTextStreamingRepresentation extends WriterRepresentation
+class GeneratedTextStreamingRepresentation extends WriterRepresentation
 {
 	//
 	// Construction
@@ -46,26 +46,26 @@ class ScriptedTextStreamingRepresentation extends WriterRepresentation
 	 *        The resource
 	 * @param container
 	 *        The container
-	 * @param compositeScriptContext
-	 *        The composite script context
-	 * @param scriptContextController
-	 *        The script context controller
-	 * @param script
-	 *        The composite script instance
+	 * @param documentContext
+	 *        The document context
+	 * @param scriptletController
+	 *        The scriptlet controller
+	 * @param document
+	 *        The document instance
 	 * @param flushLines
 	 *        Whether to flush the writers after every line
 	 */
-	public ScriptedTextStreamingRepresentation( ScriptedTextResource resource, ExposedScriptedTextResourceContainer container, CompositeScriptContext compositeScriptContext,
-		ScriptContextController scriptContextController, CompositeScript script, boolean flushLines )
+	public GeneratedTextStreamingRepresentation( GeneratedTextResource resource, ExposedContainerForGeneratedTextResource container, DocumentContext documentContext, ScriptletController scriptletController,
+		Document document, boolean flushLines )
 	{
 		// Note that we are setting representation characteristics
-		// before we actually run the script
+		// before we actually run the document
 		super( container.getMediaType() );
 
 		this.resource = resource;
 		this.container = container;
-		this.compositeScriptContext = compositeScriptContext;
-		this.scriptContextController = scriptContextController;
+		this.documentContext = documentContext;
+		this.scriptletController = scriptletController;
 		this.flushLines = flushLines;
 
 		setCharacterSet( container.getCharacterSet() );
@@ -77,7 +77,7 @@ class ScriptedTextStreamingRepresentation extends WriterRepresentation
 			} ) );
 		}
 
-		this.script = script;
+		this.document = document;
 	}
 
 	//
@@ -92,7 +92,7 @@ class ScriptedTextStreamingRepresentation extends WriterRepresentation
 		this.resource.setWriter( writer );
 		try
 		{
-			this.script.run( false, writer, this.resource.getErrorWriter(), this.flushLines, this.compositeScriptContext, this.container, this.scriptContextController );
+			this.document.run( false, writer, this.resource.getErrorWriter(), this.flushLines, this.documentContext, this.container, this.scriptletController );
 		}
 		catch( ScriptException x )
 		{
@@ -102,9 +102,9 @@ class ScriptedTextStreamingRepresentation extends WriterRepresentation
 		}
 		finally
 		{
-			// The script may have set its cacheDuration, so we must
+			// Scriptlets may have set its cacheDuration, so we must
 			// make sure to disable it!
-			this.script.setCacheDuration( 0 );
+			this.document.setCacheDuration( 0 );
 		}
 	}
 
@@ -114,27 +114,27 @@ class ScriptedTextStreamingRepresentation extends WriterRepresentation
 	/**
 	 * The resource.
 	 */
-	private final ScriptedTextResource resource;
+	private final GeneratedTextResource resource;
 
 	/**
 	 * The container.
 	 */
-	private final ExposedScriptedTextResourceContainer container;
+	private final ExposedContainerForGeneratedTextResource container;
 
 	/**
-	 * The composite script instance.
+	 * The document instance.
 	 */
-	private final CompositeScript script;
+	private final Document document;
 
 	/**
-	 * The script context controller.
+	 * The scriptlet controller.
 	 */
-	private final ScriptContextController scriptContextController;
+	private final ScriptletController scriptletController;
 
 	/**
-	 * The composite script context.
+	 * The document context.
 	 */
-	private final CompositeScriptContext compositeScriptContext;
+	private final DocumentContext documentContext;
 
 	/**
 	 * Whether to flush the writers after every line.

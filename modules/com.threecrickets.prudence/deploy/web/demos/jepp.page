@@ -11,17 +11,17 @@
 # Accessing the request
 #
 
-form = script.getContainer().getRequest().getResourceRef().getQueryAsForm()
+form = document.getContainer().getRequest().getResourceRef().getQueryAsForm()
 
 #
 # Stream this script
 #
 
 if form.getFirstValue('stream') == 'true':
-	if script.getContainer().stream():
+	if document.getContainer().stream():
 		raise
 
-script.setCacheDuration(5000)
+document.setCacheDuration(5000)
 
 #
 # Calling Java
@@ -40,11 +40,11 @@ sys.stdout.write('This page was dynamically generated at ' + str(System.currentT
 #
 # This is identical to:
 #
-#   script.getContainer().include('path')
+#   document.getContainer().include('path')
 #
 
 %>
-<%& str(script.getMeta().get('prudenceDemoBasePath')) + 'demos/jepp.fragment' %>
+<%& str(document.getMeta().get('prudenceDemoBasePath')) + 'demos/jepp.fragment' %>
 <%
 
 #
@@ -66,11 +66,11 @@ def printFactory(factory):
 %>
 <h3>Script engine used:</h3>
 <%
-printFactory(script.getEngine().getFactory())
+printFactory(document.getEngine().getFactory())
 %>
 <h3>Available script engines:</h3>
 <%
-factories = script.getEngineManager().getEngineFactories().toArray()
+factories = document.getEngineManager().getEngineFactories().toArray()
 for factory in factories:
 	printFactory(factory)
 %>

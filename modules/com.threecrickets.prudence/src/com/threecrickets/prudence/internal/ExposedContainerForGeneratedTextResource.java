@@ -28,18 +28,17 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 
-import com.threecrickets.prudence.ScriptedTextResource;
-import com.threecrickets.scripturian.CompositeScript;
-import com.threecrickets.scripturian.CompositeScriptContext;
-import com.threecrickets.scripturian.ScriptSource;
+import com.threecrickets.prudence.GeneratedTextResource;
+import com.threecrickets.scripturian.Document;
+import com.threecrickets.scripturian.DocumentContext;
+import com.threecrickets.scripturian.DocumentSource;
 
 /**
- * This is the type of the <code>script.container</code> variable exposed to the
- * script.
+ * This is the <code>document.container</code> variable exposed to scriptlets.
  * 
  * @author Tal Liron
  */
-public class ExposedScriptedTextResourceContainer
+public class ExposedContainerForGeneratedTextResource
 {
 	//
 	// Construction
@@ -47,8 +46,8 @@ public class ExposedScriptedTextResourceContainer
 
 	/**
 	 * Constructs a container with media type and character set according to the
-	 * variant, or {@link ScriptedTextResource#getDefaultCharacterSet()} if none
-	 * is provided.
+	 * variant, or {@link GeneratedTextResource#getDefaultCharacterSet()} if
+	 * none is provided.
 	 * 
 	 * @param resource
 	 *        The resource
@@ -57,7 +56,7 @@ public class ExposedScriptedTextResourceContainer
 	 * @param cache
 	 *        The cache (used for caching mode)
 	 */
-	public ExposedScriptedTextResourceContainer( ScriptedTextResource resource, Variant variant, ConcurrentMap<String, RepresentableString> cache )
+	public ExposedContainerForGeneratedTextResource( GeneratedTextResource resource, Variant variant, ConcurrentMap<String, RepresentableString> cache )
 	{
 		this.resource = resource;
 		this.variant = variant;
@@ -75,7 +74,7 @@ public class ExposedScriptedTextResourceContainer
 		if( this.characterSet == null )
 			this.characterSet = resource.getDefaultCharacterSet();
 
-		this.compositeScriptContext = new CompositeScriptContext( resource.getScriptEngineManager() );
+		this.documentContext = new DocumentContext( resource.getScriptEngineManager() );
 	}
 
 	//
@@ -85,7 +84,7 @@ public class ExposedScriptedTextResourceContainer
 	/**
 	 * The {@link CharacterSet} that will be used for the generated string.
 	 * Defaults to what the client requested (in container.variant), or to the
-	 * value of {@link ScriptedTextResource#defaultCharacterSet} if the client
+	 * value of {@link GeneratedTextResource#defaultCharacterSet} if the client
 	 * did not specify it. If not in streaming mode, your script can change this
 	 * to something else.
 	 * 
@@ -202,13 +201,13 @@ public class ExposedScriptedTextResourceContainer
 	}
 
 	/**
-	 * The {@link ScriptSource} used to fetch and cache scripts.
+	 * The {@link DocumentSource} used to fetch documents.
 	 * 
-	 * @return The script source
+	 * @return The document source
 	 */
-	public ScriptSource<CompositeScript> getSource()
+	public DocumentSource<Document> getSource()
 	{
-		return this.resource.getScriptSource();
+		return this.resource.getDocumentSource();
 	}
 
 	/**
@@ -239,17 +238,18 @@ public class ExposedScriptedTextResourceContainer
 	//
 
 	/**
-	 * This powerful method allows scripts to execute other scripts in place,
-	 * and is useful for creating large, maintainable applications based on
-	 * scripts. Included scripts can act as a library or toolkit and can even be
-	 * shared among many applications. The included script does not have to be
-	 * in the same language or use the same engine as the calling script.
-	 * However, if they do use the same engine, then methods, functions,
-	 * modules, etc., could be shared. It is important to note that how this
-	 * works varies a lot per scripting platform. For example, in JRuby, every
-	 * script is run in its own scope, so that sharing would have to be done
-	 * explicitly in the global scope. See the included Ruby composite script
-	 * example for a discussion of various ways to do this.
+	 * This powerful method allows scriptlets to execute other documents in
+	 * place, and is useful for creating large, maintainable applications based
+	 * on documents. Included documents can act as a library or toolkit and can
+	 * even be shared among many applications. The included document does not
+	 * have to be in the same programming language or use the same engine as the
+	 * calling scriptlet. However, if they do use the same engine, then methods,
+	 * functions, modules, etc., could be shared.
+	 * <p>
+	 * It is important to note that how this works varies a lot per engine. For
+	 * example, in JRuby, every scriptlet is run in its own scope, so that
+	 * sharing would have to be done explicitly in the global scope. See the
+	 * included JRuby examples for a discussion of various ways to do this.
 	 * 
 	 * @param name
 	 *        The script name
@@ -263,9 +263,9 @@ public class ExposedScriptedTextResourceContainer
 	}
 
 	/**
-	 * As {@link #include(String)}, except that the script is not composite. As
-	 * such, you must explicitly specify the name of the scripting engine that
-	 * should evaluate it.
+	 * As {@link #include(String)}, except that the document is parsed as a
+	 * single, non-delimited scriptlet. As such, you must explicitly specify the
+	 * name of the scripting engine that should evaluate it.
 	 * 
 	 * @param name
 	 *        The script name
@@ -282,26 +282,26 @@ public class ExposedScriptedTextResourceContainer
 		Writer writer = this.resource.getWriter();
 
 		// Get script descriptor
-		ScriptSource.ScriptDescriptor<CompositeScript> scriptDescriptor = this.resource.getScriptSource().getScriptDescriptor( name );
+		DocumentSource.DocumentDescriptor<Document> documentDescriptor = this.resource.getDocumentSource().getDocumentDescriptor( name );
 
-		CompositeScript script = scriptDescriptor.getScript();
-		if( script == null )
+		Document document = documentDescriptor.getDocument();
+		if( document == null )
 		{
 			// Create script from descriptor
-			String text = scriptDescriptor.getText();
+			String text = documentDescriptor.getText();
 
 			if( scriptEngineName != null )
-				text = CompositeScript.DEFAULT_DELIMITER1_START + scriptEngineName + " " + text + CompositeScript.DEFAULT_DELIMITER1_END;
+				text = Document.DEFAULT_DELIMITER1_START + scriptEngineName + " " + text + Document.DEFAULT_DELIMITER1_END;
 
-			script = new CompositeScript( text, this.resource.getScriptEngineManager(), this.resource.getDefaultScriptEngineName(), this.resource.getScriptSource(), this.resource.isAllowCompilation() );
-			CompositeScript existing = scriptDescriptor.setScriptIfAbsent( script );
+			document = new Document( text, this.resource.getScriptEngineManager(), this.resource.getDefaultScriptEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 
 			if( existing != null )
-				script = existing;
+				document = existing;
 		}
 
 		// Special handling for trivial scripts
-		String trivial = script.getTrivial();
+		String trivial = document.getTrivial();
 		if( trivial != null )
 		{
 			if( writer != null )
@@ -332,7 +332,7 @@ public class ExposedScriptedTextResourceContainer
 		try
 		{
 			// Do not allow caching in streaming mode
-			if( script.run( !isStreaming, writer, this.resource.getErrorWriter(), false, this.compositeScriptContext, this, this.resource.getScriptContextController() ) )
+			if( document.run( !isStreaming, writer, this.resource.getErrorWriter(), false, this.documentContext, this, this.resource.getScriptletController() ) )
 			{
 
 				// Did the script ask us to start streaming?
@@ -341,7 +341,7 @@ public class ExposedScriptedTextResourceContainer
 					this.startStreaming = false;
 
 					// Note that this will cause the script to run again!
-					return new ScriptedTextStreamingRepresentation( this.resource, this, this.compositeScriptContext, this.resource.getScriptContextController(), script, this.flushLines );
+					return new GeneratedTextStreamingRepresentation( this.resource, this, this.documentContext, this.resource.getScriptletController(), document, this.flushLines );
 				}
 
 				if( isStreaming )
@@ -389,7 +389,7 @@ public class ExposedScriptedTextResourceContainer
 				this.startStreaming = false;
 
 				// Note that this will cause the script to run again!
-				return new ScriptedTextStreamingRepresentation( this.resource, this, this.compositeScriptContext, this.resource.getScriptContextController(), script, this.flushLines );
+				return new GeneratedTextStreamingRepresentation( this.resource, this, this.documentContext, this.resource.getScriptletController(), document, this.flushLines );
 
 				// Note that we will allow exceptions in scripts that ask us
 				// to start streaming! In fact, throwing an exception is a
@@ -403,17 +403,17 @@ public class ExposedScriptedTextResourceContainer
 
 	/**
 	 * If you are in caching mode, calling this method will return true and
-	 * cause the script to run again, where this next run will be in streaming
-	 * mode. Whatever output the script created in the current run is discarded,
-	 * and all further exceptions are ignored. For this reason, it's probably
-	 * best to call container.stream() as early as possible in the script, and
-	 * then to quit the script as soon as possible if it returns true. For
-	 * example, your script can start by testing whether it will have a lot of
-	 * output, and if so, set output characteristics, call container.stream(),
-	 * and quit. If you are already in streaming mode, calling this method has
-	 * no effect and returns false. Note that a good way to quit the script is
-	 * to throw an exception, because it will end the script and otherwise be
-	 * ignored.
+	 * cause the document to run again, where this next run will be in streaming
+	 * mode. Whatever output the document created in the current run is
+	 * discarded, and all further exceptions are ignored. For this reason, it's
+	 * probably best to call <code>document.container.stream()</code> as early
+	 * as possible in the document, and then to quit the document as soon as
+	 * possible if it returns true. For example, your document can start by
+	 * testing whether it will have a lot of output, and if so, set output
+	 * characteristics, call <code>document.container.stream()</code>, and quit.
+	 * If you are already in streaming mode, calling this method has no effect
+	 * and returns false. Note that a good way to quit the script is to throw an
+	 * exception, because it will end the script and otherwise be ignored.
 	 * <p>
 	 * By default, writers will be automatically flushed after every line in
 	 * streaming mode. If you want to disable this behavior, use
@@ -429,18 +429,9 @@ public class ExposedScriptedTextResourceContainer
 	}
 
 	/**
-	 * If you are in caching mode, calling this method will return true and
-	 * cause the script to run again, where this next run will be in streaming
-	 * mode. Whatever output the script created in the current run is discarded,
-	 * and all further exceptions are ignored. For this reason, it's probably
-	 * best to call container.stream() as early as possible in the script, and
-	 * then to quit the script as soon as possible if it returns true. For
-	 * example, your script can start by testing whether it will have a lot of
-	 * output, and if so, set output characteristics, call container.stream(),
-	 * and quit. If you are already in streaming mode, calling this method has
-	 * no effect and returns false. Note that a good way to quit the script is
-	 * to throw an exception, because it will end the script and otherwise be
-	 * ignored.
+	 * This version of {@link #stream()} adds a boolean argument to let you
+	 * control whether to flush the writer after every line in streaming mode.
+	 * By default auto-flushing is enabled.
 	 * 
 	 * @param flushLines
 	 *        Whether to flush the writers after every line in streaming mode
@@ -464,7 +455,7 @@ public class ExposedScriptedTextResourceContainer
 	/**
 	 * The resource.
 	 */
-	private final ScriptedTextResource resource;
+	private final GeneratedTextResource resource;
 
 	/**
 	 * Flag to signify that we should enter streaming mode.
@@ -514,5 +505,5 @@ public class ExposedScriptedTextResourceContainer
 	/**
 	 * The composite script context.
 	 */
-	private final CompositeScriptContext compositeScriptContext;
+	private final DocumentContext documentContext;
 }

@@ -11,15 +11,15 @@
 // Accessing the request
 //
 
-$form = $script->container->request->resourceRef->queryAsForm;
+$form = $document->container->request->resourceRef->queryAsForm;
 
 //
 // Stream this script
 //
 
-if($form->getFirstValue('stream') == 'true') if($script->container->stream()) exit();
+if($form->getFirstValue('stream') == 'true') if($document->container->stream()) exit();
 
-$script->cacheDuration = 5000;
+$document->cacheDuration = 5000;
 
 //
 // Calling Java
@@ -39,7 +39,7 @@ print 'This page was dynamically generated at ' . System::currentTimeMillis();
 //
 
 ?>
-<?& $script->meta->get('prudenceDemoBasePath') . 'demos/quercus.fragment' ?>
+<?& $document->meta->get('prudenceDemoBasePath') . 'demos/quercus.fragment' ?>
 <?
 
 //
@@ -67,11 +67,11 @@ function printFactory($factory) {
 ?>
 <h3>Script engine used:</h3>
 <?
-printFactory($script->engine->factory);
+printFactory($document->engine->factory);
 ?>
 <h3>Available script engines:</h3>
 <?
-$factories = $script->engineManager->engineFactories->toArray();
+$factories = $document->engineManager->engineFactories->toArray();
 foreach($factories as $factory) {
 	printFactory($factory);
 }

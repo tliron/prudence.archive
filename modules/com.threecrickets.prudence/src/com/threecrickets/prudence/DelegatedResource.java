@@ -32,17 +32,17 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
-import com.threecrickets.prudence.internal.ExposedScriptedResourceContainer;
+import com.threecrickets.prudence.internal.ExposedContainerForDelegatedResource;
 import com.threecrickets.prudence.internal.PrudenceUtils;
-import com.threecrickets.scripturian.CompositeScript;
-import com.threecrickets.scripturian.ScriptContextController;
-import com.threecrickets.scripturian.ScriptSource;
+import com.threecrickets.scripturian.Document;
+import com.threecrickets.scripturian.ScriptletController;
+import com.threecrickets.scripturian.DocumentSource;
 
 /**
- * A Restlet resource which delegates functionality to a {@link CompositeScript}
- * with well-defined entry points. The entry points must be global functions,
- * closures, or whatever other technique the scripting engine uses to make entry
- * points available to Java. They entry points are:
+ * A Restlet resource which delegates functionality to a Scripturian
+ * {@link Document} with well-defined entry points. The entry points must be
+ * global functions, closures, or whatever other technique the scripting engine
+ * uses to make entry points available to Java. They entry points are:
  * <ul>
  * <li><code>handleInit()</code>: This function is called when the resource is
  * initialized. We will use it set general characteristics for the resource.</li>
@@ -89,54 +89,59 @@ import com.threecrickets.scripturian.ScriptSource;
  * {@link #getEntryPointNameForPut()} and {@link #getEntryPointNameForDelete()}.
  * <p>
  * Before using this resource, make sure to configure a valid source in the
- * application's {@link Context}; see {@link #getScriptSource()}. This source is
- * accessible from the script itself, via <code>script.container.source</code>.
+ * application's {@link Context}; see {@link #getDocumentSource()}. This source
+ * is accessible from the script itself, via
+ * <code>document.container.source</code>.
  * <p>
  * Note that the composite script's output is sent to the system's standard
  * output. Most likely, you will not want to output anything from the script.
  * However, this redirection is provided as a convenience, which may be useful
  * for certain debugging situations.
  * <p>
- * A special container environment is created for scripts, with some useful
- * services. It is available to the script as a global variable named
- * <code>script.container</code>. For some other global variables available to
- * scripts, see {@link CompositeScript}.
+ * A special container environment is created for scriptlets, with some useful
+ * services. It is available to scriptlets as a global variable named
+ * <code>document.container</code>. For some other global variables available to
+ * scriptlets, see {@link Document}.
  * <p>
  * Operations:
  * <ul>
- * <li><code>script.container.include(name)</code>: This powerful method allows
- * scripts to execute other scripts in place, and is useful for creating large,
- * maintainable applications based on scripts. Included scripts can act as a
- * library or toolkit and can even be shared among many applications. The
- * included script does not have to be in the same language or use the same
- * engine as the calling script. However, if they do use the same engine, then
- * methods, functions, modules, etc., could be shared. It is important to note
- * that how this works varies a lot per scripting platform. For example, in
- * JRuby, every script is run in its own scope, so that sharing would have to be
- * done explicitly in the global scope. See the included Ruby composite script
- * example for a discussion of various ways to do this.</li>
- * <li><code>script.container.include(name, engineName)</code>: As the above,
- * except that the script is not composite. As such, you must explicitly specify
- * the name of the scripting engine that should evaluate it.</li>
+ * <li><code>document.container.include(name)</code>: This powerful method
+ * allows scriptlets to execute other documents in place, and is useful for
+ * creating large, maintainable applications based on documents. Included
+ * documents can act as a library or toolkit and can even be shared among many
+ * applications. The included document does not have to be in the same
+ * programming language or use the same engine as the calling scriptlet.
+ * However, if they do use the same engine, then methods, functions, modules,
+ * etc., could be shared.
+ * <p>
+ * It is important to note that how this works varies a lot per engine. For
+ * example, in JRuby, every scriptlet is run in its own scope, so that sharing
+ * would have to be done explicitly in the global scope. See the included JRuby
+ * examples for a discussion of various ways to do this.
+ * </li>
+ * <li><code>document.container.include(name, engineName)</code>: As above,
+ * except that the document is parsed as a single, non-delimited scriptlet. As
+ * such, you must explicitly specify the name of the scripting engine that
+ * should evaluate it.</li>
  * </ul>
  * Read-only attributes:
  * <ul>
- * <li><code>script.container.entity</code>: The {@link Representation} of an
+ * <li><code>document.container.entity</code>: The {@link Representation} of an
  * entity provided with this request. Available only in
  * <code>handlePost()</code> and <code>handlePut()</code>. Note that
- * <code>script.container.variant</code> is identical to
- * <code>script.container.entity</code> when available.</li>
- * <li><code>script.container.resource</code>: The instance of this resource.
- * Acts as a "this" reference for the script. For example, during a call to
+ * <code>document.container.variant</code> is identical to
+ * <code>document.container.entity</code> when available.</li>
+ * <li><code>document.container.resource</code>: The instance of this resource.
+ * Acts as a "this" reference for scriptlets. For example, during a call to
  * <code>handleInit()</code>, this can be used to change the characteristics of
  * the resource. Otherwise, you can use it to access the request and response.</li>
- * <li><code>script.container.source</code>: The source used for the script; see
- * {@link #getScriptSource()}.</li>
- * <li><code>script.container.variant</code>: The {@link Variant} of this
+ * <li><code>document.container.source</code>: The source used for the document;
+ * see {@link #getDocumentSource()}.</li>
+ * <li><code>document.container.variant</code>: The {@link Variant} of this
  * request. Useful for interrogating the client's preferences. This is available
  * only in <code>handleGet()</code>, <code>handlePost()</code> and
  * <code>handlePut()</code>.</li>
- * <li><code>script.container.variants</code>: A map of possible variants or
+ * <li><code>document.container.variants</code>: A map of possible variants or
  * media types supported by this resource. You should initialize this during a
  * call to <code>handleInit()</code>. Values for the map can be
  * {@link MediaType} constants, explicit {@link Variant} instances (in which
@@ -147,77 +152,78 @@ import com.threecrickets.scripturian.ScriptSource;
  * </ul>
  * Modifiable attributes:
  * <ul>
- * <li><code>script.container.mediaType</code>: The {@link MediaType} that will
- * be used if you return an arbitrary type for <code>handleGet()</code>,
- * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to what the
- * client requested (in <code>script.container.variant</code>).</li>
- * <li><code>script.container.characterSet</code>: The {@link CharacterSet} that
+ * <li><code>document.container.mediaType</code>: The {@link MediaType} that
  * will be used if you return an arbitrary type for <code>handleGet()</code>,
  * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to what the
- * client requested (in <code>script.container.variant</code>), or to the value
- * of {@link #getDefaultCharacterSet()} if the client did not specify it.</li>
- * <li><code>script.container.language</code>: The {@link Language} that will be
- * used if you return an arbitrary type for <code>handleGet()</code>,
+ * client requested (in <code>document.container.variant</code>).</li>
+ * <li><code>document.container.characterSet</code>: The {@link CharacterSet}
+ * that will be used if you return an arbitrary type for
+ * <code>handleGet()</code>, <code>handlePost()</code> and
+ * <code>handlePut()</code>. Defaults to what the client requested (in
+ * <code>document.container.variant</code>), or to the value of
+ * {@link #getDefaultCharacterSet()} if the client did not specify it.</li>
+ * <li><code>document.container.language</code>: The {@link Language} that will
+ * be used if you return an arbitrary type for <code>handleGet()</code>,
  * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to null.</li>
  * </ul>
  * <p>
- * In addition to the above, a {@link ScriptContextController} can be set to add
+ * In addition to the above, a {@link ScriptletController} can be set to add
  * your own global variables to each composite script. See
- * {@link #getScriptContextController()}.
+ * {@link #getScriptletController()}.
  * <p>
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
  * <li>
- * <code>com.threecrickets.prudence.ScriptedResource.allowCompilation:</code>
+ * <code>com.threecrickets.prudence.DelegatedResource.allowCompilation:</code>
  * {@link Boolean}, defaults to true. See {@link #isAllowCompilation()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.ScriptedResource.defaultCharacterSet:</code>
+ * <code>com.threecrickets.prudence.DelegatedResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
  * {@link #getDefaultCharacterSet()}.</li>
- * <li><code>com.threecrickets.prudence.ScriptedResource.defaultName:</code>
+ * <li><code>com.threecrickets.prudence.DelegatedResource.defaultName:</code>
  * {@link String}, defaults to "default.script". See {@link #getDefaultName()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.ScriptedResource.defaultScriptEngineName:</code>
+ * <code>com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName:</code>
  * {@link String}, defaults to "js". See {@link #getDefaultScriptEngineName()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.ScriptedResource.entryPointNameForDelete:</code>
+ * <code>com.threecrickets.prudence.DelegatedResource.documentSource:</code>
+ * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForDelete:</code>
  * {@link String}, defaults to "handleDelete". See
  * {@link #getEntryPointNameForDelete()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.ScriptedResource.entryPointNameForGet:</code>
+ * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForGet:</code>
  * {@link String}, defaults to "handleGet". See
  * {@link #getEntryPointNameForGet()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.ScriptedResource.entryPointNameForInit:</code>
+ * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForInit:</code>
  * {@link String}, defaults to "handleInit". See
  * {@link #getEntryPointNameForInit()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.ScriptedResource.entryPointNameForPost:</code>
+ * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForPost:</code>
  * {@link String}, defaults to "handlePost". See
  * {@link #getEntryPointNameForPost()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.ScriptedResource.entryPointNameForPut:</code>
+ * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForPut:</code>
  * {@link String}, defaults to "handlePut". See
  * {@link #getEntryPointNameForPut()}.</li>
- * <li><code>com.threecrickets.prudence.ScriptedResource.errorWriter:</code>
+ * <li><code>com.threecrickets.prudence.DelegatedResource.errorWriter:</code>
  * {@link Writer}, defaults to standard error. See {@link #getErrorWriter()}.</li>
- * <li><code>com.threecrickets.prudence.ScriptedResource.extension:</code>
+ * <li><code>com.threecrickets.prudence.DelegatedResource.extension:</code>
  * {@link String}, defaults to "script". See {@link #getExtension()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.ScriptedResource.scriptContextController:</code>
- * {@link ScriptContextController}. See {@link #getScriptContextController()}.</li>
+ * <code>com.threecrickets.prudence.DelegatedResource.scriptletController:</code>
+ * {@link ScriptletController}. See {@link #getScriptletController()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.ScriptedResource.scriptEngineManager:</code>
+ * <code>com.threecrickets.prudence.DelegatedResource.scriptEngineManager:</code>
  * {@link ScriptEngineManager}, defaults to a new instance. See
  * {@link #getScriptEngineManager()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.ScriptedResource.scriptSource:</code>
- * {@link ScriptSource}. <b>Required.</b> See {@link #getScriptSource()}.</li>
- * <li>
- * <code>com.threecrickets.prudence.ScriptedResource.sourceViewable:</code>
+ * <code>com.threecrickets.prudence.DelegatedResource.sourceViewable:</code>
  * {@link Boolean}, defaults to false. See {@link #isSourceViewable()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.ScriptedResource.writer:</code>
+ * <code>com.threecrickets.prudence.DelegatedResource.writer:</code>
  * {@link Writer}, defaults to standard output. See {@link #getWriter()}.</li>
  * </ul>
  * <p>
@@ -225,21 +231,21 @@ import com.threecrickets.scripturian.ScriptSource;
  * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
  * @author Tal Liron
- * @see CompositeScript
- * @see ScriptedTextResource
+ * @see Document
+ * @see GeneratedTextResource
  */
-public class ScriptedResource extends ServerResource
+public class DelegatedResource extends ServerResource
 {
 	//
 	// Attributes
 	//
 
 	/**
-	 * The {@link Writer} used by the {@link CompositeScript}. Defaults to
-	 * standard output.
+	 * The {@link Writer} used by the {@link Document}. Defaults to standard
+	 * output.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.writer</code> in the
+	 * <code>com.threecrickets.prudence.DelegatedResource.writer</code> in the
 	 * application's {@link Context}.
 	 * 
 	 * @return The writer
@@ -249,7 +255,7 @@ public class ScriptedResource extends ServerResource
 		if( this.writer == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.writer = (Writer) attributes.get( "com.threecrickets.prudence.ScriptedResource.writer" );
+			this.writer = (Writer) attributes.get( "com.threecrickets.prudence.DelegatedResource.writer" );
 
 			if( this.writer == null )
 				this.writer = new OutputStreamWriter( System.out );
@@ -263,8 +269,8 @@ public class ScriptedResource extends ServerResource
 	 * error.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.errorWriter</code>
-	 * in the application's {@link Context}.
+	 * <code>com.threecrickets.prudence.DelegatedResource.errorWriter</code> in
+	 * the application's {@link Context}.
 	 * 
 	 * @return The error writer
 	 */
@@ -273,7 +279,7 @@ public class ScriptedResource extends ServerResource
 		if( this.errorWriter == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.errorWriter = (Writer) attributes.get( "com.threecrickets.prudence.ScriptedResource.errorWriter" );
+			this.errorWriter = (Writer) attributes.get( "com.threecrickets.prudence.DelegatedResource.errorWriter" );
 
 			if( this.errorWriter == null )
 				this.errorWriter = new OutputStreamWriter( System.out );
@@ -287,7 +293,7 @@ public class ScriptedResource extends ServerResource
 	 * Defaults to {@link CharacterSet#UTF_8}.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.defaultCharacterSet</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.defaultCharacterSet</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The default character set
@@ -297,7 +303,7 @@ public class ScriptedResource extends ServerResource
 		if( this.defaultCharacterSet == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.defaultCharacterSet = (CharacterSet) attributes.get( "com.threecrickets.prudence.ScriptedResource.defaultCharacterSet" );
+			this.defaultCharacterSet = (CharacterSet) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultCharacterSet" );
 
 			if( this.defaultCharacterSet == null )
 				this.defaultCharacterSet = CharacterSet.UTF_8;
@@ -313,8 +319,8 @@ public class ScriptedResource extends ServerResource
 	 * filenames. Defaults to "default.script".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.defaultName</code>
-	 * in the application's {@link Context}.
+	 * <code>com.threecrickets.prudence.DelegatedResource.defaultName</code> in
+	 * the application's {@link Context}.
 	 * 
 	 * @return The default name
 	 */
@@ -323,7 +329,7 @@ public class ScriptedResource extends ServerResource
 		if( this.defaultName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.defaultName = (String) attributes.get( "com.threecrickets.prudence.ScriptedResource.defaultName" );
+			this.defaultName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultName" );
 
 			if( this.defaultName == null )
 				this.defaultName = "default.script";
@@ -337,7 +343,7 @@ public class ScriptedResource extends ServerResource
 	 * one. Defaults to "js".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.defaultScriptEngineName</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The default script engine name
@@ -347,7 +353,7 @@ public class ScriptedResource extends ServerResource
 		if( this.defaultScriptEngineName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.defaultScriptEngineName = (String) attributes.get( "com.threecrickets.prudence.ScriptedResource.defaultScriptEngineName" );
+			this.defaultScriptEngineName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName" );
 
 			if( this.defaultScriptEngineName == null )
 				this.defaultScriptEngineName = "js";
@@ -361,7 +367,7 @@ public class ScriptedResource extends ServerResource
 	 * Defaults to "handleDelete".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.entryPointNameForDelete</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForDelete</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The name of the <code>handleDelete()</code> entry point
@@ -371,7 +377,7 @@ public class ScriptedResource extends ServerResource
 		if( this.entryPointNameForDelete == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.entryPointNameForDelete = (String) attributes.get( "com.threecrickets.prudence.ScriptedResource.entryPointNameForDelete" );
+			this.entryPointNameForDelete = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForDelete" );
 
 			if( this.entryPointNameForDelete == null )
 				this.entryPointNameForDelete = "handleDelete";
@@ -385,7 +391,7 @@ public class ScriptedResource extends ServerResource
 	 * Defaults to "handleGet".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.entryPointNameForGet</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForGet</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The name of the <code>handleGet()</code> entry point
@@ -395,7 +401,7 @@ public class ScriptedResource extends ServerResource
 		if( this.entryPointNameForGet == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.entryPointNameForGet = (String) attributes.get( "com.threecrickets.prudence.ScriptedResource.entryPointNameForGet" );
+			this.entryPointNameForGet = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForGet" );
 
 			if( this.entryPointNameForGet == null )
 				this.entryPointNameForGet = "handleGet";
@@ -409,7 +415,7 @@ public class ScriptedResource extends ServerResource
 	 * Defaults to "handleInit".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.entryPointNameForInit</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForInit</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The name of the <code>handleInit()</code> entry point
@@ -419,7 +425,7 @@ public class ScriptedResource extends ServerResource
 		if( this.entryPointNameForInit == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.entryPointNameForInit = (String) attributes.get( "com.threecrickets.prudence.ScriptedResource.entryPointNameForInit" );
+			this.entryPointNameForInit = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForInit" );
 
 			if( this.entryPointNameForInit == null )
 				this.entryPointNameForInit = "handleInit";
@@ -433,7 +439,7 @@ public class ScriptedResource extends ServerResource
 	 * Defaults to "handlePost".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.entryPointNameForPost</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForPost</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The name of the <code>handlePost()</code> entry point
@@ -443,7 +449,7 @@ public class ScriptedResource extends ServerResource
 		if( this.entryPointNameForPost == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.entryPointNameForPost = (String) attributes.get( "com.threecrickets.prudence.ScriptedResource.entryPointNameForPost" );
+			this.entryPointNameForPost = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForPost" );
 
 			if( this.entryPointNameForPost == null )
 				this.entryPointNameForPost = "handlePost";
@@ -457,7 +463,7 @@ public class ScriptedResource extends ServerResource
 	 * Defaults to "handlePut".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.entryPointNameForPut</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForPut</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The name of the <code>handlePut()</code> entry point
@@ -467,7 +473,7 @@ public class ScriptedResource extends ServerResource
 		if( this.entryPointNameForPut == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.entryPointNameForPut = (String) attributes.get( "com.threecrickets.prudence.ScriptedResource.entryPointNameForPut" );
+			this.entryPointNameForPut = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForPut" );
 
 			if( this.entryPointNameForPut == null )
 				this.entryPointNameForPut = "handlePut";
@@ -481,7 +487,7 @@ public class ScriptedResource extends ServerResource
 	 * allowing for nicer URLs. Defaults to "script".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.extension</code> in
+	 * <code>com.threecrickets.prudence.DelegatedResource.extension</code> in
 	 * the application's {@link Context}.
 	 * 
 	 * @return The extension
@@ -491,7 +497,7 @@ public class ScriptedResource extends ServerResource
 		if( this.extension == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.extension = (String) attributes.get( "com.threecrickets.prudence.ScriptedResource.extension" );
+			this.extension = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.extension" );
 
 			if( this.extension == null )
 				this.extension = "script";
@@ -501,24 +507,24 @@ public class ScriptedResource extends ServerResource
 	}
 
 	/**
-	 * An optional {@link ScriptContextController} to be used with the scripts.
+	 * An optional {@link ScriptletController} to be used with the scripts.
 	 * Useful for adding your own global variables to the script.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.scriptContextController</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.scriptletController</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The script context controller or null if none used
 	 */
-	public ScriptContextController getScriptContextController()
+	public ScriptletController getScriptletController()
 	{
-		if( this.scriptContextController == null )
+		if( this.scriptletController == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.scriptContextController = (ScriptContextController) attributes.get( "com.threecrickets.prudence.ScriptedResource.scriptContextController" );
+			this.scriptletController = (ScriptletController) attributes.get( "com.threecrickets.prudence.DelegatedResource.scriptletController" );
 		}
 
-		return this.scriptContextController;
+		return this.scriptletController;
 	}
 
 	/**
@@ -526,7 +532,7 @@ public class ScriptedResource extends ServerResource
 	 * scripts. Uses a default instance, but can be set to something else.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.scriptEngineManager</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.scriptEngineManager</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The script engine manager
@@ -536,13 +542,13 @@ public class ScriptedResource extends ServerResource
 		if( this.scriptEngineManager == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.scriptEngineManager = (ScriptEngineManager) attributes.get( "com.threecrickets.prudence.ScriptedResource.scriptEngineManager" );
+			this.scriptEngineManager = (ScriptEngineManager) attributes.get( "com.threecrickets.prudence.DelegatedResource.scriptEngineManager" );
 
 			if( this.scriptEngineManager == null )
 			{
 				this.scriptEngineManager = new ScriptEngineManager();
 
-				ScriptEngineManager existing = (ScriptEngineManager) attributes.putIfAbsent( "com.threecrickets.prudence.ScriptedResource.scriptEngineManager", this.scriptEngineManager );
+				ScriptEngineManager existing = (ScriptEngineManager) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.scriptEngineManager", this.scriptEngineManager );
 				if( existing != null )
 					this.scriptEngineManager = existing;
 			}
@@ -552,28 +558,28 @@ public class ScriptedResource extends ServerResource
 	}
 
 	/**
-	 * The {@link ScriptSource} used to fetch and cache scripts. This must be
+	 * The {@link DocumentSource} used to fetch and cache documents. This must be
 	 * set to a valid value before this class is used!
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.scriptSource</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.documentSource</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The script source
+	 * @return The document source
 	 */
 	@SuppressWarnings("unchecked")
-	public ScriptSource<CompositeScript> getScriptSource()
+	public DocumentSource<Document> getDocumentSource()
 	{
-		if( this.scriptSource == null )
+		if( this.documentSource == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.scriptSource = (ScriptSource<CompositeScript>) attributes.get( "com.threecrickets.prudence.ScriptedResource.scriptSource" );
+			this.documentSource = (DocumentSource<Document>) attributes.get( "com.threecrickets.prudence.DelegatedResource.documentSource" );
 
-			if( this.scriptSource == null )
-				throw new RuntimeException( "Attribute com.threecrickets.prudence.ScriptedResource.scriptSource must be set in context to use ScriptResource" );
+			if( this.documentSource == null )
+				throw new RuntimeException( "Attribute com.threecrickets.prudence.DelegatedResource.documentSource must be set in context to use ScriptResource" );
 		}
 
-		return this.scriptSource;
+		return this.documentSource;
 	}
 
 	/**
@@ -581,7 +587,7 @@ public class ScriptedResource extends ServerResource
 	 * it. Defaults to true.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.allowCompilation</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.allowCompilation</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return Whether to allow compilation
@@ -591,7 +597,7 @@ public class ScriptedResource extends ServerResource
 		if( this.allowCompilation == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.allowCompilation = (Boolean) attributes.get( "com.threecrickets.prudence.ScriptedResource.allowCompilation" );
+			this.allowCompilation = (Boolean) attributes.get( "com.threecrickets.prudence.DelegatedResource.allowCompilation" );
 
 			if( this.allowCompilation == null )
 				this.allowCompilation = true;
@@ -601,22 +607,22 @@ public class ScriptedResource extends ServerResource
 	}
 
 	/**
-	 * This is so we can see the source code for scripts by adding
+	 * This is so we can see the source code for documents by adding
 	 * <code>?source=true</code> to the URL. You probably wouldn't want this for
 	 * most applications. Defaults to false.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.ScriptedResource.sourceViewable</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.sourceViewable</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return Whether to allow viewing of script source code
+	 * @return Whether to allow viewing of document source code
 	 */
 	public boolean isSourceViewable()
 	{
 		if( this.sourceViewable == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.sourceViewable = (Boolean) attributes.get( "com.threecrickets.prudence.ScriptedResource.sourceViewable" );
+			this.sourceViewable = (Boolean) attributes.get( "com.threecrickets.prudence.DelegatedResource.sourceViewable" );
 
 			if( this.sourceViewable == null )
 				this.sourceViewable = false;
@@ -639,7 +645,7 @@ public class ScriptedResource extends ServerResource
 	protected void doInit() throws ResourceException
 	{
 		setAnnotated( false );
-		ExposedScriptedResourceContainer container = new ExposedScriptedResourceContainer( this, getVariants() );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants() );
 
 		try
 		{
@@ -677,16 +683,16 @@ public class ScriptedResource extends ServerResource
 	@Override
 	public Representation get( Variant variant ) throws ResourceException
 	{
-		ExposedScriptedResourceContainer container = new ExposedScriptedResourceContainer( this, getVariants(), variant );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
 
 		Request request = getRequest();
 		if( isSourceViewable() && TRUE.equals( request.getResourceRef().getQueryAsForm().getFirstValue( SOURCE ) ) )
 		{
-			// Represent script source
+			// Represent document source
 			String name = PrudenceUtils.getRelativePart( request, getDefaultName() );
 			try
 			{
-				return new StringRepresentation( getScriptSource().getScriptDescriptor( name ).getText() );
+				return new StringRepresentation( getDocumentSource().getDocumentDescriptor( name ).getText() );
 			}
 			catch( IOException x )
 			{
@@ -737,7 +743,7 @@ public class ScriptedResource extends ServerResource
 	@Override
 	public Representation post( Representation entity, Variant variant ) throws ResourceException
 	{
-		ExposedScriptedResourceContainer container = new ExposedScriptedResourceContainer( this, getVariants(), entity, variant );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
 
 		Object r = container.invoke( getEntryPointNameForPost() );
 		if( r != null )
@@ -781,7 +787,7 @@ public class ScriptedResource extends ServerResource
 	@Override
 	public Representation put( Representation entity, Variant variant ) throws ResourceException
 	{
-		ExposedScriptedResourceContainer container = new ExposedScriptedResourceContainer( this, getVariants(), entity, variant );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
 
 		Object r = container.invoke( getEntryPointNameForPut() );
 		if( r != null )
@@ -821,7 +827,7 @@ public class ScriptedResource extends ServerResource
 	@Override
 	public Representation delete( Variant variant ) throws ResourceException
 	{
-		ExposedScriptedResourceContainer container = new ExposedScriptedResourceContainer( this, getVariants(), variant );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
 
 		container.invoke( getEntryPointNameForDelete() );
 
@@ -844,9 +850,9 @@ public class ScriptedResource extends ServerResource
 	private Boolean allowCompilation;
 
 	/**
-	 * The {@link ScriptSource} used to fetch scripts.
+	 * The {@link DocumentSource} used to fetch scripts.
 	 */
-	private ScriptSource<CompositeScript> scriptSource;
+	private DocumentSource<Document> documentSource;
 
 	/**
 	 * Files with this extension can have the extension omitted from the URL,
@@ -872,9 +878,9 @@ public class ScriptedResource extends ServerResource
 	private CharacterSet defaultCharacterSet;
 
 	/**
-	 * An optional {@link ScriptContextController} to be used with the scripts.
+	 * An optional {@link ScriptletController} to be used with the scripts.
 	 */
-	private ScriptContextController scriptContextController;
+	private ScriptletController scriptletController;
 
 	/**
 	 * The name of the <code>handleInit()</code> entry point in the script.
@@ -918,7 +924,7 @@ public class ScriptedResource extends ServerResource
 	private static final String TRUE = "true";
 
 	/**
-	 * The {@link Writer} used by the {@link CompositeScript}.
+	 * The {@link Writer} used by the {@link Document}.
 	 */
 	private Writer writer = new OutputStreamWriter( System.out );
 

@@ -11,19 +11,19 @@
 // Accessing the request
 //
 
-var form = script.container.request.resourceRef.queryAsForm;
+var form = document.container.request.resourceRef.queryAsForm;
 
 //
 // Stream this script
 //
 
-if(form.getFirstValue('stream') == 'true') if(script.container.stream()) throw null;
+if(form.getFirstValue('stream') == 'true') if(document.container.stream()) throw null;
 
 //
 // Calling Java
 //
 
-script.cacheDuration = 5000;
+document.cacheDuration = 5000;
 print('This page was dynamically generated at ' + java.lang.System.currentTimeMillis() + '');
 
 //
@@ -31,11 +31,11 @@ print('This page was dynamically generated at ' + java.lang.System.currentTimeMi
 //
 // This is identical to:
 //
-//   script.container.include('path');
+//   document.container.include('path');
 //
 
 %>
-<%& script.meta.get('prudenceDemoBasePath') + 'demos/rhino.fragment' %>
+<%& document.meta.get('prudenceDemoBasePath') + 'demos/rhino.fragment' %>
 <%
 
 //
@@ -63,11 +63,11 @@ function printFactory(factory) {
 %>
 <h3>Script engine used:</h3>
 <%
-printFactory(script.engine.factory);
+printFactory(document.engine.factory);
 %>
 <h3>Available script engines:</h3>
 <%
-var factories = script.engineManager.engineFactories.toArray();
+var factories = document.engineManager.engineFactories.toArray();
 for(var i = 0; i < factories.length; i++) {
 	printFactory(factories[i]);
 }

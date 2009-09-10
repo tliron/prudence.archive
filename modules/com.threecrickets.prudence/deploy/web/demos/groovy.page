@@ -11,19 +11,19 @@
 // Accessing the request
 //
 
-def form = script.container.request.resourceRef.queryAsForm
+def form = document.container.request.resourceRef.queryAsForm
 
 //
 // Stream this script
 //
 
 if(form.getFirstValue('stream') == 'true') {
-	if(script.container.stream()) {
+	if(document.container.stream()) {
 		throw new Exception()
 	}
 }
 
-script.cacheDuration = 5000
+document.cacheDuration = 5000
 
 //
 // Calling Java
@@ -36,11 +36,11 @@ print 'This page was dynamically generated at ' + System.currentTimeMillis()
 //
 // This is identical to:
 //
-//   script.container.include 'path'
+//   document.container.include 'path'
 //
 
 %>
-<%& script.meta['prudenceDemoBasePath'] + 'demos/groovy.fragment' %>
+<%& document.meta['prudenceDemoBasePath'] + 'demos/groovy.fragment' %>
 <%
 
 //
@@ -69,11 +69,11 @@ def printFactory = { factory ->
 %>
 <h3>Script engine used:</h3>
 <%
-printFactory script.engine.factory
+printFactory document.engine.factory
 %>
 <h3>Available script engines:</h3>
 <%
-def factories = script.engineManager.engineFactories.toArray()
+def factories = document.engineManager.engineFactories.toArray()
 for(def factory in factories){
 	printFactory factory
 }

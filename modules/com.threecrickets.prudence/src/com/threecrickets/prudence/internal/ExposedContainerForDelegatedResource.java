@@ -23,26 +23,23 @@ import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Status;
-
-import com.threecrickets.prudence.ScriptedResource;
-
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 
-import com.threecrickets.scripturian.CompositeScript;
-import com.threecrickets.scripturian.CompositeScriptContext;
-import com.threecrickets.scripturian.ScriptContextController;
-import com.threecrickets.scripturian.ScriptSource;
+import com.threecrickets.prudence.DelegatedResource;
+import com.threecrickets.scripturian.Document;
+import com.threecrickets.scripturian.DocumentContext;
+import com.threecrickets.scripturian.DocumentSource;
+import com.threecrickets.scripturian.ScriptletController;
 
 /**
- * This is the type of the <code>script.container</code> variable exposed to the
- * script.
+ * This is the <code>document.container</code> variable exposed to scriptlets.
  * 
  * @author Tal Liron
- * @see ScriptedResource
+ * @see DelegatedResource
  */
-public class ExposedScriptedResourceContainer
+public class ExposedContainerForDelegatedResource
 {
 	//
 	// Construction
@@ -50,14 +47,14 @@ public class ExposedScriptedResourceContainer
 
 	/**
 	 * Constructs a container with no variant or entity, plain text media type,
-	 * and {@link ScriptedResource#getDefaultCharacterSet()}.
+	 * and {@link DelegatedResource#getDefaultCharacterSet()}.
 	 * 
 	 * @param resource
 	 *        The resource
 	 * @param variants
 	 *        The variants of the resource
 	 */
-	public ExposedScriptedResourceContainer( ScriptedResource resource, Map<Method, Object> variants )
+	public ExposedContainerForDelegatedResource( DelegatedResource resource, Map<Method, Object> variants )
 	{
 		this.resource = resource;
 		this.variants = variants;
@@ -65,13 +62,13 @@ public class ExposedScriptedResourceContainer
 		this.entity = null;
 		this.mediaType = MediaType.TEXT_PLAIN;
 		this.characterSet = resource.getDefaultCharacterSet();
-		this.compositeScriptContext = new CompositeScriptContext( resource.getScriptEngineManager() );
+		this.documentContext = new DocumentContext( resource.getScriptEngineManager() );
 	}
 
 	/**
 	 * Constructs a container with media type and character set according to the
 	 * entity representation, or
-	 * {@link ScriptedResource#getDefaultCharacterSet()} if none is provided.
+	 * {@link DelegatedResource#getDefaultCharacterSet()} if none is provided.
 	 * 
 	 * @param resource
 	 *        The resource
@@ -82,7 +79,7 @@ public class ExposedScriptedResourceContainer
 	 * @param variant
 	 *        The request variant
 	 */
-	public ExposedScriptedResourceContainer( ScriptedResource resource, Map<Method, Object> variants, Representation entity, Variant variant )
+	public ExposedContainerForDelegatedResource( DelegatedResource resource, Map<Method, Object> variants, Representation entity, Variant variant )
 	{
 		this.resource = resource;
 		this.variants = variants;
@@ -94,12 +91,12 @@ public class ExposedScriptedResourceContainer
 		{
 			this.characterSet = resource.getDefaultCharacterSet();
 		}
-		this.compositeScriptContext = new CompositeScriptContext( resource.getScriptEngineManager() );
+		this.documentContext = new DocumentContext( resource.getScriptEngineManager() );
 	}
 
 	/**
 	 * Constructs a container with media type and character set according to the
-	 * variant, or {@link ScriptedResource#getDefaultCharacterSet()} if none is
+	 * variant, or {@link DelegatedResource#getDefaultCharacterSet()} if none is
 	 * provided.
 	 * 
 	 * @param resource
@@ -109,7 +106,7 @@ public class ExposedScriptedResourceContainer
 	 * @param variant
 	 *        The variant
 	 */
-	public ExposedScriptedResourceContainer( ScriptedResource resource, Map<Method, Object> variants, Variant variant )
+	public ExposedContainerForDelegatedResource( DelegatedResource resource, Map<Method, Object> variants, Variant variant )
 	{
 		this.resource = resource;
 		this.variants = variants;
@@ -128,7 +125,7 @@ public class ExposedScriptedResourceContainer
 		if( this.characterSet == null )
 			this.characterSet = resource.getDefaultCharacterSet();
 
-		this.compositeScriptContext = new CompositeScriptContext( resource.getScriptEngineManager() );
+		this.documentContext = new DocumentContext( resource.getScriptEngineManager() );
 	}
 
 	//
@@ -140,7 +137,7 @@ public class ExposedScriptedResourceContainer
 	 * type for <code>represent()</code>, <code>acceptRepresentation()</code>
 	 * and <code>storeRepresentation()</code>. Defaults to what the client
 	 * requested (in <code>container.variant</code>), or to the value of
-	 * {@link ScriptedResource#getDefaultCharacterSet()} if the client did not
+	 * {@link DelegatedResource#getDefaultCharacterSet()} if the client did not
 	 * specify it.
 	 * 
 	 * @return The character set
@@ -209,14 +206,14 @@ public class ExposedScriptedResourceContainer
 	}
 
 	/**
-	 * The instance of this resource. Acts as a "this" reference for the script.
+	 * The instance of this resource. Acts as a "this" reference for scriptlets.
 	 * For example, during a call to <code>initializeResource()</code>, this can
 	 * be used to change the characteristics of the resource. Otherwise, you can
 	 * use it to access the request and response.
 	 * 
 	 * @return The resource
 	 */
-	public ScriptedResource getResource()
+	public DelegatedResource getResource()
 	{
 		return this.resource;
 	}
@@ -265,13 +262,13 @@ public class ExposedScriptedResourceContainer
 	}
 
 	/**
-	 * The {@link ScriptSource} used to fetch and cache scripts.
+	 * The {@link DocumentSource} used to fetch documents.
 	 * 
-	 * @return The script source
+	 * @return The document source
 	 */
-	public ScriptSource<CompositeScript> getSource()
+	public DocumentSource<Document> getSource()
 	{
-		return this.resource.getScriptSource();
+		return this.resource.getDocumentSource();
 	}
 
 	//
@@ -279,17 +276,18 @@ public class ExposedScriptedResourceContainer
 	//
 
 	/**
-	 * This powerful method allows scripts to execute other scripts in place,
-	 * and is useful for creating large, maintainable applications based on
-	 * scripts. Included scripts can act as a library or toolkit and can even be
-	 * shared among many applications. The included script does not have to be
-	 * in the same language or use the same engine as the calling script.
-	 * However, if they do use the same engine, then methods, functions,
-	 * modules, etc., could be shared. It is important to note that how this
-	 * works varies a lot per scripting platform. For example, in JRuby, every
-	 * script is run in its own scope, so that sharing would have to be done
-	 * explicitly in the global scope. See the included Ruby composite script
-	 * example for a discussion of various ways to do this.
+	 * This powerful method allows scriptlets to execute other documents in
+	 * place, and is useful for creating large, maintainable applications based
+	 * on documents. Included documents can act as a library or toolkit and can
+	 * even be shared among many applications. The included document does not
+	 * have to be in the same programming language or use the same engine as the
+	 * calling scriptlet. However, if they do use the same engine, then methods,
+	 * functions, modules, etc., could be shared.
+	 * <p>
+	 * It is important to note that how this works varies a lot per engine. For
+	 * example, in JRuby, every scriptlet is run in its own scope, so that
+	 * sharing would have to be done explicitly in the global scope. See the
+	 * included JRuby examples for a discussion of various ways to do this.
 	 * 
 	 * @param name
 	 *        The script name
@@ -302,9 +300,9 @@ public class ExposedScriptedResourceContainer
 	}
 
 	/**
-	 * As {@link #include(String)}, except that the script is not composite. As
-	 * such, you must explicitly specify the name of the scripting engine that
-	 * should evaluate it.
+	 * As {@link #include(String)}, except that the document is parsed as a
+	 * single, non-delimited scriptlet. As such, you must explicitly specify the
+	 * name of the scripting engine that should evaluate it.
 	 * 
 	 * @param name
 	 *        The script name
@@ -316,24 +314,24 @@ public class ExposedScriptedResourceContainer
 	 */
 	public void include( String name, String scriptEngineName ) throws IOException, ScriptException
 	{
-		ScriptSource.ScriptDescriptor<CompositeScript> scriptDescriptor = this.resource.getScriptSource().getScriptDescriptor( name );
+		DocumentSource.DocumentDescriptor<Document> documentDescriptor = this.resource.getDocumentSource().getDocumentDescriptor( name );
 
-		CompositeScript script = scriptDescriptor.getScript();
-		if( script == null )
+		Document document = documentDescriptor.getDocument();
+		if( document == null )
 		{
-			String text = scriptDescriptor.getText();
+			String text = documentDescriptor.getText();
 
 			if( scriptEngineName != null )
-				text = CompositeScript.DEFAULT_DELIMITER1_START + scriptEngineName + " " + text + CompositeScript.DEFAULT_DELIMITER1_END;
+				text = Document.DEFAULT_DELIMITER1_START + scriptEngineName + " " + text + Document.DEFAULT_DELIMITER1_END;
 
-			script = new CompositeScript( text, this.resource.getScriptEngineManager(), this.resource.getDefaultScriptEngineName(), this.resource.getScriptSource(), this.resource.isAllowCompilation() );
-			CompositeScript existing = scriptDescriptor.setScriptIfAbsent( script );
+			document = new Document( text, this.resource.getScriptEngineManager(), this.resource.getDefaultScriptEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 
 			if( existing != null )
-				script = existing;
+				document = existing;
 		}
 
-		script.run( false, this.resource.getWriter(), this.resource.getErrorWriter(), true, this.compositeScriptContext, this, this.resource.getScriptContextController() );
+		document.run( false, this.resource.getWriter(), this.resource.getErrorWriter(), true, this.documentContext, this, this.resource.getScriptletController() );
 	}
 
 	/**
@@ -343,7 +341,7 @@ public class ExposedScriptedResourceContainer
 	 *        Name of entry point
 	 * @return Result of invocation
 	 * @throws ResourceException
-	 * @see {@link CompositeScript#invoke(String, Object, ScriptContextController)}
+	 * @see {@link Document#invoke(String, Object, ScriptletController)}
 	 */
 	public Object invoke( String entryPointName ) throws ResourceException
 	{
@@ -351,22 +349,22 @@ public class ExposedScriptedResourceContainer
 
 		try
 		{
-			ScriptSource.ScriptDescriptor<CompositeScript> scriptDescriptor = this.resource.getScriptSource().getScriptDescriptor( name );
+			DocumentSource.DocumentDescriptor<Document> documentDescriptor = this.resource.getDocumentSource().getDocumentDescriptor( name );
 
-			CompositeScript script = scriptDescriptor.getScript();
-			if( script == null )
+			Document document = documentDescriptor.getDocument();
+			if( document == null )
 			{
-				String text = scriptDescriptor.getText();
-				script = new CompositeScript( text, this.resource.getScriptEngineManager(), this.resource.getDefaultScriptEngineName(), this.resource.getScriptSource(), this.resource.isAllowCompilation() );
-				CompositeScript existing = scriptDescriptor.setScriptIfAbsent( script );
+				String text = documentDescriptor.getText();
+				document = new Document( text, this.resource.getScriptEngineManager(), this.resource.getDefaultScriptEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+				Document existing = documentDescriptor.setDocumentIfAbsent( document );
 
 				if( existing != null )
-					script = existing;
+					document = existing;
 				else
-					script.run( false, this.resource.getWriter(), this.resource.getErrorWriter(), true, this.compositeScriptContext, this, this.resource.getScriptContextController() );
+					document.run( false, this.resource.getWriter(), this.resource.getErrorWriter(), true, this.documentContext, this, this.resource.getScriptletController() );
 			}
 
-			return script.invoke( entryPointName, this, this.resource.getScriptContextController() );
+			return document.invoke( entryPointName, this, this.resource.getScriptletController() );
 		}
 		catch( FileNotFoundException x )
 		{
@@ -392,7 +390,7 @@ public class ExposedScriptedResourceContainer
 	/**
 	 * The instance of this resource.
 	 */
-	private final ScriptedResource resource;
+	private final DelegatedResource resource;
 
 	/**
 	 * The variants of this resource.
@@ -433,5 +431,5 @@ public class ExposedScriptedResourceContainer
 	/**
 	 * The composite script context.
 	 */
-	private final CompositeScriptContext compositeScriptContext;
+	private final DocumentContext documentContext;
 }

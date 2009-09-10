@@ -15,7 +15,7 @@
 // the built-in version of Rhino, and so Mozilla had to add the "rhino-nonjdk" engine name as a workaround.
 // We'll go ahead and set that as our default engine name.
 
-script.container.defaultEngineName = 'rhino-nonjdk';
+document.container.defaultEngineName = 'rhino-nonjdk';
 
 %><%& 'conf/prudence.conf' %><%
 
@@ -30,9 +30,9 @@ importClass(
 	org.restlet.data.Protocol,
 	org.restlet.data.Reference,
 	org.restlet.routing.Template,
-	com.threecrickets.prudence.ScriptedResource,
-	com.threecrickets.prudence.ScriptedTextResource,
-	com.threecrickets.scripturian.file.ScriptFileSource);
+	com.threecrickets.prudence.DelegatedResource,
+	com.threecrickets.prudence.GeneratedTextResource,
+	com.threecrickets.scripturian.file.DocumentFileSource);
 
 //
 // Logging
@@ -72,8 +72,8 @@ var application = new JavaAdapter(Application, {
 		directory.listingAllowed = staticWebDirectoryListingAllowed;
 
 		var router = new Router(context);
-		router.attach(resourceBaseURL, classLoader.loadClass('com.threecrickets.prudence.ScriptedResource'));
-		router.attach(scriptedWebBaseURL, classLoader.loadClass('com.threecrickets.prudence.ScriptedTextResource'));
+		router.attach(resourceBaseURL, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
+		router.attach(dynamicWebBaseURL, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'));
 		router.attach(staticWebBaseURL, directory);
 
 		// Redirect to trailing slashes
@@ -105,24 +105,24 @@ application.context.logger = applicationLoggerName;
 var attributes = application.context.attributes;
 var scriptEngineManager = new ScriptEngineManager();
 
-// ScriptedResource
+// DelegatedResource
 
-attributes.put('com.threecrickets.prudence.ScriptedResource.scriptEngineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.ScriptedResource.defaultScriptEngineName', script.container.defaultEngineName);
-attributes.put('com.threecrickets.prudence.ScriptedResource.extension', resourceExtension);
-attributes.put('com.threecrickets.prudence.ScriptedResource.defaultName', resourceDefaultName);
-attributes.put('com.threecrickets.prudence.ScriptedResource.scriptSource',
-	new ScriptFileSource(new File(resourceBasePath), resourceDefaultName, resourceExtension, resourceMinimumTimeBetweenValidityChecks));
-attributes.put('com.threecrickets.prudence.ScriptedResource.sourceViewable', resourceSourceViewable);
+attributes.put('com.threecrickets.prudence.DelegatedResource.scriptEngineManager', scriptEngineManager);
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName', document.container.defaultEngineName);
+attributes.put('com.threecrickets.prudence.DelegatedResource.extension', resourceExtension);
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourceDefaultName);
+attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource',
+	new DocumentFileSource(new File(resourceBasePath), resourceDefaultName, resourceExtension, resourceMinimumTimeBetweenValidityChecks));
+attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourceSourceViewable);
 
-// ScriptedTextResource
+// GeneratedTextResource
 
-attributes.put('com.threecrickets.prudence.ScriptedTextResource.scriptEngineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.ScriptedTextResource.defaultScriptEngineName', script.container.defaultEngineName);
-attributes.put('com.threecrickets.prudence.ScriptedTextResource.defaultName', scriptedWebDefaultScript);
-attributes.put('com.threecrickets.prudence.ScriptedTextResource.scriptSource',
-	 new ScriptFileSource(new File(scriptedWebBasePath), scriptedWebDefaultScript, null, scriptedWebMinimumTimeBetweenValidityChecks));
-attributes.put('com.threecrickets.prudence.ScriptedTextResource.sourceViewable', scriptedWebSourceViewable);
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.scriptEngineManager', scriptEngineManager);
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName', document.container.defaultEngineName);
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',
+	 new DocumentFileSource(new File(dynamicWebBasePath), dynamicWebDefaultDocument, null, dynamicWebMinimumTimeBetweenValidityChecks));
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
 
 //
 // Start

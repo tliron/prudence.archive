@@ -11,19 +11,19 @@
 ## Accessing the request
 ##
 
-#set($form = $script.container.request.resourceRef.queryAsForm)
+#set($form = $document.container.request.resourceRef.queryAsForm)
 
 ##
 ## Stream this script
 ##
 
 #if($form.getFirstValue('stream') == 'true')
-	#if($script.container.stream())
+	#if($document.container.stream())
 		#stop
 	#end
 #end
 
-#set($script.cacheDuration=5000)
+#set($document.cacheDuration=5000)
 
 ##
 ## Calling Java
@@ -45,10 +45,10 @@ This page was dynamically generated at $currentTimeMillis
 ##
 ## This is identical to:
 ##
-##   $script.container.include('path')
+##   $document.container.include('path')
 ##
 
-%><%& "$script.meta.get('prudenceDemoBasePath')demos/velocity.fragment" %><%
+%><%& "$document.meta.get('prudenceDemoBasePath')demos/velocity.fragment" %><%
 
 ##
 ## An example of a macro
@@ -66,9 +66,9 @@ This page was dynamically generated at $currentTimeMillis
 #end
 
 <h3>Script engine used:</h3>
-#printFactory($script.engine.factory)
+#printFactory($document.engine.factory)
 <h3>Available script engines:</h3>
-#foreach($factory in $script.engineManager.engineFactories)
+#foreach($factory in $document.engineManager.engineFactories)
 	#printFactory($factory)
 #end
 </td><td>

@@ -1,4 +1,4 @@
-<% script.cacheDuration = 5000; var prudenceDemoBasePath = script.meta.get('prudenceDemoBasePath'); %><%& prudenceDemoBasePath + 'header.fragment' %>
+<% document.cacheDuration = 5000; var prudenceDemoBasePath = document.meta.get('prudenceDemoBasePath'); %><%& prudenceDemoBasePath + 'header.fragment' %>
 
 <h2>Download</h2>
 

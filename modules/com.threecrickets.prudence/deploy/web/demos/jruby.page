@@ -11,19 +11,19 @@
 # Accessing the request
 #
 
-form = $script.container.request.resource_ref.query_as_form
+form = $document.container.request.resource_ref.query_as_form
 
 #
 # Stream this script
 #
 
 if form.get_first_value('stream') == 'true'
-	if $script.container.stream()
+	if $document.container.stream()
 		raise
 	end
 end
 
-$script.cache_duration = 5000
+$document.cache_duration = 5000
 
 #
 # Calling Java
@@ -38,11 +38,11 @@ print 'This page was dynamically generated at ', System.current_time_millis
 #
 # This is identical to:
 #
-#   $script.container.include 'path'
+#   $document.container.include 'path'
 #
 
 %>
-<%& $script.meta['prudenceDemoBasePath'] + 'demos/jruby.fragment' %>
+<%& $document.meta['prudenceDemoBasePath'] + 'demos/jruby.fragment' %>
 <%
 
 # (See comments in jruby.fragment)
@@ -75,11 +75,11 @@ end
 %>
 <h3>Script engine used:</h3>
 <%
-print_factory $script.engine.factory
+print_factory $document.engine.factory
 %>
 <h3>Available script engines:</h3>
 <%
-factories = $script.engine_manager.engine_factories.to_array
+factories = $document.engine_manager.engine_factories.to_array
 for factory in factories
 	print_factory factory
 end
