@@ -14,8 +14,8 @@
 
 require 'java'
 import java.util.concurrent.locks.ReentrantReadWriteLock
-import org.restlet.representation.Variant
 import org.restlet.data.MediaType
+import org.restlet.representation.Variant
 import org.restlet.ext.json.JsonRepresentation
 import org.json.JSONObject
 
@@ -48,19 +48,19 @@ end
 $state = get_state()
 $state_lock = get_state_lock()
 
-#$state = {'name' => 'Coraline', 'media' => 'Film', 'rating' => 'A+', 'characters' => ['Coraline', 'Wybie', 'Mom', 'Dad']}
-#$state_lock = ReentrantReadWriteLock.new
-
 # This method is called when the resource is initialized. We will use it to set
 # general characteristics for the resource.
 	
 def handle_init
-	# The order in which we add the media types or variants is their order of
-	# preference. Note that clients often include a wildcard (such as "*/*") in the
+
+	# The order in which we add the variants is their order of preference.
+	# Note that clients often include a wildcard (such as "*/*") in the
 	# "Accept" attribute of their request header, specifying that any media type
 	# will do, in which case the first one we add will be used.
 
-	$document.container.variants[org.restlet.data.Method::ALL] = [MediaType::APPLICATION_JSON, MediaType::TEXT_PLAIN]
+	$document.container.variants.add Variant.new MediaType::APPLICATION_JSON
+	$document.container.variants.add Variant.new MediaType::TEXT_PLAIN
+	
 end
 
 # This method is called for the GET verb, which is expected to behave as a
@@ -78,6 +78,7 @@ end
 # list of supported languages and encoding.
 
 def handle_get
+
 	r = nil
 	state_lock = get_state_lock()
 	state = get_state()
@@ -97,6 +98,7 @@ def handle_get
 	end
 
 	return r
+	
 end
 
 # This method is called for the POST verb, which is expected to behave as a
@@ -112,6 +114,7 @@ end
 # to the client.
 
 def handle_post
+
 	update = JSONObject.new $document.container.entity.text
 	state_lock = get_state_lock()
 	state = get_state()
@@ -127,6 +130,7 @@ def handle_post
 	end
 	
 	return handle_get
+	
 end
 
 # This method is called for the PUT verb, which is expected to behave as a
@@ -142,6 +146,7 @@ end
 # to the client.
 
 def handle_put
+
 	update = JSONObject.new $document.container.entity.text
 
 	state = {}	
@@ -152,6 +157,7 @@ def handle_put
 	set_state state
 	
 	return handle_get
+	
 end
 
 # This method is called for the DELETE verb, which is expected to behave as a
@@ -166,6 +172,7 @@ def handle_delete
 	set_state({})
 
 	return nil
+	
 end
 
 # For our methods to be invocable from the outside as entry points, we must store them

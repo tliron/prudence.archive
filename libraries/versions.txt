@@ -1,4 +1,4 @@
-grizzly			1.9.17
+grizzly			1.9.18a
 groovy			1.6.4
 jepp			2.3
 jruby			1.3.1
@@ -7,7 +7,7 @@ jsr-223
 jython			2.5.1 (Subversion snapshot from Aug 5, 2009 + patch)
 log4j			1.2.15
 quercus			4.0.1
-restlet			2.0 (Subversion snapshot from Sep 5, 2009)
+restlet			2.0 (Subversion snapshot from Sep 29, 2009)
 rhino			1.7R2
 scripturian		1.0 alpha 2
 slf4j			1.5.8

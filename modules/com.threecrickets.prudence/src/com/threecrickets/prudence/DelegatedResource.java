@@ -14,6 +14,7 @@ package com.threecrickets.prudence;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
@@ -35,8 +36,8 @@ import org.restlet.resource.ServerResource;
 import com.threecrickets.prudence.internal.ExposedContainerForDelegatedResource;
 import com.threecrickets.prudence.internal.PrudenceUtils;
 import com.threecrickets.scripturian.Document;
-import com.threecrickets.scripturian.ScriptletController;
 import com.threecrickets.scripturian.DocumentSource;
+import com.threecrickets.scripturian.ScriptletController;
 
 /**
  * A Restlet resource which delegates functionality to a Scripturian
@@ -236,6 +237,27 @@ import com.threecrickets.scripturian.DocumentSource;
  */
 public class DelegatedResource extends ServerResource
 {
+	// Temporary hack due to Restlet bug!
+	private volatile List<Variant> variants;
+
+	@Override
+	public List<Variant> getVariants()
+	{
+		List<Variant> v = this.variants;
+		if( v == null )
+		{
+			synchronized( this )
+			{
+				v = this.variants;
+				if( v == null )
+				{
+					this.variants = v = new ArrayList<Variant>();
+				}
+			}
+		}
+		return v;
+	}
+
 	//
 	// Attributes
 	//
@@ -558,8 +580,8 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * The {@link DocumentSource} used to fetch and cache documents. This must be
-	 * set to a valid value before this class is used!
+	 * The {@link DocumentSource} used to fetch and cache documents. This must
+	 * be set to a valid value before this class is used!
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedResource.documentSource</code>

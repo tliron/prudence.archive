@@ -15,9 +15,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -30,7 +29,6 @@ import org.restlet.Response;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
-import org.restlet.data.Method;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
@@ -202,6 +200,27 @@ import com.threecrickets.scripturian.ScriptletController;
  */
 public class GeneratedTextResource extends ServerResource
 {
+	// Temporary hack due to Restlet bug!
+	private volatile List<Variant> variants;
+
+	@Override
+	public List<Variant> getVariants()
+	{
+		List<Variant> v = this.variants;
+		if( v == null )
+		{
+			synchronized( this )
+			{
+				v = this.variants;
+				if( v == null )
+				{
+					this.variants = v = new ArrayList<Variant>();
+				}
+			}
+		}
+		return v;
+	}
+
 	//
 	// Attributes
 	//
@@ -493,13 +512,9 @@ public class GeneratedTextResource extends ServerResource
 	{
 		super.doInit();
 		setAnnotated( false );
-		List<MediaType> mediaTypes = Arrays.asList( new MediaType[]
-		{
-			MediaType.TEXT_HTML, MediaType.TEXT_PLAIN
-		} );
-		Map<Method, Object> variants = getVariants();
-		variants.put( Method.GET, mediaTypes );
-		variants.put( Method.POST, mediaTypes );
+		List<Variant> variants = getVariants();
+		variants.add( new Variant( MediaType.TEXT_HTML ) );
+		variants.add( new Variant( MediaType.TEXT_PLAIN ) );
 	}
 
 	@Override
@@ -519,7 +534,7 @@ public class GeneratedTextResource extends ServerResource
 		{
 			if( isSourceViewable() && TRUE.equals( request.getResourceRef().getQueryAsForm().getFirstValue( SOURCE ) ) )
 			{
-				// Represent documentsource
+				// Represent document source
 				return new StringRepresentation( getDocumentSource().getDocumentDescriptor( name ).getText() );
 			}
 			else

@@ -14,7 +14,6 @@ package com.threecrickets.prudence.internal;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import javax.script.ScriptException;
 
@@ -54,7 +53,7 @@ public class ExposedContainerForDelegatedResource
 	 * @param variants
 	 *        The variants of the resource
 	 */
-	public ExposedContainerForDelegatedResource( DelegatedResource resource, Map<Method, Object> variants )
+	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants )
 	{
 		this.resource = resource;
 		this.variants = variants;
@@ -79,7 +78,7 @@ public class ExposedContainerForDelegatedResource
 	 * @param variant
 	 *        The request variant
 	 */
-	public ExposedContainerForDelegatedResource( DelegatedResource resource, Map<Method, Object> variants, Representation entity, Variant variant )
+	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants, Representation entity, Variant variant )
 	{
 		this.resource = resource;
 		this.variants = variants;
@@ -106,7 +105,7 @@ public class ExposedContainerForDelegatedResource
 	 * @param variant
 	 *        The variant
 	 */
-	public ExposedContainerForDelegatedResource( DelegatedResource resource, Map<Method, Object> variants, Variant variant )
+	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants, Variant variant )
 	{
 		this.resource = resource;
 		this.variants = variants;
@@ -242,7 +241,7 @@ public class ExposedContainerForDelegatedResource
 	 * 
 	 * @return The variants
 	 */
-	public Map<Method, Object> getVariants()
+	public List<Variant> getVariants()
 	{
 		return this.variants;
 	}
@@ -395,7 +394,7 @@ public class ExposedContainerForDelegatedResource
 	/**
 	 * The variants of this resource.
 	 */
-	private final Map<Method, Object> variants;
+	private final List<Variant> variants;
 
 	/**
 	 * The {@link Variant} of this request.
