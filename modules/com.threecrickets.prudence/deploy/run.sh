@@ -1,7 +1,7 @@
 #!/bin/bash
 
 java=/usr/bin/java
-main=com.threecrickets.scripturian.ScriptedMain
+main=com.threecrickets.scripturian.MainDocument
 
 jars=\
 lib/com.sun.grizzly.jar:\
