@@ -1,11 +1,13 @@
 #!/bin/bash
 
 java=/usr/bin/java
+#java=/usr/lib/jvm/java-1.5.0-sun/bin/java
+
 main=com.threecrickets.scripturian.MainDocument
 
 jars=\
 lib/com.sun.grizzly.jar:\
-lib/com.sun.phobos.jar:\
+lib/com.sun.phobos.script.javascript.jar:\
 lib/com.caucho.quercus.jar:\
 lib/com.caucho.resin.util.jar:\
 lib/com.sun.script.jruby.jar:\

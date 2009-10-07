@@ -20,6 +20,7 @@ document.container.defaultEngineName = 'rhino-nonjdk';
 %><%& 'conf/prudence.conf' %><%
 
 importClass(
+	java.lang.System,
 	java.io.File,
 	javax.script.ScriptEngineManager,
 	org.restlet.Application,
@@ -39,6 +40,7 @@ importClass(
 //
 
 java.util.logging.LogManager.logManager.reset();
+
 try {
 org.slf4j.bridge.SLF4JBridgeHandler.install();
 } catch(x) {}
@@ -123,6 +125,12 @@ attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', d
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',
 	 new DocumentFileSource(new File(dynamicWebBasePath), dynamicWebDefaultDocument, null, dynamicWebMinimumTimeBetweenValidityChecks));
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
+
+//
+// Miscellaneous
+//
+
+System.setProperty('com.sun.script.velocity.properties', 'conf/velocity.conf');
 
 //
 // Start

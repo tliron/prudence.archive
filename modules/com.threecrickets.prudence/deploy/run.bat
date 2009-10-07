@@ -3,7 +3,7 @@ set java=java
 set main=com.threecrickets.scripturian.ScriptedMain
 
 set jars=lib/com.sun.grizzly.jar;^
-lib/com.sun.phobos.jar;^
+lib/com.sun.phobos.script.javascript.jar;^
 lib/com.caucho.quercus.jar;^
 lib/com.caucho.resin.util.jar;^
 lib/com.sun.script.jruby.jar;^
