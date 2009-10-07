@@ -14,7 +14,6 @@ package com.threecrickets.prudence;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
@@ -237,27 +236,6 @@ import com.threecrickets.scripturian.ScriptletController;
  */
 public class DelegatedResource extends ServerResource
 {
-	// Temporary hack due to Restlet bug!
-	private volatile List<Variant> variants;
-
-	@Override
-	public List<Variant> getVariants()
-	{
-		List<Variant> v = this.variants;
-		if( v == null )
-		{
-			synchronized( this )
-			{
-				v = this.variants;
-				if( v == null )
-				{
-					this.variants = v = new ArrayList<Variant>();
-				}
-			}
-		}
-		return v;
-	}
-
 	//
 	// Attributes
 	//
