@@ -32,4 +32,6 @@ lib/org.slf4j.bridge.jar:\
 lib/org.slf4j.impl.jar:\
 lib/org.slf4j.jar
 
-"$java" -cp "$jars" $main
+# We are setting java.library.path for Jepp
+
+"$java" -cp "$jars" -Djava.library.path=/usr/local/lib $main
