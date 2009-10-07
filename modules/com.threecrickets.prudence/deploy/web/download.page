@@ -2,29 +2,38 @@
 
 <h2>Download</h2>
 
-<h3>Ready-to-rumble Version</h3>
+<h3>Flavors</h3>
+
+Pick your flavor, download, and you're ready to rumble. All flavors come with everything you need
+to get started, including documentation and a sample application.
+
+<h4>Prudence for Python</h4>
 <p>
-Just add Java!
-</p><p>
-The most recent release is available <a href="http://prudence.tigris.org/servlets/ProjectDocumentList?folderID=10663">here</a>.
-It includes plenty of example code, a scalable HTTP server, and robust
-logging facilities. It's essentially a live copy of this entire site.
-</p><p>
-Note for Jepp: Prudence includes working demos for Jepp, but the Jepp
-binaries must be installed separately. See the <a href="http://jepp.sourceforge.net/">Jepp website</a>
-for more information.
+Coming soon.
 </p>
 
-<h3>Standalone Library</h3>
+<h4>Prudence for JavaScript</h4>
 <p>
-The most recent release is available <a href="http://prudence.tigris.org/servlets/ProjectDocumentList?folderID=10663">here</a>.
-It includes full source code and API documentation.
+Coming soon.
 </p>
 
-<h3>Source Code</h3>
+<h4>All Flavors</h4>
 <p>
-Full source code is included in the standalone library release.
-It is also available via <a href="http://prudence.tigris.org/source/browse/prudence/">Subversion</a>.
+This includes all flavors of Prudence, and also a live copy of the Prudence web site. It's a big download!
+The most recent release is available <a href="http://prudence.tigris.org/servlets/ProjectDocumentList?folderID=10663">here</a>.
+</p>
+
+<h3>Other Distributions</h3>
+
+<h4>Minimal</h4>
+<p>
+This tiny download contains only source code and API documentation.
+The most recent release is available <a href="http://prudence.tigris.org/servlets/ProjectDocumentList?folderID=10663">here</a>.
+</p>
+
+<h3>Development Snapshot</h3>
+<p>
+Available via <a href="http://prudence.tigris.org/source/browse/prudence/">Subversion</a>.
 </p>
 
 

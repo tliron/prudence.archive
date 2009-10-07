@@ -30,7 +30,7 @@
 						</li>
 						<li><span class="heading">Demos</span>
 							<ul>
-								<li><a href="resource-demos.page">Resources</a></li>
+								<li><a href="resource-demos.page">REST Resources</a></li>
 								<li><a href="html-demos.page">HTML Generation</a></li>
 							</ul>
 						</li>
