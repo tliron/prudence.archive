@@ -54,7 +54,7 @@ org.apache.log4j.PropertyConfigurator.configure('conf/logging.conf');
 //
 
 var component = new Component();
-component.servers.add(Protocol.HTTP, serverPort);
+s = component.servers.add(Protocol.HTTP, serverPort);
 component.clients.add(Protocol.FILE);
 component.logService.loggerName = componentWebLoggerName;
 
@@ -72,17 +72,22 @@ var application = new JavaAdapter(Application, {
 
 		var directory = new Directory(context, new File(staticWebBasePath).toURI());
 		directory.listingAllowed = staticWebDirectoryListingAllowed;
+		directory.negotiateContent = true;
 
 		var router = new Router(context);
-		router.attach(resourceBaseURL, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
-		router.attach(dynamicWebBaseURL, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'));
-		router.attach(staticWebBaseURL, directory);
 
 		// Redirect to trailing slashes
 		for(var i in urlAddTrailingSlash) {
-			var url = urlAddTrailingSlash[i];
-			router.attach(url, new Redirector(context, url + '/', Redirector.MODE_CLIENT_PERMANENT)).matchingMode = Template.MODE_EQUALS;
+			if(urlAddTrailingSlash[i].slice(-1) == '/') {
+				urlAddTrailingSlash[i] = urlAddTrailingSlash[i].slice(0, -1);
+			}
+			var redirector = new Redirector(context, '{ri}/', Redirector.MODE_CLIENT_SEE_OTHER);
+			router.attach(urlAddTrailingSlash[i], redirector).matchingMode = Template.MODE_EQUALS;
 		}
+
+		router.attach(staticWebBaseURL, directory).matchingMode = Template.MODE_STARTS_WITH;
+		router.attach(dynamicWebBaseURL, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH;
+		router.attach(resourceBaseURL, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH;
 		
 		return router;
 	}
