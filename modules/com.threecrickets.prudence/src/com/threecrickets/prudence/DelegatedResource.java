@@ -644,6 +644,7 @@ public class DelegatedResource extends ServerResource
 	@Override
 	protected void doInit() throws ResourceException
 	{
+		super.doInit();
 		setAnnotated( false );
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants() );
 

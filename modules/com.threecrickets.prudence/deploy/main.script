@@ -39,22 +39,28 @@ importClass(
 // Logging
 //
 
+// log4j: This is our actual logging engine
+try {
+org.apache.log4j.PropertyConfigurator.configure('conf/logging.conf');
+} catch(x) {}
+
+// JULI: Remove any pre-existing configuration
 java.util.logging.LogManager.logManager.reset();
 
+// JULI: Bridge to SLF4J, which will use log4j as its engine 
 try {
 org.slf4j.bridge.SLF4JBridgeHandler.install();
 } catch(x) {}
 
-try {
-org.apache.log4j.PropertyConfigurator.configure('conf/logging.conf');
-} catch(x) {}
+// Set Restlet to use SLF4J, which will use log4j as its engine
+System.setProperty('org.restlet.engine.loggerFacadeClass', 'org.restlet.ext.slf4j.Slf4jLoggerFacade');
 
 //
 // Component and Server
 //
 
 var component = new Component();
-s = component.servers.add(Protocol.HTTP, serverPort);
+component.servers.add(Protocol.HTTP, serverPort);
 component.clients.add(Protocol.FILE);
 component.logService.loggerName = componentWebLoggerName;
 
@@ -85,9 +91,10 @@ var application = new JavaAdapter(Application, {
 			router.attach(urlAddTrailingSlash[i], redirector).matchingMode = Template.MODE_EQUALS;
 		}
 
+		// Note that order of attachment is important -- first matching pattern wins
 		router.attach(staticWebBaseURL, directory).matchingMode = Template.MODE_STARTS_WITH;
-		router.attach(dynamicWebBaseURL, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH;
 		router.attach(resourceBaseURL, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH;
+		router.attach(dynamicWebBaseURL, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH;
 		
 		return router;
 	}

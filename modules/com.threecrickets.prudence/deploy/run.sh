@@ -27,6 +27,7 @@ lib/org.json.jar:\
 lib/org.mozilla.javascript.jar:\
 lib/org.restlet.ext.grizzly.jar:\
 lib/org.restlet.ext.json.jar:\
+lib/org.restlet.ext.slf4j.jar:\
 lib/org.restlet.jar:\
 lib/org.slf4j.bridge.jar:\
 lib/org.slf4j.impl.jar:\
