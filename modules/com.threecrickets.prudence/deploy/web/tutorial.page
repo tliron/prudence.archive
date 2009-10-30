@@ -108,17 +108,19 @@ with no processing.
 
 <h3>Advanced Topics</h3>
 
-TODO
-
-<h4>Advanced Representations</h4>
+<h4>Generating Non-HTML Text</h4>
 
 TODO
 
-<h4>Advanced Routing</h4>
+<h4>Non-Textual Representations</h4>
+
+TODO
+
+<h4>Routing</h4>
 
 main.script
 
-<h4>Advanced Logging</h4>
+<h4>Logging</h4>
 
 logging.conf
 
