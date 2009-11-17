@@ -236,6 +236,7 @@
 		<copy todir="${dist-all}/content">
 			<fileset dir="${common}" excludes="log/" />
 		</copy>
+		<chmod file="${dist-all}/content/run.sh" perm="ugo+rx"/>
 	</target>
 	
 	<target name="common-standalone" description="Fetch common">
@@ -251,6 +252,7 @@
 		<copy todir="${dist-javascript}/content">
 			<fileset dir="${javascript}" />
 		</copy>
+		<chmod file="${dist-javascript}/content/run.sh" perm="ugo+rx"/>
 	</target>
 	
 	<target name="common-python" description="Fetch common">
@@ -260,6 +262,7 @@
 		<copy todir="${dist-python}/content">
 			<fileset dir="${python}" />
 		</copy>
+		<chmod file="${dist-python}/content/run.sh" perm="ugo+rx"/>
 	</target>
 	
 	<target name="package-all" depends="libraries-all, licenses-all, common-all" description="Create Prudence zip">
