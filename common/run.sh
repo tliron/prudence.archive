@@ -35,4 +35,4 @@ lib/org.slf4j.jar
 
 # We are setting java.library.path for Jepp
 
-"$java" -cp "$jars" -Djava.library.path=/usr/local/lib $main
+"$java" -cp "$jars" -Djava.library.path=/usr/local/lib $main main.js

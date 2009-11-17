@@ -20,4 +20,4 @@ lib/org.slf4j.bridge.jar;^
 lib/org.slf4j.impl.jar;^
 lib/org.slf4j.jar
 
-%java% -cp %jars% %main%
+%java% -cp %jars% %main% main.js
