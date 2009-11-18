@@ -235,14 +235,21 @@
 	<target name="content-all" description="Fetch content">
 		<copy todir="${dist-all}/content">
 			<fileset dir="${common}" excludes="log/" />
+			<fileset file="${javascript}/main.js" />
 		</copy>
 		<copy todir="${dist-all}/content/web">
 			<fileset dir="${javascript}/web" />
 			<fileset dir="${python}/web" />
+			<fileset dir="${php}/web" />
+			<fileset dir="${ruby}/web" />
+			<fileset dir="${groovy}/web" />
+			<fileset dir="${velocity}/web" />
 		</copy>
 		<copy todir="${dist-all}/content/resources">
 			<fileset dir="${javascript}/resources" />
 			<fileset dir="${python}/resources" />
+			<fileset dir="${ruby}/resources" />
+			<fileset dir="${groovy}/resources" />
 		</copy>
 		<copy todir="${dist-all}/content/conf" file="${javascript}/conf/prudence.js" />
 		<chmod file="${dist-all}/content/run.sh" perm="ugo+rx"/>
