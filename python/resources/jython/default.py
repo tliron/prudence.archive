@@ -1,5 +1,3 @@
-<%python
-
 #
 # This script implements and handles a REST resource. Simply put, it is a state,
 # addressed by a URL, that responds to verbs. Verbs represent logical operations
@@ -19,7 +17,7 @@ from org.restlet.ext.json import JsonRepresentation
 
 # Include the context library
 
-document.container.include('jython/context.fragment')
+document.container.include('jython/context.py')
 
 # Include the minjson library
 # (Note that we made a small change to minjson in order to accommodate Jython.
@@ -44,15 +42,13 @@ def getState():
 	return getContextAttribute('jython.state', createDefault)
 
 def setState(value):
-	global script
+	global document
 	document.container.resource.context.attributes['jython.state'] = value
 
 # This function is called when the resource is initialized. We will use it to set
 # general characteristics for the resource.
 
 def handleInit():
-	global script
-
 	# The order in which we add the variants is their order of preference.
 	# Note that clients often include a wildcard (such as "*/*") in the
 	# "Accept" attribute of their request header, specifying that any media type
@@ -76,8 +72,6 @@ def handleInit():
 # list of supported languages and encoding.
 
 def handleGet():
-	global script
-
 	r = None
 	stateLock = getStateLock()
 	state = getState()
@@ -109,8 +103,6 @@ def handleGet():
 # to the client.
 
 def handlePost():
-	global script
-
 	# Note that we are using the minjson library to parse the entity. While
 	# a simple eval() would also work, minjson.read() is much safer.
 
@@ -141,8 +133,6 @@ def handlePost():
 # to the client.
 
 def handlePut():
-	global script
-
 	# See comment in handlePost()
 
 	update = json.read(document.container.entity.text)
@@ -161,5 +151,3 @@ def handleDelete():
 	setState({})
 
 	return None
-
-%>

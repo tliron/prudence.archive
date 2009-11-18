@@ -1,5 +1,3 @@
-<%ruby
-
 #
 # This script implements and handles a REST resource. Simply put, it is a state,
 # addressed by a URL, that responds to verbs. Verbs represent logical operations
@@ -21,7 +19,7 @@ import org.json.JSONObject
 
 # Include the context library
 
-$document.container.include 'jruby/context.fragment'
+$document.container.include 'jruby/context.rb'
 include $static_module
 
 # State
@@ -183,5 +181,3 @@ $handleGet = method :handle_get
 $handlePost = method :handle_post
 $handlePut = method :handle_put
 $handleDelete = method :handle_delete 
-
-%>

@@ -1,5 +1,3 @@
-<%ruby
-
 #
 # Important!
 #
@@ -54,5 +52,3 @@ $static_module = Module.new do
 	end
 
 end
-
-%>

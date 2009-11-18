@@ -55,7 +55,7 @@ var resourceBasePath = 'resources';
 // Files with this extension can have the extension omitted from the URL,
 // allowing for nicer URLs. 
 
-var resourceExtension = 'script';
+var resourceExtension = 'js';
 
 // If the URL points to a directory rather than a file, and that directory
 // contains a file with this name, then it will be used. This allows

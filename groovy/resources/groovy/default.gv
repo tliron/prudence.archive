@@ -1,5 +1,3 @@
-<%groovy
-
 //
 // This script implements and handles a REST resource. Simply put, it is a state,
 // addressed by a URL, that responds to verbs. Verbs represent logical operations
@@ -20,7 +18,7 @@ import org.json.JSONObject
 
 // Include the context library
 
-document.container.include('groovy/context.fragment')
+document.container.include('groovy/context.gv')
 
 // State
 //
@@ -166,5 +164,3 @@ handleDelete = {
 
 	return null
 }
-
-%>

@@ -1,10 +1,6 @@
-<%python
-
 # Helper to access the context attributes
 
 def getContextAttribute(name, getDefaultValue):
-	global script
-
 	value = document.container.resource.context.attributes[name]
 	if value == None:
 		value = getDefaultValue()
@@ -17,5 +13,3 @@ def getContextAttribute(name, getDefaultValue):
 			value = existing
 
 	return value
-
-%>

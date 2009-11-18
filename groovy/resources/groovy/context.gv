@@ -1,5 +1,3 @@
-<%groovy
-
 // Helper to access the context attributes
 
 getContextAttribute = { name, getDefaultValue ->
@@ -17,5 +15,3 @@ getContextAttribute = { name, getDefaultValue ->
 	}
 	return value
 }
-
-%>

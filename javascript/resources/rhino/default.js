@@ -1,5 +1,3 @@
-<%
-
 //
 // This script implements and handles a REST resource. Simply put, it is a state,
 // addressed by a URL, that responds to verbs. Verbs represent logical operations
@@ -20,7 +18,7 @@ importClass(
 
 // Include the context library
 
-document.container.include('rhino/context.fragment');
+document.container.include('rhino/context.js');
 
 // Include the JSON library
 print(document.container.resource.defaultScriptEngineName);
@@ -168,5 +166,3 @@ function handleDelete() {
 	
 	return null;
 }
-
-%>

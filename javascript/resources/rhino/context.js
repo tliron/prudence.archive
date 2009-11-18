@@ -1,5 +1,3 @@
-<%
-
 // Helper to access the context attributes
 
 function getContextAttribute(name, getDefaultValue) {
@@ -17,5 +15,3 @@ function getContextAttribute(name, getDefaultValue) {
 	}
 	return value;
 }
-
-%>

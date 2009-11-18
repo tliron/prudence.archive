@@ -232,58 +232,63 @@
 		</copy>
 	</target>
 	
-	<target name="common-all" description="Fetch common">
+	<target name="content-all" description="Fetch content">
 		<copy todir="${dist-all}/content">
 			<fileset dir="${common}" excludes="log/" />
 		</copy>
+		<copy todir="${dist-all}/content/web">
+			<fileset dir="${javascript}/web" />
+			<fileset dir="${python}/web" />
+		</copy>
+		<copy todir="${dist-all}/content/resources">
+			<fileset dir="${javascript}/resources" />
+			<fileset dir="${python}/resources" />
+		</copy>
+		<copy todir="${dist-all}/content/conf" file="${javascript}/conf/prudence.js" />
 		<chmod file="${dist-all}/content/run.sh" perm="ugo+rx"/>
 	</target>
 	
-	<target name="common-standalone" description="Fetch common">
+	<target name="content-standalone" description="Fetch content">
 		<copy todir="${dist-standalone}/content">
 			<fileset dir="${common}" excludes="log/, conf/, web/, run.*" />
 		</copy>
 	</target>
 	
-	<target name="common-javascript" description="Fetch common">
+	<target name="content-javascript" description="Fetch content">
 		<copy todir="${dist-javascript}/content">
 			<fileset dir="${common}" excludes="log/, run.*" />
-		</copy>
-		<copy todir="${dist-javascript}/content">
 			<fileset dir="${javascript}" />
 		</copy>
 		<chmod file="${dist-javascript}/content/run.sh" perm="ugo+rx"/>
 	</target>
 	
-	<target name="common-python" description="Fetch common">
+	<target name="content-python" description="Fetch content">
 		<copy todir="${dist-python}/content">
 			<fileset dir="${common}" excludes="log/, run.*" />
-		</copy>
-		<copy todir="${dist-python}/content">
 			<fileset dir="${python}" />
 		</copy>
 		<chmod file="${dist-python}/content/run.sh" perm="ugo+rx"/>
 	</target>
 	
-	<target name="package-all" depends="libraries-all, licenses-all, common-all" description="Create Prudence zip">
+	<target name="package-all" depends="libraries-all, licenses-all, content-all" description="Create Prudence zip">
 		<zip destfile="${dist-all}/prudence-all.zip">
 			<fileset dir="${dist-all}/content" excludes="lib/cachedir/, resources/jython/*.class" />
 		</zip>
 	</target>
 	
-	<target name="package-standalone" depends="src-standalone, javadoc-standalone, jar-standalone, common-standalone" description="Create Prudence zip">
+	<target name="package-standalone" depends="src-standalone, javadoc-standalone, jar-standalone, content-standalone" description="Create Prudence zip">
 		<zip destfile="${dist-standalone}/prudence-standalone.zip">
 			<fileset dir="${dist-standalone}/content" />
 		</zip>
 	</target>
 
-	<target name="package-javascript" depends="libraries-javascript, licenses-javascript, common-javascript" description="Create Prudence zip">
+	<target name="package-javascript" depends="libraries-javascript, licenses-javascript, content-javascript" description="Create Prudence zip">
 		<zip destfile="${dist-javascript}/prudence-javascript.zip">
 			<fileset dir="${dist-javascript}/content" />
 		</zip>
 	</target>
 	
-	<target name="package-python" depends="libraries-python, licenses-python, common-python" description="Create Prudence zip">
+	<target name="package-python" depends="libraries-python, licenses-python, content-python" description="Create Prudence zip">
 		<zip destfile="${dist-python}/prudence-python.zip">
 			<fileset dir="${dist-python}/content" excludes="lib/cachedir/, resources/jython/*.class" />
 		</zip>
