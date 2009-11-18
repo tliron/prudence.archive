@@ -31,6 +31,7 @@ import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentContext;
 import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.ScriptletController;
+import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * This is the <code>document.container</code> variable exposed to scriptlets.
@@ -293,25 +294,7 @@ public class ExposedContainerForDelegatedResource
 	 * @throws IOException
 	 * @throws ScriptException
 	 */
-	public void include( String name ) throws IOException, ScriptException
-	{
-		include( name, null );
-	}
-
-	/**
-	 * As {@link #include(String)}, except that the document is parsed as a
-	 * single, non-delimited scriptlet. As such, you must explicitly specify the
-	 * name of the scripting engine that should evaluate it.
-	 * 
-	 * @param name
-	 *        The script name
-	 * @param scriptEngineName
-	 *        The script engine name (if null, behaves identically to
-	 *        {@link #include(String)}
-	 * @throws IOException
-	 * @throws ScriptException
-	 */
-	public void include( String name, String scriptEngineName ) throws IOException, ScriptException
+	public void includeDocument( String name ) throws IOException, ScriptException
 	{
 		DocumentSource.DocumentDescriptor<Document> documentDescriptor = this.resource.getDocumentSource().getDocumentDescriptor( name );
 
@@ -319,13 +302,9 @@ public class ExposedContainerForDelegatedResource
 		if( document == null )
 		{
 			String text = documentDescriptor.getText();
+			document = new Document( text, false, this.resource.getScriptEngineManager(), this.resource.getDefaultScriptEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
 
-			if( scriptEngineName != null )
-				text = Document.DEFAULT_DELIMITER1_START + scriptEngineName + " " + text + Document.DEFAULT_DELIMITER1_END;
-
-			document = new Document( text, this.resource.getScriptEngineManager(), this.resource.getDefaultScriptEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
-
 			if( existing != null )
 				document = existing;
 		}
@@ -334,7 +313,36 @@ public class ExposedContainerForDelegatedResource
 	}
 
 	/**
-	 * Invokes an entry point in the composite script.
+	 * As {@link #includeDocument(String)}, except that the document is parsed
+	 * as a single, non-delimited script with the engine name derived from
+	 * name's extension.
+	 * 
+	 * @param name
+	 *        The script name
+	 * @throws IOException
+	 * @throws ScriptException
+	 */
+	public void include( String name ) throws IOException, ScriptException
+	{
+		DocumentSource.DocumentDescriptor<Document> documentDescriptor = this.resource.getDocumentSource().getDocumentDescriptor( name );
+
+		Document document = documentDescriptor.getDocument();
+		if( document == null )
+		{
+			String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, this.resource.getScriptEngineManager() );
+			String text = documentDescriptor.getText();
+			document = new Document( text, true, this.resource.getScriptEngineManager(), scriptEngineName, this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+
+			Document existing = documentDescriptor.setDocumentIfAbsent( document );
+			if( existing != null )
+				document = existing;
+		}
+
+		document.run( false, this.resource.getWriter(), this.resource.getErrorWriter(), true, this.documentContext, this, this.resource.getScriptletController() );
+	}
+
+	/**
+	 * Invokes an entry point in the document.
 	 * 
 	 * @param entryPointName
 	 *        Name of entry point
@@ -353,13 +361,15 @@ public class ExposedContainerForDelegatedResource
 			Document document = documentDescriptor.getDocument();
 			if( document == null )
 			{
+				String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, this.resource.getScriptEngineManager() );
 				String text = documentDescriptor.getText();
-				document = new Document( text, this.resource.getScriptEngineManager(), this.resource.getDefaultScriptEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+				document = new Document( text, true, this.resource.getScriptEngineManager(), scriptEngineName, this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
 				Document existing = documentDescriptor.setDocumentIfAbsent( document );
 
 				if( existing != null )
 					document = existing;
 				else
+					// Must run document once and only once
 					document.run( false, this.resource.getWriter(), this.resource.getErrorWriter(), true, this.documentContext, this, this.resource.getScriptletController() );
 			}
 

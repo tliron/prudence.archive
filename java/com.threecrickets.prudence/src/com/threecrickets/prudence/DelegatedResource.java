@@ -105,9 +105,9 @@ import com.threecrickets.scripturian.ScriptletController;
  * <p>
  * Operations:
  * <ul>
- * <li><code>document.container.include(name)</code>: This powerful method
- * allows scriptlets to execute other documents in place, and is useful for
- * creating large, maintainable applications based on documents. Included
+ * <li><code>document.container.includeDocument(name)</code>: This powerful
+ * method allows scriptlets to execute other documents in place, and is useful
+ * for creating large, maintainable applications based on documents. Included
  * documents can act as a library or toolkit and can even be shared among many
  * applications. The included document does not have to be in the same
  * programming language or use the same engine as the calling scriptlet.
@@ -119,10 +119,9 @@ import com.threecrickets.scripturian.ScriptletController;
  * would have to be done explicitly in the global scope. See the included JRuby
  * examples for a discussion of various ways to do this.
  * </li>
- * <li><code>document.container.include(name, engineName)</code>: As above,
- * except that the document is parsed as a single, non-delimited scriptlet. As
- * such, you must explicitly specify the name of the scripting engine that
- * should evaluate it.</li>
+ * <li><code>document.container.include(name)</code>:except that the document is
+ * parsed as a single, non-delimited script with the engine name derived from
+ * name's extension.</li>
  * </ul>
  * Read-only attributes:
  * <ul>

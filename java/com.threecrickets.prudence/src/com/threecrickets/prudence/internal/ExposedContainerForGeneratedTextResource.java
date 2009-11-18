@@ -32,6 +32,7 @@ import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentContext;
 import com.threecrickets.scripturian.DocumentSource;
+import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * This is the <code>document.container</code> variable exposed to scriptlets.
@@ -257,148 +258,52 @@ public class ExposedContainerForGeneratedTextResource
 	 * @throws IOException
 	 * @throws ScriptException
 	 */
-	public Representation include( String name ) throws IOException, ScriptException
+	public Representation includeDocument( String name ) throws IOException, ScriptException
 	{
-		return include( name, null );
-	}
-
-	/**
-	 * As {@link #include(String)}, except that the document is parsed as a
-	 * single, non-delimited scriptlet. As such, you must explicitly specify the
-	 * name of the scripting engine that should evaluate it.
-	 * 
-	 * @param name
-	 *        The script name
-	 * @param scriptEngineName
-	 *        The script engine name (if null, behaves identically to
-	 *        {@link #include(String)}
-	 * @return A representation of the script's output
-	 * @throws IOException
-	 * @throws ScriptException
-	 */
-	public Representation include( String name, String scriptEngineName ) throws IOException, ScriptException
-	{
-		boolean isStreaming = isStreaming();
-		Writer writer = this.resource.getWriter();
-
-		// Get script descriptor
 		DocumentSource.DocumentDescriptor<Document> documentDescriptor = this.resource.getDocumentSource().getDocumentDescriptor( name );
 
 		Document document = documentDescriptor.getDocument();
 		if( document == null )
 		{
-			// Create script from descriptor
 			String text = documentDescriptor.getText();
+			document = new Document( text, false, this.resource.getScriptEngineManager(), this.resource.getDefaultScriptEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
 
-			if( scriptEngineName != null )
-				text = Document.DEFAULT_DELIMITER1_START + scriptEngineName + " " + text + Document.DEFAULT_DELIMITER1_END;
-
-			document = new Document( text, this.resource.getScriptEngineManager(), this.resource.getDefaultScriptEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
-
 			if( existing != null )
 				document = existing;
 		}
 
-		// Special handling for trivial scripts
-		String trivial = document.getTrivial();
-		if( trivial != null )
-		{
-			if( writer != null )
-				writer.write( trivial );
+		return run( document, name );
+	}
 
-			return new StringRepresentation( trivial, getMediaType(), getLanguage(), getCharacterSet() );
+	/**
+	 * As {@link #includeDocument(String)}, except that the document is parsed
+	 * as a single, non-delimited script with the engine name derived from
+	 * name's extension.
+	 * 
+	 * @param name
+	 *        The script name
+	 * @return A representation of the script's output
+	 * @throws IOException
+	 * @throws ScriptException
+	 */
+	public Representation include( String name ) throws IOException, ScriptException
+	{
+		DocumentSource.DocumentDescriptor<Document> documentDescriptor = this.resource.getDocumentSource().getDocumentDescriptor( name );
+
+		Document document = documentDescriptor.getDocument();
+		if( document == null )
+		{
+			String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, this.resource.getScriptEngineManager() );
+			String text = documentDescriptor.getText();
+			document = new Document( text, true, this.resource.getScriptEngineManager(), scriptEngineName, this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+
+			Document existing = documentDescriptor.setDocumentIfAbsent( document );
+			if( existing != null )
+				document = existing;
 		}
 
-		int startPosition = 0;
-
-		// Make sure we have a valid writer for caching mode
-		if( !isStreaming )
-		{
-			if( writer == null )
-			{
-				StringWriter stringWriter = new StringWriter();
-				this.buffer = stringWriter.getBuffer();
-				writer = new BufferedWriter( stringWriter );
-				this.resource.setWriter( writer );
-			}
-			else
-			{
-				writer.flush();
-				startPosition = this.buffer.length();
-			}
-		}
-
-		try
-		{
-			// Do not allow caching in streaming mode
-			if( document.run( !isStreaming, writer, this.resource.getErrorWriter(), false, this.documentContext, this, this.resource.getScriptletController() ) )
-			{
-
-				// Did the script ask us to start streaming?
-				if( this.startStreaming )
-				{
-					this.startStreaming = false;
-
-					// Note that this will cause the script to run again!
-					return new GeneratedTextStreamingRepresentation( this.resource, this, this.documentContext, this.resource.getScriptletController(), document, this.flushLines );
-				}
-
-				if( isStreaming )
-				{
-					// Nothing to return in streaming mode
-					return null;
-				}
-				else
-				{
-					writer.flush();
-
-					// Get the buffer from when we ran the script
-					RepresentableString string = new RepresentableString( this.buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet() );
-
-					// Cache it
-					this.cache.put( name, string );
-
-					// Return a representation of the entire buffer
-					if( startPosition == 0 )
-						return string.represent();
-					else
-						return new StringRepresentation( this.buffer.toString(), getMediaType(), getLanguage(), getCharacterSet() );
-				}
-			}
-			else
-			{
-				// Attempt to use cache
-				RepresentableString string = this.cache.get( name );
-				if( string != null )
-				{
-					if( writer != null )
-						writer.write( string.getString() );
-
-					return string.represent();
-				}
-				else
-					return null;
-			}
-		}
-		catch( ScriptException x )
-		{
-			// Did the script ask us to start streaming?
-			if( this.startStreaming )
-			{
-				this.startStreaming = false;
-
-				// Note that this will cause the script to run again!
-				return new GeneratedTextStreamingRepresentation( this.resource, this, this.documentContext, this.resource.getScriptletController(), document, this.flushLines );
-
-				// Note that we will allow exceptions in scripts that ask us
-				// to start streaming! In fact, throwing an exception is a
-				// good way for the script to signal that it's done and is
-				// ready to start streaming.
-			}
-			else
-				throw x;
-		}
+		return run( document, name );
 	}
 
 	/**
@@ -506,4 +411,110 @@ public class ExposedContainerForGeneratedTextResource
 	 * The composite script context.
 	 */
 	private final DocumentContext documentContext;
+
+	private Representation run( Document document, String name ) throws IOException, ScriptException
+	{
+		boolean isStreaming = isStreaming();
+		Writer writer = this.resource.getWriter();
+
+		// Special handling for trivial scripts
+		String trivial = document.getTrivial();
+		if( trivial != null )
+		{
+			if( writer != null )
+				writer.write( trivial );
+
+			return new StringRepresentation( trivial, getMediaType(), getLanguage(), getCharacterSet() );
+		}
+
+		int startPosition = 0;
+
+		// Make sure we have a valid writer for caching mode
+		if( !isStreaming )
+		{
+			if( writer == null )
+			{
+				StringWriter stringWriter = new StringWriter();
+				this.buffer = stringWriter.getBuffer();
+				writer = new BufferedWriter( stringWriter );
+				this.resource.setWriter( writer );
+			}
+			else
+			{
+				writer.flush();
+				startPosition = this.buffer.length();
+			}
+		}
+
+		try
+		{
+			// Do not allow caching in streaming mode
+			if( document.run( !isStreaming, writer, this.resource.getErrorWriter(), false, this.documentContext, this, this.resource.getScriptletController() ) )
+			{
+
+				// Did the script ask us to start streaming?
+				if( this.startStreaming )
+				{
+					this.startStreaming = false;
+
+					// Note that this will cause the script to run again!
+					return new GeneratedTextStreamingRepresentation( this.resource, this, this.documentContext, this.resource.getScriptletController(), document, this.flushLines );
+				}
+
+				if( isStreaming )
+				{
+					// Nothing to return in streaming mode
+					return null;
+				}
+				else
+				{
+					writer.flush();
+
+					// Get the buffer from when we ran the script
+					RepresentableString string = new RepresentableString( this.buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet() );
+
+					// Cache it
+					this.cache.put( name, string );
+
+					// Return a representation of the entire buffer
+					if( startPosition == 0 )
+						return string.represent();
+					else
+						return new StringRepresentation( this.buffer.toString(), getMediaType(), getLanguage(), getCharacterSet() );
+				}
+			}
+			else
+			{
+				// Attempt to use cache
+				RepresentableString string = this.cache.get( name );
+				if( string != null )
+				{
+					if( writer != null )
+						writer.write( string.getString() );
+
+					return string.represent();
+				}
+				else
+					return null;
+			}
+		}
+		catch( ScriptException x )
+		{
+			// Did the script ask us to start streaming?
+			if( this.startStreaming )
+			{
+				this.startStreaming = false;
+
+				// Note that this will cause the script to run again!
+				return new GeneratedTextStreamingRepresentation( this.resource, this, this.documentContext, this.resource.getScriptletController(), document, this.flushLines );
+
+				// Note that we will allow exceptions in scripts that ask us
+				// to start streaming! In fact, throwing an exception is a
+				// good way for the script to signal that it's done and is
+				// ready to start streaming.
+			}
+			else
+				throw x;
+		}
+	}
 }
