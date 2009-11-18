@@ -518,7 +518,7 @@ public class GeneratedTextResource extends ServerResource
 			{
 				// Run document and represent its output
 				ExposedContainerForGeneratedTextResource container = new ExposedContainerForGeneratedTextResource( this, variant, getCache() );
-				Representation representation = container.include( name );
+				Representation representation = container.includeDocument( name );
 
 				if( representation == null )
 					throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );

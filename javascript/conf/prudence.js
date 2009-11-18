@@ -1,5 +1,3 @@
-<%
-
 //
 // Component
 //
@@ -131,5 +129,3 @@ var staticWebDirectoryListingAllowed = true;
 // slash added to them if its missing.
 
 var urlAddTrailingSlash = [staticWebBaseURL];
-
-%>

@@ -36,7 +36,7 @@ print 'This page was dynamically generated at ' + System.currentTimeMillis()
 //
 // This is identical to:
 //
-//   document.container.include 'path'
+//   document.container.includeDocument 'path'
 //
 
 %>

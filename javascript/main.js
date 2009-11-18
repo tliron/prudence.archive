@@ -1,4 +1,3 @@
-<%
 
 importClass(
 	java.lang.System,
@@ -18,7 +17,7 @@ importClass(
 	com.threecrickets.prudence.GeneratedTextResource,
 	com.threecrickets.scripturian.file.DocumentFileSource);
 
-document.container.include('conf/prudence.conf');
+document.container.include('conf/prudence.js');
 
 //
 // Logging
@@ -109,7 +108,7 @@ var scriptEngineManager = new ScriptEngineManager();
 // DelegatedResource
 
 attributes.put('com.threecrickets.prudence.DelegatedResource.scriptEngineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName', document.container.defaultEngineName);
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName', 'js');
 attributes.put('com.threecrickets.prudence.DelegatedResource.extension', resourceExtension);
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourceDefaultName);
 attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource',
@@ -119,7 +118,7 @@ attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', re
 // GeneratedTextResource
 
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.scriptEngineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName', document.container.defaultEngineName);
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName', 'js');
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',
 	 new DocumentFileSource(new File(dynamicWebBasePath), dynamicWebDefaultDocument, null, dynamicWebMinimumTimeBetweenValidityChecks));
@@ -131,5 +130,4 @@ attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable'
 
 component.start();
 
-print('Prudence started at port ' + serverPort);
-%>
+print('Prudence started at port ' + serverPort + '\n');

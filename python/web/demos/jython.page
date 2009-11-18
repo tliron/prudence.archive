@@ -40,7 +40,7 @@ sys.stdout.write('This page was dynamically generated at ' + str(System.currentT
 #
 # This is identical to:
 #
-#   document.container.include('path')
+#   document.container.includeDocument('path')
 #
 
 %>
@@ -76,7 +76,7 @@ for factory in factories:
 %>
 </td><td>
 <h3>The "id" attribute in the URL query is:</h3>
-<p><%= form.getFirstValue('id') %></p>
+<p><%= form.getFirstValue('id') or '' %></p>
 <h3>A few tests:</h3>
 <%
 for i in range(10):

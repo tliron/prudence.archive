@@ -1,5 +1,3 @@
-<%
-
 #
 # Component
 #
@@ -131,5 +129,3 @@ staticWebDirectoryListingAllowed = True
 # slash added to them if its missing.
 
 urlAddTrailingSlash = [staticWebBaseURL]
-
-%>

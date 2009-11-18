@@ -40,7 +40,7 @@ sys.stdout.write('This page was dynamically generated at ' + str(System.currentT
 #
 # This is identical to:
 #
-#   document.getContainer().include('path')
+#   document.getContainer().includeDocument('path')
 #
 
 %>

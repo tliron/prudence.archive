@@ -1,4 +1,3 @@
-<%python
 
 from java.lang import System, ClassLoader
 from java.io import File
@@ -13,8 +12,7 @@ from org.restlet.data import Protocol, Reference
 from com.threecrickets.prudence import DelegatedResource, GeneratedTextResource
 from com.threecrickets.scripturian.file import DocumentFileSource
 
-document.container.defaultEngineName = 'python'
-document.container.include('conf/prudence.conf')
+document.container.include('conf/prudence.py')
 
 #
 # Logging
@@ -104,7 +102,7 @@ scriptEngineManager = ScriptEngineManager()
 # DelegatedResource
 
 attributes['com.threecrickets.prudence.DelegatedResource.scriptEngineManager'] = scriptEngineManager
-attributes['com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName'] = document.container.defaultEngineName
+attributes['com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName'] = 'python'
 attributes['com.threecrickets.prudence.DelegatedResource.extension'] = resourceExtension
 attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resourceDefaultName
 attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = \
@@ -114,7 +112,7 @@ attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = reso
 # GeneratedTextResource
 
 attributes['com.threecrickets.prudence.GeneratedTextResource.scriptEngineManager'] = scriptEngineManager
-attributes['com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName'] = document.container.defaultEngineName
+attributes['com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName'] = 'python'
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamicWebDefaultDocument
 attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = \
 	 DocumentFileSource(File(dynamicWebBasePath), dynamicWebDefaultDocument, None, dynamicWebMinimumTimeBetweenValidityChecks)
@@ -127,5 +125,3 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = 
 component.start()
 
 print('Prudence started at port %s' % serverPort)
-
-%>

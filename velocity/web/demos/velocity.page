@@ -45,7 +45,7 @@ This page was dynamically generated at $currentTimeMillis
 ##
 ## This is identical to:
 ##
-##   $document.container.include('path')
+##   $document.container.includeDocument('path')
 ##
 
 %><%& "$document.meta.get('prudenceDemoBasePath')demos/velocity.fragment" %><%
