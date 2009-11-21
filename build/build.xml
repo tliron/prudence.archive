@@ -1,25 +1,44 @@
 <?xml version="1.0"?>
 <project name="Prudence" default="build">
 
+	<!-- Configuration -->
+	
 	<property name="lib" value="../libraries" />
 	<property name="common" value="../common" />
 	<property name="java" value="../java" />
-	<property name="src" value="${java}/com.threecrickets.prudence/src" />
+	<property name="java-src" value="${java}/com.threecrickets.prudence/src" />
 	<property name="javascript" value="../javascript" />
 	<property name="python" value="../python" />
 	<property name="ruby" value="../ruby" />
 	<property name="php" value="../php" />
 	<property name="groovy" value="../groovy" />
 	<property name="velocity" value="../velocity" />
+	
 	<property name="tmp" value="./tmp" />
-	<property name="dist-all" value="./distribution-all" />
-	<property name="dist-standalone" value="./distribution-standalone" />
-	<property name="dist-javascript" value="./distribution-javascript" />
-	<property name="dist-python" value="./distribution-python" />
+	<property name="dist-kitchensink" value="./kitchensink" />
+	<property name="dist-standalone" value="./standalone" />
+	<property name="dist-javascript" value="./javascript" />
+	<property name="dist-python" value="./python" />
+	
+	<!-- Basic -->
+	
+	<target name="build" depends="dist-kitchensink, dist-standalone, dist-javascript, dist-python" description="Build distributions" />
+	
+	<target name="clean" description="Clean">
+		<delete dir="${tmp}" />
+		<delete dir="${dist-kitchensink}" />
+		<delete dir="${dist-standalone}" />
+		<delete dir="${dist-javascript}" />
+		<delete dir="${dist-python}" />
+	</target>
+	
+	<target name="rebuild" depends="clean, build" description="Clean and build distribution" />
+
+	<!-- Essentials -->	
 
 	<target name="compile" description="Compile Prudence code">
-		<mkdir dir="${tmp}" />
-		<javac srcdir="${src}" destdir="${tmp}" target="1.5">
+		<mkdir dir="${tmp}/classes" />
+		<javac srcdir="${java-src}" destdir="${tmp}/classes" target="1.5">
 			<classpath>
 				<fileset dir="${lib}/scripturian/lib" />
 				<fileset dir="${lib}/restlet/lib" />
@@ -27,25 +46,13 @@
 		</javac>
 	</target>
 
-	<target name="jar-all" depends="compile" description="Create Prudence jar">
-		<mkdir dir="${dist-all}/content/lib" />
-		<jar destfile="${dist-all}/content/lib/com.threecrickets.prudence.jar" basedir="${tmp}" />
+	<target name="jar" depends="compile" description="Create Prudence jar">
+		<mkdir dir="${tmp}/lib" />
+		<jar destfile="${tmp}/lib/com.threecrickets.prudence.jar" basedir="${tmp}/classes" />
 	</target>
 
-	<target name="jar-standalone" depends="jar-all" description="Create Prudence jar">
-		<copy todir="${dist-standalone}/content/lib" file="${dist-all}/content/lib/com.threecrickets.prudence.jar" />
-	</target>
-
-	<target name="jar-javascript" depends="jar-all" description="Create Prudence jar">
-		<copy todir="${dist-javascript}/content/lib" file="${dist-all}/content/lib/com.threecrickets.prudence.jar" />
-	</target>
-
-	<target name="jar-python" depends="jar-all" description="Create Prudence jar">
-		<copy todir="${dist-python}/content/lib" file="${dist-all}/content/lib/com.threecrickets.prudence.jar" />
-	</target>
-
-	<target name="javadoc-all" description="Create Prudence API docs">
-		<javadoc access="protected" author="true" excludepackagenames="**.internal.*" destdir="${dist-all}/content/web/static/javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" sourcepath="${src}" splitindex="true" use="true" version="true" windowtitle="Prudence 1.0" doctitle="Prudence 1.0" verbose="true">
+	<target name="javadoc" description="Create Prudence API docs">
+		<javadoc access="protected" author="true" excludepackagenames="**.internal.*" destdir="${tmp}/javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" sourcepath="${java-src}" splitindex="true" use="true" version="true" windowtitle="Prudence 1.0" doctitle="Prudence 1.0" verbose="true">
 			<link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
 			<link href="http://java.sun.com/javase/6/docs/api/" />
 			<link href="http://www.threecrickets.com/scripturian/api/" />
@@ -61,54 +68,167 @@
 		</javadoc>
 	</target>
 
-	<target name="javadoc-standalone" depends="javadoc-all" description="Create Prudence API docs">
-		<copy todir="${dist-standalone}/content/javadoc">
-			<fileset dir="${dist-all}/content/web/static/javadoc" />
+	<!-- Kitchensink -->
+	
+	<target name="dist-kitchensink" depends="libraries-kitchensink, licenses-kitchensink, content-kitchensink" description="Fetch Prudence zip">
+		<zip destfile="${dist-kitchensink}/prudence-kitchensink.zip">
+			<fileset dir="${dist-kitchensink}/content" excludes="lib/cachedir/, resources/jython/*.class" />
+		</zip>
+	</target>
+	
+	<target name="jar-kitchensink" depends="jar" description="Fetch Prudence jar">
+		<mkdir dir="${dist-kitchensink}/content/lib" />
+		<copy todir="${dist-kitchensink}/content/lib" file="${tmp}/lib/com.threecrickets.prudence.jar" />
+	</target>
+
+	<target name="javadoc-kitchensink" depends="javadoc" description="Fetch Prudence API docs">
+		<copy todir="${dist-kitchensink}/content/web/static/javadoc">
+			<fileset dir="${tmp}/javadoc" />
 		</copy>
 	</target>
 
-	<target name="licenses-all" description="Fetch licences">
-		<copy todir="${dist-all}/content/licenses/grizzly">
+	<target name="libraries-kitchensink" depends="jar-kitchensink" description="Fetch libraries">
+		<copy todir="${dist-kitchensink}/content/lib">
+			<fileset dir="${lib}/grizzly/lib" />
+			<fileset dir="${lib}/groovy/lib" />
+			<fileset dir="${lib}/jepp/lib" />
+			<fileset dir="${lib}/jruby/lib" />
+			<fileset dir="${lib}/json/lib" />
+			<fileset dir="${lib}/jsr223/lib" />
+			<fileset dir="${lib}/jython/lib" />
+			<fileset dir="${lib}/log4j/lib" />
+			<fileset dir="${lib}/quercus/lib" />
+			<fileset dir="${lib}/restlet/lib" />
+			<fileset dir="${lib}/rhino/lib" />
+			<fileset dir="${lib}/scripturian/lib" />
+			<fileset dir="${lib}/slf4j/lib" />
+			<fileset dir="${lib}/velocity/lib" />
+			<fileset file="${lib}/versions.txt" />
+		</copy>
+	</target>
+	
+	<target name="licenses-kitchensink" description="Fetch licences">
+		<copy todir="${dist-kitchensink}/content/licenses/grizzly">
 			<fileset dir="${lib}/grizzly/license" />
 		</copy>
-		<copy todir="${dist-all}/content/licenses/groovy">
+		<copy todir="${dist-kitchensink}/content/licenses/groovy">
 			<fileset dir="${lib}/groovy/license" />
 		</copy>
-		<copy todir="${dist-all}/content/licenses/jepp">
+		<copy todir="${dist-kitchensink}/content/licenses/jepp">
 			<fileset dir="${lib}/jepp/license" />
 		</copy>
-		<copy todir="${dist-all}/content/licenses/jruby">
+		<copy todir="${dist-kitchensink}/content/licenses/jruby">
 			<fileset dir="${lib}/jruby/license" />
 		</copy>
-		<copy todir="${dist-all}/content/licenses/json">
+		<copy todir="${dist-kitchensink}/content/licenses/json">
 			<fileset dir="${lib}/json/license" />
 		</copy>
-		<copy todir="${dist-all}/content/licenses/jsr223">
+		<copy todir="${dist-kitchensink}/content/licenses/jsr223">
 			<fileset dir="${lib}/jsr223/license" />
 		</copy>
-		<copy todir="${dist-all}/content/licenses/jython">
+		<copy todir="${dist-kitchensink}/content/licenses/jython">
 			<fileset dir="${lib}/jython/license" />
 		</copy>
-		<copy todir="${dist-all}/content/licenses/log4j">
+		<copy todir="${dist-kitchensink}/content/licenses/log4j">
 			<fileset dir="${lib}/log4j/license" />
 		</copy>
-		<copy todir="${dist-all}/content/licenses/quercus">
+		<copy todir="${dist-kitchensink}/content/licenses/quercus">
 			<fileset dir="${lib}/quercus/license" />
 		</copy>
-		<copy todir="${dist-all}/content/licenses/restlet">
+		<copy todir="${dist-kitchensink}/content/licenses/restlet">
 			<fileset dir="${lib}/restlet/license" />
 		</copy>
-		<copy todir="${dist-all}/content/licenses/rhino">
+		<copy todir="${dist-kitchensink}/content/licenses/rhino">
 			<fileset dir="${lib}/rhino/license" />
 		</copy>
-		<copy todir="${dist-all}/content/licenses/scripturian">
+		<copy todir="${dist-kitchensink}/content/licenses/scripturian">
 			<fileset dir="${lib}/scripturian/license" />
 		</copy>
-		<copy todir="${dist-all}/content/licenses/slf4j">
+		<copy todir="${dist-kitchensink}/content/licenses/slf4j">
 			<fileset dir="${lib}/slf4j/license" />
 		</copy>
-		<copy todir="${dist-all}/content/licenses/velocity">
+		<copy todir="${dist-kitchensink}/content/licenses/velocity">
 			<fileset dir="${lib}/velocity/license" />
+		</copy>
+	</target>
+
+	<target name="content-kitchensink" depends="javadoc-kitchensink" description="Fetch content">
+		<copy todir="${dist-kitchensink}/content">
+			<fileset dir="${common}" excludes="log/" />
+			<fileset file="${javascript}/main.js" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/web">
+			<fileset dir="${javascript}/web" />
+			<fileset dir="${python}/web" />
+			<fileset dir="${php}/web" />
+			<fileset dir="${ruby}/web" />
+			<fileset dir="${groovy}/web" />
+			<fileset dir="${velocity}/web" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/resources">
+			<fileset dir="${javascript}/resources" />
+			<fileset dir="${python}/resources" />
+			<fileset dir="${ruby}/resources" />
+			<fileset dir="${groovy}/resources" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/conf" file="${javascript}/conf/prudence.js" />
+		<chmod file="${dist-kitchensink}/content/run.sh" perm="ugo+rx"/>
+	</target>
+
+	<!-- Standalone -->
+	
+	<target name="dist-standalone" depends="src-standalone, jar-standalone, content-standalone" description="Fetch Prudence zip">
+		<zip destfile="${dist-standalone}/prudence-standalone.zip">
+			<fileset dir="${dist-standalone}/content" />
+		</zip>
+	</target>
+
+	<target name="jar-standalone" depends="jar" description="Fetch Prudence jar">
+		<copy todir="${dist-standalone}/content/lib" file="${tmp}/lib/com.threecrickets.prudence.jar" />
+	</target>
+
+	<target name="src-standalone" description="Fetch Prudence source">
+		<copy todir="${dist-standalone}/content/src">
+			<fileset dir="${java-src}" />
+		</copy>
+	</target>
+	
+	<target name="javadoc-standalone" depends="javadoc" description="Fetch Prudence API docs">
+		<copy todir="${dist-standalone}/content/javadoc">
+			<fileset dir="${tmp}/javadoc" />
+		</copy>
+	</target>
+
+	<target name="content-standalone" depends="javadoc-standalone" description="Fetch content">
+		<copy todir="${dist-standalone}/content">
+			<fileset dir="${common}" excludes="log/, conf/, web/, run.*" />
+		</copy>
+	</target>
+
+	<!-- JavaScript -->
+
+	<target name="dist-javascript" depends="libraries-javascript, licenses-javascript, content-javascript" description="Fetch Prudence zip">
+		<zip destfile="${dist-javascript}/prudence-javascript.zip">
+			<fileset dir="${dist-javascript}/content" />
+		</zip>
+	</target>
+	
+	<target name="jar-javascript" depends="jar" description="Fetch Prudence jar">
+		<copy todir="${dist-javascript}/content/lib" file="${tmp}/lib/com.threecrickets.prudence.jar" />
+	</target>
+
+	<target name="libraries-javascript" depends="jar-javascript" description="Fetch libraries">
+		<copy todir="${dist-javascript}/content/lib">
+			<fileset dir="${lib}/grizzly/lib" />
+			<fileset dir="${lib}/json/lib" />
+			<fileset dir="${lib}/jsr223/lib" />
+			<fileset dir="${lib}/log4j/lib" />
+			<fileset dir="${lib}/restlet/lib" />
+			<fileset dir="${lib}/rhino/lib" />
+			<fileset dir="${lib}/scripturian/lib" />
+			<fileset dir="${lib}/slf4j/lib" />
+			<fileset dir="${lib}/velocity/lib" />
+			<fileset file="${lib}/versions.txt" />
 		</copy>
 	</target>
 
@@ -142,6 +262,48 @@
 		</copy>
 	</target>
 
+	<target name="javadoc-javascript" depends="javadoc" description="Fetch Prudence API docs">
+		<copy todir="${dist-javascript}/content/web/static/javadoc">
+			<fileset dir="${tmp}/javadoc" />
+		</copy>
+	</target>
+
+	<target name="content-javascript" depends="javadoc-javascript" description="Fetch content">
+		<copy todir="${dist-javascript}/content">
+			<fileset dir="${common}" excludes="log/, run.*" />
+			<fileset dir="${javascript}" />
+		</copy>
+		<chmod file="${dist-javascript}/content/run.sh" perm="ugo+rx"/>
+	</target>
+
+	<!-- Python -->
+
+	<target name="dist-python" depends="libraries-python, licenses-python, content-python" description="Fetch Prudence zip">
+		<zip destfile="${dist-python}/prudence-python.zip">
+			<fileset dir="${dist-python}/content" excludes="lib/cachedir/, resources/jython/*.class" />
+		</zip>
+	</target>
+	
+	<target name="jar-python" depends="jar" description="Fetch Prudence jar">
+		<copy todir="${dist-python}/content/lib" file="${tmp}/lib/com.threecrickets.prudence.jar" />
+	</target>
+
+	<target name="libraries-python" depends="jar-python" description="Fetch libraries">
+		<copy todir="${dist-python}/content/lib">
+			<fileset dir="${lib}/grizzly/lib" />
+			<fileset dir="${lib}/jepp/lib" />
+			<fileset dir="${lib}/json/lib" />
+			<fileset dir="${lib}/jsr223/lib" />
+			<fileset dir="${lib}/jython/lib" />
+			<fileset dir="${lib}/log4j/lib" />
+			<fileset dir="${lib}/restlet/lib" />
+			<fileset dir="${lib}/scripturian/lib" />
+			<fileset dir="${lib}/slf4j/lib" />
+			<fileset dir="${lib}/velocity/lib" />
+			<fileset file="${lib}/versions.txt" />
+		</copy>
+	</target>
+	
 	<target name="licenses-python" description="Fetch licences for Python">
 		<copy todir="${dist-python}/content/licenses/grizzly">
 			<fileset dir="${lib}/grizzly/license" />
@@ -175,101 +337,13 @@
 		</copy>
 	</target>
 
-	<target name="libraries-all" depends="jar-all" description="Fetch libraries">
-		<copy todir="${dist-all}/content/lib">
-			<fileset dir="${lib}/grizzly/lib" />
-			<fileset dir="${lib}/groovy/lib" />
-			<fileset dir="${lib}/jepp/lib" />
-			<fileset dir="${lib}/jruby/lib" />
-			<fileset dir="${lib}/json/lib" />
-			<fileset dir="${lib}/jsr223/lib" />
-			<fileset dir="${lib}/jython/lib" />
-			<fileset dir="${lib}/log4j/lib" />
-			<fileset dir="${lib}/quercus/lib" />
-			<fileset dir="${lib}/restlet/lib" />
-			<fileset dir="${lib}/rhino/lib" />
-			<fileset dir="${lib}/scripturian/lib" />
-			<fileset dir="${lib}/slf4j/lib" />
-			<fileset dir="${lib}/velocity/lib" />
-			<fileset file="${lib}/versions.txt" />
+	<target name="javadoc-python" depends="javadoc" description="Fetch Prudence API docs">
+		<copy todir="${dist-python}/content/web/static/javadoc">
+			<fileset dir="${tmp}/javadoc" />
 		</copy>
 	</target>
-	
-	<target name="libraries-javascript" depends="jar-javascript" description="Fetch libraries">
-		<copy todir="${dist-javascript}/content/lib">
-			<fileset dir="${lib}/grizzly/lib" />
-			<fileset dir="${lib}/json/lib" />
-			<fileset dir="${lib}/jsr223/lib" />
-			<fileset dir="${lib}/log4j/lib" />
-			<fileset dir="${lib}/restlet/lib" />
-			<fileset dir="${lib}/rhino/lib" />
-			<fileset dir="${lib}/scripturian/lib" />
-			<fileset dir="${lib}/slf4j/lib" />
-			<fileset dir="${lib}/velocity/lib" />
-			<fileset file="${lib}/versions.txt" />
-		</copy>
-	</target>
-	
-	<target name="libraries-python" depends="jar-python" description="Fetch libraries">
-		<copy todir="${dist-python}/content/lib">
-			<fileset dir="${lib}/grizzly/lib" />
-			<fileset dir="${lib}/jepp/lib" />
-			<fileset dir="${lib}/json/lib" />
-			<fileset dir="${lib}/jsr223/lib" />
-			<fileset dir="${lib}/jython/lib" />
-			<fileset dir="${lib}/log4j/lib" />
-			<fileset dir="${lib}/restlet/lib" />
-			<fileset dir="${lib}/scripturian/lib" />
-			<fileset dir="${lib}/slf4j/lib" />
-			<fileset dir="${lib}/velocity/lib" />
-			<fileset file="${lib}/versions.txt" />
-		</copy>
-	</target>
-	
-	<target name="src-standalone" description="Fetch Prudence source">
-		<copy todir="${dist-standalone}/content/src">
-			<fileset dir="${src}" />
-		</copy>
-	</target>
-	
-	<target name="content-all" description="Fetch content">
-		<copy todir="${dist-all}/content">
-			<fileset dir="${common}" excludes="log/" />
-			<fileset file="${javascript}/main.js" />
-		</copy>
-		<copy todir="${dist-all}/content/web">
-			<fileset dir="${javascript}/web" />
-			<fileset dir="${python}/web" />
-			<fileset dir="${php}/web" />
-			<fileset dir="${ruby}/web" />
-			<fileset dir="${groovy}/web" />
-			<fileset dir="${velocity}/web" />
-		</copy>
-		<copy todir="${dist-all}/content/resources">
-			<fileset dir="${javascript}/resources" />
-			<fileset dir="${python}/resources" />
-			<fileset dir="${ruby}/resources" />
-			<fileset dir="${groovy}/resources" />
-		</copy>
-		<copy todir="${dist-all}/content/conf" file="${javascript}/conf/prudence.js" />
-		<chmod file="${dist-all}/content/run.sh" perm="ugo+rx"/>
-	</target>
-	
-	<target name="content-standalone" description="Fetch content">
-		<copy todir="${dist-standalone}/content">
-			<fileset dir="${common}" excludes="log/, conf/, web/, run.*" />
-		</copy>
-	</target>
-	
-	<target name="content-javascript" description="Fetch content">
-		<copy todir="${dist-javascript}/content">
-			<fileset dir="${common}" excludes="log/, run.*" />
-			<fileset dir="${javascript}" />
-		</copy>
-		<chmod file="${dist-javascript}/content/run.sh" perm="ugo+rx"/>
-	</target>
-	
-	<target name="content-python" description="Fetch content">
+
+	<target name="content-python" depends="javadoc-python" description="Fetch content">
 		<copy todir="${dist-python}/content">
 			<fileset dir="${common}" excludes="log/, run.*" />
 			<fileset dir="${python}" />
@@ -277,39 +351,4 @@
 		<chmod file="${dist-python}/content/run.sh" perm="ugo+rx"/>
 	</target>
 	
-	<target name="package-all" depends="libraries-all, licenses-all, content-all" description="Create Prudence zip">
-		<zip destfile="${dist-all}/prudence-all.zip">
-			<fileset dir="${dist-all}/content" excludes="lib/cachedir/, resources/jython/*.class" />
-		</zip>
-	</target>
-	
-	<target name="package-standalone" depends="src-standalone, javadoc-standalone, jar-standalone, content-standalone" description="Create Prudence zip">
-		<zip destfile="${dist-standalone}/prudence-standalone.zip">
-			<fileset dir="${dist-standalone}/content" />
-		</zip>
-	</target>
-
-	<target name="package-javascript" depends="libraries-javascript, licenses-javascript, content-javascript" description="Create Prudence zip">
-		<zip destfile="${dist-javascript}/prudence-javascript.zip">
-			<fileset dir="${dist-javascript}/content" />
-		</zip>
-	</target>
-	
-	<target name="package-python" depends="libraries-python, licenses-python, content-python" description="Create Prudence zip">
-		<zip destfile="${dist-python}/prudence-python.zip">
-			<fileset dir="${dist-python}/content" excludes="lib/cachedir/, resources/jython/*.class" />
-		</zip>
-	</target>
-	
-	<target name="build" depends="package-all, package-standalone, package-javascript, package-python" description="Build distributions" />
-	
-	<target name="clean" description="Clean">
-		<delete dir="${tmp}" />
-		<delete dir="${dist-all}" />
-		<delete dir="${dist-standalone}" />
-		<delete dir="${dist-python}" />
-	</target>
-	
-	<target name="rebuild" depends="clean, build" description="Clean and build distribution" />
-
 </project>
