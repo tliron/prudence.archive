@@ -83,7 +83,7 @@ def handleGet():
 		stateLock.readLock().unlock()
 	
 	# Return a representation appropriate for the requested media type
-	# of the possible options we created in initializeResource()
+	# of the possible options we created in handleInit()
 
 	if document.container.mediaType == MediaType.APPLICATION_JSON:
 		r = JsonRepresentation(r)

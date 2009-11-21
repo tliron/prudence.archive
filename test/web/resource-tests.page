@@ -88,13 +88,13 @@ function seeIncludeSource() {
 <p>
 	<i>Resource:</i>
 	<select id="resource">
-		<option value="resource/test/rhino/">JavaScript</option>
-		<!-- <option value="resource/test/quercus/">PHP [BROKEN]</option> -->
 		<option value="resource/test/jython/">Python (Jython)</option>
 		<!-- <option value="resource/test/jepp/">Python (Jepp) [BROKEN]</option> -->
 		<option value="resource/test/jruby/">Ruby</option>
 		<option value="resource/test/groovy/">Groovy</option>
 		<option value="resource/test/clojure/">Clojure</option>
+		<option value="resource/test/rhino/">JavaScript</option>
+		<!-- <option value="resource/test/quercus/">PHP [BROKEN]</option> -->
 	</select>
 </p>
 <p>

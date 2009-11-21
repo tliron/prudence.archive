@@ -19,7 +19,9 @@
 
 (if (= (.getFirstValue form "stream") "true") 
 	(if (.stream (.getContainer document))
-		(throw nil)))
+		(throw nil)
+	)
+)
 
 ;
 ; Calling Java
@@ -54,7 +56,8 @@
 	(def names (.getNames factory))
 	(doseq [name (butlast names)]
 		(print name)
-		(print ", "))
+		(print ", ")
+	)
 	(print (last names))
 %>
 </p>
@@ -69,14 +72,16 @@
 <%
 (def factories (.getEngineFactories (.getEngineManager document)))
 (doseq [factory factories]
-	(printFactory factory))
+	(printFactory factory)
+)
 %>
 </td><td>
 <h3>The "id" attribute in the URL query is:</h3>
 <p><%= (or (.getFirstValue form "id") "") %></p>
 <h3>A few tests:</h3>
 <%
-(doseq [i (range 10)] (do
+(doseq [i (range 10)]
+	(do
 %>
 A multiple of three: 
 <%
@@ -84,7 +89,8 @@ A multiple of three:
 %>
 <br />
 <%
-))
+	)
+)
 %>
 </td></tr></table>
 </body>

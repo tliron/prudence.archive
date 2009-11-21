@@ -2,7 +2,10 @@
 set java=java
 set main=com.threecrickets.scripturian.ScriptedMain
 
-set jars=lib/com.sun.grizzly.jar;^
+set jars=lib/closure.jar;^
+lib/closure.contrib.jar;^
+lib/closure.contrib.jsr223.jar;^
+lib/com.sun.grizzly.jar;^
 lib/com.sun.phobos.script.javascript.jar;^
 lib/com.caucho.quercus.jar;^
 lib/com.caucho.resin.util.jar;^

@@ -89,7 +89,7 @@ def handle_get
 	end
 
 	# Return a representation appropriate for the requested media type
-	# of the possible options we created in initialize_resource()
+	# of the possible options we created in handle_init()
 
 	if $document.container.media_type == MediaType::APPLICATION_JSON
 		return JsonRepresentation.new r
@@ -140,7 +140,7 @@ end
 #
 # You may optionally return a representation, in the same way as handle_get().
 # Because Ruby methods return the last statement's value by default,
-# you must explicitly return a nill if you do not want to return a representation
+# you must explicitly return a nil if you do not want to return a representation
 # to the client.
 
 def handle_put

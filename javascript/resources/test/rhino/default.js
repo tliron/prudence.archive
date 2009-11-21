@@ -17,7 +17,6 @@ importClass(
 	org.restlet.ext.json.JsonRepresentation);
 
 // Include the context library
-
 document.container.include('test/rhino/context.js');
 
 // Include the JSON library
@@ -85,7 +84,7 @@ function handleGet() {
 	}
 	
 	// Return a representation appropriate for the requested media type
-	// of the possible options we created in initializeResource()
+	// of the possible options we created in handleInit()
 
 	if(document.container.mediaType == MediaType.APPLICATION_JSON) {
 		r = new JsonRepresentation(r);
