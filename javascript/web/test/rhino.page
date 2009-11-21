@@ -24,10 +24,10 @@ if(form.getFirstValue('stream') == 'true') if(document.container.stream()) throw
 //
 
 document.cacheDuration = 5000;
-print('This page was dynamically generated at ' + java.lang.System.currentTimeMillis() + '');
+print('This page was dynamically generated at ' + java.lang.System.currentTimeMillis());
 
 //
-// Including a script
+// Including a document
 //
 // This is identical to:
 //

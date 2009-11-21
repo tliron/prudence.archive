@@ -14,7 +14,7 @@
 def form = document.container.request.resourceRef.queryAsForm
 
 //
-// Stream this script
+// Stream this document
 //
 
 if(form.getFirstValue('stream') == 'true') {
@@ -32,7 +32,7 @@ document.cacheDuration = 5000
 print 'This page was dynamically generated at ' + System.currentTimeMillis()
 
 //
-// Including a script
+// Including a docmuent
 //
 // This is identical to:
 //

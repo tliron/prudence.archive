@@ -14,7 +14,7 @@
 $form = $document->container->request->resourceRef->queryAsForm;
 
 //
-// Stream this script
+// Stream this document
 //
 
 if($form->getFirstValue('stream') == 'true') if($document->container->stream()) exit();
@@ -29,7 +29,7 @@ import java.lang.System;
 print 'This page was dynamically generated at ' . System::currentTimeMillis();
 
 //
-// Including a script
+// Including a document
 //
 // (see comments in quercus.fragment)
 //

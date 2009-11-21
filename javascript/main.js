@@ -101,7 +101,7 @@ attributes.put('com.threecrickets.prudence.GeneratedTextResource.scriptEngineMan
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName', 'rhino-nonjdk');
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',
-	 new DocumentFileSource(new File(dynamicWebBasePath), dynamicWebDefaultDocument, null, dynamicWebMinimumTimeBetweenValidityChecks));
+	 new DocumentFileSource(new File(dynamicWebBasePath), dynamicWebDefaultDocument, dynamicWebExtension, dynamicWebMinimumTimeBetweenValidityChecks));
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
 
 //

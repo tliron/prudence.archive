@@ -24,7 +24,9 @@
 	
 	<!-- Basic -->
 	
-	<target name="build" depends="dist-kitchensink, dist-standalone, dist-javascript, dist-python" description="Build distributions" />
+	<target name="build" depends="kitchensink, standalone, javascript, python" description="Build distributions" />
+	
+	<target name="package" depends="package-kitchensink, package-standalone, package-javascript, package-python" description="Package distributions" />
 	
 	<target name="clean" description="Clean">
 		<delete dir="${tmp}" />
@@ -71,8 +73,10 @@
 	</target>
 
 	<!-- Kitchensink -->
-	
-	<target name="dist-kitchensink" depends="libraries-kitchensink, licenses-kitchensink, content-kitchensink" description="Fetch Prudence zip">
+
+	<target name="kitchensink" depends="libraries-kitchensink, licenses-kitchensink, content-kitchensink" description="Fetch Prudence zip" />
+
+	<target name="package-kitchensink" depends="kitchensink" description="Fetch Prudence zip">
 		<zip destfile="${dist-kitchensink}/prudence-kitchensink.zip">
 			<fileset dir="${dist-kitchensink}/content" excludes="lib/cachedir/, resources/jython/*.class" />
 		</zip>
@@ -189,7 +193,9 @@
 
 	<!-- Standalone -->
 	
-	<target name="dist-standalone" depends="src-standalone, jar-standalone, content-standalone" description="Fetch Prudence zip">
+	<target name="standalone" depends="src-standalone, jar-standalone, content-standalone" description="Fetch Prudence zip" />
+
+	<target name="package-standalone" depends="standalone" description="Fetch Prudence zip">
 		<zip destfile="${dist-standalone}/prudence-standalone.zip">
 			<fileset dir="${dist-standalone}/content" />
 		</zip>
@@ -219,7 +225,9 @@
 
 	<!-- JavaScript -->
 
-	<target name="dist-javascript" depends="libraries-javascript, licenses-javascript, content-javascript" description="Fetch Prudence zip">
+	<target name="javascript" depends="libraries-javascript, licenses-javascript, content-javascript" description="Fetch Prudence zip" />
+	
+	<target name="package-javascript" depends="javascript" description="Fetch Prudence zip">
 		<zip destfile="${dist-javascript}/prudence-javascript.zip">
 			<fileset dir="${dist-javascript}/content" />
 		</zip>
@@ -290,7 +298,9 @@
 
 	<!-- Python -->
 
-	<target name="dist-python" depends="libraries-python, licenses-python, content-python" description="Fetch Prudence zip">
+	<target name="python" depends="libraries-python, licenses-python, content-python" description="Fetch Prudence zip" />
+	
+	<target name="package-python" depends="python" description="Fetch Prudence zip">
 		<zip destfile="${dist-python}/prudence-python.zip">
 			<fileset dir="${dist-python}/content" excludes="lib/cachedir/, resources/jython/*.class" />
 		</zip>

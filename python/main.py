@@ -97,7 +97,7 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.scriptEngineManager
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName'] = 'python'
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamicWebDefaultDocument
 attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = \
-	 DocumentFileSource(File(dynamicWebBasePath), dynamicWebDefaultDocument, None, dynamicWebMinimumTimeBetweenValidityChecks)
+	 DocumentFileSource(File(dynamicWebBasePath), dynamicWebDefaultDocument, dynamicWebExtension, dynamicWebMinimumTimeBetweenValidityChecks)
 attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamicWebSourceViewable
 
 #

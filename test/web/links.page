@@ -3,6 +3,9 @@
 <h2>Similar and Related Projects</h2>
 
 <p>
+In alphabetical order:
+</p>
+<p>
 "<a href="http://incubator.apache.org/sling/">Apache Sling</a> is a web framework that uses a Java Content Repository, such as Apache Jackrabbit, to store and manage content. Sling applications use either scripts or Java servlets, selected based on simple name conventions, to process HTTP requests in a RESTful way." 
 </p><p>
 "<a href="http://esxx.org/">ESSX</a> is a Java-based web application server that executes web applications written in JavaScript (a.k.a. ECMAscript) on the server side."

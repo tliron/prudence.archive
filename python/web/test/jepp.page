@@ -14,7 +14,7 @@
 form = document.getContainer().getRequest().getResourceRef().getQueryAsForm()
 
 #
-# Stream this script
+# Stream this document
 #
 
 if form.getFirstValue('stream') == 'true':
@@ -36,7 +36,7 @@ sys.stdout.write('This page was dynamically generated at ' + str(System.currentT
 # in this example.)
 
 #
-# Including a script
+# Including a document
 #
 # This is identical to:
 #

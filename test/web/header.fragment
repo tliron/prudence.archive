@@ -3,7 +3,7 @@
 <head>
 <title>Prudence - Three Crickets</title>
 	<link rel="stylesheet" type="text/css" href="static/prudence.css" />
-<% if(document.container.request.resourceRef.lastSegment == 'resource-tests.page') { %>
+<% if(document.container.request.resourceRef.lastSegment == 'resource-tests') { %>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script src="static/jquery.json-1.3.min.js"></script>
 <% } %>
@@ -18,24 +18,24 @@
 				<div class="navigation">
 					<ul>
 						<li><a href=".">About</a></li>
-						<li><a href="legal.page">License</a></li>
-						<li><a href="download.page">Download</a></li>
+						<li><a href="legal">License</a></li>
+						<li><a href="download">Download</a></li>
 						<li><span class="heading">Documentation</span>
 							<ul>
-								<li><a href="tutorial.page">Tutorial</a></li>
-								<li><a href="flavors.page">How to Choose a Flavor?</a></li>
+								<li><a href="tutorial">Tutorial</a></li>
+								<li><a href="flavors">How to Choose a Flavor?</a></li>
 								<li><a href="http://www.threecrickets.com/prudence/api/">API</a></li>
-								<li><a href="faq.page">FAQ</a></li>
+								<li><a href="faq">FAQ</a></li>
 							</ul>
 						</li>
 						<li><span class="heading">Tests</span>
 							<ul>
-								<li><a href="resource-tests.page">REST Resources</a></li>
-								<li><a href="html-tests.page">HTML Generation</a></li>
+								<li><a href="resource-tests">REST Resources</a></li>
+								<li><a href="html-tests">HTML Generation</a></li>
 							</ul>
 						</li>
 						<li><a href="http://prudence.tigris.org/">Community and Support</a></li>
-						<li><a href="links.page" class="closed">Similar Projects</a></li>
+						<li><a href="links" class="closed">Similar Projects</a></li>
 					</ul>
 				</div>
 

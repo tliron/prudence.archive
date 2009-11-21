@@ -14,7 +14,7 @@
 form = $document.container.request.resource_ref.query_as_form
 
 #
-# Stream this script
+# Stream this document
 #
 
 if form.get_first_value('stream') == 'true'
@@ -34,7 +34,7 @@ import java.lang.System
 print 'This page was dynamically generated at ', System.current_time_millis
 
 #
-# Including a script
+# Including a document
 #
 # This is identical to:
 #

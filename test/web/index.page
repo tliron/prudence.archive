@@ -5,7 +5,7 @@
 		<h2>About Prudence</h2>
 		<p>
 			Prudence is an open source framework for building scalable web frontends and network services.
-			It comes in <a href="flavors.page">several flavors</a>: JavaScript, PHP, Python, Ruby, and Groovy. 
+			It comes in <a href="flavors">several flavors</a>: Python, Ruby, Groovy, Clojure, JavaScript and PHP. 
 			Your application can support rich clients (AJAX), thin clients (pure HTML), and happy mixes between the two.
 		</p>
 		<p>
@@ -18,7 +18,7 @@
 		<p>
 			Each flavor comes with a relevant example application,
 			which shows how to integrate Prudence with various data backends.
-			The quick <a href="tutorial.page">tutorial</a> is a great place to start!
+			The quick <a href="tutorial">tutorial</a> is a great place to start!
 		</p>
 		<p>
 			All you need is a Java 5 Standard Edition environment or above.
@@ -32,12 +32,12 @@
 	<td width="50%">		
 		<h3>Features</h3>
 		<p>
-			Prudence's makes it very easy to create <a href="resource-demos.page">REST resources</a>.
+			Prudence's makes it very easy to create <a href="resource-tests">REST resources</a>.
 			In seconds, you can write code to answer an HTTP "PUT" or "GET" with a representation of your resource,
 			and attach this code to a URL template. Complex HTTP content negotiation is handled automatically.
 		</p>
 		<p>
-			Additionally, Prudence offers classic <a href="html-demos.page">HTML generation</a> by letting you embed code "scriptlets"
+			Additionally, Prudence offers classic <a href="html-tests">HTML generation</a> by letting you embed code "scriptlets"
 			into text documents, similarly to how PHP, JSP and ASP work.
 			Scriptlets can be written in any of the supported programming languages, or you can choose better-performing,
 			more manageable templating languages: Succinct and Velocity are both included.

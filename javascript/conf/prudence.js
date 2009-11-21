@@ -86,12 +86,17 @@ var resourceMinimumTimeBetweenValidityChecks = 1000;
 var dynamicWebBaseURL = applicationBaseURL;
 var dynamicWebBasePath = 'web';
 
+// Files with this extension can have the extension omitted from the URL,
+// allowing for nicer URLs. 
+
+var dynamicWebExtension = 'page';
+
 // If the URL points to a directory rather than a file, and that directory
 // contains a file with this name, then it will be used. This allows
 // you to use the directory structure to create nice URLs that do not
 // contain filenames.
 
-var dynamicWebDefaultDocument = 'index.page';
+var dynamicWebDefaultDocument = 'index.' + dynamicWebExtension;
 
 // This is so we can see the source code for scripts by adding ?source=true
 // to the URL. You probably wouldn't want this for most applications.

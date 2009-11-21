@@ -14,7 +14,7 @@
 #set($form = $document.container.request.resourceRef.queryAsForm)
 
 ##
-## Stream this script
+## Stream this document
 ##
 
 #if($form.getFirstValue('stream') == 'true')
@@ -41,7 +41,7 @@ context.setAttribute('currentTimeMillis', String(java.lang.System.currentTimeMil
 This page was dynamically generated at $currentTimeMillis
 
 ##
-## Including a script
+## Including a document
 ##
 ## This is identical to:
 ##

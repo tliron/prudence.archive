@@ -1,0 +1,6 @@
+<%Clojure
+
+(defn printTriple [value]
+	(print (* value 3)))
+
+%>

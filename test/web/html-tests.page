@@ -5,60 +5,66 @@
 These demos all do pretty much the same thing, except that each uses a different language. They're here as
 as examples of how to write scriptlets. Note that at the top of each
 page you will see a timestamp -- this is used to test caching mode, during which the timestamp should stay constant for 5 seconds, no matter
-how many times you refresh the page. See the <a href="faq.page">FAQ</a> for an explanation of the difference between caching and streaming mode.
+how many times you refresh the page. See the <a href="faq">FAQ</a> for an explanation of the difference between caching and streaming mode.
 </p>
 
 <table width="100%"><tr><td>
 <h3>JavaScript</h3>
 <p>
-<a href="test/rhino.page?id=hello">caching mode</a><br />
-<a href="test/rhino.page?id=hello&stream=true">streaming mode</a><br />
-Source code: <a href="test/rhino.page?source=true">main</a>, <a href="test/rhino.fragment?source=true">included</a>
+<a href="test/rhino?id=hello">caching mode</a><br />
+<a href="test/rhino?id=hello&stream=true">streaming mode</a><br />
+Source code: <a href="test/rhino?source=true">main</a>, <a href="test/rhino.fragment?source=true">included</a>
 </p>
 </td><td>
 <h3>PHP</h3>
 <p>
-<a href="test/quercus.page?id=hello">caching mode</a><br />
-<a href="test/quercus.page?id=hello&stream=true">streaming mode</a><br />
-Source code: <a href="test/quercus.page?source=true">main</a>, <a href="test/quercus.fragment?source=true">included</a>
+<a href="test/quercus?id=hello">caching mode</a><br />
+<a href="test/quercus?id=hello&stream=true">streaming mode</a><br />
+Source code: <a href="test/quercus?source=true">main</a>, <a href="test/quercus.fragment?source=true">included</a>
 </p>
 </td></tr><tr><td>
 <h3>Python (Jython)</h3>
 <p>
-<a href="test/jython.page?id=hello">caching mode</a><br />
-<a href="test/jython.page?id=hello&stream=true">streaming mode</a><br />
-Source code: <a href="test/jython.page?source=true">main</a>, <a href="test/jython.fragment?source=true">included</a>
+<a href="test/jython?id=hello">caching mode</a><br />
+<a href="test/jython?id=hello&stream=true">streaming mode</a><br />
+Source code: <a href="test/jython?source=true">main</a>, <a href="test/jython.fragment?source=true">included</a>
 </p>
 </td><td>
 <h3>Python (Jepp)</h3>
 <p>
-<a href="test/jepp.page?id=hello">caching mode</a>
-<br /><a href="test/jepp.page?id=hello&stream=true">streaming mode</a><br />
-Source code: <a href="test/jepp.page?source=true">main</a>, <a href="test/jepp.fragment?source=true">included</a>
+<a href="test/jepp?id=hello">caching mode</a>
+<br /><a href="test/jepp?id=hello&stream=true">streaming mode</a><br />
+Source code: <a href="test/jepp?source=true">main</a>, <a href="test/jepp.fragment?source=true">included</a>
 </p>
 </td></tr><tr><td>
 <h3>Ruby</h3>
 <p>
-<a href="test/jruby.page?id=hello">caching mode</a><br />
-<a href="test/jruby.page?id=hello&stream=true">streaming mode</a><br />
-Source code: <a href="test/jruby.page?source=true">main</a>, <a href="test/jruby.fragment?source=true">included</a>
+<a href="test/jruby?id=hello">caching mode</a><br />
+<a href="test/jruby?id=hello&stream=true">streaming mode</a><br />
+Source code: <a href="test/jruby?source=true">main</a>, <a href="test/jruby.fragment?source=true">included</a>
 </p>
 </td><td>
 <h3>Groovy</h3>
 <p>
-<a href="test/groovy.page?id=hello">caching mode</a><br />
-<a href="test/groovy.page?id=hello&stream=true">streaming mode</a><br />
-Source code: <a href="test/groovy.page?source=true">main</a>, <a href="test/groovy.fragment?source=true">included</a>
+<a href="test/groovy?id=hello">caching mode</a><br />
+<a href="test/groovy?id=hello&stream=true">streaming mode</a><br />
+Source code: <a href="test/groovy?source=true">main</a>, <a href="test/groovy.fragment?source=true">included</a>
 </td></tr><tr><td>
 </p>
+<h3>Clojure</h3>
+<p>
+<a href="test/clojure?id=hello">caching mode</a><br />
+<a href="test/clojure?id=hello&stream=true">streaming mode</a><br />
+Source code: <a href="test/clojure?source=true">main</a>, <a href="test/clojure.fragment?source=true">included</a>
+</p>
+</td><td>
 <h3>Velocity</h3>
 <p>
-<a href="test/velocity.page?id=hello">caching mode</a><br />
-<a href="test/velocity.page?id=hello&stream=true">streaming mode</a><br />
-Source code: <a href="test/velocity.page?source=true">main</a>, <a href="test/velocity.fragment?source=true">included</a>
+<a href="test/velocity?id=hello">caching mode</a><br />
+<a href="test/velocity?id=hello&stream=true">streaming mode</a><br />
+Source code: <a href="test/velocity?source=true">main</a>, <a href="test/velocity.fragment?source=true">included</a>
 </p>
 </td>
-<td></td>
 </tr></table>
 
 <%& prudenceDemoBasePath + 'footer.fragment' %>
