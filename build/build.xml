@@ -13,6 +13,7 @@
 	<property name="ruby" value="../ruby" />
 	<property name="php" value="../php" />
 	<property name="groovy" value="../groovy" />
+	<property name="clojure" value="../clojure" />
 	<property name="velocity" value="../velocity" />
 	
 	<property name="tmp" value="./tmp" />
@@ -90,6 +91,7 @@
 
 	<target name="libraries-kitchensink" depends="jar-kitchensink" description="Fetch libraries">
 		<copy todir="${dist-kitchensink}/content/lib">
+			<fileset dir="${lib}/clojure/lib" />
 			<fileset dir="${lib}/grizzly/lib" />
 			<fileset dir="${lib}/groovy/lib" />
 			<fileset dir="${lib}/jepp/lib" />
@@ -109,6 +111,9 @@
 	</target>
 	
 	<target name="licenses-kitchensink" description="Fetch licences">
+		<copy todir="${dist-kitchensink}/content/licenses/clojure">
+			<fileset dir="${lib}/clojure/license" />
+		</copy>
 		<copy todir="${dist-kitchensink}/content/licenses/grizzly">
 			<fileset dir="${lib}/grizzly/license" />
 		</copy>
@@ -165,6 +170,7 @@
 			<fileset dir="${php}/web" />
 			<fileset dir="${ruby}/web" />
 			<fileset dir="${groovy}/web" />
+			<fileset dir="${clojure}/web" />
 			<fileset dir="${velocity}/web" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/resources/test">
@@ -172,6 +178,7 @@
 			<fileset dir="${python}/resources/test" />
 			<fileset dir="${ruby}/resources/test" />
 			<fileset dir="${groovy}/resources/test" />
+			<fileset dir="${clojure}/resources/test" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/conf">
 			<fileset file="${javascript}/conf/prudence.js" />
