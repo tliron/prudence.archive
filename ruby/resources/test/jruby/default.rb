@@ -19,7 +19,7 @@ import org.json.JSONObject
 
 # Include the context library
 
-$document.container.include 'jruby/context.rb'
+$document.container.include 'test/jruby/context.rb'
 include $static_module
 
 # State

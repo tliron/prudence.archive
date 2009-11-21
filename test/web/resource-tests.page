@@ -57,7 +57,7 @@ function seeMainSource() {
 
 function seeIncludeSource() {
 	var resource = $('#resource').val();
-	window.location = resource + '/context.fragment?source=true';
+	window.location = resource.replace('default', 'context') + '?source=true';
 }
 </script>
 
@@ -88,12 +88,12 @@ function seeIncludeSource() {
 <p>
 	<i>Resource:</i>
 	<select id="resource">
-		<option value="resource/rhino">JavaScript</option>
-		<!-- <option value="resource/quercus">PHP [BROKEN]</option> -->
-		<option value="resource/jython">Python (Jython)</option>
-		<!-- <option value="resource/jepp">Python (Jepp) [BROKEN]</option> -->
-		<option value="resource/jruby">Ruby</option>
-		<option value="resource/groovy">Groovy</option>
+		<option value="resource/test/rhino/default.js">JavaScript</option>
+		<!-- <option value="resource/test/quercus/default.php">PHP [BROKEN]</option> -->
+		<option value="resource/test/jython/default.py">Python (Jython)</option>
+		<!-- <option value="resource/test/jepp/default.py">Python (Jepp) [BROKEN]</option> -->
+		<option value="resource/test/jruby/default.rb">Ruby</option>
+		<option value="resource/test/groovy/default.groovy">Groovy</option>
 	</select>
 </p>
 <p>

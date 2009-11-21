@@ -18,11 +18,11 @@ importClass(
 
 // Include the context library
 
-document.container.include('rhino/context.js');
+document.container.include('test/rhino/context.js');
 
 // Include the JSON library
 print(document.container.resource.defaultScriptEngineName);
-document.container.include('rhino/json2.js', document.container.resource.defaultScriptEngineName);
+document.container.include('test/rhino/json2.js');
 
 // State
 //

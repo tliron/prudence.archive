@@ -3,7 +3,7 @@
 <head>
 <title>Prudence - Three Crickets</title>
 	<link rel="stylesheet" type="text/css" href="static/prudence.css" />
-<% if(document.container.request.resourceRef.lastSegment == 'resource-demos.page') { %>
+<% if(document.container.request.resourceRef.lastSegment == 'resource-tests.page') { %>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script src="static/jquery.json-1.3.min.js"></script>
 <% } %>
@@ -28,10 +28,10 @@
 								<li><a href="faq.page">FAQ</a></li>
 							</ul>
 						</li>
-						<li><span class="heading">Demos</span>
+						<li><span class="heading">Tests</span>
 							<ul>
-								<li><a href="resource-demos.page">REST Resources</a></li>
-								<li><a href="html-demos.page">HTML Generation</a></li>
+								<li><a href="resource-tests.page">REST Resources</a></li>
+								<li><a href="html-tests.page">HTML Generation</a></li>
 							</ul>
 						</li>
 						<li><a href="http://prudence.tigris.org/">Community and Support</a></li>
