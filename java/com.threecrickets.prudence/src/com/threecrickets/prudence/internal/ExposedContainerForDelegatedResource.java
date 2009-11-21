@@ -329,7 +329,7 @@ public class ExposedContainerForDelegatedResource
 		Document document = documentDescriptor.getDocument();
 		if( document == null )
 		{
-			String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, this.resource.getScriptEngineManager() );
+			String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), this.resource.getScriptEngineManager() );
 			String text = documentDescriptor.getText();
 			document = new Document( text, true, this.resource.getScriptEngineManager(), scriptEngineName, this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
 
@@ -361,7 +361,7 @@ public class ExposedContainerForDelegatedResource
 			Document document = documentDescriptor.getDocument();
 			if( document == null )
 			{
-				String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, this.resource.getScriptEngineManager() );
+				String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), this.resource.getScriptEngineManager() );
 				String text = documentDescriptor.getText();
 				document = new Document( text, true, this.resource.getScriptEngineManager(), scriptEngineName, this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
 				Document existing = documentDescriptor.setDocumentIfAbsent( document );

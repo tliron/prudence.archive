@@ -9,6 +9,7 @@ log4j			1.2.15
 quercus			4.0.1
 restlet			2.0 (Subversion revision 5574)
 rhino			1.7R2
+scala			(With Sling patch for JSR-223, 2.0.3-SNAPSHOT129, with Sling Scripting Core 2.0.6)
 scripturian		1.0 alpha 2
 slf4j			1.5.8
 succinct		1.0 alpha 1

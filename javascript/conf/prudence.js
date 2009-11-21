@@ -62,7 +62,7 @@ var resourceExtension = 'js';
 // you to use the directory structure to create nice URLs without relying
 // on filenames.
 
-var resourceDefaultName = 'default.' + resourceExtension;
+var resourceDefaultName = 'default';
 
 // This is so we can see the source code for scripts by adding ?source=true
 // to the URL. You probably wouldn't want this for most applications.

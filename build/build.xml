@@ -173,7 +173,10 @@
 			<fileset dir="${ruby}/resources/test" />
 			<fileset dir="${groovy}/resources/test" />
 		</copy>
-		<copy todir="${dist-kitchensink}/content/conf" file="${javascript}/conf/prudence.js" />
+		<copy todir="${dist-kitchensink}/content/conf">
+			<fileset file="${javascript}/conf/prudence.js" />
+			<fileset file="${javascript}/conf/routing.js" />
+		</copy>
 		<chmod file="${dist-kitchensink}/content/run.sh" perm="ugo+rx"/>
 	</target>
 

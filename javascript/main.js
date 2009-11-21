@@ -75,28 +75,8 @@ application.context.logger = applicationLoggerName;
 //
 
 router = new Router(application.context)
-
-// Directory
-directory = new Directory(application.context, File(staticWebBasePath).toURI().toString());
-directory.listingAllowed = staticWebDirectoryListingAllowed;
-directory.negotiateContent = true;
-
-// Redirect to trailing slashes
-for(var i in urlAddTrailingSlash) {
-	if(urlAddTrailingSlash[i].slice(-1) == '/') {
-		urlAddTrailingSlash[i] = urlAddTrailingSlash[i].slice(0, -1);
-	}
-	var redirector = new Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_SEE_OTHER);
-	router.attach(urlAddTrailingSlash[i], redirector).matchingMode = Template.MODE_EQUALS;
-}
-
-// Note that order of attachment is important -- first matching pattern wins
-classLoader = ClassLoader.systemClassLoader;
-router.attach(staticWebBaseURL, directory).matchingMode = Template.MODE_STARTS_WITH;
-router.attach(resourceBaseURL, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH;
-router.attach(dynamicWebBaseURL, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH;
-
 application.inboundRoot = router
+document.container.include('conf/routing.js');
 
 //
 // Attributes
@@ -108,7 +88,7 @@ var scriptEngineManager = new ScriptEngineManager();
 // DelegatedResource
 
 attributes.put('com.threecrickets.prudence.DelegatedResource.scriptEngineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName', 'js');
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName', 'rhino-nonjdk');
 attributes.put('com.threecrickets.prudence.DelegatedResource.extension', resourceExtension);
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourceDefaultName);
 attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource',
@@ -118,7 +98,7 @@ attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', re
 // GeneratedTextResource
 
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.scriptEngineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName', 'js');
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName', 'rhino-nonjdk');
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',
 	 new DocumentFileSource(new File(dynamicWebBasePath), dynamicWebDefaultDocument, null, dynamicWebMinimumTimeBetweenValidityChecks));
