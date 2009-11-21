@@ -5,6 +5,7 @@
 	
 	<property name="lib" value="../libraries" />
 	<property name="common" value="../common" />
+	<property name="test" value="../test" />
 	<property name="java" value="../java" />
 	<property name="java-src" value="${java}/com.threecrickets.prudence/src" />
 	<property name="javascript" value="../javascript" />
@@ -155,6 +156,7 @@
 	<target name="content-kitchensink" depends="javadoc-kitchensink" description="Fetch content">
 		<copy todir="${dist-kitchensink}/content">
 			<fileset dir="${common}" excludes="log/" />
+			<fileset dir="${test}" excludes="log/" />
 			<fileset file="${javascript}/main.js" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/web">
@@ -165,11 +167,11 @@
 			<fileset dir="${groovy}/web" />
 			<fileset dir="${velocity}/web" />
 		</copy>
-		<copy todir="${dist-kitchensink}/content/resources">
-			<fileset dir="${javascript}/resources" />
-			<fileset dir="${python}/resources" />
-			<fileset dir="${ruby}/resources" />
-			<fileset dir="${groovy}/resources" />
+		<copy todir="${dist-kitchensink}/content/resources/test">
+			<fileset dir="${javascript}/resources/test" />
+			<fileset dir="${python}/resources/test" />
+			<fileset dir="${ruby}/resources/test" />
+			<fileset dir="${groovy}/resources/test" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/conf" file="${javascript}/conf/prudence.js" />
 		<chmod file="${dist-kitchensink}/content/run.sh" perm="ugo+rx"/>

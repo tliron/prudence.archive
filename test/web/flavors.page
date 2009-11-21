@@ -1,0 +1,85 @@
+<% document.cacheDuration = 5000; var prudenceDemoBasePath = document.meta.get('prudenceDemoBasePath'); %><%& prudenceDemoBasePath + 'header.fragment' %>
+
+<table width="100%" cellpadding="10" cellspacing="0"><tr valign="top">
+	<td width="50%">
+		<h2>How to Choose a Flavor?</h2>
+		
+		<p>
+			If you're starting a Prudence project from scratch, you may be overwhelmed by the selection of flavors.
+			This guide may help you decide which one to use.
+		</p>
+
+		<h3>JavaScript</h3>
+		<p>
+			JavaScript is a sensible choice for "AJAX" and other rich web client applications, because it's the same language used by web browsers
+			and other client platforms. Web developers are already proficient in JavaScript, and can quickly be brought on board to a server-side
+			project. Choosing JavaScript allows you to write server-side and client-side code in the same language, and even have both sides share the same libraries.
+			Couple it with <a href="http://www.json.org/">JSON</a>, and you're on solid ground for rapid development.
+		</p>
+		<p>
+			Though not as feature-rich as Python or Ruby, JavaScript is still
+			very powerful, and can support object-orientation, namespaces and other paradigms. Many libraries exist to help you with this.
+		</p>
+		
+		<h3>PHP</h3>
+		<p>
+			PHP is, of course, ubiquitous. It's a simple language with the most mature libraries of any web programming language, and programmers are available with years
+			of experience. It's also designed from the ground up as a programming language for the web.
+		</p>
+		<p>
+			However, some of PHP's benefits and libraries will not be immediately usable under Prudence. PHP's built-in web features, such as $_SESSION and $_COOKIE,
+			won't work. You'll need to use the Prudence versions instead, and some libraries may expect PHP's built-in features.
+			(It may be possible to write a transition library -- any volunteers?) 
+		</p>
+		<p>
+			<i>Note:</i> The PHP flavor of Prudence is currently limited.
+			At this time, you cannot create REST resources in PHP,
+			though you can embed PHP scriptlets into text.
+			(This is true for Quercus version 3.2.1.) 
+		</p>
+
+	</td>
+	<td width="50%">
+
+		<h3>Python</h3>
+		<p>
+			Python presents a unique challenge in a scriptlet environment, due to its reliance on indentation. However, because HTML is loose with
+			whitespace, it's possible to force the whole file to adhere to Python's scheme. In fact, as many Python enthusiasts would argue, forcing your code
+			to adhere to Python's indentation requirements can go a long way towards making it more readable and manageable.
+		</p>
+		<p>
+			Otherwise, Python is far richer in features than PHP and JavaScript,
+			and can compete well with PHP for the quality and maturity of its libraries.
+		</p>
+		<p>
+			<i>Note:</i> The Python flavor of Prudence can use either the Jython or Jepp engines,
+			but Jython is recommended, because Prudence's use of Jepp is currently limited.
+			At this time, you cannot create REST resources in Python/Jepp,
+			though you can embed Python/Jepp scriptlets into text.
+			(This is true for Jepp version 2.3.) 
+		</p>
+		
+		<h3>Ruby</h3>
+		<p>
+			And then there's Ruby, a relatively new language that can do most of what Python can do and more. Unlike Python, it has a very loose and forgiving
+			syntax, which is perfect for scriptlets. It can work with many styles of code, and as such it would be relatively easy to transition to Ruby from
+			any of the above languages.
+		</p>
+		<p>
+			Ruby has some excellent libraries, and may be very productive for developing large applications.
+		</p>
+		
+		<h3>Groovy</h3>
+		<p>
+			In many ways, Groovy is the best of this bunch. It has all the flexibility of Ruby, but is designed from the ground up to integrate
+			strongly into Java. That means that any Java library is also a Groovy library. (This is true to various extents for the other programming languages
+			here, but Groovy does it best.) Additionally, Groovy is enjoying a huge growth in specialized adaptations and Groovy-specific libraries.
+		</p>
+		<p>
+			If you know your project will require heavy interaction with Java libraries, Groovy is a terrific choice.
+		</p>
+
+	</td>
+</tr></table>
+
+<%& prudenceDemoBasePath + 'footer.fragment' %>

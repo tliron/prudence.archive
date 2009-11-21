@@ -1,0 +1,64 @@
+<% document.cacheDuration = 5000; var prudenceDemoBasePath = document.meta.get('prudenceDemoBasePath'); %><%& prudenceDemoBasePath + 'header.fragment' %>
+
+<table width="100%" cellpadding="10" cellspacing="0"><tr valign="top">
+	<td width="50%">
+		<h2>About Prudence</h2>
+		<p>
+			Prudence is an open source framework for building scalable web frontends and network services.
+			It comes in <a href="flavors.page">several flavors</a>: JavaScript, PHP, Python, Ruby, and Groovy. 
+			Your application can support rich clients (AJAX), thin clients (pure HTML), and happy mixes between the two.
+		</p>
+		<p>
+			Prudence stands out from other web frameworks in that it is designed from the ground up to scale.
+			It adheres to proven <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer">REST</a> principles,
+			which work with the web's inherently scalable architecture, rather than trying to force it into other, limiting paradigms. 
+			HTTP is handled via non-blocking I/O, which keeps your operating system from getting saturated
+			in high loads. Code runs on a JVM.
+		</p>
+		<p>
+			Each flavor comes with a relevant example application,
+			which shows how to integrate Prudence with various data backends.
+			The quick <a href="tutorial.page">tutorial</a> is a great place to start!
+		</p>
+		<p>
+			All you need is a Java 5 Standard Edition environment or above.
+			Note that no Java coding is necessary. Also, Prudence does not
+			require or use Java Enterprise Edition extensions.
+		</p>
+		<p>
+			For Java developers, Prudence is also available as an embeddable, standalone library.
+		</p>
+	</td>
+	<td width="50%">		
+		<h3>Features</h3>
+		<p>
+			Prudence's makes it very easy to create <a href="resource-demos.page">REST resources</a>.
+			In seconds, you can write code to answer an HTTP "PUT" or "GET" with a representation of your resource,
+			and attach this code to a URL template. Complex HTTP content negotiation is handled automatically.
+		</p>
+		<p>
+			Additionally, Prudence offers classic <a href="html-demos.page">HTML generation</a> by letting you embed code "scriptlets"
+			into text documents, similarly to how PHP, JSP and ASP work.
+			Scriptlets can be written in any of the supported programming languages, or you can choose better-performing,
+			more manageable templating languages: Succinct and Velocity are both included.
+			Prudence goes a step beyond similarp platforms by offering high-performance streaming and fine-grained caching
+			of the generated results.
+		</p>
+		<p>
+			Development is quick, powerful and fun. Prudence picks up and compiles your changes on-the-fly,
+			making sure to update its cached code base.
+		</p>
+		
+		<h3>Diligence and Prudence</h3>
+		<p>
+			We at <a href="http://www.threecrickets.com/">Three Crickets</a> originally designed Prudence to
+			help us create our own products. Its counterpart is Diligence, a super-scalable data-driving backend.
+			Together, they make <a href="http://www.threecrickets.com/diligenceandprudence/">Diligence and Prudence</a>,
+			a complete stack for easily creating cloud-ready applications in the language of your choice.
+			We used Diligence and Prudence to build <a href="http://www.threecrickets.com/sneeze/">Sneeze!</a>
+			in just 10 days, using nothing but JavaScript!
+		</p>
+	</td>
+</tr></table>
+
+<%& prudenceDemoBasePath + 'footer.fragment' %>

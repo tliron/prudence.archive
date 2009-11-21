@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Prudence - Three Crickets</title>
+	<link rel="stylesheet" type="text/css" href="static/prudence.css" />
+<% if(document.container.request.resourceRef.lastSegment == 'resource-demos.page') { %>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+	<script src="static/jquery.json-1.3.min.js"></script>
+<% } %>
+</head>
+<body>
+	<table width="100%" cellspacing="20">
+		<tr valign="top">
+			<td width="25%">
+
+				<h1>Prudence</h1>
+				
+				<div class="navigation">
+					<ul>
+						<li><a href=".">About</a></li>
+						<li><a href="legal.page">License</a></li>
+						<li><a href="download.page">Download</a></li>
+						<li><span class="heading">Documentation</span>
+							<ul>
+								<li><a href="tutorial.page">Tutorial</a></li>
+								<li><a href="flavors.page">How to Choose a Flavor?</a></li>
+								<li><a href="http://www.threecrickets.com/prudence/api/">API</a></li>
+								<li><a href="faq.page">FAQ</a></li>
+							</ul>
+						</li>
+						<li><span class="heading">Demos</span>
+							<ul>
+								<li><a href="resource-demos.page">REST Resources</a></li>
+								<li><a href="html-demos.page">HTML Generation</a></li>
+							</ul>
+						</li>
+						<li><a href="http://prudence.tigris.org/">Community and Support</a></li>
+						<li><a href="links.page" class="closed">Similar Projects</a></li>
+					</ul>
+				</div>
+
+			</td>
+			<td width="50%" id="main">

@@ -1,0 +1,29 @@
+<% document.cacheDuration = 5000; var prudenceDemoBasePath = document.meta.get('prudenceDemoBasePath'); %><%& prudenceDemoBasePath + 'header.fragment' %>
+
+<h2>Similar and Related Projects</h2>
+
+<p>
+"<a href="http://incubator.apache.org/sling/">Apache Sling</a> is a web framework that uses a Java Content Repository, such as Apache Jackrabbit, to store and manage content. Sling applications use either scripts or Java servlets, selected based on simple name conventions, to process HTTP requests in a RESTful way." 
+</p><p>
+"<a href="http://esxx.org/">ESSX</a> is a Java-based web application server that executes web applications written in JavaScript (a.k.a. ECMAscript) on the server side."
+</p><p>
+"<a href="http://code.google.com/p/gogoego/">GoGoEgo</a> is a modern JVM-based platform for creating and managing Web sites in a resource-oriented way. It uses REST, OSGi, and scripting to address the many real-world problems of working collaboratively on production Web sites."
+</p><p>
+"<a href="http://docs.codehaus.org/display/GROOVY/GroovyRestlet">GroovyRestlet</a> is a simple DSL for constructing Restlet application in a simple, shortcuting syntax."
+(Also see: <a href="http://blog.arc90.com/2008/06/building_restful_web_apps_groovy_restlet_part_1.php">Building RESTful Web Apps with Groovy and Restlet</a>.)
+</p><p>
+"<a href="http://helma.org/">Helma</a> is a server-side Javascript environment and web application framework for fast and efficient scripting and serving
+of your websites and Internet applications."
+</p><p>
+"<a href="http://jssp.de/">JSSP</a> is a runtime library to generate web pages using JavaScript on a Java web server. It requires a web server that can run Java Servlets."
+</p><p>
+"<a href="http://www.mynajs.org/">Myna</a> is a Java web application (.war file) that provides dynamic web content from both interpreted and compiled JavaScript, as well as complete access to Java libraries." 
+</p><p>
+"<a href="https://phobos.dev.java.net">Phobos</a> is a lightweight, scripting-friendly, web application environment running on the Java platform."
+</p><p>
+"<a href="http://www.playframework.org/">Play!</a> Finally a Java framework made by Web developers. Discover a clean alternative to bloated enterprise Java stacks. Play focuses on developer productivity and targets RESTful architectures."
+</p><p>
+"<a href="http://torino.sourceforge.net/">Torino</a> provides a fully-featured JavaScript runtime environment for developing real-world applications."
+</p>
+
+<%& prudenceDemoBasePath + 'footer.fragment' %>
