@@ -44,7 +44,7 @@ sys.stdout.write('This page was dynamically generated at ' + str(System.currentT
 #
 
 %>
-<%& document.meta['prudenceDemoBasePath'] + 'demos/jython.fragment' %>
+<%& document.meta['prudenceDemoBasePath'] + 'test/jython.fragment' %>
 <%
 
 #

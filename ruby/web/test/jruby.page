@@ -42,7 +42,7 @@ print 'This page was dynamically generated at ', System.current_time_millis
 #
 
 %>
-<%& $document.meta['prudenceDemoBasePath'] + 'demos/jruby.fragment' %>
+<%& $document.meta['prudenceDemoBasePath'] + 'test/jruby.fragment' %>
 <%
 
 # (See comments in jruby.fragment)

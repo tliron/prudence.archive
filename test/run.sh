@@ -35,5 +35,5 @@ lib/org.slf4j.jar
 
 # We are setting java.library.path for Jepp
 
-"$java" -cp "$jars" -Djava.library.path=/usr/local/lib -Dpython.home=lib/python -Dpython.cachedir=cache $main main.js
+"$java" -cp "$jars" -Djava.library.path=/usr/local/lib -Dpython.home=lib/python -Dpython.cachedir=cache -Dpython.verbose=warning $main main.js
 

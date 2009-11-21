@@ -39,7 +39,7 @@ print 'This page was dynamically generated at ' . System::currentTimeMillis();
 //
 
 ?>
-<?& $document->meta->get('prudenceDemoBasePath') . 'demos/quercus.fragment' ?>
+<?& $document->meta->get('prudenceDemoBasePath') . 'test/quercus.fragment' ?>
 <?
 
 //
