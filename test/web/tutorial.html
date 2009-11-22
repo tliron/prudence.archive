@@ -1,4 +1,4 @@
-<% document.cacheDuration = 5000; var prudenceDemoBasePath = document.meta.get('prudenceDemoBasePath'); %><%& prudenceDemoBasePath + 'header.fragment' %>
+<% document.cacheDuration = 5000; var prudenceDemoBasePath = document.meta.get('prudenceDemoBasePath'); %><%& prudenceDemoBasePath + 'header-fragment' %>
 
 <h2>Tutorial</h2>
 
@@ -38,22 +38,21 @@ web.log is an Apache-compatible log of all hits to your Prudence server. You can
 Resources are all under the /resources folder. Changes here will be picked up by Prudence on-the-fly.
 </p>
 <p>
-They are source code files with .script extension, one file per resource. Scripts can, of course, include other files and libraries.
-By convention we give them the .fragment extension, but you can use any you wish. Only .script files will be mapped to URLs as
-resources.
+They are source code files with extensions appropriate for your language, one file per resource. Code can, of course, include other files and libraries.
 </p>
 <p>
-The directory structure maps directly to the final URL of your resource relative to the /resource/ URL,
-with the .script extension optionally omitted. For example, the file /resources/shopping-cart/item.script
-would be mapped to http://localhost:8080/resource/shopping-cart/item.
+The directory structure maps directly to the final URL of your resource relative to the /resource/ URL.
+For example, the file /resources/shopping-cart/item.js would be mapped to http://localhost:8080/resource/shopping-cart/item.
+Note that you do not have to use the file extension for the mapped URL: Prudence will pick up the first file with the given name. This means that you need
+to be careful using files with the same name and different extensions.
 </p>
 <p>
-If you prefer, you can use directories exclusively for URL mapping: files named default.script will be considered as the default mapping
-for any directory if no file is specified in the URL. For example, the file /resources/user/profile/details/default.script would be mapped to
+If you prefer, you can use directories exclusively for URL mapping: files named default will be considered as the default mapping
+for any directory if no file is specified in the URL. For example, the file /resources/user/profile/details/default.js would be mapped to
 http://localhost:8080/resource/user/profile/details.
 </p>
 <p>
-More advanced routing is possible by editing your main.script. See below.
+More advanced routing is possible by editing your main script. See below.
 </p>
 <p>
 Your resource script must have at least a handleInit function, which is called only once, when the resource is attached to the URL.
@@ -85,13 +84,15 @@ employing non-blocking data streaming, and will perform and scale very well, so 
 static files on a "real" web server such as Apache.
 </p>
 <p>
-Documents under /web are text files with the .script extension, with support for embedded scriptlets, which you can use to
-generate dynamic content. Note that Prudence will handle both HTTP GET and POST verbs for your documents, so that
+Documents under /web are text files with support for embedded scriptlets, which you can use to
+generate dynamic content. Prudence will guess the MIME type according to the file extension, though
+you can set it in code. Note that Prudence will handle both HTTP GET and POST verbs for your documents, so that
 you can you can handle HTML form submission (via GET or POST) right in your document.
 </p>
 <p>
-Similarly to how resources work, the directory structure maps directly to the URL under the / root. Again, the .script
-extension is omitted in the URL, and default.script files can be used to avoid filenames altogether.
+Similarly to how resources work, the directory structure maps directly to the URL under the / root. Again, if an extension
+is omitted from the URL, the first file with that name is picked up. By by convention, the "index" name is used for directories.
+For example, index.html will be mapped for a directory URL. Note that index.txt would be mapped, too.
 </p>
 <p>
 We say "HTML," but, in fact, these documents can be of any textual format. You can set the MIME type of each document inside of it by code.
@@ -134,4 +135,4 @@ YAJSW
 service.conf
 controller.log
 
-<%& prudenceDemoBasePath + 'footer.fragment' %>
+<%& prudenceDemoBasePath + 'footer-fragment' %>

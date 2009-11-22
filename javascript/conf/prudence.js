@@ -96,7 +96,7 @@ var dynamicWebExtension = 'page';
 // you to use the directory structure to create nice URLs that do not
 // contain filenames.
 
-var dynamicWebDefaultDocument = 'index.' + dynamicWebExtension;
+var dynamicWebDefaultDocument = 'index';
 
 // This is so we can see the source code for scripts by adding ?source=true
 // to the URL. You probably wouldn't want this for most applications.

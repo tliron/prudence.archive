@@ -1,24 +1,24 @@
 <html>
 <head>
-	<title>Python (Jython) Scriptlets Demo</title>
+	<title>Python (Jepp) Scriptlets Demo</title>
 	<link rel="stylesheet" type="text/css" href="../static/prudence.css" />
 </head>
 <body>
 <table width="100%"><tr valign="top"><td>
-<%python
+<%jep
 
 #
 # Accessing the request
 #
 
-form = document.container.getRequest().resourceRef.queryAsForm
+form = document.getContainer().getRequest().getResourceRef().getQueryAsForm()
 
 #
 # Stream this document
 #
 
 if form.getFirstValue('stream') == 'true':
-	if document.container.stream():
+	if document.getContainer().stream():
 		raise
 
 document.setCacheDuration(5000)
@@ -40,11 +40,11 @@ sys.stdout.write('This page was dynamically generated at ' + str(System.currentT
 #
 # This is identical to:
 #
-#   document.container.includeDocument('path')
+#   document.getContainer().includeDocument('path')
 #
 
 %>
-<%& document.meta['prudenceDemoBasePath'] + 'test/jython.fragment' %>
+<%& str(document.getMeta().get('prudenceDemoBasePath')) + 'test/jepp-fragment' %>
 <%
 
 #
@@ -53,12 +53,12 @@ sys.stdout.write('This page was dynamically generated at ' + str(System.currentT
 
 def printFactory(factory):
 	%><p>
-	<i>Engine:</i> <%= factory.engineName %> version <%= factory.engineVersion %><br />
-	<i>Language:</i> <%= factory.languageName %> version <%= factory.languageVersion %><br />
+	<i>Engine:</i> <%= factory.getEngineName() %> version <%= factory.getEngineVersion() %><br />
+	<i>Language:</i> <%= factory.getLanguageName() %> version <%= factory.getLanguageVersion() %><br />
 	<i>Names:</i> <%
-	names = factory.names.toArray()
+	names = factory.getNames().toArray()
 	for i in range(len(names)):
-		sys.stdout.write(names[i])
+		sys.stdout.write(str(names[i]))
 		if i < len(names) - 1:
 			sys.stdout.write(', ')
 	%></p><%
@@ -66,17 +66,17 @@ def printFactory(factory):
 %>
 <h3>Script engine used:</h3>
 <%
-printFactory(document.engine.factory)
+printFactory(document.getEngine().getFactory())
 %>
 <h3>Available script engines:</h3>
 <%
-factories = document.engineManager.engineFactories.toArray()
+factories = document.getEngineManager().getEngineFactories().toArray()
 for factory in factories:
 	printFactory(factory)
 %>
 </td><td>
 <h3>The "id" attribute in the URL query is:</h3>
-<p><%= form.getFirstValue('id') or '' %></p>
+<p><%= form.getFirstValue('id') %></p>
 <h3>A few tests:</h3>
 <%
 for i in range(10):
