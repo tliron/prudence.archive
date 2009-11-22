@@ -88,7 +88,7 @@ function seeIncludeSource() {
 <p>
 	<i>Resource:</i>
 	<select id="resource">
-		<option value="resource/test/jython/">Python (Jython)</option>
+		<option value="resource/test/jython/">Python</option>
 		<!-- <option value="resource/test/jepp/">Python (Jepp) [BROKEN]</option> -->
 		<option value="resource/test/jruby/">Ruby</option>
 		<option value="resource/test/groovy/">Groovy</option>
