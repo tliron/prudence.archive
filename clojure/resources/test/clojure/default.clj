@@ -107,6 +107,19 @@
 ; to the client.
 
 (defn handlePost []
+	(def update (json/decode-from-str (.getText (.getEntity (.getContainer document)))))
+	(def stateLock (getStateLock))
+	(def state (getState))
+	
+	; Update our state
+	(.lock (.writeLock stateLock))
+	(try
+		(setState (merge state update))
+		()
+		(.unlock (.writeLock stateLock))
+	)
+	
+	(handleGet)
 )
 
 ; This function is called for the PUT verb, which is expected to behave as a
@@ -122,6 +135,10 @@
 ; to the client.
 
 (defn handlePut []
+	(def update (json/decode-from-str (.getText (.getEntity (.getContainer document)))))
+	(setState update)
+	
+	(handleGet)
 )
 
 ; This function is called for the DELETE verb, which is expected to behave as a
@@ -132,4 +149,7 @@
 ; ignored. Still, it's a good idea to return null to avoid any passing of value.
 
 (defn handleDelete []
+	(setState {})
+	
+	nil
 )
