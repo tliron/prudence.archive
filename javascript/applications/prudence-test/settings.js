@@ -1,5 +1,5 @@
 //
-// Prudence Application
+// Prudence Application Settings
 //
 
 var applicationName = 'Prudence Test';

@@ -166,20 +166,14 @@
 		<copy todir="${dist-kitchensink}/content">
 			<fileset dir="${common}" excludes="log/" />
 			<fileset dir="${test}" excludes="log/" />
-			<fileset file="${javascript}/default.js" />
 		</copy>
-		<copy todir="${dist-kitchensink}/content/conf">
-			<fileset dir="${javascript}/conf" />
+		<copy todir="${dist-kitchensink}/content/start">
+			<fileset dir="${javascript}/start" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/applications/prudence-test">
-			<fileset file="${javascript}/applications/prudence-test/default.js" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/applications/prudence-test/conf">
-			<fileset file="${javascript}/applications/prudence-test/conf/prudence.js" />
-			<fileset file="${javascript}/applications/prudence-test/conf/routing.js" />
+			<fileset dir="${javascript}/applications/prudence-test" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/applications/prudence-test/web">
-			<fileset dir="${javascript}/applications/prudence-test/web" />
 			<fileset dir="${python}/applications/prudence-test/web" />
 			<fileset dir="${php}/applications/prudence-test/web" />
 			<fileset dir="${ruby}/applications/prudence-test/web" />
@@ -188,7 +182,6 @@
 			<fileset dir="${velocity}/applications/prudence-test/web" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/applications/prudence-test/resources/test">
-			<fileset dir="${javascript}/applications/prudence-test/resources/test" />
 			<fileset dir="${python}/applications/prudence-test/resources/test" />
 			<fileset dir="${ruby}/applications/prudence-test/resources/test" />
 			<fileset dir="${groovy}/applications/prudence-test/resources/test" />

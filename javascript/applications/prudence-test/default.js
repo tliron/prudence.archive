@@ -9,7 +9,11 @@ importClass(
 	org.restlet.data.Reference,
 	com.threecrickets.scripturian.file.DocumentFileSource);
 
-document.container.include(applicationBasePath + '/conf/prudence');
+//
+// Settings
+//
+
+document.container.include(applicationBasePath + '/settings');
 
 //
 // Application
@@ -27,7 +31,7 @@ application.statusService.contactEmail = applicationContactEmail;
 // Routing
 //
 
-document.container.include(applicationBasePath + '/conf/routing');
+document.container.include(applicationBasePath + '/routing');
 
 //
 // Logging

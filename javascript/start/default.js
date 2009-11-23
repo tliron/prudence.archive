@@ -54,13 +54,13 @@ component.clients.add(Protocol.FILE);
 // Servers
 //
 
-document.container.include('conf/servers');
+document.container.include('start/servers');
 
 //
 // Hosts
 //
 
-document.container.include('conf/hosts');
+document.container.include('start/hosts');
 
 //
 // Applications
