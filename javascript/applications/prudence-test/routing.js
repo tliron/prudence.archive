@@ -18,7 +18,7 @@ classLoader = ClassLoader.systemClassLoader;
 // Hosts
 //
 // Note that the application's context will not be created until we attach the application to at least one
-// virtual host. See conf/hosts.js for more information.
+// virtual host. See start/hosts.js for more information.
 //
 
 print('Attached application "' + application.name + '" to "' + applicationBaseURL + '" on virtual hosts ');

@@ -1,23 +1,5 @@
 #
-# Component
-#
-
-# Logger used for web requests 
-
-componentWebLoggerName = 'web-requests'
-
-#
-# Server
-#
-
-# The TCP port on which the server will start. Note that the server can
-# be set up to run behind another web server via a proxy. For Apache, this
-# requires mod_proxy.
-
-serverPort = 8080
-
-#
-# Application
+# Prudence Application Settings
 #
 
 applicationName = 'Prudence Demo'
@@ -28,18 +10,23 @@ applicationHomeURL = 'http:#www.threecrickets.com/prudence/'
 applicationContactEmail = 'prudence@threecrickets.com'
 applicationLoggerName = 'prudence-demo'
 
-# All other URLs will be under this one.
+#
+# Base URL
+#
+# All URLs will be under this. Defaults to the directory name under /applications,
+# though you can override it here. For example, if you want your application to available
+# as the root URL, set it to an empty string. 
 
-applicationBaseURL = '/'
+#applicationBaseURL = ''
 
 #
-# Configuration specific to Prudence demo application
+# Hosts
+#
+# These are the virtual hosts to which our application will be attached.
+# See start/hosts.py for more information.
 #
 
-# Our pages will prefix this to included files. This is useful if you want to combine
-# the demo site into another site.
-
-document.meta['prudenceDemoBasePath'] = ''
+hosts = [component.defaultHost, mysiteHost]
 
 #
 # Resources
@@ -49,8 +36,8 @@ document.meta['prudenceDemoBasePath'] = ''
 # is directly linked to the base URL.
 #
 
-resourceBaseURL = applicationBaseURL + 'resource/'
-resourceBasePath = 'resources'
+resourceBaseURL = '/resource'
+resourceBasePath = '/resources'
 
 # Files with this extension can have the extension omitted from the URL,
 # allowing for nicer URLs. 
@@ -83,13 +70,13 @@ resourceMinimumTimeBetweenValidityChecks = 1000
 # Note that the generated result can be cached for better performance.
 #
 
-dynamicWebBaseURL = applicationBaseURL
-dynamicWebBasePath = 'web'
+dynamicWebBaseURL = '/'
+dynamicWebBasePath = '/web'
 
 # Files with this extension can have the extension omitted from the URL,
 # allowing for nicer URLs. 
 
-dynamicWebExtension = 'page'
+dynamicWebExtension = 'html'
 
 
 # If the URL points to a directory rather than a file, and that directory
@@ -119,8 +106,8 @@ dynamicWebMinimumTimeBetweenValidityChecks = 1000
 # files efficiently to clients. 
 #
 
-staticWebBaseURL = applicationBaseURL + 'static/'
-staticWebBasePath = 'web/static'
+staticWebBaseURL = '/static'
+staticWebBasePath = '/web/static'
 
 # If the URL points to a directory rather than a file, then this will allow
 # automatic creation of an HTML page with a directory listing.
@@ -134,4 +121,4 @@ staticWebDirectoryListingAllowed = True
 # The URLs in this array will automatically be redirected to have a trailing
 # slash added to them if its missing.
 
-urlAddTrailingSlash = [staticWebBaseURL]
+urlAddTrailingSlash = ['', staticWebBaseURL]

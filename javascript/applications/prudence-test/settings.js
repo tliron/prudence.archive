@@ -22,6 +22,9 @@ var applicationLoggerName = 'prudence-test';
 //
 // Hosts
 //
+// These are the virtual hosts to which our application will be attached.
+// See start/hosts.js for more information.
+//
 
 var hosts = [component.defaultHost, mysiteHost];
 
