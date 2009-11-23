@@ -88,7 +88,7 @@
 	</target>
 
 	<target name="javadoc-kitchensink" depends="javadoc" description="Fetch Prudence API docs">
-		<copy todir="${dist-kitchensink}/content/web/static/javadoc">
+		<copy todir="${dist-kitchensink}/content/applications/prudence-test/web/static/javadoc">
 			<fileset dir="${tmp}/javadoc" />
 		</copy>
 	</target>
@@ -166,27 +166,33 @@
 		<copy todir="${dist-kitchensink}/content">
 			<fileset dir="${common}" excludes="log/" />
 			<fileset dir="${test}" excludes="log/" />
-			<fileset dir="${javascript}" excludes="log/, run.*" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/web">
-			<fileset dir="${javascript}/web" />
-			<fileset dir="${python}/web" />
-			<fileset dir="${php}/web" />
-			<fileset dir="${ruby}/web" />
-			<fileset dir="${groovy}/web" />
-			<fileset dir="${clojure}/web" />
-			<fileset dir="${velocity}/web" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/resources/test">
-			<fileset dir="${javascript}/resources/test" />
-			<fileset dir="${python}/resources/test" />
-			<fileset dir="${ruby}/resources/test" />
-			<fileset dir="${groovy}/resources/test" />
-			<fileset dir="${clojure}/resources/test" />
+			<fileset file="${javascript}/default.js" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/conf">
-			<fileset file="${javascript}/conf/prudence.js" />
-			<fileset file="${javascript}/conf/routing.js" />
+			<fileset dir="${javascript}/conf" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/applications/prudence-test">
+			<fileset file="${javascript}/applications/prudence-test/default.js" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/applications/prudence-test/conf">
+			<fileset file="${javascript}/applications/prudence-test/conf/prudence.js" />
+			<fileset file="${javascript}/applications/prudence-test/conf/routing.js" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/applications/prudence-test/web">
+			<fileset dir="${javascript}/applications/prudence-test/web" />
+			<fileset dir="${python}/applications/prudence-test/web" />
+			<fileset dir="${php}/applications/prudence-test/web" />
+			<fileset dir="${ruby}/applications/prudence-test/web" />
+			<fileset dir="${groovy}/applications/prudence-test/web" />
+			<fileset dir="${clojure}/applications/prudence-test/web" />
+			<fileset dir="${velocity}/applications/prudence-test/web" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/applications/prudence-test/resources/test">
+			<fileset dir="${javascript}/applications/prudence-test/resources/test" />
+			<fileset dir="${python}/applications/prudence-test/resources/test" />
+			<fileset dir="${ruby}/applications/prudence-test/resources/test" />
+			<fileset dir="${groovy}/applications/prudence-test/resources/test" />
+			<fileset dir="${clojure}/applications/prudence-test/resources/test" />
 		</copy>
 		<chmod file="${dist-kitchensink}/content/run.sh" perm="ugo+rx"/>
 	</target>
@@ -283,7 +289,7 @@
 	</target>
 
 	<target name="javadoc-javascript" depends="javadoc" description="Fetch Prudence API docs">
-		<copy todir="${dist-javascript}/content/web/static/javadoc">
+		<copy todir="${dist-javascript}/content/applications/prudence-test/web/static/javadoc">
 			<fileset dir="${tmp}/javadoc" />
 		</copy>
 	</target>
@@ -360,7 +366,7 @@
 	</target>
 
 	<target name="javadoc-python" depends="javadoc" description="Fetch Prudence API docs">
-		<copy todir="${dist-python}/content/web/static/javadoc">
+		<copy todir="${dist-python}/content/applications/prudence-test/web/static/javadoc">
 			<fileset dir="${tmp}/javadoc" />
 		</copy>
 	</target>
