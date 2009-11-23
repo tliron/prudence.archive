@@ -82,7 +82,7 @@
 	<target name="kitchensink" depends="libraries-kitchensink, licenses-kitchensink, content-kitchensink" description="Fetch Prudence zip" />
 
 	<target name="package-kitchensink" depends="kitchensink" description="Fetch Prudence zip">
-		<zip destfile="${dist-kitchensink}/prudence-kitchensink.zip">
+		<zip destfile="${dist-kitchensink}/prudence-kitchensink.zip" level="9">
 			<fileset dir="${dist-kitchensink}/content" excludes="lib/cachedir/, resources/jython/*.class" />
 		</zip>
 	</target>
@@ -200,7 +200,7 @@
 	<target name="standalone" depends="src-standalone, jar-standalone, content-standalone" description="Fetch Prudence zip" />
 
 	<target name="package-standalone" depends="standalone" description="Fetch Prudence zip">
-		<zip destfile="${dist-standalone}/prudence-standalone.zip">
+		<zip destfile="${dist-standalone}/prudence-standalone.zip" level="9">
 			<fileset dir="${dist-standalone}/content" />
 		</zip>
 	</target>
@@ -232,7 +232,7 @@
 	<target name="javascript" depends="libraries-javascript, licenses-javascript, content-javascript" description="Fetch Prudence zip" />
 	
 	<target name="package-javascript" depends="javascript" description="Fetch Prudence zip">
-		<zip destfile="${dist-javascript}/prudence-javascript.zip">
+		<zip destfile="${dist-javascript}/prudence-javascript.zip" level="9">
 			<fileset dir="${dist-javascript}/content" />
 		</zip>
 	</target>
@@ -305,7 +305,7 @@
 	<target name="python" depends="libraries-python, licenses-python, content-python" description="Fetch Prudence zip" />
 	
 	<target name="package-python" depends="python" description="Fetch Prudence zip">
-		<zip destfile="${dist-python}/prudence-python.zip">
+		<zip destfile="${dist-python}/prudence-python.zip" level="9">
 			<fileset dir="${dist-python}/content" excludes="lib/cachedir/, resources/jython/*.class" />
 		</zip>
 	</target>
