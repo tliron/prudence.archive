@@ -182,8 +182,8 @@ import com.threecrickets.scripturian.ScriptletController;
  * <li><code>com.threecrickets.prudence.DelegatedResource.defaultName:</code>
  * {@link String}, defaults to "default.script". See {@link #getDefaultName()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName:</code>
- * {@link String}, defaults to "js". See {@link #getDefaultScriptEngineName()}.</li>
+ * <code>com.threecrickets.prudence.DelegatedResource.defaultEngineName:</code>
+ * {@link String}, defaults to "js". See {@link #getDefaultEngineName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.documentSource:</code>
  * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
@@ -215,9 +215,9 @@ import com.threecrickets.scripturian.ScriptletController;
  * <code>com.threecrickets.prudence.DelegatedResource.scriptletController:</code>
  * {@link ScriptletController}. See {@link #getScriptletController()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.scriptEngineManager:</code>
+ * <code>com.threecrickets.prudence.DelegatedResource.engineManager:</code>
  * {@link ScriptEngineManager}, defaults to a new instance. See
- * {@link #getScriptEngineManager()}.</li>
+ * {@link #getEngineManager()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.sourceViewable:</code>
  * {@link Boolean}, defaults to false. See {@link #isSourceViewable()}.</li>
@@ -342,23 +342,23 @@ public class DelegatedResource extends ServerResource
 	 * one. Defaults to "js".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.defaultEngineName</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The default script engine name
 	 */
-	public String getDefaultScriptEngineName()
+	public String getDefaultEngineName()
 	{
-		if( this.defaultScriptEngineName == null )
+		if( this.defaultEngineName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.defaultScriptEngineName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName" );
+			this.defaultEngineName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultEngineName" );
 
-			if( this.defaultScriptEngineName == null )
-				this.defaultScriptEngineName = "js";
+			if( this.defaultEngineName == null )
+				this.defaultEngineName = "js";
 		}
 
-		return this.defaultScriptEngineName;
+		return this.defaultEngineName;
 	}
 
 	/**
@@ -531,29 +531,29 @@ public class DelegatedResource extends ServerResource
 	 * scripts. Uses a default instance, but can be set to something else.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.scriptEngineManager</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.engineManager</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The script engine manager
 	 */
-	public ScriptEngineManager getScriptEngineManager()
+	public ScriptEngineManager getEngineManager()
 	{
-		if( this.scriptEngineManager == null )
+		if( this.engineManager == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.scriptEngineManager = (ScriptEngineManager) attributes.get( "com.threecrickets.prudence.DelegatedResource.scriptEngineManager" );
+			this.engineManager = (ScriptEngineManager) attributes.get( "com.threecrickets.prudence.DelegatedResource.engineManager" );
 
-			if( this.scriptEngineManager == null )
+			if( this.engineManager == null )
 			{
-				this.scriptEngineManager = new ScriptEngineManager();
+				this.engineManager = new ScriptEngineManager();
 
-				ScriptEngineManager existing = (ScriptEngineManager) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.scriptEngineManager", this.scriptEngineManager );
+				ScriptEngineManager existing = (ScriptEngineManager) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.engineManager", this.engineManager );
 				if( existing != null )
-					this.scriptEngineManager = existing;
+					this.engineManager = existing;
 			}
 		}
 
-		return this.scriptEngineManager;
+		return this.engineManager;
 	}
 
 	/**
@@ -841,7 +841,7 @@ public class DelegatedResource extends ServerResource
 	 * The {@link ScriptEngineManager} used to create the script engines for the
 	 * scripts.
 	 */
-	private ScriptEngineManager scriptEngineManager;
+	private ScriptEngineManager engineManager;
 
 	/**
 	 * Whether or not compilation is attempted for script engines that support
@@ -870,7 +870,7 @@ public class DelegatedResource extends ServerResource
 	 * The default script engine name to be used if the script doesn't specify
 	 * one.
 	 */
-	private String defaultScriptEngineName;
+	private String defaultEngineName;
 
 	/**
 	 * The default character set to be used if the client does not specify it.

@@ -166,7 +166,7 @@
 		<copy todir="${dist-kitchensink}/content">
 			<fileset dir="${common}" excludes="log/" />
 			<fileset dir="${test}" excludes="log/" />
-			<fileset file="${javascript}/main.js" />
+			<fileset dir="${javascript}" excludes="log/, run.*" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/web">
 			<fileset dir="${javascript}/web" />

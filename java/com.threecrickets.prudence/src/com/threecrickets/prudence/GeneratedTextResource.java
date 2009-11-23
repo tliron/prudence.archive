@@ -172,8 +172,8 @@ import com.threecrickets.scripturian.ScriptletController;
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultName:</code>
  * {@link String}, defaults to "index.page". See {@link #getDefaultName()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName:</code>
- * {@link String}, defaults to "js". See {@link #getDefaultScriptEngineName()}.</li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.defaultEngineName:</code>
+ * {@link String}, defaults to "js". See {@link #getScriptEngineName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.documentSource:</code>
  * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
@@ -184,9 +184,9 @@ import com.threecrickets.scripturian.ScriptletController;
  * <code>com.threecrickets.prudence.GeneratedTextResource.scriptletController:</code>
  * {@link ScriptletController}. See {@link #getScriptletController()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.scriptEngineManager:</code>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.engineManager:</code>
  * {@link ScriptEngineManager}, defaults to a new instance. See
- * {@link #getScriptEngineManager()}.</li>
+ * {@link #getEngineManager()}.</li>
  * </ul>
  * <p>
  * <i>"Restlet" is a registered trademark of <a
@@ -333,23 +333,23 @@ public class GeneratedTextResource extends ServerResource
 	 * specify one. Defaults to "js".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName</code>
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultEngineName</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The default script engine name
 	 */
-	public String getDefaultScriptEngineName()
+	public String getScriptEngineName()
 	{
-		if( this.defaultScriptEngineName == null )
+		if( this.defaultEngineName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.defaultScriptEngineName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName" );
+			this.defaultEngineName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultEngineName" );
 
-			if( this.defaultScriptEngineName == null )
-				this.defaultScriptEngineName = "js";
+			if( this.defaultEngineName == null )
+				this.defaultEngineName = "js";
 		}
 
-		return this.defaultScriptEngineName;
+		return this.defaultEngineName;
 	}
 
 	/**
@@ -378,23 +378,23 @@ public class GeneratedTextResource extends ServerResource
 	 * scripts. Uses a default instance, but can be set to something else.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.scriptEngineManager</code>
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.engineManager</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The script engine manager
 	 */
-	public ScriptEngineManager getScriptEngineManager()
+	public ScriptEngineManager getEngineManager()
 	{
 		if( this.scriptEngineManager == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.scriptEngineManager = (ScriptEngineManager) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.scriptEngineManager" );
+			this.scriptEngineManager = (ScriptEngineManager) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.engineManager" );
 
 			if( this.scriptEngineManager == null )
 			{
 				this.scriptEngineManager = new ScriptEngineManager();
 
-				ScriptEngineManager existing = (ScriptEngineManager) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.scriptEngineManager", this.scriptEngineManager );
+				ScriptEngineManager existing = (ScriptEngineManager) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.engineManager", this.scriptEngineManager );
 				if( existing != null )
 					this.scriptEngineManager = existing;
 			}
@@ -578,7 +578,7 @@ public class GeneratedTextResource extends ServerResource
 	 * The default script engine name to be used if the script doesn't specify
 	 * one.
 	 */
-	private String defaultScriptEngineName;
+	private String defaultEngineName;
 
 	/**
 	 * The default character set to be used if the client does not specify it.

@@ -75,7 +75,7 @@ public class ExposedContainerForGeneratedTextResource
 		if( this.characterSet == null )
 			this.characterSet = resource.getDefaultCharacterSet();
 
-		this.documentContext = new DocumentContext( resource.getScriptEngineManager() );
+		this.documentContext = new DocumentContext( resource.getEngineManager() );
 	}
 
 	//
@@ -266,7 +266,7 @@ public class ExposedContainerForGeneratedTextResource
 		if( document == null )
 		{
 			String text = documentDescriptor.getText();
-			document = new Document( text, false, this.resource.getScriptEngineManager(), this.resource.getDefaultScriptEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+			document = new Document( text, false, this.resource.getEngineManager(), this.resource.getScriptEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
 
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
@@ -294,9 +294,9 @@ public class ExposedContainerForGeneratedTextResource
 		Document document = documentDescriptor.getDocument();
 		if( document == null )
 		{
-			String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), this.resource.getScriptEngineManager() );
+			String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), this.resource.getEngineManager() );
 			String text = documentDescriptor.getText();
-			document = new Document( text, true, this.resource.getScriptEngineManager(), scriptEngineName, this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+			document = new Document( text, true, this.resource.getEngineManager(), scriptEngineName, this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
 
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
