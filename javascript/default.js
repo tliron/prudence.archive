@@ -66,13 +66,18 @@ document.container.include('conf/hosts');
 // Applications
 //
 
-var applicationBasePath = 'applications/prudence-test';
-var applicationBaseURL ='/prudence-test';
-document.container.include(applicationBasePath);
+var applicationDirs = new File('applications').listFiles();
+for(var i in applicationDirs) {
+	var applicationDir = applicationDirs[i]; 
+	if(applicationDir.isDirectory()) {
+		var applicationBasePath = applicationDir.path;
+		var applicationBaseURL ='/' + applicationDir.name;
+		document.container.include(applicationBasePath);
+	}
+}
 
 //
 // Start
 //
 
 component.start();
-
