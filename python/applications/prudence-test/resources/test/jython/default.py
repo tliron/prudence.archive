@@ -7,7 +7,7 @@
 # applications. 
 #
 # The exact URL of this resource depends on its its filename and/or its location in
-# your directory structure. See your prudence.conf for more information.
+# your directory structure. See your settings.py for more information.
 #
 
 from java.util.concurrent.locks import ReentrantReadWriteLock
@@ -17,7 +17,7 @@ from org.restlet.ext.json import JsonRepresentation
 
 # Include the context library
 
-document.container.include('test/jython/context.py')
+document.container.include('test/jython/context')
 
 # Include the minjson library
 # (Note that we made a small change to minjson in order to accommodate Jython.

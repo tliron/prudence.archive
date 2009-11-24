@@ -36,8 +36,8 @@ var hosts = [component.defaultHost, mysiteHost];
 // is directly linked to the base URL.
 //
 
-var resourceBaseURL = '/resource';
-var resourceBasePath = '/resources';
+var resourceBaseURL = '/resource/';
+var resourceBasePath = '/resources/';
 
 // Files with this extension can have the extension omitted from the URL,
 // allowing for nicer URLs. 
@@ -71,7 +71,7 @@ var resourceMinimumTimeBetweenValidityChecks = 1000;
 //
 
 var dynamicWebBaseURL = '/';
-var dynamicWebBasePath = '/web';
+var dynamicWebBasePath = '/web/';
 
 // Files with this extension can have the extension omitted from the URL,
 // allowing for nicer URLs. 
@@ -105,8 +105,8 @@ var dynamicWebMinimumTimeBetweenValidityChecks = 1000;
 // files efficiently to clients. 
 //
 
-var staticWebBaseURL = '/static';
-var staticWebBasePath = '/web/static';
+var staticWebBaseURL = '/static/';
+var staticWebBasePath = '/web/static/';
 
 // If the URL points to a directory rather than a file, then this will allow
 // automatic creation of an HTML page with a directory listing.

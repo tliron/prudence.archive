@@ -7,19 +7,18 @@
 ; applications. 
 ;
 ; The exact URL of this resource depends on its its filename and/or its location in
-; your directory structure. See your prudence.conf for more information.
+; your directory structure. See your settings.clj for more information.
 ;
 
 (import
 	'(java.io File)
-	'(java.util.concurrent.locks ReentrantReadWriteLock)
 	'(org.restlet.representation Variant)
 	'(org.restlet.data MediaType)
 	'(org.restlet.ext.json JsonRepresentation)
 )
 
 ; Include the context library
-(.include (.getContainer document) "test/clojure/context.clj")
+(.include (.getContainer document) "test/clojure/context")
 
 ; Include the JSON library
 (add-classpath (.toURL (File. (str (.getBasePath (.getSource (.getContainer document))) "/test/clojure"))))
@@ -30,13 +29,15 @@
 ; These make sure that our state is properly stored in the context,
 ; so that we always use the same state, even if this script is recompiled.
 
-(defn getStateLock []
-	(getContextAttribute "clojure.stateLock"
-		(fn [] (new ReentrantReadWriteLock))
-	)
-)
-
 (defn getState []
+	;
+	; Important! Clojure maps are not regular old Java maps. They are *persistent*, meaning that are
+	; on the one hand immutable, and the other hand maintain performance behavior when extended into
+	; new forms. Bottom line for us here is that we do not need to do any locking to read or "modify"
+	; our state. In other flavors of Prudence, you will find it more difficult (and error-prone)
+	; to deal with state. Viva Clojure!
+	;
+
 	(getContextAttribute "clojure.state"
 		(fn [] {"name" "Coraline" "media" "Film" "rating" "A+" "characters" ["Coraline" "Wybie" "Mom" "Dad"]})
 	)
@@ -74,15 +75,9 @@
 ; list of supported languages and encoding.
 
 (defn handleGet []
-	(def stateLock (getStateLock))
 	(def state (getState))
 
-	(.lock (.readLock stateLock))
-	(try
-		(def r (json/encode-to-str state))
-		()
-		(.unlock (.readLock stateLock))
-	)
+	(def r (json/encode-to-str state))
 	
 	; Return a representation appropriate for the requested media type
 	; of the possible options we created in handleInit
@@ -108,16 +103,9 @@
 
 (defn handlePost []
 	(def update (json/decode-from-str (.getText (.getEntity (.getContainer document)))))
-	(def stateLock (getStateLock))
 	(def state (getState))
 	
-	; Update our state
-	(.lock (.writeLock stateLock))
-	(try
-		(setState (merge state update))
-		()
-		(.unlock (.writeLock stateLock))
-	)
+	(setState (merge state update))
 	
 	(handleGet)
 )
@@ -126,7 +114,7 @@
 ; logical "create" of the resource's state.
 ;
 ; The expectation is that document.container.entity represents an entirely new state,
-; that will affect future calls to . Unlike handlePost,
+; that will affect future calls to handleGet. Unlike handlePost,
 ; it is expected that the representation be logically complete.
 ;
 ; You may optionally return a representation, in the same way as handleGet.

@@ -7,7 +7,7 @@
 // applications. 
 //
 // The exact URL of this resource depends on its its filename and/or its location in
-// your directory structure. See your prudence.conf for more information.
+// your directory structure. See your settings.js for more information.
 //
 
 importClass(
@@ -17,10 +17,10 @@ importClass(
 	org.restlet.ext.json.JsonRepresentation);
 
 // Include the context library
-document.container.include('test/rhino/context.js');
+document.container.include('test/rhino/context');
 
 // Include the JSON library
-document.container.include('test/rhino/json2.js');
+document.container.include('test/rhino/json2');
 
 // State
 //

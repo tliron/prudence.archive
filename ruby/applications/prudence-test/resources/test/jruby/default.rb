@@ -7,7 +7,7 @@
 # applications. 
 #
 # The exact URL of this resource depends on its its filename and/or its location in
-# your directory structure. See your restoration.conf for more information.
+# your directory structure. See your settings.rb for more information.
 #
 
 require 'java'
@@ -19,7 +19,7 @@ import org.json.JSONObject
 
 # Include the context library
 
-$document.container.include 'test/jruby/context.rb'
+$document.container.include 'test/jruby/context'
 include $static_module
 
 # State

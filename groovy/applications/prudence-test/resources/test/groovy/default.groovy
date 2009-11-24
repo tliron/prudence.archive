@@ -7,7 +7,7 @@
 // applications. 
 //
 // The exact URL of this resource depends on its its filename and/or its location in
-// your directory structure. See your prudence.conf for more information.
+// your directory structure. See your settings.gv for more information.
 //
 
 import java.util.concurrent.locks.ReentrantReadWriteLock
@@ -18,7 +18,7 @@ import org.json.JSONObject
 
 // Include the context library
 
-document.container.include('groovy/context.groovy')
+document.container.include('groovy/context')
 
 // State
 //
