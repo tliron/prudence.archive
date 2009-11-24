@@ -54,10 +54,9 @@ scriptEngineManager = ScriptEngineManager()
 
 attributes.put('com.threecrickets.prudence.DelegatedResource.scriptEngineManager', scriptEngineManager)
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName', 'python')
-attributes.put('com.threecrickets.prudence.DelegatedResource.extension', resourceExtension)
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourceDefaultName)
 attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', \
-	DocumentFileSource(File(applicationBasePath + resourceBasePath), resourceDefaultName, resourceExtension, resourceMinimumTimeBetweenValidityChecks))
+	DocumentFileSource(File(applicationBasePath + resourceBasePath), resourceDefaultName, resourceMinimumTimeBetweenValidityChecks))
 attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourceSourceViewable)
 
 # GeneratedTextResource
@@ -66,5 +65,5 @@ attributes.put('com.threecrickets.prudence.GeneratedTextResource.scriptEngineMan
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName', 'python')
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument)
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource', \
-	 DocumentFileSource(File(applicationBasePath + dynamicWebBasePath), dynamicWebDefaultDocument, dynamicWebExtension, dynamicWebMinimumTimeBetweenValidityChecks))
+	 DocumentFileSource(File(applicationBasePath + dynamicWebBasePath), dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks))
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable)

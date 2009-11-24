@@ -40,9 +40,6 @@ hosts = [component.defaultHost, mysiteHost]
 resourceBaseURL = '/resource/'
 resourceBasePath = '/resources/'
 
-# Files with this extension can have the extension omitted from the URL,
-# allowing for nicer URLs. 
-
 resourceExtension = 'py'
 
 # If the URL points to a directory rather than a file, and that directory
@@ -73,12 +70,6 @@ resourceMinimumTimeBetweenValidityChecks = 1000
 
 dynamicWebBaseURL = '/'
 dynamicWebBasePath = '/web/'
-
-# Files with this extension can have the extension omitted from the URL,
-# allowing for nicer URLs. 
-
-dynamicWebExtension = 'html'
-
 
 # If the URL points to a directory rather than a file, and that directory
 # contains a file with this name, then it will be used. This allows

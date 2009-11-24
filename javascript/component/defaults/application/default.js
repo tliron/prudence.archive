@@ -57,10 +57,9 @@ scriptEngineManager = new ScriptEngineManager();
 
 attributes.put('com.threecrickets.prudence.DelegatedResource.scriptEngineManager', scriptEngineManager);
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName', 'rhino-nonjdk');
-attributes.put('com.threecrickets.prudence.DelegatedResource.extension', resourceExtension);
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourceDefaultName);
 attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource',
-	new DocumentFileSource(new File(applicationBasePath + resourceBasePath), resourceDefaultName, resourceExtension, resourceMinimumTimeBetweenValidityChecks));
+	new DocumentFileSource(new File(applicationBasePath + resourceBasePath), resourceDefaultName, resourceMinimumTimeBetweenValidityChecks));
 attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourceSourceViewable);
 
 // GeneratedTextResource
@@ -69,5 +68,5 @@ attributes.put('com.threecrickets.prudence.GeneratedTextResource.scriptEngineMan
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName', 'rhino-nonjdk');
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',
-	 new DocumentFileSource(new File(applicationBasePath + dynamicWebBasePath), dynamicWebDefaultDocument, dynamicWebExtension, dynamicWebMinimumTimeBetweenValidityChecks));
+	 new DocumentFileSource(new File(applicationBasePath + dynamicWebBasePath), dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks));
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);

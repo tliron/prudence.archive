@@ -40,11 +40,6 @@ var hosts = [component.defaultHost, mysiteHost];
 var resourceBaseURL = '/resource/';
 var resourceBasePath = '/resources/';
 
-// Files with this extension can have the extension omitted from the URL,
-// allowing for nicer URLs. 
-
-var resourceExtension = 'js';
-
 // If the URL points to a directory rather than a file, and that directory
 // contains a file with this name, then it will be used. This allows
 // you to use the directory structure to create nice URLs without relying
@@ -73,11 +68,6 @@ var resourceMinimumTimeBetweenValidityChecks = 1000;
 
 var dynamicWebBaseURL = '/';
 var dynamicWebBasePath = '/web/';
-
-// Files with this extension can have the extension omitted from the URL,
-// allowing for nicer URLs. 
-
-var dynamicWebExtension = 'html';
 
 // If the URL points to a directory rather than a file, and that directory
 // contains a file with this name, then it will be used. This allows

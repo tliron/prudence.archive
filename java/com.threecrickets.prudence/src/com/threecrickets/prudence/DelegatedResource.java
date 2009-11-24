@@ -209,8 +209,6 @@ import com.threecrickets.scripturian.ScriptletController;
  * {@link #getEntryPointNameForPut()}.</li>
  * <li><code>com.threecrickets.prudence.DelegatedResource.errorWriter:</code>
  * {@link Writer}, defaults to standard error. See {@link #getErrorWriter()}.</li>
- * <li><code>com.threecrickets.prudence.DelegatedResource.extension:</code>
- * {@link String}, defaults to "script". See {@link #getExtension()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.scriptletController:</code>
  * {@link ScriptletController}. See {@link #getScriptletController()}.</li>
@@ -479,30 +477,6 @@ public class DelegatedResource extends ServerResource
 		}
 
 		return this.entryPointNameForPut;
-	}
-
-	/**
-	 * Files with this extension can have the extension omitted from the URL,
-	 * allowing for nicer URLs. Defaults to "script".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.extension</code> in
-	 * the application's {@link Context}.
-	 * 
-	 * @return The extension
-	 */
-	public String getExtension()
-	{
-		if( this.extension == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.extension = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.extension" );
-
-			if( this.extension == null )
-				this.extension = "script";
-		}
-
-		return this.extension;
 	}
 
 	/**
@@ -853,12 +827,6 @@ public class DelegatedResource extends ServerResource
 	 * The {@link DocumentSource} used to fetch scripts.
 	 */
 	private DocumentSource<Document> documentSource;
-
-	/**
-	 * Files with this extension can have the extension omitted from the URL,
-	 * allowing for nicer URLs.
-	 */
-	private String extension;
 
 	/**
 	 * If the URL points to a directory rather than a file, and that directory
