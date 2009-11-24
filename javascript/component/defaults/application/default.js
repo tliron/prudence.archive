@@ -4,6 +4,7 @@
 
 importClass(
 	java.io.File,
+	java.io.FileNotFoundException,
 	javax.script.ScriptEngineManager,
 	org.restlet.Application,
 	org.restlet.data.Reference,
@@ -31,7 +32,12 @@ application.statusService.contactEmail = applicationContactEmail;
 // Routing
 //
 
-document.container.include(applicationBasePath + '/routing');
+try {
+	document.container.include(applicationBasePath + '/routing');
+} catch(e if e.javaException instanceof FileNotFoundException) {
+	// Use default application script
+	document.container.include('component/defaults/application/routing');
+}
 
 //
 // Logging

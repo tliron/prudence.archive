@@ -5,6 +5,7 @@
 importClass(
 	java.lang.System,
 	java.io.File,
+	java.io.FileNotFoundException,
 	java.util.logging.LogManager,
 	org.restlet.Component,
 	org.restlet.data.Protocol);
@@ -66,13 +67,20 @@ document.container.include('start/hosts');
 // Applications
 //
 
+var start = false;
 var applicationDirs = new File('applications').listFiles();
 for(var i in applicationDirs) {
 	var applicationDir = applicationDirs[i]; 
 	if(applicationDir.isDirectory()) {
 		var applicationBasePath = applicationDir.path;
 		var applicationBaseURL ='/' + applicationDir.name;
-		document.container.include(applicationBasePath);
+		try {
+			document.container.include(applicationBasePath);
+		} catch(e if e.javaException instanceof FileNotFoundException) {
+			// Use default application script
+			document.container.include('start/defaults/application');
+		}
+		start = true;
 	}
 }
 
@@ -80,4 +88,8 @@ for(var i in applicationDirs) {
 // Start
 //
 
-component.start();
+if(start) {
+	component.start();
+} else {
+	print('No applications found.');
+}
