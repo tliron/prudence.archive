@@ -31,11 +31,11 @@
 
 (defn getState []
 	;
-	; Important! Clojure maps are not regular old Java maps. They are *persistent*, meaning that are
-	; on the one hand immutable, and the other hand maintain performance behavior when extended into
-	; new forms. Bottom line for us here is that we do not need to do any locking to read or "modify"
-	; our state. In other flavors of Prudence, you will find it more difficult (and error-prone)
-	; to deal with state. Viva Clojure!
+	; Important! Clojure maps are not regular old Java maps. They are *persistent*, meaning that on the
+	; the one hand they are immutable, and on the other hand they maintain performance behavior when
+	; extended into new forms. Bottom line for us here is that we do not need to do any locking to read
+	; or "modify" our state. In other flavors of Prudence, you will find it more difficult (and error-
+	; prone) to deal with state. Viva Clojure!
 	;
 
 	(getContextAttribute "clojure.state"
