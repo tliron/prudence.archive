@@ -6,7 +6,7 @@ applicationName = 'Prudence Demo'
 applicationDescription = 'Used to test that Prudence works for you, and useful as a basis for creating your own applications'
 applicationAuthor = 'Tal Liron'
 applicationOwner = 'Three Crickets'
-applicationHomeURL = 'http:#www.threecrickets.com/prudence/'
+applicationHomeURL = 'http://www.threecrickets.com/prudence/'
 applicationContactEmail = 'prudence@threecrickets.com'
 applicationLoggerName = 'prudence-demo'
 
@@ -15,15 +15,16 @@ applicationLoggerName = 'prudence-demo'
 #
 # All URLs will be under this. Defaults to the directory name under /applications,
 # though you can override it here. For example, if you want your application to available
-# as the root URL, set it to an empty string. 
+# as the root URL, set it to "/".
+#
 
-#applicationBaseURL = ''
+#applicationBaseURL = '/'
 
 #
 # Hosts
 #
 # These are the virtual hosts to which our application will be attached.
-# See start/hosts.py for more information.
+# See component/hosts.py for more information.
 #
 
 hosts = [component.defaultHost, mysiteHost]

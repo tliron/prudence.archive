@@ -15,15 +15,16 @@ var applicationLoggerName = 'prudence-test';
 //
 // All URLs will be under this. Defaults to the directory name under /applications,
 // though you can override it here. For example, if you want your application to available
-// as the root URL, set it to an empty string. 
+// as the root URL, set it to "/".
+//
 
-//applicationBaseURL = '';
+//applicationBaseURL = '/';
 
 //
 // Hosts
 //
 // These are the virtual hosts to which our application will be attached.
-// See start/hosts.js for more information.
+// See component/hosts.js for more information.
 //
 
 var hosts = [component.defaultHost, mysiteHost];
