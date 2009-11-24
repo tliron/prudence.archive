@@ -78,7 +78,7 @@ for(var i in applicationDirs) {
 			document.container.include(applicationBasePath);
 		} catch(e if e.javaException instanceof FileNotFoundException) {
 			// Use default application script
-			document.container.include('start/defaults/application');
+			document.container.include('component/defaults/application');
 		}
 		start = true;
 	}
