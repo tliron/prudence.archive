@@ -48,7 +48,7 @@ This page was dynamically generated at $currentTimeMillis
 ##   $document.container.includeDocument('path')
 ##
 
-%><%& "$document.meta.get('prudenceDemoBasePath')test/velocity.fragment" %><%
+%><%& "test/velocity.fragment" %><%
 
 ##
 ## An example of a macro

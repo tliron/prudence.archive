@@ -10,7 +10,7 @@ log4j			1.2.15
 quercus			4.0.1
 restlet			2.0 (Subversion revision 5730)
 rhino			1.7R2
-scripturian		1.0 (Subversion revision 84)
+scripturian		1.0 (Subversion revision 85)
 slf4j			1.5.8
 succinct		1.0 alpha 1
 velocity		1.6.2
