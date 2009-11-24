@@ -2,7 +2,7 @@
 # Prudence Application
 #
 
-from java.io import File
+from java.io import File, FileNotFoundException
 from javax.script import ScriptEngineManager
 from org.restlet import Application
 from org.restlet.data import Reference
@@ -30,7 +30,11 @@ application.statusService.contactEmail = applicationContactEmail
 # Routing
 #
 
-document.container.include(applicationBasePath + '/routing')
+try:
+	document.container.include(applicationBasePath + '/routing')
+except FileNotFoundException:
+	# Use default application script
+	document.container.include('component/defaults/application/routing');
 
 #
 # Logging

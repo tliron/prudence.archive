@@ -1,6 +1,6 @@
 
 set java=java
-set main=com.threecrickets.scripturian.ScriptedMain
+set main=com.threecrickets.scripturian.MainDocument
 
 set jars=lib/com.sun.grizzly.jar;^
 lib/com.sun.script.velocity.jar;^
@@ -21,4 +21,4 @@ lib/org.slf4j.bridge.jar;^
 lib/org.slf4j.impl.jar;^
 lib/org.slf4j.jar
 
-%java% -cp %jars% -Dpython.home=lib/python -Dpython.cachedir=cache -Dpython.verbose=warning %main% start
+%java% -cp %jars% -Dpython.home=lib/python -Dpython.cachedir=cache -Dpython.verbose=warning %main% component

@@ -55,13 +55,13 @@ component.clients.add(Protocol.FILE);
 // Servers
 //
 
-document.container.include('start/servers');
+document.container.include('component/servers');
 
 //
 // Hosts
 //
 
-document.container.include('start/hosts');
+document.container.include('component/hosts');
 
 //
 // Applications
@@ -91,5 +91,5 @@ for(var i in applicationDirs) {
 if(start) {
 	component.start();
 } else {
-	print('No applications found.');
+	print('No applications found.\n');
 }

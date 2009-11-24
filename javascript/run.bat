@@ -1,6 +1,6 @@
 
 set java=java
-set main=com.threecrickets.scripturian.ScriptedMain
+set main=com.threecrickets.scripturian.MainDocument
 
 set jars=lib/com.sun.grizzly.jar;^
 lib/com.sun.phobos.script.javascript.jar;^

@@ -3,7 +3,7 @@
 #
 
 from java.lang import System
-from java.io import File
+from java.io import File, FileNotFoundException
 from java.util.logging import LogManager
 
 from org.restlet import Component
@@ -56,27 +56,36 @@ component.clients.add(Protocol.FILE)
 # Servers
 #
 
-document.container.include('start/servers')
+document.container.include('component/servers')
 
 #
 # Hosts
 #
 
-document.container.include('start/hosts')
+document.container.include('component/hosts')
 
 #
 # Applications
 #
 
+start = False
 applicationDirs = File('applications').listFiles()
 for applicationDir in applicationDirs:
 	if applicationDir.isDirectory():
 		applicationBasePath = applicationDir.path
 		applicationBaseURL = '/' + applicationDir.name
-		document.container.include(applicationBasePath)
+		try:
+			document.container.include(applicationBasePath)
+		except FileNotFoundException:
+			# Use default application script
+			document.container.include('component/defaults/application');
+		start = True
 
 #
 # Start
 #
 
-component.start()
+if start:
+	component.start()
+else:
+	print 'No applications found.'
