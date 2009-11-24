@@ -119,6 +119,6 @@ var staticWebDirectoryListingAllowed = true;
 //
 
 // The URLs in this array will automatically be redirected to have a trailing
-// slash added to them if its missing.
+// slash added to them if it's missing.
 
 var urlAddTrailingSlash = ['', staticWebBaseURL];

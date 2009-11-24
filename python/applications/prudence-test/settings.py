@@ -37,8 +37,8 @@ hosts = [component.defaultHost, mysiteHost]
 # is directly linked to the base URL.
 #
 
-resourceBaseURL = '/resource'
-resourceBasePath = '/resources'
+resourceBaseURL = '/resource/'
+resourceBasePath = '/resources/'
 
 # Files with this extension can have the extension omitted from the URL,
 # allowing for nicer URLs. 
@@ -72,7 +72,7 @@ resourceMinimumTimeBetweenValidityChecks = 1000
 #
 
 dynamicWebBaseURL = '/'
-dynamicWebBasePath = '/web'
+dynamicWebBasePath = '/web/'
 
 # Files with this extension can have the extension omitted from the URL,
 # allowing for nicer URLs. 
@@ -107,8 +107,8 @@ dynamicWebMinimumTimeBetweenValidityChecks = 1000
 # files efficiently to clients. 
 #
 
-staticWebBaseURL = '/static'
-staticWebBasePath = '/web/static'
+staticWebBaseURL = '/static/'
+staticWebBasePath = '/web/static/'
 
 # If the URL points to a directory rather than a file, then this will allow
 # automatic creation of an HTML page with a directory listing.
@@ -120,6 +120,6 @@ staticWebDirectoryListingAllowed = True
 #
 
 # The URLs in this array will automatically be redirected to have a trailing
-# slash added to them if its missing.
+# slash added to them if it's missing.
 
 urlAddTrailingSlash = ['', staticWebBaseURL]
