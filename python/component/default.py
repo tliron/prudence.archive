@@ -10,6 +10,12 @@ from org.restlet import Component
 from org.restlet.data import Protocol
 
 #
+# Welcome
+#
+
+print 'Prudence for Python 1.0'
+
+#
 # Component
 #
 
@@ -69,14 +75,15 @@ document.container.include('component/hosts')
 #
 
 start = False
-applicationDirs = File('applications').listFiles()
-for applicationDir in applicationDirs:
-	if applicationDir.isDirectory():
-		applicationName = applicationDir.name
-		applicationBasePath = applicationDir.path
-		applicationBaseURL = '/' + applicationDir.name + '/'
+application_dirs = File('applications').listFiles()
+for application_dir in application_dirs:
+	if application_dir.isDirectory():
+		application_name = application_dir.name
+		application_logger_name = application_dir.name
+		application_base_path = application_dir.path
+		application_base_url = '/' + application_dir.name + '/'
 		try:
-			document.container.include(applicationBasePath)
+			document.container.include(application_base_path)
 		except FileNotFoundException:
 			# Use default application script
 			document.container.include('component/defaults/application');

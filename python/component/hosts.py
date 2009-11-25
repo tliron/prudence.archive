@@ -17,10 +17,10 @@ from org.restlet.routing import VirtualHost
 # Our "wildcard" host will accept all incoming requests.
 #
 
-wildcardHost = VirtualHost(component.context)
-wildcardHost.name = 'wildcard'
+wildcard_host = VirtualHost(component.context)
+wildcard_host.name = 'wildcard'
 
-component.hosts.add(wildcardHost)
+component.hosts.add(wildcard_host)
 
 #
 # mysite.org
@@ -29,13 +29,13 @@ component.hosts.add(wildcardHost)
 # a specific set of domains.
 #
 
-mysiteHost = VirtualHost(component.context)
-mysiteHost.name = 'mysite.org'
-mysiteHost.hostScheme = 'http'
-mysiteHost.hostDomain = 'mysite.org|www.mysite.org'
-mysiteHost.hostPort = '80'
+mysite_host = VirtualHost(component.context)
+mysite_host.name = 'mysite.org'
+mysite_host.hostScheme = 'http'
+mysite_host.hostDomain = 'mysite.org|www.mysite.org'
+mysite_host.hostPort = '80'
 
-component.hosts.add(mysiteHost)
+component.hosts.add(mysite_host)
 
 #
 # Default Host
@@ -45,7 +45,7 @@ component.hosts.add(mysiteHost)
 # routing.js.
 #
 
-component.defaultHost = wildcardHost
+component.defaultHost = wildcard_host
 
 #
 # Welcome

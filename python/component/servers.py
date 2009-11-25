@@ -23,8 +23,8 @@ from org.restlet.data import Protocol
 # Binds to the machine's default IP address.
 #
 
-defaultServer = Server(Protocol.HTTP, 8080)
-component.servers.add(defaultServer)
+default_server = Server(Protocol.HTTP, 8080)
+component.servers.add(default_server)
 
 #
 # HTTP server bound to a specific IP address

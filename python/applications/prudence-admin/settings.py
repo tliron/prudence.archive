@@ -1,11 +1,13 @@
 #
-# Prudence Test Settings
+# Prudence Admin Settings
 #
 
 document.container.include('component/defaults/application/settings')
 
-application_name = 'Prudence Test'
-application_description = 'Used to test that Prudence works for you, and useful as a skeleton for creating your own applications'
+application_base_url = '/'
+
+application_name = 'Prudence Admin'
+application_description = 'Runtime management of Prudence'
 application_author = 'Tal Liron'
 application_owner = 'Three Crickets'
 application_home_url = 'http://www.threecrickets.com/prudence/'

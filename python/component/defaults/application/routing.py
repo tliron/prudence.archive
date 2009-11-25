@@ -15,12 +15,12 @@ classLoader = ClassLoader.getSystemClassLoader()
 # Utilities
 #
 
-# Creates a URL relative to the applicationBaseURL 
-def applicationURL(url):
-	return (applicationBaseURL + url).replace('//', '/')
+# Creates a URL relative to the application_base_url 
+def application_url(url):
+	return (application_base_url + url).replace('//', '/')
 
 # Moves a route to be the one before the last
-def penultimateRoute(route):
+def penultimate_route(route):
 	router.routes.remove(route)
 	router.routes.add(router.routes.size() - 1, route)
 
@@ -31,7 +31,7 @@ def penultimateRoute(route):
 # virtual host. See start/hosts.js for more information.
 #
 
-sys.stdout.write('Attached application "%s" to "%s" on virtual hosts ' % (application.name, applicationBaseURL))
+sys.stdout.write('Attached application "%s" to "%s" on virtual hosts ' % (application.name, application_base_url))
 for i in range(len(hosts)):
 	host = hosts[i]
 	host.attach(application)
@@ -51,10 +51,10 @@ application.inboundRoot = router
 # Add trailing slashes
 #
 
-if len(urlAddTrailingSlash) > 0:
+if len(url_add_trailing_slash) > 0:
 	redirector = Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_SEE_OTHER)
-	for url in urlAddTrailingSlash:
-		url = applicationURL(url)
+	for url in url_add_trailing_slash:
+		url = application_url(url)
 		if url[-1] == '/':
 			url = url[0:-1]
 		if len(url) > 0:
@@ -64,20 +64,20 @@ if len(urlAddTrailingSlash) > 0:
 # Static web
 #
 
-staticWeb = Directory(application.context, File(applicationBasePath + staticWebBasePath).toURI().toString())
-staticWeb.listingAllowed = staticWebDirectoryListingAllowed
-staticWeb.negotiateContent = True
+static_web = Directory(application.context, File(application_base_path + static_web_base_path).toURI().toString())
+static_web.listingAllowed = static_web_directory_listing_allowed
+static_web.negotiateContent = True
 
-router.attach(applicationURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_STARTS_WITH
+router.attach(application_url(static_web_base_url), static_web).matchingMode = Template.MODE_STARTS_WITH
 
 #
 # Resources
 #
 
-router.attach(applicationURL(resourceBaseURL), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH
+router.attach(application_url(resource_base_url), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH
 
 #
 # Dynamic web
 #
 
-router.attach(applicationURL(dynamicWebBaseURL), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH
+router.attach(application_url(dynamic_web_base_url), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH

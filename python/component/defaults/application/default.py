@@ -13,7 +13,7 @@ from com.threecrickets.scripturian.file import DocumentFileSource
 #
 
 try:
-	document.container.include(applicationBasePath + '/settings')
+	document.container.include(application_base_path + '/settings')
 except FileNotFoundException:
 	# Use default application script
 	document.container.include('component/defaults/application/settings');
@@ -23,19 +23,19 @@ except FileNotFoundException:
 #
 
 application = Application()
-application.name = applicationName
-application.description = applicationDescription
-application.author = applicationAuthor
-application.owner = applicationOwner
-application.statusService.homeRef = Reference(applicationHomeURL)
-application.statusService.contactEmail = applicationContactEmail
+application.name = application_name
+application.description = application_description
+application.author = application_author
+application.owner = application_owner
+application.statusService.homeRef = Reference(application_home_url)
+application.statusService.contactEmail = application_contact_email
 
 #
 # Routing
 #
 
 try:
-	document.container.include(applicationBasePath + '/routing')
+	document.container.include(application_base_path + '/routing')
 except FileNotFoundException:
 	# Use default application script
 	document.container.include('component/defaults/application/routing');
@@ -44,7 +44,7 @@ except FileNotFoundException:
 # Logging
 #
 
-application.context.setLogger(applicationLoggerName)
+application.context.setLogger(application_logger_name)
 
 #
 # Configuration
@@ -52,25 +52,25 @@ application.context.setLogger(applicationLoggerName)
 
 attributes = application.context.attributes
 
-attributes['applicationBasePath'] = applicationBasePath
-attributes['applicationBaseURL'] = applicationBaseURL
+attributes['applicationBasePath'] = application_base_path
+attributes['applicationBaseURL'] = application_base_url
 
-scriptEngineManager = ScriptEngineManager()
+script_engine_manager = ScriptEngineManager()
 
 # DelegatedResource
 
-attributes['com.threecrickets.prudence.DelegatedResource.engineManager'] = scriptEngineManager
+attributes['com.threecrickets.prudence.DelegatedResource.engineManager'] = script_engine_manager
 attributes['com.threecrickets.prudence.DelegatedResource.defaultEngineName'] = 'python'
-attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resourceDefaultName
+attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resource_default_name
 attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = \
-	DocumentFileSource(File(applicationBasePath + resourceBasePath), resourceDefaultName, resourceMinimumTimeBetweenValidityChecks)
-attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resourceSourceViewable
+	DocumentFileSource(File(application_base_path + resource_base_path), resource_default_name, resource_minimum_time_between_validity_checks)
+attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resource_source_viewable
 
 # GeneratedTextResource
 
-attributes['com.threecrickets.prudence.GeneratedTextResource.engineManager'] = scriptEngineManager
+attributes['com.threecrickets.prudence.GeneratedTextResource.engineManager'] = script_engine_manager
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultEngineName'] = 'python'
-attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamicWebDefaultDocument
+attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamic_web_default_document
 attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = \
-	 DocumentFileSource(File(applicationBasePath + dynamicWebBasePath), dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks)
-attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamicWebSourceViewable
+	 DocumentFileSource(File(application_base_path + dynamic_web_base_path), dynamic_web_default_document, dynamic_web_minimum_time_between_validity_checks)
+attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable

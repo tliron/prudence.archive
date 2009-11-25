@@ -11,6 +11,12 @@ importClass(
 	org.restlet.data.Protocol);
 
 //
+// Welcome
+//
+
+print('Prudence for JavsScript 1.0\n');
+
+//
 // Component
 //
 
@@ -73,6 +79,7 @@ for(var i in applicationDirs) {
 	var applicationDir = applicationDirs[i]; 
 	if(applicationDir.isDirectory()) {
 		var applicationName = applicationDir.name;
+		var applicationLoggerName = applicationDir.name;
 		var applicationBasePath = applicationDir.path;
 		var applicationBaseURL = '/' + applicationDir.name + '/';
 		try {
