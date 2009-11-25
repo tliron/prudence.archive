@@ -111,4 +111,4 @@ staticWebDirectoryListingAllowed = True
 # The URLs in this array will automatically be redirected to have a trailing
 # slash added to them if it's missing.
 
-urlAddTrailingSlash = ['', dynamicWebURL, staticWebBaseURL]
+urlAddTrailingSlash = ['', dynamicWebBaseURL, staticWebBaseURL]

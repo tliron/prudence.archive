@@ -12,7 +12,7 @@ from org.restlet.resource import Directory
 classLoader = ClassLoader.getSystemClassLoader()
 
 def applicationURL(url):
-	return (applicationBaseURL + url).urlreplace('//', '/')
+	return (applicationBaseURL + url).replace('//', '/')
 
 #
 # Hosts
