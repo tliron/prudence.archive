@@ -2,13 +2,13 @@
 # Prudence Application Settings
 #
 
-#applicationName = 'Prudence Application'; # Defaults to the application directory name
+#applicationName = 'Prudence Application' # Defaults to the application directory name
 applicationDescription = 'This is a Prudence application.'
 applicationAuthor = 'Anonymous'
 applicationOwner = 'Public Domain'
 applicationHomeURL = 'http://www.threecrickets.com/prudence/'
 applicationContactEmail = 'prudence@threecrickets.com'
-applicationLoggerName = 'prudence-application'
+#applicationLoggerName = 'prudence-application' # Defaults to the application directory name
 
 #
 # Base URL

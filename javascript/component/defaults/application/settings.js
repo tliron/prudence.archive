@@ -8,7 +8,7 @@ var applicationAuthor = 'Anonymous';
 var applicationOwner = 'Public Domain';
 var applicationHomeURL = 'http://www.threecrickets.com/prudence/';
 var applicationContactEmail = 'prudence@threecrickets.com';
-var applicationLoggerName = 'prudence-application';
+//var applicationLoggerName = 'prudence-application'; // Defaults to the application directory name
 
 //
 // Base URL

@@ -16,8 +16,19 @@ importClass(
 
 var classLoader = ClassLoader.systemClassLoader;
 
+//
+// Utilities
+//
+
+// Creates a URL relative to the applicationBaseURL 
 function applicationURL(url) {
 	return (applicationBaseURL + url).replace('//', '/');
+}
+
+// Moves a route to be the one before the last
+function penultimateRoute(route) {
+	router.routes.remove(route);
+	router.routes.add(router.routes.size() - 1, route);
 }
 
 //

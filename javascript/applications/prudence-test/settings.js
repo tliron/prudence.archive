@@ -10,6 +10,5 @@ applicationAuthor = 'Tal Liron';
 applicationOwner = 'Three Crickets';
 applicationHomeURL = 'http://www.threecrickets.com/prudence/';
 applicationContactEmail = 'prudence@threecrickets.com';
-applicationLoggerName = 'prudence-test';
 
 hosts = [component.defaultHost, mysiteHost];

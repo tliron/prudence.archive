@@ -11,8 +11,18 @@ from org.restlet.resource import Directory
 
 classLoader = ClassLoader.getSystemClassLoader()
 
+#
+# Utilities
+#
+
+# Creates a URL relative to the applicationBaseURL 
 def applicationURL(url):
 	return (applicationBaseURL + url).replace('//', '/')
+
+# Moves a route to be the one before the last
+def penultimateRoute(route):
+	router.routes.remove(route)
+	router.routes.add(router.routes.size() - 1, route)
 
 #
 # Hosts

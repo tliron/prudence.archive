@@ -31,7 +31,7 @@ component.servers.add(defaultServer)
 #
 # This is an example of binding a server to an IP address representing one of
 # several of the machine's network interfaces. In this case, let's pretend
-# that it's the interface open to the Iternet at large.
+# that it's the interface open to the Internet at large.
 #
 
 #worldServer = Server(Protocol.HTTP, '192.168.1.2', 80)
