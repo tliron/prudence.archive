@@ -11,6 +11,9 @@ from org.restlet.resource import Directory
 
 classLoader = ClassLoader.getSystemClassLoader()
 
+def applicationURL(url):
+	return (applicationBaseURL + url).urlreplace('//', '/')
+
 #
 # Hosts
 #
@@ -41,11 +44,11 @@ application.inboundRoot = router
 if len(urlAddTrailingSlash) > 0:
 	redirector = Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_SEE_OTHER)
 	for url in urlAddTrailingSlash:
-		url = applicationBaseURL + url
+		url = applicationURL(url)
 		if url[-1] == '/':
 			url = url[0:-1]
 		if len(url) > 0:
-			router.attach(url, redirector).matchingMode = Template.MODE_EQUALS
+			router.attach(url, redirector)
 
 #
 # Static web
@@ -55,16 +58,16 @@ staticWeb = Directory(application.context, File(applicationBasePath + staticWebB
 staticWeb.listingAllowed = staticWebDirectoryListingAllowed
 staticWeb.negotiateContent = True
 
-router.attach(applicationBaseURL + staticWebBaseURL, staticWeb).matchingMode = Template.MODE_STARTS_WITH
+router.attach(applicationURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_STARTS_WITH
 
 #
 # Resources
 #
 
-router.attach(applicationBaseURL + resourceBaseURL, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH
+router.attach(applicationURL(resourceBaseURL), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH
 
 #
 # Dynamic web
 #
 
-router.attach(applicationBaseURL + dynamicWebBaseURL, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH
+router.attach(applicationURL(dynamicWebBaseURL), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH

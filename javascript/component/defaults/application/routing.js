@@ -1,3 +1,5 @@
+//document.container.include('component/defaults/application/routing');
+
 //
 // Prudence Application Routing
 //
@@ -12,7 +14,11 @@ importClass(
 	org.restlet.routing.Template,
 	org.restlet.resource.Directory);
 
-classLoader = ClassLoader.systemClassLoader;
+var classLoader = ClassLoader.systemClassLoader;
+
+function applicationURL(url) {
+	return (applicationBaseURL + url).replace('//', '/');
+}
 
 //
 // Hosts
@@ -46,13 +52,13 @@ application.inboundRoot = router;
 if(urlAddTrailingSlash.length > 0) {
 	var redirector = new Redirector(router.context, '{ri}/', Redirector.MODE_CLIENT_SEE_OTHER);
 	for(var i in urlAddTrailingSlash) {
-		urlAddTrailingSlash[i] = applicationBaseURL + urlAddTrailingSlash[i];
+		urlAddTrailingSlash[i] = applicationURL(urlAddTrailingSlash[i]);
 		if(urlAddTrailingSlash[i].slice(-1) == '/') {
 			// Remove trailing slash for pattern
 			urlAddTrailingSlash[i] = urlAddTrailingSlash[i].slice(0, -1);
 		}
 		if(urlAddTrailingSlash[i].length > 0) {
-			router.attach(urlAddTrailingSlash[i], redirector).matchingMode = Template.MODE_EQUALS;
+			router.attach(urlAddTrailingSlash[i], redirector);
 		}
 	}
 }
@@ -65,16 +71,16 @@ var staticWeb = new Directory(router.context, File(applicationBasePath + staticW
 staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
 staticWeb.negotiateContent = true;
 
-router.attach(applicationBaseURL + staticWebBaseURL, staticWeb).matchingMode = Template.MODE_STARTS_WITH;
+router.attach(applicationURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_STARTS_WITH;
 
 //
 // Resources
 //
 
-router.attach(applicationBaseURL + resourceBaseURL, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH;
+router.attach(applicationURL(resourceBaseURL), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH;
 
 //
 // Dynamic web
 //
 
-router.attach(applicationBaseURL + dynamicWebBaseURL, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH;
+router.attach(applicationURL(dynamicWebBaseURL), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH;

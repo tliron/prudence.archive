@@ -266,7 +266,7 @@ public class ExposedContainerForGeneratedTextResource
 		if( document == null )
 		{
 			String text = documentDescriptor.getText();
-			document = new Document( text, false, this.resource.getEngineManager(), this.resource.getScriptEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+			document = new Document( text, false, this.resource.getEngineManager(), this.resource.getDefaultEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
 
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )

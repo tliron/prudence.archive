@@ -72,8 +72,9 @@ var applicationDirs = new File('applications').listFiles();
 for(var i in applicationDirs) {
 	var applicationDir = applicationDirs[i]; 
 	if(applicationDir.isDirectory()) {
+		var applicationName = applicationDir.name;
 		var applicationBasePath = applicationDir.path;
-		var applicationBaseURL ='/' + applicationDir.name;
+		var applicationBaseURL = '/' + applicationDir.name + '/';
 		try {
 			document.container.include(applicationBasePath);
 		} catch(e if e.javaException instanceof FileNotFoundException) {

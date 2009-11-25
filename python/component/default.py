@@ -72,8 +72,9 @@ start = False
 applicationDirs = File('applications').listFiles()
 for applicationDir in applicationDirs:
 	if applicationDir.isDirectory():
+		applicationName = applicationDir.name
 		applicationBasePath = applicationDir.path
-		applicationBaseURL = '/' + applicationDir.name
+		applicationBaseURL = '/' + applicationDir.name + '/'
 		try:
 			document.container.include(applicationBasePath)
 		except FileNotFoundException:

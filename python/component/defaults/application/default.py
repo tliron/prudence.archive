@@ -12,7 +12,11 @@ from com.threecrickets.scripturian.file import DocumentFileSource
 # Settings
 #
 
-document.container.include(applicationBasePath + '/settings')
+try:
+	document.container.include(applicationBasePath + '/settings')
+except FileNotFoundException:
+	# Use default application script
+	document.container.include('component/defaults/application/settings');
 
 #
 # Application
@@ -48,22 +52,25 @@ application.context.setLogger(applicationLoggerName)
 
 attributes = application.context.attributes
 
+attributes['applicationBasePath'] = applicationBasePath
+attributes['applicationBaseURL'] = applicationBaseURL
+
 scriptEngineManager = ScriptEngineManager()
 
 # DelegatedResource
 
-attributes.put('com.threecrickets.prudence.DelegatedResource.scriptEngineManager', scriptEngineManager)
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName', 'python')
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourceDefaultName)
-attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', \
-	DocumentFileSource(File(applicationBasePath + resourceBasePath), resourceDefaultName, resourceMinimumTimeBetweenValidityChecks))
-attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourceSourceViewable)
+attributes['com.threecrickets.prudence.DelegatedResource.engineManager'] = scriptEngineManager
+attributes['com.threecrickets.prudence.DelegatedResource.defaultEngineName'] = 'python'
+attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resourceDefaultName
+attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = \
+	DocumentFileSource(File(applicationBasePath + resourceBasePath), resourceDefaultName, resourceMinimumTimeBetweenValidityChecks)
+attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resourceSourceViewable
 
 # GeneratedTextResource
 
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.scriptEngineManager', scriptEngineManager)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName', 'python')
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource', \
-	 DocumentFileSource(File(applicationBasePath + dynamicWebBasePath), dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks))
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable)
+attributes['com.threecrickets.prudence.GeneratedTextResource.engineManager'] = scriptEngineManager
+attributes['com.threecrickets.prudence.GeneratedTextResource.defaultEngineName'] = 'python'
+attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamicWebDefaultDocument
+attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = \
+	 DocumentFileSource(File(applicationBasePath + dynamicWebBasePath), dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks)
+attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamicWebSourceViewable

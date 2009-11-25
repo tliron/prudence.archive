@@ -173,7 +173,7 @@ import com.threecrickets.scripturian.ScriptletController;
  * {@link String}, defaults to "index.page". See {@link #getDefaultName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultEngineName:</code>
- * {@link String}, defaults to "js". See {@link #getScriptEngineName()}.</li>
+ * {@link String}, defaults to "js". See {@link #getDefaultEngineName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.documentSource:</code>
  * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
@@ -338,7 +338,7 @@ public class GeneratedTextResource extends ServerResource
 	 * 
 	 * @return The default script engine name
 	 */
-	public String getScriptEngineName()
+	public String getDefaultEngineName()
 	{
 		if( this.defaultEngineName == null )
 		{

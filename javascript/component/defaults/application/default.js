@@ -14,7 +14,12 @@ importClass(
 // Settings
 //
 
-document.container.include(applicationBasePath + '/settings');
+try {
+	document.container.include(applicationBasePath + '/settings');
+} catch(e if e.javaException instanceof FileNotFoundException) {
+	// Use default application script
+	document.container.include('component/defaults/application/settings');
+}
 
 //
 // Application
@@ -51,12 +56,15 @@ application.context.setLogger(applicationLoggerName);
 
 var attributes = application.context.attributes;
 
+attributes.put('applicationBasePath', applicationBasePath);
+attributes.put('applicationBaseURL', applicationBaseURL);
+
 scriptEngineManager = new ScriptEngineManager();
 
 // DelegatedResource
 
-attributes.put('com.threecrickets.prudence.DelegatedResource.scriptEngineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultScriptEngineName', 'rhino-nonjdk');
+attributes.put('com.threecrickets.prudence.DelegatedResource.engineManager', scriptEngineManager);
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultEngineName', 'rhino-nonjdk');
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourceDefaultName);
 attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource',
 	new DocumentFileSource(new File(applicationBasePath + resourceBasePath), resourceDefaultName, resourceMinimumTimeBetweenValidityChecks));
@@ -64,8 +72,8 @@ attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', re
 
 // GeneratedTextResource
 
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.scriptEngineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultScriptEngineName', 'rhino-nonjdk');
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.engineManager', scriptEngineManager);
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultEngineName', 'rhino-nonjdk');
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',
 	 new DocumentFileSource(new File(applicationBasePath + dynamicWebBasePath), dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks));
