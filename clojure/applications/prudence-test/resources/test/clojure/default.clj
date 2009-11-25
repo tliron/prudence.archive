@@ -18,10 +18,10 @@
 )
 
 ; Include the context library
-(.include (.getContainer document) "test/clojure/context")
+(.. document (getContainer) (include "test/clojure/context"))
 
 ; Include the JSON library
-(add-classpath (.toURL (File. (str (.getBasePath (.getSource (.getContainer document))) "/test/clojure"))))
+(add-classpath (.toURL (File. (str (.. document (getContainer) (getSource) (getBasePath)) "/test/clojure"))))
 (require '(org.danlarkin [json :as json]))
 
 ; State
@@ -39,12 +39,12 @@
 	;
 
 	(getContextAttribute "clojure.state"
-		(fn [] {"name" "Coraline" "media" "Film" "rating" "A+" "characters" ["Coraline" "Wybie" "Mom" "Dad"]})
+		(fn [] {"name" "Coraline", "media" "Film", "rating" "A+", "characters" ["Coraline" "Wybie" "Mom" "Dad"]})
 	)
 )
 
 (defn setState [value]
-	(.put (.getAttributes (.getContext (.getResource (.getContainer document)))) "clojure.state" value)
+	(.. document (getContainer) (getResource) (getContext) (getAttributes) (put "clojure.state" value))
 )
 
 ; This function is called when the resource is initialized. We will use it to set
@@ -56,8 +56,8 @@
 	; "Accept" attribute of their request header, specifying that any media type
 	; will do, in which case the first one we add will be used.
 
-	(.add (.getVariants (.getContainer document)) (Variant. MediaType/TEXT_PLAIN))
-	(.add (.getVariants (.getContainer document)) (Variant. MediaType/APPLICATION_JSON))
+	(.. document (getContainer) (getVariants) (add (Variant. MediaType/TEXT_PLAIN)))
+	(.. document (getContainer) (getVariants) (add (Variant. MediaType/APPLICATION_JSON)))
 )
 
 ; This function is called for the GET verb, which is expected to behave as a
@@ -82,7 +82,7 @@
 	; Return a representation appropriate for the requested media type
 	; of the possible options we created in handleInit
 	
-	(if (= (.getMediaType (.getContainer document)) MediaType/APPLICATION_JSON)
+	(if (= (.. document (getContainer) (getMediaType)) MediaType/APPLICATION_JSON)
 		(def r (JsonRepresentation. (str r)))
 	)
 	
@@ -102,7 +102,7 @@
 ; to the client.
 
 (defn handlePost []
-	(def update (json/decode-from-str (.getText (.getEntity (.getContainer document)))))
+	(def update (json/decode-from-str (.. document (getContainer) (getEntity) (getText))))
 	(def state (getState))
 	
 	(setState (merge state update))
@@ -123,7 +123,7 @@
 ; to the client.
 
 (defn handlePut []
-	(def update (json/decode-from-str (.getText (.getEntity (.getContainer document)))))
+	(def update (json/decode-from-str (.. document (getContainer) (getEntity) (getText))))
 	(setState update)
 	
 	(handleGet)

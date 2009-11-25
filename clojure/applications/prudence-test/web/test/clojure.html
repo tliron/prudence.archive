@@ -11,14 +11,14 @@
 ; Accessing the request
 ;
 
-(def form (.getQueryAsForm (.getResourceRef (.getRequest (.getContainer document)))))
+(def form (.. document (getContainer) (getRequest) (getResourceRef) (getQueryAsForm)))
 
 ;
 ; Stream this script
 ;
 
 (if (= (.getFirstValue form "stream") "true") 
-	(if (.stream (.getContainer document))
+	(if (.. document (getContainer) (stream))
 		(throw nil)
 	)
 )
@@ -35,7 +35,7 @@
 ;
 ; This is identical to:
 ;
-;   (.includeDocument (.getContainer document) "path")
+;   (.. document (getContainer) (includeDocument "path"))
 ;
 
 %>
@@ -66,11 +66,11 @@
 %>
 <h3>Script engine used:</h3>
 <%
-(printFactory (.getFactory (.getEngine document)))
+(printFactory (.. document (getEngine) (getFactory)))
 %>
 <h3>Available script engines:</h3>
 <%
-(def factories (.getEngineFactories (.getEngineManager document)))
+(def factories (.. document (getEngineManager) (getEngineFactories)))
 (doseq [factory factories]
 	(printFactory factory)
 )
