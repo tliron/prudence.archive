@@ -2,32 +2,38 @@
 // Prudence Application Settings
 //
 
+//
+// Information
+//
+// These are for administrative purposes only.
+//
+
 //var applicationName = 'Prudence Application'; // Defaults to the application directory name
 var applicationDescription = 'This is a Prudence application.';
 var applicationAuthor = 'Anonymous';
 var applicationOwner = 'Public Domain';
 var applicationHomeURL = 'http://www.threecrickets.com/prudence/';
 var applicationContactEmail = 'prudence@threecrickets.com';
-//var applicationLoggerName = 'prudence-application'; // Defaults to the application directory name
 
 //
-// Base URL
+// Logging
 //
-// All URLs will be under this. Defaults to the directory name under /applications,
-// though you can override it here. For example, if you want your application to available
-// at the root URL, set it to "/".
+// Logger defaults to the application's directory name. Configure logging at
+// conf/logging.conf.
 //
 
-//applicationBaseURL = '/';
+//var applicationLoggerName = 'prudence-application';
 
 //
 // Hosts
 //
-// These are the virtual hosts to which our application will be attached.
-// See component/hosts.js for more information.
+// This is a vector of vectors of two elements: the first is the virtual hosts to which,
+// our application will be attached, the second is the base URLs on the hosts. See
+// component/hosts.py for more information. Specify None for the URL to default to the
+// application's directory name.
 //
 
-var hosts = [component.defaultHost];
+var hosts = [[component.defaultHost, null]];
 
 //
 // Resources
@@ -111,4 +117,4 @@ var staticWebDirectoryListingAllowed = true;
 // The URLs in this array will automatically be redirected to have a trailing
 // slash added to them if it's missing.
 
-var urlAddTrailingSlash = ['/', dynamicWebBaseURL, staticWebBaseURL];
+var urlAddTrailingSlash = [dynamicWebBaseURL, staticWebBaseURL];

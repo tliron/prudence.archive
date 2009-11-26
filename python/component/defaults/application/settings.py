@@ -2,32 +2,37 @@
 # Prudence Application Settings
 #
 
+#
+# Information
+#
+# These are for administrative purposes only.
+#
+
 #application_name = 'Prudence Application' # Defaults to the application directory name
 application_description = 'This is a Prudence application.'
 application_author = 'Anonymous'
 application_owner = 'Public Domain'
 application_home_url = 'http://www.threecrickets.com/prudence/'
 application_contact_email = 'prudence@threecrickets.com'
-#application_logger_name = 'prudence-application' # Defaults to the application directory name
 
 #
-# Base URL
+# Logging
 #
-# All URLs will be under this. Defaults to the directory name under /applications,
-# though you can override it here. For example, if you want your application to available
-# at the root URL, set it to "/".
+# Logger defaults to the application's directory name. Configure logging at
+# conf/logging.conf.
 #
 
-#application_base_url = '/'
+#application_logger_name = 'prudence-application'
 
 #
 # Hosts
 #
-# These are the virtual hosts to which our application will be attached.
-# See component/hosts.py for more information.
+# This map matches the virtual hosts to which our application will be attached
+# with their base URLs on the hosts. See component/hosts.py for more information.
+# Specify None for the URL to default to the application's directory name.
 #
 
-hosts = [component.defaultHost]
+hosts = {component.defaultHost: None}
 
 #
 # Resources
@@ -111,4 +116,4 @@ static_web_directory_listing_allowed = True
 # The URLs in this array will automatically be redirected to have a trailing
 # slash added to them if it's missing.
 
-url_add_trailing_slash = ['', dynamic_web_base_url, static_web_base_url]
+url_add_trailing_slash = [dynamic_web_base_url, static_web_base_url]

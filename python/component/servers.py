@@ -24,6 +24,7 @@ from org.restlet.data import Protocol
 #
 
 default_server = Server(Protocol.HTTP, 8080)
+default_server.name = 'default'
 component.servers.add(default_server)
 
 #
@@ -34,8 +35,9 @@ component.servers.add(default_server)
 # that it's the interface open to the Internet at large.
 #
 
-#worldServer = Server(Protocol.HTTP, '192.168.1.2', 80)
-#component.servers.add(worldServer)
+#world_server = Server(Protocol.HTTP, '192.168.1.2', 80)
+#world_server.name = 'world'
+#component.servers.add(world_server)
 
 #
 # Welcome
@@ -44,9 +46,9 @@ component.servers.add(default_server)
 for i in range(len(component.servers)):
 	server = component.servers[i]
 	if server.address:
-		sys.stdout.write('Starting server at %s port %s for ' % (server.address, server.port))
+		sys.stdout.write('Starting server "%s" at %s port %s for ' % (server.name, server.address, server.port))
 	else:
-		sys.stdout.write('Starting server at port %s for ' % server.port)
+		sys.stdout.write('Starting server "%s" at port %s for ' % (server.name, server.port))
 	for j in range(len(server.protocols)):
 		protocol = server.protocols[j]
 		if j < len(server.protocols) - 1:

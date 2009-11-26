@@ -14,7 +14,7 @@ importClass(
 // Welcome
 //
 
-print('Prudence for JavsScript 1.0\n');
+print('Prudence 1.0 for JavaScript\n');
 
 //
 // Component
@@ -73,7 +73,7 @@ document.container.include('component/hosts');
 // Applications
 //
 
-var start = false;
+var applications = [];
 var applicationDirs = new File('applications').listFiles();
 for(var i in applicationDirs) {
 	var applicationDir = applicationDirs[i]; 
@@ -81,14 +81,14 @@ for(var i in applicationDirs) {
 		var applicationName = applicationDir.name;
 		var applicationLoggerName = applicationDir.name;
 		var applicationBasePath = applicationDir.path;
-		var applicationBaseURL = '/' + applicationDir.name + '/';
+		var applicationDefaultURL = '/' + applicationDir.name + '/';
 		try {
 			document.container.include(applicationBasePath);
 		} catch(e if e.javaException instanceof FileNotFoundException) {
 			// Use default application script
 			document.container.include('component/defaults/application');
 		}
-		start = true;
+		applications[applications.length] = application;
 	}
 }
 
@@ -96,7 +96,8 @@ for(var i in applicationDirs) {
 // Start
 //
 
-if(start) {
+if(applications.length > 0) {
+	component.context.attributes.put('applications', applications);
 	component.start();
 } else {
 	print('No applications found.\n');

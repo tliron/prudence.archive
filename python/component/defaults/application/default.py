@@ -52,9 +52,6 @@ application.context.setLogger(application_logger_name)
 
 attributes = application.context.attributes
 
-attributes['applicationBasePath'] = application_base_path
-attributes['applicationBaseURL'] = application_base_url
-
 script_engine_manager = ScriptEngineManager()
 
 # DelegatedResource

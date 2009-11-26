@@ -56,9 +56,6 @@ application.context.setLogger(applicationLoggerName);
 
 var attributes = application.context.attributes;
 
-attributes.put('applicationBasePath', applicationBasePath);
-attributes.put('applicationBaseURL', applicationBaseURL);
-
 scriptEngineManager = new ScriptEngineManager();
 
 // DelegatedResource

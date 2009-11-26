@@ -1,5 +1,3 @@
-//document.container.include('component/defaults/application/routing');
-
 //
 // Prudence Application Routing
 //
@@ -20,9 +18,15 @@ var classLoader = ClassLoader.systemClassLoader;
 // Utilities
 //
 
-// Creates a URL relative to the applicationBaseURL 
+//  Makes sure we have slashes where we expect them
 function applicationURL(url) {
-	return (applicationBaseURL + url).replace('//', '/');
+	if(url.length > 0 && url[0] == '/') {
+		url = url.slice(1);
+	}
+	if(url.length > 0 && url[url.length -1] != '/') {
+		url = url + '/';
+	}
+	return url;
 }
 
 // Moves a route to be the one before the last
@@ -35,14 +39,27 @@ function penultimateRoute(route) {
 // Hosts
 //
 // Note that the application's context will not be created until we attach the application to at least one
-// virtual host. See start/hosts.js for more information.
+// virtual host. See component/hosts.js for more information.
 //
 
-print('Attached application "' + application.name + '" to "' + applicationBaseURL + '" on virtual hosts ');
+var redirector = new Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_SEE_OTHER);
+
+print('Attached application "' + application.name + '" to ');
 for(var i in hosts) {
-	var host = hosts[i];
-	host.attach(application);
-	print('"' + host.name + '"');
+	var entry = hosts[i];
+	var host = entry[0];
+	var url = entry[1];
+	if(!url) {
+		url = applicationDefaultURL;
+	}
+	print('"' + url + '" on "' + host.name + '"');
+	host.attach(url, application).matchingMode = Template.MODE_STARTS_WITH;
+	if(url != '/') {
+		if(url[url.length - 1] == '/') {
+			url = url.slice(0, -1);
+		}
+		host.attach(url, redirector);
+	}
 	if(i < hosts.length - 1) {
 		print(', ');
 	}
@@ -61,14 +78,13 @@ application.inboundRoot = router;
 //
 
 if(urlAddTrailingSlash.length > 0) {
-	var redirector = new Redirector(router.context, '{ri}/', Redirector.MODE_CLIENT_SEE_OTHER);
 	for(var i in urlAddTrailingSlash) {
 		urlAddTrailingSlash[i] = applicationURL(urlAddTrailingSlash[i]);
-		if(urlAddTrailingSlash[i].slice(-1) == '/') {
-			// Remove trailing slash for pattern
-			urlAddTrailingSlash[i] = urlAddTrailingSlash[i].slice(0, -1);
-		}
 		if(urlAddTrailingSlash[i].length > 0) {
+			if(urlAddTrailingSlash[i][-1] == '/') {
+				// Remove trailing slash for pattern
+				urlAddTrailingSlash[i] = urlAddTrailingSlash[i].slice(0, -1);
+			}
 			router.attach(urlAddTrailingSlash[i], redirector);
 		}
 	}

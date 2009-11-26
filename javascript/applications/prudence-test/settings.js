@@ -11,4 +11,4 @@ applicationOwner = 'Three Crickets';
 applicationHomeURL = 'http://www.threecrickets.com/prudence/';
 applicationContactEmail = 'prudence@threecrickets.com';
 
-hosts = [component.defaultHost, mysiteHost];
+hosts = [[component.defaultHost, null], [mysiteHost, null]];

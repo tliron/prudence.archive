@@ -17,7 +17,7 @@
 	<property name="velocity" value="../velocity" />
 	
 	<property name="tmp" value="./tmp" />
-	<property name="kitchensink-base" value="${python}" />
+	<property name="kitchensink-base" value="${javascript}" />
 	<property name="dist-kitchensink" value="./kitchensink" />
 	<property name="dist-standalone" value="./standalone" />
 	<property name="dist-javascript" value="./javascript" />
@@ -175,6 +175,9 @@
 		</copy>
 		<copy todir="${dist-kitchensink}/content/component">
 			<fileset dir="${kitchensink-base}/component" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/applications/prudence-admin">
+			<fileset dir="${kitchensink-base}/applications/prudence-admin" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/applications/prudence-test">
 			<fileset dir="${kitchensink-base}/applications/prudence-test" />

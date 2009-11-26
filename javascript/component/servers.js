@@ -25,6 +25,7 @@ importClass(
 //
 
 var defaultServer = new Server(Protocol.HTTP, 8080);
+defaultServer.name = 'default';
 component.servers.add(defaultServer);
 
 //
@@ -36,6 +37,7 @@ component.servers.add(defaultServer);
 //
 
 //var worldServer = new Server(Protocol.HTTP, '192.168.1.2', 80);
+//worldServer.name = 'world';
 //component.servers.add(worldServer);
 
 //

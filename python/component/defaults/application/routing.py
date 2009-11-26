@@ -15,27 +15,40 @@ classLoader = ClassLoader.getSystemClassLoader()
 # Utilities
 #
 
-# Creates a URL relative to the application_base_url 
+# Makes sure we have slashes where we expect them
 def application_url(url):
-	return (application_base_url + url).replace('//', '/')
+	if len(url) > 0 and url[0] == '/':
+		url = url[1:]
+	if len(url) > 0 and url[-1] != '/':
+		url = url + '/'
+	return url
 
 # Moves a route to be the one before the last
 def penultimate_route(route):
 	router.routes.remove(route)
 	router.routes.add(router.routes.size() - 1, route)
+	return route
 
 #
 # Hosts
 #
 # Note that the application's context will not be created until we attach the application to at least one
-# virtual host. See start/hosts.js for more information.
+# virtual host. See component/hosts.js for more information.
 #
 
-sys.stdout.write('Attached application "%s" to "%s" on virtual hosts ' % (application.name, application_base_url))
+redirector = Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_SEE_OTHER)
+
+sys.stdout.write('Attached application "%s" to ' % application.name)
 for i in range(len(hosts)):
-	host = hosts[i]
-	host.attach(application)
-	sys.stdout.write('"%s"' % host.name)
+	host, url = hosts.items()[i]
+	if url is None:
+		url = application_default_url
+	sys.stdout.write('"%s" on "%s"' % (url, host.name))
+	host.attach(url, application).matchingMode = Template.MODE_STARTS_WITH
+	if url != '/':
+		if url[-1] == '/':
+			url = url[:-1]
+		host.attach(url, redirector)
 	if i < len(hosts) - 1:
 		sys.stdout.write(', ')
 print '.'
@@ -52,12 +65,11 @@ application.inboundRoot = router
 #
 
 if len(url_add_trailing_slash) > 0:
-	redirector = Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_SEE_OTHER)
 	for url in url_add_trailing_slash:
 		url = application_url(url)
-		if url[-1] == '/':
-			url = url[0:-1]
 		if len(url) > 0:
+			if url[-1] == '/':
+				url = url[:-1]
 			router.attach(url, redirector)
 
 #

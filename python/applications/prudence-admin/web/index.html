@@ -1,0 +1,52 @@
+<html>
+<head>
+	<title>Prudence Admin</title>
+</head>
+<h1>Prudence Admin</h1>
+<%python
+
+from org.restlet import Application
+component = Application.getCurrent().context.attributes['component']
+applications = component.context.attributes['applications']
+
+%>
+<body>
+<h2>Applications</h2>
+<%
+
+for application in applications:
+	%>
+<div>
+	<h3><%= application.name %></h3>
+	<div><%= application.description %></div>
+	<div>Author: <%= application.author %></div>
+</div>
+<%
+
+%>
+<h2>Virtual Hosts</h2>
+<%
+
+for host in component.hosts:
+	%>
+	<h3><%= host.name %></h3>
+<%
+	#print dir(host)
+	
+%>
+
+<h2>Servers</h2>
+<%
+
+for server in component.servers:
+	%>
+<div>
+	<h3><%= server.name %></h3>
+	Protocols: <%= str(server.protocols) %>
+</div>
+<%
+
+%>
+
+</body>
+</html>

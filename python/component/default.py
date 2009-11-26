@@ -13,7 +13,7 @@ from org.restlet.data import Protocol
 # Welcome
 #
 
-print 'Prudence for Python 1.0'
+print 'Prudence 1.0 for Python'
 
 #
 # Component
@@ -74,26 +74,27 @@ document.container.include('component/hosts')
 # Applications
 #
 
-start = False
+applications = []
 application_dirs = File('applications').listFiles()
 for application_dir in application_dirs:
 	if application_dir.isDirectory():
 		application_name = application_dir.name
 		application_logger_name = application_dir.name
 		application_base_path = application_dir.path
-		application_base_url = '/' + application_dir.name + '/'
+		application_default_url = '/' + application_dir.name + '/'
 		try:
 			document.container.include(application_base_path)
 		except FileNotFoundException:
 			# Use default application script
 			document.container.include('component/defaults/application');
-		start = True
+		applications.append(application)
 
 #
 # Start
 #
 
-if start:
+if len(applications) > 0:
+	component.context.attributes['applications'] = applications
 	component.start()
 else:
 	print 'No applications found.'
