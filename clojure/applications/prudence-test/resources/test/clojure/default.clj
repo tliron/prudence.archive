@@ -11,10 +11,10 @@
 ;
 
 (import
-	'(java.io File)
-	'(org.restlet.representation Variant)
-	'(org.restlet.data MediaType)
-	'(org.restlet.ext.json JsonRepresentation)
+	'java.io.File
+	'org.restlet.representation.Variant
+	'org.restlet.data.MediaType
+	'org.restlet.ext.json.JsonRepresentation
 )
 
 ; Include the context library
