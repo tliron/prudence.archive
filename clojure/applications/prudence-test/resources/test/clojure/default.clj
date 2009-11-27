@@ -18,18 +18,18 @@
 )
 
 ; Include the context library
-(.. document (getContainer) (include "test/clojure/context"))
+(.. document getContainer (include "test/clojure/context"))
 
 ; Include the JSON library
-(add-classpath (.toURL (File. (str (.. document (getContainer) (getSource) (getBasePath)) "/test/clojure"))))
-(require '(org.danlarkin [json :as json]))
+(add-classpath (.toURL (File. (str (.. document getContainer getSource getBasePath) "/test/clojure"))))
+(use '[org.danlarkin.json :only (encode-to-str decode-from-str)])
 
 ; State
 ;
 ; These make sure that our state is properly stored in the context,
 ; so that we always use the same state, even if this script is recompiled.
 
-(defn getState []
+(defn get-state []
 	;
 	; Important! Clojure maps are not regular old Java maps. They are *persistent*, meaning that on the
 	; the one hand they are immutable, and on the other hand they maintain performance behavior when
@@ -38,13 +38,13 @@
 	; prone) to deal with state. Viva Clojure!
 	;
 
-	(getContextAttribute "clojure.state"
-		(fn [] {"name" "Coraline", "media" "Film", "rating" "A+", "characters" ["Coraline" "Wybie" "Mom" "Dad"]})
+	(get-context-attribute "clojure.state"
+		#(identity {"name" "Coraline", "media" "Film", "rating" "A+", "characters" ["Coraline" "Wybie" "Mom" "Dad"]})
 	)
 )
 
-(defn setState [value]
-	(.. document (getContainer) (getResource) (getContext) (getAttributes) (put "clojure.state" value))
+(defn set-state [value]
+	(.. document getContainer getResource getContext getAttributes (put "clojure.state" value))
 )
 
 ; This function is called when the resource is initialized. We will use it to set
@@ -56,8 +56,8 @@
 	; "Accept" attribute of their request header, specifying that any media type
 	; will do, in which case the first one we add will be used.
 
-	(.. document (getContainer) (getVariants) (add (Variant. MediaType/TEXT_PLAIN)))
-	(.. document (getContainer) (getVariants) (add (Variant. MediaType/APPLICATION_JSON)))
+	(.. document getContainer getVariants (add (Variant. MediaType/TEXT_PLAIN)))
+	(.. document getContainer getVariants (add (Variant. MediaType/APPLICATION_JSON)))
 )
 
 ; This function is called for the GET verb, which is expected to behave as a
@@ -75,14 +75,14 @@
 ; list of supported languages and encoding.
 
 (defn handleGet []
-	(def state (getState))
+	(def state (get-state))
 
-	(def r (json/encode-to-str state))
+	(def r (encode-to-str state))
 	
 	; Return a representation appropriate for the requested media type
 	; of the possible options we created in handleInit
 	
-	(if (= (.. document (getContainer) (getMediaType)) MediaType/APPLICATION_JSON)
+	(if (= (.. document getContainer getMediaType) MediaType/APPLICATION_JSON)
 		(def r (JsonRepresentation. (str r)))
 	)
 	
@@ -102,10 +102,10 @@
 ; to the client.
 
 (defn handlePost []
-	(def update (json/decode-from-str (.. document (getContainer) (getEntity) (getText))))
-	(def state (getState))
+	(def update (decode-from-str (.. document getContainer getEntity getText)))
+	(def state (get-state))
 	
-	(setState (merge state update))
+	(set-state (merge state update))
 	
 	(handleGet)
 )
@@ -123,8 +123,8 @@
 ; to the client.
 
 (defn handlePut []
-	(def update (json/decode-from-str (.. document (getContainer) (getEntity) (getText))))
-	(setState update)
+	(def update (decode-from-str (.. document getContainer getEntity getText)))
+	(set-state update)
 	
 	(handleGet)
 )
@@ -137,7 +137,7 @@
 ; ignored. Still, it's a good idea to return null to avoid any passing of value.
 
 (defn handleDelete []
-	(setState {})
+	(set-state {})
 	
 	nil
 )

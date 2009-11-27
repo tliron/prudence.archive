@@ -11,14 +11,14 @@
 ; Accessing the request
 ;
 
-(def form (.. document (getContainer) (getRequest) (getResourceRef) (getQueryAsForm)))
+(def form (.. document getContainer getRequest getResourceRef getQueryAsForm))
 
 ;
 ; Stream this script
 ;
 
 (if (= (.getFirstValue form "stream") "true") 
-	(if (.. document (getContainer) (stream))
+	(if (.. document getContainer stream)
 		(throw nil)
 	)
 )
@@ -35,7 +35,7 @@
 ;
 ; This is identical to:
 ;
-;   (.. document (getContainer) (includeDocument "path"))
+;   (.. document getContainer (includeDocument "path"))
 ;
 
 %>
@@ -46,7 +46,7 @@
 ; An example of a function
 ;
 
-(defn printFactory [factory]
+(defn print-factory [factory]
 %>
 <p>
 	<i>Engine:</i> <%= (.getEngineName factory) %> version <%= (.getEngineVersion factory) %><br />
@@ -66,13 +66,13 @@
 %>
 <h3>Script engine used:</h3>
 <%
-(printFactory (.. document (getEngine) (getFactory)))
+(print-factory (.. document getEngine getFactory))
 %>
 <h3>Available script engines:</h3>
 <%
-(def factories (.. document (getEngineManager) (getEngineFactories)))
+(def factories (.. document getEngineManager getEngineFactories))
 (doseq [factory factories]
-	(printFactory factory)
+	(print-factory factory)
 )
 %>
 </td><td>
@@ -85,7 +85,7 @@
 %>
 A multiple of three: 
 <%
-	(printTriple i)
+	(print-triple i)
 %>
 <br />
 <%
