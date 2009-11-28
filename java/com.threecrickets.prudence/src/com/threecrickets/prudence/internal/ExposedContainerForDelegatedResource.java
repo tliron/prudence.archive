@@ -120,7 +120,7 @@ public class ExposedContainerForDelegatedResource
 		}
 
 		if( this.mediaType == null )
-			this.mediaType = MediaType.TEXT_HTML;
+			this.mediaType = MediaType.TEXT_PLAIN;
 
 		if( this.characterSet == null )
 			this.characterSet = resource.getDefaultCharacterSet();
