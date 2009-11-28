@@ -44,7 +44,7 @@ function penultimateRoute(route) {
 
 var redirector = new Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_SEE_OTHER);
 
-print('Attached application "' + application.name + '" to ');
+print(application.name + ': ');
 for(var i in hosts) {
 	var entry = hosts[i];
 	var host = entry[0];
@@ -52,7 +52,7 @@ for(var i in hosts) {
 	if(!url) {
 		url = applicationDefaultURL;
 	}
-	print('"' + url + '" on "' + host.name + '"');
+	print('"' + url + '" on ' + host.name);
 	host.attach(url, application).matchingMode = Template.MODE_STARTS_WITH;
 	if(url != '/') {
 		if(url[url.length - 1] == '/') {

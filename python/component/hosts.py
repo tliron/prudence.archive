@@ -12,15 +12,15 @@
 from org.restlet.routing import VirtualHost
 
 #
-# Wildcard
+# All
 #
-# Our "wildcard" host will accept all incoming requests.
+# Our "all" host will accept all incoming requests.
 #
 
-wildcard_host = VirtualHost(component.context)
-wildcard_host.name = 'wildcard'
+all_host = VirtualHost(component.context)
+all_host.name = 'all'
 
-component.hosts.add(wildcard_host)
+component.hosts.add(all_host)
 
 #
 # mysite.org
@@ -45,16 +45,4 @@ component.hosts.add(mysite_host)
 # routing.js.
 #
 
-component.defaultHost = wildcard_host
-
-#
-# Welcome
-#
-
-sys.stdout.write('Available virtual hosts: ')
-for i in range(len(component.hosts)):
-	host = component.hosts[i]
-	sys.stdout.write('"%s"' % host.name)
-	if i < len(component.hosts) - 1:
-		sys.stdout.write(', ')
-print '.'
+component.defaultHost = all_host

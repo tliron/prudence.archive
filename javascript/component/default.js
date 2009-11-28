@@ -14,7 +14,7 @@ importClass(
 // Welcome
 //
 
-print('Prudence 1.0 for JavaScript\n');
+print('Prudence 1.0 for JavaScript.\n');
 
 //
 // Component
@@ -58,12 +58,6 @@ component.logService.loggerName = 'web-requests';
 component.clients.add(Protocol.FILE);
 
 //
-// Servers
-//
-
-document.container.include('component/servers');
-
-//
 // Hosts
 //
 
@@ -74,6 +68,7 @@ document.container.include('component/hosts');
 //
 
 var applications = [];
+component.context.attributes.put('applications', applications);
 var applicationDirs = new File('applications').listFiles();
 for(var i in applicationDirs) {
 	var applicationDir = applicationDirs[i]; 
@@ -92,13 +87,19 @@ for(var i in applicationDirs) {
 	}
 }
 
+if(applications.length == 0) {
+	print('No applications found. Exiting.\n');
+	System.exit(0);
+}
+
+//
+// Servers
+//
+
+document.container.include('component/servers');
+
 //
 // Start
 //
 
-if(applications.length > 0) {
-	component.context.attributes.put('applications', applications);
-	component.start();
-} else {
-	print('No applications found.\n');
-}
+component.start();

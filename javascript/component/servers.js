@@ -47,9 +47,9 @@ component.servers.add(defaultServer);
 for(var i = 0; i < component.servers.size(); i++) {
 	var server = component.servers.get(i);
 	if(server.address) {
-		print('Starting server at ' + server.address + ' port ' + server.port + ' for ');
+		print('Listening on ' + server.address + ' port ' + server.port + ' for ');
 	} else {
-		print('Starting server at port ' + server.port + ' for ');
+		print('Listening on port ' + server.port + ' for ');
 	}
 	for(var j = 0; j < server.protocols.size(); j++) {
 		protocol = server.protocols.get(j);

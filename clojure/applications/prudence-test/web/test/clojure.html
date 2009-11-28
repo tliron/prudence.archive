@@ -46,23 +46,25 @@
 ; An example of a function
 ;
 
-(defn print-factory [f] (let [factory (bean f)]
+(defn print-factory [f]
+	(let [factory (bean f)]
 %>
 <p>
 	<i>Engine:</i> <%= (:engineName factory) %> version <%= (:engineVersion factory) %><br />
 	<i>Language:</i> <%= (:languageName factory) %> version <%= (:languageVersion factory) %><br />
 	<i>Names:</i> 
 <%
-	(def names (:names factory))
-	(doseq [name (butlast names)]
-		(print name)
-		(print ", ")
-	)
-	(print (last names))
+		(def names (:names factory))
+		(doseq [name (butlast names)]
+			(print name)
+			(print ", ")
+		)
+		(print (last names))
 %>
 </p>
 <%
-))
+	)
+)
 %>
 <h3>Script engine used:</h3>
 <%
@@ -81,7 +83,6 @@
 <h3>A few tests:</h3>
 <%
 (doseq [i (range 10)]
-	(do
 %>
 A multiple of three: 
 <%
@@ -89,7 +90,6 @@ A multiple of three:
 %>
 <br />
 <%
-	)
 )
 %>
 </td></tr></table>

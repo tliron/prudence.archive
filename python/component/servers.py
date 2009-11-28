@@ -46,9 +46,9 @@ component.servers.add(default_server)
 for i in range(len(component.servers)):
 	server = component.servers[i]
 	if server.address:
-		sys.stdout.write('Starting server "%s" at %s port %s for ' % (server.name, server.address, server.port))
+		sys.stdout.write('Listening on %s port %s for ' % (server.address, server.port))
 	else:
-		sys.stdout.write('Starting server "%s" at port %s for ' % (server.name, server.port))
+		sys.stdout.write('Listening on port %s for ' % server.port)
 	for j in range(len(server.protocols)):
 		protocol = server.protocols[j]
 		if j < len(server.protocols) - 1:

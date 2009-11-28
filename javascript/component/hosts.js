@@ -13,15 +13,15 @@ importClass(
 	org.restlet.routing.VirtualHost);
 
 //
-// Wildcard
+// All
 //
-// Our "wildcard" host will accept all incoming requests.
+// Our "all" host will accept all incoming requests.
 //
 
-var wildcardHost = new VirtualHost(component.context);
-wildcardHost.name = 'wildcard';
+var allHost = new VirtualHost(component.context);
+allHost.name = 'all';
 
-component.hosts.add(wildcardHost);
+component.hosts.add(allHost);
 
 //
 // mysite.org
@@ -46,18 +46,4 @@ component.hosts.add(mysiteHost);
 // routing.js.
 //
 
-component.defaultHost = wildcardHost;
-
-//
-// Welcome
-//
-
-print('Available virtual hosts: ');
-for(var i = 0; i < component.hosts.size(); i++) {
-	var host = component.hosts.get(i);
-	print('"' + host.name + '"');
-	if(i < component.hosts.size() - 1) {
-		print(', ');
-	}
-}
-print('.\n');
+component.defaultHost = allHost;

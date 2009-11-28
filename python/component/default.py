@@ -13,7 +13,7 @@ from org.restlet.data import Protocol
 # Welcome
 #
 
-print 'Prudence 1.0 for Python'
+print 'Prudence 1.0 for Python.'
 
 #
 # Component
@@ -52,19 +52,6 @@ System.setProperty('com.sun.script.velocity.properties', 'conf/velocity.conf')
 component.logService.loggerName = 'web-requests'
 
 #
-# Clients
-#
-
-# Required for use of Directory
-component.clients.add(Protocol.FILE)
-
-#
-# Servers
-#
-
-document.container.include('component/servers')
-
-#
 # Hosts
 #
 
@@ -74,7 +61,7 @@ document.container.include('component/hosts')
 # Applications
 #
 
-applications = []
+applications = component.context.attributes['applications'] = []
 application_dirs = File('applications').listFiles()
 for application_dir in application_dirs:
 	if application_dir.isDirectory():
@@ -89,12 +76,26 @@ for application_dir in application_dirs:
 			document.container.include('component/defaults/application');
 		applications.append(application)
 
+if len(applications) == 0:
+	print 'No applications found. Exiting.'
+	System.exit(0)
+
+#
+# Clients
+#
+
+# Required for use of Directory
+component.clients.add(Protocol.FILE)
+
+#
+# Servers
+#
+
+document.container.include('component/servers')
+
 #
 # Start
 #
 
-if len(applications) > 0:
-	component.context.attributes['applications'] = applications
-	component.start()
-else:
-	print 'No applications found.'
+component.context.attributes['applications'] = applications
+component.start()

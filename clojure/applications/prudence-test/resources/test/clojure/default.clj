@@ -75,18 +75,16 @@
 ; list of supported languages and encoding.
 
 (defn handleGet []
-	(def state (get-state))
+	(let [state (get-state), r (encode-to-str state)]
 
-	(def r (encode-to-str state))
+		; Return a representation appropriate for the requested media type
+		; of the possible options we created in handleInit
 	
-	; Return a representation appropriate for the requested media type
-	; of the possible options we created in handleInit
-	
-	(if (= (.. document getContainer getMediaType) MediaType/APPLICATION_JSON)
-		(def r (JsonRepresentation. (str r)))
+		(if (= (.. document getContainer getMediaType) MediaType/APPLICATION_JSON)
+			(JsonRepresentation. (str r))
+			r
+		)
 	)
-	
-	r
 )
 
 ; This function is called for the POST verb, which is expected to behave as a
@@ -102,11 +100,10 @@
 ; to the client.
 
 (defn handlePost []
-	(def update (decode-from-str (.. document getContainer getEntity getText)))
-	(def state (get-state))
-	
-	(set-state (merge state update))
-	
+	(let [update (decode-from-str (.. document getContainer getEntity getText))
+		state (get-state)]
+		(set-state (merge state update))
+	)
 	(handleGet)
 )
 
@@ -123,9 +120,9 @@
 ; to the client.
 
 (defn handlePut []
-	(def update (decode-from-str (.. document getContainer getEntity getText)))
-	(set-state update)
-	
+	(let [update (decode-from-str (.. document getContainer getEntity getText))]
+		(set-state update)
+	)
 	(handleGet)
 )
 
