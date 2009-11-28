@@ -15,7 +15,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -489,9 +488,6 @@ public class GeneratedTextResource extends ServerResource
 	{
 		super.doInit();
 		setAnnotated( false );
-		List<Variant> variants = getVariants();
-		variants.add( new Variant( MediaType.TEXT_HTML ) );
-		variants.add( new Variant( MediaType.TEXT_PLAIN ) );
 	}
 
 	@Override

@@ -69,9 +69,6 @@ public class ExposedContainerForGeneratedTextResource
 			this.characterSet = variant.getCharacterSet();
 		}
 
-		if( this.mediaType == null )
-			this.mediaType = MediaType.TEXT_HTML;
-
 		if( this.characterSet == null )
 			this.characterSet = resource.getDefaultCharacterSet();
 
@@ -271,6 +268,12 @@ public class ExposedContainerForGeneratedTextResource
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
 				document = existing;
+		}
+
+		if( this.getMediaType() == null )
+		{
+			// Set initial media type according to the document's tag
+			this.setMediaType( this.resource.getMetadataService().getMediaType( documentDescriptor.getTag() ) );
 		}
 
 		return run( document, name );
