@@ -112,5 +112,4 @@ router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_
 // Resources
 //
 
-var resources = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
 router.attach(fixURL(resourceBaseURL), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH;
