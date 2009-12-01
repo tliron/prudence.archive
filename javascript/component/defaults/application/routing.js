@@ -10,9 +10,8 @@ importClass(
 	org.restlet.routing.Router,
 	org.restlet.routing.Redirector,
 	org.restlet.routing.Template,
-	org.restlet.resource.Finder,
 	org.restlet.resource.Directory,
-	com.threecrickets.prudence.util.Fallback);
+	com.threecrickets.prudence.util.FallbackRouter);
 
 var classLoader = ClassLoader.systemClassLoader;
 
@@ -72,7 +71,7 @@ print('.\n');
 // Inbound root
 //
 
-var router = new Router(application.context);
+var router = new FallbackRouter(application.context);
 router.routingMode = Router.MODE_BEST_MATCH;
 application.inboundRoot = router;
 
@@ -97,8 +96,7 @@ if(urlAddTrailingSlash.length > 0) {
 // Dynamic web
 //
 
-//router.attach(fixURL(dynamicWebBaseURL), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH;
-var dynamicWeb = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')); 
+router.attach(fixURL(dynamicWebBaseURL), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH;
 
 //
 // Static web
@@ -108,14 +106,11 @@ var staticWeb = new Directory(router.context, File(applicationBasePath + staticW
 staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
 staticWeb.negotiateContent = true;
 
-//router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_STARTS_WITH;
+router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_STARTS_WITH;
 
 //
 // Resources
 //
 
 var resources = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
-//router.attach(fixURL(resourceBaseURL), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH;
-
-var fallback = new Fallback(application.context, dynamicWeb, staticWeb, resources);
-router.attach(fixURL(dynamicWebBaseURL), fallback).matchingMode = Template.MODE_STARTS_WITH;
+router.attach(fixURL(resourceBaseURL), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH;

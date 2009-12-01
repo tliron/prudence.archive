@@ -43,7 +43,7 @@ var hosts = [[component.defaultHost, null]];
 // is directly linked to the base URL.
 //
 
-var resourceBaseURL = '/resource/';
+var resourceBaseURL = '/';
 var resourceBasePath = '/resources/';
 
 // If the URL points to a directory rather than a file, and that directory
@@ -102,7 +102,7 @@ var dynamicWebMinimumTimeBetweenValidityChecks = 1000;
 // files efficiently to clients. 
 //
 
-var staticWebBaseURL = '/static/';
+var staticWebBaseURL = '/';
 var staticWebBasePath = '/web/static/';
 
 // If the URL points to a directory rather than a file, then this will allow
