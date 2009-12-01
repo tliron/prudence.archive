@@ -19,7 +19,7 @@ var classLoader = ClassLoader.systemClassLoader;
 //
 
 //  Makes sure we have slashes where we expect them
-function applicationURL(url) {
+function fixURL(url) {
 	if(url.length > 0 && url[0] == '/') {
 		url = url.slice(1);
 	}
@@ -70,7 +70,9 @@ print('.\n');
 // Inbound root
 //
 
+
 var router = new Router(application.context);
+router.routingMode = Router.MODE_BEST_MATCH;
 application.inboundRoot = router;
 
 //
@@ -79,7 +81,7 @@ application.inboundRoot = router;
 
 if(urlAddTrailingSlash.length > 0) {
 	for(var i in urlAddTrailingSlash) {
-		urlAddTrailingSlash[i] = applicationURL(urlAddTrailingSlash[i]);
+		urlAddTrailingSlash[i] = fixURL(urlAddTrailingSlash[i]);
 		if(urlAddTrailingSlash[i].length > 0) {
 			if(urlAddTrailingSlash[i][-1] == '/') {
 				// Remove trailing slash for pattern
@@ -91,6 +93,12 @@ if(urlAddTrailingSlash.length > 0) {
 }
 
 //
+// Dynamic web
+//
+
+router.attach(fixURL(dynamicWebBaseURL), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH;
+
+//
 // Static web
 //
 
@@ -98,16 +106,10 @@ var staticWeb = new Directory(router.context, File(applicationBasePath + staticW
 staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
 staticWeb.negotiateContent = true;
 
-router.attach(applicationURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_STARTS_WITH;
+router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_STARTS_WITH;
 
 //
 // Resources
 //
 
-router.attach(applicationURL(resourceBaseURL), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH;
-
-//
-// Dynamic web
-//
-
-router.attach(applicationURL(dynamicWebBaseURL), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH;
+router.attach(fixURL(resourceBaseURL), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH;

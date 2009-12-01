@@ -73,7 +73,7 @@ var resourceMinimumTimeBetweenValidityChecks = 1000;
 //
 
 var dynamicWebBaseURL = '/';
-var dynamicWebBasePath = '/web/';
+var dynamicWebBasePath = '/web/dynamic/';
 
 // If the URL points to a directory rather than a file, and that directory
 // contains a file with this name, then it will be used. This allows

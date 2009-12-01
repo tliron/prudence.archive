@@ -16,7 +16,7 @@ classLoader = ClassLoader.getSystemClassLoader()
 #
 
 # Makes sure we have slashes where we expect them
-def application_url(url):
+def fix_url(url):
 	if len(url) > 0 and url[0] == '/':
 		url = url[1:]
 	if len(url) > 0 and url[-1] != '/':
@@ -58,6 +58,7 @@ print '.'
 #
 
 router = Router(application.context)
+router.routingMode = Router.MODE_BEST_MATCH
 application.inboundRoot = router
 
 #
@@ -66,11 +67,17 @@ application.inboundRoot = router
 
 if len(url_add_trailing_slash) > 0:
 	for url in url_add_trailing_slash:
-		url = application_url(url)
+		url = fix_url(url)
 		if len(url) > 0:
 			if url[-1] == '/':
 				url = url[:-1]
 			router.attach(url, redirector)
+
+#
+# Dynamic web
+#
+
+router.attach(fix_url(dynamic_web_base_url), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH
 
 #
 # Static web
@@ -80,16 +87,10 @@ static_web = Directory(application.context, File(application_base_path + static_
 static_web.listingAllowed = static_web_directory_listing_allowed
 static_web.negotiateContent = True
 
-router.attach(application_url(static_web_base_url), static_web).matchingMode = Template.MODE_STARTS_WITH
+router.attach(fix_url(static_web_base_url), static_web).matchingMode = Template.MODE_STARTS_WITH
 
 #
 # Resources
 #
 
-router.attach(application_url(resource_base_url), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH
-
-#
-# Dynamic web
-#
-
-router.attach(application_url(dynamic_web_base_url), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH
+router.attach(fix_url(resource_base_url), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH

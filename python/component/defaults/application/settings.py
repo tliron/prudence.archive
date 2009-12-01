@@ -72,7 +72,7 @@ resource_minimum_time_between_validity_checks = 1000
 #
 
 dynamic_web_base_url = '/'
-dynamic_web_base_path = '/web/'
+dynamic_web_base_path = '/web/dynamic/'
 
 # If the URL points to a directory rather than a file, and that directory
 # contains a file with this name, then it will be used. This allows

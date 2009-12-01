@@ -1,0 +1,127 @@
+<%velocity #set($document.cacheDuration=5000) #set($prefix = '../') %><%& 'header-fragment' %>
+
+<h2>Generating HTML</h2>
+
+<p>
+Prudence has good support for generating HTML by embedding programming language code in it. Despite some unique and useful features, Prudence is not so much different in this than other platforms that support dynamic HTML generation. Where Prudence stands out is in its support for REST resources, which we'll deal with in the next section. Go ahead and skip to there if HTML generation bores you!
+</p>
+
+<h3>Files</h3>
+<p>
+Files under /web/dynamic/ are all assumed to be text files. While we're titling this section “Generating HTML,” these files can, in fact, be in any textual format. The filename's extension will be used to map the default MIME type for the file, though you can easily change it in code.
+</p><p>
+TUTORIAL:
+</p><p>
+Create a file named index.html under /web/dynamic/. Open your web browser to http://localhost:8080/hello/.  You should see your file rendered in the browser. Note that you did not have to enter index.html, though it would also work. Additionally, just index would work: in the /web/dynamic/ and /resources/ subdirectories, Prudence considers filename extensions to be optional for URLs.
+</p>
+
+<h3>Scriptlets</h3>
+<p>
+Programming language code can be embedded within your /web/dynamic/ files using either <% %> or <? ?>. Note, however, that you can only use one of either in the same file.
+</p><p>
+For historical reasons, these embedded bits of code are called “scriptlets.” However, they are usually compiled, not interpreted.
+</p><p>
+Blocks can span several scriptlets (as long as you are using the same programming language: see below). For example, this will work as expected:
+</p><p>
+
+
+You can achieve the same result by printing out the text in Python code:
+</p><p>
+
+
+In fact, behind the scenes, all non-scriptlet text is turned into code. It's a simple print of the non-scriptlet text.
+</p><p>
+A common idiom is to print out expressions interwoven with non-scriptlet text. The expression scriptlet, marked by an equal sign, can help you reduce clutter. For example:
+</p><p>
+
+Just remember that behind the scenes the expression scriptlet is turned into a regular scriptlet, So, you need to follow all the rules of Python expressions.
+</p>
+
+<h3>Mixing Languages</h3>
+<p>
+By default, Prudence will assume your scriptlets to be Python code. However, Prudence lets you scriptlets of various languages by adding the language name after the first scriptlet delimiter. For example:
+</p><p>
+NOTE: You need the appropriate language JARs under your /libs/ directory for this to work.
+</p><p>
+Once you change the language, all subsequent scriptlets will default to that language. Make sure to change back if you need to.
+</p><p>
+You might think that mixing programming languages is a bad idea in general, and only necessary for making use of legacy code. However, it can be a great idea if you consider that Prudence comes with high-performance templating languages, both Succinct and Velocity. This lets you write all the more straightforward templating as Succinct scriptlets, switching to Python scriptlets only when you need Python features. For example:
+</p><p>
+Not only is the Succinct code more readable and easier to manager, but it also performs betters, is less prone to errors, and more secure. Prudence lets you use the right tool for the right job.
+</p><p>
+One tiny hiccup to be aware of is that blocks can no longer trivially span several scriptlets. For example, this won't immediately work:
+</p><p>
+
+The reason is that, by necessity, Prudence must run scriptlets of different languages separately, in sequence. The language switch thus represents a boundary, But, fear not, Prudence lets you solve this problem via the “in-flow” scriptlet, marked by a colon:
+</p><p>
+
+This works! But how, you might wonder? Behind the scenes, the in-flow scriptlet is run from within the enclosing language. We thus do never leave the enclosing language for the purposes of running through the file. Don't worry about performance here: in-flow scriptlets are compiled only once per file. Also, in-flow scriptlets are treated as regular scriptlets if there is no language switch.
+</p><p>
+NOTE: Prudence's terrific handling of scriptlets in multiple languages is internally handled by the Scripturian library. Scripturian was originally developed for Prudence, but its use is generic and useful enough that it merited separating it into a separate project. With Scripturian, you can easily add scriptlet power to your Java applications.
+</p>
+
+<h3>Includes</h3>
+
+<h3>Life</h3>
+As mentioned, files are only compiled once, when they are first requested by a client. From then on, each request is handled by the compiled version.
+</p><p>
+What if you edit the file? Prudence can automatically pick up your changes and recompile. This happens on the fly, while the application is running. Are you worried that this check would happen for every client request? You can easily disable this feature for production deployments, or control the minimum time interval in which Prudence assumes the file is unchanged.
+</p><p>
+TUTORIAL:
+</p><p>
+Edit your index.html file and ...
+</p><p>
+NOTE:
+</p><p>
+Your compiled file can be run by multiple threads concurrently. It is up to you to avoid race conditions and guarantee thread safety.
+</p>
+
+<h3>Caching</h3>
+<p>
+You've chosen to use dynamically-generated HTML because you want request to be able to have different results. However, sometimes you do not expect results to change very often. For example, a home web page might display the local temperature, but it would probably be good enough to update it every hour, instead of per request.
+</p><p>
+Depending on what your scriptlets are doing, dynamically generating a web page can be very costly, and could be a performance and scalability bottleneck for your application under heavy load. You don't want to waste energy and resources to generate results that do not change.
+</p><p>
+The solution is to cache results. Sometimes even caching for tiny time intervals can make a huge different in the ability of your application to handle load. For example, let's say that in order to fetch the local temperature for our web page we need to query a service on the network. Without caching, every client request would result in a service query. Let's say our web page gets 100 hits per second. Even just caching our home page for 5 seconds would throttle our service queries down to 1 every 5 seconds, vs. 500 every 5 seconds without caching. And users would get temperature readings up to 5 seconds old. It's a negligible usability with enormous savings.
+</p><p>
+This was a trivial example. Truly scalable software requires smart caching everywhere, from the level of file and database access all the way to the generated results.
+</p><p>
+Prudence handles caching of results. Every file has its own caching interval, which you can access and change via scriptlet:
+</p><p>
+Note that you can change the cache interval dynamically. For example, you might want to increase it if you see that your machine's CPU load is too high, or you might even want to decrease it during “rush hours” where users expect to see especially up-to-date results.
+</p><p>
+By using includes, you can fine-tune your caching strategy even more. Since each file has its own caching interval, you can fragment your page into parts with different caching sensitivity. For example, you can put the temperature reading in its own fragment, with a high cache interval, with another fragment being a “number of visitors today” counter with no cache interval, always up-to-date. The home page itself could have its own interval, or none. This setup can help you think of caching problems independently, while allowing for subtle overall schemes.
+</p><p>
+TODO: default caching time in application context
+</p>
+
+<h3>Streaming</h3>
+<p>
+Sometimes the client expects a slow, and long response from your application. For example, a list of bank account transactions for the past year might be hundreds of rows in length. The client does not want to wait until you've produced the entire result, but can start consuming results as they come.
+</p><p>
+Streaming mode lets send results to your client as you produce them.
+</p><p>
+There are risks to streaming mode. If your scriptlet code fails along the way, the stream will stop and the client might get broken results, For example, an HTML table might not get its closing &lt;/table&gt; tag, leading to a broken rendering on a web browser. Of course, this is a general risk, and can happen due to connection failures along the way. It's just something you need to be extra careful about in streaming mode. So, make sure you catch all exceptions and gracefully finish the request for the client in case of error.
+</p>
+
+<h3>HTML Forms</h3>
+<p>
+The files in /web/dynamic/ are meant to be sent to the clients, in response to an HTTP GET. Later on, we'll look at  files under /resources/, which can respond to all HTTP verbs. However, there is one case in which you might want to respond to HTTP POST and PUT directly in your /web/dynamic/ files: HTML form submissions. Though hardly ideal, HTML forms are the most universally supported technique of getting input from clients, and are easy to set up.
+</p><p>
+Prudence's solution is trivial: it attaches your file to HTTP POST and PUT in addition to HTTP GET. This leaves it up to you to handle each method accordingly. Here is an example:
+</p><p>
+Handling form responses via scriplets can make your files hard to read, as they turn into a patchwork of various results all overlapped in one file. This can be cleaned up via includes:
+</p><p>
+Still, it might make more sense to remove all this form handling logic from /web/dynamic/ to /resources/. We'll show you an example of it in the next section.
+</p>
+
+
+<h3>Generating Other Formats</h3>
+By extension
+Programmatically
+(text, XML, JSON)
+
+
+
+
+<%& 'footer-fragment' %>
