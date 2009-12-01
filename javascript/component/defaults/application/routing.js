@@ -72,7 +72,6 @@ print('.\n');
 // Inbound root
 //
 
-
 var router = new Router(application.context);
 router.routingMode = Router.MODE_BEST_MATCH;
 application.inboundRoot = router;
