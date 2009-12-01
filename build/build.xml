@@ -191,12 +191,12 @@
 			<fileset dir="${php}/applications/prudence-test/web" />
 			<fileset dir="${velocity}/applications/prudence-test/web" />
 		</copy>
-		<copy todir="${dist-kitchensink}/content/applications/prudence-test/resources/test">
-			<fileset dir="${python}/applications/prudence-test/resources/test" />
-			<fileset dir="${ruby}/applications/prudence-test/resources/test" />
-			<fileset dir="${groovy}/applications/prudence-test/resources/test" />
-			<fileset dir="${clojure}/applications/prudence-test/resources/test" />
-			<fileset dir="${javascript}/applications/prudence-test/resources/test" />
+		<copy todir="${dist-kitchensink}/content/applications/prudence-test/resources">
+			<fileset dir="${python}/applications/prudence-test/resources" />
+			<fileset dir="${ruby}/applications/prudence-test/resources" />
+			<fileset dir="${groovy}/applications/prudence-test/resources" />
+			<fileset dir="${clojure}/applications/prudence-test/resources" />
+			<fileset dir="${javascript}/applications/prudence-test/resources" />
 		</copy>
 		<chmod file="${dist-kitchensink}/content/run.sh" perm="ugo+rx"/>
 	</target>
