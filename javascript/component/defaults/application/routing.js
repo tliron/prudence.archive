@@ -10,7 +10,9 @@ importClass(
 	org.restlet.routing.Router,
 	org.restlet.routing.Redirector,
 	org.restlet.routing.Template,
-	org.restlet.resource.Directory);
+	org.restlet.resource.Finder,
+	org.restlet.resource.Directory,
+	com.threecrickets.prudence.internal.Fallback);
 
 var classLoader = ClassLoader.systemClassLoader;
 
@@ -96,7 +98,8 @@ if(urlAddTrailingSlash.length > 0) {
 // Dynamic web
 //
 
-router.attach(fixURL(dynamicWebBaseURL), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH;
+//router.attach(fixURL(dynamicWebBaseURL), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH;
+var dynamicWeb = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')); 
 
 //
 // Static web
@@ -106,10 +109,14 @@ var staticWeb = new Directory(router.context, File(applicationBasePath + staticW
 staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
 staticWeb.negotiateContent = true;
 
-router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_STARTS_WITH;
+//router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_STARTS_WITH;
 
 //
 // Resources
 //
 
-router.attach(fixURL(resourceBaseURL), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH;
+var resources = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
+//router.attach(fixURL(resourceBaseURL), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH;
+
+var fallback = new Fallback(application.context, dynamicWeb, staticWeb, resources);
+router.attach(fixURL(dynamicWebBaseURL), fallback).matchingMode = Template.MODE_STARTS_WITH;

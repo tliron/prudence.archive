@@ -22,6 +22,7 @@ public class Fallback extends Restlet
 		super.handle( request, response );
 		for( Restlet restlet : restlets )
 		{
+			response.setStatus( Status.SUCCESS_OK );
 			restlet.handle( request, response );
 			if( response.getStatus() != Status.CLIENT_ERROR_NOT_FOUND )
 				break;
