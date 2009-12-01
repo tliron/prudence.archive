@@ -12,7 +12,7 @@ importClass(
 	org.restlet.routing.Template,
 	org.restlet.resource.Finder,
 	org.restlet.resource.Directory,
-	com.threecrickets.prudence.internal.Fallback);
+	com.threecrickets.prudence.util.Fallback);
 
 var classLoader = ClassLoader.systemClassLoader;
 
