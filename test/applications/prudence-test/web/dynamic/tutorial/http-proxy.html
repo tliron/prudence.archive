@@ -2,21 +2,21 @@
 
 <h2>HTTP Proxy</h2>
 <p>
-There's nothing special about how Prudence handles HTTP, and it can work easily behind any reverse proxy. This lets you easily unite Prudence with other web servers or run it behind a load balancer. Though it's not unique to Prudence, we thought to add this section to the documentation in order to get you rolling quickly on this common and useful task.
+There's nothing special about how Prudence handles HTTP, and it can work easily behind any reverse proxy. This lets you easily unite Prudence with other web servers or run it behind a load balancer. Though it's not unique to Prudence, we thought to add this section to the documentation in order to get you up and running quickly with this useful scenario.
 </p>
 
 <h3>PerlBal</h3>
 <p>
-You can run many instances of Prudence behind a load balancer. This offers fault tolerance, maintenance options, and the possibility to dramatically scale up the number of requests you can support. Fault tolerance happens load balancers will automatically route to another node in case one fails. Similarly, you can bring one node down for maintenance and keep your application up and running.
+You can run many instances of Prudence behind a load balancer. This offers fault tolerance, maintenance options, and the possibility to dramatically scale up the number of requests you can support. Your application can tolerate failure of any number of instances, as long as you have one running, because load balancers will automatically route to working instances. Similarly, load balancing allows you to bring some instances down for maintenance while keeping your application up and running.
 </p><p>
 Scaling up can be straightforward: simply add more and more instances behind the load balancer, which will make sure to distribute requests among them, while monitoring their responsiveness to accommodate for how well they handle their load. More complex systems can involve different kinds of instances, with the load balancer being in charge of routing requests to the appropriate pool of instances. This “partitioning” can be according to features (one pool handles chat room, one pool handles file downloads), geography (one pool handles England, one pool handles France), or other clever ways to keep the whole system efficient and responsive.
 </p><p>
-There are many great load balancers out there, but we especially like PerlBal. Not only is it easy to use and configure, but it also adds a cool feature: instances behind PerlBal can ask it to reroute specific requests. [In the future, we will show you how to do this in Prudence.]
+There are many great load balancers out there, but we especially like <a href="http://www.danga.com/perlbal/">PerlBal</a>. Not only is it easy to use and configure, but it also adds a cool feature: instances behind PerlBal can ask it to reroute specific requests. [In the future, we will show you how to do this in Prudence.]
 </p>
 
 <h3>Apache</h3>
 <p>
-Apache is often called the "Swiss army knife of the Internet" for how well it manipulates URLs and routes HTTP requests. Prudence already does powerful routing, including virtual hosting, and that this may be good enough for you. However, Apache is also used a container environment for application platforms as modules, such as mod_php and mod_wsgi. If you have no choice but to run Apache as your front end, it is straightforward to set it to route to Prudence as a reverse proxy.
+<a href="http://httpd.apache.org/">Apache</a> is often called the "Swiss army knife of the Internet" for how well it manipulates URLs and routes HTTP requests. Prudence already does powerful routing, including virtual hosting, and that this may be good enough for you. However, Apache is also used a container environment for application platforms as modules, such as mod_php and mod_wsgi. If you have no choice but to run Apache as your front end, it is straightforward to set it to route to Prudence as a reverse proxy.
 </p>
 
 

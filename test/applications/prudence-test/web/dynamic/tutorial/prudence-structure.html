@@ -3,14 +3,16 @@
 <h2>Prudence Structure</h2>
 
 <p>
-Prudence comes ready to rumble. You just need to have Java support on your environment, minimally Java 5. You really just need the Java runtime for Prudence, not the whole Java Development Kit. Also, the Standard Edition is just fine; Prudence does not require Enterprise Edition features. In fact, you can see Prudence as a RESTful, minimal alternative to developing web applications under Java Enterprise Edition.
+Prudence comes ready to rumble!
+</p><p>
+You just need to have Java support on your environment, minimally Java 5. You really just need the Java runtime for Prudence, not the whole Java Development Kit. Also, the Standard Edition is just fine; Prudence does not require Enterprise Edition features. In fact, you can see Prudence as a RESTful, minimal alternative to developing web applications under Java Enterprise Edition.
 </p><p>
 A single installation of Prudence works as a container for multiple applications and servers, so there is rarely a need to install it more than once per machine.
 </p><p>
 Here's what it contains:
-</p><p>
-run.sh and run.bat
-</p><p>
+</p>
+<h3>run.sh and run.bat</h3>
+<p>
 The former is for Unix-like operating systems, such as Linux and Mac OS X, the latter is for Windows. Running it should start a Prudence server with all applications. It will print out a simple welcome message with the basic server and and available applications. From then on, Prudence will avoid sending output to the console, and instead output to rolling logs under the /logs/ directory.
 </p><p>
 Prudence can actually run several servers at the same time, as well as handle several web sites via virtual hosting.
@@ -18,32 +20,32 @@ Prudence can actually run several servers at the same time, as well as handle se
 TUTORIAL:
 </p><p>
 Try it! Prudence should announce the availability of the demo application, and that it is listening on port 8080. Open your web browser to http://localhost:8080/, and have fun playing with the demos.
-</p><p>
-/applications/
-</p><p>
+</p>
+<h3>/applications/</h3>
+<p>
 This is where you put your applications, each occupying a subdirectory. Your application's subdirectory name serves as a useful default name for your application. It is also the default base URL, and the default logging name. You can change any of these default easily.
-</p><p>
-/logs/
-</p><p>
+</p>
+<h3>/logs/</h3>
+<p>
 This is where your rolling logs will appear. Prudence logs are highly configurable and powerful. In particular, your web.log will show all requests hitting your Prudence server, using a standard format that can be consumes and analyzed by software.
-</p><p>
-/component/
-</p><p>
+</p>
+<h3>/component/</h3>
+<p>
 This is where the Prudence component gets initialized. The “component” is the overall container which manages the servers and the applications. All files are straightforward code which you can edit and run. They're really nothing much more than scripts for bootstrapping the component. Going  through them can give you some idea of how Prudence assembles its parts together. You'll rarely need to edit these files: Prudence tries to make configuration easy by using sensible default behavior, and making it easy to override it. However, you can always edit these files directly if necessary.
 </p><p>
 For example, under /component/defaults/application/ you will find the default files used for applications in the /applications/ directory.
-</p><p>
-/conf/
-</p><p>
+</p>
+<h3>/conf/</h3>
+<p>
 There are a few essential configuration files here. Most important is logging.conf, but you will also find some optional files to help you configure Prudence to run as a daemon.
-</p><p>
-/lib/
-</p><p>
+</p>
+<h3>/lib/</h3>
+<p>
 Here you will find Prudence's main libraries as well as support libraries. The basic directory is for Java 
 libraries (JARs), but you may find subdirectories for libraries in other languages, such as Python.
 </p><p>
 If you add your own JARs, make sure to edit run.sh or run.bat to accommodate your additions.
-</p><p>
+</p><p class="note">
 NOTE: Java 6 can pick them up automatically. Daemon can, too.
 </p>
 

@@ -5,13 +5,24 @@ import org.restlet.Restlet;
 import org.restlet.routing.Route;
 import org.restlet.routing.Router;
 
+/**
+ * @author Tal Liron
+ */
 @SuppressWarnings("deprecation")
 public class FallbackRouter extends Router
 {
+	//
+	// Construction
+	//
+
 	public FallbackRouter( Context context )
 	{
 		super( context );
 	}
+
+	//
+	// Router
+	//
 
 	@Override
 	public Route attach( String pathTemplate, Restlet target )

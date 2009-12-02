@@ -56,8 +56,8 @@ The reason is that, by necessity, Prudence must run scriptlets of different lang
 </p><p>
 
 This works! But how, you might wonder? Behind the scenes, the in-flow scriptlet is run from within the enclosing language. We thus do never leave the enclosing language for the purposes of running through the file. Don't worry about performance here: in-flow scriptlets are compiled only once per file. Also, in-flow scriptlets are treated as regular scriptlets if there is no language switch.
-</p><p>
-NOTE: Prudence's terrific handling of scriptlets in multiple languages is internally handled by the Scripturian library. Scripturian was originally developed for Prudence, but its use is generic and useful enough that it merited separating it into a separate project. With Scripturian, you can easily add scriptlet power to your Java applications.
+</p><p class="note">
+Prudence's terrific handling of scriptlets in multiple languages is internally handled by the Scripturian library. Scripturian was originally developed for Prudence, but its use is generic and useful enough that it merited separating it into a separate project. With Scripturian, you can easily add scriptlet power to your Java applications.
 </p>
 
 <h3>Includes</h3>
@@ -70,9 +70,7 @@ What if you edit the file? Prudence can automatically pick up your changes and r
 TUTORIAL:
 </p><p>
 Edit your index.html file and ...
-</p><p>
-NOTE:
-</p><p>
+</p><p class="note">
 Your compiled file can be run by multiple threads concurrently. It is up to you to avoid race conditions and guarantee thread safety.
 </p>
 

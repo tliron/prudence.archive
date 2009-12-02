@@ -22,7 +22,12 @@ h4 {
 p {
 	font-size: 14px;
 	line-height: 180%;
-} 
+}
+
+.note {
+	border: 1px solid black;
+	padding: 3px 3px 3px 3px;
+}
 
 /* Hyperlinks */
 
