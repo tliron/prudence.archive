@@ -17,7 +17,7 @@
 	<property name="velocity" value="../velocity" />
 	
 	<property name="tmp" value="./tmp" />
-	<property name="kitchensink-base" value="${javascript}" />
+	<property name="kitchensink-base" value="${python}" />
 	<property name="dist-kitchensink" value="./kitchensink" />
 	<property name="dist-standalone" value="./standalone" />
 	<property name="dist-javascript" value="./javascript" />

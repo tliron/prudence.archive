@@ -17,10 +17,10 @@ importClass(
 	org.restlet.ext.json.JsonRepresentation);
 
 // Include the context library
-document.container.include('test/rhino/context');
+document.container.include('data/rhino/context');
 
 // Include the JSON library
-document.container.include('test/rhino/json2');
+document.container.include('data/rhino/json2');
 
 // State
 //

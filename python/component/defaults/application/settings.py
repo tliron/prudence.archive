@@ -42,7 +42,7 @@ hosts = {component.defaultHost: None}
 # is directly linked to the base URL.
 #
 
-resource_base_url = '/resource/'
+resource_base_url = '/'
 resource_base_path = '/resources/'
 
 # If the URL points to a directory rather than a file, and that directory
@@ -101,7 +101,7 @@ dynamic_web_minimum_time_between_validity_checks = 1000
 # files efficiently to clients. 
 #
 
-static_web_base_url = '/static/'
+static_web_base_url = '/'
 static_web_base_path = '/web/static/'
 
 # If the URL points to a directory rather than a file, then this will allow

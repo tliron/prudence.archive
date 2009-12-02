@@ -8,6 +8,7 @@ from java.lang import ClassLoader
 from java.io import File
 from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Directory
+from com.threecrickets.prudence.util import FallbackRouter
 
 classLoader = ClassLoader.getSystemClassLoader()
 
@@ -57,7 +58,7 @@ print '.'
 # Inbound root
 #
 
-router = Router(application.context)
+router = FallbackRouter(application.context)
 router.routingMode = Router.MODE_BEST_MATCH
 application.inboundRoot = router
 

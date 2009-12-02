@@ -18,10 +18,10 @@
 )
 
 ; Include the context library
-(.. document getContainer (include "test/clojure/context"))
+(.. document getContainer (include "data/clojure/context"))
 
 ; Include the JSON library
-(add-classpath (.toURL (File. (str (.. document getContainer getSource getBasePath) "/test/clojure"))))
+(add-classpath (.toURL (File. (str (.. document getContainer getSource getBasePath) "/data/clojure"))))
 (use '[org.danlarkin.json :only (encode-to-str decode-from-str)])
 
 ; State
