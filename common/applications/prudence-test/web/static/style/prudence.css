@@ -25,6 +25,11 @@ p {
 }
 
 .note {
+	border: 1px dotted black;
+	padding: 3px 3px 3px 3px;
+}
+
+.tutorial {
 	border: 1px solid black;
 	padding: 3px 3px 3px 3px;
 }

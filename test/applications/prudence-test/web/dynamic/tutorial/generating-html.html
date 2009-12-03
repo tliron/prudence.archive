@@ -19,14 +19,14 @@ be in any textual format. The filename's extension will be used to map
 the default MIME type for the file, though you can easily change it in
 code.</p>
 
-<p>TUTORIAL:</p>
-
+<div class="tutorial">
 <p>Create a file named index.html under /web/dynamic/. Open your web
 browser to http://localhost:8080/hello/. You should see your file
 rendered in the browser. Note that you did not have to enter index.html,
 though it would also work. Additionally, just index would work: in the
 /web/dynamic/ and /resources/ subdirectories, Prudence considers
 filename extensions to be optional for URLs.</p>
+</div>
 
 <h3>Scriptlets</h3>
 
@@ -62,8 +62,10 @@ code. However, Prudence lets you scriptlets of various languages by
 adding the language name after the first scriptlet delimiter. For
 example:</p>
 
-<p class="note">You need the appropriate language JARs under your
+<div class="note">
+<p>You need the appropriate language JARs under your
 /libs/ directory for this to work.</p>
+</div>
 
 <p>Once you change the language, all subsequent scriptlets will
 default to that language. Make sure to change back if you need to.</p>
@@ -96,12 +98,14 @@ the file. Don't worry about performance here: in-flow scriptlets are
 compiled only once per file. Also, in-flow scriptlets are treated as
 regular scriptlets if there is no language switch.</p>
 
-<p class="note">Prudence's terrific handling of scriptlets in
+<div class="note">
+<p>Prudence's terrific handling of scriptlets in
 multiple languages is internally handled by the Scripturian library.
 Scripturian was originally developed for Prudence, but its use is
 generic and useful enough that it merited separating it into a separate
 project. With Scripturian, you can easily add scriptlet power to your
 Java applications.</p>
+</div>
 
 <h3>Includes</h3>
 
@@ -118,12 +122,15 @@ every client request? You can easily disable this feature for production
 deployments, or control the minimum time interval in which Prudence
 assumes the file is unchanged.</p>
 
-<p>TUTORIAL:</p>
-
+<div class="tutorial">
 <p>Edit your index.html file and ...</p>
-<p class="note">Your compiled file can be run by multiple threads
+</div>
+
+<div class="note">
+<p>Your compiled file can be run by multiple threads
 concurrently. It is up to you to avoid race conditions and guarantee
 thread safety.</p>
+</div>
 
 <h3>Caching</h3>
 
@@ -215,6 +222,8 @@ one file. This can be cleaned up via includes:</p>
 logic from /web/dynamic/ to /resources/. We'll show you an example of it
 in the next section.</p>
 
-
 <h3>Generating Other Formats</h3>
-By extension Programmatically (text, XML, JSON) <%& 'footer-fragment' %>
+
+<p>By extension Programmatically (text, XML, JSON)</p>
+
+<%& 'footer-fragment' %>

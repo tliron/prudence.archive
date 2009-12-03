@@ -27,31 +27,32 @@ public class FallbackRouter extends Router
 	@Override
 	public Route attach( String pathTemplate, Restlet target )
 	{
-		Route exists = null;
+		Route existingRoute = null;
 		for( Route route : getRoutes() )
 		{
 			if( route.getTemplate().getPattern().equals( pathTemplate ) )
 			{
-				exists = route;
+				existingRoute = route;
 				break;
 			}
 		}
 
-		if( exists != null )
+		if( existingRoute != null )
 		{
-			Restlet current = exists.getNext();
+			Restlet current = existingRoute.getNext();
 			if( current instanceof Fallback )
 			{
+				// Add to current Fallback
 				( (Fallback) current ).addRestlet( target );
 			}
 			else
 			{
-				// Replace current with Fallback
+				// Replace current target with Fallback
 				Fallback fallback = new Fallback( getContext(), current, target );
-				exists.setNext( fallback );
+				existingRoute.setNext( fallback );
 			}
 
-			return exists;
+			return existingRoute;
 		}
 
 		return super.attach( pathTemplate, target );
