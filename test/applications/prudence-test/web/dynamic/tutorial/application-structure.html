@@ -2,32 +2,72 @@
 
 <h2>Application Structure</h2>
 
-<p>
-As stated earlier, each application's subdirectory name under the /applications/ directory is used as a default for many things. Under that subdirectory is a straightforward structure:
-</p><p>
-/web/dynamic/
-</p><p>
-This is where you'll put your dynamic HTML files. By “dynamic” is meant that they are generated on-demand, such that each request can potentially produce a different result. Prudence has a powerful framework for embedding programming language code into files, and for supporting caching of results for performance, streaming of results, and support for textual formats beyond HTML, such as XML, RSS, JSON, etc.
-</p><p>
-The names of the files and subdirectories under /web/dynamic/ attach to URLs, with simple intelligence to make it easy for you to create pretty, sensible URLs. Prudence additionally supports much more powerful routing.
-</p><p>
-/web/static/
-</p><p>
-This subdirectory works like a standard “static” web server. Files put here are attached to URLs and accessible to clients as is. Prudence uses non-blocking I/O for high performance, scalable delivery of data to client. Like many web servers, MIME types for HTTP headers are automatically assigned according to the filename extension. For example. .html files will be sent as application/html, and .png files will be sent as image/png. You can easily configure the basic mapping table.
-</p><p>
-/resources/
-</p><p>
-Whereas the /web/dynamic directory has HTML files with embedded programming language code,  /resources/ is pure code. This is Prudence's most powerful feature: files here are attached as REST resources, capable of handling all HTTP verbs and responding with appropriate representations in many different formats. If /web/dynamic/ lets you write HTML-based front ends for “thin” clients, such as simple web browsers, /resources/ lets you handle “rich” clients, such as AJAX, Flash and other dynamic platforms. 
-</p><p>
-By default, URLs will attach first to /web/dynamic/, then to /web/static/, and finally to /resources/. Thus, identical URLs from prior sections will hide those from latter sections. You can easily change the order of attachment.
-</p><p>
-Optional Files
-settings, routing, default
-</p><p>
-TUTORIAL:
-</p><p>
-Let's go ahead and create a subdirectory named “hello” under /applications/. When you restart Prudence, you'll see it announce the “hello” application as available under the /hello/ URL. We don't have anything there quite yet, so you will get an error if you try to browse to http://localhost:8080/hello/.
-</p>
+<p>As stated earlier, each application's subdirectory name under the
+/applications/ directory is used as a default for many things. Under
+that subdirectory is a straightforward structure:</p>
+
+<h3>/web/dynamic/</h3>
+
+<p>This is where you'll put your dynamic HTML files. By “dynamic” is
+meant that they are generated on-demand, such that each request can
+potentially produce a different result. Prudence has a powerful
+framework for embedding programming language code into files, and for
+supporting caching of results for performance, streaming of results, and
+support for textual formats beyond HTML, such as XML, RSS, JSON, etc.
+Later, we will <a href="html-generation">examine HTML generation in
+depth</a>.</p>
+
+<p>The names of the files and subdirectories under /web/dynamic/
+attach to URLs, with simple intelligence to make it easy for you to
+create pretty, sensible URLs. Prudence additionally supports <a
+	href="routing">much more powerful routing</a>.</p>
+
+<h3>/web/static/</h3>
+
+<p>This subdirectory works like a standard "static" web server.
+Files put here are attached to URLs and accessible to clients as is.
+Prudence uses non-blocking I/O for high performance, scalable delivery
+of data to client. Like many web servers, MIME types for HTTP headers
+are automatically assigned according to the filename extension. For
+example. .html files will be sent as application/html, and .png files
+will be sent as image/png. You can easily configure the basic mapping
+table.</p>
+
+<p>The static web subdirectory will likely just work for you as is.
+Later, we'll delve into <a href="static-web">a few of its
+configuration features</a>.</p>
+
+<h3>/resources/</h3>
+
+<p>Whereas the /web/dynamic directory has HTML files with embedded
+programming language code, /resources/ is pure code. This is Prudence's
+most powerful feature: files here are attached as REST resources,
+capable of handling all HTTP verbs and responding with appropriate
+representations in many different formats.
+
+<p>From the perspective of web development, consider that if
+/web/dynamic/ lets you write HTML-based front ends for "thin" clients,
+such as simple web browsers, /resources/ lets you handle "rich" clients,
+such as AJAX, Flash and other dynamic platforms.</p>
+<p>We'll delve into <a href="resources">resources</a> later.</p>
+
+<h3>Default Routing</h3>
+
+<p>By default, URLs will attach first to /web/dynamic/, then to
+/web/static/, and finally to /resources/. Thus, identical URLs from
+prior sections will hide those from latter sections. You can easily
+change the order of attachment. Routing will be <a href="routing">covered
+in depth</a> later.</p>
+
+<h3>Optional Files settings, routing, default</h3>
+
+<p>TUTORIAL:</p>
+
+<p>Let's go ahead and create a subdirectory named "hello" under
+/applications/. When you restart Prudence, you'll see it announce the
+"hello" application as available under the /hello/ URL. We don't have
+anything there quite yet, so you will get an error if you try to browse
+to http://localhost:8080/hello/.</p>
 
 
 <%& 'footer-fragment' %>

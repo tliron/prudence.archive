@@ -1,10 +1,14 @@
 <%velocity #set($document.cacheDuration=5000) #set($prefix = '../') %><%& 'header-fragment' %>
 
 <h2>Static Web</h2>
-<p class="note">
-<i>Should I use Apache instead of Prudence to serve my static files?</i>
-You might think that Apache would be better at this because it's designed to serve static files. However, Prudence's non-blocking I/O actually does a great job at it, too, and you will likely not see performance or scalability gains by using Apache instead. If serving static files from Prudence is more straightforward for you, don't hesitate to go for it.
-</p>
+
+<p class="note"><i>Should I use Apache instead of Prudence to
+serve my static files?</i> You might think that Apache would be better at
+this because it's designed to serve static files. However, Prudence's
+non-blocking I/O actually does a great job at it, too, and you will
+likely not see performance or scalability gains by using Apache instead.
+If serving static files from Prudence is more straightforward for you,
+don't hesitate to go for it.</p>
 
 
 
