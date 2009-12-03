@@ -22,7 +22,13 @@ public class Fallback extends Restlet
 
 	public Fallback( Context context, Restlet... restlets )
 	{
+		this( context, new AtomicInteger( 5000 ), restlets );
+	}
+
+	public Fallback( Context context, AtomicInteger remember, Restlet... restlets )
+	{
 		super( context );
+		this.remember = remember;
 		for( Restlet restlet : restlets )
 			addRestlet( restlet );
 	}
@@ -49,10 +55,6 @@ public class Fallback extends Restlet
 	public void setRemember( int remember )
 	{
 		this.remember.set( remember );
-		if( remember == 0 )
-			// Remember might have changed already, but it doesn't matter enough
-			// to complicate things
-			remembered.clear();
 	}
 
 	//
@@ -102,7 +104,7 @@ public class Fallback extends Restlet
 
 	private final CopyOnWriteArrayList<Restlet> restlets = new CopyOnWriteArrayList<Restlet>();
 
-	private final AtomicInteger remember = new AtomicInteger( 5000 );
+	private final AtomicInteger remember;
 
 	private final ConcurrentHashMap<String, Node> remembered = new ConcurrentHashMap<String, Node>();
 

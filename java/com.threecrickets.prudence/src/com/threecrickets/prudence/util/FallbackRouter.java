@@ -1,5 +1,7 @@
 package com.threecrickets.prudence.util;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.routing.Route;
@@ -18,6 +20,20 @@ public class FallbackRouter extends Router
 	public FallbackRouter( Context context )
 	{
 		super( context );
+	}
+
+	//
+	// Attributes
+	//
+
+	public int getRemember()
+	{
+		return remember.get();
+	}
+
+	public void setRemember( int remember )
+	{
+		this.remember.set( remember );
 	}
 
 	//
@@ -48,7 +64,7 @@ public class FallbackRouter extends Router
 			else
 			{
 				// Replace current target with Fallback
-				Fallback fallback = new Fallback( getContext(), current, target );
+				Fallback fallback = new Fallback( getContext(), remember, current, target );
 				existingRoute.setNext( fallback );
 			}
 
@@ -57,4 +73,9 @@ public class FallbackRouter extends Router
 
 		return super.attach( pathTemplate, target );
 	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	private final AtomicInteger remember = new AtomicInteger( 5000 );
 }

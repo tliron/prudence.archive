@@ -62,7 +62,7 @@
 	</target>
 
 	<target name="javadoc-unless" description="Create Prudence API docs" unless="javadoc-present">
-		<javadoc access="protected" author="true" excludepackagenames="**.internal.*" destdir="${tmp}/javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" sourcepath="${java-src}" splitindex="true" use="true" version="true" windowtitle="Prudence 1.0" doctitle="Prudence 1.0" verbose="true">
+		<javadoc access="protected" author="true" excludepackagenames="**.internal.*" destdir="${tmp}/api" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" sourcepath="${java-src}" splitindex="true" use="true" version="true" windowtitle="Prudence 1.0" doctitle="Prudence 1.0" verbose="true">
 			<link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
 			<link href="http://java.sun.com/javase/6/docs/api/" />
 			<link href="http://www.threecrickets.com/scripturian/api/" />
@@ -94,8 +94,8 @@
 	</target>
 
 	<target name="javadoc-kitchensink" depends="javadoc" description="Fetch Prudence API docs">
-		<copy todir="${dist-kitchensink}/content/applications/prudence-test/web/static/javadoc">
-			<fileset dir="${tmp}/javadoc" />
+		<copy todir="${dist-kitchensink}/content/applications/prudence-test/web/static/api">
+			<fileset dir="${tmp}/api" />
 		</copy>
 	</target>
 
@@ -222,8 +222,8 @@
 	</target>
 	
 	<target name="javadoc-standalone" depends="javadoc" description="Fetch Prudence API docs">
-		<copy todir="${dist-standalone}/content/javadoc">
-			<fileset dir="${tmp}/javadoc" />
+		<copy todir="${dist-standalone}/content/api">
+			<fileset dir="${tmp}/api" />
 		</copy>
 	</target>
 
@@ -293,8 +293,8 @@
 	</target>
 
 	<target name="javadoc-javascript" depends="javadoc" description="Fetch Prudence API docs">
-		<copy todir="${dist-javascript}/content/applications/prudence-test/web/static/javadoc">
-			<fileset dir="${tmp}/javadoc" />
+		<copy todir="${dist-javascript}/content/applications/prudence-test/web/static/api">
+			<fileset dir="${tmp}/api" />
 		</copy>
 	</target>
 
@@ -370,8 +370,8 @@
 	</target>
 
 	<target name="javadoc-python" depends="javadoc" description="Fetch Prudence API docs">
-		<copy todir="${dist-python}/content/applications/prudence-test/web/static/javadoc">
-			<fileset dir="${tmp}/javadoc" />
+		<copy todir="${dist-python}/content/applications/prudence-test/web/static/api">
+			<fileset dir="${tmp}/api" />
 		</copy>
 	</target>
 
