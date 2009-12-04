@@ -53,18 +53,21 @@ can be consumes and analyzed by software.</p>
 <h3>/component/</h3>
 
 <p>This is where the Prudence component gets initialized. The
-“component” is the overall container which manages the servers and the
-applications. All files are straightforward code which you can edit and
-run. They're really nothing much more than scripts for bootstrapping the
-component. Going through them can give you some idea of how Prudence
-assembles its parts together. You'll rarely need to edit these files:
-Prudence tries to make configuration easy by using sensible default
+"component" is the overall container which manages the servers and the
+applications.</p>
+
+<h3>/defaults/</h3>
+
+<p>Here you'll find defaults used in /component/ and /applications/.
+Generally, you'll not want to edit these, but instead override them
+there. Prudence tries to make configuration easy by using sensible default
 behavior, and making it easy to override it. However, you can always
 edit these files directly if necessary.</p>
 
-<p>For example, under /component/defaults/application/ you will find
-the default files used for applications in the /applications/ directory.
-</p>
+<p>All files here are straightforward code.
+They're really nothing much more than scripts for bootstrapping the
+Prudence. Going through them can give you some idea of how Prudence
+assembles its parts together.</p>
 
 <h3>/conf/</h3>
 

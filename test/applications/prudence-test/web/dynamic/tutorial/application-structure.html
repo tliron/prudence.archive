@@ -37,9 +37,15 @@ table.</p>
 Later, we'll delve into <a href="static-web">a few of its
 configuration features</a>.</p>
 
+<h3>/web/fragments/</h3>
+
+This subdirectory is not technically used by Prudence, but it's customary
+to put fragments included by /web/dynamic files here. Note that you can
+include files from anywhere in your file system.
+
 <h3>/resources/</h3>
 
-<p>Whereas the /web/dynamic directory has HTML files with embedded
+<p>Whereas the /web/dynamic/ subdirectory has HTML files with embedded
 programming language code, /resources/ is pure code. This is Prudence's
 most powerful feature: files here are attached as REST resources,
 capable of handling all HTTP verbs and responding with appropriate
@@ -49,6 +55,7 @@ representations in many different formats.
 /web/dynamic/ lets you write HTML-based front ends for "thin" clients,
 such as simple web browsers, /resources/ lets you handle "rich" clients,
 such as AJAX, Flash and other dynamic platforms.</p>
+
 <p>We'll delve into <a href="resources">resources</a> later.</p>
 
 <h3>Default Routing</h3>
