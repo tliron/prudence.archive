@@ -6,6 +6,7 @@ importClass(
 	java.lang.System,
 	java.io.File,
 	java.io.FileNotFoundException,
+	java.util.ArrayList,
 	java.util.logging.LogManager,
 	org.restlet.Component,
 	org.restlet.data.Protocol);
@@ -77,7 +78,7 @@ includeOrDefault('component/hosts');
 // Applications
 //
 
-var applications = [];
+var applications = new ArrayList();
 component.context.attributes.put('applications', applications);
 var applicationDirs = new File('applications').listFiles();
 for(var i in applicationDirs) {
@@ -88,7 +89,7 @@ for(var i in applicationDirs) {
 		var applicationBasePath = applicationDir.path;
 		var applicationDefaultURL = '/' + applicationDir.name + '/';
 		includeOrDefault(applicationBasePath, 'defaults/application');
-		applications[applications.length] = application;
+		applications.add(application);
 	}
 }
 
