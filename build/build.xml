@@ -57,7 +57,7 @@
 	</target>
 
 	<target name="javadoc" description="Create Prudence API docs">
-		<available file="${tmp}/javadoc" property="javadoc-present" />
+		<available file="${tmp}/api" property="javadoc-present" />
 		<antcall target="javadoc-unless" />
 	</target>
 
@@ -172,6 +172,9 @@
 		<copy todir="${dist-kitchensink}/content">
 			<fileset dir="${common}" excludes="log/" />
 			<fileset dir="${test}" excludes="log/" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/defaults">
+			<fileset dir="${kitchensink-base}/defaults" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/component">
 			<fileset dir="${kitchensink-base}/component" />

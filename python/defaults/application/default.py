@@ -12,11 +12,7 @@ from com.threecrickets.scripturian.file import DocumentFileSource
 # Settings
 #
 
-try:
-	document.container.include(application_base_path + '/settings')
-except FileNotFoundException:
-	# Use default application script
-	document.container.include('component/defaults/application/settings');
+include_or_default(application_base_path + '/settings', 'defaults/application/settings')
 
 #
 # Application
@@ -34,11 +30,7 @@ application.statusService.contactEmail = application_contact_email
 # Routing
 #
 
-try:
-	document.container.include(application_base_path + '/routing')
-except FileNotFoundException:
-	# Use default application script
-	document.container.include('component/defaults/application/routing');
+include_or_default(application_base_path + '/routing', 'defaults/application/routing')
 
 #
 # Logging

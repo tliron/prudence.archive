@@ -30,12 +30,6 @@ function fixURL(url) {
 	return url;
 }
 
-// Moves a route to be the one before the last
-function penultimateRoute(route) {
-	router.routes.remove(route);
-	router.routes.add(router.routes.size() - 1, route);
-}
-
 //
 // Hosts
 //

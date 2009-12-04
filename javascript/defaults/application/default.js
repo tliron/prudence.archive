@@ -14,12 +14,7 @@ importClass(
 // Settings
 //
 
-try {
-	document.container.include(applicationBasePath + '/settings');
-} catch(e if e.javaException instanceof FileNotFoundException) {
-	// Use default application script
-	document.container.include('component/defaults/application/settings');
-}
+includeOrDefault(applicationBasePath + '/settings', 'defaults/application/settings');
 
 //
 // Application
@@ -37,12 +32,7 @@ application.statusService.contactEmail = applicationContactEmail;
 // Routing
 //
 
-try {
-	document.container.include(applicationBasePath + '/routing');
-} catch(e if e.javaException instanceof FileNotFoundException) {
-	// Use default application script
-	document.container.include('component/defaults/application/routing');
-}
+includeOrDefault(applicationBasePath + '/routing', 'defaults/application/routing');
 
 //
 // Logging

@@ -2,6 +2,6 @@
 # Prudence Admin Application
 #
 
-document.container.include('component/defaults/application')
+document.container.include('defaults/application')
 
 attributes['component'] = component

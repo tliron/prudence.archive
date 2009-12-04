@@ -2,7 +2,7 @@
 // Prudence Admin Settings
 //
 
-document.container.include('component/defaults/application/settings');
+document.container.include('defaults/application/settings');
 
 applicationName = 'Prudence Admin';
 applicationDescription = 'Runtime management of Prudence';

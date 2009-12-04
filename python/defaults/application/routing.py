@@ -24,12 +24,6 @@ def fix_url(url):
 		url = url + '/'
 	return url
 
-# Moves a route to be the one before the last
-def penultimate_route(route):
-	router.routes.remove(route)
-	router.routes.add(router.routes.size() - 1, route)
-	return route
-
 #
 # Hosts
 #
