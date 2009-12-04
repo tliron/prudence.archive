@@ -5,7 +5,6 @@
 	
 	<property name="lib" value="../libraries" />
 	<property name="common" value="../common" />
-	<property name="test" value="../test" />
 	<property name="java" value="../java" />
 	<property name="java-src" value="${java}/com.threecrickets.prudence/src" />
 	<property name="python" value="../python" />
@@ -179,7 +178,6 @@
 	<target name="content-kitchensink" depends="javadoc-kitchensink" description="Fetch content">
 		<copy todir="${dist-kitchensink}/content">
 			<fileset dir="${common}" excludes="log/" />
-			<fileset dir="${test}" excludes="log/" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/defaults">
 			<fileset dir="${kitchensink-base}/defaults" />

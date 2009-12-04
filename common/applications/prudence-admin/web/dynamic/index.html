@@ -1,51 +1,44 @@
+<%velocity
 <html>
 <head>
 	<title>Prudence Admin</title>
 </head>
 <h1>Prudence Admin</h1>
-<%velocity
 
-#set($component = org.restlet.Application.getCurrent().context.attributes['component'])
-#set($applications = $component.context.attributes['applications'])
+#set($component = $document.container.resource.context.attributes.get('component'))
+#set($applications = $component.context.attributes.get('applications'))
 
-%>
 <body>
 <h2>Applications</h2>
-<%
 
-for application in applications:
-	%>
+#foreach($application in $applications)
 <div>
-	<h3><%= application.name %></h3>
-	<div><%= application.description %></div>
-	<div>Author: <%= application.author %></div>
+	<h3>$application.name</h3>
+	<div>$application.description</div>
+	<div>Author: $application.author</div>
 </div>
-<%
+#end
 
-%>
 <h2>Virtual Hosts</h2>
-<%
-
-for host in component.hosts:
-	%>
-	<h3><%= host.name %></h3>
-<%
-	#print dir(host)
-	
-%>
+#foreach($host in $component.hosts)
+	<h3>$host.name</h3>
+	<p>
+	Routes:
+	#foreach($route in $host.routes)
+		<a href="$route">$route</a>
+	#end
+	</p>
+#end
 
 <h2>Servers</h2>
-<%
 
-for server in component.servers:
-	%>
+#foreach($server in $component.servers)
 <div>
-	<h3><%= server.name %></h3>
-	Protocols: <%= str(server.protocols) %>
+	<h3>$server.name</h3>
+	Protocols: $server.protocols
 </div>
-<%
-
-%>
+#end
 
 </body>
 </html>
+%>
