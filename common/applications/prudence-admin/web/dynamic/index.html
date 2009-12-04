@@ -3,11 +3,10 @@
 	<title>Prudence Admin</title>
 </head>
 <h1>Prudence Admin</h1>
-<%python
+<%velocity
 
-from org.restlet import Application
-component = Application.getCurrent().context.attributes['component']
-applications = component.context.attributes['applications']
+#set($component = org.restlet.Application.getCurrent().context.attributes['component'])
+#set($applications = $component.context.attributes['applications'])
 
 %>
 <body>

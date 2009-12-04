@@ -23,7 +23,6 @@ import javax.script.ScriptException;
 
 import org.restlet.Context;
 import org.restlet.Request;
-import org.restlet.Response;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
@@ -125,10 +124,9 @@ import com.threecrickets.scripturian.ScriptletController;
  * <ul>
  * <li><code>document.container.isStreaming</code>: This boolean is true when
  * the writer is in streaming mode (see above).</li>
- * <li><code>document.container.request</code>: The {@link Request}. Useful for
- * accessing URL attributes, form parameters, etc.</li>
- * <li><code>document.container.response</code>: The {@link Response}. Useful
- * for explicitly setting response characteristics.</li>
+ * <li><code>document.container.resource</code>: The instance of this resource.
+ * Acts as a "this" reference for scriptlets. You can use it to access the
+ * request and response.</li>
  * <li><code>document.container.source</code>: The source used for the script;
  * see {@link #getDocumentSource()}.</li>
  * <li><code>document.container.variant</code>: The {@link Variant} of this

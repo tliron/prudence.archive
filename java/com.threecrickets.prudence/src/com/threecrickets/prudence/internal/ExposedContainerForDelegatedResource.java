@@ -134,9 +134,9 @@ public class ExposedContainerForDelegatedResource
 
 	/**
 	 * The {@link CharacterSet} that will be used if you return an arbitrary
-	 * type for <code>represent()</code>, <code>acceptRepresentation()</code>
-	 * and <code>storeRepresentation()</code>. Defaults to what the client
-	 * requested (in <code>container.variant</code>), or to the value of
+	 * type for <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>. Defaults to what the client requested (in
+	 * <code>container.variant</code>), or to the value of
 	 * {@link DelegatedResource#getDefaultCharacterSet()} if the client did not
 	 * specify it.
 	 * 
@@ -160,8 +160,8 @@ public class ExposedContainerForDelegatedResource
 
 	/**
 	 * The {@link Language} that will be used if you return an arbitrary type
-	 * for <code>represent()</code>, <code>acceptRepresentation()</code> and
-	 * <code>storeRepresentation()</code>. Defaults to null.
+	 * for <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>. Defaults to null.
 	 * 
 	 * @return The language or null if not set
 	 * @see #setLanguage(Language)
@@ -183,9 +183,9 @@ public class ExposedContainerForDelegatedResource
 
 	/**
 	 * The {@link MediaType} that will be used if you return an arbitrary type
-	 * for <code>represent()</code>, <code>acceptRepresentation()</code> and
-	 * <code>storeRepresentation()</code>. Defaults to what the client requested
-	 * (in <code>container.variant</code>).
+	 * for <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>. Defaults to what the client requested (in
+	 * <code>container.variant</code>).
 	 * 
 	 * @return The media type
 	 * @see #setMediaType(MediaType)
@@ -207,9 +207,9 @@ public class ExposedContainerForDelegatedResource
 
 	/**
 	 * The instance of this resource. Acts as a "this" reference for scriptlets.
-	 * For example, during a call to <code>initializeResource()</code>, this can
-	 * be used to change the characteristics of the resource. Otherwise, you can
-	 * use it to access the request and response.
+	 * For example, during a call to <code>handleInit()</code>, this can be used
+	 * to change the characteristics of the resource. Otherwise, you can use it
+	 * to access the request and response.
 	 * 
 	 * @return The resource
 	 */
@@ -220,9 +220,8 @@ public class ExposedContainerForDelegatedResource
 
 	/**
 	 * The {@link Variant} of this request. Useful for interrogating the
-	 * client's preferences. This is available only in <code>represent()</code>,
-	 * <code>acceptRepresentation()</code> and
-	 * <code>storeRepresentation()</code>.
+	 * client's preferences. This is available only in <code>handleGet()</code>,
+	 * <code>handlePost()</code> and <code>handlePut()</code>.
 	 * 
 	 * @return The variant or null if not available
 	 */
@@ -233,8 +232,8 @@ public class ExposedContainerForDelegatedResource
 
 	/**
 	 * A map of possible variants or media types supported by this resource. You
-	 * should initialize this during a call to <code>initializeResource()</code>
-	 * . Values for the map can be {@link MediaType} constants, explicit
+	 * should initialize this during a call to <code>handleInit()</code> .
+	 * Values for the map can be {@link MediaType} constants, explicit
 	 * {@link Variant} instances (in which case these variants will be returned
 	 * immediately for their media type without calling the entry point), or a
 	 * {@link List} containing both media types and variants. Use map key
@@ -249,9 +248,8 @@ public class ExposedContainerForDelegatedResource
 
 	/**
 	 * The {@link Representation} of an entity provided with this request.
-	 * Available only in <code>acceptRepresentation()</code> and
-	 * <code>storeRepresentation()</code>. Note that
-	 * <code>container.variant</code> is identical to
+	 * Available only in <code>handlePost()</code> and <code>handlePut()</code>.
+	 * Note that <code>container.variant</code> is identical to
 	 * <code>container.entity</code> when available.
 	 * 
 	 * @return The entity's representation or null if not available

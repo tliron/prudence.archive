@@ -19,8 +19,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.script.ScriptException;
 
-import org.restlet.Request;
-import org.restlet.Response;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
@@ -166,25 +164,14 @@ public class ExposedContainerForGeneratedTextResource
 	}
 
 	/**
-	 * The {@link Request}. Useful for accessing URL attributes, form
-	 * parameters, etc.
+	 * The instance of this resource. Acts as a "this" reference for scriptlets.
+	 * You can use it to access the request and response.
 	 * 
-	 * @return The request
+	 * @return The resource
 	 */
-	public Request getRequest()
+	public GeneratedTextResource getResource()
 	{
-		return this.resource.getRequest();
-	}
-
-	/**
-	 * The {@link Response}. Useful for explicitly setting response
-	 * characteristics.
-	 * 
-	 * @return The response
-	 */
-	public Response getResponse()
-	{
-		return this.resource.getResponse();
+		return this.resource;
 	}
 
 	/**
