@@ -11,7 +11,7 @@
 ; Accessing the request
 ;
 
-(def form (.. document getContainer getRequest getResourceRef getQueryAsForm))
+(def form (.. document getContainer getResource getRequest getResourceRef getQueryAsForm))
 
 ;
 ; Stream this script
@@ -39,7 +39,7 @@
 ;
 
 %>
-<%& "test/clojure-fragment" %>
+<%& "../fragments/test/clojure" %>
 <%
 
 ;

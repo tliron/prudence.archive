@@ -7,10 +7,12 @@ json
 jsr-223			
 jython			2.5.1 (Revision Aug 5, 2009 + patch)
 log4j			1.2.15
+mysqlconnector	5.1.8
 quercus			4.0.1
 restlet			2.0 (Revision 5730)
 rhino			1.7R2
 scripturian		1.0 (Revision 86)
 slf4j			1.5.8
 succinct		1.0 alpha 1
+sqlalchemy		0.6 (Revision 6523)
 velocity		1.6.2

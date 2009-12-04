@@ -11,7 +11,7 @@
 # Accessing the request
 #
 
-form = $document.container.request.resource_ref.query_as_form
+form = $document.container.resource.request.resource_ref.query_as_form
 
 #
 # Stream this document
@@ -42,7 +42,7 @@ print 'This page was dynamically generated at ', System.current_time_millis
 #
 
 %>
-<%& 'test/jruby-fragment' %>
+<%& '../fragments/test/jruby' %>
 <%
 
 # (See comments in jruby-fragment.html)

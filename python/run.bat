@@ -2,7 +2,8 @@
 set java=java
 set main=com.threecrickets.scripturian.MainDocument
 
-set jars=lib/com.sun.grizzly.jar;^
+set jars=lib/com.mysql.jdbc.jar;^
+lib/com.sun.grizzly.jar;^
 lib/com.sun.script.velocity.jar;^
 lib/com.threecrickets.prudence.jar;^
 lib/com.threecrickets.scripturian.jar;^

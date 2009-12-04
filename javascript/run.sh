@@ -9,6 +9,7 @@ java=/usr/bin/java
 main=com.threecrickets.scripturian.MainDocument
 
 jars=\
+lib/com.mysql.jdbc.jar:\
 lib/com.sun.grizzly.jar:\
 lib/com.sun.phobos.script.javascript.jar:\
 lib/com.sun.script.velocity.jar:\

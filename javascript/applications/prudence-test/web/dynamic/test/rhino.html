@@ -11,7 +11,7 @@
 // Accessing the request
 //
 
-var form = document.container.request.resourceRef.queryAsForm;
+var form = document.container.resource.request.resourceRef.queryAsForm;
 
 //
 // Stream this script
@@ -35,7 +35,7 @@ print('This page was dynamically generated at ' + java.lang.System.currentTimeMi
 //
 
 %>
-<%& 'test/rhino-fragment' %>
+<%& '../fragments/test/rhino' %>
 <%
 
 //

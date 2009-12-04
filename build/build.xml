@@ -110,11 +110,13 @@
 			<fileset dir="${lib}/jsr223/lib" />
 			<fileset dir="${lib}/jython/lib" />
 			<fileset dir="${lib}/log4j/lib" />
+			<fileset dir="${lib}/mysqlconnector/lib" />
 			<fileset dir="${lib}/quercus/lib" />
 			<fileset dir="${lib}/restlet/lib" />
 			<fileset dir="${lib}/rhino/lib" />
 			<fileset dir="${lib}/scripturian/lib" />
 			<fileset dir="${lib}/slf4j/lib" />
+			<fileset dir="${lib}/sqlalchemy/lib" />
 			<fileset dir="${lib}/velocity/lib" />
 			<fileset file="${lib}/versions.txt" />
 		</copy>
@@ -148,6 +150,9 @@
 		<copy todir="${dist-kitchensink}/content/licenses/log4j">
 			<fileset dir="${lib}/log4j/license" />
 		</copy>
+		<copy todir="${dist-kitchensink}/content/licenses/mysqlconnector">
+			<fileset dir="${lib}/mysqlconnector/license" />
+		</copy>
 		<copy todir="${dist-kitchensink}/content/licenses/quercus">
 			<fileset dir="${lib}/quercus/license" />
 		</copy>
@@ -162,6 +167,9 @@
 		</copy>
 		<copy todir="${dist-kitchensink}/content/licenses/slf4j">
 			<fileset dir="${lib}/slf4j/license" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/licenses/sqlalchemy">
+			<fileset dir="${lib}/sqlalchemy/license" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/licenses/velocity">
 			<fileset dir="${lib}/velocity/license" />
@@ -201,6 +209,12 @@
 			<fileset dir="${clojure}/applications/prudence-test/resources" />
 			<fileset dir="${javascript}/applications/prudence-test/resources" />
 		</copy>
+		<copy todir="${dist-kitchensink}/content/applications/stickre/web">
+			<fileset dir="${python}/applications/stickre/web" />
+		</copy>
+		<!--<copy todir="${dist-kitchensink}/content/applications/stickre/resources">
+			<fileset dir="${python}/applications/stickre/resources" />
+		</copy>-->
 		<chmod file="${dist-kitchensink}/content/run.sh" perm="ugo+rx"/>
 	</target>
 
@@ -331,9 +345,11 @@
 			<fileset dir="${lib}/jsr223/lib" />
 			<fileset dir="${lib}/jython/lib" />
 			<fileset dir="${lib}/log4j/lib" />
+			<fileset dir="${lib}/mysqlconnector/lib" />
 			<fileset dir="${lib}/restlet/lib" />
 			<fileset dir="${lib}/scripturian/lib" />
 			<fileset dir="${lib}/slf4j/lib" />
+			<fileset dir="${lib}/sqlalchemy/lib" />
 			<fileset dir="${lib}/velocity/lib" />
 			<fileset file="${lib}/versions.txt" />
 		</copy>
@@ -358,6 +374,9 @@
 		<copy todir="${dist-python}/content/licenses/log4j">
 			<fileset dir="${lib}/log4j/license" />
 		</copy>
+		<copy todir="${dist-python}/content/licenses/mysqlconnector">
+			<fileset dir="${lib}/mysqlconnector/license" />
+		</copy>
 		<copy todir="${dist-python}/content/licenses/restlet">
 			<fileset dir="${lib}/restlet/license" />
 		</copy>
@@ -366,6 +385,9 @@
 		</copy>
 		<copy todir="${dist-python}/content/licenses/slf4j">
 			<fileset dir="${lib}/slf4j/license" />
+		</copy>
+		<copy todir="${dist-python}/content/licenses/sqlalchemy">
+			<fileset dir="${lib}/sqlalchemy/license" />
 		</copy>
 		<copy todir="${dist-python}/content/licenses/velocity">
 			<fileset dir="${lib}/velocity/license" />

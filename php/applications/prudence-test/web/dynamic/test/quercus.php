@@ -1,7 +1,7 @@
 <html>
 <head>
 	<title>PHP Scriptlets Demo</title>
-	<link rel="stylesheet" type="text/css" href="../static/prudence.css" />
+	<link rel="stylesheet" type="text/css" href="../style/prudence.css" />
 </head>
 <body>
 <table width="100%"><tr valign="top"><td>
@@ -11,7 +11,7 @@
 // Accessing the request
 //
 
-$form = $document->container->request->resourceRef->queryAsForm;
+$form = $document->container->resource->request->resourceRef->queryAsForm;
 
 //
 // Stream this document
@@ -31,7 +31,7 @@ print 'This page was dynamically generated at ' . System::currentTimeMillis();
 //
 // Including a document
 //
-// (see comments in quercus.fragment)
+// (see comments in fragments/quercus.html)
 //
 // This is identical to:
 //
@@ -39,7 +39,7 @@ print 'This page was dynamically generated at ' . System::currentTimeMillis();
 //
 
 ?>
-<?& $document->meta->get('prudenceDemoBasePath') . 'test/quercus.fragment' ?>
+<?& '../fragments/test/quercus.php' ?>
 <?
 
 //

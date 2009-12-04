@@ -1,7 +1,7 @@
 <html>
 <head>
 	<title>Velocity Scriptlets Demo</title>
-	<link rel="stylesheet" type="text/css" href="../static/prudence.css" />
+	<link rel="stylesheet" type="text/css" href="../style/prudence.css" />
 </head>
 <body>
 <table width="100%"><tr valign="top"><td>
@@ -11,7 +11,7 @@
 ## Accessing the request
 ##
 
-#set($form = $document.container.request.resourceRef.queryAsForm)
+#set($form = $document.container.resource.request.resourceRef.queryAsForm)
 
 ##
 ## Stream this document
@@ -48,7 +48,7 @@ This page was dynamically generated at $currentTimeMillis
 ##   $document.container.includeDocument('path')
 ##
 
-%><%& "test/velocity.fragment" %><%
+%><%& "../fragments/test/velocity" %><%
 
 ##
 ## An example of a macro

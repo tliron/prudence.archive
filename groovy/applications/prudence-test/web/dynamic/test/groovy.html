@@ -11,7 +11,7 @@
 // Accessing the request
 //
 
-def form = document.container.request.resourceRef.queryAsForm
+def form = document.container.resource.request.resourceRef.queryAsForm
 
 //
 // Stream this document
@@ -40,7 +40,7 @@ print 'This page was dynamically generated at ' + System.currentTimeMillis()
 //
 
 %>
-<%& 'test/groovy-fragment' %>
+<%& '../fragments/test/groovy' %>
 <%
 
 //

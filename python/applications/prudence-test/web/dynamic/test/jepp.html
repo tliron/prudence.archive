@@ -11,7 +11,7 @@
 # Accessing the request
 #
 
-form = document.getContainer().getRequest().getResourceRef().getQueryAsForm()
+form = document.getContainer().getResource().getRequest().getResourceRef().getQueryAsForm()
 
 #
 # Stream this document
@@ -44,7 +44,7 @@ sys.stdout.write('This page was dynamically generated at ' + str(System.currentT
 #
 
 %>
-<%& 'test/jepp-fragment' %>
+<%& '../fragments/test/jepp' %>
 <%
 
 #

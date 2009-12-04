@@ -11,7 +11,7 @@
 # Accessing the request
 #
 
-form = document.container.getRequest().resourceRef.queryAsForm
+form = document.container.resource.request.resourceRef.queryAsForm
 
 #
 # Stream this document
@@ -44,7 +44,7 @@ sys.stdout.write('This page was dynamically generated at ' + str(System.currentT
 #
 
 %>
-<%& 'test/jython-fragment' %>
+<%& '../fragments/test/jython' %>
 <%
 
 #
