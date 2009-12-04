@@ -1,4 +1,4 @@
-<%velocity #set($document.cacheDuration=5000) #set($prefix = '../') %><%& 'header-fragment' %>
+<%velocity #set($document.cacheDuration=5000) #set($prefix = '../') %><%& '../fragments/header' %>
 
 <h2>Application Structure</h2>
 
@@ -8,7 +8,7 @@ that subdirectory is a straightforward structure:</p>
 
 <h3>/web/dynamic/</h3>
 
-<p>This is where you'll put your dynamic HTML files. By “dynamic” is
+<p>This is where you'll put your dynamic HTML files. By "dynamic" is
 meant that they are generated on-demand, such that each request can
 potentially produce a different result. Prudence has a powerful
 framework for embedding programming language code into files, and for
@@ -59,7 +59,8 @@ prior sections will hide those from latter sections. You can easily
 change the order of attachment. Routing will be <a href="routing">covered
 in depth</a> later.</p>
 
-<h3>Optional Files settings, routing, default</h3>
+<h3>Optional Files</h3>
+<p>settings, routing, default</p>
 
 <div class="tutorial">
 <p>
@@ -70,4 +71,4 @@ anything there quite yet, so you will get an error if you try to browse
 to http://localhost:8080/hello/.</p>
 </div>
 
-<%& 'footer-fragment' %>
+<%& '../fragments/footer' %>
