@@ -621,14 +621,7 @@ public class DelegatedResource extends ServerResource
 		setAnnotated( false );
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants() );
 
-		try
-		{
-			container.invoke( getEntryPointNameForInit() );
-		}
-		catch( ResourceException x )
-		{
-			x.printStackTrace();
-		}
+		container.invoke( getEntryPointNameForInit() );
 	}
 
 	/**
