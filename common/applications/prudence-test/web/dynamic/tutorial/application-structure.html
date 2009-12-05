@@ -19,8 +19,8 @@ depth</a>.</p>
 
 <p>The names of the files and subdirectories under /web/dynamic/
 attach to URLs, with simple intelligence to make it easy for you to
-create pretty, sensible URLs. Prudence additionally supports <a
-	href="routing">much more powerful routing</a>.</p>
+create pretty, sensible URLs. Prudence additionally supports
+<a href="routing">much more powerful routing</a>.</p>
 
 <h3>/web/static/</h3>
 
@@ -58,6 +58,12 @@ such as AJAX, Flash and other dynamic platforms.</p>
 
 <p>We'll delve into <a href="resources">resources</a> later.</p>
 
+<h3>/libraries/</h3>
+
+Like /web/fragments/, Prudence does not directly use this directory,
+but it's customary to put your code here. Code here can be used by
+/resources/ and by scriptlets in /web/dynamic/.
+
 <h3>Default Routing</h3>
 
 <p>By default, URLs will attach first to /web/dynamic/, then to
@@ -66,7 +72,16 @@ prior sections will hide those from latter sections. You can easily
 change the order of attachment. Routing will be <a href="routing">covered
 in depth</a> later.</p>
 
+<div class="note">
+<p>When Prudence URLs are attached to files,
+the filename extension is optional. Prudence simply grabs the
+first file it finds with that name. So, generally, get used
+to not have more than one file with the same name in the same directory,
+even if they have different extensions.</p>
+</div>
+
 <h3>Optional Files</h3>
+
 <p>settings, routing, default</p>
 
 <div class="tutorial">

@@ -24,7 +24,6 @@
 						<li><a href="http://prudence.tigris.org/">Community and Support</a></li>
 						<li><span class="heading">Tutorial</span>
 							<ul>
-								<li><a href="$!{prefix}tutorial/flavors">How to Choose a Flavor?</a></li>
 								<li><a href="$!{prefix}tutorial/prudence-structure">Prudence Structure</a></li>
 								<li><a href="$!{prefix}tutorial/application-structure">Application Structure</a></li>
 								<li><a href="$!{prefix}tutorial/generating-html">Generating HTML</a></li>
@@ -34,14 +33,17 @@
 								<li><a href="$!{prefix}tutorial/representations">Representations</a></li>
 								<li><a href="$!{prefix}tutorial/logging">Logging</a></li>
 								<li><a href="$!{prefix}tutorial/state">Managing State</a></li>
-								<li><a href="$!{prefix}tutorial/prudence-structure">Daemon</a></li>
+								<li><a href="$!{prefix}tutorial/daemon">Daemon</a></li>
 								<li><a href="$!{prefix}tutorial/http-proxy">HTTP Proxy</a></li>
 							</ul>
 						</li>
 						<li><span class="heading">Documentation</span>
 							<ul>
-								<li><a href="$!{prefix}api/">API</a></li>
+								<li><a href="$!{prefix}flavors">How to Choose a Flavor?</a></li>
+								<li><a href="$!{prefix}rest">The Case for REST</a></li>
 								<li><a href="$!{prefix}faq">FAQ</a></li>
+								<li><a href="$!{prefix}under-the-hood">Under the Hood</a></li>
+								<li><a href="$!{prefix}api/">Java API</a></li>
 							</ul>
 						</li>
 						<li><span class="heading">Tests</span>
@@ -59,4 +61,9 @@
 
 			</td>
 			<td width="50%" id="main">
+#if($document.container.resource.request.resourceRef.path.indexOf('tutorial') != -1)
+<div class="note" align="center"><p>
+The tutorial is a work in progress! Expect to see missing sections and some out-of-date information.
+</p></div>
+#end
 %>

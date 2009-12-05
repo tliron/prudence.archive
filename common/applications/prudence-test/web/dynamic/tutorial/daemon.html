@@ -1,13 +1,54 @@
 <%velocity #set($document.cacheDuration=5000) #set($prefix = '../') %><%& '../fragments/header' %>
 
 
-<h3>Prudence Daemon</h3>
+<h2>Prudence As a Daemon</h2>
 
-<h2>YAJSW</h2>
+<p>In production environments, it's best to run Prudence as a daemon in Unix-like systems
+or a service in Windows, via a lightweight wrapper. This will provide proper process
+monitoring and control. For example, if Prudence's JVM crashes for some reason, hangs, grabs
+too much CPU or RAM, the wrapper can automatically shut down and even restart it.</p>
 
-<h2>Java Service Wrapper</h2>
+<p>While Prudence comes with the necessary configuration files for this, it does not include
+the actual wrapper, which you will need to install manually. There are two reasons for this:
+YAJSW, our preferred wrapper, is too big a download as of now, and including it in
+Prudence make it too heavy. As for Tanuki's JSW, its license will not allow us to
+distribute it with Prudence. It does not, however, bar you from downloading and installing
+it yourself.</p>
+
+<div class="note">
+<p>Ready for a short history lesson?</p>
+<p>The copyright for JSW is held by its developer, Tanuki Software. Up to version 3.2,
+Tanuki released JSW under a very permissive license, making it very popular in many
+projects. However, it has since been distributed under the GPL 2.0 (and also via a commercial
+license). We applaud Tanuki's commitment to open source, and are big fans of the GPL.
+However, the GPL makes it impossible to distribute JSW with open source projects
+using less restrictive licenses, such as Prudence. Many projects have kept distributing
+version 3.2 of JSW, which is now out of date and missing bug fixes.</p>
+<p>For less restrictive open source projects, the gap has been filled by JAJSW, which
+originally sought not only to be a drop-in replacement for JSW, but also to go beyond it
+with many more features.</p>
+</div>
+
+<h3>YAJSW</h3>
+
+<p><a href="http://yajsw.sourceforge.net/">YAJSW</a> is cleverly written in 100% Java, using
+<a href="https://jna.dev.java.net/">JNA</a> to handle the native operating-system-dependent
+features. It is an powerful tool with many great features.</p>
+
+<h4>Monitoring via JMX</h4>
+
+<h3>JSW</h3>
+
+<p>
+<a href="http://wrapper.tanukisoftware.org/">JSW</a> is written in C rather than Java,
+making it more lightweight than YAJSW. Nevertheless, it has binaries for many
+operating systems.
+</p>
 
 
+
+
+</p>
 
 
 

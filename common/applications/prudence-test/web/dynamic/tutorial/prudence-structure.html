@@ -4,18 +4,22 @@
 
 <p>Prudence comes ready to rumble!</p>
 
-<p>You just need to have Java support on your environment, minimally
-Java 5. You really just need the Java runtime for Prudence, not the
-whole Java Development Kit. Also, the Standard Edition is just fine;
-Prudence does not require Enterprise Edition features. In fact, you can
-see Prudence as a RESTful, minimal alternative to developing web
-applications under Java Enterprise Edition.</p>
+<p>You just need to have Java Virtual Machine (JVM) support on your
+environment, minimally version 5. An excellent, open-source JVM is available
+as part of the <a href="http://openjdk.java.net/">OpenJDK</a> project.</p>
+
+<p>Java Runtime Environment (JRE) is enough for Prudence. You need the
+Java Development Kit (JDK) only if you plan to write code in Java.</p>
+
+<p>Also, Java Standard Edition (JEE) is good enough; Prudence does not require
+Enterprise Edition features. In fact, you can see Prudence as a RESTful, minimal
+alternative to developing web applications under Java Enterprise Edition.</p>
 
 <p>A single installation of Prudence works as a container for
 multiple applications and servers, so there is rarely a need to install
 it more than once per machine.</p>
 
-<p>Here's what it contains:</p>
+<p>Here's what Prudence contains:</p>
 
 <h3>run.sh and run.bat</h3>
 
@@ -28,6 +32,13 @@ rolling logs under the /logs/ directory.</p>
 
 <p>Prudence can actually run several servers at the same time, as
 well as handle several web sites via virtual hosting.</p>
+
+<div class="note">
+<p>This run scripts are there for getting you quickly
+up and running, however it is strongly recommended that you run
+<a href="daemon">Prudence as a daemon</a> for production systems.
+</p>
+</div>
 
 <div class="tutorial">
 <p>Try it! Prudence should announce the availability of the demo
@@ -43,12 +54,16 @@ subdirectory. Your application's subdirectory name serves as a useful
 default name for your application. It is also the default base URL, and
 the default logging name. You can change any of these default easily.</p>
 
+<p>More about the structure of applications <a href="application-structure">here</a>.</p>
+
 <h3>/logs/</h3>
 
 <p>This is where your rolling logs will appear. Prudence logs are
 highly configurable and powerful. In particular, your web.log will show
 all requests hitting your Prudence server, using a standard format that
 can be consumes and analyzed by software.</p>
+
+<p>More on logging <a href="logging">here</a>.</p>
 
 <h3>/component/</h3>
 
