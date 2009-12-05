@@ -54,11 +54,6 @@ function seeMainSource() {
 	var resource = $('#resource').val();
 	window.location = resource + '?source=true';
 }
-
-function seeIncludeSource() {
-	var resource = $('#resource').val();
-	window.location = resource.replace('default', 'context') + '?source=true';
-}
 </script>
 
 
@@ -98,11 +93,7 @@ function seeIncludeSource() {
 		<option value="data/rhino/">JavaScript</option>
 		<!-- <option value="resource/test/quercus/">PHP [BROKEN]</option> -->
 	</select>
-</p>
-<p>
-	<i>Source code:</i>
-	<input type="button" onclick="seeMainSource()" value="Main" />
-	<input type="button" onclick="seeIncludeSource()" value="Include" />
+	<input type="button" onclick="seeMainSource()" value="Source" />
 </p>
 <p>
 	<i>MIME to request (for Get, Post and Put):</i>

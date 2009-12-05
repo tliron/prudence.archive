@@ -18,7 +18,7 @@ import org.json.JSONObject
 
 // Include the context library
 
-document.container.include('data/groovy/context')
+document.container.include('../libraries/groovy/context')
 
 // State
 //

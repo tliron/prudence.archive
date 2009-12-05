@@ -17,13 +17,13 @@ from org.restlet.ext.json import JsonRepresentation
 
 # Include the context library
 
-document.container.include('data/jython/context')
+document.container.include('../libraries/jython/context')
 
 # Include the minjson library
 # (Note that we made a small change to minjson in order to accommodate Jython.
 # See line 334 there.)
 
-sys.path.append(str(document.container.source.basePath) + '/data/jython/')
+sys.path.append(str(document.container.source.basePath) + '/../libraries/jython/')
 import minjson as json
 
 # State
