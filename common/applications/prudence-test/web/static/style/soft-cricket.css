@@ -1,6 +1,12 @@
+/******************
+ *  Soft Cricket  *
+ *                *
+ *  By Tal Liron  *
+ ******************/
+
 body {
 	sbackground-color: #e0ffe0;
-	background: url(../images/bg.gif); /* From: http://www.eosdev.com/Backgrounds/Back_Tilework/EosTilework2h.htm */
+	background: url(../images/background.png); /* From: http://www.eosdev.com/Backgrounds/Back_Tilework/EosTilework2h.htm */
 	font-family: Georgia, Palatino, 'Times New Roman', serif;
 }
 
@@ -27,7 +33,7 @@ p {
 
 div.hr {
   height: 57px;
-  background-image: url(../images/newrule.gif);
+  background-image: url(../images/ruler.png);
   background-repeat: no-repeat;
   background-position: center;
 }
