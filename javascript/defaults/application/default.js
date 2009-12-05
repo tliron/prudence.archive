@@ -8,6 +8,7 @@ importClass(
 	javax.script.ScriptEngineManager,
 	org.restlet.Application,
 	org.restlet.data.Reference,
+	org.restlet.data.MediaType,
 	com.threecrickets.scripturian.file.DocumentFileSource);
 
 //
@@ -27,6 +28,12 @@ application.author = applicationAuthor;
 application.owner = applicationOwner;
 application.statusService.homeRef = new Reference(applicationHomeURL);
 application.statusService.contactEmail = applicationContactEmail;
+
+//
+// MetaData
+//
+
+application.metadataService.addExtension('php', MediaType.TEXT_HTML);
 
 //
 // Routing

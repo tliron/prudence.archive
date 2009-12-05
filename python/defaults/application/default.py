@@ -5,7 +5,7 @@
 from java.io import File, FileNotFoundException
 from javax.script import ScriptEngineManager
 from org.restlet import Application
-from org.restlet.data import Reference
+from org.restlet.data import Reference, MetaData
 from com.threecrickets.scripturian.file import DocumentFileSource
 
 #
@@ -25,6 +25,12 @@ application.author = application_author
 application.owner = application_owner
 application.statusService.homeRef = Reference(application_home_url)
 application.statusService.contactEmail = application_contact_email
+
+#
+# MetaData
+#
+
+application.metadataService.addExtension('php', MediaType.TEXT_HTML)
 
 #
 # Routing
