@@ -1,0 +1,47 @@
+<html>
+<head>
+</head>
+<body>
+
+<%python
+
+from sqlalchemy import create_engine
+from sqlalchemy import Column, Integer, Text
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+engine = create_engine('mysql+zxjdbc://root:root@localhost/')
+execute = engine.connect().execute
+execute('CREATE DATABASE IF NOT EXISTS stickre')
+
+engine = create_engine('mysql+zxjdbc://root:root@localhost/stickre')
+
+Base = declarative_base()
+Session = sessionmaker()
+
+Session.configure(bind=engine)
+
+class Note(Base):
+	__tablename__ = 'note'
+
+	id = Column(Integer, primary_key=True)
+	content = Column(Text)
+
+	def __init__(self, content):
+		self.content = content
+		
+Base.metadata.create_all(engine)
+
+session = Session()
+note = Note('fish')
+session.add(note)
+session.commit()
+
+%>
+
+
+
+</body>
+
+
+</html>

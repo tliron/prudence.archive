@@ -5,7 +5,7 @@
 from java.io import File, FileNotFoundException
 from javax.script import ScriptEngineManager
 from org.restlet import Application
-from org.restlet.data import Reference, MetaData
+from org.restlet.data import Reference, MediaType
 from com.threecrickets.scripturian.file import DocumentFileSource
 
 #

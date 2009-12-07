@@ -537,15 +537,43 @@ public class GeneratedTextResource extends ServerResource
 	@Override
 	public Representation post( Representation entity ) throws ResourceException
 	{
-		// Handle the same was as get(variant)
-		return get( entity );
+		// Handle the same was as get()
+		return get();
 	}
 
 	@Override
 	public Representation post( Representation entity, Variant variant ) throws ResourceException
 	{
-		// Handle the same was as post(entity) -- we are ignoring the variant
-		return post( entity );
+		// Handle the same was as get(variant)
+		return get( variant );
+	}
+
+	@Override
+	public Representation put( Representation entity ) throws ResourceException
+	{
+		// Handle the same was as get()
+		return get();
+	}
+
+	@Override
+	public Representation put( Representation entity, Variant variant ) throws ResourceException
+	{
+		// Handle the same was as get(variant)
+		return get( variant );
+	}
+
+	@Override
+	public Representation delete() throws ResourceException
+	{
+		// Handle the same was as get()
+		return get();
+	}
+
+	@Override
+	public Representation delete( Variant variant ) throws ResourceException
+	{
+		// Handle the same was as get(variant)
+		return get( variant );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

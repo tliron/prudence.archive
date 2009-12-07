@@ -10,7 +10,7 @@ jython			2.5.1 (Revision 6660 + patch)
 log4j			1.2.15
 mysqlconnector	5.1.8
 quercus			4.0.1
-restlet			2.0 (Revision 5730)
+restlet			2.0 (Revision 5820)
 rhino			1.7R2
 scripturian		1.0 (Revision 91)
 slf4j			1.5.8

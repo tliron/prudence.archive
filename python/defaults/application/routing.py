@@ -72,7 +72,8 @@ if len(url_add_trailing_slash) > 0:
 # Dynamic web
 #
 
-router.attach(fix_url(dynamic_web_base_url), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH
+dynamic_web = classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')
+router.attach(fix_url(dynamic_web_base_url), dynamic_web).matchingMode = Template.MODE_STARTS_WITH
 
 #
 # Static web
@@ -88,4 +89,5 @@ router.attach(fix_url(static_web_base_url), static_web).matchingMode = Template.
 # Resources
 #
 
-router.attach(fix_url(resource_base_url), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH
+resources = classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')
+router.attach(fix_url(resource_base_url), resources).matchingMode = Template.MODE_STARTS_WITH

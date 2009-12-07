@@ -1,44 +1,74 @@
 <%velocity
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>Prudence Admin</title>
+	<title>Prudence Administration</title>
+	<link rel="stylesheet" type="text/css" href="$!{prefix}style/soft-cricket.css" />
 </head>
-<h1>Prudence Admin</h1>
-
-#set($component = $document.container.resource.context.attributes.get('component'))
-#set($applications = $component.context.attributes.get('applications'))
-
 <body>
-<h2>Applications</h2>
+	<table width="100%" cellspacing="20">
+		<tr valign="top">
+			<td width="25%">
 
-#foreach($application in $applications)
-<div>
-	<h3>$application.name</h3>
-	<div>$application.description</div>
-	<div>Author: $application.author</div>
-</div>
-#end
+				<h1>Prudence Administration</h1>
+				<p>
+					Here you can see applications, virtual hosts and servers configured in this
+					instance of Prudence. You can create some runtime changes here, though
+					note that they will be lost when you restart Prudence.
+				</p>
+				<p>
+					<a href="$!{prefix}." class="neutral"><img src="$!{prefix}images/bullfinch-small.png" border="0"></a>
+				</p>
+				
+			</td>
+			<td width="50%" id="main">
+			
+				<table width="100%" cellpadding="10" cellspacing="0"><tr valign="top">
+					<td width="50%">
+				
+						#set($component = $document.container.resource.context.attributes.get('component'))
+						#set($applications = $component.context.attributes.get('applications'))
+						
+						#foreach($application in $applications)
+						<div>
+							<h2>$application.name</h2>
+							<p>$application.description</p>
+							<p>Author: $application.author</p>
+						</div>
+						#end
+						
+					</td>
+					<td width="50%">
+						
+						<h2>Virtual Hosts</h2>
+						#foreach($host in $component.hosts)
+							<h3>$host.name</h3>
+							<p>
+							Routes:
+							#foreach($route in $host.routes)
+								<a href="$route">$route</a>
+							#end
+							</p>
+						#end
+						
+						<h2>Servers</h2>
+						
+						#foreach($server in $component.servers)
+						<div>
+							<h3>$server.name</h3>
+							<p>Protocols: $server.protocols</p>
+						</div>
+						#end
+						
+					</td>
+				</tr></table>
 
-<h2>Virtual Hosts</h2>
-#foreach($host in $component.hosts)
-	<h3>$host.name</h3>
-	<p>
-	Routes:
-	#foreach($route in $host.routes)
-		<a href="$route">$route</a>
-	#end
-	</p>
-#end
-
-<h2>Servers</h2>
-
-#foreach($server in $component.servers)
-<div>
-	<h3>$server.name</h3>
-	Protocols: $server.protocols
-</div>
-#end
-
+			</td>
+			<td width="25%" align="right">
+				<a href="http://www.threecrickets.com/" class="neutral"><img src="$!{prefix}images/three-crickets-small.png" border="0" /></a>
+			</td>
+		</tr>
+	</table>
 </body>
 </html>
 %>

@@ -90,7 +90,8 @@ if(urlAddTrailingSlash.length > 0) {
 // Dynamic web
 //
 
-router.attach(fixURL(dynamicWebBaseURL), classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource')).matchingMode = Template.MODE_STARTS_WITH;
+var dynamicWeb = classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource');
+router.attach(fixURL(dynamicWebBaseURL), dynamicWeb).matchingMode = Template.MODE_STARTS_WITH;
 
 //
 // Static web
@@ -106,4 +107,5 @@ router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_
 // Resources
 //
 
-router.attach(fixURL(resourceBaseURL), classLoader.loadClass('com.threecrickets.prudence.DelegatedResource')).matchingMode = Template.MODE_STARTS_WITH;
+resources =classLoader.loadClass('com.threecrickets.prudence.DelegatedResource');
+router.attach(fixURL(resourceBaseURL), resources).matchingMode = Template.MODE_STARTS_WITH;

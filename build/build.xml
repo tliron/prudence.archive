@@ -16,7 +16,7 @@
 	<property name="velocity" value="../velocity" />
 	
 	<property name="tmp" value="./tmp" />
-	<property name="kitchensink-base" value="${javascript}" />
+	<property name="kitchensink-base" value="${python}" />
 	<property name="dist-kitchensink" value="./kitchensink" />
 	<property name="dist-standalone" value="./standalone" />
 	<property name="dist-javascript" value="./javascript" />
@@ -215,8 +215,8 @@
 			<fileset dir="${clojure}/applications/prudence-test/libraries" />
 			<fileset dir="${javascript}/applications/prudence-test/libraries" />
 		</copy>
-		<copy todir="${dist-kitchensink}/content/applications/stickre/web">
-			<fileset dir="${python}/applications/stickre/web" />
+		<copy todir="${dist-kitchensink}/content/applications/stickre">
+			<fileset dir="${python}/applications/stickre" />
 		</copy>
 		<!--<copy todir="${dist-kitchensink}/content/applications/stickre/resources">
 			<fileset dir="${python}/applications/stickre/resources" />

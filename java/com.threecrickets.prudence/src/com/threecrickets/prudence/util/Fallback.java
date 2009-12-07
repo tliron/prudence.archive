@@ -73,7 +73,7 @@ public class Fallback extends Restlet
 			if( System.currentTimeMillis() - node.timestamp > remember.get() )
 			{
 				// Invalidate
-				remembered.remove( node );
+				remembered.remove( ref );
 			}
 			else
 			{

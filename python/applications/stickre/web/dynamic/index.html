@@ -1,47 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
+	<title>Stickre</title>
+	<link rel="stylesheet" type="text/css" href="style/soft-cricket.css" media="screen"/>
+	<link rel="stylesheet" type="text/css" href="style/jstickynote.css" media="screen"/>
+	<link rel="stylesheet" type="text/css" href="http://jqueryui.com/latest/themes/base/ui.all.css" />
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>		
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="script/jquery.stickynote.js"></script>
+	<script type="text/javascript" src="script/json2.js"></script>
+	<script type="text/javascript" src="script/stickre.js"></script>
 </head>
 <body>
-
-<%python
-
-from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, Text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-
-engine = create_engine('mysql+zxjdbc://root:root@localhost/')
-execute = engine.connect().execute
-execute('CREATE DATABASE IF NOT EXISTS stickre')
-
-engine = create_engine('mysql+zxjdbc://root:root@localhost/stickre')
-
-Base = declarative_base()
-Session = sessionmaker()
-
-Session.configure(bind=engine)
-
-class Note(Base):
-	__tablename__ = 'note'
-
-	id = Column(Integer, primary_key=True)
-	content = Column(Text)
-
-	def __init__(self, content):
-		self.content = content
-		
-Base.metadata.create_all(engine)
-
-session = Session()
-note = Note('fish')
-session.add(note)
-session.commit()
-
-%>
-
-
-
+<div style="margin-left: auto; margin-right: auto; width: 1000px;">
+	<h1>Stickre</h1>
+	<p>
+		Online sticky notes.
+	</p>
+	<p>
+		<button id="refresh">Refresh</button>
+		<button id="new">New Stickre</button>
+	</p>
+	<div id="content" style="width: 100%; height: 500px; border: 1px solid black;"></div>
+</div>
 </body>
-
-
 </html>
