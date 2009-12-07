@@ -25,10 +25,7 @@ def handleGet():
 
 def handlePut():
     text = document.container.entity.text
-    print text
     dict = json.read(text)
-    print dict
-    
     note = Note.from_dict(dict)
     
     session = get_session()
