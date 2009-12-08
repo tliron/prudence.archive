@@ -186,6 +186,9 @@
 		<copy todir="${dist-kitchensink}/content/defaults">
 			<fileset dir="${kitchensink-base}/defaults" />
 		</copy>
+		<copy todir="${dist-kitchensink}/content/component">
+			<fileset dir="${kitchensink-base}/component" />
+		</copy>
 		<copy todir="${dist-kitchensink}/content/applications/prudence-admin">
 			<fileset dir="${kitchensink-base}/applications/prudence-admin" />
 		</copy>

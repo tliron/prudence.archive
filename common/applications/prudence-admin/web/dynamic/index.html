@@ -1,9 +1,17 @@
 <%velocity
+#set($component = $document.container.resource.context.attributes.get('component'))
+#set($applications = $component.context.attributes.get('applications'))
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<title>Prudence Administration</title>
 	<link rel="stylesheet" type="text/css" href="$!{prefix}style/soft-cricket.css" />
+	<style>
+	div.node {
+		padding: 0px 20px 0px 20px;
+		border: 1px black solid;
+	}
+	</style>
 </head>
 <body>
 	<table width="100%" cellspacing="20">
@@ -26,37 +34,52 @@
 				<table width="100%" cellpadding="10" cellspacing="0"><tr valign="top">
 					<td width="50%">
 				
-						#set($component = $document.container.resource.context.attributes.get('component'))
-						#set($applications = $component.context.attributes.get('applications'))
-						
-						#foreach($application in $applications)
-						<div>
-							<h2>$application.name</h2>
-							<p>$application.description</p>
-							<p>Author: $application.author</p>
-						</div>
-						#end
-						
-					</td>
-					<td width="50%">
-						
 						<h2>Virtual Hosts</h2>
+						
 						#foreach($host in $component.hosts)
-							<h3>$host.name</h3>
+						<h3>$host.name</h3>
+						<div class="node">
+							<p>
+							Local Host: $host.localHostName, $host.localHostAddress
+							</p>
+							<p>
+							Host: $host.hostScheme://$host.hostDomain:$host.hostPort
+							</p>
+							<p>
+							Server: $host.serverAddress:$host.serverPort
+							</p>
+							<p>
+							Resources: $host.resourceScheme://$host.resourceDomain:$host.resourcePort
+							</p>
 							<p>
 							Routes:
 							#foreach($route in $host.routes)
 								<a href="$route">$route</a>
 							#end
 							</p>
+						</div>
 						#end
 						
 						<h2>Servers</h2>
 						
 						#foreach($server in $component.servers)
-						<div>
-							<h3>$server.name</h3>
+						<h3>$server.name</h3>
+						<div class="node">
+							<p>Listening on: $!server.address:$server.port</p>
 							<p>Protocols: $server.protocols</p>
+						</div>
+						#end
+
+					</td>
+					<td width="50%">
+						
+						<h2>Applications</h2>
+						
+						#foreach($application in $applications)
+						<h3>$application.name</h3>
+						<div class="node">
+							<p>$application.description</p>
+							<p>Author: $application.author</p>
 						</div>
 						#end
 						

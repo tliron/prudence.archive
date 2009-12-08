@@ -26,8 +26,26 @@ def handleGet():
 
     return json.write(note.to_dict())
 
-def handlePut():
+def handlePost():
     id = get_id()
+
+    # Note: You can only "consume" the entity once, so if we want it
+    # as text, and want to refer to it more than once, we should keep
+    # a reference to that text.
+    
+    text = document.container.entity.text
+    dict = json.read(text)
+
+    session = get_session()
+    try:
+        note = session.query(Note).filter_by(id=id).first()
+        note.x = dict['x']
+        note.y = dict['y']
+        session.flush()
+    finally:
+        session.close()
+
+    return json.write(note.to_dict())
 
 def handleDelete():
     id = get_id()
@@ -37,7 +55,7 @@ def handleDelete():
         note = session.query(Note).filter_by(id=id).first()
         if note is not None:
             session.delete(note)
-            session.commit()
+            session.flush()
     finally:
         session.close()
 

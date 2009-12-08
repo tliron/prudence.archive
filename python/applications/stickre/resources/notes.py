@@ -35,7 +35,7 @@ def handlePut():
     session = get_session()
     try:
         session.add(note)
-        session.commit()
+        session.flush()
     finally:
         session.close()
     

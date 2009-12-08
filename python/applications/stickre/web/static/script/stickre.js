@@ -1,24 +1,52 @@
 
-function fail(request, status, error) {
-	var dialog = $('<div title="' + status + '"></div').html(error || 'Could not communicate with server.');
-	$(dialog).dialog({modal: true, resizable: false});
+function clear() {
+	$('div.stickynote').remove();
 }
 
-function create(div, text) {
-	var pos = $(div).position();
-	text = text.replace('\n', '<br />');
+function show(notes) {
+	clear();
+	for(var i in notes) {
+		notes[i].containment = 'content';
+		notes[i].size = 'small';
+		notes[i].ontop = true;
+		notes[i].ondelete = destroy;
+		notes[i].onstop = move;
+		$('#content').stickynote.createNote(notes[i]);
+	}
+}
+
+function create(note, text) {
+	var pos = note.offset();
+	var ppos = note.parent().offset();
+	text = text.replace('\n', '<br />'); // JSON is unhappy with newlines
 	$.ajax({
 		type: 'put',
 		url: 'notes/',
 		dataType: 'json',
 		contentType: 'application/json',
-		data: JSON.stringify({content: text, x: pos.left, y: pos.top}),
+		data: JSON.stringify({content: text, x: pos.left - ppos.left, y: pos.top - ppos.top}),
 		success: show,
 		error: fail
 	});
 }
 
-function destroy(div, obj) {
+function move(event, note) {
+	var id = note.helper.attr('noteid');
+	if(id) {
+		var pos = note.position;
+		$.ajax({
+			type: 'post',
+			url: 'note/' + id +'/',
+			dataType: 'json',
+			contentType: 'application/json',
+			data: JSON.stringify({x: pos.left, y: pos.top}),
+			success: refresh,
+			error: fail
+		});
+	}
+}
+
+function destroy(note, obj) {
 	var id = obj.id;
 	$.ajax({
 		type: 'delete',
@@ -37,27 +65,19 @@ function refresh() {
 	});
 }
 
-function show(notes) {
-	clear();
-	for(var i in notes) {
-		notes[i].containment = 'content';
-		notes[i].size = 'medium';
-		notes[i].ontop = true;
-		notes[i].ondelete = destroy;
-		$('#content').stickynote.createNote(notes[i]);
-	}
-}
-
-function clear() {
-	$('div.jSticky').remove();
+function fail(request, status, error) {
+	var dialog = $('<div title="' + status + '"></div>').html(error || 'Could not communicate with server.');
+	$(dialog).dialog({modal: true, resizable: false});
 }
 
 $(function() {
 	$('#new').stickynote({
 		containment: 'content',
-		size: 'medium',
+		size: 'small',
 		ontop: true,
-		oncreate: create
+		oncreate: create,
+		onstop: move,
+		x: 50
 	});
 
 	$('#refresh').click(refresh);
