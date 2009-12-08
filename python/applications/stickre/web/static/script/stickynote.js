@@ -66,7 +66,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			.attr('noteid', o.id ? o.id : '')
 			.addClass('stickynote')
 			.addClass('stickynote-' + o.size)
-			.css({'position': 'relative', 'left': o.x, 'top': o.y});
+			.css({'position': 'absolute', 'left': o.x, 'top': o.y});
 
 		var _div_note = $(document.createElement('div'))
 			.addClass('stickynote-note')
