@@ -69,3 +69,7 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dyn
 attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = \
 	 DocumentFileSource(File(application_base_path + dynamic_web_base_path), dynamic_web_default_document, dynamic_web_minimum_time_between_validity_checks)
 attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
+
+# Additional runtime attributes
+
+attributes.putAll(runtime_attributes)

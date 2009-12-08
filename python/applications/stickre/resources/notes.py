@@ -24,6 +24,10 @@ def handleGet():
     return json.write(list)
 
 def handlePut():
+    # Note: You can only "consume" the entity once, so if we want it
+    # as text, and want to refer to it more than once, we should keep
+    # a reference to that text.
+    
     text = document.container.entity.text
     dict = json.read(text)
     note = Note.from_dict(dict)

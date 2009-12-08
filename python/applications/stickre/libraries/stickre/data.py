@@ -4,21 +4,13 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from threading import RLock
 
+from org.restlet import Application
+
 Base = declarative_base()
 Session = sessionmaker()
 
 engine = None
 engine_lock = RLock()
-
-#
-# Settings
-#
-
-backend = 'mysql+zxjdbc'
-username = 'root'
-password = 'root'
-host = 'localhost'
-database = 'stickre'
 
 #
 # Note
@@ -65,13 +57,16 @@ def connect():
     try:
         global engine
         if engine is None:
+            attributes = Application.getCurrent().context.attributes
+
             # Make sure database exists
-            root_engine = create_engine('%s://%s:%s@%s/' % (backend, username, password, host))
-            root_execute = root_engine.connect().execute
-            root_execute('CREATE DATABASE IF NOT EXISTS %s' % database)
+            root_engine = create_engine('%s://%s:%s@%s/' % (attributes['stickre.backend'], attributes['stickre.username'], attributes['stickre.password'], attributes['stickre.host']))
+            connection = root_engine.connect()
+            connection.execute('CREATE DATABASE IF NOT EXISTS %s' % attributes['stickre.database'])
+            connection.close()
     
             # Connect to database
-            engine = create_engine('%s://%s:%s@%s/%s' % (backend, username, password, host, database))
+            engine = create_engine('%s://%s:%s@%s/%s' % (attributes['stickre.backend'], attributes['stickre.username'], attributes['stickre.password'], attributes['stickre.host'], attributes['stickre.database']))
             Session.configure(bind=engine)
             
             # Make sure tables exist

@@ -117,3 +117,11 @@ static_web_directory_listing_allowed = True
 # slash added to them if it's missing.
 
 url_add_trailing_slash = [dynamic_web_base_url, static_web_base_url]
+
+#
+# Runtime Attributes
+#
+# These will be available to your code via the application's context.
+#
+
+runtime_attributes = {}

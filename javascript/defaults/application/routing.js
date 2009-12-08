@@ -10,8 +10,10 @@ importClass(
 	org.restlet.routing.Router,
 	org.restlet.routing.Redirector,
 	org.restlet.routing.Template,
+	org.restlet.resource.Finder,
 	org.restlet.resource.Directory,
-	com.threecrickets.prudence.util.FallbackRouter);
+	com.threecrickets.prudence.util.FallbackRouter,
+	com.threecrickets.prudence.util.Renamer);
 
 var classLoader = ClassLoader.systemClassLoader;
 
@@ -21,6 +23,7 @@ var classLoader = ClassLoader.systemClassLoader;
 
 //  Makes sure we have slashes where we expect them
 function fixURL(url) {
+	url = url.replace('//', '/');
 	if(url.length > 0 && url[0] == '/') {
 		url = url.slice(1);
 	}
@@ -90,7 +93,7 @@ if(urlAddTrailingSlash.length > 0) {
 // Dynamic web
 //
 
-var dynamicWeb = classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource');
+var dynamicWeb = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'));
 router.attach(fixURL(dynamicWebBaseURL), dynamicWeb).matchingMode = Template.MODE_STARTS_WITH;
 
 //
@@ -99,7 +102,7 @@ router.attach(fixURL(dynamicWebBaseURL), dynamicWeb).matchingMode = Template.MOD
 
 var staticWeb = new Directory(router.context, File(applicationBasePath + staticWebBasePath).toURI().toString());
 staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
-staticWeb.negotiateContent = true;
+staticWeb.negotiatingContent = true;
 
 router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_STARTS_WITH;
 
@@ -107,5 +110,5 @@ router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_
 // Resources
 //
 
-resources =classLoader.loadClass('com.threecrickets.prudence.DelegatedResource');
+resources = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
 router.attach(fixURL(resourceBaseURL), resources).matchingMode = Template.MODE_STARTS_WITH;

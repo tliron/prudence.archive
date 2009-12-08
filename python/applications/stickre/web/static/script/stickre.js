@@ -9,7 +9,7 @@ function create(div, text) {
 	text = text.replace('\n', '<br />');
 	$.ajax({
 		type: 'put',
-		url: 'notes',
+		url: 'notes/',
 		dataType: 'json',
 		contentType: 'application/json',
 		data: JSON.stringify({content: text, x: pos.left, y: pos.top}),
@@ -22,7 +22,7 @@ function destroy(div, obj) {
 	var id = obj.id;
 	$.ajax({
 		type: 'delete',
-		url: 'note?id=' + id,
+		url: 'note/' + id + '/',
 		success: refresh,
 		error: fail
 	});
@@ -30,7 +30,7 @@ function destroy(div, obj) {
 
 function refresh() {
 	$.ajax({
-		url: 'notes',
+		url: 'notes/',
 		dataType: 'json',
 		success: show,
 		error: fail
@@ -61,4 +61,6 @@ $(function() {
 	});
 
 	$('#refresh').click(refresh);
+	
+	refresh();
 });

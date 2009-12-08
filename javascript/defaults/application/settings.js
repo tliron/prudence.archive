@@ -118,3 +118,11 @@ var staticWebDirectoryListingAllowed = true;
 // slash added to them if it's missing.
 
 var urlAddTrailingSlash = [dynamicWebBaseURL, staticWebBaseURL];
+
+//
+// Runtime Attributes
+//
+// These will be available to your code via the application's context.
+//
+
+runtimeAttributes = {};

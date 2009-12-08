@@ -7,9 +7,9 @@ from org.restlet.representation import Variant
 import minjson as json
 
 def get_id():
-    #return document.container.resource.request.attributes.get('id')
-    form = document.container.resource.request.resourceRef.queryAsForm
-    return int(form.getFirstValue('id'))
+    return int(document.container.resource.request.attributes.get('id'))
+    #form = document.container.resource.request.resourceRef.queryAsForm
+    #return int(form.getFirstValue('id'))
 
 def handleInit():
     document.container.variants.add(Variant(MediaType.TEXT_PLAIN))

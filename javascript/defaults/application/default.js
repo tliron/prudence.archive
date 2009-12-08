@@ -72,3 +72,7 @@ attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', d
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',
 	 new DocumentFileSource(new File(applicationBasePath + dynamicWebBasePath), dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks));
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
+
+// Additional runtime attributes
+
+attributes.putAll(runtimeAttributes);

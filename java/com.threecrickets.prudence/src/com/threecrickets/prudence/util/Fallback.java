@@ -79,7 +79,8 @@ public class Fallback extends Restlet
 			{
 				// Use remembered restlet
 				node.restlet.handle( request, response );
-				return;
+				if( wasHandled( request, response ) )
+					return;
 			}
 		}
 
@@ -88,15 +89,28 @@ public class Fallback extends Restlet
 		{
 			response.setStatus( Status.SUCCESS_OK );
 			restlet.handle( request, response );
-			if( response.getStatus() != Status.CLIENT_ERROR_NOT_FOUND )
+			if( wasHandled( request, response ) )
 			{
 				// Found a good one
 				if( remember.get() > 0 )
+				{
 					// Remember this restlet
+					// (erasing any previously remembered one)
 					remembered.put( ref, new Node( restlet ) );
+				}
+				// Stop here
 				return;
 			}
 		}
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Protected
+
+	protected boolean wasHandled( Request request, Response response )
+	{
+		Status status = response.getStatus();
+		return !status.equals( Status.CLIENT_ERROR_NOT_FOUND ) && !status.equals( Status.CLIENT_ERROR_METHOD_NOT_ALLOWED );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
