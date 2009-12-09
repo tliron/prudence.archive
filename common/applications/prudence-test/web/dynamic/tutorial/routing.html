@@ -2,13 +2,36 @@
 
 <h2>Routing</h2>
 
+<p>"Routing" in Prudence refers to how URLs are attached to resources. In
+fact, this is often not a simple one-to-one relationship, and different
+routes may be selected according to changing circumstances.</p>
+
 <h3>Directories As Slugs</h3>
+
+<p>Prudence provides straightforward, hierarchical, dynamic routing between
+your directory structure and URLs. Simply put, file paths are mapped directly
+to URLs. Files added at runtime will automatically create new URLs for them.
+To keep the URLs pretty, filename extensions are optional. The filename
+extension, though serves two purposes: in the case of code in /resources/,
+/libraries/ or other places, the extension selects the language engine which
+will run the code; in the case of files in /web/dynamic/ and /web/static/,
+it helps select the default MIME type for representations. This selection
+is based on the meta data service, which you can customize (see
+<a href="static-web">static web</a>). Embedded language code in /web/dynamic/
+files can also programatically change the returns MIME types (see <a
+href="resoruces">resources</a>)).
+</p>
+
+<div class="note">
+<p>Prudence routing rule: route by filename, format/language by extension</p>
+</div>
+
 
 <h3>default.*</h3>
 
-<h3>Route by filename, format/language by extension</h3>
 
 <h3>routing.*</h3>
+
 
 
 <h3>URI Templates</h3>

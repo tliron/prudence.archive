@@ -2,16 +2,24 @@
 
 <h2>Static Web</h2>
 
-<div class="note">
-<p><i>Should I use Apache instead of Prudence to
-serve my static files?</i></p>
-<p>You might think that Apache would be better at
-this because it's designed to serve static files. However, Prudence's
-non-blocking I/O actually does a great job at it, too, and you will
-likely not see performance or scalability gains by using Apache instead.
-If serving static files from Prudence is more straightforward for you,
-don't hesitate to go for it.</p>
-</div>
+<p>Prudence attaches your application's /web/static/ subdirectory to
+URLs, making files there available via HTTP GET. In other words,
+/static/web/ is a "web server." It's a convenient place for storing
+immutable resources that your clients will need to run your application:
+images, styles, scripts, etc.</p>
+
+<p>You're likely, though, wondering if its merely a convenience, and
+if you'd be better off using Apache or other dedicated web servers
+instead of Prudence to serve your the static files.</p>
+
+<p>Our recommendation is to take that route only if those web
+servers offer important features that you won't find in Prudence.
+Remember, for example, that Prudence can do URL redirecting and routing.
+Otherwise, Prudence's non-blocking I/O actually does a great job at
+serving files, and you will likely not see performance or scalability
+gains by using Apache instead.</p>
+
+<h3>MIME types</h3>
 
 
 <%& '../fragments/footer' %>

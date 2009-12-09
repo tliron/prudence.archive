@@ -2,10 +2,22 @@
 
 <h2>Logging</h2>
 
+<p>Prudence comes pre-configured with robust logging, based on log4j.
+You are encouraged to make use of logging in your applications, but even
+if you don't, you will still finds the logs useful. Prudence's servers,
+routers, language engines and other components all send messages to the
+logs, making them an invaluable tool for debugging, monitoring and
+understanding.</p>
+
+<p>By default, logs are sent to the /logs/ directory, using a configurable
+rolling log scheme. web.log records all server requests, using Apache's
+format, while everything else goes to prudence.log.</p>
+
 <h3>logging.conf</h3>
 
+<h4>Appenders and Loggers</h4>
 
-<h3>Messages</h3>
+<h3>Sending Messages</h3>
 
 <h3>web.log</h3>
 
