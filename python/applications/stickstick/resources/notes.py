@@ -1,6 +1,6 @@
 sys.path.append(str(document.container.source.basePath) + '/../libraries/')
 
-from stickre.data import *
+from stickstick.data import *
 from org.restlet.data import MediaType
 from org.restlet.representation import Variant
 

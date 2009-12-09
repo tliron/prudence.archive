@@ -6,12 +6,18 @@ function clear() {
 function show(notes) {
 	clear();
 	for(var i in notes) {
-		notes[i].containment = 'content';
-		notes[i].size = 'small';
-		notes[i].ontop = true;
-		notes[i].ondelete = destroy;
-		notes[i].onstop = move;
-		$('#content').stickynote.createNote(notes[i]);
+		$('#content').stickynote.create({
+			containment: 'content',
+			x: notes[i].x,
+			y: notes[i].y,
+			size: notes[i].size == 2 ? 'large' : 'small',
+			content: notes[i].content,
+			ontop: true,
+			ondelete: destroy,
+			onstop: move
+		})
+		.data('stickstick.id', notes[i].id)
+		.data('stickstick.board', notes[i].board);
 	}
 }
 
@@ -24,14 +30,20 @@ function create(note, text) {
 		url: 'notes/',
 		dataType: 'json',
 		contentType: 'application/json',
-		data: JSON.stringify({content: text, x: pos.left - ppos.left, y: pos.top - ppos.top}),
+		data: JSON.stringify({
+			board: '',
+			x: pos.left - ppos.left,
+			y: pos.top - ppos.top,
+			size: note.hasClass('stickynote-large') ? 2 : 1,
+			content: text
+		}),
 		success: show,
 		error: fail
 	});
 }
 
 function move(event, note) {
-	var id = note.helper.attr('noteid');
+	var id = note.helper.data('stickstick.id');
 	if(id) {
 		var pos = note.position;
 		$.ajax({
@@ -46,14 +58,16 @@ function move(event, note) {
 	}
 }
 
-function destroy(note, obj) {
-	var id = obj.id;
-	$.ajax({
-		type: 'delete',
-		url: 'note/' + id + '/',
-		success: refresh,
-		error: fail
-	});
+function destroy(note) {
+	var id = $(note).parent().data('stickstick.id');
+	if(id) {
+		$.ajax({
+			type: 'delete',
+			url: 'note/' + id + '/',
+			success: refresh,
+			error: fail
+		});
+	}
 }
 
 function refresh() {
@@ -71,9 +85,18 @@ function fail(request, status, error) {
 }
 
 $(function() {
-	$('#new').stickynote({
+	$('#new-small').stickynote({
 		containment: 'content',
 		size: 'small',
+		ontop: true,
+		oncreate: create,
+		onstop: move,
+		x: 50
+	});
+
+	$('#new-large').stickynote({
+		containment: 'content',
+		size: 'large',
 		ontop: true,
 		oncreate: create,
 		onstop: move,

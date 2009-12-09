@@ -218,8 +218,8 @@
 			<fileset dir="${clojure}/applications/prudence-test/libraries" />
 			<fileset dir="${javascript}/applications/prudence-test/libraries" />
 		</copy>
-		<copy todir="${dist-kitchensink}/content/applications/stickre">
-			<fileset dir="${python}/applications/stickre" />
+		<copy todir="${dist-kitchensink}/content/applications/stickstick">
+			<fileset dir="${python}/applications/stickstick" />
 		</copy>
 		<!--<copy todir="${dist-kitchensink}/content/applications/stickre/resources">
 			<fileset dir="${python}/applications/stickre/resources" />

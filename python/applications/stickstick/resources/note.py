@@ -1,6 +1,6 @@
 sys.path.append(str(document.container.source.basePath) + '/../libraries/')
 
-from stickre.data import *
+from stickstick.data import *
 from org.restlet.data import MediaType
 from org.restlet.representation import Variant
 
@@ -39,8 +39,7 @@ def handlePost():
     session = get_session()
     try:
         note = session.query(Note).filter_by(id=id).first()
-        note.x = dict['x']
-        note.y = dict['y']
+        note.update(dict)
         session.flush()
     finally:
         session.close()
