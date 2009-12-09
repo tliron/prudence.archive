@@ -75,4 +75,6 @@ attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable'
 
 // Additional runtime attributes
 
-attributes.putAll(runtimeAttributes);
+for(var key in runtimeAttributes) {
+	attributes.put(key, runtimeAttributes[key]);
+}

@@ -78,8 +78,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			div_note.append(note_content);
 
 			var div_create = $(document.createElement('div'))
-				.addClass('stickynote-create')
-				.attr('title','Create Sticky Note');
+				.addClass('stickynote-create');
 			div_wrap.append(div_create);
 
 			div_create.click(function(e) {
@@ -121,17 +120,25 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			});
 		}
 		
-		function onstart(event, ui) {
-			if(options.ontop)
-				$(ui).parent().append($(ui));
+		function totop(event, ui) {
+			$(ui).parent().append($(ui));
 		}
 		
 		if(options.containment) {
-			div_wrap.draggable({containment: '#' + options.containment, scroll: false, start: onstart, stop: options.onstop});	
+			div_wrap.draggable({
+				containment: '#' + options.containment,
+				scroll: false,
+				start: options.ontop ? totop : null,
+				stop: options.onstop
+			});	
 			$('#' + options.containment).append(div_wrap);
 		}
 		else {
-			div_wrap.draggable({scroll: false, start: onstart, stop: options.onstop});
+			div_wrap.draggable({
+				scroll: false,
+				start: options.ontop ? totop : null,
+				stop: options.onstop
+			});
 			$('body').append(div_wrap);
 		}
 		

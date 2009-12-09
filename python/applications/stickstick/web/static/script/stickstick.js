@@ -1,4 +1,6 @@
 
+var board = 'For All';
+
 function clear() {
 	$('div.stickynote').remove();
 }
@@ -22,18 +24,17 @@ function show(notes) {
 }
 
 function create(note, text) {
-	var pos = note.offset();
-	var ppos = note.parent().offset();
-	text = text.replace('\n', '<br />'); // JSON is unhappy with newlines
+	var pos = note.position();
+	text = text.replace(/\n/g, '<br />'); // JSON is unhappy with newlines
 	$.ajax({
 		type: 'put',
 		url: 'notes/',
 		dataType: 'json',
 		contentType: 'application/json',
 		data: JSON.stringify({
-			board: '',
-			x: pos.left - ppos.left,
-			y: pos.top - ppos.top,
+			board: board,
+			x: pos.left,
+			y: pos.top,
 			size: note.hasClass('stickynote-large') ? 2 : 1,
 			content: text
 		}),

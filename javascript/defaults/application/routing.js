@@ -23,7 +23,7 @@ var classLoader = ClassLoader.systemClassLoader;
 
 //  Makes sure we have slashes where we expect them
 function fixURL(url) {
-	url = url.replace('//', '/');
+	url = url.replace(/\/\//g, '/');
 	if(url.length > 0 && url[0] == '/') {
 		url = url.slice(1);
 	}
