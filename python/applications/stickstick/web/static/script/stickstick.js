@@ -75,6 +75,7 @@ function refresh() {
 	$.ajax({
 		url: 'notes/',
 		dataType: 'json',
+		contentType: 'application/json',
 		success: show,
 		error: fail
 	});
@@ -86,10 +87,16 @@ function fail(request, status, error) {
 }
 
 $(function() {
+	if($.browser.msie) {
+		// Caching breaks Internet Explorer
+		$.ajaxSetup({
+			cache: false
+		});
+	}
+	
 	$('#new-small').stickynote({
 		containment: 'content',
 		size: 'small',
-		ontop: true,
 		oncreate: create,
 		onstop: move,
 		x: 50
@@ -98,7 +105,6 @@ $(function() {
 	$('#new-large').stickynote({
 		containment: 'content',
 		size: 'large',
-		ontop: true,
 		oncreate: create,
 		onstop: move,
 		x: 50

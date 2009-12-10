@@ -82,7 +82,7 @@ router.attach(fix_url(dynamic_web_base_url), dynamic_web).matchingMode = Templat
 
 static_web = Directory(application.context, File(application_base_path + static_web_base_path).toURI().toString())
 static_web.listingAllowed = static_web_directory_listing_allowed
-static_web.negotiatingContent = True
+static_web.negotiateContent = True
 
 router.attach(fix_url(static_web_base_url), static_web).matchingMode = Template.MODE_STARTS_WITH
 
