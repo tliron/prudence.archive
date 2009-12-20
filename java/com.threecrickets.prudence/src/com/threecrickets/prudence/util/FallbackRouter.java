@@ -1,3 +1,14 @@
+/**
+ * Copyright 2009 Three Crickets LLC.
+ * <p>
+ * The contents of this file are subject to the terms of the LGPL version 3.0:
+ * http://www.opensource.org/licenses/lgpl-3.0.html
+ * <p>
+ * Alternatively, you can obtain a royalty free commercial license with less
+ * limitations, transferable or non-transferable, directly from Three Crickets
+ * at http://www.threecrickets.com/
+ */
+
 package com.threecrickets.prudence.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -59,7 +70,7 @@ public class FallbackRouter extends Router
 			if( current instanceof Fallback )
 			{
 				// Add to current Fallback
-				( (Fallback) current ).addRestlet( target );
+				( (Fallback) current ).addTarget( target );
 			}
 			else
 			{
@@ -72,6 +83,48 @@ public class FallbackRouter extends Router
 		}
 
 		return super.attach( pathTemplate, target );
+	}
+
+	@Override
+	public void detach( Restlet target )
+	{
+		boolean found = false;
+		Route dead = null;
+		for( Route route : getRoutes() )
+		{
+			Restlet restlet = route.getNext();
+			if( restlet instanceof Fallback )
+			{
+				Fallback fallback = (Fallback) restlet;
+
+				for( Restlet fallbackRestlet : fallback.getTargets() )
+				{
+					if( fallbackRestlet == target )
+					{
+						found = true;
+						break;
+					}
+				}
+
+				if( found )
+				{
+					fallback.getTargets().remove( target );
+					int size = fallback.getTargets().size();
+					if( size == 1 )
+						// No need for fallback anymore
+						route.setNext( fallback.getTargets().get( 0 ) );
+					else if( size == 0 )
+						// No need for route anymore
+						dead = route;
+					break;
+				}
+			}
+		}
+
+		if( dead != null )
+			getRoutes().remove( dead );
+		else if( !found )
+			super.detach( target );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

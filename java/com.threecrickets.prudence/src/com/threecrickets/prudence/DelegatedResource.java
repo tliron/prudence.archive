@@ -656,7 +656,7 @@ public class DelegatedResource extends ServerResource
 		if( isSourceViewable() && TRUE.equals( request.getResourceRef().getQueryAsForm().getFirstValue( SOURCE ) ) )
 		{
 			// Represent document source
-			String name = PrudenceUtils.getRelativePart( request, getDefaultName() );
+			String name = PrudenceUtils.getRemainingPart( request, getDefaultName() );
 			try
 			{
 				return new StringRepresentation( getDocumentSource().getDocumentDescriptor( name ).getText() );

@@ -499,7 +499,7 @@ public class GeneratedTextResource extends ServerResource
 	public Representation get( Variant variant ) throws ResourceException
 	{
 		Request request = getRequest();
-		String name = PrudenceUtils.getRelativePart( request, getDefaultName() );
+		String name = PrudenceUtils.getRemainingPart( request, getDefaultName() );
 
 		try
 		{

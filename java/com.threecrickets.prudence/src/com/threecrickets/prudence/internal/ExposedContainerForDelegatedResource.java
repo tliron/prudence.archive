@@ -350,7 +350,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public Object invoke( String entryPointName ) throws ResourceException
 	{
-		String name = PrudenceUtils.getRelativePart( this.resource.getRequest(), this.resource.getDefaultName() );
+		String name = PrudenceUtils.getRemainingPart( this.resource.getRequest(), this.resource.getDefaultName() );
 
 		try
 		{

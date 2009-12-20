@@ -28,19 +28,12 @@ public abstract class PrudenceUtils
 	 *        The request or null
 	 * @param def
 	 *        A default value to return if the request is null or if the
-	 *        relative part of the reference is empty
-	 * @return The relative part of the reference or the default value
+	 *        remaining part of the reference is empty
+	 * @return The remaining part of the reference or the default value
 	 */
-	public static String getRelativePart( Request request, String def )
+	public static String getRemainingPart( Request request, String def )
 	{
-		String url = request.getResourceRef().getRemainingPart( true );
-
-		if( url != null )
-		{
-			int query = url.indexOf( '?' );
-			if( query != -1 )
-				url = url.substring( 0, query );
-		}
+		String url = request.getResourceRef().getRemainingPart( true, false );
 
 		if( ( url == null ) || ( url.length() == 0 ) || url.equals( "/" ) )
 			return def;

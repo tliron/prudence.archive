@@ -1,3 +1,14 @@
+/**
+ * Copyright 2009 Three Crickets LLC.
+ * <p>
+ * The contents of this file are subject to the terms of the LGPL version 3.0:
+ * http://www.opensource.org/licenses/lgpl-3.0.html
+ * <p>
+ * Alternatively, you can obtain a royalty free commercial license with less
+ * limitations, transferable or non-transferable, directly from Three Crickets
+ * at http://www.threecrickets.com/
+ */
+
 package com.threecrickets.prudence.util;
 
 import java.util.List;
@@ -20,31 +31,31 @@ public class Fallback extends Restlet
 	// Construction
 	//
 
-	public Fallback( Context context, Restlet... restlets )
+	public Fallback( Context context, Restlet... targets )
 	{
-		this( context, new AtomicInteger( 5000 ), restlets );
+		this( context, new AtomicInteger( 5000 ), targets );
 	}
 
-	public Fallback( Context context, AtomicInteger remember, Restlet... restlets )
+	public Fallback( Context context, AtomicInteger remember, Restlet... targets )
 	{
 		super( context );
 		this.remember = remember;
-		for( Restlet restlet : restlets )
-			addRestlet( restlet );
+		for( Restlet target : targets )
+			addTarget( target );
 	}
 
 	//
 	// Attributes
 	//
 
-	public List<Restlet> getRestlets()
+	public List<Restlet> getTargets()
 	{
-		return restlets;
+		return targets;
 	}
 
-	public void addRestlet( Restlet restlet )
+	public void addTarget( Restlet target )
 	{
-		this.restlets.add( restlet );
+		this.targets.add( target );
 	}
 
 	public int getRemember()
@@ -66,37 +77,37 @@ public class Fallback extends Restlet
 	{
 		super.handle( request, response );
 
-		String ref = request.getResourceRef().getRemainingPart();
-		Node node = remembered.get( ref );
+		String reference = request.getResourceRef().getRemainingPart();
+		Node node = remembered.get( reference );
 		if( node != null )
 		{
 			if( System.currentTimeMillis() - node.timestamp > remember.get() )
 			{
 				// Invalidate
-				remembered.remove( ref );
+				remembered.remove( reference );
 			}
 			else
 			{
 				// Use remembered restlet
-				node.restlet.handle( request, response );
+				node.target.handle( request, response );
 				if( wasHandled( request, response ) )
 					return;
 			}
 		}
 
-		// Try all restlets in order
-		for( Restlet restlet : restlets )
+		// Try all targets in order
+		for( Restlet target : targets )
 		{
 			response.setStatus( Status.SUCCESS_OK );
-			restlet.handle( request, response );
+			target.handle( request, response );
 			if( wasHandled( request, response ) )
 			{
 				// Found a good one
 				if( remember.get() > 0 )
 				{
-					// Remember this restlet
+					// Remember this target
 					// (erasing any previously remembered one)
-					remembered.put( ref, new Node( restlet ) );
+					remembered.put( reference, new Node( target ) );
 				}
 				// Stop here
 				return;
@@ -116,7 +127,7 @@ public class Fallback extends Restlet
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
-	private final CopyOnWriteArrayList<Restlet> restlets = new CopyOnWriteArrayList<Restlet>();
+	private final CopyOnWriteArrayList<Restlet> targets = new CopyOnWriteArrayList<Restlet>();
 
 	private final AtomicInteger remember;
 
@@ -124,12 +135,12 @@ public class Fallback extends Restlet
 
 	private static class Node
 	{
-		private Node( Restlet restlet )
+		private Node( Restlet target )
 		{
-			this.restlet = restlet;
+			this.target = target;
 		}
 
-		private final Restlet restlet;
+		private final Restlet target;
 
 		private final long timestamp = System.currentTimeMillis();
 	}
