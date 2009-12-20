@@ -35,7 +35,9 @@ public class Renamer extends Filter
 	@Override
 	protected int beforeHandle( Request request, Response response )
 	{
-		request.setResourceRef( newReference );
+		Reference reference = new Reference( newReference );
+		reference.setQuery( request.getResourceRef().getQuery() );
+		request.setResourceRef( reference );
 
 		return CONTINUE;
 	}

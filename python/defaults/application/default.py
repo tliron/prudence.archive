@@ -18,7 +18,8 @@ include_or_default(application_base_path + '/settings', 'defaults/application/se
 # Application
 #
 
-application = Application()
+include_or_default(application_base_path + '/application', 'defaults/application/application')
+
 application.name = application_name
 application.description = application_description
 application.author = application_author

@@ -1,0 +1,5 @@
+#
+# Prudence Application
+#
+
+application = Application()

@@ -104,6 +104,7 @@
 			<fileset dir="${lib}/grizzly/lib" />
 			<fileset dir="${lib}/groovy/lib" />
 			<fileset dir="${lib}/h2/lib" />
+			<fileset dir="${lib}/jackson/lib" />
 			<fileset dir="${lib}/jepp/lib" />
 			<fileset dir="${lib}/jruby/lib" />
 			<fileset dir="${lib}/json/lib" />
@@ -134,6 +135,9 @@
 		</copy>
 		<copy todir="${dist-kitchensink}/content/licenses/h2">
 			<fileset dir="${lib}/h2/license" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/licenses/jackson">
+			<fileset dir="${lib}/jackson/license" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/licenses/jepp">
 			<fileset dir="${lib}/jepp/license" />

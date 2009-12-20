@@ -21,7 +21,8 @@ includeOrDefault(applicationBasePath + '/settings', 'defaults/application/settin
 // Application
 //
 
-var application = new Application();
+includeOrDefault(applicationBasePath + '/application', 'defaults/application/application');
+
 application.name = applicationName;
 application.description = applicationDescription;
 application.author = applicationAuthor;
