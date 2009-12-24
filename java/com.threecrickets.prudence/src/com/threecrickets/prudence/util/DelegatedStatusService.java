@@ -82,6 +82,10 @@ public class DelegatedStatusService extends StatusService
 
 			// Delegate
 			errorHandler.handle( request, response );
+
+			// Return the status
+			response.setStatus( status );
+
 			return response.getEntity();
 		}
 		else
