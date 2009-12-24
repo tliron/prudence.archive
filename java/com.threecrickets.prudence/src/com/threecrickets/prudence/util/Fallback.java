@@ -23,6 +23,25 @@ import org.restlet.Restlet;
 import org.restlet.data.Status;
 
 /**
+ * A restlet that delegates {@link Restlet#handle(Request, Response)} to a
+ * series of targets in sequence, stopping at the first target that satisfies
+ * the condition of {@link #wasHandled(Request, Response)}. This is very useful
+ * for allowing multiple restlets a chance to handle a request, while
+ * "falling back" to subsequent restlets when those "fail."
+ * <p>
+ * If none of the targets "succeeds" in this respect, the response will be left
+ * in the same condition as it was in the last attempt.
+ * <p>
+ * Supports a simple timed cache that "remembers" which target handled which
+ * reference, in order to avoid unnecessary attempts on targets known to fail.
+ * Note that in situations in which targets may sometimes fail and sometimes
+ * succeed for the same reference, you would want to disable the cache or keep
+ * it low.
+ * <p>
+ * By default, {@link #wasHandled(Request, Response)} checks that the response
+ * status is not {@link Status#CLIENT_ERROR_NOT_FOUND} or
+ * {@link Status#CLIENT_ERROR_METHOD_NOT_ALLOWED}.
+ * 
  * @author Tal Liron
  */
 public class Fallback extends Restlet
@@ -31,11 +50,30 @@ public class Fallback extends Restlet
 	// Construction
 	//
 
+	/**
+	 * Construct a fallback for an array of target restlets with a default cache
+	 * length of 5 seconds.
+	 * 
+	 * @param context
+	 *        The context
+	 * @param targets
+	 *        The target restlets
+	 */
 	public Fallback( Context context, Restlet... targets )
 	{
 		this( context, new AtomicInteger( 5000 ), targets );
 	}
 
+	/**
+	 * Construct a fallback for an array of target restlets.
+	 * 
+	 * @param context
+	 *        The context
+	 * @param remember
+	 *        The cache length, in milliseconds
+	 * @param targets
+	 *        The target restlets
+	 */
 	public Fallback( Context context, AtomicInteger remember, Restlet... targets )
 	{
 		super( context );
@@ -48,21 +86,43 @@ public class Fallback extends Restlet
 	// Attributes
 	//
 
+	/**
+	 * The targets restlets. (Modifiable by concurrent threads.)
+	 * 
+	 * @return The target restlets
+	 */
 	public List<Restlet> getTargets()
 	{
 		return targets;
 	}
 
+	/**
+	 * Adds a target restlet.
+	 * 
+	 * @param target
+	 *        A target restlet
+	 */
 	public void addTarget( Restlet target )
 	{
 		this.targets.add( target );
 	}
 
+	/**
+	 * The cache length, in milliseconds.
+	 * 
+	 * @return The cache length, in milliseconds
+	 */
 	public int getRemember()
 	{
 		return remember.get();
 	}
 
+	/**
+	 * The cache length, in milliseconds. (Modifiable by concurrent threads.)
+	 * 
+	 * @param remember
+	 *        The cache length, in milliseconds
+	 */
 	public void setRemember( int remember )
 	{
 		this.remember.set( remember );
@@ -118,6 +178,20 @@ public class Fallback extends Restlet
 	// //////////////////////////////////////////////////////////////////////////
 	// Protected
 
+	/**
+	 * Checks to see if a request was handled after a call to
+	 * {@link Restlet#handle(Request, Response)}.
+	 * <p>
+	 * This default implementation checks that the response status is not
+	 * {@link Status#CLIENT_ERROR_NOT_FOUND} or
+	 * {@link Status#CLIENT_ERROR_METHOD_NOT_ALLOWED}.
+	 * 
+	 * @param request
+	 *        The request
+	 * @param response
+	 *        The response
+	 * @return "True" if the request was handled
+	 */
 	protected boolean wasHandled( Request request, Response response )
 	{
 		Status status = response.getStatus();
@@ -127,12 +201,24 @@ public class Fallback extends Restlet
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * The target restlets.
+	 */
 	private final CopyOnWriteArrayList<Restlet> targets = new CopyOnWriteArrayList<Restlet>();
 
+	/**
+	 * The cache length, in milliseconds.
+	 */
 	private final AtomicInteger remember;
 
+	/**
+	 * The cache (references mapped to nodes).
+	 */
 	private final ConcurrentHashMap<String, Node> remembered = new ConcurrentHashMap<String, Node>();
 
+	/**
+	 * A cached node.
+	 */
 	private static class Node
 	{
 		private Node( Restlet target )

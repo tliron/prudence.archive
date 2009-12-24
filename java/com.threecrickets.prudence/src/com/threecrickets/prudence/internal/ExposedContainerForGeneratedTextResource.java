@@ -50,14 +50,17 @@ public class ExposedContainerForGeneratedTextResource
 	 * 
 	 * @param resource
 	 *        The resource
+	 * @param entity
+	 *        The entity
 	 * @param variant
 	 *        The variant
 	 * @param cache
 	 *        The cache (used for caching mode)
 	 */
-	public ExposedContainerForGeneratedTextResource( GeneratedTextResource resource, Variant variant, ConcurrentMap<String, RepresentableString> cache )
+	public ExposedContainerForGeneratedTextResource( GeneratedTextResource resource, Representation entity, Variant variant, ConcurrentMap<String, RepresentableString> cache )
 	{
 		this.resource = resource;
+		this.entity = entity;
 		this.variant = variant;
 		this.cache = cache;
 
@@ -172,6 +175,16 @@ public class ExposedContainerForGeneratedTextResource
 	public GeneratedTextResource getResource()
 	{
 		return this.resource;
+	}
+
+	/**
+	 * The entity of this request. Available only for post and put.
+	 * 
+	 * @return The entity
+	 */
+	public Representation getEntity()
+	{
+		return this.entity;
 	}
 
 	/**
@@ -358,6 +371,11 @@ public class ExposedContainerForGeneratedTextResource
 	private boolean startStreaming;
 
 	/**
+	 * The entity of this request.
+	 */
+	private final Representation entity;
+
+	/**
 	 * The {@link Variant} of this request.
 	 */
 	private final Variant variant;
@@ -402,6 +420,17 @@ public class ExposedContainerForGeneratedTextResource
 	 */
 	private final DocumentContext documentContext;
 
+	/**
+	 * The actual running of the document.
+	 * 
+	 * @param document
+	 *        The document
+	 * @param name
+	 *        The document's name
+	 * @return A representation
+	 * @throws IOException
+	 * @throws ScriptException
+	 */
 	private Representation run( Document document, String name ) throws IOException, ScriptException
 	{
 		boolean isStreaming = isStreaming();

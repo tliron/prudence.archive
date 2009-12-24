@@ -19,7 +19,12 @@ import org.restlet.data.Reference;
 import org.restlet.routing.Filter;
 
 /**
+ * A {@link Filter} that renames the {@link Request}'s {@link Reference}.
+ * <p>
+ * The original reference's query is preserved.
+ * 
  * @author Tal Liron
+ * @see Reference
  */
 public class Renamer extends Filter
 {
@@ -27,12 +32,32 @@ public class Renamer extends Filter
 	// Construction
 	//
 
+	/**
+	 * Construct a renamer.
+	 * 
+	 * @param context
+	 *        The context
+	 * @param next
+	 *        The next restlet
+	 * @param newReference
+	 *        The new reference that will replace the request's reference
+	 */
 	public Renamer( Context context, Restlet next, Reference newReference )
 	{
 		super( context, next );
 		this.newReference = newReference;
 	}
 
+	/**
+	 * Construct a renamer.
+	 * 
+	 * @param context
+	 *        The context
+	 * @param next
+	 *        The next restlet
+	 * @param newReferenceUri
+	 *        The new reference that will replace the request's reference
+	 */
 	public Renamer( Context context, Restlet next, String newReferenceUri )
 	{
 		super( context, next );
@@ -56,5 +81,8 @@ public class Renamer extends Filter
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * The new reference that will replace the request's reference.
+	 */
 	private final Reference newReference;
 }

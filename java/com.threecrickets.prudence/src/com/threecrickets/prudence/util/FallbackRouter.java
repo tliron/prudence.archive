@@ -19,6 +19,16 @@ import org.restlet.routing.Route;
 import org.restlet.routing.Router;
 
 /**
+ * A {@link Router} that takes care to bunch identical routes under
+ * {@link Fallback} restlets. This is very useful for allowing multiple restlets
+ * a chance to handle a request, while "falling back" to subsequent restlets
+ * when those "fail."
+ * <p>
+ * Both {@link Router#attach(String, Restlet)} and
+ * {@link Router#detach(Restlet)} are overriden to support bunching and
+ * un-bunching. Note that if you otherwise change the routes (say, via modifying
+ * {@link Router#getRoutes()}, you will override this behavior.
+ * 
  * @author Tal Liron
  */
 @SuppressWarnings("deprecation")
@@ -28,20 +38,53 @@ public class FallbackRouter extends Router
 	// Construction
 	//
 
+	/**
+	 * Constructs a fallback router with a default cache length of 5 seconds.
+	 * 
+	 * @param context
+	 *        The context
+	 */
 	public FallbackRouter( Context context )
 	{
+		this( context, 5000 );
+	}
+
+	/**
+	 * Construct a fallback router.
+	 * 
+	 * @param context
+	 *        The context
+	 * @param remember
+	 *        The cache length, in milliseconds
+	 */
+	public FallbackRouter( Context context, int remember )
+	{
 		super( context );
+		this.remember = new AtomicInteger( remember );
 	}
 
 	//
 	// Attributes
 	//
 
+	/**
+	 * The cache length, in milliseconds.
+	 * 
+	 * @return The cache length, in milliseconds
+	 * @see Fallback#getRemember()
+	 */
 	public int getRemember()
 	{
 		return remember.get();
 	}
 
+	/**
+	 * The cache length, in milliseconds. (Modifiable by concurrent threads.)
+	 * 
+	 * @param remember
+	 *        The cache length, in milliseconds
+	 * @see Fallback#setRemember(int)
+	 */
 	public void setRemember( int remember )
 	{
 		this.remember.set( remember );
@@ -130,5 +173,8 @@ public class FallbackRouter extends Router
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
-	private final AtomicInteger remember = new AtomicInteger( 5000 );
+	/**
+	 * The cache length, in milliseconds.
+	 */
+	private final AtomicInteger remember;
 }

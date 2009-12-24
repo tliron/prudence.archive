@@ -122,6 +122,8 @@ import com.threecrickets.scripturian.ScriptletController;
  * </ul>
  * Read-only attributes:
  * <ul>
+ * <li><code>document.container.entity</code>: The entity of this request.
+ * Available only for post and put.</li>
  * <li><code>document.container.isStreaming</code>: This boolean is true when
  * the writer is in streaming mode (see above).</li>
  * <li><code>document.container.resource</code>: The instance of this resource.
@@ -419,7 +421,7 @@ public class GeneratedTextResource extends ServerResource
 			this.documentSource = (DocumentSource<Document>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentSource" );
 
 			if( this.documentSource == null )
-				throw new RuntimeException( "Attribute com.threecrickets.prudence.GeneratedTextResource.documentSource must be set in context to use ScriptResource" );
+				throw new RuntimeException( "Attribute com.threecrickets.prudence.GeneratedTextResource.documentSource must be set in context to use GeneratedTextResource" );
 		}
 
 		return this.documentSource;
@@ -491,82 +493,43 @@ public class GeneratedTextResource extends ServerResource
 	@Override
 	public Representation get() throws ResourceException
 	{
-		// TODO: is this really what we want to do here?
-		return get( null );
+		return run( null, null );
 	}
 
 	@Override
 	public Representation get( Variant variant ) throws ResourceException
 	{
-		Request request = getRequest();
-		String name = PrudenceUtils.getRemainingPart( request, getDefaultName() );
-
-		try
-		{
-			if( isSourceViewable() && TRUE.equals( request.getResourceRef().getQueryAsForm().getFirstValue( SOURCE ) ) )
-			{
-				// Represent document source
-				return new StringRepresentation( getDocumentSource().getDocumentDescriptor( name ).getText() );
-			}
-			else
-			{
-				// Run document and represent its output
-				ExposedContainerForGeneratedTextResource container = new ExposedContainerForGeneratedTextResource( this, variant, getCache() );
-				Representation representation = container.includeDocument( name );
-
-				if( representation == null )
-					throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-				else
-					return representation;
-			}
-		}
-		catch( FileNotFoundException x )
-		{
-			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
-		}
-		catch( IOException x )
-		{
-			throw new ResourceException( x );
-		}
-		catch( ScriptException x )
-		{
-			throw new ResourceException( x );
-		}
+		return run( null, variant );
 	}
 
 	@Override
 	public Representation post( Representation entity ) throws ResourceException
 	{
-		// Handle the same was as get()
-		return get();
+		return run( entity, null );
 	}
 
 	@Override
 	public Representation post( Representation entity, Variant variant ) throws ResourceException
 	{
-		// Handle the same was as get(variant)
-		return get( variant );
+		return run( entity, variant );
 	}
 
 	@Override
 	public Representation put( Representation entity ) throws ResourceException
 	{
-		// Handle the same was as get()
-		return get();
+		return run( entity, null );
 	}
 
 	@Override
 	public Representation put( Representation entity, Variant variant ) throws ResourceException
 	{
-		// Handle the same was as get(variant)
-		return get( variant );
+		return run( entity, variant );
 	}
 
 	@Override
 	public Representation delete() throws ResourceException
 	{
-		// Handle the same was as get()
-		return get();
+		return run( null, null );
 	}
 
 	@Override
@@ -650,4 +613,52 @@ public class GeneratedTextResource extends ServerResource
 	 * The {@link Writer} used by the {@link Document}.
 	 */
 	private Writer writer;
+
+	/**
+	 * Does the actual handling of requests.
+	 * 
+	 * @param entity
+	 *        The entity
+	 * @param variant
+	 *        The variant
+	 * @return A representation
+	 * @throws ResourceException
+	 */
+	private Representation run( Representation entity, Variant variant ) throws ResourceException
+	{
+		Request request = getRequest();
+		String name = PrudenceUtils.getRemainingPart( request, getDefaultName() );
+
+		try
+		{
+			if( isSourceViewable() && TRUE.equals( request.getResourceRef().getQueryAsForm().getFirstValue( SOURCE ) ) )
+			{
+				// Represent document source
+				return new StringRepresentation( getDocumentSource().getDocumentDescriptor( name ).getText() );
+			}
+			else
+			{
+				// Run document and represent its output
+				ExposedContainerForGeneratedTextResource container = new ExposedContainerForGeneratedTextResource( this, entity, variant, getCache() );
+				Representation representation = container.includeDocument( name );
+
+				if( representation == null )
+					throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+				else
+					return representation;
+			}
+		}
+		catch( FileNotFoundException x )
+		{
+			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
+		}
+		catch( IOException x )
+		{
+			throw new ResourceException( x );
+		}
+		catch( ScriptException x )
+		{
+			throw new ResourceException( x );
+		}
+	}
 }
