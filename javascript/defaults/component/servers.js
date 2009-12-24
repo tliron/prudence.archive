@@ -28,6 +28,11 @@ var defaultServer = new Server(Protocol.HTTP, 8080);
 defaultServer.name = 'default';
 component.servers.add(defaultServer);
 
+// Add support for the X-FORWARDED-FOR header used by proxies, such as Apache's
+// mod_proxy. This guarantees that request.clientInfo.upstreamAddress returns
+// the upstream address behind the proxy.
+defaultServer.context.parameters.add('useForwardedForHeader', 'true');
+
 //
 // HTTP server bound to a specific IP address
 //

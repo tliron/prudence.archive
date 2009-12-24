@@ -27,6 +27,11 @@ default_server = Server(Protocol.HTTP, 8080)
 default_server.name = 'default'
 component.servers.add(default_server)
 
+# Add support for the X-FORWARDED-FOR header used by proxies, such as Apache's
+# mod_proxy. This guarantees that request.clientInfo.upstreamAddress returns
+# the upstream address behind the proxy.
+default_server.context.parameters.add('useForwardedForHeader', 'true')
+
 #
 # HTTP server bound to a specific IP address
 #

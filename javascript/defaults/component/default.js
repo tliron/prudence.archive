@@ -63,12 +63,6 @@ System.setProperty('com.sun.script.velocity.properties', 'conf/velocity.conf');
 component.logService.loggerName = 'web-requests';
 
 //
-// Clients
-//
-
-includeOrDefault('component/clients');
-
-//
 // Hosts
 //
 
@@ -97,6 +91,12 @@ if(applications.length == 0) {
 	print('No applications found. Exiting.\n');
 	System.exit(0);
 }
+
+//
+// Clients
+//
+
+includeOrDefault('component/clients');
 
 //
 // Servers

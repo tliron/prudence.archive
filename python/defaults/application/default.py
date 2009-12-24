@@ -4,9 +4,11 @@
 
 from java.io import File, FileNotFoundException
 from javax.script import ScriptEngineManager
+
 from org.restlet import Application
-from org.restlet.data import Reference, MediaType
+from org.restlet.data import Reference, MediaType, Status
 from com.threecrickets.scripturian.file import DocumentFileSource
+from com.threecrickets.prudence.util import DelegatedStatusService
 
 #
 # Settings
@@ -24,6 +26,7 @@ application.name = application_name
 application.description = application_description
 application.author = application_author
 application.owner = application_owner
+application.statusService = DelegatedStatusService()
 application.statusService.homeRef = Reference(application_home_url)
 application.statusService.contactEmail = application_contact_email
 

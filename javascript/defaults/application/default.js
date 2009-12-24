@@ -9,7 +9,9 @@ importClass(
 	org.restlet.Application,
 	org.restlet.data.Reference,
 	org.restlet.data.MediaType,
-	com.threecrickets.scripturian.file.DocumentFileSource);
+	org.restlet.data.Status,
+	com.threecrickets.scripturian.file.DocumentFileSource,
+	com.threecrickets.prudence.util.DelegatedStatusService);
 
 //
 // Settings
@@ -27,6 +29,7 @@ application.name = applicationName;
 application.description = applicationDescription;
 application.author = applicationAuthor;
 application.owner = applicationOwner;
+application.statusService = new DelegatedStatusService();
 application.statusService.homeRef = new Reference(applicationHomeURL);
 application.statusService.contactEmail = applicationContactEmail;
 
