@@ -11,9 +11,12 @@ lib/com.threecrickets.scripturian.jar;^
 lib/javax.script.jar;^
 lib/org.apache.log4j.jar;^
 lib/org.apache.velocity.jar;^
+lib/org.codehaus.jackson.jar:^
+lib/org.codehaus.jackson.mapper.jar:^
 lib/org.json.jar;^
 lib/org.mozilla.javascript.jar;^
 lib/org.restlet.ext.grizzly.jar;^
+lib/org.restlet.ext.jackson.jar:^
 lib/org.restlet.ext.json.jar;^
 lib/org.restlet.ext.slf4j.jar;^
 lib/org.restlet.jar;^
