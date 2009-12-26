@@ -8,21 +8,33 @@ routes may be selected according to changing circumstances.</p>
 
 <h3>Directories As Slugs</h3>
 
-<p>Prudence provides straightforward, hierarchical, dynamic routing between
+<p>Prudence provides straightforward, hierarchical, live routing between
 your directory structure and URLs. Simply put, file paths are mapped directly
 to URLs. Files added at runtime will automatically create new URLs for them.
 To keep the URLs pretty, filename extensions are optional. The filename
-extension, though serves two purposes: in the case of code in /resources/,
-/libraries/ or other places, the extension selects the language engine which
-will run the code; in the case of files in /web/dynamic/ and /web/static/,
+extension, though serves two purposes:
+
+In the case of code in /resources/, /libraries/ or other places, the extension
+selects the language engine which will run the code. For example, "search.py"
+will be run using Python, "search.gv" will be Groovy, "search.clj" will be
+Clojure, etc.
+
+In the case of files in /web/dynamic/ and /web/static/,
 it helps select the default MIME type for representations. This selection
 is based on the meta data service, which you can customize (see
 <a href="static-web">static web</a>). Embedded language code in /web/dynamic/
 files can also programatically change the returns MIME types (see <a
-href="resoruces">resources</a>)).
+href="resoruces">resources</a>).
 </p>
 
 <div class="note">
+<p>When Prudence URLs are attached to files in /web/dynamic/ and /resources/,
+the filename extension is optional. Prudence simply grabs the
+first file it finds with that name. So, generally, get used
+to not have more than one file with the same name in the same directory,
+even if they have different extensions.</p>
+</div>
+
 <p>Prudence routing rule: route by filename, format/language by extension</p>
 </div>
 
@@ -43,6 +55,14 @@ href="resoruces">resources</a>)).
 <h3>Redirection</h3>
 
 
+<h3>Handling Errors</h3>
+
+<pre>
+// 404 handler
+application.statusService.errorHandlers.put(
+	Status.CLIENT_ERROR_NOT_FOUND,
+	new Renamer(application.context, router, '404.html'));
+</pre>
 
 
 <%& '../fragments/footer' %>

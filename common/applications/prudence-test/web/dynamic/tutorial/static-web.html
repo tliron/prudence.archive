@@ -8,18 +8,23 @@ URLs, making files there available via HTTP GET. In other words,
 immutable resources that your clients will need to run your application:
 images, styles, scripts, etc.</p>
 
-<p>You're likely, though, wondering if its merely a convenience, and
-if you'd be better off using Apache or other dedicated web servers
+<p>You're likely, though, wondering if /web/static/ is merely a convenience,
+and if you'd be better off using Apache or other dedicated web servers
 instead of Prudence to serve your the static files.</p>
 
 <p>Our recommendation is to take that route only if those web
 servers offer important features that you won't find in Prudence.
-Remember, for example, that Prudence can do URL redirecting and routing.
-Otherwise, Prudence's non-blocking I/O actually does a great job at
-serving files, and you will likely not see performance or scalability
-gains by using Apache instead.</p>
+Remember that Prudence has many powerful features, including URL
+redirecting, rewriting and routing, and that Prudence's non-blocking
+I/O actually does a great job at serving files. You will likely not
+see many performance or scalability gains replacing /web/static/ with
+standard Apache.</p>
 
-<h3>MIME types</h3>
+<h3>Mapping MIME Types</h3>
+
+<pre>
+application.metadataService.addExtension('php', MediaType.TEXT_HTML)
+</pre>
 
 
 <%& '../fragments/footer' %>

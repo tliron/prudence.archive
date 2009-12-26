@@ -16,7 +16,7 @@
 	<property name="velocity" value="../velocity" />
 	
 	<property name="tmp" value="./tmp" />
-	<property name="kitchensink-base" value="${python}" />
+	<property name="kitchensink-base" value="${javascript}" />
 	<property name="dist-kitchensink" value="./kitchensink" />
 	<property name="dist-standalone" value="./standalone" />
 	<property name="dist-javascript" value="./javascript" />
@@ -223,10 +223,16 @@
 			<fileset dir="${javascript}/applications/prudence-test/libraries" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/applications/stickstick">
-			<fileset dir="${python}/applications/stickstick" />
+			<fileset dir="${kitchensink-base}/applications/stickstick" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/applications/stickstick/libraries">
+			<fileset dir="${python}/applications/stickstick/libraries" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/applications/stickstick/resources">
 			<fileset dir="${python}/applications/stickstick/resources" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/applications/stickstick/web">
+			<fileset dir="${python}/applications/stickstick/web" />
 		</copy>
 		<chmod file="${dist-kitchensink}/content/run.sh" perm="ugo+rx"/>
 	</target>
