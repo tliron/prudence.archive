@@ -20,7 +20,28 @@ These types represent dates and times as ISO formatted strings, which also nicel
 support ordering.   There's no reliance on typical "libc" internals for these functions
 so historical dates are fully supported.
 
+Auto Incrementing Beahvior
+--------------------------
 
+Background on SQLite's autoincrement is at: http://sqlite.org/autoinc.html
+
+Two things to note:
+
+* The AUTOINCREMENT keyword is **not** required for SQLite tables to
+  generate primary key values automatically. AUTOINCREMENT only means that
+  the algorithm used to generate ROWID values should be slightly different.
+* SQLite does **not** generate primary key (i.e. ROWID) values, even for
+  one column, if the table has a composite (i.e. multi-column) primary key.
+  This is regardless of the AUTOINCREMENT keyword being present or not.
+
+To specifically render the AUTOINCREMENT keyword on the primary key
+column when rendering DDL, add the flag ``sqlite_autoincrement=True`` 
+to the Table construct::
+
+    Table('sometable', metadata,
+            Column('id', Integer, primary_key=True), 
+            sqlite_autoincrement=True)
+    
 """
 
 import datetime, re, time
@@ -146,23 +167,7 @@ class TIME(_DateTimeMixin, sqltypes.Time):
     def result_processor(self, dialect, coltype):
         return self._result_processor(datetime.time)
 
-class _SLBoolean(sqltypes.Boolean):
-    def bind_processor(self, dialect):
-        def process(value):
-            if value is None:
-                return None
-            return value and 1 or 0
-        return process
-
-    def result_processor(self, dialect, coltype):
-        def process(value):
-            if value is None:
-                return None
-            return value == 1
-        return process
-
 colspecs = {
-    sqltypes.Boolean: _SLBoolean,
     sqltypes.Date: DATE,
     sqltypes.DateTime: DATETIME,
     sqltypes.Float: _SLFloat,
@@ -254,12 +259,50 @@ class SQLiteDDLCompiler(compiler.DDLCompiler):
 
         if not column.nullable:
             colspec += " NOT NULL"
+
+        if column.primary_key and \
+             column.table.kwargs.get('sqlite_autoincrement', False) and \
+             len(column.table.primary_key.columns) == 1 and \
+             isinstance(column.type, sqltypes.Integer) and \
+             not column.foreign_keys:
+             colspec += " PRIMARY KEY AUTOINCREMENT"
+            
         return colspec
-    
+
+    def visit_primary_key_constraint(self, constraint):
+        # for columns with sqlite_autoincrement=True,
+        # the PRIMARY KEY constraint can only be inline
+        # with the column itself.
+        if len(constraint.columns) == 1:
+            c = list(constraint)[0]
+            if c.primary_key and \
+                c.table.kwargs.get('sqlite_autoincrement', False) and \
+                isinstance(c.type, sqltypes.Integer) and \
+                not c.foreign_keys:
+                return ''
+ 
+        return super(SQLiteDDLCompiler, self).\
+                    visit_primary_key_constraint(constraint)
+ 
+
+    def visit_create_index(self, create):
+        index = create.element
+        preparer = self.preparer
+        text = "CREATE "
+        if index.unique:
+            text += "UNIQUE "
+        text += "INDEX %s ON %s (%s)" \
+                    % (preparer.format_index(index,
+                       name=self._validate_identifier(index.name, True)),
+                       preparer.format_table(index.table, use_schema=False),
+                       ', '.join(preparer.quote(c.name, c.quote)
+                                 for c in index.columns))
+        return text
+
 class SQLiteTypeCompiler(compiler.GenericTypeCompiler):
     def visit_binary(self, type_):
         return self.visit_BLOB(type_)
-    
+
 class SQLiteIdentifierPreparer(compiler.IdentifierPreparer):
     reserved_words = set([
         'add', 'after', 'all', 'alter', 'analyze', 'and', 'as', 'asc',
@@ -280,6 +323,16 @@ class SQLiteIdentifierPreparer(compiler.IdentifierPreparer):
         'transaction', 'trigger', 'true', 'union', 'unique', 'update', 'using',
         'vacuum', 'values', 'view', 'virtual', 'when', 'where',
         ])
+
+    def format_index(self, index, use_schema=True, name=None):
+        """Prepare a quoted index and schema name."""
+
+        if name is None:
+            name = index.name
+        result = self.quote(name, index.quote)
+        if not self.omit_schema and use_schema and getattr(index.table, "schema", None):
+            result = self.quote_schema(index.table.schema, index.table.quote_schema) + "." + result
+        return result
 
 class SQLiteDialect(default.DefaultDialect):
     name = 'sqlite'

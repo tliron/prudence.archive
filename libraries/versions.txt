@@ -16,5 +16,5 @@ rhino			1.7R2
 scripturian		1.0 (Revision 91)
 slf4j			1.5.8
 succinct		1.0 alpha 1
-sqlalchemy		0.6 (Revision 6523)
+sqlalchemy		0.6 (Revision 6575)
 velocity		1.6.2

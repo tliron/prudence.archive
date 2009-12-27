@@ -135,6 +135,27 @@ class Dialect(object):
     supports_default_values
       Indicates if the construct ``INSERT INTO tablename DEFAULT
       VALUES`` is supported
+    
+    supports_sequences
+      Indicates if the dialect supports CREATE SEQUENCE or similar.
+    
+    sequences_optional
+      If True, indicates if the "optional" flag on the Sequence() construct
+      should signal to not generate a CREATE SEQUENCE. Applies only to
+      dialects that support sequences. Currently used only to allow Postgresql
+      SERIAL to be used on a column that specifies Sequence() for usage on
+      other backends.
+        
+    supports_native_enum
+      Indicates if the dialect supports a native ENUM construct.
+      This will prevent types.Enum from generating a CHECK
+      constraint when that type is used.
+
+    supports_native_boolean
+      Indicates if the dialect supports a native boolean construct.
+      This will prevent types.Boolean from generating a CHECK
+      constraint when that type is used.
+      
     """
 
     def create_connect_args(self, url):
@@ -685,9 +706,10 @@ class Connection(Connectable):
     .. index::
       single: thread safety; Connection
     """
-
+    options = {}
+    
     def __init__(self, engine, connection=None, close_with_result=False,
-                 _branch=False):
+                 _branch=False, _options=None):
         """Construct a new Connection.
 
         Connection objects are typically constructed by an
@@ -702,6 +724,8 @@ class Connection(Connectable):
         self.__savepoint_seq = 0
         self.__branch = _branch
         self.__invalid = False
+        if _options:
+            self.options = _options
 
     def _branch(self):
         """Return a new Connection which references this Connection's
@@ -713,7 +737,22 @@ class Connection(Connectable):
         """
 
         return self.engine.Connection(self.engine, self.__connection, _branch=True)
-
+    
+    def _with_options(self, **opt):
+        """Add keyword options to a Connection generatively.
+        
+        Experimental.  May change the name/signature at 
+        some point.
+        
+        If made public, strongly consider the name
+        "options()" so as to be consistent with
+        orm.Query.options().
+        
+        """
+        return self.engine.Connection(
+                    self.engine, self.__connection,
+                     _branch=self.__branch, _options=opt)
+        
     @property
     def dialect(self):
         "Dialect used by this Connection."

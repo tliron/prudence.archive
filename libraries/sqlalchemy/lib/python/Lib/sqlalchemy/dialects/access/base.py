@@ -8,6 +8,8 @@
 """
 Support for the Microsoft Access database.
 
+This dialect is *not* ported to SQLAlchemy 0.6.
+
 This dialect is *not* tested on SQLAlchemy 0.6.
 
 
@@ -178,6 +180,8 @@ class AccessDialect(default.DefaultDialect):
     supports_sane_rowcount = False
     supports_sane_multi_rowcount = False
 
+    ported_sqla_06 = False
+    
     def type_descriptor(self, typeobj):
         newobj = types.adapt_type(typeobj, self.colspecs)
         return newobj

@@ -5,6 +5,8 @@
 
 """Support for the MaxDB database.
 
+This dialect is *not* ported to SQLAlchemy 0.6.
+
 This dialect is *not* tested on SQLAlchemy 0.6.
 
 Overview
@@ -804,6 +806,8 @@ class MaxDBDialect(default.DefaultDialect):
     statement_compiler = MaxDBCompiler
     ddl_compiler = MaxDBDDLCompiler
     execution_ctx_cls = MaxDBExecutionContext
+
+    ported_sqla_06 = False
 
     colspecs = colspecs
     ischema_names = ischema_names

@@ -1588,11 +1588,17 @@ class _CompareMixin(ColumnOperators):
 
           somecolumn * 5
 
-        operator
-          a string which will be output as the infix operator between
+        
+        :param operator: a string which will be output as the infix operator between
           this ``ClauseElement`` and the expression passed to the
           generated function.
 
+        This function can also be used to make bitwise operators explicit. For example::
+
+          somecolumn.op('&')(0xff)
+
+        is a bitwise AND of the value in somecolumn.
+          
         """
         return lambda other: self.__operate(operator, other)
 
@@ -2131,15 +2137,10 @@ class _BindParamClause(ColumnElement):
             return obj.type
 
     def compare(self, other, **kw):
-        """Compare this ``_BindParamClause`` to the given clause.
-
-        Since ``compare()`` is meant to compare statement syntax, this
-        method returns True if the two ``_BindParamClauses`` have just
-        the same type.
-
-        """
+        """Compare this ``_BindParamClause`` to the given clause."""
+        
         return isinstance(other, _BindParamClause) and \
-                    other.type.__class__ == self.type.__class__ and \
+                    self.type._compare_type_affinity(other.type) and \
                     self.value == other.value
 
     def __getstate__(self):
@@ -2818,7 +2819,7 @@ class Alias(FromClause):
         self.element = _clone(self.element)
         baseselectable = self.element
         while isinstance(baseselectable, Alias):
-            baseselectable = baseselectable.selectable
+            baseselectable = baseselectable.element
         self.original = baseselectable
 
     def get_children(self, column_collections=True, aliased_selectables=True, **kwargs):
@@ -3020,21 +3021,13 @@ class ColumnClause(_Immutable, ColumnElement):
 
         elif self.table is not None and self.table.named_with_column:
             if getattr(self.table, 'schema', None):
-                label = self.table.schema + "_" + \
+                label = self.table.schema.replace('.', '_') + "_" + \
                             _escape_for_generated(self.table.name) + "_" + \
                             _escape_for_generated(self.name)
             else:
                 label = _escape_for_generated(self.table.name) + "_" + \
                             _escape_for_generated(self.name)
 
-            if label in self.table.c:
-                # TODO: coverage does not seem to be present for this
-                _label = label
-                counter = 1
-                while _label in self.table.c:
-                    _label = label + "_" + str(counter)
-                    counter += 1
-                label = _label
             return _generated_label(label)
 
         else:

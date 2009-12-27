@@ -37,7 +37,7 @@ if util.jython:
     import array
 
 class AbstractType(Visitable):
-
+    
     def __init__(self, *args, **kwargs):
         pass
 
@@ -87,9 +87,11 @@ class AbstractType(Visitable):
         return False
 
     def get_dbapi_type(self, dbapi):
-        """Return the corresponding type object from the underlying DB-API, if any.
+        """Return the corresponding type object from the underlying DB-API, if
+        any.
+        
+         This can be useful for calling ``setinputsizes()``, for example.
 
-        This can be useful for calling ``setinputsizes()``, for example.
         """
         return None
 
@@ -98,8 +100,22 @@ class AbstractType(Visitable):
         translate it to a new operator based on the semantics of this type.
 
         By default, returns the operator unchanged.
+
         """
         return op
+        
+    @util.memoized_property
+    def _type_affinity(self):
+        """Return a rudimental 'affinity' value expressing the general class of type."""
+        
+        for i, t in enumerate(self.__class__.__mro__):
+            if t is TypeEngine or t is UserDefinedType:
+                return self.__class__.__mro__[i - 1]
+        else:
+            return self.__class__
+        
+    def _compare_type_affinity(self, other):
+        return self._type_affinity is other._type_affinity
 
     def __repr__(self):
         return "%s(%s)" % (
@@ -157,7 +173,7 @@ class UserDefinedType(TypeEngine):
 
     This should be the base of new types.  Note that
     for most cases, :class:`TypeDecorator` is probably
-    more appropriate.
+    more appropriate::
 
       import sqlalchemy.types as types
 
@@ -266,6 +282,10 @@ class TypeDecorator(AbstractType):
         tt.impl = typedesc
         self._impl_dict[dialect] = tt
         return tt
+
+    @util.memoized_property
+    def _type_affinity(self):
+        return self.impl._type_affinity
 
     def type_engine(self, dialect):
         impl = self.dialect_impl(dialect)
@@ -836,7 +856,13 @@ class Binary(TypeEngine):
         return dbapi.BINARY
 
 class SchemaType(object):
-    """Mark a type as possibly requiring schema-level DDL for usage."""
+    """Mark a type as possibly requiring schema-level DDL for usage.
+    
+    Supports types that must be explicitly created/dropped (i.e. PG ENUM type)
+    as well as types that are complimented by table or schema level
+    constraints, triggers, and other rules.
+    
+    """
     
     def __init__(self, **kw):
         self.name = kw.pop('name', None)
@@ -867,6 +893,8 @@ class SchemaType(object):
         return self.metadata and self.metadata.bind or None
         
     def create(self, bind=None, checkfirst=False):
+        """Issue CREATE ddl for this type, if applicable."""
+        
         from sqlalchemy.schema import _bind_or_error
         if bind is None:
             bind = _bind_or_error(self)
@@ -875,6 +903,8 @@ class SchemaType(object):
             t.create(bind=bind, checkfirst=checkfirst)
 
     def drop(self, bind=None, checkfirst=False):
+        """Issue DROP ddl for this type, if applicable."""
+
         from sqlalchemy.schema import _bind_or_error
         if bind is None:
             bind = _bind_or_error(self)
@@ -983,12 +1013,16 @@ class Enum(String, SchemaType):
         if self.native_enum:
             SchemaType._set_table(self, table, column)
             
-        # this constraint DDL object is conditionally
-        # compiled by MySQL, Postgresql based on
-        # the native_enum flag.
-        table.append_constraint(
-            EnumConstraint(self, column)
-        )
+        def should_create_constraint(compiler):
+            return not self.native_enum or \
+                        not compiler.dialect.supports_native_enum
+
+        e = schema.CheckConstraint(
+                        column.in_(self.enums),
+                        name=self.name,
+                        _create_rule=should_create_constraint
+                    )
+        table.append_constraint(e)
         
     def adapt(self, impltype):
         return impltype(name=self.name, 
@@ -1000,14 +1034,6 @@ class Enum(String, SchemaType):
                         *self.enums
                         )
 
-class EnumConstraint(schema.CheckConstraint):
-    __visit_name__ = 'enum_constraint'
-    
-    def __init__(self, type_, column, **kw):
-        super(EnumConstraint, self).__init__('', name=type_.name, **kw)
-        self.type = type_
-        self.column = column
-    
 class PickleType(MutableType, TypeDecorator):
     """Holds Python objects.
 
@@ -1095,7 +1121,7 @@ class PickleType(MutableType, TypeDecorator):
         return self.mutable
 
 
-class Boolean(TypeEngine):
+class Boolean(TypeEngine, SchemaType):
     """A bool datatype.
 
     Boolean typically uses BOOLEAN or SMALLINT on the DDL side, and on
@@ -1104,6 +1130,44 @@ class Boolean(TypeEngine):
     """
 
     __visit_name__ = 'boolean'
+
+    def __init__(self, create_constraint=True, name=None):
+        """Construct a Boolean.
+        
+        :param create_constraint: defaults to True.  If the boolean 
+        is generated as an int/smallint, also create a CHECK constraint
+        on the table that ensures 1 or 0 as a value.
+        
+        :param name: if a CHECK constraint is generated, specify
+        the name of the constraint.
+        
+        """
+        self.create_constraint = create_constraint
+        self.name = name
+        
+    def _set_table(self, table, column):
+        if not self.create_constraint:
+            return
+            
+        def should_create_constraint(compiler):
+            return not compiler.dialect.supports_native_boolean
+
+        e = schema.CheckConstraint(
+                        column.in_([0, 1]),
+                        name=self.name,
+                        _create_rule=should_create_constraint
+                    )
+        table.append_constraint(e)
+    
+    def result_processor(self, dialect, coltype):
+        if dialect.supports_native_boolean:
+            return None
+        else:
+            def process(value):
+                if value is None:
+                    return None
+                return value and True or False
+            return process
 
 class Interval(TypeDecorator):
     """A type for ``datetime.timedelta()`` objects.

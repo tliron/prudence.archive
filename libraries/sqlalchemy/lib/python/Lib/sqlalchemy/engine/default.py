@@ -36,6 +36,9 @@ class DefaultDialect(base.Dialect):
     postfetch_lastrowid = True
     implicit_returning = False
     
+    supports_native_enum = False
+    supports_native_boolean = False
+    
     # Py3K
     #supports_unicode_statements = True
     #supports_unicode_binds = True
@@ -67,6 +70,11 @@ class DefaultDialect(base.Dialect):
                  encoding='utf-8', paramstyle=None, dbapi=None,
                  implicit_returning=None,
                  label_length=None, **kwargs):
+                 
+        if not getattr(self, 'ported_sqla_06', True):
+            util.warn(
+                "The %s dialect is not yet ported to SQLAlchemy 0.6" % self.name)
+        
         self.convert_unicode = convert_unicode
         self.assert_unicode = assert_unicode
         self.encoding = encoding
@@ -99,7 +107,11 @@ class DefaultDialect(base.Dialect):
         #self.supports_unicode_statements = True
         #self.supports_unicode_binds = True
         #self.returns_unicode_strings = True
-
+    
+    @property
+    def dialect_description(self):
+        return self.name + "+" + self.driver
+        
     def initialize(self, connection):
         try:
             self.server_version_info = self._get_server_version_info(connection)
