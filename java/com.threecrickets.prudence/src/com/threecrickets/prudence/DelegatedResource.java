@@ -704,7 +704,6 @@ public class DelegatedResource extends ServerResource
 		super.doInit();
 		setAnnotated( false );
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants() );
-
 		container.invoke( getEntryPointNameForInit() );
 	}
 
@@ -880,9 +879,7 @@ public class DelegatedResource extends ServerResource
 	public Representation delete( Variant variant ) throws ResourceException
 	{
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
-
 		container.invoke( getEntryPointNameForDelete() );
-
 		return null;
 	}
 
@@ -912,7 +909,6 @@ public class DelegatedResource extends ServerResource
 	public Representation options( Variant variant ) throws ResourceException
 	{
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
-
 		Object r = container.invoke( getEntryPointNameForOptions() );
 		return container.getRepresentation( r );
 	}
