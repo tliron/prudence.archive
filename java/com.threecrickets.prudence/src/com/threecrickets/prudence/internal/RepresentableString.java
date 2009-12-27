@@ -53,6 +53,25 @@ public class RepresentableString
 		this.expirationDate = expirationDate;
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param string
+	 *        The string
+	 * @param mediaType
+	 *        The media type
+	 * @param language
+	 *        The language
+	 * @param characterSet
+	 *        The character set
+	 * @param expiration
+	 *        Expiration timestamp or 0
+	 */
+	public RepresentableString( String string, MediaType mediaType, Language language, CharacterSet characterSet, long expiration )
+	{
+		this( string, mediaType, language, characterSet, expiration > 0 ? new Date( expiration ) : null );
+	}
+
 	//
 	// Attributes
 	//

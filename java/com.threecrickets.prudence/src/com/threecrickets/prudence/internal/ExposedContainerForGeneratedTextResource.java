@@ -15,7 +15,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Date;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.script.ScriptException;
@@ -24,7 +23,6 @@ import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
-import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 
 import com.threecrickets.prudence.GeneratedTextResource;
@@ -444,11 +442,7 @@ public class ExposedContainerForGeneratedTextResource
 			if( writer != null )
 				writer.write( trivial );
 
-			StringRepresentation representation = new StringRepresentation( trivial, getMediaType(), getLanguage(), getCharacterSet() );
-			representation.setModificationDate( new Date() );
-			if( document.getCacheDuration() > 0 )
-				representation.setExpirationDate( new Date( document.getLastRun() + document.getCacheDuration() ) );
-			return representation;
+			return new RepresentableString( trivial, getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? document.getExpiration() : 0 ).represent();
 		}
 
 		int startPosition = 0;
@@ -495,9 +489,8 @@ public class ExposedContainerForGeneratedTextResource
 					writer.flush();
 
 					// Get the buffer from when we ran the script
-					RepresentableString string = new RepresentableString( buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet(), document.getCacheDuration() > 0 ? new Date( document
-						.getLastRun()
-						+ document.getCacheDuration() ) : null );
+					RepresentableString string = new RepresentableString( buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? document.getExpiration()
+						: 0 );
 
 					// Cache it
 					cache.put( name, string );
@@ -506,13 +499,7 @@ public class ExposedContainerForGeneratedTextResource
 					if( startPosition == 0 )
 						return string.represent();
 					else
-					{
-						StringRepresentation representation = new StringRepresentation( buffer.toString(), getMediaType(), getLanguage(), getCharacterSet() );
-						representation.setModificationDate( new Date() );
-						if( document.getCacheDuration() > 0 )
-							representation.setExpirationDate( new Date( document.getLastRun() + document.getCacheDuration() ) );
-						return representation;
-					}
+						return new RepresentableString( buffer.toString(), getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? document.getExpiration() : 0 ).represent();
 				}
 			}
 			else

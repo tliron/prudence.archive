@@ -118,7 +118,8 @@ import com.threecrickets.scripturian.ScriptletController;
  * .</li>
  * <li><code>document.container.stream(flushLines)</code>: This version of the
  * above adds a boolean argument to let you control whether to flush the writer
- * after every line in streaming mode. By default auto-flushing is enabled.</li>
+ * after every line in streaming mode. By default line-by-line flushing is
+ * enabled.</li>
  * </ul>
  * Read-only attributes:
  * <ul>
@@ -156,6 +157,9 @@ import com.threecrickets.scripturian.ScriptletController;
  * <p>
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.allowClientCaching:</code>
+ * {@link Boolean}, defaults to true. See {@link #isAllowClientCaching()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.allowCompilation:</code>
  * {@link Boolean}, defaults to true. See {@link #isAllowCompilation()}.</li>
@@ -428,6 +432,30 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
+	 * Whether or not to send information to the client about cache expiration.
+	 * Defaults to true.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.allowClientCaching</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return Whether to allow client caching
+	 */
+	public boolean isAllowClientCaching()
+	{
+		if( allowClientCaching == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			allowClientCaching = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.allowClientCaching" );
+
+			if( allowClientCaching == null )
+				allowClientCaching = true;
+		}
+
+		return allowClientCaching;
+	}
+
+	/**
 	 * Whether or not compilation is attempted for script engines that support
 	 * it. Defaults to true.
 	 * <p>
@@ -585,6 +613,11 @@ public class GeneratedTextResource extends ServerResource
 	 * An optional {@link ScriptletController} to be used with the scripts.
 	 */
 	private ScriptletController scriptletController;
+
+	/**
+	 * Whether or not to send information to the client about cache expiration.
+	 */
+	private Boolean allowClientCaching;
 
 	/**
 	 * Whether or not compilation is attempted for script engines that support
