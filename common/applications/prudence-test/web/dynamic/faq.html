@@ -72,13 +72,13 @@ See the <a href="tutorial/dynamic-web">tutorial</a> for more information.
 There may be a delay when starting up a specific language engine in Prudence for the first time in an application, as it loads
 and initializes itself. Then, there may be a delay when accessing a dynamic web page or resource for the first time, or after
 it has been changed, as it might require compilation. Once it's up and running, though, your code performs and scale very well --
-well, as well as you've written it. You need to understand concurrency and make sure you make good choices to handle
+as well as you've written it. You need to understand concurrency and make sure you make good choices to handle
 coordination between threads accessing the same data. If all is good, your code will actually perform better throughout the
 life of the application. The JVM learns and adapts as it runs, and performance can improve the more the application is used. 
 </p>
 <p>
-If you are performing CPU-intensive tasks that require high performance, then it's best to profile these code segments precisely,
-as exact performance characteristics depend on the language and engine used. The <a href="http://shootout.alioth.debian.org/">Bechmarks Game</a>
+If you are performing CPU-intensive or time-sensitive tasks, then it's best to profile these code segments precisely.
+Exact performance characteristics depend on the language and engine used. The <a href="http://shootout.alioth.debian.org/">Bechmarks Game</a>
 can give you some comparisons of different language engines running high-computation programs.
 In any case, if you have a piece of intensive code that really needs to perform well, it's probably best to write
 it in Java and access it from the your language. You can even write it in C or assembly, and have it linked to Java via JNI.
