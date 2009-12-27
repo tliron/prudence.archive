@@ -2,7 +2,7 @@
 # Prudence Application
 #
 
-from java.io import File, FileNotFoundException
+from java.io import FileNotFoundException
 from javax.script import ScriptEngineManager
 
 from org.restlet import Application
@@ -62,7 +62,7 @@ attributes['com.threecrickets.prudence.DelegatedResource.engineManager'] = scrip
 attributes['com.threecrickets.prudence.DelegatedResource.defaultEngineName'] = 'python'
 attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resource_default_name
 attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = \
-	DocumentFileSource(File(application_base_path + resource_base_path), resource_default_name, resource_minimum_time_between_validity_checks)
+	DocumentFileSource(application_base_path + resource_base_path, resource_default_name, resource_minimum_time_between_validity_checks)
 attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resource_source_viewable
 
 # GeneratedTextResource
@@ -71,7 +71,7 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.engineManager'] = s
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultEngineName'] = 'python'
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamic_web_default_document
 attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = \
-	 DocumentFileSource(File(application_base_path + dynamic_web_base_path), dynamic_web_default_document, dynamic_web_minimum_time_between_validity_checks)
+	 DocumentFileSource(application_base_path + dynamic_web_base_path, dynamic_web_default_document, dynamic_web_minimum_time_between_validity_checks)
 attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
 
 # Additional runtime attributes
