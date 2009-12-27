@@ -35,7 +35,7 @@ def handleGetInfo():
     try:
         note = session.query(Note).filter_by(id=id).one()
     except NoResultFound:
-        return 404
+        return None
     finally:
         session.close()
 
