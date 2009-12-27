@@ -495,8 +495,9 @@ public class ExposedContainerForGeneratedTextResource
 					writer.flush();
 
 					// Get the buffer from when we ran the script
-					RepresentableString string = new RepresentableString( buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet(), new Date( document.getLastRun()
-						+ document.getCacheDuration() ) );
+					RepresentableString string = new RepresentableString( buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet(), document.getCacheDuration() > 0 ? new Date( document
+						.getLastRun()
+						+ document.getCacheDuration() ) : null );
 
 					// Cache it
 					cache.put( name, string );
