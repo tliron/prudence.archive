@@ -243,12 +243,12 @@ public class ExposedContainerForDelegatedResource
 
 	/**
 	 * @param expirationDate
-	 *        The date or null
+	 *        The date
 	 * @see #setExpirationDate(Date)
 	 */
-	public void setExpirationDateAsLong( Number modificationDate )
+	public void setExpirationDateAsLong( long expirationDate )
 	{
-		this.modificationDate = new Date( modificationDate.longValue() );
+		this.expirationDate = new Date( expirationDate );
 	}
 
 	/**
@@ -285,12 +285,12 @@ public class ExposedContainerForDelegatedResource
 
 	/**
 	 * @param modificationDate
-	 *        The date or null
+	 *        The date
 	 * @see #setModificationDate(Date)
 	 */
-	public void setModificationDateAsLong( Number modificationDate )
+	public void setModificationDateAsLong( long modificationDate )
 	{
-		this.modificationDate = new Date( modificationDate.longValue() );
+		this.modificationDate = new Date( modificationDate );
 	}
 
 	/**
@@ -327,12 +327,12 @@ public class ExposedContainerForDelegatedResource
 
 	/**
 	 * @param tag
-	 *        The HTTP-formatted tag
+	 *        The HTTP-formatted tag or null
 	 * @see #setTag(Tag)
 	 */
 	public void setTagAsString( String tag )
 	{
-		this.tag = Tag.parse( tag );
+		this.tag = tag != null ? Tag.parse( tag ) : null;
 	}
 
 	/**

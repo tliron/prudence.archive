@@ -11,6 +11,8 @@
 
 package com.threecrickets.prudence.internal;
 
+import java.util.Date;
+
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
@@ -39,13 +41,16 @@ public class RepresentableString
 	 *        The language
 	 * @param characterSet
 	 *        The character set
+	 * @param expirationDate
+	 *        The expiration date
 	 */
-	public RepresentableString( String string, MediaType mediaType, Language language, CharacterSet characterSet )
+	public RepresentableString( String string, MediaType mediaType, Language language, CharacterSet characterSet, Date expirationDate )
 	{
 		this.string = string;
 		this.mediaType = mediaType;
 		this.language = language;
 		this.characterSet = characterSet;
+		this.expirationDate = expirationDate;
 	}
 
 	//
@@ -73,7 +78,10 @@ public class RepresentableString
 	 */
 	public StringRepresentation represent()
 	{
-		return new StringRepresentation( string, mediaType, language, characterSet );
+		StringRepresentation representation = new StringRepresentation( string, mediaType, language, characterSet );
+		representation.setModificationDate( modificationDate );
+		representation.setExpirationDate( expirationDate );
+		return representation;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -98,4 +106,14 @@ public class RepresentableString
 	 * The character set.
 	 */
 	private final CharacterSet characterSet;
+
+	/**
+	 * The modification date.
+	 */
+	private final Date modificationDate = new Date();
+
+	/**
+	 * The expiration date.
+	 */
+	private final Date expirationDate;
 }

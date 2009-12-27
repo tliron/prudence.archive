@@ -15,6 +15,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Date;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.script.ScriptException;
@@ -443,7 +444,11 @@ public class ExposedContainerForGeneratedTextResource
 			if( writer != null )
 				writer.write( trivial );
 
-			return new StringRepresentation( trivial, getMediaType(), getLanguage(), getCharacterSet() );
+			StringRepresentation representation = new StringRepresentation( trivial, getMediaType(), getLanguage(), getCharacterSet() );
+			representation.setModificationDate( new Date() );
+			if( document.getCacheDuration() > 0 )
+				representation.setExpirationDate( new Date( document.getLastRun() + document.getCacheDuration() ) );
+			return representation;
 		}
 
 		int startPosition = 0;
@@ -490,7 +495,8 @@ public class ExposedContainerForGeneratedTextResource
 					writer.flush();
 
 					// Get the buffer from when we ran the script
-					RepresentableString string = new RepresentableString( buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet() );
+					RepresentableString string = new RepresentableString( buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet(), new Date( document.getLastRun()
+						+ document.getCacheDuration() ) );
 
 					// Cache it
 					cache.put( name, string );
@@ -499,7 +505,13 @@ public class ExposedContainerForGeneratedTextResource
 					if( startPosition == 0 )
 						return string.represent();
 					else
-						return new StringRepresentation( buffer.toString(), getMediaType(), getLanguage(), getCharacterSet() );
+					{
+						StringRepresentation representation = new StringRepresentation( buffer.toString(), getMediaType(), getLanguage(), getCharacterSet() );
+						representation.setModificationDate( new Date() );
+						if( document.getCacheDuration() > 0 )
+							representation.setExpirationDate( new Date( document.getLastRun() + document.getCacheDuration() ) );
+						return representation;
+					}
 				}
 			}
 			else
