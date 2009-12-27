@@ -24,11 +24,11 @@ def datetime_to_milliseconds(dt):
 class Note(Base):
     
     id = Column(Integer, primary_key=True)
-    board = Column(String(50, convert_unicode=True, assert_unicode='warn'), index=True)
+    board = Column(String(50), index=True)
     x = Column(Integer)
     y = Column(Integer)
     size = Column(Integer)
-    content = Column(Text(convert_unicode=True, assert_unicode='warn'))
+    content = Column(Text())
     timestamp = Column(DateTime)
 
     __tablename__ = 'note'
@@ -80,14 +80,26 @@ def get_engine():
             attributes = Application.getCurrent().context.attributes
 
             # Make sure database exists
-            root_engine = create_engine('%s://%s:%s@%s/' % (attributes['stickstick.backend'], attributes['stickstick.username'], attributes['stickstick.password'], attributes['stickstick.host']))
+            root_engine = create_engine('%s://%s:%s@%s/' % (
+                attributes['stickstick.backend'],
+                attributes['stickstick.username'],
+                attributes['stickstick.password'],
+                attributes['stickstick.host']),
+                convert_unicode=True)
             connection = root_engine.connect()
             #connection.execute('DROP DATABASE %s' % attributes['stickstick.database'])
             connection.execute('CREATE DATABASE IF NOT EXISTS %s' % attributes['stickstick.database'])
             connection.close()
     
             # Connect to database
-            engine = create_engine('%s://%s:%s@%s/%s' % (attributes['stickstick.backend'], attributes['stickstick.username'], attributes['stickstick.password'], attributes['stickstick.host'], attributes['stickstick.database']))
+            engine = create_engine('%s://%s:%s@%s/%s' % (
+                attributes['stickstick.backend'],
+                attributes['stickstick.username'],
+                attributes['stickstick.password'],
+                attributes['stickstick.host'],
+                attributes['stickstick.database']),
+                convert_unicode=True,
+                pool_recycle=3600)
             Session.configure(bind=engine)
             
             # Make sure tables exist
