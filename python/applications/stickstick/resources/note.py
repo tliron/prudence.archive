@@ -1,7 +1,7 @@
 sys.path.append(str(document.container.source.basePath) + '/../libraries/')
 
 from stickstick.data import *
-from org.restlet.data import Status
+from sqlalchemy.orm.exc import NoResultFound
 
 import minjson as json
 
@@ -20,12 +20,10 @@ def handleGet():
     session = get_session()
     try:
         note = session.query(Note).filter_by(id=id).one()
+    except NoResultFound:
+        return 404
     finally:
         session.close()
-
-    if note is None:
-        document.container.resource.response.status = Status.CLIENT_ERROR_NOT_FOUND;
-        return None
 
     document.container.modificationTimestamp = datetime_to_milliseconds(note.timestamp)
     return json.write(note.to_dict())
@@ -36,12 +34,10 @@ def handleGetInfo():
     session = get_session()
     try:
         note = session.query(Note).filter_by(id=id).one()
+    except NoResultFound:
+        return 404
     finally:
         session.close()
-
-    if note is None:
-        document.container.resource.response.status = Status.CLIENT_ERROR_NOT_FOUND;
-        return None
 
     return datetime_to_milliseconds(note.timestamp)
 
@@ -58,12 +54,10 @@ def handlePost():
     session = get_session()
     try:
         note = session.query(Note).filter_by(id=id).one()
-        if note is None:
-            document.container.resource.response.status = Status.CLIENT_ERROR_NOT_FOUND;
-            return None
-
         note.update(dict)
         session.flush()
+    except NoResultFound:
+        return 404
     finally:
         session.close()
 
@@ -76,12 +70,10 @@ def handleDelete():
     session = get_session()
     try:
         note = session.query(Note).filter_by(id=id).one()
-        if note is None:
-            document.container.resource.response.status = Status.CLIENT_ERROR_NOT_FOUND;
-            return None
-
         session.delete(note)
         session.flush()
+    except NoResultFound:
+        return 404
     finally:
         session.close()
 

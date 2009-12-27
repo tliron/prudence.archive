@@ -53,13 +53,15 @@ import com.threecrickets.scripturian.ScriptletController;
  * is expected to behave as a logical "read" of the resource's state. The
  * expectation is that it return one representation, out of possibly many, of
  * the resource's state. Returned values can be of any explicit sub-class of
- * {@link Representation}. Other types will be automatically converted to string
- * representation using the client's requested media type and character set.
- * These, and the language of the representation (defaulting to null), can be
- * read and changed via <code>container.mediaType</code>,
- * <code>container.characterSet</code>, and <code>container.language</code>.
- * Additionally, you can use <code>container.variant</code> to interrogate the
- * client's provided list of supported languages and encoding.</li>
+ * {@link Representation}. If you return an integer, it will be set as the
+ * response status code and a null representation will be returned to the
+ * client. Other types will be automatically converted to string representation
+ * using the client's requested media type and character set. These, and the
+ * language of the representation (defaulting to null), can be read and changed
+ * via <code>container.mediaType</code>, <code>container.characterSet</code>,
+ * and <code>container.language</code>. Additionally, you can use
+ * <code>container.variant</code> to interrogate the client's provided list of
+ * supported languages and encoding.</li>
  * <li><code>handleGetInfo()</code>: This optional function is called, if you
  * defined it, instead of <code>handleGet()</code> during conditional
  * processing. Rather of returning a full-blown representation of your data, it
@@ -166,6 +168,10 @@ import com.threecrickets.scripturian.ScriptletController;
  * a timestamp (long).</li>
  * <li><code>document.container.modificationTimestamp</code>: See
  * <code>document.container.modificationDate</code>.</li>
+ * <li><code>document.container.statusCode</code>: A convenient way to set the
+ * response status code. This is equivalent to setting
+ * <code>document.container.response.status</code> using
+ * {@link Status#valueOf(int)}.</li>
  * <li><code>document.container.source</code>: The source used for the document;
  * see {@link #getDocumentSource()}.</li>
  * <li><code>document.container.tag</code>: Smart clients can use this optional
@@ -760,7 +766,7 @@ public class DelegatedResource extends ServerResource
 		else
 		{
 			Object r = container.invoke( getEntryPointNameForGet() );
-			return container.getRepresentation( r );
+			return getRepresentation( container, r );
 		}
 	}
 
@@ -791,7 +797,7 @@ public class DelegatedResource extends ServerResource
 	{
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), null, variant );
 		Object r = container.invoke( getEntryPointNameForGetInfo() );
-		return container.getRepresentationInfo( r );
+		return getRepresentationInfo( container, r );
 	}
 
 	/**
@@ -825,7 +831,7 @@ public class DelegatedResource extends ServerResource
 	{
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
 		Object r = container.invoke( getEntryPointNameForPost() );
-		return container.getRepresentation( r );
+		return getRepresentation( container, r );
 	}
 
 	/**
@@ -859,7 +865,7 @@ public class DelegatedResource extends ServerResource
 	{
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
 		Object r = container.invoke( getEntryPointNameForPut() );
-		return container.getRepresentation( r );
+		return getRepresentation( container, r );
 	}
 
 	/**
@@ -919,7 +925,7 @@ public class DelegatedResource extends ServerResource
 	{
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
 		Object r = container.invoke( getEntryPointNameForOptions() );
-		return container.getRepresentation( r );
+		return getRepresentation( container, r );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -1024,4 +1030,65 @@ public class DelegatedResource extends ServerResource
 	 * Same as {@link #writer}, for standard error.
 	 */
 	private Writer errorWriter = new OutputStreamWriter( System.err );
+
+	/**
+	 * Returns a representation based on the object. If the object is not
+	 * already a representation, creates a new representation based on the
+	 * container's attributes.
+	 * 
+	 * @param container
+	 *        The container
+	 * @param object
+	 *        An object
+	 * @return A representation
+	 */
+	private Representation getRepresentation( ExposedContainerForDelegatedResource container, Object object )
+	{
+		if( object == null )
+			return null;
+		else if( object instanceof Representation )
+			return (Representation) object;
+		else if( object instanceof Integer )
+		{
+			getResponse().setStatus( Status.valueOf( (Integer) object ) );
+			return null;
+		}
+		else
+		{
+			Representation representation = new StringRepresentation( object.toString(), container.getMediaType(), container.getLanguage(), container.getCharacterSet() );
+			representation.setTag( container.getTag() );
+			representation.setExpirationDate( container.getExpirationDate() );
+			representation.setModificationDate( container.getModificationDate() );
+			return representation;
+		}
+	}
+
+	/**
+	 * Returns a representation info based on the object. If the object is not
+	 * already a representation info, creates a new representation info based on
+	 * the container's attributes.
+	 * 
+	 * @param container
+	 *        The container
+	 * @param object
+	 *        An object
+	 * @return A representation info
+	 */
+	public RepresentationInfo getRepresentationInfo( ExposedContainerForDelegatedResource container, Object object )
+	{
+		if( object == null )
+			return null;
+		else if( object instanceof RepresentationInfo )
+			return (RepresentationInfo) object;
+		else if( object instanceof Date )
+			return new RepresentationInfo( container.getMediaType(), (Date) object );
+		else if( object instanceof Number )
+			return new RepresentationInfo( container.getMediaType(), new Date( ( (Number) object ).longValue() ) );
+		else if( object instanceof Tag )
+			return new RepresentationInfo( container.getMediaType(), (Tag) object );
+		else if( object instanceof String )
+			return new RepresentationInfo( container.getMediaType(), Tag.parse( (String) object ) );
+		else
+			throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "cannot convert " + object.getClass().toString() + " to a RepresentationInfo" );
+	}
 }

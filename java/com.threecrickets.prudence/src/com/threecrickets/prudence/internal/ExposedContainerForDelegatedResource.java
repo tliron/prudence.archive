@@ -25,8 +25,6 @@ import org.restlet.data.Method;
 import org.restlet.data.Status;
 import org.restlet.data.Tag;
 import org.restlet.representation.Representation;
-import org.restlet.representation.RepresentationInfo;
-import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 
@@ -450,6 +448,29 @@ public class ExposedContainerForDelegatedResource
 	}
 
 	/**
+	 * The response status code.
+	 * 
+	 * @return The response status code
+	 * @see #setStatusCode(int)
+	 */
+	public int getStatusCode()
+	{
+		return resource.getResponse().getStatus().getCode();
+	}
+
+	/**
+	 * The response status code.
+	 * 
+	 * @param statusCode
+	 *        The response status code
+	 * @see #getStatusCode()
+	 */
+	public void setStatusCode( int statusCode )
+	{
+		resource.getResponse().setStatus( Status.valueOf( statusCode ) );
+	}
+
+	/**
 	 * The instance of this resource. Acts as a "this" reference for scriptlets.
 	 * For example, during a call to <code>handleInit()</code>, this can be used
 	 * to change the characteristics of the resource. Otherwise, you can use it
@@ -551,58 +572,6 @@ public class ExposedContainerForDelegatedResource
 	public void addMediaTypeByExtension( String mediaTypeExtension )
 	{
 		resource.getVariants().add( new Variant( resource.getApplication().getMetadataService().getMediaType( mediaTypeExtension ) ) );
-	}
-
-	/**
-	 * Returns a representation based on the object. If the object is not
-	 * already a representation, creates a new representation based on the
-	 * container's attributes.
-	 * 
-	 * @param object
-	 *        An object
-	 * @return A representation
-	 */
-	public Representation getRepresentation( Object object )
-	{
-		if( object == null )
-			return null;
-		else if( object instanceof Representation )
-			return (Representation) object;
-		else
-		{
-			Representation representation = new StringRepresentation( object.toString(), getMediaType(), getLanguage(), getCharacterSet() );
-			representation.setTag( getTag() );
-			representation.setExpirationDate( getExpirationDate() );
-			representation.setModificationDate( getModificationDate() );
-			return representation;
-		}
-	}
-
-	/**
-	 * Returns a representation info based on the object. If the object is not
-	 * already a representation info, creates a new representation info based on
-	 * the container's attributes.
-	 * 
-	 * @param object
-	 *        An object
-	 * @return A representation info
-	 */
-	public RepresentationInfo getRepresentationInfo( Object object )
-	{
-		if( object == null )
-			return null;
-		else if( object instanceof RepresentationInfo )
-			return (RepresentationInfo) object;
-		else if( object instanceof Date )
-			return new RepresentationInfo( getMediaType(), (Date) object );
-		else if( object instanceof Number )
-			return new RepresentationInfo( getMediaType(), new Date( ( (Number) object ).longValue() ) );
-		else if( object instanceof Tag )
-			return new RepresentationInfo( getMediaType(), (Tag) object );
-		else if( object instanceof String )
-			return new RepresentationInfo( getMediaType(), Tag.parse( (String) object ) );
-		else
-			throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "cannot convert " + object.getClass().toString() + " to a RepresentationInfo" );
 	}
 
 	/**
