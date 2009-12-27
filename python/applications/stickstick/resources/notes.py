@@ -1,9 +1,12 @@
 sys.path.append(str(document.container.source.basePath) + '/../libraries/')
 
-from stickstick.data import *
+from sqlalchemy.orm.exc import NoResultFound
+
 from sqlalchemy.sql import func
 
 import minjson as json
+
+from stickstick.data import *
 
 def handleInit():
     document.container.addMediaTypeByName('text/plain')
@@ -21,6 +24,8 @@ def handleGet():
             timestamp = note.timestamp
             if max_timestamp is None or timestamp > max_timestamp:
                 max_timestamp = timestamp
+    except NoResultFound:
+        return None
     finally:
         session.close()
 
@@ -34,7 +39,7 @@ def handleGetInfo():
     # called
     session = get_session()
     try:
-        max_timestamp = session.query(func.max(Note.timestamp)).scalar()
+        max_timestamp = session.query(func.max(Board.timestamp)).scalar()
     finally:
         session.close()
     return datetime_to_milliseconds(max_timestamp)
@@ -51,6 +56,7 @@ def handlePut():
     session = get_session()
     try:
         session.add(note)
+        update_board_timestamp(session, note)
         session.flush()
     finally:
         session.close()

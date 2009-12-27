@@ -1,7 +1,8 @@
 sys.path.append(str(document.container.source.basePath) + '/../libraries/')
 
-from stickstick.data import *
 from sqlalchemy.orm.exc import NoResultFound
+
+from stickstick.data import *
 
 import minjson as json
 
@@ -55,6 +56,7 @@ def handlePost():
     try:
         note = session.query(Note).filter_by(id=id).one()
         note.update(dict)
+        update_board_timestamp(session, note)
         session.flush()
     except NoResultFound:
         return 404
@@ -71,6 +73,7 @@ def handleDelete():
     try:
         note = session.query(Note).filter_by(id=id).one()
         session.delete(note)
+        update_board_timestamp(session, note, now())
         session.flush()
     except NoResultFound:
         return 404

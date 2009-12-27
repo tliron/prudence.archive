@@ -1,4 +1,6 @@
+
 from sqlalchemy import Column, Integer, String, Text, DateTime
+from sqlalchemy.orm.exc import NoResultFound
 from threading import RLock
 from org.restlet import Application
 from datetime import datetime
@@ -13,9 +15,13 @@ Session = sessionmaker()
 
 engine = None
 engine_lock = RLock()
+boards_lock = RLock()
 
 def datetime_to_milliseconds(dt):
     return long(mktime(dt.timetuple()) * 1000) if dt else None
+
+def now():
+    return datetime.fromtimestamp(time())
 
 #
 # Note
@@ -43,7 +49,7 @@ class Note(Base):
         self.y = y
         self.size = size
         self.content = content
-        self.timestamp = datetime.fromtimestamp(time())
+        self.timestamp = now()
         
     def update(self, dict):
         if 'board' in dict:
@@ -56,7 +62,7 @@ class Note(Base):
             self.size = dict['size']
         if 'content' in dict:
             self.content = dict['content']
-        self.timestamp = datetime.fromtimestamp(time())
+        self.timestamp = now()
 
     def to_dict(self):
         return {
@@ -68,6 +74,20 @@ class Note(Base):
                 'content': self.content
         }
 
+#
+# Board
+#
+
+class Board(Base):
+
+    id = Column(String(50), primary_key=True)
+    timestamp = Column(DateTime)
+
+    __tablename__ = 'board'
+
+    def __init__(self, id):
+        self.id = id
+        self.timestamp = now()
 #
 # Helpers
 #
@@ -87,7 +107,7 @@ def get_engine():
                 attributes['stickstick.host']),
                 convert_unicode=True)
             connection = root_engine.connect()
-            #connection.execute('DROP DATABASE %s' % attributes['stickstick.database'])
+            connection.execute('DROP DATABASE %s' % attributes['stickstick.database'])
             connection.execute('CREATE DATABASE IF NOT EXISTS %s' % attributes['stickstick.database'])
             connection.close()
     
@@ -116,7 +136,25 @@ def get_connection():
 def get_session():
     get_engine()
     return Session()
-        
+
+def update_board_timestamp(session, note, timestamp=None):
+    if timestamp is None:
+        timestamp = note.timestamp
+
+    try:
+        board = session.query(Board).filter_by(id=note.board).one()
+    except NoResultFound:
+        board = Board(note.board)
+        session.add(board)
+
+    boards_lock.acquire()
+    try:
+        if timestamp > board.timestamp:
+            board.timestamp = timestamp
+    finally:
+        boards_lock.release()
+
+
 #note = Note('fish', 200, 50)
 #session = get_session()
 #session.add(note)
