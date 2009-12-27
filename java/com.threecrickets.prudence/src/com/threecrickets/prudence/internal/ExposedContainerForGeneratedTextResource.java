@@ -66,14 +66,14 @@ public class ExposedContainerForGeneratedTextResource
 
 		if( variant != null )
 		{
-			this.mediaType = variant.getMediaType();
-			this.characterSet = variant.getCharacterSet();
+			mediaType = variant.getMediaType();
+			characterSet = variant.getCharacterSet();
 		}
 
-		if( this.characterSet == null )
-			this.characterSet = resource.getDefaultCharacterSet();
+		if( characterSet == null )
+			characterSet = resource.getDefaultCharacterSet();
 
-		this.documentContext = new DocumentContext( resource.getEngineManager() );
+		documentContext = new DocumentContext( resource.getEngineManager() );
 	}
 
 	//
@@ -92,7 +92,7 @@ public class ExposedContainerForGeneratedTextResource
 	 */
 	public CharacterSet getCharacterSet()
 	{
-		return this.characterSet;
+		return characterSet;
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class ExposedContainerForGeneratedTextResource
 	 */
 	public Language getLanguage()
 	{
-		return this.language;
+		return language;
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class ExposedContainerForGeneratedTextResource
 	 */
 	public MediaType getMediaType()
 	{
-		return this.mediaType;
+		return mediaType;
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class ExposedContainerForGeneratedTextResource
 	 */
 	public GeneratedTextResource getResource()
 	{
-		return this.resource;
+		return resource;
 	}
 
 	/**
@@ -184,7 +184,7 @@ public class ExposedContainerForGeneratedTextResource
 	 */
 	public Representation getEntity()
 	{
-		return this.entity;
+		return entity;
 	}
 
 	/**
@@ -195,7 +195,7 @@ public class ExposedContainerForGeneratedTextResource
 	 */
 	public Variant getVariant()
 	{
-		return this.variant;
+		return variant;
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class ExposedContainerForGeneratedTextResource
 	 */
 	public DocumentSource<Document> getSource()
 	{
-		return this.resource.getDocumentSource();
+		return resource.getDocumentSource();
 	}
 
 	/**
@@ -215,7 +215,7 @@ public class ExposedContainerForGeneratedTextResource
 	 */
 	public boolean isStreaming()
 	{
-		return this.isStreaming;
+		return isStreaming;
 	}
 
 	/**
@@ -257,23 +257,23 @@ public class ExposedContainerForGeneratedTextResource
 	 */
 	public Representation includeDocument( String name ) throws IOException, ScriptException
 	{
-		DocumentSource.DocumentDescriptor<Document> documentDescriptor = this.resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
 		Document document = documentDescriptor.getDocument();
 		if( document == null )
 		{
 			String text = documentDescriptor.getText();
-			document = new Document( text, false, this.resource.getEngineManager(), this.resource.getDefaultEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+			document = new Document( text, false, resource.getEngineManager(), resource.getDefaultEngineName(), resource.getDocumentSource(), resource.isAllowCompilation() );
 
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
 				document = existing;
 		}
 
-		if( this.getMediaType() == null )
+		if( getMediaType() == null )
 		{
 			// Set initial media type according to the document's tag
-			this.setMediaType( this.resource.getMetadataService().getMediaType( documentDescriptor.getTag() ) );
+			setMediaType( resource.getMetadataService().getMediaType( documentDescriptor.getTag() ) );
 		}
 
 		return run( document, name );
@@ -292,14 +292,14 @@ public class ExposedContainerForGeneratedTextResource
 	 */
 	public Representation include( String name ) throws IOException, ScriptException
 	{
-		DocumentSource.DocumentDescriptor<Document> documentDescriptor = this.resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
 		Document document = documentDescriptor.getDocument();
 		if( document == null )
 		{
-			String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), this.resource.getEngineManager() );
+			String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), resource.getEngineManager() );
 			String text = documentDescriptor.getText();
-			document = new Document( text, true, this.resource.getEngineManager(), scriptEngineName, this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+			document = new Document( text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
 
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
@@ -352,7 +352,7 @@ public class ExposedContainerForGeneratedTextResource
 		if( isStreaming() )
 			return false;
 
-		this.startStreaming = true;
+		startStreaming = true;
 		this.flushLines = flushLines;
 		return true;
 	}
@@ -434,7 +434,7 @@ public class ExposedContainerForGeneratedTextResource
 	private Representation run( Document document, String name ) throws IOException, ScriptException
 	{
 		boolean isStreaming = isStreaming();
-		Writer writer = this.resource.getWriter();
+		Writer writer = resource.getWriter();
 
 		// Special handling for trivial scripts
 		String trivial = document.getTrivial();
@@ -454,30 +454,30 @@ public class ExposedContainerForGeneratedTextResource
 			if( writer == null )
 			{
 				StringWriter stringWriter = new StringWriter();
-				this.buffer = stringWriter.getBuffer();
+				buffer = stringWriter.getBuffer();
 				writer = new BufferedWriter( stringWriter );
-				this.resource.setWriter( writer );
+				resource.setWriter( writer );
 			}
 			else
 			{
 				writer.flush();
-				startPosition = this.buffer.length();
+				startPosition = buffer.length();
 			}
 		}
 
 		try
 		{
 			// Do not allow caching in streaming mode
-			if( document.run( !isStreaming, writer, this.resource.getErrorWriter(), false, this.documentContext, this, this.resource.getScriptletController() ) )
+			if( document.run( !isStreaming, writer, resource.getErrorWriter(), false, documentContext, this, resource.getScriptletController() ) )
 			{
 
 				// Did the script ask us to start streaming?
-				if( this.startStreaming )
+				if( startStreaming )
 				{
-					this.startStreaming = false;
+					startStreaming = false;
 
 					// Note that this will cause the script to run again!
-					return new GeneratedTextStreamingRepresentation( this.resource, this, this.documentContext, this.resource.getScriptletController(), document, this.flushLines );
+					return new GeneratedTextStreamingRepresentation( resource, this, documentContext, resource.getScriptletController(), document, flushLines );
 				}
 
 				if( isStreaming )
@@ -490,22 +490,22 @@ public class ExposedContainerForGeneratedTextResource
 					writer.flush();
 
 					// Get the buffer from when we ran the script
-					RepresentableString string = new RepresentableString( this.buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet() );
+					RepresentableString string = new RepresentableString( buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet() );
 
 					// Cache it
-					this.cache.put( name, string );
+					cache.put( name, string );
 
 					// Return a representation of the entire buffer
 					if( startPosition == 0 )
 						return string.represent();
 					else
-						return new StringRepresentation( this.buffer.toString(), getMediaType(), getLanguage(), getCharacterSet() );
+						return new StringRepresentation( buffer.toString(), getMediaType(), getLanguage(), getCharacterSet() );
 				}
 			}
 			else
 			{
 				// Attempt to use cache
-				RepresentableString string = this.cache.get( name );
+				RepresentableString string = cache.get( name );
 				if( string != null )
 				{
 					if( writer != null )
@@ -520,12 +520,12 @@ public class ExposedContainerForGeneratedTextResource
 		catch( ScriptException x )
 		{
 			// Did the script ask us to start streaming?
-			if( this.startStreaming )
+			if( startStreaming )
 			{
-				this.startStreaming = false;
+				startStreaming = false;
 
 				// Note that this will cause the script to run again!
-				return new GeneratedTextStreamingRepresentation( this.resource, this, this.documentContext, this.resource.getScriptletController(), document, this.flushLines );
+				return new GeneratedTextStreamingRepresentation( resource, this, documentContext, resource.getScriptletController(), document, flushLines );
 
 				// Note that we will allow exceptions in scripts that ask us
 				// to start streaming! In fact, throwing an exception is a

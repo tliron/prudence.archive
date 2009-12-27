@@ -59,7 +59,7 @@ public class RepresentableString
 	 */
 	public String getString()
 	{
-		return this.string;
+		return string;
 	}
 
 	//
@@ -73,7 +73,7 @@ public class RepresentableString
 	 */
 	public StringRepresentation represent()
 	{
-		return new StringRepresentation( this.string, this.mediaType, this.language, this.characterSet );
+		return new StringRepresentation( string, mediaType, language, characterSet );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

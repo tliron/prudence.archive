@@ -209,7 +209,7 @@ public class GeneratedTextResource extends ServerResource
 	 */
 	public Writer getWriter()
 	{
-		return this.writer;
+		return writer;
 	}
 
 	/**
@@ -232,7 +232,7 @@ public class GeneratedTextResource extends ServerResource
 	 */
 	public Writer getErrorWriter()
 	{
-		return this.errorWriter;
+		return errorWriter;
 	}
 
 	/**
@@ -260,21 +260,21 @@ public class GeneratedTextResource extends ServerResource
 	@SuppressWarnings("unchecked")
 	public ConcurrentMap<String, RepresentableString> getCache()
 	{
-		if( this.cache == null )
+		if( cache == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.cache = (ConcurrentMap<String, RepresentableString>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.cache" );
-			if( this.cache == null )
+			cache = (ConcurrentMap<String, RepresentableString>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.cache" );
+			if( cache == null )
 			{
-				this.cache = new ConcurrentHashMap<String, RepresentableString>();
+				cache = new ConcurrentHashMap<String, RepresentableString>();
 
-				ConcurrentMap<String, RepresentableString> existing = (ConcurrentMap<String, RepresentableString>) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.cache", this.cache );
+				ConcurrentMap<String, RepresentableString> existing = (ConcurrentMap<String, RepresentableString>) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.cache", cache );
 				if( existing != null )
-					this.cache = existing;
+					cache = existing;
 			}
 		}
 
-		return this.cache;
+		return cache;
 	}
 
 	/**
@@ -289,16 +289,16 @@ public class GeneratedTextResource extends ServerResource
 	 */
 	public CharacterSet getDefaultCharacterSet()
 	{
-		if( this.defaultCharacterSet == null )
+		if( defaultCharacterSet == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.defaultCharacterSet = (CharacterSet) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultCharacterSet" );
+			defaultCharacterSet = (CharacterSet) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultCharacterSet" );
 
-			if( this.defaultCharacterSet == null )
-				this.defaultCharacterSet = CharacterSet.UTF_8;
+			if( defaultCharacterSet == null )
+				defaultCharacterSet = CharacterSet.UTF_8;
 		}
 
-		return this.defaultCharacterSet;
+		return defaultCharacterSet;
 	}
 
 	/**
@@ -315,16 +315,16 @@ public class GeneratedTextResource extends ServerResource
 	 */
 	public String getDefaultName()
 	{
-		if( this.defaultName == null )
+		if( defaultName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.defaultName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultName" );
+			defaultName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultName" );
 
-			if( this.defaultName == null )
-				this.defaultName = "index.page";
+			if( defaultName == null )
+				defaultName = "index.page";
 		}
 
-		return this.defaultName;
+		return defaultName;
 	}
 
 	/**
@@ -339,16 +339,16 @@ public class GeneratedTextResource extends ServerResource
 	 */
 	public String getDefaultEngineName()
 	{
-		if( this.defaultEngineName == null )
+		if( defaultEngineName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.defaultEngineName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultEngineName" );
+			defaultEngineName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultEngineName" );
 
-			if( this.defaultEngineName == null )
-				this.defaultEngineName = "js";
+			if( defaultEngineName == null )
+				defaultEngineName = "js";
 		}
 
-		return this.defaultEngineName;
+		return defaultEngineName;
 	}
 
 	/**
@@ -363,13 +363,13 @@ public class GeneratedTextResource extends ServerResource
 	 */
 	public ScriptletController getScriptletController()
 	{
-		if( this.scriptletController == null )
+		if( scriptletController == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.scriptletController = (ScriptletController) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.scriptletController" );
+			scriptletController = (ScriptletController) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.scriptletController" );
 		}
 
-		return this.scriptletController;
+		return scriptletController;
 	}
 
 	/**
@@ -384,22 +384,22 @@ public class GeneratedTextResource extends ServerResource
 	 */
 	public ScriptEngineManager getEngineManager()
 	{
-		if( this.scriptEngineManager == null )
+		if( scriptEngineManager == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.scriptEngineManager = (ScriptEngineManager) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.engineManager" );
+			scriptEngineManager = (ScriptEngineManager) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.engineManager" );
 
-			if( this.scriptEngineManager == null )
+			if( scriptEngineManager == null )
 			{
-				this.scriptEngineManager = new ScriptEngineManager();
+				scriptEngineManager = new ScriptEngineManager();
 
-				ScriptEngineManager existing = (ScriptEngineManager) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.engineManager", this.scriptEngineManager );
+				ScriptEngineManager existing = (ScriptEngineManager) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.engineManager", scriptEngineManager );
 				if( existing != null )
-					this.scriptEngineManager = existing;
+					scriptEngineManager = existing;
 			}
 		}
 
-		return this.scriptEngineManager;
+		return scriptEngineManager;
 	}
 
 	/**
@@ -415,16 +415,16 @@ public class GeneratedTextResource extends ServerResource
 	@SuppressWarnings("unchecked")
 	public DocumentSource<Document> getDocumentSource()
 	{
-		if( this.documentSource == null )
+		if( documentSource == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.documentSource = (DocumentSource<Document>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentSource" );
+			documentSource = (DocumentSource<Document>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentSource" );
 
-			if( this.documentSource == null )
+			if( documentSource == null )
 				throw new RuntimeException( "Attribute com.threecrickets.prudence.GeneratedTextResource.documentSource must be set in context to use GeneratedTextResource" );
 		}
 
-		return this.documentSource;
+		return documentSource;
 	}
 
 	/**
@@ -439,16 +439,16 @@ public class GeneratedTextResource extends ServerResource
 	 */
 	public boolean isAllowCompilation()
 	{
-		if( this.allowCompilation == null )
+		if( allowCompilation == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.allowCompilation = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.allowCompilation" );
+			allowCompilation = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.allowCompilation" );
 
-			if( this.allowCompilation == null )
-				this.allowCompilation = true;
+			if( allowCompilation == null )
+				allowCompilation = true;
 		}
 
-		return this.allowCompilation;
+		return allowCompilation;
 	}
 
 	/**
@@ -464,16 +464,16 @@ public class GeneratedTextResource extends ServerResource
 	 */
 	public boolean isSourceViewable()
 	{
-		if( this.sourceViewable == null )
+		if( sourceViewable == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.sourceViewable = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" );
+			sourceViewable = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" );
 
-			if( this.sourceViewable == null )
-				this.sourceViewable = false;
+			if( sourceViewable == null )
+				sourceViewable = false;
 		}
 
-		return this.sourceViewable;
+		return sourceViewable;
 	}
 
 	//
@@ -535,8 +535,19 @@ public class GeneratedTextResource extends ServerResource
 	@Override
 	public Representation delete( Variant variant ) throws ResourceException
 	{
-		// Handle the same was as get(variant)
-		return get( variant );
+		return run( null, variant );
+	}
+
+	@Override
+	public Representation options() throws ResourceException
+	{
+		return run( null, null );
+	}
+
+	@Override
+	public Representation options( Variant variant ) throws ResourceException
+	{
+		return run( null, variant );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

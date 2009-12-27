@@ -13,6 +13,7 @@ package com.threecrickets.prudence.internal;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.script.ScriptException;
@@ -22,6 +23,7 @@ import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Status;
+import org.restlet.data.Tag;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
@@ -58,11 +60,11 @@ public class ExposedContainerForDelegatedResource
 	{
 		this.resource = resource;
 		this.variants = variants;
-		this.variant = null;
-		this.entity = null;
-		this.mediaType = MediaType.TEXT_PLAIN;
-		this.characterSet = resource.getDefaultCharacterSet();
-		this.documentContext = new DocumentContext( resource.getEngineManager() );
+		variant = null;
+		entity = null;
+		mediaType = MediaType.TEXT_PLAIN;
+		characterSet = resource.getDefaultCharacterSet();
+		documentContext = new DocumentContext( resource.getEngineManager() );
 	}
 
 	/**
@@ -85,13 +87,13 @@ public class ExposedContainerForDelegatedResource
 		this.variants = variants;
 		this.entity = entity;
 		this.variant = variant;
-		this.mediaType = this.variant.getMediaType();
-		this.characterSet = this.variant.getCharacterSet();
-		if( this.characterSet == null )
+		mediaType = variant.getMediaType();
+		characterSet = this.variant.getCharacterSet();
+		if( characterSet == null )
 		{
-			this.characterSet = resource.getDefaultCharacterSet();
+			characterSet = resource.getDefaultCharacterSet();
 		}
-		this.documentContext = new DocumentContext( resource.getEngineManager() );
+		documentContext = new DocumentContext( resource.getEngineManager() );
 	}
 
 	/**
@@ -111,21 +113,21 @@ public class ExposedContainerForDelegatedResource
 		this.resource = resource;
 		this.variants = variants;
 		this.variant = variant;
-		this.entity = null;
+		entity = null;
 
 		if( variant != null )
 		{
-			this.mediaType = variant.getMediaType();
-			this.characterSet = variant.getCharacterSet();
+			mediaType = variant.getMediaType();
+			characterSet = variant.getCharacterSet();
 		}
 
-		if( this.mediaType == null )
-			this.mediaType = MediaType.TEXT_PLAIN;
+		if( mediaType == null )
+			mediaType = MediaType.TEXT_PLAIN;
 
-		if( this.characterSet == null )
-			this.characterSet = resource.getDefaultCharacterSet();
+		if( characterSet == null )
+			characterSet = resource.getDefaultCharacterSet();
 
-		this.documentContext = new DocumentContext( resource.getEngineManager() );
+		documentContext = new DocumentContext( resource.getEngineManager() );
 	}
 
 	//
@@ -145,7 +147,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public CharacterSet getCharacterSet()
 	{
-		return this.characterSet;
+		return characterSet;
 	}
 
 	/**
@@ -168,7 +170,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public Language getLanguage()
 	{
-		return this.language;
+		return language;
 	}
 
 	/**
@@ -192,7 +194,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public MediaType getMediaType()
 	{
-		return this.mediaType;
+		return mediaType;
 	}
 
 	/**
@@ -206,6 +208,90 @@ public class ExposedContainerForDelegatedResource
 	}
 
 	/**
+	 * The {@link Date} that will be used if you return an arbitrary type for
+	 * <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>. Defaults to null.
+	 * 
+	 * @return The date or null if not set
+	 * @see #setModificationDate(Date)
+	 */
+	public Date getModificationDate()
+	{
+		return modificationDate;
+	}
+
+	/**
+	 * @param modificationDate
+	 *        The date or null
+	 * @see #getModificationDate()
+	 */
+	public void setModificationDate( Date modificationDate )
+	{
+		this.modificationDate = modificationDate;
+	}
+
+	/**
+	 * @return The date or 0 if not set
+	 * @see #setModificationDate()
+	 */
+	public long getModificationDateAsLong()
+	{
+		return modificationDate != null ? modificationDate.getTime() : 0L;
+	}
+
+	/**
+	 * @param modificationDate
+	 *        The date or null
+	 * @see #setModificationDate(Date)
+	 */
+	public void setModificationDateAsLong( Number modificationDate )
+	{
+		this.modificationDate = new Date( modificationDate.longValue() );
+	}
+
+	/**
+	 * The {@link Tag} that will be used if you return an arbitrary type for
+	 * <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>. Defaults to null.
+	 * 
+	 * @return The tag or null if not set
+	 * @see #setTag(Tag)
+	 */
+	public Tag getTag()
+	{
+		return tag;
+	}
+
+	/**
+	 * @param tag
+	 *        The tag or null
+	 * @see #getTag()
+	 */
+	public void setTag( Tag tag )
+	{
+		this.tag = tag;
+	}
+
+	/**
+	 * @return The HTTP-formatted tag or null if not set
+	 * @see #getTag()
+	 */
+	public String getTagAsString()
+	{
+		return tag != null ? tag.format() : null;
+	}
+
+	/**
+	 * @param tag
+	 *        The HTTP-formatted tag
+	 * @see #setTag(Tag)
+	 */
+	public void setTagAsString( String tag )
+	{
+		this.tag = Tag.parse( tag );
+	}
+
+	/**
 	 * The instance of this resource. Acts as a "this" reference for scriptlets.
 	 * For example, during a call to <code>handleInit()</code>, this can be used
 	 * to change the characteristics of the resource. Otherwise, you can use it
@@ -215,7 +301,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public DelegatedResource getResource()
 	{
-		return this.resource;
+		return resource;
 	}
 
 	/**
@@ -227,7 +313,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public Variant getVariant()
 	{
-		return this.variant;
+		return variant;
 	}
 
 	/**
@@ -243,7 +329,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public List<Variant> getVariants()
 	{
-		return this.variants;
+		return variants;
 	}
 
 	/**
@@ -256,7 +342,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public Representation getEntity()
 	{
-		return this.entity;
+		return entity;
 	}
 
 	/**
@@ -266,7 +352,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public DocumentSource<Document> getSource()
 	{
-		return this.resource.getDocumentSource();
+		return resource.getDocumentSource();
 	}
 
 	//
@@ -294,20 +380,20 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public void includeDocument( String name ) throws IOException, ScriptException
 	{
-		DocumentSource.DocumentDescriptor<Document> documentDescriptor = this.resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
 		Document document = documentDescriptor.getDocument();
 		if( document == null )
 		{
 			String text = documentDescriptor.getText();
-			document = new Document( text, false, this.resource.getEngineManager(), this.resource.getDefaultEngineName(), this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+			document = new Document( text, false, this.resource.getEngineManager(), resource.getDefaultEngineName(), resource.getDocumentSource(), resource.isAllowCompilation() );
 
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
 				document = existing;
 		}
 
-		document.run( false, this.resource.getWriter(), this.resource.getErrorWriter(), true, this.documentContext, this, this.resource.getScriptletController() );
+		document.run( false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, resource.getScriptletController() );
 	}
 
 	/**
@@ -322,21 +408,21 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public void include( String name ) throws IOException, ScriptException
 	{
-		DocumentSource.DocumentDescriptor<Document> documentDescriptor = this.resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
 		Document document = documentDescriptor.getDocument();
 		if( document == null )
 		{
-			String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), this.resource.getEngineManager() );
+			String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), resource.getEngineManager() );
 			String text = documentDescriptor.getText();
-			document = new Document( text, true, this.resource.getEngineManager(), scriptEngineName, this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+			document = new Document( text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
 
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
 				document = existing;
 		}
 
-		document.run( false, this.resource.getWriter(), this.resource.getErrorWriter(), true, this.documentContext, this, this.resource.getScriptletController() );
+		document.run( false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, resource.getScriptletController() );
 	}
 
 	/**
@@ -350,28 +436,28 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public Object invoke( String entryPointName ) throws ResourceException
 	{
-		String name = PrudenceUtils.getRemainingPart( this.resource.getRequest(), this.resource.getDefaultName() );
+		String name = PrudenceUtils.getRemainingPart( resource.getRequest(), resource.getDefaultName() );
 
 		try
 		{
-			DocumentSource.DocumentDescriptor<Document> documentDescriptor = this.resource.getDocumentSource().getDocumentDescriptor( name );
+			DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
 			Document document = documentDescriptor.getDocument();
 			if( document == null )
 			{
-				String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), this.resource.getEngineManager() );
+				String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), resource.getEngineManager() );
 				String text = documentDescriptor.getText();
-				document = new Document( text, true, this.resource.getEngineManager(), scriptEngineName, this.resource.getDocumentSource(), this.resource.isAllowCompilation() );
+				document = new Document( text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
 				Document existing = documentDescriptor.setDocumentIfAbsent( document );
 
 				if( existing != null )
 					document = existing;
 				else
 					// Must run document once and only once
-					document.run( false, this.resource.getWriter(), this.resource.getErrorWriter(), true, this.documentContext, this, this.resource.getScriptletController() );
+					document.run( false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, resource.getScriptletController() );
 			}
 
-			return document.invoke( entryPointName, this, this.resource.getScriptletController() );
+			return document.invoke( entryPointName, this, resource.getScriptletController() );
 		}
 		catch( FileNotFoundException x )
 		{
@@ -416,24 +502,38 @@ public class ExposedContainerForDelegatedResource
 
 	/**
 	 * The {@link MediaType} that will be used if you return an arbitrary type
-	 * for <code>represent()</code>, <code>acceptRepresentation()</code> and
-	 * <code>storeRepresentation()</code>.
+	 * for <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>.
 	 */
 	private MediaType mediaType;
 
 	/**
 	 * The {@link CharacterSet} that will be used if you return an arbitrary
-	 * type for <code>represent()</code>, <code>acceptRepresentation()</code>
-	 * and <code>storeRepresentation()</code>.
+	 * type for <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>.
 	 */
 	private CharacterSet characterSet;
 
 	/**
 	 * The {@link Language} that will be used if you return an arbitrary type
-	 * for <code>represent()</code>, <code>acceptRepresentation()</code> and
-	 * <code>storeRepresentation()</code>.
+	 * for <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>.
 	 */
 	private Language language;
+
+	/**
+	 * The {@link Tag} that will be used if you return an arbitrary type for
+	 * <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>.
+	 */
+	private Tag tag;
+
+	/**
+	 * The {@link Date} that will be used if you return an arbitrary type for
+	 * <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>.
+	 */
+	private Date modificationDate;
 
 	/**
 	 * The composite script context.

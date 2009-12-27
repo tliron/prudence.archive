@@ -14,6 +14,7 @@ package com.threecrickets.prudence;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
@@ -26,7 +27,9 @@ import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Status;
+import org.restlet.data.Tag;
 import org.restlet.representation.Representation;
+import org.restlet.representation.RepresentationInfo;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
@@ -41,7 +44,7 @@ import com.threecrickets.scripturian.ScriptletController;
 /**
  * A Restlet resource which delegates functionality to a Scripturian
  * {@link Document} with well-defined entry points. The entry points must be
- * global functions, closures, or whatever other technique the scripting engine
+ * global functions, closures, or whatever other technique the language engine
  * uses to make entry points available to Java. They entry points are:
  * <ul>
  * <li><code>handleInit()</code>: This function is called when the resource is
@@ -57,15 +60,27 @@ import com.threecrickets.scripturian.ScriptletController;
  * <code>container.characterSet</code>, and <code>container.language</code>.
  * Additionally, you can use <code>container.variant</code> to interrogate the
  * client's provided list of supported languages and encoding.</li>
+ * <li><code>handleGetInfo()</code>: This optional function is called, if you
+ * defined it, instead of <code>handleGet()</code> during conditional
+ * processing. Rather of returning a full-blown representation of your data, it
+ * returns a lightweight {@link RepresentationInfo}, which usefully includes the
+ * modification date and tag. In cases where constructing the full-blown
+ * representation is costly, implementing <code>handleGetInfo()</code> is a
+ * great way to improve the performance of your resource. Note, though, that it
+ * is only useful if you properly set modification dates and/or tags in both
+ * <code>handleGet()</code> and <code>handleGetInfo()</code>. Returned values
+ * can be explicit sub-classes of {@link RepresentationInfo} (which includes
+ * {@link Representation}), {@link Date}, for only specifying a modification
+ * date, or {@link Tag}, for only specifying the tag.</li>
  * <li><code>handlePost()</code>: This function is called for the POST verb,
  * which is expected to behave as a logical "update" of the resource's state.
  * The expectation is that <code>container.entity</code> represents an update to
  * the state, that will affect future calls to <code>handleGet()</code>. As
  * such, it may be possible to accept logically partial representations of the
  * state. You may optionally return a representation, in the same way as
- * <code>handleGet()</code>. Because many scripting languages functions return
- * the last statement's value by default, you must explicitly return a null if
- * you do not want to return a representation to the client.</li>
+ * <code>handleGet()</code>. Because many languages functions return the last
+ * statement's value by default, you must explicitly return a null if you do not
+ * want to return a representation to the client.</li>
  * <li><code>handlePut()</code>: This function is called for the PUT verb, which
  * is expected to behave as a logical "create" of the resource's state. The
  * expectation is that container.entity represents an entirely new state, that
@@ -82,11 +97,15 @@ import com.threecrickets.scripturian.ScriptletController;
  * returned value will ignored. Still, it's a good idea to return null to avoid
  * any passing of value.</li>
  * </ul>
+ * <li><code>handleOptions()</code>: This function is called for the OPTIONS
+ * verb. It is not widely used in HTTP.</li>
  * <p>
  * Names of these entry point can be configured via attributes in the
  * application's {@link Context}. See {@link #getEntryPointNameForInit()},
- * {@link #getEntryPointNameForGet()}, {@link #getEntryPointNameForPost()},
- * {@link #getEntryPointNameForPut()} and {@link #getEntryPointNameForDelete()}.
+ * {@link #getEntryPointNameForGet()}, {@link #getEntryPointNameForGetInfo()},
+ * {@link #getEntryPointNameForPost()}, {@link #getEntryPointNameForPut()},
+ * {@link #getEntryPointNameForDelete()} and
+ * {@link #getEntryPointNameForOptions()}.
  * <p>
  * Before using this resource, make sure to configure a valid source in the
  * application's {@link Context}; see {@link #getDocumentSource()}. This source
@@ -134,8 +153,14 @@ import com.threecrickets.scripturian.ScriptletController;
  * Acts as a "this" reference for scriptlets. For example, during a call to
  * <code>handleInit()</code>, this can be used to change the characteristics of
  * the resource. Otherwise, you can use it to access the request and response.</li>
+ * <li><code>document.container.modificationDate</code>: Smart clients can use
+ * this optional value to cache results and avoid unnecessary requests. Most
+ * useful in conjunction with <code>getInfo()</code>.</li>
  * <li><code>document.container.source</code>: The source used for the document;
  * see {@link #getDocumentSource()}.</li>
+ * <li><code>document.container.tag</code>: Smart clients can use this optional
+ * value to cache results and avoid unnecessary requests. Most useful in
+ * conjunction with <code>getInfo()</code>.</li>
  * <li><code>document.container.variant</code>: The {@link Variant} of this
  * request. Useful for interrogating the client's preferences. This is available
  * only in <code>handleGet()</code>, <code>handlePost()</code> and
@@ -196,9 +221,17 @@ import com.threecrickets.scripturian.ScriptletController;
  * {@link String}, defaults to "handleGet". See
  * {@link #getEntryPointNameForGet()}.</li>
  * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForGetInfo:</code>
+ * {@link String}, defaults to "handleGetInfo". See
+ * {@link #getEntryPointNameForGetInfo()}.</li>
+ * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForInit:</code>
  * {@link String}, defaults to "handleInit". See
  * {@link #getEntryPointNameForInit()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForOptions:</code>
+ * {@link String}, defaults to "handleOptions". See
+ * {@link #getEntryPointNameForOptions()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForPost:</code>
  * {@link String}, defaults to "handlePost". See
@@ -249,16 +282,16 @@ public class DelegatedResource extends ServerResource
 	 */
 	public Writer getWriter()
 	{
-		if( this.writer == null )
+		if( writer == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.writer = (Writer) attributes.get( "com.threecrickets.prudence.DelegatedResource.writer" );
+			writer = (Writer) attributes.get( "com.threecrickets.prudence.DelegatedResource.writer" );
 
-			if( this.writer == null )
-				this.writer = new OutputStreamWriter( System.out );
+			if( writer == null )
+				writer = new OutputStreamWriter( System.out );
 		}
 
-		return this.writer;
+		return writer;
 	}
 
 	/**
@@ -273,16 +306,16 @@ public class DelegatedResource extends ServerResource
 	 */
 	public Writer getErrorWriter()
 	{
-		if( this.errorWriter == null )
+		if( errorWriter == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.errorWriter = (Writer) attributes.get( "com.threecrickets.prudence.DelegatedResource.errorWriter" );
+			errorWriter = (Writer) attributes.get( "com.threecrickets.prudence.DelegatedResource.errorWriter" );
 
-			if( this.errorWriter == null )
-				this.errorWriter = new OutputStreamWriter( System.out );
+			if( errorWriter == null )
+				errorWriter = new OutputStreamWriter( System.out );
 		}
 
-		return this.errorWriter;
+		return errorWriter;
 	}
 
 	/**
@@ -297,16 +330,16 @@ public class DelegatedResource extends ServerResource
 	 */
 	public CharacterSet getDefaultCharacterSet()
 	{
-		if( this.defaultCharacterSet == null )
+		if( defaultCharacterSet == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.defaultCharacterSet = (CharacterSet) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultCharacterSet" );
+			defaultCharacterSet = (CharacterSet) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultCharacterSet" );
 
-			if( this.defaultCharacterSet == null )
-				this.defaultCharacterSet = CharacterSet.UTF_8;
+			if( defaultCharacterSet == null )
+				defaultCharacterSet = CharacterSet.UTF_8;
 		}
 
-		return this.defaultCharacterSet;
+		return defaultCharacterSet;
 	}
 
 	/**
@@ -323,16 +356,16 @@ public class DelegatedResource extends ServerResource
 	 */
 	public String getDefaultName()
 	{
-		if( this.defaultName == null )
+		if( defaultName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.defaultName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultName" );
+			defaultName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultName" );
 
-			if( this.defaultName == null )
-				this.defaultName = "default.script";
+			if( defaultName == null )
+				defaultName = "default.script";
 		}
 
-		return this.defaultName;
+		return defaultName;
 	}
 
 	/**
@@ -347,64 +380,16 @@ public class DelegatedResource extends ServerResource
 	 */
 	public String getDefaultEngineName()
 	{
-		if( this.defaultEngineName == null )
+		if( defaultEngineName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.defaultEngineName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultEngineName" );
+			defaultEngineName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultEngineName" );
 
-			if( this.defaultEngineName == null )
-				this.defaultEngineName = "js";
+			if( defaultEngineName == null )
+				defaultEngineName = "js";
 		}
 
-		return this.defaultEngineName;
-	}
-
-	/**
-	 * The name of the <code>handleDelete()</code> entry point in the script.
-	 * Defaults to "handleDelete".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForDelete</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The name of the <code>handleDelete()</code> entry point
-	 */
-	public String getEntryPointNameForDelete()
-	{
-		if( this.entryPointNameForDelete == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.entryPointNameForDelete = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForDelete" );
-
-			if( this.entryPointNameForDelete == null )
-				this.entryPointNameForDelete = "handleDelete";
-		}
-
-		return this.entryPointNameForDelete;
-	}
-
-	/**
-	 * The name of the <code>handleGet()</code> entry point in the script.
-	 * Defaults to "handleGet".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForGet</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The name of the <code>handleGet()</code> entry point
-	 */
-	public String getEntryPointNameForGet()
-	{
-		if( this.entryPointNameForGet == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.entryPointNameForGet = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForGet" );
-
-			if( this.entryPointNameForGet == null )
-				this.entryPointNameForGet = "handleGet";
-		}
-
-		return this.entryPointNameForGet;
+		return defaultEngineName;
 	}
 
 	/**
@@ -419,16 +404,88 @@ public class DelegatedResource extends ServerResource
 	 */
 	public String getEntryPointNameForInit()
 	{
-		if( this.entryPointNameForInit == null )
+		if( entryPointNameForInit == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.entryPointNameForInit = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForInit" );
+			entryPointNameForInit = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForInit" );
 
-			if( this.entryPointNameForInit == null )
-				this.entryPointNameForInit = "handleInit";
+			if( entryPointNameForInit == null )
+				entryPointNameForInit = "handleInit";
 		}
 
-		return this.entryPointNameForInit;
+		return entryPointNameForInit;
+	}
+
+	/**
+	 * The name of the <code>handleGet()</code> entry point in the script.
+	 * Defaults to "handleGet".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForGet</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The name of the <code>handleGet()</code> entry point
+	 */
+	public String getEntryPointNameForGet()
+	{
+		if( entryPointNameForGet == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			entryPointNameForGet = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForGet" );
+
+			if( entryPointNameForGet == null )
+				entryPointNameForGet = "handleGet";
+		}
+
+		return entryPointNameForGet;
+	}
+
+	/**
+	 * The name of the <code>handleGetInfo()</code> entry point in the script.
+	 * Defaults to "handleGetInfo".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForGetInfo</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The name of the <code>handleGetInfo()</code> entry point
+	 */
+	public String getEntryPointNameForGetInfo()
+	{
+		if( entryPointNameForGetInfo == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			entryPointNameForGetInfo = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForGetInfo" );
+
+			if( entryPointNameForGetInfo == null )
+				entryPointNameForGetInfo = "handleGetInfo";
+		}
+
+		return entryPointNameForGetInfo;
+	}
+
+	/**
+	 * The name of the <code>handleOptions()</code> entry point in the script.
+	 * Defaults to "handleOptions".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForOptions</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The name of the <code>handleOptions()</code> entry point
+	 */
+	public String getEntryPointNameForOptions()
+	{
+		if( entryPointNameForOptions == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			entryPointNameForOptions = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForOptions" );
+
+			if( entryPointNameForOptions == null )
+				entryPointNameForOptions = "handleOptions";
+		}
+
+		return entryPointNameForOptions;
 	}
 
 	/**
@@ -443,16 +500,16 @@ public class DelegatedResource extends ServerResource
 	 */
 	public String getEntryPointNameForPost()
 	{
-		if( this.entryPointNameForPost == null )
+		if( entryPointNameForPost == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.entryPointNameForPost = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForPost" );
+			entryPointNameForPost = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForPost" );
 
-			if( this.entryPointNameForPost == null )
-				this.entryPointNameForPost = "handlePost";
+			if( entryPointNameForPost == null )
+				entryPointNameForPost = "handlePost";
 		}
 
-		return this.entryPointNameForPost;
+		return entryPointNameForPost;
 	}
 
 	/**
@@ -467,16 +524,40 @@ public class DelegatedResource extends ServerResource
 	 */
 	public String getEntryPointNameForPut()
 	{
-		if( this.entryPointNameForPut == null )
+		if( entryPointNameForPut == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.entryPointNameForPut = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForPut" );
+			entryPointNameForPut = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForPut" );
 
-			if( this.entryPointNameForPut == null )
-				this.entryPointNameForPut = "handlePut";
+			if( entryPointNameForPut == null )
+				entryPointNameForPut = "handlePut";
 		}
 
-		return this.entryPointNameForPut;
+		return entryPointNameForPut;
+	}
+
+	/**
+	 * The name of the <code>handleDelete()</code> entry point in the script.
+	 * Defaults to "handleDelete".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForDelete</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The name of the <code>handleDelete()</code> entry point
+	 */
+	public String getEntryPointNameForDelete()
+	{
+		if( entryPointNameForDelete == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			entryPointNameForDelete = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointNameForDelete" );
+
+			if( entryPointNameForDelete == null )
+				entryPointNameForDelete = "handleDelete";
+		}
+
+		return entryPointNameForDelete;
 	}
 
 	/**
@@ -491,13 +572,13 @@ public class DelegatedResource extends ServerResource
 	 */
 	public ScriptletController getScriptletController()
 	{
-		if( this.scriptletController == null )
+		if( scriptletController == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.scriptletController = (ScriptletController) attributes.get( "com.threecrickets.prudence.DelegatedResource.scriptletController" );
+			scriptletController = (ScriptletController) attributes.get( "com.threecrickets.prudence.DelegatedResource.scriptletController" );
 		}
 
-		return this.scriptletController;
+		return scriptletController;
 	}
 
 	/**
@@ -512,22 +593,22 @@ public class DelegatedResource extends ServerResource
 	 */
 	public ScriptEngineManager getEngineManager()
 	{
-		if( this.engineManager == null )
+		if( engineManager == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.engineManager = (ScriptEngineManager) attributes.get( "com.threecrickets.prudence.DelegatedResource.engineManager" );
+			engineManager = (ScriptEngineManager) attributes.get( "com.threecrickets.prudence.DelegatedResource.engineManager" );
 
-			if( this.engineManager == null )
+			if( engineManager == null )
 			{
-				this.engineManager = new ScriptEngineManager();
+				engineManager = new ScriptEngineManager();
 
-				ScriptEngineManager existing = (ScriptEngineManager) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.engineManager", this.engineManager );
+				ScriptEngineManager existing = (ScriptEngineManager) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.engineManager", engineManager );
 				if( existing != null )
-					this.engineManager = existing;
+					engineManager = existing;
 			}
 		}
 
-		return this.engineManager;
+		return engineManager;
 	}
 
 	/**
@@ -543,16 +624,16 @@ public class DelegatedResource extends ServerResource
 	@SuppressWarnings("unchecked")
 	public DocumentSource<Document> getDocumentSource()
 	{
-		if( this.documentSource == null )
+		if( documentSource == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.documentSource = (DocumentSource<Document>) attributes.get( "com.threecrickets.prudence.DelegatedResource.documentSource" );
+			documentSource = (DocumentSource<Document>) attributes.get( "com.threecrickets.prudence.DelegatedResource.documentSource" );
 
-			if( this.documentSource == null )
+			if( documentSource == null )
 				throw new RuntimeException( "Attribute com.threecrickets.prudence.DelegatedResource.documentSource must be set in context to use ScriptResource" );
 		}
 
-		return this.documentSource;
+		return documentSource;
 	}
 
 	/**
@@ -567,16 +648,16 @@ public class DelegatedResource extends ServerResource
 	 */
 	public boolean isAllowCompilation()
 	{
-		if( this.allowCompilation == null )
+		if( allowCompilation == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.allowCompilation = (Boolean) attributes.get( "com.threecrickets.prudence.DelegatedResource.allowCompilation" );
+			allowCompilation = (Boolean) attributes.get( "com.threecrickets.prudence.DelegatedResource.allowCompilation" );
 
-			if( this.allowCompilation == null )
-				this.allowCompilation = true;
+			if( allowCompilation == null )
+				allowCompilation = true;
 		}
 
-		return this.allowCompilation;
+		return allowCompilation;
 	}
 
 	/**
@@ -592,16 +673,16 @@ public class DelegatedResource extends ServerResource
 	 */
 	public boolean isSourceViewable()
 	{
-		if( this.sourceViewable == null )
+		if( sourceViewable == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			this.sourceViewable = (Boolean) attributes.get( "com.threecrickets.prudence.DelegatedResource.sourceViewable" );
+			sourceViewable = (Boolean) attributes.get( "com.threecrickets.prudence.DelegatedResource.sourceViewable" );
 
-			if( this.sourceViewable == null )
-				this.sourceViewable = false;
+			if( sourceViewable == null )
+				sourceViewable = false;
 		}
 
-		return this.sourceViewable;
+		return sourceViewable;
 	}
 
 	//
@@ -634,7 +715,6 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation get() throws ResourceException
 	{
-		// TODO: is this really what we want to do here?
 		return get( null );
 	}
 
@@ -672,12 +752,61 @@ public class DelegatedResource extends ServerResource
 
 			if( r == null )
 				return null;
-
-			if( r instanceof Representation )
+			else if( r instanceof Representation )
 				return (Representation) r;
 			else
-				return new StringRepresentation( r.toString(), container.getMediaType(), container.getLanguage(), container.getCharacterSet() );
+			{
+				Representation representation = new StringRepresentation( r.toString(), container.getMediaType(), container.getLanguage(), container.getCharacterSet() );
+				representation.setTag( container.getTag() );
+				representation.setModificationDate( container.getModificationDate() );
+				return representation;
+			}
 		}
+	}
+
+	/**
+	 * Delegates to the <code>handleGetInfo()</code> entry point in the script.
+	 * 
+	 * @return The optional result entity
+	 * @throws ResourceException
+	 * @see #getEntryPointNameForGetInfo()
+	 */
+	@Override
+	public RepresentationInfo getInfo() throws ResourceException
+	{
+		return getInfo( null );
+	}
+
+	/**
+	 * Delegates to the <code>handleGetInfo()</code> entry point in the script.
+	 * 
+	 * @param variant
+	 *        The variant of the response entity
+	 * @return The optional result entity
+	 * @throws ResourceException
+	 * @see #getEntryPointNameForGetInfo()
+	 */
+	@Override
+	public RepresentationInfo getInfo( Variant variant ) throws ResourceException
+	{
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), null, variant );
+
+		Object r = container.invoke( getEntryPointNameForGetInfo() );
+
+		if( r == null )
+			return null;
+		else if( r instanceof RepresentationInfo )
+			return (RepresentationInfo) r;
+		else if( r instanceof Date )
+			return new RepresentationInfo( container.getMediaType(), (Date) r );
+		else if( r instanceof Number )
+			return new RepresentationInfo( container.getMediaType(), new Date( ( (Number) r ).longValue() ) );
+		else if( r instanceof Tag )
+			return new RepresentationInfo( container.getMediaType(), (Tag) r );
+		else if( r instanceof String )
+			return new RepresentationInfo( container.getMediaType(), Tag.parse( (String) r ) );
+		else
+			throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "handleGetInfo() returned a " + r.getClass().toString() + " instead of a RepresentationInfo" );
 	}
 
 	/**
@@ -692,7 +821,6 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation post( Representation entity ) throws ResourceException
 	{
-		// TODO: is this really what we want to do here?
 		return post( entity, null );
 	}
 
@@ -713,15 +841,18 @@ public class DelegatedResource extends ServerResource
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
 
 		Object r = container.invoke( getEntryPointNameForPost() );
-		if( r != null )
-		{
-			if( r instanceof Representation )
-				return (Representation) r;
-			else
-				return new StringRepresentation( r.toString(), container.getMediaType(), container.getLanguage(), container.getCharacterSet() );
-		}
 
-		return null;
+		if( r == null )
+			return null;
+		else if( r instanceof Representation )
+			return (Representation) r;
+		else
+		{
+			Representation representation = new StringRepresentation( r.toString(), container.getMediaType(), container.getLanguage(), container.getCharacterSet() );
+			representation.setTag( container.getTag() );
+			representation.setModificationDate( container.getModificationDate() );
+			return representation;
+		}
 	}
 
 	/**
@@ -736,7 +867,6 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation put( Representation entity ) throws ResourceException
 	{
-		// TODO: is this really what we want to do here?
 		return put( entity, null );
 	}
 
@@ -757,15 +887,18 @@ public class DelegatedResource extends ServerResource
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
 
 		Object r = container.invoke( getEntryPointNameForPut() );
-		if( r != null )
-		{
-			if( r instanceof Representation )
-				return (Representation) r;
-			else
-				return new StringRepresentation( r.toString(), container.getMediaType(), container.getLanguage(), container.getCharacterSet() );
-		}
 
-		return null;
+		if( r == null )
+			return null;
+		else if( r instanceof Representation )
+			return (Representation) r;
+		else
+		{
+			Representation representation = new StringRepresentation( r.toString(), container.getMediaType(), container.getLanguage(), container.getCharacterSet() );
+			representation.setTag( container.getTag() );
+			representation.setModificationDate( container.getModificationDate() );
+			return representation;
+		}
 	}
 
 	/**
@@ -778,7 +911,6 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation delete() throws ResourceException
 	{
-		// TODO: is this really what we want to do here?
 		return delete( null );
 	}
 
@@ -799,6 +931,48 @@ public class DelegatedResource extends ServerResource
 		container.invoke( getEntryPointNameForDelete() );
 
 		return null;
+	}
+
+	/**
+	 * Delegates to the <code>handleOptions()</code> entry point in the script.
+	 * 
+	 * @return The optional result entity
+	 * @throws ResourceException
+	 * @see #getEntryPointNameForOptions()
+	 */
+	@Override
+	public Representation options() throws ResourceException
+	{
+		return options( null );
+	}
+
+	/**
+	 * Delegates to the <code>handleOptions()</code> entry point in the script.
+	 * 
+	 * @param variant
+	 *        The variant of the response entity
+	 * @return The optional result entity
+	 * @throws ResourceException
+	 * @see #getEntryPointNameForOptions()
+	 */
+	@Override
+	public Representation options( Variant variant ) throws ResourceException
+	{
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
+
+		Object r = container.invoke( getEntryPointNameForOptions() );
+
+		if( r == null )
+			return null;
+		else if( r instanceof Representation )
+			return (Representation) r;
+		else
+		{
+			Representation representation = new StringRepresentation( r.toString(), container.getMediaType(), container.getLanguage(), container.getCharacterSet() );
+			representation.setTag( container.getTag() );
+			representation.setModificationDate( container.getModificationDate() );
+			return representation;
+		}
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -852,6 +1026,16 @@ public class DelegatedResource extends ServerResource
 	 * The name of the <code>handleGet()</code> entry point in the script.
 	 */
 	private String entryPointNameForGet;
+
+	/**
+	 * The name of the <code>handleGetInfo()</code> entry point in the script.
+	 */
+	private String entryPointNameForGetInfo;
+
+	/**
+	 * The name of the <code>handleOptions()</code> entry point in the script.
+	 */
+	private String entryPointNameForOptions;
 
 	/**
 	 * The name of the <code>handlePost()</code> entry point in the script.

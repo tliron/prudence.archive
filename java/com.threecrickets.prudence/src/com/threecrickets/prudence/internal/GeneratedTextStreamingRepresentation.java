@@ -87,12 +87,11 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	@Override
 	public void write( Writer writer ) throws IOException
 	{
-		// writer = new OutputStreamWriter(System.out);
-		this.container.isStreaming = true;
-		this.resource.setWriter( writer );
+		container.isStreaming = true;
+		resource.setWriter( writer );
 		try
 		{
-			this.document.run( false, writer, this.resource.getErrorWriter(), this.flushLines, this.documentContext, this.container, this.scriptletController );
+			document.run( false, writer, resource.getErrorWriter(), flushLines, documentContext, container, scriptletController );
 		}
 		catch( ScriptException x )
 		{
@@ -104,7 +103,7 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		{
 			// Scriptlets may have set its cacheDuration, so we must
 			// make sure to disable it!
-			this.document.setCacheDuration( 0 );
+			document.setCacheDuration( 0 );
 		}
 	}
 
