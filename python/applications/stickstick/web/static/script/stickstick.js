@@ -82,7 +82,7 @@ function refresh() {
 }
 
 function fail(request, status, error) {
-	var dialog = $('<div title="' + status + '"></div>').html(error || 'Could not communicate with server.');
+	var dialog = $('<div title="Error"></div>').html(error || 'There was a communication error.');
 	$(dialog).dialog({modal: true, resizable: false});
 }
 

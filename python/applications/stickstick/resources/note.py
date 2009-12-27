@@ -1,7 +1,7 @@
 sys.path.append(str(document.container.source.basePath) + '/../libraries/')
 
 from stickstick.data import *
-from org.restlet.data import MediaType
+from org.restlet.data import MediaType, Status
 from org.restlet.representation import Variant
 
 import minjson as json
@@ -20,11 +20,31 @@ def handleGet():
    
     session = get_session()
     try:
-        note = session.query(Note).filter_by(id=id).first()
+        note = session.query(Note).filter_by(id=id).one()
     finally:
         session.close()
 
+    if note is None:
+        document.container.resource.response.status = Status.CLIENT_ERROR_NOT_FOUND;
+        return None
+
+    document.container.modificationDateAsLong = datetime_to_milliseconds(note.timestamp)
     return json.write(note.to_dict())
+
+def handleGetInfo():
+    id = get_id()
+   
+    session = get_session()
+    try:
+        note = session.query(Note).filter_by(id=id).one()
+    finally:
+        session.close()
+
+    if note is None:
+        document.container.resource.response.status = Status.CLIENT_ERROR_NOT_FOUND;
+        return None
+
+    return datetime_to_milliseconds(note.timestamp)
 
 def handlePost():
     id = get_id()
@@ -38,7 +58,11 @@ def handlePost():
 
     session = get_session()
     try:
-        note = session.query(Note).filter_by(id=id).first()
+        note = session.query(Note).filter_by(id=id).one()
+        if note is None:
+            document.container.resource.response.status = Status.CLIENT_ERROR_NOT_FOUND;
+            return None
+
         note.update(dict)
         session.flush()
     finally:
@@ -51,10 +75,13 @@ def handleDelete():
 
     session = get_session()
     try:
-        note = session.query(Note).filter_by(id=id).first()
-        if note is not None:
-            session.delete(note)
-            session.flush()
+        note = session.query(Note).filter_by(id=id).one()
+        if note is None:
+            document.container.resource.response.status = Status.CLIENT_ERROR_NOT_FOUND;
+            return None
+
+        session.delete(note)
+        session.flush()
     finally:
         session.close()
 

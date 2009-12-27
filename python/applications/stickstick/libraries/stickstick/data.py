@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, DateTime
 from threading import RLock
 from org.restlet import Application
+from datetime import datetime
+from time import mktime
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -12,6 +14,9 @@ Session = sessionmaker()
 engine = None
 engine_lock = RLock()
 
+def datetime_to_milliseconds(dt):
+    return long(mktime(dt.utctimetuple()) * 1000) if dt else None
+
 #
 # Note
 #
@@ -19,16 +24,17 @@ engine_lock = RLock()
 class Note(Base):
     
     id = Column(Integer, primary_key=True)
-    board = Column(String(50), index=True)
+    board = Column(String(50, convert_unicode=True, assert_unicode='warn'), index=True)
     x = Column(Integer)
     y = Column(Integer)
     size = Column(Integer)
-    content = Column(Text)
+    content = Column(Text(convert_unicode=True, assert_unicode='warn'))
+    timestamp = Column(DateTime)
 
     __tablename__ = 'note'
     
     @staticmethod
-    def from_dict(dict):
+    def create_from_dict(dict):
         return Note(dict['board'], dict['x'], dict['y'], dict['size'], dict['content'])
     
     def __init__(self, board, x, y, size, content):
@@ -37,6 +43,7 @@ class Note(Base):
         self.y = y
         self.size = size
         self.content = content
+        self.timestamp = datetime.now()
         
     def update(self, dict):
         if 'board' in dict:
@@ -49,6 +56,7 @@ class Note(Base):
             self.size = dict['size']
         if 'content' in dict:
             self.content = dict['content']
+        self.timestamp = datetime.now()
 
     def to_dict(self):
         return {
@@ -64,7 +72,7 @@ class Note(Base):
 # Helpers
 #
         
-def connect():
+def get_engine():
     engine_lock.acquire()
     try:
         global engine
@@ -74,6 +82,7 @@ def connect():
             # Make sure database exists
             root_engine = create_engine('%s://%s:%s@%s/' % (attributes['stickstick.backend'], attributes['stickstick.username'], attributes['stickstick.password'], attributes['stickstick.host']))
             connection = root_engine.connect()
+            #connection.execute('DROP DATABASE %s' % attributes['stickstick.database'])
             connection.execute('CREATE DATABASE IF NOT EXISTS %s' % attributes['stickstick.database'])
             connection.close()
     
@@ -83,11 +92,17 @@ def connect():
             
             # Make sure tables exist
             Base.metadata.create_all(engine)
+            
+        return engine
     finally:
         engine_lock.release()
-    
+
+def get_connection():
+    engine = get_engine()
+    return engine.connect()
+
 def get_session():
-    connect()
+    get_engine()
     return Session()
         
 #note = Note('fish', 200, 50)
