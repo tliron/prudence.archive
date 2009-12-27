@@ -147,6 +147,9 @@ import com.threecrickets.scripturian.ScriptletController;
  * <li><code>document.container.entity</code>: The {@link Representation} of an
  * entity provided with this request. Available only in
  * <code>handlePost()</code> and <code>handlePut()</code>. Note that
+ * <li><code>document.container.expirationDate</code>: Smart clients can use
+ * this optional value to cache results and avoid unnecessary requests. Most
+ * useful in conjunction with <code>getInfo()</code>.</li>
  * <code>document.container.variant</code> is identical to
  * <code>document.container.entity</code> when available.</li>
  * <li><code>document.container.resource</code>: The instance of this resource.
@@ -749,18 +752,7 @@ public class DelegatedResource extends ServerResource
 		else
 		{
 			Object r = container.invoke( getEntryPointNameForGet() );
-
-			if( r == null )
-				return null;
-			else if( r instanceof Representation )
-				return (Representation) r;
-			else
-			{
-				Representation representation = new StringRepresentation( r.toString(), container.getMediaType(), container.getLanguage(), container.getCharacterSet() );
-				representation.setTag( container.getTag() );
-				representation.setModificationDate( container.getModificationDate() );
-				return representation;
-			}
+			return container.getRepresentation( r );
 		}
 	}
 
@@ -790,23 +782,8 @@ public class DelegatedResource extends ServerResource
 	public RepresentationInfo getInfo( Variant variant ) throws ResourceException
 	{
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), null, variant );
-
 		Object r = container.invoke( getEntryPointNameForGetInfo() );
-
-		if( r == null )
-			return null;
-		else if( r instanceof RepresentationInfo )
-			return (RepresentationInfo) r;
-		else if( r instanceof Date )
-			return new RepresentationInfo( container.getMediaType(), (Date) r );
-		else if( r instanceof Number )
-			return new RepresentationInfo( container.getMediaType(), new Date( ( (Number) r ).longValue() ) );
-		else if( r instanceof Tag )
-			return new RepresentationInfo( container.getMediaType(), (Tag) r );
-		else if( r instanceof String )
-			return new RepresentationInfo( container.getMediaType(), Tag.parse( (String) r ) );
-		else
-			throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "handleGetInfo() returned a " + r.getClass().toString() + " instead of a RepresentationInfo" );
+		return container.getRepresentationInfo( r );
 	}
 
 	/**
@@ -839,20 +816,8 @@ public class DelegatedResource extends ServerResource
 	public Representation post( Representation entity, Variant variant ) throws ResourceException
 	{
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
-
 		Object r = container.invoke( getEntryPointNameForPost() );
-
-		if( r == null )
-			return null;
-		else if( r instanceof Representation )
-			return (Representation) r;
-		else
-		{
-			Representation representation = new StringRepresentation( r.toString(), container.getMediaType(), container.getLanguage(), container.getCharacterSet() );
-			representation.setTag( container.getTag() );
-			representation.setModificationDate( container.getModificationDate() );
-			return representation;
-		}
+		return container.getRepresentation( r );
 	}
 
 	/**
@@ -885,20 +850,8 @@ public class DelegatedResource extends ServerResource
 	public Representation put( Representation entity, Variant variant ) throws ResourceException
 	{
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
-
 		Object r = container.invoke( getEntryPointNameForPut() );
-
-		if( r == null )
-			return null;
-		else if( r instanceof Representation )
-			return (Representation) r;
-		else
-		{
-			Representation representation = new StringRepresentation( r.toString(), container.getMediaType(), container.getLanguage(), container.getCharacterSet() );
-			representation.setTag( container.getTag() );
-			representation.setModificationDate( container.getModificationDate() );
-			return representation;
-		}
+		return container.getRepresentation( r );
 	}
 
 	/**
@@ -961,18 +914,7 @@ public class DelegatedResource extends ServerResource
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
 
 		Object r = container.invoke( getEntryPointNameForOptions() );
-
-		if( r == null )
-			return null;
-		else if( r instanceof Representation )
-			return (Representation) r;
-		else
-		{
-			Representation representation = new StringRepresentation( r.toString(), container.getMediaType(), container.getLanguage(), container.getCharacterSet() );
-			representation.setTag( container.getTag() );
-			representation.setModificationDate( container.getModificationDate() );
-			return representation;
-		}
+		return container.getRepresentation( r );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

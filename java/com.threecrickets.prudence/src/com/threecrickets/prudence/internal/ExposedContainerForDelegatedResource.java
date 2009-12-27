@@ -25,6 +25,8 @@ import org.restlet.data.Method;
 import org.restlet.data.Status;
 import org.restlet.data.Tag;
 import org.restlet.representation.Representation;
+import org.restlet.representation.RepresentationInfo;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 
@@ -213,6 +215,48 @@ public class ExposedContainerForDelegatedResource
 	 * <code>handlePut()</code>. Defaults to null.
 	 * 
 	 * @return The date or null if not set
+	 * @see #setExpirationDate(Date)
+	 */
+	public Date getExpirationDate()
+	{
+		return expirationDate;
+	}
+
+	/**
+	 * @param expirationDate
+	 *        The date or null
+	 * @see #getExpirationDate()
+	 */
+	public void setExpirationDate( Date expirationDate )
+	{
+		this.expirationDate = expirationDate;
+	}
+
+	/**
+	 * @return The date or 0 if not set
+	 * @see #setExpirationDate()
+	 */
+	public long getExpirationDateAsLong()
+	{
+		return expirationDate != null ? expirationDate.getTime() : 0L;
+	}
+
+	/**
+	 * @param expirationDate
+	 *        The date or null
+	 * @see #setExpirationDate(Date)
+	 */
+	public void setExpirationDateAsLong( Number modificationDate )
+	{
+		this.modificationDate = new Date( modificationDate.longValue() );
+	}
+
+	/**
+	 * The {@link Date} that will be used if you return an arbitrary type for
+	 * <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>. Defaults to null.
+	 * 
+	 * @return The date or null if not set
 	 * @see #setModificationDate(Date)
 	 */
 	public Date getModificationDate()
@@ -358,6 +402,58 @@ public class ExposedContainerForDelegatedResource
 	//
 	// Operations
 	//
+
+	/**
+	 * Returns a representation based on the object. If the object is not
+	 * already a representation, creates a new representation based on the
+	 * container's attributes.
+	 * 
+	 * @param object
+	 *        An object
+	 * @return A representation
+	 */
+	public Representation getRepresentation( Object object )
+	{
+		if( object == null )
+			return null;
+		else if( object instanceof Representation )
+			return (Representation) object;
+		else
+		{
+			Representation representation = new StringRepresentation( object.toString(), getMediaType(), getLanguage(), getCharacterSet() );
+			representation.setTag( getTag() );
+			representation.setExpirationDate( getExpirationDate() );
+			representation.setModificationDate( getModificationDate() );
+			return representation;
+		}
+	}
+
+	/**
+	 * Returns a representation info based on the object. If the object is not
+	 * already a representation info, creates a new representation info based on
+	 * the container's attributes.
+	 * 
+	 * @param object
+	 *        An object
+	 * @return A representation info
+	 */
+	public RepresentationInfo getRepresentationInfo( Object object )
+	{
+		if( object == null )
+			return null;
+		else if( object instanceof RepresentationInfo )
+			return (RepresentationInfo) object;
+		else if( object instanceof Date )
+			return new RepresentationInfo( getMediaType(), (Date) object );
+		else if( object instanceof Number )
+			return new RepresentationInfo( getMediaType(), new Date( ( (Number) object ).longValue() ) );
+		else if( object instanceof Tag )
+			return new RepresentationInfo( getMediaType(), (Tag) object );
+		else if( object instanceof String )
+			return new RepresentationInfo( getMediaType(), Tag.parse( (String) object ) );
+		else
+			throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "cannot convert " + object.getClass().toString() + " to a RepresentationInfo" );
+	}
 
 	/**
 	 * This powerful method allows scriptlets to execute other documents in
@@ -527,6 +623,13 @@ public class ExposedContainerForDelegatedResource
 	 * <code>handlePut()</code>.
 	 */
 	private Tag tag;
+
+	/**
+	 * The {@link Date} that will be used if you return an arbitrary type for
+	 * <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>.
+	 */
+	private Date expirationDate;
 
 	/**
 	 * The {@link Date} that will be used if you return an arbitrary type for
