@@ -26,7 +26,8 @@ def handleGet():
     finally:
         session.close()
 
-    document.container.modificationDateAsLong = datetime_to_milliseconds(max_timestamp)
+    if max_timestamp is not None:
+        document.container.modificationDateAsLong = datetime_to_milliseconds(max_timestamp)
     return json.write(list)
 
 def handleGetInfo():

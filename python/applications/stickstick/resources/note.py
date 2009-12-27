@@ -68,6 +68,7 @@ def handlePost():
     finally:
         session.close()
 
+    document.container.modificationDateAsLong = datetime_to_milliseconds(note.timestamp)
     return json.write(note.to_dict())
 
 def handleDelete():
