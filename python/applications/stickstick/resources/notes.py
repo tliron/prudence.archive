@@ -1,15 +1,13 @@
 sys.path.append(str(document.container.source.basePath) + '/../libraries/')
 
 from stickstick.data import *
-from org.restlet.data import MediaType
-from org.restlet.representation import Variant
 from sqlalchemy.sql import func
 
 import minjson as json
 
 def handleInit():
-    document.container.variants.add(Variant(MediaType.TEXT_PLAIN))
-    document.container.variants.add(Variant(MediaType.APPLICATION_JSON))
+    document.container.addMediaTypeByName('text/plain')
+    document.container.addMediaTypeByName('application/json')
 
 def handleGet():
     session = get_session()
@@ -27,7 +25,7 @@ def handleGet():
         session.close()
 
     if max_timestamp is not None:
-        document.container.modificationDateAsLong = datetime_to_milliseconds(max_timestamp)
+        document.container.modificationTimestamp = datetime_to_milliseconds(max_timestamp)
     return json.write(list)
 
 def handleGetInfo():

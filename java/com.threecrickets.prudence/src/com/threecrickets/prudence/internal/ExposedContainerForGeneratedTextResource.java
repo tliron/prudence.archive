@@ -110,6 +110,44 @@ public class ExposedContainerForGeneratedTextResource
 	}
 
 	/**
+	 * @return The character set name
+	 * @see #getCharacterSet()
+	 */
+	public String getCharacterSetName()
+	{
+		return characterSet != null ? characterSet.getName() : null;
+	}
+
+	/**
+	 * @param characterSetName
+	 *        The character set name
+	 * @see #setCharacterSet(CharacterSet)
+	 */
+	public void setCharacterSetName( String characterSetName )
+	{
+		characterSet = CharacterSet.valueOf( characterSetName );
+	}
+
+	/**
+	 * @return The character set extension
+	 * @see #getCharacterSet()
+	 */
+	public String getCharacterSetExtension()
+	{
+		return characterSet != null ? resource.getApplication().getMetadataService().getExtension( characterSet ) : null;
+	}
+
+	/**
+	 * @param characterSetExtension
+	 *        The character set extension
+	 * @see #setCharacterSet(CharacterSet)
+	 */
+	public void setCharacterSetExtension( String characterSetExtension )
+	{
+		characterSet = resource.getApplication().getMetadataService().getCharacterSet( characterSetExtension );
+	}
+
+	/**
 	 * The {@link Language} that will be used for the generated string. Defaults
 	 * to null. If not in streaming mode, your script can change this to
 	 * something else.
@@ -138,6 +176,44 @@ public class ExposedContainerForGeneratedTextResource
 	}
 
 	/**
+	 * @return The language name
+	 * @see #getLanguage()
+	 */
+	public String getLanguageName()
+	{
+		return language != null ? language.getName() : null;
+	}
+
+	/**
+	 * @param languageName
+	 *        The language name
+	 * @see #setLanguage(Language)
+	 */
+	public void setLanguageName( String languageName )
+	{
+		language = Language.valueOf( languageName );
+	}
+
+	/**
+	 * @return The language extension
+	 * @see #getLanguage()
+	 */
+	public String getLanguageExtension()
+	{
+		return language != null ? resource.getApplication().getMetadataService().getExtension( language ) : null;
+	}
+
+	/**
+	 * @param languageExtension
+	 *        The language extension
+	 * @see #setLanguage(Language)
+	 */
+	public void setLanguageExtension( String languageExtension )
+	{
+		language = resource.getApplication().getMetadataService().getLanguage( languageExtension );
+	}
+
+	/**
 	 * The {@link MediaType} that will be used for the generated string.
 	 * Defaults to what the client requested (in container.variant). If not in
 	 * streaming mode, your script can change this to something else.
@@ -163,6 +239,44 @@ public class ExposedContainerForGeneratedTextResource
 			throw new IllegalStateException( "Cannot change media type while streaming" );
 
 		this.mediaType = mediaType;
+	}
+
+	/**
+	 * @return The media type name
+	 * @see #getMediaType()
+	 */
+	public String getMediaTypeName()
+	{
+		return mediaType != null ? mediaType.getName() : null;
+	}
+
+	/**
+	 * @param mediaTypeName
+	 *        The media type name
+	 * @see #setMediaType(MediaType)
+	 */
+	public void setMediaTypeName( String mediaTypeName )
+	{
+		mediaType = MediaType.valueOf( mediaTypeName );
+	}
+
+	/**
+	 * @return The media type extension
+	 * @see #getMediaType()
+	 */
+	public String getMediaTypeExtension()
+	{
+		return mediaType != null ? resource.getApplication().getMetadataService().getExtension( mediaType ) : null;
+	}
+
+	/**
+	 * @param mediaTypeExtension
+	 *        The media type extension
+	 * @see #setMediaType(MediaType)
+	 */
+	public void setMediaTypeExtension( String mediaTypeExtension )
+	{
+		mediaType = resource.getApplication().getMetadataService().getMediaType( mediaTypeExtension );
 	}
 
 	/**

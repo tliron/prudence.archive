@@ -12,8 +12,6 @@
 
 importClass(
 	java.util.concurrent.locks.ReentrantReadWriteLock,
-	org.restlet.data.MediaType,
-	org.restlet.representation.Variant,
 	org.restlet.ext.json.JsonRepresentation);
 
 // Include the context library
@@ -52,8 +50,8 @@ function handleInit() {
 	// "Accept" attribute of their request header, specifying that any media type
 	// will do, in which case the first one we add will be used.
 	
-	document.container.variants.add(new Variant(MediaType.APPLICATION_JSON));
-	document.container.variants.add(new Variant(MediaType.TEXT_PLAIN));
+    document.container.addMediaTypeByName('application/json');
+    document.container.addMediaTypeByName('text/plain');
 }
 
 // This function is called for the GET verb, which is expected to behave as a
@@ -86,7 +84,7 @@ function handleGet() {
 	// Return a representation appropriate for the requested media type
 	// of the possible options we created in handleInit()
 
-	if(document.container.mediaType == MediaType.APPLICATION_JSON) {
+	if(document.container.mediaTypeName == 'application/json') {
 		r = new JsonRepresentation(r);
 	}
 	

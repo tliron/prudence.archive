@@ -12,8 +12,6 @@
 
 require 'java'
 import java.util.concurrent.locks.ReentrantReadWriteLock
-import org.restlet.data.MediaType
-import org.restlet.representation.Variant
 import org.restlet.ext.json.JsonRepresentation
 import org.json.JSONObject
 
@@ -56,8 +54,8 @@ def handle_init
 	# "Accept" attribute of their request header, specifying that any media type
 	# will do, in which case the first one we add will be used.
 
-	$document.container.variants.add Variant.new MediaType::APPLICATION_JSON
-	$document.container.variants.add Variant.new MediaType::TEXT_PLAIN
+    $document.container.add_media_type_by_name('application/json')
+    $document.container.add_media_type_by_name('text/plain')
 	
 end
 
@@ -91,7 +89,7 @@ def handle_get
 	# Return a representation appropriate for the requested media type
 	# of the possible options we created in handle_init()
 
-	if $document.container.media_type == MediaType::APPLICATION_JSON
+	if $document.container.media_type_name == 'application/json'
 		return JsonRepresentation.new r
 	end
 

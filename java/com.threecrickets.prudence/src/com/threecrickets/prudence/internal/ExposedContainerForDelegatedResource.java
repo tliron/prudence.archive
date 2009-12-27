@@ -163,6 +163,44 @@ public class ExposedContainerForDelegatedResource
 	}
 
 	/**
+	 * @return The character set name
+	 * @see #getCharacterSet()
+	 */
+	public String getCharacterSetName()
+	{
+		return characterSet != null ? characterSet.getName() : null;
+	}
+
+	/**
+	 * @param characterSetName
+	 *        The character set name
+	 * @see #setCharacterSet(CharacterSet)
+	 */
+	public void setCharacterSetName( String characterSetName )
+	{
+		characterSet = CharacterSet.valueOf( characterSetName );
+	}
+
+	/**
+	 * @return The character set extension
+	 * @see #getCharacterSet()
+	 */
+	public String getCharacterSetExtension()
+	{
+		return characterSet != null ? resource.getApplication().getMetadataService().getExtension( characterSet ) : null;
+	}
+
+	/**
+	 * @param characterSetExtension
+	 *        The character set extension
+	 * @see #setCharacterSet(CharacterSet)
+	 */
+	public void setCharacterSetExtension( String characterSetExtension )
+	{
+		characterSet = resource.getApplication().getMetadataService().getCharacterSet( characterSetExtension );
+	}
+
+	/**
 	 * The {@link Language} that will be used if you return an arbitrary type
 	 * for <code>handleGet()</code>, <code>handlePost()</code> and
 	 * <code>handlePut()</code>. Defaults to null.
@@ -183,6 +221,44 @@ public class ExposedContainerForDelegatedResource
 	public void setLanguage( Language language )
 	{
 		this.language = language;
+	}
+
+	/**
+	 * @return The language name
+	 * @see #getLanguage()
+	 */
+	public String getLanguageName()
+	{
+		return language != null ? language.getName() : null;
+	}
+
+	/**
+	 * @param languageName
+	 *        The language name
+	 * @see #setLanguage(Language)
+	 */
+	public void setLanguageName( String languageName )
+	{
+		language = Language.valueOf( languageName );
+	}
+
+	/**
+	 * @return The language extension
+	 * @see #getLanguage()
+	 */
+	public String getLanguageExtension()
+	{
+		return language != null ? resource.getApplication().getMetadataService().getExtension( language ) : null;
+	}
+
+	/**
+	 * @param languageExtension
+	 *        The language extension
+	 * @see #setLanguage(Language)
+	 */
+	public void setLanguageExtension( String languageExtension )
+	{
+		language = resource.getApplication().getMetadataService().getLanguage( languageExtension );
 	}
 
 	/**
@@ -210,6 +286,44 @@ public class ExposedContainerForDelegatedResource
 	}
 
 	/**
+	 * @return The media type name
+	 * @see #getMediaType()
+	 */
+	public String getMediaTypeName()
+	{
+		return mediaType != null ? mediaType.getName() : null;
+	}
+
+	/**
+	 * @param mediaTypeName
+	 *        The media type name
+	 * @see #setMediaType(MediaType)
+	 */
+	public void setMediaTypeName( String mediaTypeName )
+	{
+		mediaType = MediaType.valueOf( mediaTypeName );
+	}
+
+	/**
+	 * @return The media type extension
+	 * @see #getMediaType()
+	 */
+	public String getMediaTypeExtension()
+	{
+		return mediaType != null ? resource.getApplication().getMetadataService().getExtension( mediaType ) : null;
+	}
+
+	/**
+	 * @param mediaTypeExtension
+	 *        The media type extension
+	 * @see #setMediaType(MediaType)
+	 */
+	public void setMediaTypeExtension( String mediaTypeExtension )
+	{
+		mediaType = resource.getApplication().getMetadataService().getMediaType( mediaTypeExtension );
+	}
+
+	/**
 	 * The {@link Date} that will be used if you return an arbitrary type for
 	 * <code>handleGet()</code>, <code>handlePost()</code> and
 	 * <code>handlePut()</code>. Defaults to null.
@@ -233,22 +347,22 @@ public class ExposedContainerForDelegatedResource
 	}
 
 	/**
-	 * @return The date or 0 if not set
+	 * @return The timestamp or 0 if not set
 	 * @see #setExpirationDate()
 	 */
-	public long getExpirationDateAsLong()
+	public long getExpirationTimestamp()
 	{
 		return expirationDate != null ? expirationDate.getTime() : 0L;
 	}
 
 	/**
-	 * @param expirationDate
-	 *        The date
+	 * @param expirationTimestamp
+	 *        The timestamp
 	 * @see #setExpirationDate(Date)
 	 */
-	public void setExpirationDateAsLong( long expirationDate )
+	public void setExpirationTimestamp( long expirationTimestamp )
 	{
-		this.expirationDate = new Date( expirationDate );
+		this.expirationDate = new Date( expirationTimestamp );
 	}
 
 	/**
@@ -275,22 +389,22 @@ public class ExposedContainerForDelegatedResource
 	}
 
 	/**
-	 * @return The date or 0 if not set
+	 * @return The timestamp or 0 if not set
 	 * @see #setModificationDate()
 	 */
-	public long getModificationDateAsLong()
+	public long getModificationTimestamp()
 	{
 		return modificationDate != null ? modificationDate.getTime() : 0L;
 	}
 
 	/**
-	 * @param modificationDate
-	 *        The date
+	 * @param modificationTimestamp
+	 *        The timestamp
 	 * @see #setModificationDate(Date)
 	 */
-	public void setModificationDateAsLong( long modificationDate )
+	public void setModificationTimestamp( long modificationTimestamp )
 	{
-		this.modificationDate = new Date( modificationDate );
+		this.modificationDate = new Date( modificationTimestamp );
 	}
 
 	/**
@@ -320,7 +434,7 @@ public class ExposedContainerForDelegatedResource
 	 * @return The HTTP-formatted tag or null if not set
 	 * @see #getTag()
 	 */
-	public String getTagAsString()
+	public String getHttpTag()
 	{
 		return tag != null ? tag.format() : null;
 	}
@@ -330,7 +444,7 @@ public class ExposedContainerForDelegatedResource
 	 *        The HTTP-formatted tag or null
 	 * @see #setTag(Tag)
 	 */
-	public void setTagAsString( String tag )
+	public void setHttpTag( String tag )
 	{
 		this.tag = tag != null ? Tag.parse( tag ) : null;
 	}
@@ -402,6 +516,42 @@ public class ExposedContainerForDelegatedResource
 	//
 	// Operations
 	//
+
+	/**
+	 * Adds a media type to the list of variants.
+	 * 
+	 * @param mediaType
+	 *        The media type
+	 * @see #getVariants()
+	 */
+	public void addMediaType( MediaType mediaType )
+	{
+		resource.getVariants().add( new Variant( mediaType ) );
+	}
+
+	/**
+	 * Adds a media type to the list of variants.
+	 * 
+	 * @param mediaTypeName
+	 *        The media type name
+	 * @see #getVariants()
+	 */
+	public void addMediaTypeByName( String mediaTypeName )
+	{
+		resource.getVariants().add( new Variant( MediaType.valueOf( mediaTypeName ) ) );
+	}
+
+	/**
+	 * Adds a media type to the list of variants.
+	 * 
+	 * @param mediaTypeExtension
+	 *        The media type extension
+	 * @see #getVariants()
+	 */
+	public void addMediaTypeByExtension( String mediaTypeExtension )
+	{
+		resource.getVariants().add( new Variant( resource.getApplication().getMetadataService().getMediaType( mediaTypeExtension ) ) );
+	}
 
 	/**
 	 * Returns a representation based on the object. If the object is not

@@ -1,8 +1,7 @@
 sys.path.append(str(document.container.source.basePath) + '/../libraries/')
 
 from stickstick.data import *
-from org.restlet.data import MediaType, Status
-from org.restlet.representation import Variant
+from org.restlet.data import Status
 
 import minjson as json
 
@@ -12,8 +11,8 @@ def get_id():
     #return int(form.getFirstValue('id'))
 
 def handleInit():
-    document.container.variants.add(Variant(MediaType.TEXT_PLAIN))
-    document.container.variants.add(Variant(MediaType.APPLICATION_JSON))
+    document.container.addMediaTypeByName('text/plain')
+    document.container.addMediaTypeByName('application/json')
 
 def handleGet():
     id = get_id()
@@ -28,7 +27,7 @@ def handleGet():
         document.container.resource.response.status = Status.CLIENT_ERROR_NOT_FOUND;
         return None
 
-    document.container.modificationDateAsLong = datetime_to_milliseconds(note.timestamp)
+    document.container.modificationTimestamp = datetime_to_milliseconds(note.timestamp)
     return json.write(note.to_dict())
 
 def handleGetInfo():
@@ -68,7 +67,7 @@ def handlePost():
     finally:
         session.close()
 
-    document.container.modificationDateAsLong = datetime_to_milliseconds(note.timestamp)
+    document.container.modificationTimestamp = datetime_to_milliseconds(note.timestamp)
     return json.write(note.to_dict())
 
 def handleDelete():

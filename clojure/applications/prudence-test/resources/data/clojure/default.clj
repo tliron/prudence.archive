@@ -12,8 +12,6 @@
 
 (import
 	'java.io.File
-	'org.restlet.representation.Variant
-	'org.restlet.data.MediaType
 	'org.restlet.ext.json.JsonRepresentation
 )
 
@@ -56,8 +54,8 @@
 	; "Accept" attribute of their request header, specifying that any media type
 	; will do, in which case the first one we add will be used.
 
-	(.. document getContainer getVariants (add (Variant. MediaType/TEXT_PLAIN)))
-	(.. document getContainer getVariants (add (Variant. MediaType/APPLICATION_JSON)))
+	(.. document getContainer (addMediaTypeByName "text/plain"))
+	(.. document getContainer (addMediaTypeByName "application/json"))
 )
 
 ; This function is called for the GET verb, which is expected to behave as a
@@ -80,7 +78,7 @@
 		; Return a representation appropriate for the requested media type
 		; of the possible options we created in handleInit
 	
-		(if (= (.. document getContainer getMediaType) MediaType/APPLICATION_JSON)
+		(if (= (.. document getContainer getMediaTypeName) "application/json")
 			(JsonRepresentation. (str r))
 			r
 		)

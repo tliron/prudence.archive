@@ -152,18 +152,27 @@ import com.threecrickets.scripturian.ScriptletController;
  * useful in conjunction with <code>getInfo()</code>.</li>
  * <code>document.container.variant</code> is identical to
  * <code>document.container.entity</code> when available.</li>
+ * <li><code>document.container.httpTag</code>: See
+ * <code>document.container.tag</code>.</li>
  * <li><code>document.container.resource</code>: The instance of this resource.
  * Acts as a "this" reference for scriptlets. For example, during a call to
  * <code>handleInit()</code>, this can be used to change the characteristics of
  * the resource. Otherwise, you can use it to access the request and response.</li>
  * <li><code>document.container.modificationDate</code>: Smart clients can use
  * this optional value to cache results and avoid unnecessary requests. Most
- * useful in conjunction with <code>getInfo()</code>.</li>
+ * useful in conjunction with <code>getInfo()</code>. Note that you need to use
+ * {@link Date} instances here. Use
+ * <code>document.container.modificationTimestamp</code> to access this value as
+ * a timestamp (long).</li>
+ * <li><code>document.container.modificationTimestamp</code>: See
+ * <code>document.container.modificationDate</code>.</li>
  * <li><code>document.container.source</code>: The source used for the document;
  * see {@link #getDocumentSource()}.</li>
  * <li><code>document.container.tag</code>: Smart clients can use this optional
  * value to cache results and avoid unnecessary requests. Most useful in
- * conjunction with <code>getInfo()</code>.</li>
+ * conjunction with <code>getInfo()</code>. Note that you need to use
+ * {@link Tag} instances here. Use <code>document.container.httpTag</code> to
+ * access this value as an HTTP ETag string.</li>
  * <li><code>document.container.variant</code>: The {@link Variant} of this
  * request. Useful for interrogating the client's preferences. This is available
  * only in <code>handleGet()</code>, <code>handlePost()</code> and
