@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Text, DateTime
 from threading import RLock
 from org.restlet import Application
 from datetime import datetime
-from time import mktime
+from time import time, mktime
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -15,7 +15,7 @@ engine = None
 engine_lock = RLock()
 
 def datetime_to_milliseconds(dt):
-    return long(mktime(dt.utctimetuple()) * 1000) if dt else None
+    return long(mktime(dt.timetuple()) * 1000) if dt else None
 
 #
 # Note
@@ -43,7 +43,7 @@ class Note(Base):
         self.y = y
         self.size = size
         self.content = content
-        self.timestamp = datetime.now()
+        self.timestamp = datetime.fromtimestamp(time())
         
     def update(self, dict):
         if 'board' in dict:
@@ -56,7 +56,7 @@ class Note(Base):
             self.size = dict['size']
         if 'content' in dict:
             self.content = dict['content']
-        self.timestamp = datetime.now()
+        self.timestamp = datetime.fromtimestamp(time())
 
     def to_dict(self):
         return {
