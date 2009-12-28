@@ -13,7 +13,10 @@ def handleInit():
     document.container.addMediaTypeByName('application/json')
 
 def handleGet():
-    session = get_session()
+    form = document.container.resource.request.resourceRef.queryAsForm
+    fresh = form.getFirstValue('fresh') == 'true'
+
+    session = get_session(fresh)
     try:
         notes = session.query(Note).all()
 

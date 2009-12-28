@@ -92,11 +92,11 @@ class Board(Base):
 # Helpers
 #
         
-def get_engine():
+def get_engine(fresh=False):
     engine_lock.acquire()
     try:
         global engine
-        if engine is None:
+        if engine is None or fresh:
             attributes = Application.getCurrent().context.attributes
 
             # Make sure database exists
@@ -107,7 +107,8 @@ def get_engine():
                 attributes['stickstick.host']),
                 convert_unicode=True)
             connection = root_engine.connect()
-            connection.execute('DROP DATABASE %s' % attributes['stickstick.database'])
+            if fresh:
+                connection.execute('DROP DATABASE %s' % attributes['stickstick.database'])
             connection.execute('CREATE DATABASE IF NOT EXISTS %s' % attributes['stickstick.database'])
             connection.close()
     
@@ -129,12 +130,12 @@ def get_engine():
     finally:
         engine_lock.release()
 
-def get_connection():
-    engine = get_engine()
+def get_connection(fresh=False):
+    engine = get_engine(fresh)
     return engine.connect()
 
-def get_session():
-    get_engine()
+def get_session(fresh=False):
+    get_engine(fresh)
     return Session()
 
 def update_board_timestamp(session, note, timestamp=None):
