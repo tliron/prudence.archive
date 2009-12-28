@@ -15,6 +15,29 @@ See below for internal access to your resources.</p>
 
 <h3>CRUD</h3>
 
+<p>An example of handleGet in Python:</p>
+<pre>
+def handleGet():
+    id = int(document.container.resource.request.attributes.get('id'))
+   
+    session = get_session()
+    try:
+        note = session.query(Note).filter_by(id=id).one()
+    except NoResultFound:
+        return 404
+    finally:
+        session.close()
+
+    document.container.modificationTimestamp = note.timestamp
+
+	if document.container.mediaTypeName == 'application/json':
+        return json.write(note.to_dict())
+    elif if document.container.mediaTypeName == 'application/xml':
+        return dict_to_xml(note.to_dict())
+    else:
+    	return 415
+</pre>
+
 <h3>Implied Representation</h3>
 
 <h3>Error Codes</h3>
