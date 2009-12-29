@@ -1,4 +1,4 @@
-sys.path.append(str(document.container.source.basePath) + '/../libraries/')
+sys.path.append(str(prudence.source.basePath) + '/../libraries/')
 
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -9,11 +9,11 @@ import minjson as json
 from stickstick.data import *
 
 def handleInit():
-    document.container.addMediaTypeByName('text/plain')
-    document.container.addMediaTypeByName('application/json')
+    prudence.addMediaTypeByName('text/plain')
+    prudence.addMediaTypeByName('application/json')
 
 def handleGet():
-    form = document.container.resource.request.resourceRef.queryAsForm
+    form = prudence.resource.request.resourceRef.queryAsForm
     fresh = form.getFirstValue('fresh') == 'true'
 
     session = get_session(fresh)
@@ -33,7 +33,7 @@ def handleGet():
         session.close()
 
     if max_timestamp is not None:
-        document.container.modificationTimestamp = datetime_to_milliseconds(max_timestamp)
+        prudence.modificationTimestamp = datetime_to_milliseconds(max_timestamp)
     return json.write(list)
 
 def handleGetInfo():
@@ -52,7 +52,7 @@ def handlePut():
     # as text, and want to refer to it more than once, we should keep
     # a reference to that text.
     
-    text = document.container.entity.text
+    text = prudence.entity.text
     dict = json.read(text)
     note = Note.create_from_dict(dict)
     

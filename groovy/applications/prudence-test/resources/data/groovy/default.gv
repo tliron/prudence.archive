@@ -16,7 +16,7 @@ import org.json.JSONObject
 
 // Include the context library
 
-document.container.include('../libraries/groovy/context')
+prudence.include('../libraries/groovy/context')
 
 // State
 //
@@ -36,7 +36,7 @@ getState = {
 }
 
 setState = { value ->
-	document.container.resource.context.attributes['groovy.state'] = value 
+	prudence.resource.context.attributes['groovy.state'] = value 
 }
 
 // This closure is called when the resource is initialized. We will use it to set
@@ -48,8 +48,8 @@ handleInit = {
 	// "Accept" attribute of their request header, specifying that any media type
 	// will do, in which case the first one we add will be used.
 
-    document.container.addMediaTypeByName('application/json')
-    document.container.addMediaTypeByName('text/plain')
+    prudence.addMediaTypeByName('application/json')
+    prudence.addMediaTypeByName('text/plain')
 }
 
 // This closure is called for the GET verb, which is expected to behave as a
@@ -60,10 +60,10 @@ handleInit = {
 // org.restlet.resource.Representation. Other types will be automatically converted to
 // string representation using the client's requested media type and character set.
 // These, and the language of the representation (defaulting to null), can be read and
-// changed via document.container.mediaType, document.container.characterSet, and
-// document.container.language.
+// changed via prudence.mediaType, prudence.characterSet, and
+// prudence.language.
 //
-// Additionally, you can use document.container.variant to interrogate the client's provided
+// Additionally, you can use prudence.variant to interrogate the client's provided
 // list of supported languages and encoding.
 
 handleGet = {
@@ -82,7 +82,7 @@ handleGet = {
 	// Return a representation appropriate for the requested media type
 	// of the possible options we created in handleInit()
 
-	if(document.container.mediaTypeName == 'application/json')
+	if(prudence.mediaTypeName == 'application/json')
 		r = new JsonRepresentation(r)
 
 	return r
@@ -91,7 +91,7 @@ handleGet = {
 // This closure is called for the POST verb, which is expected to behave as a
 // logical "update" of the resource's state.
 //
-// The expectation is that document.container.entity represents an update to the state,
+// The expectation is that prudence.entity represents an update to the state,
 // that will affect future calls to handleGet(). As such, it may be possible
 // to accept logically partial representations of the state.
 //
@@ -104,7 +104,7 @@ handlePost = {
 	// Note that we are using the JSON library to parse the entity. While
 	// a simple eval() would also work, the JSONObject constructor is much safer.
 	
-	def update = new JSONObject(document.container.entity.text)
+	def update = new JSONObject(prudence.entity.text)
 	def stateLock = getStateLock()
 	def state = getState()
 	
@@ -125,7 +125,7 @@ handlePost = {
 // This closure is called for the PUT verb, which is expected to behave as a
 // logical "create" of the resource's state.
 //
-// The expectation is that document.container.entity represents an entirely new state,
+// The expectation is that prudence.entity represents an entirely new state,
 // that will affect future calls to handleGet(). Unlike handlePost(),
 // it is expected that the representation be logically complete.
 //
@@ -137,7 +137,7 @@ handlePost = {
 handlePut = {
 	// See comment in handlePost()
 
-	def entity = new JSONObject(document.container.entity.text)
+	def entity = new JSONObject(prudence.entity.text)
 
 	def state = [:]
 	for(def key in entity.keys()) {

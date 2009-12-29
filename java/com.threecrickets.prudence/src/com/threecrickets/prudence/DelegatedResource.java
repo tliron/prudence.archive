@@ -111,8 +111,7 @@ import com.threecrickets.scripturian.ScriptletController;
  * <p>
  * Before using this resource, make sure to configure a valid source in the
  * application's {@link Context}; see {@link #getDocumentSource()}. This source
- * is accessible from the script itself, via
- * <code>document.container.source</code>.
+ * is accessible from the script itself, via <code>prudence.source</code>.
  * <p>
  * Note that the composite script's output is sent to the system's standard
  * output. Most likely, you will not want to output anything from the script.
@@ -121,91 +120,84 @@ import com.threecrickets.scripturian.ScriptletController;
  * <p>
  * A special container environment is created for scriptlets, with some useful
  * services. It is available to scriptlets as a global variable named
- * <code>document.container</code>. For some other global variables available to
+ * <code>prudence</code>. For some other global variables available to
  * scriptlets, see {@link Document}.
  * <p>
  * Operations:
  * <ul>
- * <li><code>document.container.includeDocument(name)</code>: This powerful
- * method allows scriptlets to execute other documents in place, and is useful
- * for creating large, maintainable applications based on documents. Included
- * documents can act as a library or toolkit and can even be shared among many
- * applications. The included document does not have to be in the same
- * programming language or use the same engine as the calling scriptlet.
- * However, if they do use the same engine, then methods, functions, modules,
- * etc., could be shared.
+ * <li><code>prudence.includeDocument(name)</code>: This powerful method allows
+ * scriptlets to execute other documents in place, and is useful for creating
+ * large, maintainable applications based on documents. Included documents can
+ * act as a library or toolkit and can even be shared among many applications.
+ * The included document does not have to be in the same programming language or
+ * use the same engine as the calling scriptlet. However, if they do use the
+ * same engine, then methods, functions, modules, etc., could be shared.
  * <p>
  * It is important to note that how this works varies a lot per engine. For
  * example, in JRuby, every scriptlet is run in its own scope, so that sharing
  * would have to be done explicitly in the global scope. See the included JRuby
  * examples for a discussion of various ways to do this.
  * </li>
- * <li><code>document.container.include(name)</code>:except that the document is
- * parsed as a single, non-delimited script with the engine name derived from
- * name's extension.</li>
+ * <li><code>prudence.include(name)</code>:except that the document is parsed as
+ * a single, non-delimited script with the engine name derived from name's
+ * extension.</li>
  * </ul>
  * Read-only attributes:
  * <ul>
- * <li><code>document.container.entity</code>: The {@link Representation} of an
- * entity provided with this request. Available only in
- * <code>handlePost()</code> and <code>handlePut()</code>. Note that
- * <li><code>document.container.expirationDate</code>: Smart clients can use
- * this optional value to cache results and avoid unnecessary requests. Most
- * useful in conjunction with <code>getInfo()</code>.</li>
- * <code>document.container.variant</code> is identical to
- * <code>document.container.entity</code> when available.</li>
- * <li><code>document.container.httpTag</code>: See
- * <code>document.container.tag</code>.</li>
- * <li><code>document.container.resource</code>: The instance of this resource.
- * Acts as a "this" reference for scriptlets. For example, during a call to
+ * <li><code>prudence.entity</code>: The {@link Representation} of an entity
+ * provided with this request. Available only in <code>handlePost()</code> and
+ * <code>handlePut()</code>. Note that
+ * <li><code>prudence.expirationDate</code>: Smart clients can use this optional
+ * value to cache results and avoid unnecessary requests. Most useful in
+ * conjunction with <code>getInfo()</code>.</li> <code>prudence.variant</code>
+ * is identical to <code>prudence.entity</code> when available.</li>
+ * <li><code>prudence.httpTag</code>: See <code>prudence.tag</code>.</li>
+ * <li><code>prudence.resource</code>: The instance of this resource. Acts as a
+ * "this" reference for scriptlets. For example, during a call to
  * <code>handleInit()</code>, this can be used to change the characteristics of
  * the resource. Otherwise, you can use it to access the request and response.</li>
- * <li><code>document.container.modificationDate</code>: Smart clients can use
- * this optional value to cache results and avoid unnecessary requests. Most
- * useful in conjunction with <code>getInfo()</code>. Note that you need to use
- * {@link Date} instances here. Use
- * <code>document.container.modificationTimestamp</code> to access this value as
- * a timestamp (long).</li>
- * <li><code>document.container.modificationTimestamp</code>: See
- * <code>document.container.modificationDate</code>.</li>
- * <li><code>document.container.statusCode</code>: A convenient way to set the
- * response status code. This is equivalent to setting
- * <code>document.container.response.status</code> using
- * {@link Status#valueOf(int)}.</li>
- * <li><code>document.container.source</code>: The source used for the document;
- * see {@link #getDocumentSource()}.</li>
- * <li><code>document.container.tag</code>: Smart clients can use this optional
- * value to cache results and avoid unnecessary requests. Most useful in
- * conjunction with <code>getInfo()</code>. Note that you need to use
- * {@link Tag} instances here. Use <code>document.container.httpTag</code> to
- * access this value as an HTTP ETag string.</li>
- * <li><code>document.container.variant</code>: The {@link Variant} of this
- * request. Useful for interrogating the client's preferences. This is available
- * only in <code>handleGet()</code>, <code>handlePost()</code> and
+ * <li><code>prudence.modificationDate</code>: Smart clients can use this
+ * optional value to cache results and avoid unnecessary requests. Most useful
+ * in conjunction with <code>getInfo()</code>. Note that you need to use
+ * {@link Date} instances here. Use <code>prudence.modificationTimestamp</code>
+ * to access this value as a timestamp (long).</li>
+ * <li><code>prudence.modificationTimestamp</code>: See
+ * <code>prudence.modificationDate</code>.</li>
+ * <li><code>prudence.statusCode</code>: A convenient way to set the response
+ * status code. This is equivalent to setting
+ * <code>prudence.response.status</code> using {@link Status#valueOf(int)}.</li>
+ * <li><code>prudence.source</code>: The source used for the document; see
+ * {@link #getDocumentSource()}.</li>
+ * <li><code>prudence.tag</code>: Smart clients can use this optional value to
+ * cache results and avoid unnecessary requests. Most useful in conjunction with
+ * <code>getInfo()</code>. Note that you need to use {@link Tag} instances here.
+ * Use <code>prudence.httpTag</code> to access this value as an HTTP ETag
+ * string.</li>
+ * <li><code>prudence.variant</code>: The {@link Variant} of this request.
+ * Useful for interrogating the client's preferences. This is available only in
+ * <code>handleGet()</code>, <code>handlePost()</code> and
  * <code>handlePut()</code>.</li>
- * <li><code>document.container.variants</code>: A map of possible variants or
- * media types supported by this resource. You should initialize this during a
- * call to <code>handleInit()</code>. Values for the map can be
- * {@link MediaType} constants, explicit {@link Variant} instances (in which
- * case these variants will be returned immediately for their media type without
- * calling the entry point), or a {@link List} containing both media types and
- * variants. Use map key {@link Method#ALL} to indicate support for all methods.
- * </li>
+ * <li><code>prudence.variants</code>: A map of possible variants or media types
+ * supported by this resource. You should initialize this during a call to
+ * <code>handleInit()</code>. Values for the map can be {@link MediaType}
+ * constants, explicit {@link Variant} instances (in which case these variants
+ * will be returned immediately for their media type without calling the entry
+ * point), or a {@link List} containing both media types and variants. Use map
+ * key {@link Method#ALL} to indicate support for all methods.</li>
  * </ul>
  * Modifiable attributes:
  * <ul>
- * <li><code>document.container.mediaType</code>: The {@link MediaType} that
- * will be used if you return an arbitrary type for <code>handleGet()</code>,
+ * <li><code>prudence.mediaType</code>: The {@link MediaType} that will be used
+ * if you return an arbitrary type for <code>handleGet()</code>,
  * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to what the
- * client requested (in <code>document.container.variant</code>).</li>
- * <li><code>document.container.characterSet</code>: The {@link CharacterSet}
- * that will be used if you return an arbitrary type for
- * <code>handleGet()</code>, <code>handlePost()</code> and
- * <code>handlePut()</code>. Defaults to what the client requested (in
- * <code>document.container.variant</code>), or to the value of
+ * client requested (in <code>prudence.variant</code>).</li>
+ * <li><code>prudence.characterSet</code>: The {@link CharacterSet} that will be
+ * used if you return an arbitrary type for <code>handleGet()</code>,
+ * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to what the
+ * client requested (in <code>prudence.variant</code>), or to the value of
  * {@link #getDefaultCharacterSet()} if the client did not specify it.</li>
- * <li><code>document.container.language</code>: The {@link Language} that will
- * be used if you return an arbitrary type for <code>handleGet()</code>,
+ * <li><code>prudence.language</code>: The {@link Language} that will be used if
+ * you return an arbitrary type for <code>handleGet()</code>,
  * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to null.</li>
  * </ul>
  * <p>
@@ -218,6 +210,9 @@ import com.threecrickets.scripturian.ScriptletController;
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.allowCompilation:</code>
  * {@link Boolean}, defaults to true. See {@link #isAllowCompilation()}.</li>
+ * <li><code>com.threecrickets.prudence.DelegatedResource.containerName</code>:
+ * The name of the global variable with which to access the container. Defaults
+ * to "prudence". See {@link #getContainerName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
@@ -337,6 +332,30 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
+	 * The name of the global variable with which to access the container.
+	 * Defaults to "prudence".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedResource.containerName</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The container name
+	 */
+	public String getContainerName()
+	{
+		if( containerName == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			containerName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.containerName" );
+
+			if( containerName == null )
+				containerName = "prudence";
+		}
+
+		return containerName;
+	}
+
+	/**
 	 * The default character set to be used if the client does not specify it.
 	 * Defaults to {@link CharacterSet#UTF_8}.
 	 * <p>
@@ -364,7 +383,7 @@ public class DelegatedResource extends ServerResource
 	 * If the URL points to a directory rather than a file, and that directory
 	 * contains a file with this name, then it will be used. This allows you to
 	 * use the directory structure to create nice URLs without relying on
-	 * filenames. Defaults to "default.script".
+	 * filenames. Defaults to "default".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedResource.defaultName</code> in
@@ -380,7 +399,7 @@ public class DelegatedResource extends ServerResource
 			defaultName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultName" );
 
 			if( defaultName == null )
-				defaultName = "default.script";
+				defaultName = "default";
 		}
 
 		return defaultName;
@@ -579,8 +598,8 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * An optional {@link ScriptletController} to be used with the scripts.
-	 * Useful for adding your own global variables to the script.
+	 * An optional {@link ScriptletController} to be used with the document.
+	 * Useful for adding your own global variables to the document.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedResource.scriptletController</code>
@@ -600,8 +619,8 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * The {@link ScriptEngineManager} used to create the script engines for the
-	 * scripts. Uses a default instance, but can be set to something else.
+	 * The {@link ScriptEngineManager} used to create the script engines. Uses a
+	 * default instance, but can be set to something else.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedResource.engineManager</code>
@@ -1030,6 +1049,11 @@ public class DelegatedResource extends ServerResource
 	 * Same as {@link #writer}, for standard error.
 	 */
 	private Writer errorWriter = new OutputStreamWriter( System.err );
+
+	/**
+	 * The name of the global variable with which to access the container.
+	 */
+	private String containerName;
 
 	/**
 	 * Returns a representation based on the object. If the object is not

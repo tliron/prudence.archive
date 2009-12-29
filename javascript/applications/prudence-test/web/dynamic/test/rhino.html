@@ -11,13 +11,13 @@
 // Accessing the request
 //
 
-var form = document.container.resource.request.resourceRef.queryAsForm;
+var form = prudence.resource.request.resourceRef.queryAsForm;
 
 //
 // Stream this script
 //
 
-if(form.getFirstValue('stream') == 'true') if(document.container.stream()) throw null;
+if(form.getFirstValue('stream') == 'true') if(prudence.stream()) throw null;
 
 //
 // Calling Java
@@ -31,7 +31,7 @@ print('This page was dynamically generated at ' + java.lang.System.currentTimeMi
 //
 // This is identical to:
 //
-//   document.container.includeDocument('path');
+//   prudence.includeDocument('path');
 //
 
 %>

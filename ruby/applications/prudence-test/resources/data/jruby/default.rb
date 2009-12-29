@@ -17,7 +17,7 @@ import org.json.JSONObject
 
 # Include the context library
 
-$document.container.include '../libraries/jruby/context'
+$prudence.include '../libraries/jruby/context'
 include $static_module
 
 # State
@@ -38,7 +38,7 @@ def get_state
 end
 
 def set_state value
-	$document.container.resource.context.attributes['jruby.state'] = value
+	$prudence.resource.context.attributes['jruby.state'] = value
 end
 
 $state = get_state()
@@ -54,8 +54,8 @@ def handle_init
 	# "Accept" attribute of their request header, specifying that any media type
 	# will do, in which case the first one we add will be used.
 
-    $document.container.add_media_type_by_name('application/json')
-    $document.container.add_media_type_by_name('text/plain')
+    $prudence.add_media_type_by_name('application/json')
+    $prudence.add_media_type_by_name('text/plain')
 	
 end
 
@@ -67,10 +67,10 @@ end
 # org.restlet.resource.Representation. Other types will be automatically converted to
 # string representation using the client's requested media type and character set.
 # These, and the language of the representation (defaulting to None), can be read and
-# changed via $document.container.media_type, $document.container.character_set, and
-# $document.container.language.
+# changed via $prudence.media_type, $prudence.character_set, and
+# $prudence.language.
 #
-# Additionally, you can use $document.container.variant to interrogate the client's provided
+# Additionally, you can use $prudence.variant to interrogate the client's provided
 # list of supported languages and encoding.
 
 def handle_get
@@ -89,7 +89,7 @@ def handle_get
 	# Return a representation appropriate for the requested media type
 	# of the possible options we created in handle_init()
 
-	if $document.container.media_type_name == 'application/json'
+	if $prudence.media_type_name == 'application/json'
 		return JsonRepresentation.new r
 	end
 
@@ -100,7 +100,7 @@ end
 # This method is called for the POST verb, which is expected to behave as a
 # logical "update" of the resource's state.
 #
-# The expectation is that document.container.entity represents an update to the state,
+# The expectation is that prudence.entity represents an update to the state,
 # that will affect future calls to handle_get(). As such, it may be possible
 # to accept logically partial representations of the state.
 #
@@ -111,7 +111,7 @@ end
 
 def handle_post
 
-	update = JSONObject.new $document.container.entity.text
+	update = JSONObject.new $prudence.entity.text
 	state_lock = get_state_lock()
 	state = get_state()
 	
@@ -132,7 +132,7 @@ end
 # This method is called for the PUT verb, which is expected to behave as a
 # logical "create" of the resource's state.
 #
-# The expectation is that document.container.entity represents an entirely new state,
+# The expectation is that prudence.entity represents an entirely new state,
 # that will affect future calls to handle_get(). Unlike handle_post(),
 # it is expected that the representation be logically complete.
 #
@@ -143,7 +143,7 @@ end
 
 def handle_put
 
-	update = JSONObject.new $document.container.entity.text
+	update = JSONObject.new $prudence.entity.text
 
 	state = {}	
 	for key in update.keys

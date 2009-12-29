@@ -11,14 +11,14 @@
 ## Accessing the request
 ##
 
-#set($form = $document.container.resource.request.resourceRef.queryAsForm)
+#set($form = $prudence.resource.request.resourceRef.queryAsForm)
 
 ##
 ## Stream this document
 ##
 
 #if($form.getFirstValue('stream') == 'true')
-	#if($document.container.stream())
+	#if($prudence.stream())
 		#stop
 	#end
 #end
@@ -45,7 +45,7 @@ This page was dynamically generated at $currentTimeMillis
 ##
 ## This is identical to:
 ##
-##   $document.container.includeDocument('path')
+##   $prudence.includeDocument('path')
 ##
 
 %><%& "../fragments/test/velocity" %><%

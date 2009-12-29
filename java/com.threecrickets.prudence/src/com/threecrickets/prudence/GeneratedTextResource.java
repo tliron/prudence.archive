@@ -47,7 +47,7 @@ import com.threecrickets.scripturian.ScriptletController;
  * <p>
  * Before using this resource, make sure to configure a valid source in the
  * application's {@link Context}; see {@link #getDocumentSource()}. This source
- * is accessible from scriptlets, via <code>document.container.source</code>.
+ * is accessible from scriptlets, via <code>prudence.source</code>.
  * <p>
  * This resource supports two modes of output:
  * <ul>
@@ -58,97 +58,91 @@ import com.threecrickets.scripturian.ScriptletController;
  * value of <code>document.cacheDuration</code> (see {@link Document}). Because
  * output is not sent to the client until after the script finished its run, it
  * is possible for scriptlets to determine output characteristics at any time by
- * changing the values of <code>document.container.mediaType</code>,
- * <code>document.container.characterSet</code>, and
- * <code>document.container.language</code> (see below).</li>
+ * changing the values of <code>prudence.mediaType</code>,
+ * <code>prudence.characterSet</code>, and <code>prudence.language</code> (see
+ * below).</li>
  * <li>Streaming mode: Output is sent to the client <i>while</i> scriptlets run.
  * This is recommended for documents that need to output a very large amount of
  * text, which might take a long time, or that might otherwise encounter
  * slow-downs while running. In either case, you want the client to receive
  * ongoing output. The output of the document is not cached, and the value of
  * <code>document.cacheDuration</code> is reset to 0. To enter streaming mode,
- * call <code>document.container.stream()</code> (see below for details). Note
- * that you must determine output characteristics (
- * <code>document.container.mediaType</code>,
- * <code>document.container.characterSet</code>, and
- * <code>document.container.language</code>) <i>before</i> entering streaming
- * mode. Trying to change them while running in streaming mode will raise an
- * exception.
+ * call <code>prudence.stream()</code> (see below for details). Note that you
+ * must determine output characteristics ( <code>prudence.mediaType</code>,
+ * <code>prudence.characterSet</code>, and <code>prudence.language</code>)
+ * <i>before</i> entering streaming mode. Trying to change them while running in
+ * streaming mode will raise an exception.
  * </ul>
  * <p>
  * A special container environment is created for scriptlets, with some useful
  * services. It is available to scriptlets as a global variable named
- * <code>document.container</code>. For some other global variables available to
+ * <code>prudence</code>. For some other global variables available to
  * scriptlets, see {@link Document}.
  * <p>
  * Operations:
  * <ul>
- * <li><code>document.container.includeDocument(name)</code>: This powerful
- * method allows scriptlets to execute other documents in place, and is useful
- * for creating large, maintainable applications based on documents. Included
- * documents can act as a library or toolkit and can even be shared among many
- * applications. The included document does not have to be in the same
- * programming language or use the same engine as the calling scriptlet.
- * However, if they do use the same engine, then methods, functions, modules,
- * etc., could be shared.
+ * <li><code>prudence.includeDocument(name)</code>: This powerful method allows
+ * scriptlets to execute other documents in place, and is useful for creating
+ * large, maintainable applications based on documents. Included documents can
+ * act as a library or toolkit and can even be shared among many applications.
+ * The included document does not have to be in the same programming language or
+ * use the same engine as the calling scriptlet. However, if they do use the
+ * same engine, then methods, functions, modules, etc., could be shared.
  * <p>
  * It is important to note that how this works varies a lot per engine. For
  * example, in JRuby, every scriptlet is run in its own scope, so that sharing
  * would have to be done explicitly in the global scope. See the included JRuby
  * examples for a discussion of various ways to do this.
  * </li>
- * <li><code>document.container.include(name)</code>:except that the document is
- * parsed as a single, non-delimited script with the engine name derived from
- * name's extension.</li>
- * <li><code>document.container.stream()</code>: If you are in caching mode,
- * calling this method will return true and cause the document to run again,
- * where this next run will be in streaming mode. Whatever output the document
- * created in the current run is discarded, and all further exceptions are
- * ignored. For this reason, it's probably best to call
- * <code>document.container.stream()</code> as early as possible in the
- * document, and then to quit the document as soon as possible if it returns
- * true. For example, your document can start by testing whether it will have a
- * lot of output, and if so, set output characteristics, call
- * <code>document.container.stream()</code>, and quit. If you are already in
- * streaming mode, calling this method has no effect and returns false. Note
- * that a good way to quit the script is to throw an exception, because it will
- * end the script and otherwise be ignored. By default, writers will be
- * automatically flushed after every line in streaming mode. If you want to
- * disable this behavior, use <code>document.container.stream(flushLines)</code>
- * .</li>
- * <li><code>document.container.stream(flushLines)</code>: This version of the
- * above adds a boolean argument to let you control whether to flush the writer
- * after every line in streaming mode. By default line-by-line flushing is
- * enabled.</li>
+ * <li><code>prudence.include(name)</code>:except that the document is parsed as
+ * a single, non-delimited script with the engine name derived from name's
+ * extension.</li>
+ * <li><code>prudence.stream()</code>: If you are in caching mode, calling this
+ * method will return true and cause the document to run again, where this next
+ * run will be in streaming mode. Whatever output the document created in the
+ * current run is discarded, and all further exceptions are ignored. For this
+ * reason, it's probably best to call <code>prudence.stream()</code> as early as
+ * possible in the document, and then to quit the document as soon as possible
+ * if it returns true. For example, your document can start by testing whether
+ * it will have a lot of output, and if so, set output characteristics, call
+ * <code>prudence.stream()</code>, and quit. If you are already in streaming
+ * mode, calling this method has no effect and returns false. Note that a good
+ * way to quit the script is to throw an exception, because it will end the
+ * script and otherwise be ignored. By default, writers will be automatically
+ * flushed after every line in streaming mode. If you want to disable this
+ * behavior, use <code>prudence.stream(flushLines)</code> .</li>
+ * <li><code>prudence.stream(flushLines)</code>: This version of the above adds
+ * a boolean argument to let you control whether to flush the writer after every
+ * line in streaming mode. By default line-by-line flushing is enabled.</li>
  * </ul>
  * Read-only attributes:
  * <ul>
- * <li><code>document.container.entity</code>: The entity of this request.
- * Available only for post and put.</li>
- * <li><code>document.container.isStreaming</code>: This boolean is true when
- * the writer is in streaming mode (see above).</li>
- * <li><code>document.container.resource</code>: The instance of this resource.
- * Acts as a "this" reference for scriptlets. You can use it to access the
- * request and response.</li>
- * <li><code>document.container.source</code>: The source used for the script;
- * see {@link #getDocumentSource()}.</li>
- * <li><code>document.container.variant</code>: The {@link Variant} of this
- * request. Useful for interrogating the client's preferences.</li>
+ * <li><code>prudence.entity</code>: The entity of this request. Available only
+ * for post and put.</li>
+ * <li><code>prudence.isStreaming</code>: This boolean is true when the writer
+ * is in streaming mode (see above).</li>
+ * <li><code>prudence.resource</code>: The instance of this resource. Acts as a
+ * "this" reference for scriptlets. You can use it to access the request and
+ * response.</li>
+ * <li><code>prudence.source</code>: The source used for the script; see
+ * {@link #getDocumentSource()}.</li>
+ * <li><code>prudence.variant</code>: The {@link Variant} of this request.
+ * Useful for interrogating the client's preferences.</li>
  * </ul>
  * Modifiable attributes:
  * <ul>
- * <li><code>document.container.characterSet</code>: The {@link CharacterSet}
- * that will be used for the generated string. Defaults to what the client
- * requested (in <code>document.container.variant</code>), or to the value of
+ * <li><code>prudence.characterSet</code>: The {@link CharacterSet} that will be
+ * used for the generated string. Defaults to what the client requested (in
+ * <code>prudence.variant</code>), or to the value of
  * {@link #getDefaultCharacterSet()} if the client did not specify it. If not in
  * streaming mode, your scriptlets can change this to something else.</li>
- * <li><code>document.container.language</code>: The {@link Language} that will
- * be used for the generated string. Defaults to null. If not in streaming mode,
- * your scriptlets can change this to something else.</li>
- * <li><code>document.container.mediaType</code>: The {@link MediaType} that
- * will be used for the generated string. Defaults to what the client requested
- * (in <code>document.container.variant</code>). If not in streaming mode, your
+ * <li><code>prudence.language</code>: The {@link Language} that will be used
+ * for the generated string. Defaults to null. If not in streaming mode, your
  * scriptlets can change this to something else.</li>
+ * <li><code>prudence.mediaType</code>: The {@link MediaType} that will be used
+ * for the generated string. Defaults to what the client requested (in
+ * <code>prudence.variant</code>). If not in streaming mode, your scriptlets can
+ * change this to something else.</li>
  * </ul>
  * <p>
  * In addition to the above, a {@link ScriptletController} can be set to add
@@ -167,6 +161,10 @@ import com.threecrickets.scripturian.ScriptletController;
  * <code>com.threecrickets.prudence.GeneratedTextResource.cache:</code>
  * {@link ConcurrentMap}, defaults to a new instance of
  * {@link ConcurrentHashMap}. See {@link #getCache()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.containerName</code>:
+ * The name of the global variable with which to access the container. Defaults
+ * to "prudence". See {@link #getContainerName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
@@ -250,6 +248,30 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
+	 * The name of the global variable with which to access the container.
+	 * Defaults to "prudence".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.containerName</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The container name
+	 */
+	public String getContainerName()
+	{
+		if( containerName == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			containerName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.containerName" );
+
+			if( containerName == null )
+				containerName = "prudence";
+		}
+
+		return containerName;
+	}
+
+	/**
 	 * Cache used for caching mode. Defaults to a new instance of
 	 * {@link ConcurrentHashMap}. It is stored in the application's
 	 * {@link Context} for persistence across requests and for sharing among
@@ -306,10 +328,10 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
-	 * If the URL points to a directory rather than a file, and that directory
+	 * If a URL points to a directory rather than a file, and that directory
 	 * contains a file with this name, then it will be used. This allows you to
 	 * use the directory structure to create nice URLs that do not contain
-	 * filenames. Defaults to "index.page".
+	 * filenames. Defaults to "index".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultName</code>
@@ -325,7 +347,7 @@ public class GeneratedTextResource extends ServerResource
 			defaultName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultName" );
 
 			if( defaultName == null )
-				defaultName = "index.page";
+				defaultName = "index";
 		}
 
 		return defaultName;
@@ -356,8 +378,8 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
-	 * An optional {@link ScriptletController} to be used with the scripts.
-	 * Useful for adding your own global variables to the script.
+	 * An optional {@link ScriptletController} to be used with the scriptlets.
+	 * Useful for adding your own global variables to the scriptlets.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.scriptletController</code>
@@ -407,7 +429,7 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
-	 * The {@link DocumentSource} used to fetch scripts. This must be set to a
+	 * The {@link DocumentSource} used to fetch documents. This must be set to a
 	 * valid value before this class is used!
 	 * <p>
 	 * This setting can be configured by setting an attribute named
@@ -657,6 +679,11 @@ public class GeneratedTextResource extends ServerResource
 	 * The {@link Writer} used by the {@link Document}.
 	 */
 	private Writer writer;
+
+	/**
+	 * The name of the global variable with which to access the container.
+	 */
+	private String containerName;
 
 	/**
 	 * Does the actual handling of requests.

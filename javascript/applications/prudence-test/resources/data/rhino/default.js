@@ -15,10 +15,10 @@ importClass(
 	org.restlet.ext.json.JsonRepresentation);
 
 // Include the context library
-document.container.include('../libraries/rhino/context');
+prudence.include('../libraries/rhino/context');
 
 // Include the JSON library
-document.container.include('../libraries/rhino/json2');
+prudence.include('../libraries/rhino/json2');
 
 // State
 //
@@ -38,7 +38,7 @@ function getState() {
 }
 
 function setState(value) {
-	document.container.resource.context.attributes.put('rhino.state', value); 
+	prudence.resource.context.attributes.put('rhino.state', value); 
 }
 
 // This function is called when the resource is initialized. We will use it to set
@@ -50,8 +50,8 @@ function handleInit() {
 	// "Accept" attribute of their request header, specifying that any media type
 	// will do, in which case the first one we add will be used.
 	
-    document.container.addMediaTypeByName('application/json');
-    document.container.addMediaTypeByName('text/plain');
+    prudence.addMediaTypeByName('application/json');
+    prudence.addMediaTypeByName('text/plain');
 }
 
 // This function is called for the GET verb, which is expected to behave as a
@@ -62,10 +62,10 @@ function handleInit() {
 // org.restlet.resource.Representation. Other types will be automatically converted to
 // string representation using the client's requested media type and character set.
 // These, and the language of the representation (defaulting to null), can be read and
-// changed via document.container.mediaType, document.container.characterSet, and
-// document.container.language.
+// changed via prudence.mediaType, prudence.characterSet, and
+// prudence.language.
 //
-// Additionally, you can use document.container.variant to interrogate the client's provided
+// Additionally, you can use prudence.variant to interrogate the client's provided
 // list of supported languages and encoding.
 
 function handleGet() {
@@ -84,7 +84,7 @@ function handleGet() {
 	// Return a representation appropriate for the requested media type
 	// of the possible options we created in handleInit()
 
-	if(document.container.mediaTypeName == 'application/json') {
+	if(prudence.mediaTypeName == 'application/json') {
 		r = new JsonRepresentation(r);
 	}
 	
@@ -94,7 +94,7 @@ function handleGet() {
 // This function is called for the POST verb, which is expected to behave as a
 // logical "update" of the resource's state.
 //
-// The expectation is that document.container.entity represents an update to the state,
+// The expectation is that prudence.entity represents an update to the state,
 // that will affect future calls to handleGet(). As such, it may be possible
 // to accept logically partial representations of the state.
 //
@@ -111,7 +111,7 @@ function handlePost() {
 	// in this case the JSON library specifically expects a JavaScript string
 	// object.
 	
-	var update = JSON.parse(String(document.container.entity.text));
+	var update = JSON.parse(String(prudence.entity.text));
 	var stateLock = getStateLock();
 	var state = getState();
 	
@@ -131,7 +131,7 @@ function handlePost() {
 // This function is called for the PUT verb, which is expected to behave as a
 // logical "create" of the resource's state.
 //
-// The expectation is that document.container.entity represents an entirely new state,
+// The expectation is that prudence.entity represents an entirely new state,
 // that will affect future calls to handleGet(). Unlike handlePost(),
 // it is expected that the representation be logically complete.
 //
@@ -143,7 +143,7 @@ function handlePost() {
 function handlePut() {
 	// See comment in handlePost()
 
-	var update = JSON.parse(String(document.container.entity.text));
+	var update = JSON.parse(String(prudence.entity.text));
 	setState(update);
 	
 	return handleGet();

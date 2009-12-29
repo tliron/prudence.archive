@@ -11,14 +11,14 @@
 // Accessing the request
 //
 
-def form = document.container.resource.request.resourceRef.queryAsForm
+def form = prudence.resource.request.resourceRef.queryAsForm
 
 //
 // Stream this document
 //
 
 if(form.getFirstValue('stream') == 'true') {
-	if(document.container.stream()) {
+	if(prudence.stream()) {
 		throw new Exception()
 	}
 }
@@ -36,7 +36,7 @@ print 'This page was dynamically generated at ' + System.currentTimeMillis()
 //
 // This is identical to:
 //
-//   document.container.includeDocument 'path'
+//   prudence.includeDocument 'path'
 //
 
 %>

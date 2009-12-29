@@ -1,4 +1,4 @@
-sys.path.append(str(document.container.source.basePath) + '/../libraries/')
+sys.path.append(str(prudence.source.basePath) + '/../libraries/')
 
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -7,17 +7,17 @@ from stickstick.data import *
 import minjson as json
 
 def get_id():
-    return int(document.container.resource.request.attributes.get('id'))
-    #form = document.container.resource.request.resourceRef.queryAsForm
+    return int(prudence.resource.request.attributes.get('id'))
+    #form = prudence.resource.request.resourceRef.queryAsForm
     #return int(form.getFirstValue('id'))
 
 def handleInit():
-    document.container.addMediaTypeByName('text/plain')
-    document.container.addMediaTypeByName('application/json')
+    prudence.addMediaTypeByName('text/plain')
+    prudence.addMediaTypeByName('application/json')
 
 def handleGet():
     id = get_id()
-   
+
     session = get_session()
     try:
         note = session.query(Note).filter_by(id=id).one()
@@ -26,12 +26,12 @@ def handleGet():
     finally:
         session.close()
 
-    document.container.modificationTimestamp = datetime_to_milliseconds(note.timestamp)
+    prudence.modificationTimestamp = datetime_to_milliseconds(note.timestamp)
     return json.write(note.to_dict())
 
 def handleGetInfo():
     id = get_id()
-   
+
     session = get_session()
     try:
         note = session.query(Note).filter_by(id=id).one()
@@ -49,7 +49,7 @@ def handlePost():
     # as text, and want to refer to it more than once, we should keep
     # a reference to that text.
     
-    text = document.container.entity.text
+    text = prudence.entity.text
     dict = json.read(text)
 
     session = get_session()
@@ -63,7 +63,7 @@ def handlePost():
     finally:
         session.close()
 
-    document.container.modificationTimestamp = datetime_to_milliseconds(note.timestamp)
+    prudence.modificationTimestamp = datetime_to_milliseconds(note.timestamp)
     return json.write(note.to_dict())
 
 def handleDelete():

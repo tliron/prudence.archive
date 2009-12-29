@@ -11,13 +11,13 @@
 // Accessing the request
 //
 
-$form = $document->container->resource->request->resourceRef->queryAsForm;
+$form = $prudence->resource->request->resourceRef->queryAsForm;
 
 //
 // Stream this document
 //
 
-if($form->getFirstValue('stream') == 'true') if($document->container->stream()) exit();
+if($form->getFirstValue('stream') == 'true') if($prudence->stream()) exit();
 
 $document->cacheDuration = 5000;
 

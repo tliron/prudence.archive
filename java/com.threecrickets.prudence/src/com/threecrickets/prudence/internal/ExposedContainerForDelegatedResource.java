@@ -36,7 +36,7 @@ import com.threecrickets.scripturian.ScriptletController;
 import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
- * This is the <code>document.container</code> variable exposed to scriptlets.
+ * This is the <code>prudence</code> variable exposed to scriptlets.
  * 
  * @author Tal Liron
  * @see DelegatedResource
@@ -58,13 +58,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants )
 	{
-		this.resource = resource;
-		this.variants = variants;
-		variant = null;
-		entity = null;
-		mediaType = MediaType.TEXT_PLAIN;
-		characterSet = resource.getDefaultCharacterSet();
-		documentContext = new DocumentContext( resource.getEngineManager() );
+		this( resource, variants, null, null );
 	}
 
 	/**
@@ -87,12 +81,19 @@ public class ExposedContainerForDelegatedResource
 		this.variants = variants;
 		this.entity = entity;
 		this.variant = variant;
-		mediaType = variant.getMediaType();
-		characterSet = this.variant.getCharacterSet();
-		if( characterSet == null )
+
+		if( variant != null )
 		{
-			characterSet = resource.getDefaultCharacterSet();
+			mediaType = variant.getMediaType();
+			characterSet = variant.getCharacterSet();
 		}
+
+		if( mediaType == null )
+			mediaType = MediaType.TEXT_PLAIN;
+
+		if( characterSet == null )
+			characterSet = resource.getDefaultCharacterSet();
+
 		documentContext = new DocumentContext( resource.getEngineManager() );
 	}
 
@@ -110,24 +111,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants, Variant variant )
 	{
-		this.resource = resource;
-		this.variants = variants;
-		this.variant = variant;
-		entity = null;
-
-		if( variant != null )
-		{
-			mediaType = variant.getMediaType();
-			characterSet = variant.getCharacterSet();
-		}
-
-		if( mediaType == null )
-			mediaType = MediaType.TEXT_PLAIN;
-
-		if( characterSet == null )
-			characterSet = resource.getDefaultCharacterSet();
-
-		documentContext = new DocumentContext( resource.getEngineManager() );
+		this( resource, variants, null, variant );
 	}
 
 	//
@@ -608,7 +592,9 @@ public class ExposedContainerForDelegatedResource
 				document = existing;
 		}
 
-		document.run( false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, resource.getScriptletController() );
+		PrudenceScriptletController<ExposedContainerForDelegatedResource> scriptletController = new PrudenceScriptletController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
+			.getScriptletController() );
+		document.run( false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, scriptletController );
 	}
 
 	/**
@@ -637,7 +623,9 @@ public class ExposedContainerForDelegatedResource
 				document = existing;
 		}
 
-		document.run( false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, resource.getScriptletController() );
+		PrudenceScriptletController<ExposedContainerForDelegatedResource> scriptletController = new PrudenceScriptletController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
+			.getScriptletController() );
+		document.run( false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, scriptletController );
 	}
 
 	/**
@@ -656,6 +644,8 @@ public class ExposedContainerForDelegatedResource
 		try
 		{
 			DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
+			PrudenceScriptletController<ExposedContainerForDelegatedResource> scriptletController = new PrudenceScriptletController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
+				.getScriptletController() );
 
 			Document document = documentDescriptor.getDocument();
 			if( document == null )
@@ -668,11 +658,13 @@ public class ExposedContainerForDelegatedResource
 				if( existing != null )
 					document = existing;
 				else
+				{
 					// Must run document once and only once
-					document.run( false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, resource.getScriptletController() );
+					document.run( false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, scriptletController );
+				}
 			}
 
-			return document.invoke( entryPointName, this, resource.getScriptletController() );
+			return document.invoke( entryPointName, this, scriptletController );
 		}
 		catch( FileNotFoundException x )
 		{

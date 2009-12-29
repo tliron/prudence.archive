@@ -34,14 +34,14 @@ $static_module = Module.new do
 	# Helper to access the context attributes
 
 	def get_context_attribute name
-		value = $document.container.resource.context.attributes[name]
+		value = $prudence.resource.context.attributes[name]
 		if value == nil
 			value = yield
 
 			# Note: another thread might have changed our value in the meantime.
 			# We'll make sure there is no duplication.
 
-			existing = $document.container.resource.context.attributes.put_if_absent name, value
+			existing = $prudence.resource.context.attributes.put_if_absent name, value
 			if existing != nil
 				value = existing
 			end

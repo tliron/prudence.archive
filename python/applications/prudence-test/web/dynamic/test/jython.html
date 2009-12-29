@@ -11,14 +11,14 @@
 # Accessing the request
 #
 
-form = document.container.resource.request.resourceRef.queryAsForm
+form = prudence.resource.request.resourceRef.queryAsForm
 
 #
 # Stream this document
 #
 
 if form.getFirstValue('stream') == 'true':
-	if document.container.stream():
+	if prudence.stream():
 		raise
 
 document.setCacheDuration(5000)
@@ -40,7 +40,7 @@ sys.stdout.write('This page was dynamically generated at ' + str(System.currentT
 #
 # This is identical to:
 #
-#   document.container.includeDocument('path')
+#   prudence.includeDocument('path')
 #
 
 %>

@@ -3,15 +3,15 @@ importClass(
 	org.restlet.representation.Variant);
 
 //Include the JSON library
-document.container.include('../libraries/json2');
+prudence.include('../libraries/json2');
 
 function handleInit() {
-	document.container.variants.add(new Variant(MediaType.TEXT_PLAIN));
-	document.container.variants.add(new Variant(MediaType.APPLICATION_JSON));
+	prudence.variants.add(new Variant(MediaType.TEXT_PLAIN));
+	prudence.variants.add(new Variant(MediaType.APPLICATION_JSON));
 }
 
 function handleGet() {
-	var component = document.container.resource.context.attributes.get('component');
+	var component = prudence.resource.context.attributes.get('component');
 	var applications = component.context.attributes.get('applications');
 
 	var r = [];

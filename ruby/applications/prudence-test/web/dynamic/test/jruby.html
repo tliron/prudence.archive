@@ -11,14 +11,14 @@
 # Accessing the request
 #
 
-form = $document.container.resource.request.resource_ref.query_as_form
+form = $prudence.resource.request.resource_ref.query_as_form
 
 #
 # Stream this document
 #
 
 if form.get_first_value('stream') == 'true'
-	if $document.container.stream()
+	if $prudence.stream()
 		raise
 	end
 end
@@ -38,7 +38,7 @@ print 'This page was dynamically generated at ', System.current_time_millis
 #
 # This is identical to:
 #
-#   $document.container.include_document 'path'
+#   $prudence.include_document 'path'
 #
 
 %>

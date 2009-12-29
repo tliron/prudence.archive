@@ -32,7 +32,7 @@ import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
- * This is the <code>document.container</code> variable exposed to scriptlets.
+ * This is the <code>prudence</code> variable exposed to scriptlets.
  * 
  * @author Tal Liron
  */
@@ -427,11 +427,11 @@ public class ExposedContainerForGeneratedTextResource
 	 * cause the document to run again, where this next run will be in streaming
 	 * mode. Whatever output the document created in the current run is
 	 * discarded, and all further exceptions are ignored. For this reason, it's
-	 * probably best to call <code>document.container.stream()</code> as early
+	 * probably best to call <code>prudence.stream()</code> as early
 	 * as possible in the document, and then to quit the document as soon as
 	 * possible if it returns true. For example, your document can start by
 	 * testing whether it will have a lot of output, and if so, set output
-	 * characteristics, call <code>document.container.stream()</code>, and quit.
+	 * characteristics, call <code>prudence.stream()</code>, and quit.
 	 * If you are already in streaming mode, calling this method has no effect
 	 * and returns false. Note that a good way to quit the script is to throw an
 	 * exception, because it will end the script and otherwise be ignored.
@@ -581,7 +581,8 @@ public class ExposedContainerForGeneratedTextResource
 		try
 		{
 			// Do not allow caching in streaming mode
-			if( document.run( !isStreaming, writer, resource.getErrorWriter(), false, documentContext, this, resource.getScriptletController() ) )
+			PrudenceScriptletController<ExposedContainerForGeneratedTextResource> scriptletController = new PrudenceScriptletController<ExposedContainerForGeneratedTextResource>( this, resource.getContainerName(), resource.getScriptletController() );
+			if( document.run( !isStreaming, writer, resource.getErrorWriter(), false, documentContext, this, scriptletController ) )
 			{
 
 				// Did the script ask us to start streaming?

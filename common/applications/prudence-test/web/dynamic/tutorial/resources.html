@@ -18,7 +18,7 @@ See below for internal access to your resources.</p>
 <p>An example of handleGet in Python:</p>
 <pre>
 def handleGet():
-    id = int(document.container.resource.request.attributes.get('id'))
+    id = int(prudence.resource.request.attributes.get('id'))
    
     session = get_session()
     try:
@@ -28,11 +28,11 @@ def handleGet():
     finally:
         session.close()
 
-    document.container.modificationTimestamp = note.timestamp
+    prudence.modificationTimestamp = note.timestamp
 
-	if document.container.mediaTypeName == 'application/json':
+	if prudence.mediaTypeName == 'application/json':
         return json.write(note.to_dict())
-    elif if document.container.mediaTypeName == 'application/xml':
+    elif if prudence.mediaTypeName == 'application/xml':
         return dict_to_xml(note.to_dict())
     else:
     	return 415

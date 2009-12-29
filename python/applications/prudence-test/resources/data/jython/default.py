@@ -15,13 +15,13 @@ from org.restlet.ext.json import JsonRepresentation
 
 # Include the context library
 
-document.container.include('../libraries/jython/context')
+prudence.include('../libraries/jython/context')
 
 # Include the minjson library
 # (Note that we made a small change to minjson in order to accommodate Jython.
 # See line 334 there.)
 
-sys.path.append(str(document.container.source.basePath) + '/../libraries/jython/')
+sys.path.append(str(prudence.source.basePath) + '/../libraries/jython/')
 import minjson as json
 
 # State
@@ -41,7 +41,7 @@ def getState():
 
 def setState(value):
 	global document
-	document.container.resource.context.attributes['jython.state'] = value
+	prudence.resource.context.attributes['jython.state'] = value
 
 # This function is called when the resource is initialized. We will use it to set
 # general characteristics for the resource.
@@ -52,8 +52,8 @@ def handleInit():
 	# "Accept" attribute of their request header, specifying that any media type
 	# will do, in which case the first one we add will be used.
 
-    document.container.addMediaTypeByName('application/json')
-    document.container.addMediaTypeByName('text/plain')
+    prudence.addMediaTypeByName('application/json')
+    prudence.addMediaTypeByName('text/plain')
 
 # This function is called for the GET verb, which is expected to behave as a
 # logical "read" of the resource's state.
@@ -63,10 +63,10 @@ def handleInit():
 # org.restlet.resource.Representation. Other types will be automatically converted to
 # string representation using the client's requested media type and character set.
 # These, and the language of the representation (defaulting to None), can be read and
-# changed via document.container.mediaType, document.container.characterSet, and
-# document.container.language.
+# changed via prudence.mediaType, prudence.characterSet, and
+# prudence.language.
 #
-# Additionally, you can use document.container.variant to interrogate the client's provided
+# Additionally, you can use prudence.variant to interrogate the client's provided
 # list of supported languages and encoding.
 
 def handleGet():
@@ -83,7 +83,7 @@ def handleGet():
 	# Return a representation appropriate for the requested media type
 	# of the possible options we created in handleInit()
 
-	if document.container.mediaTypeName == 'application/json':
+	if prudence.mediaTypeName == 'application/json':
 		r = JsonRepresentation(r)
 		
 	return r
@@ -91,7 +91,7 @@ def handleGet():
 # This function is called for the POST verb, which is expected to behave as a
 # logical "update" of the resource's state.
 #
-# The expectation is that document.container.entity represents an update to the state,
+# The expectation is that prudence.entity represents an update to the state,
 # that will affect future calls to handleGet(). As such, it may be possible
 # to accept logically partial representations of the state.
 #
@@ -104,7 +104,7 @@ def handlePost():
 	# Note that we are using the minjson library to parse the entity. While
 	# a simple eval() would also work, minjson.read() is much safer.
 
-	update = json.read(document.container.entity.text)
+	update = json.read(prudence.entity.text)
 	stateLock = getStateLock()
 	state = getState()
 
@@ -121,7 +121,7 @@ def handlePost():
 # This function is called for the PUT verb, which is expected to behave as a
 # logical "create" of the resource's state.
 #
-# The expectation is that document.container.entity represents an entirely new state,
+# The expectation is that prudence.entity represents an entirely new state,
 # that will affect future calls to handleGet(). Unlike handlePost(),
 # it is expected that the representation be logically complete.
 #
@@ -133,7 +133,7 @@ def handlePost():
 def handlePut():
 	# See comment in handlePost()
 
-	update = json.read(document.container.entity.text)
+	update = json.read(prudence.entity.text)
 	setState(update)
 
 	return handleGet()
