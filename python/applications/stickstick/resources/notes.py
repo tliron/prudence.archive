@@ -21,9 +21,9 @@ def handleGet():
         notes = session.query(Note).all()
 
         max_timestamp = None
-        list = []
+        note_list = []
         for note in notes:
-            list.append(note.to_dict())
+            note_list.append(note.to_dict())
             timestamp = note.timestamp
             if max_timestamp is None or timestamp > max_timestamp:
                 max_timestamp = timestamp
@@ -34,7 +34,7 @@ def handleGet():
 
     if max_timestamp is not None:
         prudence.modificationTimestamp = datetime_to_milliseconds(max_timestamp)
-    return json.write(list)
+    return json.write(note_list)
 
 def handleGetInfo():
     # Note that this is more efficient than handleGet()! If our notes have not
@@ -53,8 +53,8 @@ def handlePut():
     # a reference to that text.
     
     text = prudence.entity.text
-    dict = json.read(text)
-    note = Note.create_from_dict(dict)
+    note_dict = json.read(text)
+    note = Note.create_from_dict(note_dict)
     
     session = get_session()
     try:

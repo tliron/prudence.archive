@@ -50,12 +50,12 @@ def handlePost():
     # a reference to that text.
     
     text = prudence.entity.text
-    dict = json.read(text)
+    note_dict = json.read(text)
 
     session = get_session()
     try:
         note = session.query(Note).filter_by(id=id).one()
-        note.update(dict)
+        note.update(note_dict)
         update_board_timestamp(session, note)
         session.flush()
     except NoResultFound:

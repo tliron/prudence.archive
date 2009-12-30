@@ -40,8 +40,8 @@ class Note(Base):
     __tablename__ = 'note'
     
     @staticmethod
-    def create_from_dict(dict):
-        return Note(dict['board'], dict['x'], dict['y'], dict['size'], dict['content'])
+    def create_from_dict(note_dict):
+        return Note(note_dict['board'], note_dict['x'], note_dict['y'], note_dict['size'], note_dict['content'])
     
     def __init__(self, board, x, y, size, content):
         self.board = board
@@ -51,17 +51,17 @@ class Note(Base):
         self.content = content
         self.timestamp = now()
         
-    def update(self, dict):
-        if 'board' in dict:
-            self.board = dict['board']
-        if 'x' in dict:
-            self.x = dict['x']
-        if 'y' in dict:
-            self.y = dict['y']
-        if 'size' in dict:
-            self.size = dict['size']
-        if 'content' in dict:
-            self.content = dict['content']
+    def update(self, note_dict):
+        if 'board' in note_dict:
+            self.board = note_dict['board']
+        if 'x' in note_dict:
+            self.x = note_dict['x']
+        if 'y' in note_dict:
+            self.y = note_dict['y']
+        if 'size' in note_dict:
+            self.size = note_dict['size']
+        if 'content' in note_dict:
+            self.content = note_dict['content']
         self.timestamp = now()
 
     def to_dict(self):
