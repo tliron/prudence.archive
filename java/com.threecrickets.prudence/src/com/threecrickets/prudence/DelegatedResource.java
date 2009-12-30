@@ -745,7 +745,7 @@ public class DelegatedResource extends ServerResource
 
 			if( sourceRepresenter == null )
 			{
-				sourceRepresenter = new SyntaxHighlighterSourceRepresenter();
+				sourceRepresenter = new SyntaxHighlighterSourceRepresenter( getContext() );
 
 				SourceRepresenter existing = (SourceRepresenter) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.sourceRepresenter", sourceRepresenter );
 				if( existing != null )
@@ -812,7 +812,7 @@ public class DelegatedResource extends ServerResource
 				DocumentDescriptor<Document> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
 				SourceRepresenter sourceRepresenter = getSourceRepresenter();
 				if( sourceRepresenter != null )
-					return sourceRepresenter.representSource( name, documentDescriptor );
+					return sourceRepresenter.representSource( name, documentDescriptor, request );
 				else
 					return new StringRepresentation( documentDescriptor.getText() );
 			}

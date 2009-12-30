@@ -11,6 +11,7 @@
 
 package com.threecrickets.prudence.util;
 
+import org.restlet.Request;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
 
@@ -22,5 +23,12 @@ import com.threecrickets.scripturian.DocumentSource.DocumentDescriptor;
  */
 public interface SourceRepresenter
 {
-	public Representation representSource( String name, DocumentDescriptor<Document> documentDescriptor ) throws ResourceException;
+	/**
+	 * @param name
+	 * @param documentDescriptor
+	 * @param request
+	 * @return
+	 * @throws ResourceException
+	 */
+	public Representation representSource( String name, DocumentDescriptor<Document> documentDescriptor, Request request ) throws ResourceException;
 }
