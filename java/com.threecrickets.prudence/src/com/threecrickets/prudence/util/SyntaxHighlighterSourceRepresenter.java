@@ -97,32 +97,22 @@ public class SyntaxHighlighterSourceRepresenter implements SourceRepresenter
 	{
 		String tag = documentDescriptor.getTag();
 
-		String brush = null, alias = null;
-		if( "js".equals( tag ) )
-		{
-			brush = "JScript";
-			alias = "js";
-		}
-		else if( "py".equals( tag ) )
-		{
+		String brush = null, alias = tag;
+		if( "py".equals( tag ) )
 			brush = "Python";
-			alias = "py";
-		}
 		else if( "rb".equals( tag ) )
-		{
 			brush = "Ruby";
-			alias = "rb";
-		}
 		else if( "gv".equals( tag ) || "groovy".equals( tag ) )
 		{
 			brush = "Groovy";
 			alias = "groovy";
 		}
+		else if( "js".equals( tag ) )
+			brush = "JScript";
+		else if( "clj".equals( tag ) )
+			brush = "Clojure";
 		else if( "php".equals( tag ) )
-		{
 			brush = "Php";
-			alias = "php";
-		}
 
 		if( brush == null )
 			return new StringRepresentation( documentDescriptor.getText() );
