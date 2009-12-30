@@ -79,5 +79,5 @@ public class SyntaxHighlighterSourceRepresenter implements SourceRepresenter
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
-	private final String theme = "midnight";
+	private final String theme = "Midnight";
 }
