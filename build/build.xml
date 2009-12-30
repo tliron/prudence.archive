@@ -178,6 +178,9 @@
 		<copy todir="${dist-kitchensink}/content/licenses/sqlalchemy">
 			<fileset dir="${lib}/sqlalchemy/license" />
 		</copy>
+		<copy todir="${dist-kitchensink}/content/licenses/syntaxhighlighter">
+			<fileset dir="${lib}/syntaxhighlighter/license" />
+		</copy>
 		<copy todir="${dist-kitchensink}/content/licenses/velocity">
 			<fileset dir="${lib}/velocity/license" />
 		</copy>
@@ -222,6 +225,9 @@
 			<fileset dir="${clojure}/applications/prudence-test/libraries" />
 			<fileset dir="${javascript}/applications/prudence-test/libraries" />
 		</copy>
+		<copy todir="${dist-kitchensink}/content/applications/prudence-test/web/static/syntaxhighlighter">
+			<fileset dir="${lib}/syntaxhighlighter/lib" />
+		</copy>
 		<copy todir="${dist-kitchensink}/content/applications/stickstick">
 			<fileset dir="${kitchensink-base}/applications/stickstick" />
 		</copy>
@@ -233,6 +239,9 @@
 		</copy>
 		<copy todir="${dist-kitchensink}/content/applications/stickstick/web">
 			<fileset dir="${python}/applications/stickstick/web" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/applications/stickstick/web/static/syntaxhighlighter">
+			<fileset dir="${lib}/syntaxhighlighter/lib" />
 		</copy>
 		<chmod file="${dist-kitchensink}/content/run.sh" perm="ugo+rx"/>
 	</target>
@@ -319,6 +328,9 @@
 		</copy>
 		<copy todir="${dist-javascript}/content/licenses/scripturian">
 			<fileset dir="${lib}/scripturian/license" />
+		</copy>
+		<copy todir="${dist-javascript}/content/licenses/syntaxhighlighter">
+			<fileset dir="${lib}/syntaxhighlighter/license" />
 		</copy>
 		<copy todir="${dist-javascript}/content/licenses/slf4j">
 			<fileset dir="${lib}/slf4j/license" />
@@ -408,6 +420,9 @@
 		<copy todir="${dist-python}/content/licenses/sqlalchemy">
 			<fileset dir="${lib}/sqlalchemy/license" />
 		</copy>
+		<copy todir="${dist-python}/content/licenses/syntaxhighlighter">
+			<fileset dir="${lib}/syntaxhighlighter/license" />
+		</copy>
 		<copy todir="${dist-python}/content/licenses/velocity">
 			<fileset dir="${lib}/velocity/license" />
 		</copy>
@@ -423,6 +438,12 @@
 		<copy todir="${dist-python}/content">
 			<fileset dir="${common}" excludes="log/, run.*" />
 			<fileset dir="${python}" />
+		</copy>
+		<copy todir="${dist-python}/content/applications/prudence-test/web/static/syntaxhighlighter">
+			<fileset dir="${lib}/syntaxhighlighter/lib" />
+		</copy>
+		<copy todir="${dist-python}/content/applications/stickstick/web/static/syntaxhighlighter">
+			<fileset dir="${lib}/syntaxhighlighter/lib" />
 		</copy>
 		<chmod file="${dist-python}/content/run.sh" perm="ugo+rx"/>
 	</target>

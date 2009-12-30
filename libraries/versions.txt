@@ -17,4 +17,5 @@ scripturian			1.0 (Revision 94)
 slf4j				1.5.8
 succinct			1.0 alpha 1
 sqlalchemy			0.6 (Revision 6575)
+syntaxhighlighter	2.1.364
 velocity			1.6.2
