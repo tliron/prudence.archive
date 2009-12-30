@@ -18,7 +18,7 @@ engine_lock = RLock()
 boards_lock = RLock()
 
 def datetime_to_milliseconds(dt):
-    return long(mktime(dt.timetuple()) * 1000) if dt else None
+    return long(mktime(dt.timetuple()) * 1000) if dt else 0
 
 def now():
     return datetime.fromtimestamp(time())
