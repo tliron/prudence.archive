@@ -607,51 +607,73 @@ public class GeneratedTextResource extends ServerResource
 	 * The {@link ScriptEngineManager} used to create the script engines for the
 	 * scripts.
 	 */
-	private ScriptEngineManager scriptEngineManager;
+	private volatile ScriptEngineManager scriptEngineManager;
 
 	/**
 	 * The {@link DocumentSource} used to fetch scripts.
 	 */
-	private DocumentSource<Document> documentSource;
+	private volatile DocumentSource<Document> documentSource;
 
 	/**
 	 * If the URL points to a directory rather than a file, and that directory
 	 * contains a file with this name, then it will be used.
 	 */
-	private String defaultName;
+	private volatile String defaultName;
 
 	/**
 	 * The default script engine name to be used if the script doesn't specify
 	 * one.
 	 */
-	private String defaultEngineName;
+	private volatile String defaultEngineName;
 
 	/**
 	 * The default character set to be used if the client does not specify it.
 	 */
-	private CharacterSet defaultCharacterSet;
+	private volatile CharacterSet defaultCharacterSet;
 
 	/**
 	 * An optional {@link ScriptletController} to be used with the scripts.
 	 */
-	private ScriptletController scriptletController;
+	private volatile ScriptletController scriptletController;
 
 	/**
 	 * Whether or not to send information to the client about cache expiration.
 	 */
-	private Boolean allowClientCaching;
+	private volatile Boolean allowClientCaching;
 
 	/**
 	 * Whether or not compilation is attempted for script engines that support
 	 * it.
 	 */
-	private Boolean allowCompilation;
+	private volatile Boolean allowCompilation;
 
 	/**
 	 * This is so we can see the source code for scripts by adding
 	 * <code>?source=true</code> to the URL.
 	 */
-	private Boolean sourceViewable;
+	private volatile Boolean sourceViewable;
+
+	/**
+	 * Cache used for caching mode.
+	 */
+	private volatile ConcurrentMap<String, RepresentableString> cache;
+
+	/**
+	 * Same as {@link #writer}, for standard error. (Nothing is currently done
+	 * with the contents of this, but this may change in future
+	 * implementations.)
+	 */
+	private volatile Writer errorWriter = new StringWriter();
+
+	/**
+	 * The {@link Writer} used by the {@link Document}.
+	 */
+	private volatile Writer writer;
+
+	/**
+	 * The name of the global variable with which to access the container.
+	 */
+	private volatile String containerName;
 
 	/**
 	 * Constant.
@@ -662,28 +684,6 @@ public class GeneratedTextResource extends ServerResource
 	 * Constant.
 	 */
 	private static final String TRUE = "true";
-
-	/**
-	 * Cache used for caching mode.
-	 */
-	private ConcurrentMap<String, RepresentableString> cache;
-
-	/**
-	 * Same as {@link #writer}, for standard error. (Nothing is currently done
-	 * with the contents of this, but this may change in future
-	 * implementations.)
-	 */
-	private Writer errorWriter = new StringWriter();
-
-	/**
-	 * The {@link Writer} used by the {@link Document}.
-	 */
-	private Writer writer;
-
-	/**
-	 * The name of the global variable with which to access the container.
-	 */
-	private String containerName;
 
 	/**
 	 * Does the actual handling of requests.

@@ -992,81 +992,101 @@ public class DelegatedResource extends ServerResource
 	 * The {@link ScriptEngineManager} used to create the script engines for the
 	 * scripts.
 	 */
-	private ScriptEngineManager engineManager;
+	private volatile ScriptEngineManager engineManager;
 
 	/**
 	 * Whether or not compilation is attempted for script engines that support
 	 * it.
 	 */
-	private Boolean allowCompilation;
+	private volatile Boolean allowCompilation;
 
 	/**
 	 * The {@link DocumentSource} used to fetch scripts.
 	 */
-	private DocumentSource<Document> documentSource;
+	private volatile DocumentSource<Document> documentSource;
 
 	/**
 	 * If the URL points to a directory rather than a file, and that directory
 	 * contains a file with this name, then it will be used.
 	 */
-	private String defaultName;
+	private volatile String defaultName;
 
 	/**
 	 * The default script engine name to be used if the script doesn't specify
 	 * one.
 	 */
-	private String defaultEngineName;
+	private volatile String defaultEngineName;
 
 	/**
 	 * The default character set to be used if the client does not specify it.
 	 */
-	private CharacterSet defaultCharacterSet;
+	private volatile CharacterSet defaultCharacterSet;
 
 	/**
 	 * An optional {@link ScriptletController} to be used with the scripts.
 	 */
-	private ScriptletController scriptletController;
+	private volatile ScriptletController scriptletController;
 
 	/**
 	 * The name of the <code>handleInit()</code> entry point in the script.
 	 */
-	private String entryPointNameForInit;
+	private volatile String entryPointNameForInit;
 
 	/**
 	 * The name of the <code>handleGet()</code> entry point in the script.
 	 */
-	private String entryPointNameForGet;
+	private volatile String entryPointNameForGet;
 
 	/**
 	 * The name of the <code>handleGetInfo()</code> entry point in the script.
 	 */
-	private String entryPointNameForGetInfo;
+	private volatile String entryPointNameForGetInfo;
 
 	/**
 	 * The name of the <code>handleOptions()</code> entry point in the script.
 	 */
-	private String entryPointNameForOptions;
+	private volatile String entryPointNameForOptions;
 
 	/**
 	 * The name of the <code>handlePost()</code> entry point in the script.
 	 */
-	private String entryPointNameForPost;
+	private volatile String entryPointNameForPost;
 
 	/**
 	 * The name of the <code>handlePut()</code> entry point in the script.
 	 */
-	private String entryPointNameForPut;
+	private volatile String entryPointNameForPut;
 
 	/**
 	 * The name of the <code>handleDelete()</code> entry point in the script.
 	 */
-	private String entryPointNameForDelete;
+	private volatile String entryPointNameForDelete;
 
 	/**
 	 * This is so we can see the source code for scripts by adding
 	 * <code>?source=true</code> to the URL.
 	 */
-	private Boolean sourceViewable;
+	private volatile Boolean sourceViewable;
+
+	/**
+	 * The {@link Writer} used by the {@link Document}.
+	 */
+	private volatile Writer writer = new OutputStreamWriter( System.out );
+
+	/**
+	 * Same as {@link #writer}, for standard error.
+	 */
+	private volatile Writer errorWriter = new OutputStreamWriter( System.err );
+
+	/**
+	 * The name of the global variable with which to access the container.
+	 */
+	private volatile String containerName;
+
+	/**
+	 * The source code formatter.
+	 */
+	private volatile SourceFormatter sourceFormatter;
 
 	/**
 	 * Constant.
@@ -1077,26 +1097,6 @@ public class DelegatedResource extends ServerResource
 	 * Constant.
 	 */
 	private static final String TRUE = "true";
-
-	/**
-	 * The {@link Writer} used by the {@link Document}.
-	 */
-	private Writer writer = new OutputStreamWriter( System.out );
-
-	/**
-	 * Same as {@link #writer}, for standard error.
-	 */
-	private Writer errorWriter = new OutputStreamWriter( System.err );
-
-	/**
-	 * The name of the global variable with which to access the container.
-	 */
-	private String containerName;
-
-	/**
-	 * The source code formatter.
-	 */
-	private SourceFormatter sourceFormatter;
 
 	/**
 	 * Returns a representation based on the object. If the object is not
