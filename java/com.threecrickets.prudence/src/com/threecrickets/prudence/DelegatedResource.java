@@ -37,8 +37,8 @@ import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.internal.ExposedContainerForDelegatedResource;
 import com.threecrickets.prudence.internal.PrudenceUtils;
-import com.threecrickets.prudence.util.SourceFormatter;
-import com.threecrickets.prudence.util.SyntaxHighlighterSyntaxFormatter;
+import com.threecrickets.prudence.util.SourceRepresenter;
+import com.threecrickets.prudence.util.SyntaxHighlighterSourceRepresenter;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.ScriptletController;
@@ -726,33 +726,34 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * An optional {@link SourceFormatter} to use for showing source code.
+	 * An optional {@link SourceRepresenter} to use for representing source
+	 * code.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.sourceFormatter</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.sourceRepresenter</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The source formatter or null
+	 * @return The source representer or null
 	 * @see #isSourceViewable()
 	 */
-	public SourceFormatter getSourceFormatter()
+	public SourceRepresenter getSourceRepresenter()
 	{
-		if( sourceFormatter == null )
+		if( sourceRepresenter == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			sourceFormatter = (SourceFormatter) attributes.get( "com.threecrickets.prudence.DelegatedResource.sourceFormatter" );
+			sourceRepresenter = (SourceRepresenter) attributes.get( "com.threecrickets.prudence.DelegatedResource.sourceRepresenter" );
 
-			if( sourceFormatter == null )
+			if( sourceRepresenter == null )
 			{
-				sourceFormatter = new SyntaxHighlighterSyntaxFormatter();
+				sourceRepresenter = new SyntaxHighlighterSourceRepresenter();
 
-				SourceFormatter existing = (SourceFormatter) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.sourceFormatter", sourceFormatter );
+				SourceRepresenter existing = (SourceRepresenter) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.sourceRepresenter", sourceRepresenter );
 				if( existing != null )
-					sourceFormatter = existing;
+					sourceRepresenter = existing;
 			}
 		}
 
-		return sourceFormatter;
+		return sourceRepresenter;
 	}
 
 	//
@@ -809,9 +810,9 @@ public class DelegatedResource extends ServerResource
 			try
 			{
 				DocumentDescriptor<Document> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
-				SourceFormatter sourceFormatter = getSourceFormatter();
-				if( sourceFormatter != null )
-					return sourceFormatter.formatSource( documentDescriptor.getText(), name, documentDescriptor.getTag() );
+				SourceRepresenter sourceRepresenter = getSourceRepresenter();
+				if( sourceRepresenter != null )
+					return sourceRepresenter.representSource( name, documentDescriptor );
 				else
 					return new StringRepresentation( documentDescriptor.getText() );
 			}
@@ -1086,7 +1087,7 @@ public class DelegatedResource extends ServerResource
 	/**
 	 * The source code formatter.
 	 */
-	private volatile SourceFormatter sourceFormatter;
+	private volatile SourceRepresenter sourceRepresenter;
 
 	/**
 	 * Constant.

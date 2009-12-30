@@ -14,17 +14,13 @@ package com.threecrickets.prudence.util;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
 
+import com.threecrickets.scripturian.Document;
+import com.threecrickets.scripturian.DocumentSource.DocumentDescriptor;
+
 /**
  * @author Tal Liron
  */
-public interface SourceFormatter
+public interface SourceRepresenter
 {
-	/**
-	 * @param source
-	 * @param name
-	 * @param tag
-	 * @return
-	 * @throws ResourceException
-	 */
-	public Representation formatSource( String source, String name, String tag ) throws ResourceException;
+	public Representation representSource( String name, DocumentDescriptor<Document> documentDescriptor ) throws ResourceException;
 }
