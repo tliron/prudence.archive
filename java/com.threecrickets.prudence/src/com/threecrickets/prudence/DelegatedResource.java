@@ -37,9 +37,12 @@ import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.internal.ExposedContainerForDelegatedResource;
 import com.threecrickets.prudence.internal.PrudenceUtils;
+import com.threecrickets.prudence.util.SourceFormatter;
+import com.threecrickets.prudence.util.SyntaxHighlighterSyntaxFormatter;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.ScriptletController;
+import com.threecrickets.scripturian.DocumentSource.DocumentDescriptor;
 
 /**
  * A Restlet resource which delegates functionality to a Scripturian
@@ -722,6 +725,36 @@ public class DelegatedResource extends ServerResource
 		return sourceViewable;
 	}
 
+	/**
+	 * An optional {@link SourceFormatter} to use for showing source code.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedResource.sourceFormatter</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The source formatter or null
+	 * @see #isSourceViewable()
+	 */
+	public SourceFormatter getSourceFormatter()
+	{
+		if( sourceFormatter == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			sourceFormatter = (SourceFormatter) attributes.get( "com.threecrickets.prudence.DelegatedResource.sourceFormatter" );
+
+			if( sourceFormatter == null )
+			{
+				sourceFormatter = new SyntaxHighlighterSyntaxFormatter();
+
+				SourceFormatter existing = (SourceFormatter) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.sourceFormatter", sourceFormatter );
+				if( existing != null )
+					sourceFormatter = existing;
+			}
+		}
+
+		return sourceFormatter;
+	}
+
 	//
 	// ServerResource
 	//
@@ -775,7 +808,12 @@ public class DelegatedResource extends ServerResource
 			String name = PrudenceUtils.getRemainingPart( request, getDefaultName() );
 			try
 			{
-				return new StringRepresentation( getDocumentSource().getDocumentDescriptor( name ).getText() );
+				DocumentDescriptor<Document> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
+				SourceFormatter sourceFormatter = getSourceFormatter();
+				if( sourceFormatter != null )
+					return sourceFormatter.formatSource( documentDescriptor.getText(), name, documentDescriptor.getTag() );
+				else
+					return new StringRepresentation( documentDescriptor.getText() );
 			}
 			catch( IOException x )
 			{
@@ -1054,6 +1092,11 @@ public class DelegatedResource extends ServerResource
 	 * The name of the global variable with which to access the container.
 	 */
 	private String containerName;
+
+	/**
+	 * The source code formatter.
+	 */
+	private SourceFormatter sourceFormatter;
 
 	/**
 	 * Returns a representation based on the object. If the object is not
