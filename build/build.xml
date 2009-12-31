@@ -112,6 +112,7 @@
 			<fileset dir="${lib}/jython/lib" />
 			<fileset dir="${lib}/log4j/lib" />
 			<fileset dir="${lib}/mysqlconnector/lib" />
+			<fileset dir="${lib}/pygments/lib" />
 			<fileset dir="${lib}/quercus/lib" />
 			<fileset dir="${lib}/restlet/lib" />
 			<fileset dir="${lib}/rhino/lib" />
@@ -159,6 +160,9 @@
 		</copy>
 		<copy todir="${dist-kitchensink}/content/licenses/mysqlconnector">
 			<fileset dir="${lib}/mysqlconnector/license" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/licenses/pygments">
+			<fileset dir="${lib}/pygments/license" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/licenses/quercus">
 			<fileset dir="${lib}/quercus/license" />
