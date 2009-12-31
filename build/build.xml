@@ -22,6 +22,47 @@
 	<property name="dist-javascript" value="./javascript" />
 	<property name="dist-python" value="./python" />
 
+	<!-- Macros -->
+	
+	<macrodef name="fetch-library">
+		<attribute name="dist" />
+		<attribute name="library" />
+		<sequential>
+			<copy todir="@{dist}/content/lib">
+				<fileset dir="${lib}/@{library}/lib" />
+			</copy>
+			<copy todir="@{dist}/content/licenses/@{library}">
+				<fileset dir="${lib}/@{library}/license" />
+			</copy>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="fetch-javadocs">
+		<attribute name="dist" />
+		<sequential>
+			<copy todir="@{dist}/content/applications/prudence-test/web/static/api">
+				<fileset dir="${tmp}/api" />
+			</copy>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="fetch-prudence-jar">
+		<attribute name="dist" />
+		<sequential>
+			<copy todir="@{dist}/content/lib" file="${tmp}/lib/com.threecrickets.prudence.jar" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="package">
+		<attribute name="dist" />
+		<attribute name="name" />
+		<sequential>
+			<zip destfile="@{dist}/prudence-@{name}.zip" level="9">
+				<fileset dir="@{dist}/content" excludes="lib/cachedir/, resources/jython/*.class" />
+			</zip>
+		</sequential>
+	</macrodef>
+
 	<!-- Basic -->
 	
 	<target name="build" depends="kitchensink, standalone, javascript, python" description="Build distributions" />
@@ -79,115 +120,42 @@
 
 	<!-- Kitchensink -->
 
-	<target name="kitchensink" depends="libraries-kitchensink, licenses-kitchensink, content-kitchensink" description="Fetch Prudence zip" />
+	<target name="kitchensink" depends="libraries-kitchensink, content-kitchensink" description="Fetch Prudence zip" />
 
 	<target name="package-kitchensink" depends="kitchensink" description="Fetch Prudence zip">
-		<zip destfile="${dist-kitchensink}/prudence-kitchensink.zip" level="9">
-			<fileset dir="${dist-kitchensink}/content" excludes="lib/cachedir/, resources/jython/*.class" />
-		</zip>
+		<package dist="${dist-kitchensink}" name="kitchensink" />
 	</target>
 	
 	<target name="jar-kitchensink" depends="jar" description="Fetch Prudence jar">
-		<mkdir dir="${dist-kitchensink}/content/lib" />
-		<copy todir="${dist-kitchensink}/content/lib" file="${tmp}/lib/com.threecrickets.prudence.jar" />
+		<fetch-prudence-jar dist="${dist-kitchensink}" />
 	</target>
 
 	<target name="javadoc-kitchensink" depends="javadoc" description="Fetch Prudence API docs">
-		<copy todir="${dist-kitchensink}/content/applications/prudence-test/web/static/api">
-			<fileset dir="${tmp}/api" />
-		</copy>
+		<fetch-javadocs dist="${dist-kitchensink}" />
 	</target>
 
 	<target name="libraries-kitchensink" depends="jar-kitchensink" description="Fetch libraries">
-		<copy todir="${dist-kitchensink}/content/lib">
-			<fileset dir="${lib}/clojure/lib" />
-			<fileset dir="${lib}/grizzly/lib" />
-			<fileset dir="${lib}/groovy/lib" />
-			<fileset dir="${lib}/h2/lib" />
-			<fileset dir="${lib}/jackson/lib" />
-			<fileset dir="${lib}/jepp/lib" />
-			<fileset dir="${lib}/jruby/lib" />
-			<fileset dir="${lib}/json/lib" />
-			<fileset dir="${lib}/jsr223/lib" />
-			<fileset dir="${lib}/jython/lib" />
-			<fileset dir="${lib}/log4j/lib" />
-			<fileset dir="${lib}/mysqlconnector/lib" />
-			<fileset dir="${lib}/pygments/lib" />
-			<fileset dir="${lib}/quercus/lib" />
-			<fileset dir="${lib}/restlet/lib" />
-			<fileset dir="${lib}/rhino/lib" />
-			<fileset dir="${lib}/scripturian/lib" />
-			<fileset dir="${lib}/slf4j/lib" />
-			<fileset dir="${lib}/sqlalchemy/lib" />
-			<fileset dir="${lib}/velocity/lib" />
-			<fileset file="${lib}/versions.txt" />
-		</copy>
-	</target>
-	
-	<target name="licenses-kitchensink" description="Fetch licences">
-		<copy todir="${dist-kitchensink}/content/licenses/clojure">
-			<fileset dir="${lib}/clojure/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/grizzly">
-			<fileset dir="${lib}/grizzly/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/groovy">
-			<fileset dir="${lib}/groovy/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/h2">
-			<fileset dir="${lib}/h2/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/jackson">
-			<fileset dir="${lib}/jackson/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/jepp">
-			<fileset dir="${lib}/jepp/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/jruby">
-			<fileset dir="${lib}/jruby/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/json">
-			<fileset dir="${lib}/json/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/jsr223">
-			<fileset dir="${lib}/jsr223/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/jython">
-			<fileset dir="${lib}/jython/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/log4j">
-			<fileset dir="${lib}/log4j/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/mysqlconnector">
-			<fileset dir="${lib}/mysqlconnector/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/pygments">
-			<fileset dir="${lib}/pygments/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/quercus">
-			<fileset dir="${lib}/quercus/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/restlet">
-			<fileset dir="${lib}/restlet/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/rhino">
-			<fileset dir="${lib}/rhino/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/scripturian">
-			<fileset dir="${lib}/scripturian/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/slf4j">
-			<fileset dir="${lib}/slf4j/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/sqlalchemy">
-			<fileset dir="${lib}/sqlalchemy/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/syntaxhighlighter">
-			<fileset dir="${lib}/syntaxhighlighter/license" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/licenses/velocity">
-			<fileset dir="${lib}/velocity/license" />
-		</copy>
+		<fetch-library dist="${dist-kitchensink}" library="clojure" />
+		<fetch-library dist="${dist-kitchensink}" library="grizzly" />
+		<fetch-library dist="${dist-kitchensink}" library="groovy" />
+		<fetch-library dist="${dist-kitchensink}" library="h2" />
+		<fetch-library dist="${dist-kitchensink}" library="jackson" />
+		<fetch-library dist="${dist-kitchensink}" library="jepp" />
+		<fetch-library dist="${dist-kitchensink}" library="jruby" />
+		<fetch-library dist="${dist-kitchensink}" library="json" />
+		<fetch-library dist="${dist-kitchensink}" library="jsr223" />
+		<fetch-library dist="${dist-kitchensink}" library="jython" />
+		<fetch-library dist="${dist-kitchensink}" library="log4j" />
+		<fetch-library dist="${dist-kitchensink}" library="mysqlconnector" />
+		<fetch-library dist="${dist-kitchensink}" library="pygments" />
+		<fetch-library dist="${dist-kitchensink}" library="quercus" />
+		<fetch-library dist="${dist-kitchensink}" library="restlet" />
+		<fetch-library dist="${dist-kitchensink}" library="rhino" />
+		<fetch-library dist="${dist-kitchensink}" library="scripturian" />
+		<fetch-library dist="${dist-kitchensink}" library="slf4j" />
+		<fetch-library dist="${dist-kitchensink}" library="sqlalchemy" />
+		<fetch-library dist="${dist-kitchensink}" library="velocity" />
+		<copy todir="${dist-kitchensink}/content/lib" file="${lib}/versions.txt" />
 	</target>
 
 	<target name="content-kitchensink" depends="javadoc-kitchensink" description="Fetch content">
@@ -255,13 +223,11 @@
 	<target name="standalone" depends="src-standalone, jar-standalone, content-standalone" description="Fetch Prudence zip" />
 
 	<target name="package-standalone" depends="standalone" description="Fetch Prudence zip">
-		<zip destfile="${dist-standalone}/prudence-standalone.zip" level="9">
-			<fileset dir="${dist-standalone}/content" />
-		</zip>
+		<package dist="${dist-standalone}" name="standalone" />
 	</target>
 
 	<target name="jar-standalone" depends="jar" description="Fetch Prudence jar">
-		<copy todir="${dist-standalone}/content/lib" file="${tmp}/lib/com.threecrickets.prudence.jar" />
+		<fetch-prudence-jar dist="${dist-standalone}" />
 	</target>
 
 	<target name="src-standalone" description="Fetch Prudence source">
@@ -278,76 +244,37 @@
 
 	<target name="content-standalone" depends="javadoc-standalone" description="Fetch content">
 		<copy todir="${dist-standalone}/content">
-			<fileset dir="${common}" excludes="log/, conf/, web/, run.*" />
+			<fileset dir="${common}" excludes="log/, conf/, applications/, run.*" />
 		</copy>
 	</target>
 
 	<!-- JavaScript -->
 
-	<target name="javascript" depends="libraries-javascript, licenses-javascript, content-javascript" description="Fetch Prudence zip" />
+	<target name="javascript" depends="libraries-javascript, content-javascript" description="Fetch Prudence zip" />
 	
 	<target name="package-javascript" depends="javascript" description="Fetch Prudence zip">
-		<zip destfile="${dist-javascript}/prudence-javascript.zip" level="9">
-			<fileset dir="${dist-javascript}/content" />
-		</zip>
+		<package dist="${dist-javascript}" name="javascript" />
 	</target>
 	
 	<target name="jar-javascript" depends="jar" description="Fetch Prudence jar">
-		<copy todir="${dist-javascript}/content/lib" file="${tmp}/lib/com.threecrickets.prudence.jar" />
+		<fetch-prudence-jar dist="${dist-javascript}" />
 	</target>
 
 	<target name="libraries-javascript" depends="jar-javascript" description="Fetch libraries">
-		<copy todir="${dist-javascript}/content/lib">
-			<fileset dir="${lib}/grizzly/lib" />
-			<fileset dir="${lib}/json/lib" />
-			<fileset dir="${lib}/jsr223/lib" />
-			<fileset dir="${lib}/log4j/lib" />
-			<fileset dir="${lib}/restlet/lib" />
-			<fileset dir="${lib}/rhino/lib" />
-			<fileset dir="${lib}/scripturian/lib" />
-			<fileset dir="${lib}/slf4j/lib" />
-			<fileset dir="${lib}/velocity/lib" />
-			<fileset file="${lib}/versions.txt" />
-		</copy>
-	</target>
-
-	<target name="licenses-javascript" description="Fetch licences">
-		<copy todir="${dist-javascript}/content/licenses/grizzly">
-			<fileset dir="${lib}/grizzly/license" />
-		</copy>
-		<copy todir="${dist-javascript}/content/licenses/json">
-			<fileset dir="${lib}/json/license" />
-		</copy>
-		<copy todir="${dist-javascript}/content/licenses/jsr223">
-			<fileset dir="${lib}/jsr223/license" />
-		</copy>
-		<copy todir="${dist-javascript}/content/licenses/log4j">
-			<fileset dir="${lib}/log4j/license" />
-		</copy>
-		<copy todir="${dist-javascript}/content/licenses/restlet">
-			<fileset dir="${lib}/restlet/license" />
-		</copy>
-		<copy todir="${dist-javascript}/content/licenses/rhino">
-			<fileset dir="${lib}/rhino/license" />
-		</copy>
-		<copy todir="${dist-javascript}/content/licenses/scripturian">
-			<fileset dir="${lib}/scripturian/license" />
-		</copy>
-		<copy todir="${dist-javascript}/content/licenses/syntaxhighlighter">
-			<fileset dir="${lib}/syntaxhighlighter/license" />
-		</copy>
-		<copy todir="${dist-javascript}/content/licenses/slf4j">
-			<fileset dir="${lib}/slf4j/license" />
-		</copy>
-		<copy todir="${dist-javascript}/content/licenses/velocity">
-			<fileset dir="${lib}/velocity/license" />
-		</copy>
+		<fetch-library dist="${dist-javascript}" library="grizzly" />
+		<fetch-library dist="${dist-javascript}" library="json" />
+		<fetch-library dist="${dist-javascript}" library="jsr223" />
+		<fetch-library dist="${dist-javascript}" library="log4j" />
+		<fetch-library dist="${dist-javascript}" library="restlet" />
+		<fetch-library dist="${dist-javascript}" library="rhino" />
+		<fetch-library dist="${dist-javascript}" library="scripturian" />
+		<fetch-library dist="${dist-javascript}" library="slf4j" />
+		<fetch-library dist="${dist-javascript}" library="velocity" />
+		<copy todir="${dist-javascript}/content/lib" file="${lib}/versions.txt" />
 	</target>
 
 	<target name="javadoc-javascript" depends="javadoc" description="Fetch Prudence API docs">
-		<copy todir="${dist-javascript}/content/applications/prudence-test/web/static/api">
-			<fileset dir="${tmp}/api" />
-		</copy>
+		<fetch-javadocs dist="${dist-javascript}" />
 	</target>
 
 	<target name="content-javascript" depends="javadoc-javascript" description="Fetch content">
@@ -360,82 +287,35 @@
 
 	<!-- Python -->
 
-	<target name="python" depends="libraries-python, licenses-python, content-python" description="Fetch Prudence zip" />
+	<target name="python" depends="libraries-python, content-python" description="Fetch Prudence zip" />
 	
 	<target name="package-python" depends="python" description="Fetch Prudence zip">
-		<zip destfile="${dist-python}/prudence-python.zip" level="9">
-			<fileset dir="${dist-python}/content" excludes="lib/cachedir/, resources/jython/*.class" />
-		</zip>
+		<package dist="${dist-python}" name="python" />
 	</target>
 	
 	<target name="jar-python" depends="jar" description="Fetch Prudence jar">
-		<copy todir="${dist-python}/content/lib" file="${tmp}/lib/com.threecrickets.prudence.jar" />
-	</target>
-
-	<target name="libraries-python" depends="jar-python" description="Fetch libraries">
-		<copy todir="${dist-python}/content/lib">
-			<fileset dir="${lib}/grizzly/lib" />
-			<fileset dir="${lib}/jepp/lib" />
-			<fileset dir="${lib}/json/lib" />
-			<fileset dir="${lib}/jsr223/lib" />
-			<fileset dir="${lib}/jython/lib" />
-			<fileset dir="${lib}/log4j/lib" />
-			<fileset dir="${lib}/mysqlconnector/lib" />
-			<fileset dir="${lib}/restlet/lib" />
-			<fileset dir="${lib}/scripturian/lib" />
-			<fileset dir="${lib}/slf4j/lib" />
-			<fileset dir="${lib}/sqlalchemy/lib" />
-			<fileset dir="${lib}/velocity/lib" />
-			<fileset file="${lib}/versions.txt" />
-		</copy>
+		<fetch-prudence-jar dist="${dist-python}" />
 	</target>
 	
-	<target name="licenses-python" description="Fetch licences for Python">
-		<copy todir="${dist-python}/content/licenses/grizzly">
-			<fileset dir="${lib}/grizzly/license" />
-		</copy>
-		<copy todir="${dist-python}/content/licenses/jepp">
-			<fileset dir="${lib}/jepp/license" />
-		</copy>
-		<copy todir="${dist-python}/content/licenses/json">
-			<fileset dir="${lib}/json/license" />
-		</copy>
-		<copy todir="${dist-python}/content/licenses/jsr223">
-			<fileset dir="${lib}/jsr223/license" />
-		</copy>
-		<copy todir="${dist-python}/content/licenses/jython">
-			<fileset dir="${lib}/jython/license" />
-		</copy>
-		<copy todir="${dist-python}/content/licenses/log4j">
-			<fileset dir="${lib}/log4j/license" />
-		</copy>
-		<copy todir="${dist-python}/content/licenses/mysqlconnector">
-			<fileset dir="${lib}/mysqlconnector/license" />
-		</copy>
-		<copy todir="${dist-python}/content/licenses/restlet">
-			<fileset dir="${lib}/restlet/license" />
-		</copy>
-		<copy todir="${dist-python}/content/licenses/scripturian">
-			<fileset dir="${lib}/scripturian/license" />
-		</copy>
-		<copy todir="${dist-python}/content/licenses/slf4j">
-			<fileset dir="${lib}/slf4j/license" />
-		</copy>
-		<copy todir="${dist-python}/content/licenses/sqlalchemy">
-			<fileset dir="${lib}/sqlalchemy/license" />
-		</copy>
-		<copy todir="${dist-python}/content/licenses/syntaxhighlighter">
-			<fileset dir="${lib}/syntaxhighlighter/license" />
-		</copy>
-		<copy todir="${dist-python}/content/licenses/velocity">
-			<fileset dir="${lib}/velocity/license" />
-		</copy>
+	<target name="libraries-python" depends="jar-python" description="Fetch libraries">
+		<fetch-library dist="${dist-python}" library="grizzly" />
+		<fetch-library dist="${dist-python}" library="jepp" />
+		<fetch-library dist="${dist-python}" library="json" />
+		<fetch-library dist="${dist-python}" library="jsr223" />
+		<fetch-library dist="${dist-python}" library="jython" />
+		<fetch-library dist="${dist-python}" library="log4j" />
+		<fetch-library dist="${dist-python}" library="mysqlconnector" />
+		<fetch-library dist="${dist-python}" library="pygments" />
+		<fetch-library dist="${dist-python}" library="restlet" />
+		<fetch-library dist="${dist-python}" library="scripturian" />
+		<fetch-library dist="${dist-python}" library="slf4j" />
+		<fetch-library dist="${dist-python}" library="sqlalchemy" />
+		<fetch-library dist="${dist-python}" library="velocity" />
+		<copy todir="${dist-python}/content/lib" file="${lib}/versions.txt" />
 	</target>
 
 	<target name="javadoc-python" depends="javadoc" description="Fetch Prudence API docs">
-		<copy todir="${dist-python}/content/applications/prudence-test/web/static/api">
-			<fileset dir="${tmp}/api" />
-		</copy>
+		<fetch-javadocs dist="${dist-python}" />
 	</target>
 
 	<target name="content-python" depends="javadoc-python" description="Fetch content">
