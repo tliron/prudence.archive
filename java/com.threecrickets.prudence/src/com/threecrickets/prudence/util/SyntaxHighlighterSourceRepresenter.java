@@ -24,13 +24,10 @@ import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentSource.DocumentDescriptor;
 
 /**
+ * Use <a href="http://alexgorbatchev.com/wiki/SyntaxHighlighter">Syntax
+ * Highligher</a> to represent source code.
+ * 
  * @author Tal Liron
- */
-/**
- * @author emblemparade
- */
-/**
- * @author emblemparade
  */
 public class SyntaxHighlighterSourceRepresenter implements SourceRepresenter
 {
@@ -113,6 +110,14 @@ public class SyntaxHighlighterSourceRepresenter implements SourceRepresenter
 			brush = "Clojure";
 		else if( "php".equals( tag ) )
 			brush = "Php";
+		else if( "html".equals( tag ) )
+			brush = "Xml";
+		else if( "xhtml".equals( tag ) )
+			brush = "Xml";
+		else if( "xml".equals( tag ) )
+			brush = "Xml";
+		else if( "xslt".equals( tag ) )
+			brush = "Xml";
 
 		if( brush == null )
 			return new StringRepresentation( documentDescriptor.getText() );
@@ -137,6 +142,9 @@ public class SyntaxHighlighterSourceRepresenter implements SourceRepresenter
 		html.append( "  </head>\n" );
 		html.append( "  <body>\n" );
 		html.append( "\n" );
+		html.append( "    <noscript>" );
+		html.append( "      You must enable JavaScript in your browser in order to see the source code." );
+		html.append( "    </noscript>" );
 		html.append( "<script type=\"syntaxhighlighter\" class=\"brush: " + alias + ";\"><![CDATA[" );
 		html.append( documentDescriptor.getText() );
 		html.append( "]]></script>\n" );

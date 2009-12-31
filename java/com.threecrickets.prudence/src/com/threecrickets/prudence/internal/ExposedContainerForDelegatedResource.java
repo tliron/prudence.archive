@@ -386,7 +386,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public void setModificationTimestamp( long modificationTimestamp )
 	{
-		this.modificationDate = new Date( modificationTimestamp );
+		this.modificationDate = modificationTimestamp != 0 ? new Date( modificationTimestamp ) : null;
 	}
 
 	/**

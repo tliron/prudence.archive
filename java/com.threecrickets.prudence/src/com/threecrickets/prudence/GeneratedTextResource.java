@@ -36,9 +36,12 @@ import org.restlet.resource.ServerResource;
 import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
 import com.threecrickets.prudence.internal.PrudenceUtils;
 import com.threecrickets.prudence.internal.RepresentableString;
+import com.threecrickets.prudence.util.SourceRepresenter;
+import com.threecrickets.prudence.util.SyntaxHighlighterSourceRepresenter;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.ScriptletController;
+import com.threecrickets.scripturian.DocumentSource.DocumentDescriptor;
 
 /**
  * A Restlet resource which runs a Scripturian {@link Document} for HTTP GET and
@@ -526,6 +529,37 @@ public class GeneratedTextResource extends ServerResource
 		return sourceViewable;
 	}
 
+	/**
+	 * An optional {@link SourceRepresenter} to use for representing source
+	 * code.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedResource.sourceRepresenter</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The source representer or null
+	 * @see #isSourceViewable()
+	 */
+	public SourceRepresenter getSourceRepresenter()
+	{
+		if( sourceRepresenter == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			sourceRepresenter = (SourceRepresenter) attributes.get( "com.threecrickets.prudence.DelegatedResource.sourceRepresenter" );
+
+			if( sourceRepresenter == null )
+			{
+				sourceRepresenter = new SyntaxHighlighterSourceRepresenter( getContext() );
+
+				SourceRepresenter existing = (SourceRepresenter) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.sourceRepresenter", sourceRepresenter );
+				if( existing != null )
+					sourceRepresenter = existing;
+			}
+		}
+
+		return sourceRepresenter;
+	}
+
 	//
 	// ServerResource
 	//
@@ -676,6 +710,11 @@ public class GeneratedTextResource extends ServerResource
 	private volatile String containerName;
 
 	/**
+	 * The source code formatter.
+	 */
+	private volatile SourceRepresenter sourceRepresenter;
+
+	/**
 	 * Constant.
 	 */
 	private static final String SOURCE = "source";
@@ -704,8 +743,12 @@ public class GeneratedTextResource extends ServerResource
 		{
 			if( isSourceViewable() && TRUE.equals( request.getResourceRef().getQueryAsForm().getFirstValue( SOURCE ) ) )
 			{
-				// Represent document source
-				return new StringRepresentation( getDocumentSource().getDocumentDescriptor( name ).getText() );
+				DocumentDescriptor<Document> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
+				SourceRepresenter sourceRepresenter = getSourceRepresenter();
+				if( sourceRepresenter != null )
+					return sourceRepresenter.representSource( name, documentDescriptor, request );
+				else
+					return new StringRepresentation( documentDescriptor.getText() );
 			}
 			else
 			{
