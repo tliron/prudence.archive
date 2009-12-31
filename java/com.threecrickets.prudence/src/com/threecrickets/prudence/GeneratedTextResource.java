@@ -36,8 +36,8 @@ import org.restlet.resource.ServerResource;
 import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
 import com.threecrickets.prudence.internal.PrudenceUtils;
 import com.threecrickets.prudence.internal.RepresentableString;
+import com.threecrickets.prudence.util.PygmentsSourceRepresenter;
 import com.threecrickets.prudence.util.SourceRepresenter;
-import com.threecrickets.prudence.util.SyntaxHighlighterSourceRepresenter;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.ScriptletController;
@@ -549,7 +549,9 @@ public class GeneratedTextResource extends ServerResource
 
 			if( sourceRepresenter == null )
 			{
-				sourceRepresenter = new SyntaxHighlighterSourceRepresenter( getContext() );
+				// sourceRepresenter = new SyntaxHighlighterSourceRepresenter(
+				// getContext() );
+				sourceRepresenter = new PygmentsSourceRepresenter();
 
 				SourceRepresenter existing = (SourceRepresenter) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.sourceRepresenter", sourceRepresenter );
 				if( existing != null )

@@ -130,7 +130,7 @@ public class SyntaxHighlighterSourceRepresenter implements SourceRepresenter
 		html.append( "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n" );
 		html.append( "  <head>\n" );
 		html.append( "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />" );
-		html.append( "    <title>" + name + " - " + tag + "</title>\n" );
+		html.append( "    <title>" + name + "</title>\n" );
 		html.append( "    <link href=\"" + baseUrl + "styles/shCore.css\" rel=\"stylesheet\" type=\"text/css\" />\n" );
 		html.append( "    <link href=\"" + baseUrl + "styles/shTheme" + theme + ".css\" rel=\"stylesheet\" type=\"text/css\" />\n" );
 		html.append( "    <script type=\"text/javascript\" src=\"" + baseUrl + "src/shCore.js\"></script>\n" );
