@@ -6,7 +6,7 @@ from java.io import FileNotFoundException
 from javax.script import ScriptEngineManager
 
 from org.restlet import Application
-from org.restlet.data import Reference, MediaType, Status
+from org.restlet.data import Reference, MediaType
 from com.threecrickets.scripturian.file import DocumentFileSource
 from com.threecrickets.prudence.util import DelegatedStatusService
 

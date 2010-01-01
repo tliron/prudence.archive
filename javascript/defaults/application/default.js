@@ -8,7 +8,6 @@ importClass(
 	org.restlet.Application,
 	org.restlet.data.Reference,
 	org.restlet.data.MediaType,
-	org.restlet.data.Status,
 	com.threecrickets.scripturian.file.DocumentFileSource,
 	com.threecrickets.prudence.util.DelegatedStatusService);
 

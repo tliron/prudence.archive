@@ -11,8 +11,8 @@
 
 package com.threecrickets.prudence.util;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Request;
 import org.restlet.Response;
@@ -56,15 +56,43 @@ public class DelegatedStatusService extends StatusService
 	//
 
 	/**
-	 * A map of error status to target restlets. If no handler is mapped for a
+	 * A map of error statuses to target restlets. If no handler is mapped for a
 	 * status, the default handling will kick in. (Modifiable by concurrent
 	 * threads.)
 	 * 
 	 * @return The error handlers
 	 */
-	public Map<Status, Restlet> getErrorHandlers()
+	public ConcurrentMap<Integer, Restlet> getErrorHandlers()
 	{
 		return errorHandlers;
+	}
+
+	//
+	// Operations
+	//
+
+	/**
+	 * Sets the handler for an error status.
+	 * 
+	 * @param status
+	 *        The status code
+	 * @param errorHandler
+	 *        The error handler
+	 */
+	public void setHandler( int status, Restlet errorHandler )
+	{
+		errorHandlers.put( status, errorHandler );
+	}
+
+	/**
+	 * Removes the handler for an error status.
+	 * 
+	 * @param status
+	 *        The status code
+	 */
+	public void removeHandler( int status )
+	{
+		errorHandlers.remove( status );
 	}
 
 	//
@@ -74,7 +102,7 @@ public class DelegatedStatusService extends StatusService
 	@Override
 	public Representation getRepresentation( Status status, Request request, Response response )
 	{
-		Restlet errorHandler = errorHandlers.get( status );
+		Restlet errorHandler = errorHandlers.get( status.getCode() );
 		if( errorHandler != null )
 		{
 			// Clear the status
@@ -95,5 +123,5 @@ public class DelegatedStatusService extends StatusService
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
-	private Map<Status, Restlet> errorHandlers = new ConcurrentHashMap<Status, Restlet>();
+	private ConcurrentMap<Integer, Restlet> errorHandlers = new ConcurrentHashMap<Integer, Restlet>();
 }
