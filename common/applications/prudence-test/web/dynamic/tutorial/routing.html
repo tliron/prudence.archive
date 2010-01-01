@@ -54,12 +54,17 @@ even if they have different extensions.</p>
 
 <h3>Redirection</h3>
 
+<p>
+See <a href="http://www.restlet.org/documentation/2.0/jse/api/org/restlet/util/Resolver.html#createResolver(org.restlet.Request,%20org.restlet.Response)">this</a>.
+</p>
+
 
 <h3>Handling Errors</h3>
 
+
 <pre>
 // 404 handler
-application.statusService.errorHandlers.put(404, new Renamer(application.context, router, '404.html'));
+component.statusService.setHandler(404, new Redirector(component.context, '{hi}/404.html', Redirector.MODE_SERVER_DISPATCHER));
 </pre>
 
 

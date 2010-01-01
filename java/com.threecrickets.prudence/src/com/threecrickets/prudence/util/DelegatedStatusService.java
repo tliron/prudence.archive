@@ -38,6 +38,7 @@ public class DelegatedStatusService extends StatusService
 	public DelegatedStatusService()
 	{
 		super();
+		setOverwriting( true );
 	}
 
 	/**
@@ -49,6 +50,7 @@ public class DelegatedStatusService extends StatusService
 	public DelegatedStatusService( boolean enabled )
 	{
 		super( enabled );
+		setOverwriting( true );
 	}
 
 	//
@@ -102,26 +104,30 @@ public class DelegatedStatusService extends StatusService
 	@Override
 	public Representation getRepresentation( Status status, Request request, Response response )
 	{
-		Restlet errorHandler = errorHandlers.get( status.getCode() );
-		if( errorHandler != null )
+		if( isEnabled() )
 		{
-			// Clear the status
-			response.setStatus( Status.SUCCESS_OK );
+			Restlet errorHandler = errorHandlers.get( status.getCode() );
 
-			// Delegate
-			errorHandler.handle( request, response );
+			if( errorHandler != null )
+			{
+				// Clear the status
+				response.setStatus( Status.SUCCESS_OK );
 
-			// Return the status
-			response.setStatus( status );
+				// Delegate
+				errorHandler.handle( request, response );
 
-			return response.getEntity();
+				// Return the status
+				// response.setStatus( status );
+
+				return response.getEntity();
+			}
 		}
-		else
-			return super.getRepresentation( status, request, response );
+
+		return super.getRepresentation( status, request, response );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
-	private ConcurrentMap<Integer, Restlet> errorHandlers = new ConcurrentHashMap<Integer, Restlet>();
+	private final ConcurrentMap<Integer, Restlet> errorHandlers = new ConcurrentHashMap<Integer, Restlet>();
 }

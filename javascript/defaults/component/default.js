@@ -4,12 +4,10 @@
 
 importClass(
 	java.lang.System,
-	java.io.File,
 	java.io.FileNotFoundException,
-	java.util.ArrayList,
 	java.util.logging.LogManager,
 	org.restlet.Component,
-	org.restlet.data.Protocol);
+	com.threecrickets.prudence.util.DelegatedStatusService);
 
 function includeOrDefault(name, def) {
 	try {
@@ -63,34 +61,16 @@ System.setProperty('com.sun.script.velocity.properties', 'conf/velocity.conf');
 component.logService.loggerName = 'web-requests';
 
 //
-// Hosts
+// StatusService
 //
 
-includeOrDefault('component/hosts');
+component.statusService = new DelegatedStatusService();
 
 //
-// Applications
+// Routing
 //
 
-var applications = new ArrayList();
-component.context.attributes.put('applications', applications);
-var applicationDirs = new File('applications').listFiles();
-for(var i in applicationDirs) {
-	var applicationDir = applicationDirs[i]; 
-	if(applicationDir.isDirectory()) {
-		var applicationName = applicationDir.name;
-		var applicationLoggerName = applicationDir.name;
-		var applicationBasePath = applicationDir.path;
-		var applicationDefaultURL = '/' + applicationDir.name + '/';
-		includeOrDefault(applicationBasePath, 'defaults/application');
-		applications.add(application);
-	}
-}
-
-if(applications.length == 0) {
-	print('No applications found. Exiting.\n');
-	System.exit(0);
-}
+includeOrDefault('component/routing');
 
 //
 // Clients

@@ -1,8 +1,6 @@
 //
 // Prudence Application Routing
 //
-// Note that order of attachment is important: first matching pattern wins.
-//
 
 importClass(
 	java.lang.ClassLoader,
@@ -12,8 +10,7 @@ importClass(
 	org.restlet.routing.Template,
 	org.restlet.resource.Finder,
 	org.restlet.resource.Directory,
-	com.threecrickets.prudence.util.FallbackRouter,
-	com.threecrickets.prudence.util.Renamer);
+	com.threecrickets.prudence.util.FallbackRouter);
 
 var classLoader = ClassLoader.systemClassLoader;
 
@@ -40,7 +37,7 @@ function fixURL(url) {
 // virtual host. See component/hosts.js for more information.
 //
 
-var redirector = new Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_SEE_OTHER);
+var addTrailingSlash = new Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT);
 
 print(application.name + ': ');
 for(var i in hosts) {
@@ -56,7 +53,7 @@ for(var i in hosts) {
 		if(url[url.length - 1] == '/') {
 			url = url.slice(0, -1);
 		}
-		host.attach(url, redirector);
+		host.attach(url, addTrailingSlash);
 	}
 	if(i < hosts.length - 1) {
 		print(', ');
@@ -84,7 +81,7 @@ if(urlAddTrailingSlash.length > 0) {
 				// Remove trailing slash for pattern
 				urlAddTrailingSlash[i] = urlAddTrailingSlash[i].slice(0, -1);
 			}
-			router.attach(urlAddTrailingSlash[i], redirector);
+			router.attach(urlAddTrailingSlash[i], addTrailingSlash);
 		}
 	}
 }

@@ -1,14 +1,12 @@
 #
 # Prudence Application Routing
 #
-# Note that order of attachment is important: first matching pattern wins.
-#
 
 from java.lang import ClassLoader
 from java.io import File
 from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Finder, Directory
-from com.threecrickets.prudence.util import FallbackRouter, Renamer
+from com.threecrickets.prudence.util import FallbackRouter
 
 classLoader = ClassLoader.getSystemClassLoader()
 
@@ -32,7 +30,7 @@ def fix_url(url):
 # virtual host. See component/hosts.js for more information.
 #
 
-redirector = Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_SEE_OTHER)
+add_trailing_slash = Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)
 
 sys.stdout.write('%s: ' % application.name)
 for i in range(len(hosts)):
@@ -44,7 +42,7 @@ for i in range(len(hosts)):
 	if url != '/':
 		if url[-1] == '/':
 			url = url[:-1]
-		host.attach(url, redirector)
+		host.attach(url, add_trailing_slash)
 	if i < len(hosts) - 1:
 		sys.stdout.write(', ')
 print '.'
@@ -67,7 +65,7 @@ if len(url_add_trailing_slash) > 0:
 		if len(url) > 0:
 			if url[-1] == '/':
 				url = url[:-1]
-			router.attach(url, redirector)
+			router.attach(url, add_trailing_slash)
 
 #
 # Dynamic web

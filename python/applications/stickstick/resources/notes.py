@@ -37,9 +37,6 @@ def handleGet():
     return json.write(note_list)
 
 def handleGetInfo():
-    # Note that this is more efficient than handleGet()! If our notes have not
-    # been changed since the client last fetched them, then handleGet() will not be
-    # called
     session = get_session()
     try:
         max_timestamp = session.query(func.max(Board.timestamp)).scalar()
