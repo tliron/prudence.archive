@@ -77,6 +77,10 @@ public class Fallback extends Restlet
 	public Fallback( Context context, AtomicInteger remember, Restlet... targets )
 	{
 		super( context );
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "Fallback" );
+		setDescription( "Delegates to a series of targets in sequence, stopping at the first target that handles the request" );
 		this.remember = remember;
 		for( Restlet target : targets )
 			addTarget( target );

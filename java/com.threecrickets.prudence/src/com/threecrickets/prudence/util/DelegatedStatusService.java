@@ -104,7 +104,7 @@ public class DelegatedStatusService extends StatusService
 	@Override
 	public Representation getRepresentation( Status status, Request request, Response response )
 	{
-		if( isEnabled() )
+		if( isEnabled()  )
 		{
 			Restlet errorHandler = errorHandlers.get( status.getCode() );
 
@@ -117,9 +117,16 @@ public class DelegatedStatusService extends StatusService
 				errorHandler.handle( request, response );
 
 				// Return the status
-				// response.setStatus( status );
+				response.setStatus( status );
 
-				return response.getEntity();
+				Representation representation = response.getEntity();
+				
+				// Avoid caching, which would require other statuses
+				representation.setExpirationDate( null );
+				representation.setModificationDate( null );
+				representation.setTag( null );
+
+				return representation;
 			}
 		}
 

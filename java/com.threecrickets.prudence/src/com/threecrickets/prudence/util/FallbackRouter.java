@@ -60,6 +60,10 @@ public class FallbackRouter extends Router
 	public FallbackRouter( Context context, int remember )
 	{
 		super( context );
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "FallbackRouter" );
+		setDescription( "A router that takes care to bunch identical routes under Fallback restlets" );
 		this.remember = new AtomicInteger( remember );
 	}
 
