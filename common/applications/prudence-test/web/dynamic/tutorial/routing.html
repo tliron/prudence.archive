@@ -64,7 +64,7 @@ See <a href="http://www.restlet.org/documentation/2.0/jse/api/org/restlet/util/R
 
 <pre>
 // 404 handler
-component.statusService.setHandler(404, new Redirector(component.context, '{hi}/404.html', Redirector.MODE_SERVER_DISPATCHER));
+component.statusService.redirect(404, '{hi}/404.html', component.context);
 </pre>
 
 
