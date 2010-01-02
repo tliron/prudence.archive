@@ -1,0 +1,346 @@
+### Eclipse Workspace Patch 1.0
+#P jython-trunk
+Index: src/org/python/util/PythonInterpreter.java
+===================================================================
+--- src/org/python/util/PythonInterpreter.java	(revision 6958)
++++ src/org/python/util/PythonInterpreter.java	(working copy)
+@@ -32,6 +32,8 @@
+     protected PySystemState systemState;
+ 
+     PyObject locals;
++    
++    protected boolean threadLocals = false;
+ 
+     protected CompilerFlags cflags = new CompilerFlags();
+ 
+@@ -83,8 +85,13 @@
+         systemState.modules.__setitem__("__main__", module);
+         locals = dict;
+     }
++    
++    public void setThreadLocals(boolean threadLocals) {
++    	this.threadLocals = threadLocals;
++    }
+ 
+     protected void setState() {
++    	// The thread-bound system state may not have been set yet for this thread
+         Py.setSystemState(systemState);
+     }
+ 
+@@ -95,7 +102,7 @@
+      *            Python file-like object to use as input stream
+      */
+     public void setIn(PyObject inStream) {
+-        systemState.stdin = inStream;
++    	Py.getSystemState().stdin = inStream;
+     }
+ 
+     public void setIn(java.io.Reader inStream) {
+@@ -119,7 +126,7 @@
+      *            Python file-like object to use as output stream
+      */
+     public void setOut(PyObject outStream) {
+-        systemState.stdout = outStream;
++    	Py.getSystemState().stdout = outStream;
+     }
+ 
+     public void setOut(java.io.Writer outStream) {
+@@ -137,7 +144,7 @@
+     }
+ 
+     public void setErr(PyObject outStream) {
+-        systemState.stderr = outStream;
++    	Py.getSystemState().stderr = outStream;
+     }
+ 
+     public void setErr(java.io.Writer outStream) {
+@@ -153,7 +160,7 @@
+      */
+     public PyObject eval(String s) {
+         setState();
+-        return __builtin__.eval(new PyString(s), locals);
++        return __builtin__.eval(new PyString(s), getLocals());
+     }
+ 
+     /**
+@@ -161,7 +168,7 @@
+      */
+     public PyObject eval(PyObject code) {
+         setState();
+-        return __builtin__.eval(code, locals, locals);
++        return __builtin__.eval(code, getLocals(), getLocals());
+     }
+ 
+     /**
+@@ -169,7 +176,7 @@
+      */
+     public void exec(String s) {
+         setState();
+-        Py.exec(Py.compile_flags(s, "<string>", CompileMode.exec, cflags), locals, locals);
++        Py.exec(Py.compile_flags(s, "<string>", CompileMode.exec, cflags), getLocals(), getLocals());
+         Py.flushLine();
+     }
+ 
+@@ -178,7 +185,7 @@
+      */
+     public void exec(PyObject code) {
+         setState();
+-        Py.exec(code, locals, locals);
++        Py.exec(code, getLocals(), getLocals());
+         Py.flushLine();
+     }
+ 
+@@ -187,7 +194,7 @@
+      */
+     public void execfile(String filename) {
+         setState();
+-        __builtin__.execfile_flags(filename, locals, locals, cflags);
++        __builtin__.execfile_flags(filename, getLocals(), getLocals(), cflags);
+         Py.flushLine();
+     }
+ 
+@@ -197,7 +204,7 @@
+ 
+     public void execfile(java.io.InputStream s, String name) {
+         setState();
+-        Py.runCode(Py.compile_flags(s, name, CompileMode.exec, cflags), locals, locals);
++        Py.runCode(Py.compile_flags(s, name, CompileMode.exec, cflags), getLocals(), getLocals());
+         Py.flushLine();
+     }
+ 
+@@ -225,11 +232,16 @@
+ 
+ 
+     public PyObject getLocals() {
+-        return locals;
++		return threadLocals ? Py.getThreadState().threadLocals : locals;
+     }
+ 
+     public void setLocals(PyObject d) {
+-        locals = d;
++    	if(threadLocals) {
++    		Py.getThreadState().threadLocals = d;
++    	}
++    	else {
++    		locals = d;
++    	}
+     }
+ 
+     /**
+@@ -242,7 +254,7 @@
+      *            appropriate Python object.
+      */
+     public void set(String name, Object value) {
+-        locals.__setitem__(name.intern(), Py.java2py(value));
++    	getLocals().__setitem__(name.intern(), Py.java2py(value));
+     }
+ 
+     /**
+@@ -254,7 +266,7 @@
+      *            the value to set the variable to
+      */
+     public void set(String name, PyObject value) {
+-        locals.__setitem__(name.intern(), value);
++    	getLocals().__setitem__(name.intern(), value);
+     }
+ 
+     /**
+@@ -265,7 +277,7 @@
+      * @return the value of the variable, or null if that name isn't assigned
+      */
+     public PyObject get(String name) {
+-        return locals.__finditem__(name.intern());
++        return getLocals().__finditem__(name.intern());
+     }
+ 
+     /**
+@@ -280,7 +292,7 @@
+      * @return the value of the variable as the given class, or null if that name isn't assigned
+      */
+     public <T> T get(String name, Class<T> javaclass) {
+-        PyObject val = locals.__finditem__(name.intern());
++        PyObject val = getLocals().__finditem__(name.intern());
+         if (val == null) {
+             return null;
+         }
+Index: src/org/python/core/ThreadState.java
+===================================================================
+--- src/org/python/core/ThreadState.java	(revision 6958)
++++ src/org/python/core/ThreadState.java	(working copy)
+@@ -24,6 +24,8 @@
+     public TraceFunction tracefunc;
+ 
+     public TraceFunction profilefunc;
++    
++    public PyObject threadLocals;
+ 
+     private LinkedList<PyObject> initializingProxies;
+ 
+Index: src/org/python/jsr223/PyScriptEngineScope.java
+===================================================================
+--- src/org/python/jsr223/PyScriptEngineScope.java	(revision 6958)
++++ src/org/python/jsr223/PyScriptEngineScope.java	(working copy)
+@@ -38,15 +38,13 @@
+     @ExposedMethod
+     public PyObject scope_keys() {
+         PyList members = new PyList();
+-        synchronized (context) {
+-            List<Integer> scopes = context.getScopes();
+-            for (int scope : scopes) {
+-                Bindings bindings = context.getBindings(scope);
+-                if (bindings == null)
+-                    continue;
+-                for (String key : bindings.keySet())
+-                    members.append(new PyString(key));
+-            }
++        List<Integer> scopes = context.getScopes();
++        for (int scope : scopes) {
++            Bindings bindings = context.getBindings(scope);
++            if (bindings == null)
++                continue;
++            for (String key : bindings.keySet())
++                members.append(new PyString(key));
+         }
+         members.sort();
+         return members;
+@@ -63,12 +61,10 @@
+     }
+ 
+     public PyObject __finditem__(String key) {
+-        synchronized (context) {
+-            int scope = context.getAttributesScope(key);
+-            if (scope == -1)
+-                return null;
+-            return Py.java2py(context.getAttribute(key, scope));
+-        }
++        int scope = context.getAttributesScope(key);
++        if (scope == -1)
++            return null;
++        return Py.java2py(context.getAttribute(key, scope));
+     }
+ 
+     @ExposedMethod
+@@ -77,12 +73,10 @@
+     }
+ 
+     public void __setitem__(String key, PyObject value) {
+-        synchronized (context) {
+-            int scope = context.getAttributesScope(key);
+-            if (scope == -1)
+-                scope = ScriptContext.ENGINE_SCOPE;
+-            context.setAttribute(key, value.__tojava__(Object.class), scope);
+-        }
++        int scope = context.getAttributesScope(key);
++        if (scope == -1)
++            scope = ScriptContext.ENGINE_SCOPE;
++        context.setAttribute(key, value.__tojava__(Object.class), scope);
+     }
+ 
+     @ExposedMethod
+@@ -91,11 +85,9 @@
+     }
+ 
+     public void __delitem__(String key) {
+-        synchronized (context) {
+-            int scope = context.getAttributesScope(key);
+-            if (scope == -1)
+-                throw Py.KeyError(key);
+-            context.removeAttribute(key, scope);
+-        }
++        int scope = context.getAttributesScope(key);
++        if (scope == -1)
++            throw Py.KeyError(key);
++        context.removeAttribute(key, scope);
+     }
+ }
+Index: src/org/python/jsr223/PyScriptEngine.java
+===================================================================
+--- src/org/python/jsr223/PyScriptEngine.java	(revision 6958)
++++ src/org/python/jsr223/PyScriptEngine.java	(working copy)
+@@ -2,9 +2,12 @@
+ 
+ import java.lang.reflect.Method;
+ import org.python.core.*;
++
+ import java.io.Reader;
+ import java.lang.reflect.InvocationHandler;
+ import java.lang.reflect.Proxy;
++import java.util.List;
++
+ import javax.script.AbstractScriptEngine;
+ import javax.script.Bindings;
+ import javax.script.Compilable;
+@@ -21,20 +24,21 @@
+ 
+     private final PythonInterpreter interp;
+     private final ScriptEngineFactory factory;
+-    private final PyModule module;
+ 
+     PyScriptEngine(ScriptEngineFactory factory) {
+         this.factory = factory;
+-        interp = new PythonInterpreter(new PyScriptEngineScope(this, context));
+-        module = (PyModule)Py.getSystemState().modules.__finditem__("__main__");
++        interp = new PythonInterpreter();
++        interp.setThreadLocals(true);
+     }
+-
++    
+     public Object eval(String script, ScriptContext context) throws ScriptException {
+         return eval(compileScript(script, context), context);
+     }
+ 
+     private Object eval(PyCode code, ScriptContext context) throws ScriptException {
+         try {
++            // These affect states that are all thread-bound:
++            interp.setLocals(new PyScriptEngineScope(this, context));
+             interp.setIn(context.getReader());
+             interp.setOut(context.getWriter());
+             interp.setErr(context.getErrorWriter());
+@@ -67,6 +71,7 @@
+     private PyCode compileScript(String script, ScriptContext context) throws ScriptException {
+         try {
+             String filename = (String) context.getAttribute(ScriptEngine.FILENAME);
++            interp.setLocals(new PyScriptEngineScope(this, context));
+             if (filename == null) {
+                 return interp.compile(script);
+             } else {
+@@ -80,6 +85,7 @@
+     private PyCode compileScript(Reader reader, ScriptContext context) throws ScriptException {
+         try {
+             String filename = (String) context.getAttribute(ScriptEngine.FILENAME);
++            interp.setLocals(new PyScriptEngineScope(this, context));
+             if (filename == null) {
+                 return interp.compile(reader);
+             } else {
+@@ -93,6 +99,7 @@
+     public Object invokeMethod(Object thiz, String name, Object... args) throws ScriptException,
+             NoSuchMethodException {
+         try {
++            interp.setLocals(new PyScriptEngineScope(this, context));
+             if (!(thiz instanceof PyObject)) {
+                 thiz = Py.java2py(thiz);
+             }
+@@ -109,6 +116,7 @@
+     public Object invokeFunction(String name, Object... args) throws ScriptException,
+             NoSuchMethodException {
+         try {
++            interp.setLocals(new PyScriptEngineScope(this, context));
+             PyObject function = interp.get(name);
+             if (function == null) {
+                 throw new NoSuchMethodException(name);
+@@ -120,6 +128,7 @@
+     }
+ 
+     public <T> T getInterface(Class<T> clazz) {
++        PyModule module = (PyModule)Py.getSystemState().modules.__finditem__("__main__");
+         return getInterface(module, clazz);
+     }
+ 
+@@ -138,6 +147,7 @@
+             new InvocationHandler() {
+                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                     try {
++                        interp.setLocals(new PyScriptEngineScope(PyScriptEngine.this, context));
+                         PyObject pyMethod = thiz.__findattr__(method.getName());
+                         if (pyMethod == null)
+                             throw new NoSuchMethodException(method.getName());
