@@ -15,17 +15,15 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
 
-import javax.script.ScriptException;
-
 import org.restlet.data.Language;
-
-import com.threecrickets.prudence.GeneratedTextResource;
-
 import org.restlet.representation.WriterRepresentation;
 
+import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentContext;
 import com.threecrickets.scripturian.ScriptletController;
+import com.threecrickets.scripturian.exception.DocumentInitializationException;
+import com.threecrickets.scripturian.exception.DocumentRunException;
 
 /**
  * Representation used in streaming mode of {@link GeneratedTextResource}.
@@ -93,9 +91,15 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		{
 			document.run( false, writer, resource.getErrorWriter(), flushLines, documentContext, container, scriptletController );
 		}
-		catch( ScriptException x )
+		catch( DocumentInitializationException x )
 		{
-			IOException iox = new IOException( "Script exception" );
+			IOException iox = new IOException( "DocumentParseException" );
+			iox.initCause( x );
+			throw iox;
+		}
+		catch( DocumentRunException x )
+		{
+			IOException iox = new IOException( "DocumentRunException" );
 			iox.initCause( x );
 			throw iox;
 		}

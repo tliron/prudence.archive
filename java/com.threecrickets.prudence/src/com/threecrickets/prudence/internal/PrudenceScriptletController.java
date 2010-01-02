@@ -12,9 +12,9 @@
 package com.threecrickets.prudence.internal;
 
 import javax.script.ScriptContext;
-import javax.script.ScriptException;
 
 import com.threecrickets.scripturian.ScriptletController;
+import com.threecrickets.scripturian.exception.DocumentRunException;
 
 public class PrudenceScriptletController<C> implements ScriptletController
 {
@@ -33,7 +33,7 @@ public class PrudenceScriptletController<C> implements ScriptletController
 	// ScriptletController
 	//
 
-	public void initialize( ScriptContext scriptContext ) throws ScriptException
+	public void initialize( ScriptContext scriptContext ) throws DocumentRunException
 	{
 		scriptContext.setAttribute( name, container, ScriptContext.ENGINE_SCOPE );
 		if( scriptletController != null )

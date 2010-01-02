@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import javax.script.ScriptException;
-
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
@@ -33,6 +31,8 @@ import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentContext;
 import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.ScriptletController;
+import com.threecrickets.scripturian.exception.DocumentInitializationException;
+import com.threecrickets.scripturian.exception.DocumentRunException;
 import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
@@ -575,9 +575,10 @@ public class ExposedContainerForDelegatedResource
 	 * @param name
 	 *        The script name
 	 * @throws IOException
-	 * @throws ScriptException
+	 * @throws DocumentInitializationException
+	 * @throws DocumentRunException
 	 */
-	public void includeDocument( String name ) throws IOException, ScriptException
+	public void includeDocument( String name ) throws IOException, DocumentInitializationException, DocumentRunException
 	{
 		DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
@@ -585,7 +586,7 @@ public class ExposedContainerForDelegatedResource
 		if( document == null )
 		{
 			String text = documentDescriptor.getText();
-			document = new Document( text, false, this.resource.getEngineManager(), resource.getDefaultEngineName(), resource.getDocumentSource(), resource.isAllowCompilation() );
+			document = new Document( name, text, false, this.resource.getEngineManager(), resource.getDefaultEngineName(), resource.getDocumentSource(), resource.isAllowCompilation() );
 
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
@@ -605,9 +606,10 @@ public class ExposedContainerForDelegatedResource
 	 * @param name
 	 *        The script name
 	 * @throws IOException
-	 * @throws ScriptException
+	 * @throws DocumentInitializationException
+	 * @throws DocumentRunException
 	 */
-	public void include( String name ) throws IOException, ScriptException
+	public void include( String name ) throws IOException, DocumentInitializationException, DocumentRunException
 	{
 		DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
@@ -616,7 +618,7 @@ public class ExposedContainerForDelegatedResource
 		{
 			String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), resource.getEngineManager() );
 			String text = documentDescriptor.getText();
-			document = new Document( text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
+			document = new Document( name, text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
 
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
@@ -652,7 +654,7 @@ public class ExposedContainerForDelegatedResource
 			{
 				String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), resource.getEngineManager() );
 				String text = documentDescriptor.getText();
-				document = new Document( text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
+				document = new Document( name, text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
 				Document existing = documentDescriptor.setDocumentIfAbsent( document );
 
 				if( existing != null )
@@ -674,7 +676,11 @@ public class ExposedContainerForDelegatedResource
 		{
 			throw new ResourceException( x );
 		}
-		catch( ScriptException x )
+		catch( DocumentInitializationException x )
+		{
+			throw new ResourceException( x );
+		}
+		catch( DocumentRunException x )
 		{
 			throw new ResourceException( x );
 		}

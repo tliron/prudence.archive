@@ -19,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import org.restlet.Context;
 import org.restlet.Request;
@@ -42,6 +41,8 @@ import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.ScriptletController;
 import com.threecrickets.scripturian.DocumentSource.DocumentDescriptor;
+import com.threecrickets.scripturian.exception.DocumentInitializationException;
+import com.threecrickets.scripturian.exception.DocumentRunException;
 
 /**
  * A Restlet resource which runs a Scripturian {@link Document} for HTTP GET and
@@ -772,7 +773,11 @@ public class GeneratedTextResource extends ServerResource
 		{
 			throw new ResourceException( x );
 		}
-		catch( ScriptException x )
+		catch( DocumentInitializationException x )
+		{
+			throw new ResourceException( x );
+		}
+		catch( DocumentRunException x )
 		{
 			throw new ResourceException( x );
 		}

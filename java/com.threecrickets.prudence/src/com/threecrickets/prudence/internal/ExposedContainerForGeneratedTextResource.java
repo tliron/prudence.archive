@@ -17,8 +17,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.script.ScriptException;
-
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
@@ -29,6 +27,8 @@ import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentContext;
 import com.threecrickets.scripturian.DocumentSource;
+import com.threecrickets.scripturian.exception.DocumentInitializationException;
+import com.threecrickets.scripturian.exception.DocumentRunException;
 import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
@@ -366,9 +366,10 @@ public class ExposedContainerForGeneratedTextResource
 	 *        The script name
 	 * @return A representation of the script's output
 	 * @throws IOException
-	 * @throws ScriptException
+	 * @throws DocumentInitializationException
+	 * @throws DocumentRunException
 	 */
-	public Representation includeDocument( String name ) throws IOException, ScriptException
+	public Representation includeDocument( String name ) throws IOException, DocumentInitializationException, DocumentRunException
 	{
 		DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
@@ -376,7 +377,7 @@ public class ExposedContainerForGeneratedTextResource
 		if( document == null )
 		{
 			String text = documentDescriptor.getText();
-			document = new Document( text, false, resource.getEngineManager(), resource.getDefaultEngineName(), resource.getDocumentSource(), resource.isAllowCompilation() );
+			document = new Document( name, text, false, resource.getEngineManager(), resource.getDefaultEngineName(), resource.getDocumentSource(), resource.isAllowCompilation() );
 
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
@@ -401,9 +402,10 @@ public class ExposedContainerForGeneratedTextResource
 	 *        The script name
 	 * @return A representation of the script's output
 	 * @throws IOException
-	 * @throws ScriptException
+	 * @throws DocumentInitializationException
+	 * @throws DocumentRunException
 	 */
-	public Representation include( String name ) throws IOException, ScriptException
+	public Representation include( String name ) throws IOException, DocumentInitializationException, DocumentRunException
 	{
 		DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
@@ -412,7 +414,7 @@ public class ExposedContainerForGeneratedTextResource
 		{
 			String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), resource.getEngineManager() );
 			String text = documentDescriptor.getText();
-			document = new Document( text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
+			document = new Document( name, text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
 
 			Document existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
@@ -427,14 +429,14 @@ public class ExposedContainerForGeneratedTextResource
 	 * cause the document to run again, where this next run will be in streaming
 	 * mode. Whatever output the document created in the current run is
 	 * discarded, and all further exceptions are ignored. For this reason, it's
-	 * probably best to call <code>prudence.stream()</code> as early
-	 * as possible in the document, and then to quit the document as soon as
-	 * possible if it returns true. For example, your document can start by
-	 * testing whether it will have a lot of output, and if so, set output
-	 * characteristics, call <code>prudence.stream()</code>, and quit.
-	 * If you are already in streaming mode, calling this method has no effect
-	 * and returns false. Note that a good way to quit the script is to throw an
-	 * exception, because it will end the script and otherwise be ignored.
+	 * probably best to call <code>prudence.stream()</code> as early as possible
+	 * in the document, and then to quit the document as soon as possible if it
+	 * returns true. For example, your document can start by testing whether it
+	 * will have a lot of output, and if so, set output characteristics, call
+	 * <code>prudence.stream()</code>, and quit. If you are already in streaming
+	 * mode, calling this method has no effect and returns false. Note that a
+	 * good way to quit the script is to throw an exception, because it will end
+	 * the script and otherwise be ignored.
 	 * <p>
 	 * By default, writers will be automatically flushed after every line in
 	 * streaming mode. If you want to disable this behavior, use
@@ -542,9 +544,10 @@ public class ExposedContainerForGeneratedTextResource
 	 *        The document's name
 	 * @return A representation
 	 * @throws IOException
-	 * @throws ScriptException
+	 * @throws DocumentInitializationException
+	 * @throws DocumentRunException
 	 */
-	private Representation run( Document document, String name ) throws IOException, ScriptException
+	private Representation run( Document document, String name ) throws IOException, DocumentInitializationException, DocumentRunException
 	{
 		boolean isStreaming = isStreaming();
 		Writer writer = resource.getWriter();
@@ -581,7 +584,8 @@ public class ExposedContainerForGeneratedTextResource
 		try
 		{
 			// Do not allow caching in streaming mode
-			PrudenceScriptletController<ExposedContainerForGeneratedTextResource> scriptletController = new PrudenceScriptletController<ExposedContainerForGeneratedTextResource>( this, resource.getContainerName(), resource.getScriptletController() );
+			PrudenceScriptletController<ExposedContainerForGeneratedTextResource> scriptletController = new PrudenceScriptletController<ExposedContainerForGeneratedTextResource>( this, resource.getContainerName(),
+				resource.getScriptletController() );
 			if( document.run( !isStreaming, writer, resource.getErrorWriter(), false, documentContext, this, scriptletController ) )
 			{
 
@@ -632,7 +636,7 @@ public class ExposedContainerForGeneratedTextResource
 					return null;
 			}
 		}
-		catch( ScriptException x )
+		catch( DocumentRunException x )
 		{
 			// Did the script ask us to start streaming?
 			if( startStreaming )
