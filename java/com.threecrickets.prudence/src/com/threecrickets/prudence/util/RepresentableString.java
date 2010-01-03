@@ -9,7 +9,7 @@
  * at http://www.threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.util;
 
 import java.util.Date;
 

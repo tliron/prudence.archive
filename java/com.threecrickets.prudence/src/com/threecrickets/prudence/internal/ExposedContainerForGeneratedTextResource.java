@@ -24,6 +24,7 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 
 import com.threecrickets.prudence.GeneratedTextResource;
+import com.threecrickets.prudence.util.RepresentableString;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentContext;
 import com.threecrickets.scripturian.DocumentSource;

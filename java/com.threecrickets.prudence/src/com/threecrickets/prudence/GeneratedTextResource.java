@@ -34,8 +34,8 @@ import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
 import com.threecrickets.prudence.internal.PrudenceUtils;
-import com.threecrickets.prudence.internal.RepresentableString;
 import com.threecrickets.prudence.util.PygmentsSourceRepresenter;
+import com.threecrickets.prudence.util.RepresentableString;
 import com.threecrickets.prudence.util.SourceRepresenter;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentSource;
