@@ -14,7 +14,7 @@ pygments			1.1.1
 quercus				4.0.1
 restlet				2.0 (Revision 5850)
 rhino				1.7R2
-scripturian			1.0 (Revision 97)
+scripturian			1.0 (Revision 98)
 slf4j				1.5.8
 succinct			1.0 alpha 1
 sqlalchemy			0.6 (Revision 6575)
