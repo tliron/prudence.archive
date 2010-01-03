@@ -504,11 +504,14 @@ public class DelegatedStatusService extends StatusService
 			html.append( stackTraceElement.getClassName() );
 			html.append( '.' );
 			html.append( stackTraceElement.getMethodName() );
-			html.append( " (" );
-			html.append( stackTraceElement.getFileName() );
-			html.append( ':' );
-			html.append( stackTraceElement.getLineNumber() );
-			html.append( ')' );
+			if( stackTraceElement.getFileName() != null )
+			{
+				html.append( " (" );
+				html.append( stackTraceElement.getFileName() );
+				html.append( ':' );
+				html.append( stackTraceElement.getLineNumber() );
+				html.append( ')' );
+			}
 			html.append( "<br />" );
 		}
 		html.append( "</div>" );
