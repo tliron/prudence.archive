@@ -53,7 +53,6 @@ public class DelegatedStatusService extends StatusService
 	public DelegatedStatusService()
 	{
 		super();
-		setOverwriting( true );
 	}
 
 	/**
@@ -65,7 +64,6 @@ public class DelegatedStatusService extends StatusService
 	public DelegatedStatusService( boolean enabled )
 	{
 		super( enabled );
-		setOverwriting( true );
 	}
 
 	//
@@ -523,5 +521,5 @@ public class DelegatedStatusService extends StatusService
 	/**
 	 * Whether we are debugging.
 	 */
-	private volatile boolean isDebugging = true;
+	private volatile boolean isDebugging;
 }

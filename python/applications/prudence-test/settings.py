@@ -12,3 +12,5 @@ application_home_url = 'http://www.threecrickets.com/prudence/'
 application_contact_email = 'prudence@threecrickets.com'
 
 hosts = {component.defaultHost: None, mysite_host: None}
+
+show_debug_on_error = True

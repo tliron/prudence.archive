@@ -12,3 +12,5 @@ applicationHomeURL = 'http://www.threecrickets.com/prudence/';
 applicationContactEmail = 'prudence@threecrickets.com';
 
 hosts = [[component.defaultHost, null], [mysiteHost, null]];
+
+showDebugOnError = true;

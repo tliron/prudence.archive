@@ -31,7 +31,7 @@ application.owner = applicationOwner;
 //
 
 application.statusService = new DelegatedStatusService();
-
+application.statusService.debugging = showDebugOnError;
 application.statusService.homeRef = new Reference(applicationHomeURL);
 application.statusService.contactEmail = applicationContactEmail;
 

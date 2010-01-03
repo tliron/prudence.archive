@@ -16,6 +16,14 @@ application_home_url = 'http://www.threecrickets.com/prudence/'
 application_contact_email = 'prudence@threecrickets.com'
 
 #
+# Debugging
+#
+
+# Set to true to show debug information on error.
+
+show_debug_on_error = False
+
+#
 # Logging
 #
 # Logger defaults to the application's directory name. Configure logging at

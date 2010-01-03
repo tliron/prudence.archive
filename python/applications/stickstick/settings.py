@@ -15,3 +15,5 @@ runtime_attributes.update({
     'stickstick.host': 'localhost',
     'stickstick.database': 'stickstick'
     })
+
+show_debug_on_error = True

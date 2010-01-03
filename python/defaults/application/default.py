@@ -30,7 +30,7 @@ application.owner = application_owner
 #
 
 application.statusService = DelegatedStatusService()
-
+application.statusService.debugging = show_debug_on_error
 application.statusService.homeRef = Reference(application_home_url)
 application.statusService.contactEmail = application_contact_email
 

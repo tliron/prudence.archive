@@ -13,3 +13,5 @@ runtimeAttributes['stickstick.username'] = 'root';
 runtimeAttributes['stickstick.password'] = 'root';
 runtimeAttributes['stickstick.host'] = 'localhost';
 runtimeAttributes['stickstick.database'] = 'stickstick';
+
+showDebugOnError = true;

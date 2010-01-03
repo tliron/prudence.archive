@@ -16,6 +16,14 @@ var applicationHomeURL = 'http://www.threecrickets.com/prudence/';
 var applicationContactEmail = 'prudence@threecrickets.com';
 
 //
+// Debugging
+//
+
+// Set to true to show debug information on error.
+
+var showDebugOnError = false;
+
+//
 // Logging
 //
 // Logger defaults to the application's directory name. Configure logging at
