@@ -53,6 +53,7 @@ public class DelegatedStatusService extends StatusService
 	public DelegatedStatusService()
 	{
 		super();
+		setOverwriting( true );
 	}
 
 	/**
@@ -64,6 +65,7 @@ public class DelegatedStatusService extends StatusService
 	public DelegatedStatusService( boolean enabled )
 	{
 		super( enabled );
+		setOverwriting( true );
 	}
 
 	//
@@ -158,6 +160,9 @@ public class DelegatedStatusService extends StatusService
 	{
 		if( isEnabled() )
 		{
+			if( response.getAttributes().containsKey( "com.threecrickets.prudence.util.DelegatedStatusService.passThrough" ) )
+				return response.getEntity();
+
 			Restlet errorHandler = errorHandlers.get( status.getCode() );
 
 			if( errorHandler != null )
@@ -179,11 +184,15 @@ public class DelegatedStatusService extends StatusService
 				representation.setModificationDate( null );
 				representation.setTag( null );
 
+				response.getAttributes().put( "com.threecrickets.prudence.util.DelegatedStatusService.passThrough", true );
 				return representation;
 			}
 
 			if( isDebugging() && ( status.getThrowable() != null ) )
+			{
+				response.getAttributes().put( "com.threecrickets.prudence.util.DelegatedStatusService.passThrough", true );
 				return getDebugRepresentation( status, request, response );
+			}
 		}
 
 		return super.getRepresentation( status, request, response );
