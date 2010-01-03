@@ -1,3 +1,6 @@
+//
+// Stickstick Routing
+//
 
 document.container.include('defaults/application/routing');
 

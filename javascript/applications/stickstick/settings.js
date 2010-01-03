@@ -1,3 +1,6 @@
+//
+// Stickstick Settings
+//
 
 document.container.include('defaults/application/settings');
 
