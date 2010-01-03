@@ -15,6 +15,7 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ResourceException;
 
+import com.threecrickets.prudence.internal.ExposedContainerForPygmentsSourceRepresenter;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentSource.DocumentDescriptor;
 
@@ -58,7 +59,7 @@ public class PygmentsSourceRepresenter implements SourceRepresenter
 		if( language == null )
 			return new StringRepresentation( documentDescriptor.getText() );
 
-		Container container = new Container( language, name, "vs", documentDescriptor.getText() );
+		ExposedContainerForPygmentsSourceRepresenter container = new ExposedContainerForPygmentsSourceRepresenter( language, name, "vs", documentDescriptor.getText() );
 		ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 		ScriptEngine scriptEngine = scriptEngineManager.getEngineByName( "python" );
 		ScriptContext scriptContext = scriptEngine.getContext();
@@ -107,50 +108,6 @@ public class PygmentsSourceRepresenter implements SourceRepresenter
 		Representation representation = new StringRepresentation( container.getText() );
 		representation.setMediaType( MediaType.TEXT_HTML );
 		return representation;
-	}
-
-	public static class Container
-	{
-		public Container( String language, String title, String style, String text )
-		{
-			this.language = language;
-			this.title = title;
-			this.style = style;
-			this.text = text;
-		}
-
-		public String getLanguage()
-		{
-			return language;
-		}
-
-		public String getTitle()
-		{
-			return title;
-		}
-
-		public String getStyle()
-		{
-			return style;
-		}
-
-		public String getText()
-		{
-			return text;
-		}
-
-		public void setText( String text )
-		{
-			this.text = text;
-		}
-
-		private final String language;
-
-		private final String title;
-
-		private final String style;
-
-		private String text;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

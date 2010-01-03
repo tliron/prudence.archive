@@ -101,9 +101,9 @@ import com.threecrickets.scripturian.DocumentSource.DocumentDescriptor;
  * fail. As such, it doesn't make sense to return a representation, and any
  * returned value will ignored. Still, it's a good idea to return null to avoid
  * any passing of value.</li>
- * </ul>
  * <li><code>handleOptions()</code>: This function is called for the OPTIONS
  * verb. It is not widely used in HTTP.</li>
+ * </ul>
  * <p>
  * Names of these entry point can be configured via attributes in the
  * application's {@link Context}. See {@link #getEntryPointNameForInit()},
@@ -141,9 +141,9 @@ import com.threecrickets.scripturian.DocumentSource.DocumentDescriptor;
  * would have to be done explicitly in the global scope. See the included JRuby
  * examples for a discussion of various ways to do this.
  * </li>
- * <li><code>prudence.include(name)</code>:except that the document is parsed as
- * a single, non-delimited script with the engine name derived from name's
- * extension.</li>
+ * <li><code>prudence.include(name)</code>: as above, except that the document
+ * is parsed as a single, non-delimited script with the engine name derived from
+ * name's extension.</li>
  * </ul>
  * Read-only attributes:
  * <ul>
