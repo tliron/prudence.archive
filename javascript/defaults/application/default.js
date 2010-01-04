@@ -3,7 +3,6 @@
 //
 
 importClass(
-	javax.script.ScriptEngineManager,
 	org.restlet.data.Reference,
 	org.restlet.data.MediaType,
 	com.threecrickets.scripturian.file.DocumentFileSource,
@@ -25,6 +24,8 @@ application.name = applicationName;
 application.description = applicationDescription;
 application.author = applicationAuthor;
 application.owner = applicationOwner;
+
+var attributes = application.context.attributes;
 
 //
 // StatusService
@@ -54,32 +55,8 @@ includeOrDefault(applicationBasePath + '/routing', 'defaults/application/routing
 application.context.setLogger(applicationLoggerName);
 
 //
-// Configuration
+// Additional/Override Runtime Attributes
 //
-
-var attributes = application.context.attributes;
-
-var scriptEngineManager = new ScriptEngineManager();
-
-// DelegatedResource
-
-attributes.put('com.threecrickets.prudence.DelegatedResource.engineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultEngineName', 'rhino-nonjdk');
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourceDefaultName);
-attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource',
-	new DocumentFileSource(applicationBasePath + resourceBasePath, resourceDefaultName, resourceMinimumTimeBetweenValidityChecks));
-attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourceSourceViewable);
-
-// GeneratedTextResource
-
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.engineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultEngineName', 'rhino-nonjdk');
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',
-	 new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks));
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
-
-// Additional runtime attributes
 
 for(var key in runtimeAttributes) {
 	attributes.put(key, runtimeAttributes[key]);

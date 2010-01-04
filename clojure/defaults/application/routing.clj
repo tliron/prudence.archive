@@ -5,6 +5,7 @@
 (import
 	'java.lang.ClassLoader
 	'java.io.File
+	'javax.script.ScriptEngineManager
 	'org.restlet.routing.Router
 	'org.restlet.routing.Redirector
 	'org.restlet.routing.Template
@@ -96,6 +97,15 @@
 (.setListingAllowed static-web static-web-directory-listing-allowed)
 (.setNegotiateContent static-web true)
 
+(def script-engine-manager (ScriptEngineManager.))
+
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.engineManager" script-engine-manager)
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultEngineName" "Clojure")
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.documentSource"
+	 (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document (.longValue dynamic-web-minimum-time-between-validity-checks)))
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" dynamic-web-source-viewable)
+
 (.setMatchingMode (.attach router (fix-url static-web-base-url) static-web) Template/MODE_STARTS_WITH)
 
 ;
@@ -103,4 +113,12 @@
 ;
 
 (def resources (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
+
+(.put attributes "com.threecrickets.prudence.DelegatedResource.engineManager" script-engine-manager)
+(.put attributes "com.threecrickets.prudence.DelegatedResource.defaultEngineName" "Clojure")
+(.put attributes "com.threecrickets.prudence.DelegatedResource.defaultName" resource-default-name)
+(.put attributes "com.threecrickets.prudence.DelegatedResource.documentSource"
+	(DocumentFileSource. (str application-base-path resource-base-path) resource-default-name (.longValue resource-minimum-time-between-validity-checks)))
+(.put attributes "com.threecrickets.prudence.DelegatedResource.sourceViewable" resource-source-viewable)
+
 (.setMatchingMode (.attach router (fix-url resource-base-url) resources) Template/MODE_STARTS_WITH)

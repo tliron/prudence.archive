@@ -4,6 +4,8 @@
 
 from java.lang import ClassLoader
 from java.io import File
+from javax.script import ScriptEngineManager
+
 from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Finder, Directory
 from com.threecrickets.prudence.util import FallbackRouter
@@ -72,6 +74,16 @@ if len(url_add_trailing_slash) > 0:
 #
 
 dynamic_web = Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
+
+script_engine_manager = ScriptEngineManager()
+
+attributes['com.threecrickets.prudence.GeneratedTextResource.engineManager'] = script_engine_manager
+attributes['com.threecrickets.prudence.GeneratedTextResource.defaultEngineName'] = 'python'
+attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamic_web_default_document
+attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = \
+	 DocumentFileSource(application_base_path + dynamic_web_base_path, dynamic_web_default_document, dynamic_web_minimum_time_between_validity_checks)
+attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
+
 router.attach(fix_url(dynamic_web_base_url), dynamic_web).matchingMode = Template.MODE_STARTS_WITH
 
 #
@@ -89,4 +101,12 @@ router.attach(fix_url(static_web_base_url), static_web).matchingMode = Template.
 #
 
 resources = Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
+
+attributes['com.threecrickets.prudence.DelegatedResource.engineManager'] = script_engine_manager
+attributes['com.threecrickets.prudence.DelegatedResource.defaultEngineName'] = 'python'
+attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resource_default_name
+attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = \
+	DocumentFileSource(application_base_path + resource_base_path, resource_default_name, resource_minimum_time_between_validity_checks)
+attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resource_source_viewable
+
 router.attach(fix_url(resource_base_url), resources).matchingMode = Template.MODE_STARTS_WITH

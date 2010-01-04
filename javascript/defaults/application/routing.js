@@ -5,6 +5,7 @@
 importClass(
 	java.lang.ClassLoader,
 	java.io.File,
+	javax.script.ScriptEngineManager,
 	org.restlet.routing.Router,
 	org.restlet.routing.Redirector,
 	org.restlet.routing.Template,
@@ -101,6 +102,15 @@ var staticWeb = new Directory(router.context, File(applicationBasePath + staticW
 staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
 staticWeb.negotiatingContent = true;
 
+var scriptEngineManager = new ScriptEngineManager();
+
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.engineManager', scriptEngineManager);
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultEngineName', 'rhino-nonjdk');
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',
+	 new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks));
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
+
 router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_STARTS_WITH;
 
 //
@@ -108,4 +118,12 @@ router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_
 //
 
 resources = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
+
+attributes.put('com.threecrickets.prudence.DelegatedResource.engineManager', scriptEngineManager);
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultEngineName', 'rhino-nonjdk');
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourceDefaultName);
+attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource',
+	new DocumentFileSource(applicationBasePath + resourceBasePath, resourceDefaultName, resourceMinimumTimeBetweenValidityChecks));
+attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourceSourceViewable);
+
 router.attach(fixURL(resourceBaseURL), resources).matchingMode = Template.MODE_STARTS_WITH;
