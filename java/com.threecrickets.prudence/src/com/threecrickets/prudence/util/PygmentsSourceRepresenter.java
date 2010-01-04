@@ -31,7 +31,7 @@ public class PygmentsSourceRepresenter implements SourceRepresenter
 	// SourceFormatter
 	//
 
-	public Representation representSource( String name, DocumentDescriptor<Document> documentDescriptor, Request request ) throws ResourceException
+	public Representation representSource( String name, int lineNumber, DocumentDescriptor<Document> documentDescriptor, Request request ) throws ResourceException
 	{
 		String tag = documentDescriptor.getTag();
 		String language = null;
@@ -59,7 +59,7 @@ public class PygmentsSourceRepresenter implements SourceRepresenter
 		if( language == null )
 			return new StringRepresentation( documentDescriptor.getText() );
 
-		ExposedContainerForPygmentsSourceRepresenter container = new ExposedContainerForPygmentsSourceRepresenter( language, name, "vs", documentDescriptor.getText() );
+		ExposedContainerForPygmentsSourceRepresenter container = new ExposedContainerForPygmentsSourceRepresenter( documentDescriptor.getText(), lineNumber, language, name, "vs", "#dddddd", "#dddd00" );
 		ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 		ScriptEngine scriptEngine = scriptEngineManager.getEngineByName( "python" );
 		ScriptContext scriptContext = scriptEngine.getContext();
@@ -116,6 +116,6 @@ public class PygmentsSourceRepresenter implements SourceRepresenter
 	private CompiledScript compiledScript;
 
 	private final String program = "from pygments import highlight\n" + "from pygments.lexers import get_lexer_by_name\n" + "from pygments.formatters import HtmlFormatter\n"
-		+ "lexer = get_lexer_by_name(container.language, stripall=True)\n" + "formatter = HtmlFormatter(full=True, linenos=True, title=container.title, style=container.style)\n"
-		+ "container.text = highlight(container.text, lexer, formatter)\n";
+		+ "lexer = get_lexer_by_name(container.language, stripall=True)\n" + "formatter = HtmlFormatter(full=True, linenos='table', hl_lines=(container.lineNumber,), title=container.title, style=container.style)\n"
+		+ "formatter.style.background_color = container.background\n" + "formatter.style.highlight_color = container.highlight\n" + "container.text = highlight(container.text, lexer, formatter)\n";
 }

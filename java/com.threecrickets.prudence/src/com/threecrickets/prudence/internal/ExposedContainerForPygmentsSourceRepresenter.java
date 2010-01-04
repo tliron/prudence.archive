@@ -23,17 +23,35 @@ public class ExposedContainerForPygmentsSourceRepresenter
 	// Construction
 	//
 
-	public ExposedContainerForPygmentsSourceRepresenter( String language, String title, String style, String text )
+	public ExposedContainerForPygmentsSourceRepresenter( String text, int lineNumber, String language, String title, String style, String background, String highlight )
 	{
+		this.text = text;
+		this.lineNumber = lineNumber;
 		this.language = language;
 		this.title = title;
 		this.style = style;
-		this.text = text;
+		this.background = background;
+		this.highlight = highlight;
 	}
 
 	//
 	// Attributes
 	//
+
+	public String getText()
+	{
+		return text;
+	}
+
+	public void setText( String text )
+	{
+		this.text = text;
+	}
+
+	public int getLineNumber()
+	{
+		return lineNumber;
+	}
 
 	public String getLanguage()
 	{
@@ -50,18 +68,22 @@ public class ExposedContainerForPygmentsSourceRepresenter
 		return style;
 	}
 
-	public String getText()
+	public String getBackground()
 	{
-		return text;
+		return background;
 	}
 
-	public void setText( String text )
+	public String getHighlight()
 	{
-		this.text = text;
+		return highlight;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
+
+	private String text;
+
+	private final int lineNumber;
 
 	private final String language;
 
@@ -69,5 +91,7 @@ public class ExposedContainerForPygmentsSourceRepresenter
 
 	private final String style;
 
-	private String text;
+	private final String background;
+
+	private final String highlight;
 }

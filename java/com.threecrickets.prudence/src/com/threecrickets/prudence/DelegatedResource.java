@@ -23,6 +23,7 @@ import javax.script.ScriptEngineManager;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.data.CharacterSet;
+import org.restlet.data.Form;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -804,30 +805,43 @@ public class DelegatedResource extends ServerResource
 	{
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
 
-		Request request = getRequest();
-		if( isSourceViewable() && TRUE.equals( request.getResourceRef().getQueryAsForm().getFirstValue( SOURCE ) ) )
+		if( isSourceViewable() )
 		{
-			// Represent document source
-			String name = PrudenceUtils.getRemainingPart( request, getDefaultName() );
-			try
+			Request request = getRequest();
+			Form query = request.getResourceRef().getQueryAsForm();
+			if( TRUE.equals( query.getFirstValue( SOURCE ) ) )
 			{
-				DocumentDescriptor<Document> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
-				SourceRepresenter sourceRepresenter = getSourceRepresenter();
-				if( sourceRepresenter != null )
-					return sourceRepresenter.representSource( name, documentDescriptor, request );
-				else
-					return new StringRepresentation( documentDescriptor.getText() );
-			}
-			catch( IOException x )
-			{
-				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
+				String name = PrudenceUtils.getRemainingPart( request, getDefaultName() );
+				int lineNumber = -1;
+				String line = query.getFirstValue( LINE );
+				if( line != null )
+				{
+					try
+					{
+						lineNumber = Integer.parseInt( line );
+					}
+					catch( NumberFormatException x )
+					{
+					}
+				}
+				try
+				{
+					DocumentDescriptor<Document> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
+					SourceRepresenter sourceRepresenter = getSourceRepresenter();
+					if( sourceRepresenter != null )
+						return sourceRepresenter.representSource( name, lineNumber, documentDescriptor, request );
+					else
+						return new StringRepresentation( documentDescriptor.getText() );
+				}
+				catch( IOException x )
+				{
+					throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
+				}
 			}
 		}
-		else
-		{
-			Object r = container.invoke( getEntryPointNameForGet() );
-			return getRepresentation( container, r );
-		}
+
+		Object r = container.invoke( getEntryPointNameForGet() );
+		return getRepresentation( container, r );
 	}
 
 	/**
@@ -1095,6 +1109,11 @@ public class DelegatedResource extends ServerResource
 	 * Constant.
 	 */
 	private static final String SOURCE = "source";
+
+	/**
+	 * Constant.
+	 */
+	private static final String LINE = "line";
 
 	/**
 	 * Constant.

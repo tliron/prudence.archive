@@ -25,10 +25,11 @@ public interface SourceRepresenter
 {
 	/**
 	 * @param name
+	 * @param lineNumber
 	 * @param documentDescriptor
 	 * @param request
 	 * @return
 	 * @throws ResourceException
 	 */
-	public Representation representSource( String name, DocumentDescriptor<Document> documentDescriptor, Request request ) throws ResourceException;
+	public Representation representSource( String name, int lineNumber, DocumentDescriptor<Document> documentDescriptor, Request request ) throws ResourceException;
 }

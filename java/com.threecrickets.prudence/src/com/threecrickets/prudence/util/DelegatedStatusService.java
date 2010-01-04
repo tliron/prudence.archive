@@ -208,7 +208,7 @@ public class DelegatedStatusService extends StatusService
 
 		html.append( "<html>\n" );
 		html.append( "<head>\n" );
-		html.append( "   <title>Prudence - Debug</title>\n" );
+		html.append( "<title>Prudence - Debug</title>\n" );
 		html.append( "</head>\n" );
 		html.append( "<body style=\"font-family: sans-serif;\">\n" );
 
@@ -219,12 +219,19 @@ public class DelegatedStatusService extends StatusService
 		if( throwable instanceof DocumentRunException )
 		{
 			DocumentRunException documentRunException = (DocumentRunException) throwable;
+			int lineNumber = documentRunException.getLineNumber();
 			html.append( "<div id=\"error\">" );
 			html.append( "Document: " );
 			html.append( documentRunException.getDocumentName() );
 			html.append( " <a href=\"" );
 			html.append( request.getResourceRef() );
-			html.append( "?source=true\">" );
+			html.append( "?source=true" );
+			if( lineNumber >= 0 )
+			{
+				html.append( "&line=" );
+				html.append( lineNumber );
+			}
+			html.append( "\">" );
 			html.append( "(source)</a>" );
 			html.append( "<br />" );
 			if( documentRunException.getLineNumber() >= 0 )

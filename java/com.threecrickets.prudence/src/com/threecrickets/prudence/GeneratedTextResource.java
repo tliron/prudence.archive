@@ -23,6 +23,7 @@ import javax.script.ScriptEngineManager;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.data.CharacterSet;
+import org.restlet.data.Form;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
@@ -725,6 +726,11 @@ public class GeneratedTextResource extends ServerResource
 	/**
 	 * Constant.
 	 */
+	private static final String LINE = "line";
+
+	/**
+	 * Constant.
+	 */
 	private static final String TRUE = "true";
 
 	/**
@@ -744,26 +750,40 @@ public class GeneratedTextResource extends ServerResource
 
 		try
 		{
-			if( isSourceViewable() && TRUE.equals( request.getResourceRef().getQueryAsForm().getFirstValue( SOURCE ) ) )
+			if( isSourceViewable() )
 			{
-				DocumentDescriptor<Document> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
-				SourceRepresenter sourceRepresenter = getSourceRepresenter();
-				if( sourceRepresenter != null )
-					return sourceRepresenter.representSource( name, documentDescriptor, request );
-				else
-					return new StringRepresentation( documentDescriptor.getText() );
+				Form query = request.getResourceRef().getQueryAsForm();
+				if( TRUE.equals( query.getFirstValue( SOURCE ) ) )
+				{
+					int lineNumber = -1;
+					String line = query.getFirstValue( LINE );
+					if( line != null )
+					{
+						try
+						{
+							lineNumber = Integer.parseInt( line );
+						}
+						catch( NumberFormatException x )
+						{
+						}
+					}
+					DocumentDescriptor<Document> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
+					SourceRepresenter sourceRepresenter = getSourceRepresenter();
+					if( sourceRepresenter != null )
+						return sourceRepresenter.representSource( name, lineNumber, documentDescriptor, request );
+					else
+						return new StringRepresentation( documentDescriptor.getText() );
+				}
 			}
-			else
-			{
-				// Run document and represent its output
-				ExposedContainerForGeneratedTextResource container = new ExposedContainerForGeneratedTextResource( this, entity, variant, getCache() );
-				Representation representation = container.includeDocument( name );
 
-				if( representation == null )
-					throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-				else
-					return representation;
-			}
+			// Run document and represent its output
+			ExposedContainerForGeneratedTextResource container = new ExposedContainerForGeneratedTextResource( this, entity, variant, getCache() );
+			Representation representation = container.includeDocument( name );
+
+			if( representation == null )
+				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+			else
+				return representation;
 		}
 		catch( FileNotFoundException x )
 		{
