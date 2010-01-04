@@ -25,8 +25,6 @@
 (.setAuthor application application-author)
 (.setOwner application application-owner)
 
-(def attributes (.. application getContext (getAttributes)))
-
 ;
 ; StatusService
 ;

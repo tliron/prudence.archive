@@ -25,8 +25,6 @@ application.description = applicationDescription;
 application.author = applicationAuthor;
 application.owner = applicationOwner;
 
-var attributes = application.context.attributes;
-
 //
 // StatusService
 //

@@ -49,6 +49,8 @@ for i in range(len(hosts)):
 		sys.stdout.write(', ')
 print '.'
 
+attributes = application.context.attributes
+
 #
 # Inbound root
 #

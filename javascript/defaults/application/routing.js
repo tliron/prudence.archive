@@ -62,6 +62,8 @@ for(var i in hosts) {
 }
 print('.\n');
 
+var attributes = application.context.attributes;
+
 //
 // Inbound root
 //

@@ -23,8 +23,6 @@ application.description = application_description
 application.author = application_author
 application.owner = application_owner
 
-attributes = application.context.attributes
-
 #
 # StatusService
 #

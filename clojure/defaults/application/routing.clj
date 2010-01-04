@@ -62,6 +62,8 @@
 )
 (println ".")
 
+(def attributes (.. application getContext (getAttributes)))
+
 ;
 ; Inbound root
 ;
