@@ -27,6 +27,7 @@ import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.prudence.util.RepresentableString;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentContext;
+import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentInitializationException;
 import com.threecrickets.scripturian.exception.DocumentRunException;
@@ -372,7 +373,7 @@ public class ExposedContainerForGeneratedTextResource
 	 */
 	public Representation includeDocument( String name ) throws IOException, DocumentInitializationException, DocumentRunException
 	{
-		DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
 		Document document = documentDescriptor.getDocument();
 		if( document == null )
@@ -408,7 +409,7 @@ public class ExposedContainerForGeneratedTextResource
 	 */
 	public Representation include( String name ) throws IOException, DocumentInitializationException, DocumentRunException
 	{
-		DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
 		Document document = documentDescriptor.getDocument();
 		if( document == null )

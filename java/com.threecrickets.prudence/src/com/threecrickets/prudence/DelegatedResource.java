@@ -38,12 +38,12 @@ import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.internal.ExposedContainerForDelegatedResource;
 import com.threecrickets.prudence.internal.PrudenceUtils;
-import com.threecrickets.prudence.util.PygmentsSourceRepresenter;
-import com.threecrickets.prudence.util.SourceRepresenter;
 import com.threecrickets.scripturian.Document;
+import com.threecrickets.scripturian.DocumentDescriptor;
+import com.threecrickets.scripturian.DocumentFormatter;
 import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.ScriptletController;
-import com.threecrickets.scripturian.DocumentSource.DocumentDescriptor;
+import com.threecrickets.scripturian.formatter.PygmentsDocumentFormatter;
 
 /**
  * A Restlet resource which delegates functionality to a Scripturian
@@ -226,6 +226,9 @@ import com.threecrickets.scripturian.DocumentSource.DocumentDescriptor;
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.defaultEngineName:</code>
  * {@link String}, defaults to "js". See {@link #getDefaultEngineName()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.documentFormatter:</code>
+ * {@link DocumentFormatter}. See {@link #getDocumentFormatter()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.documentSource:</code>
  * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
@@ -727,36 +730,36 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * An optional {@link SourceRepresenter} to use for representing source
+	 * An optional {@link DocumentFormatter} to use for representing source
 	 * code.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.sourceRepresenter</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.documentFormatter</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The source representer or null
+	 * @return The document formatter or null
 	 * @see #isSourceViewable()
 	 */
-	public SourceRepresenter getSourceRepresenter()
+	@SuppressWarnings("unchecked")
+	public DocumentFormatter<Document> getDocumentFormatter()
 	{
-		if( sourceRepresenter == null )
+		if( documentFormatter == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			sourceRepresenter = (SourceRepresenter) attributes.get( "com.threecrickets.prudence.DelegatedResource.sourceRepresenter" );
+			documentFormatter = (DocumentFormatter<Document>) attributes.get( "com.threecrickets.prudence.DelegatedResource.documentFormatter" );
 
-			if( sourceRepresenter == null )
+			if( documentFormatter == null )
 			{
-				// sourceRepresenter = new SyntaxHighlighterSourceRepresenter(
-				// getContext() );
-				sourceRepresenter = new PygmentsSourceRepresenter();
+				// documentFormatter = new SyntaxHighlighterDocumentFormatter();
+				documentFormatter = new PygmentsDocumentFormatter<Document>();
 
-				SourceRepresenter existing = (SourceRepresenter) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.sourceRepresenter", sourceRepresenter );
+				DocumentFormatter<Document> existing = (DocumentFormatter<Document>) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.documentFormatter", documentFormatter );
 				if( existing != null )
-					sourceRepresenter = existing;
+					documentFormatter = existing;
 			}
 		}
 
-		return sourceRepresenter;
+		return documentFormatter;
 	}
 
 	//
@@ -827,9 +830,9 @@ public class DelegatedResource extends ServerResource
 				try
 				{
 					DocumentDescriptor<Document> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
-					SourceRepresenter sourceRepresenter = getSourceRepresenter();
-					if( sourceRepresenter != null )
-						return sourceRepresenter.representSource( name, lineNumber, documentDescriptor, request );
+					DocumentFormatter<Document> documentFormatter = getDocumentFormatter();
+					if( documentFormatter != null )
+						return new StringRepresentation( documentFormatter.format( documentDescriptor, name, lineNumber ), MediaType.TEXT_HTML );
 					else
 						return new StringRepresentation( documentDescriptor.getText() );
 				}
@@ -1101,9 +1104,9 @@ public class DelegatedResource extends ServerResource
 	private volatile String containerName;
 
 	/**
-	 * The source code formatter.
+	 * The document formatter.
 	 */
-	private volatile SourceRepresenter sourceRepresenter;
+	private volatile DocumentFormatter<Document> documentFormatter;
 
 	/**
 	 * Constant.

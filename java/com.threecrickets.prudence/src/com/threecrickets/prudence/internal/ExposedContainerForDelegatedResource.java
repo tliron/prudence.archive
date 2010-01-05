@@ -29,6 +29,7 @@ import org.restlet.resource.ResourceException;
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentContext;
+import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.ScriptletController;
 import com.threecrickets.scripturian.exception.DocumentInitializationException;
@@ -580,7 +581,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public void includeDocument( String name ) throws IOException, DocumentInitializationException, DocumentRunException
 	{
-		DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
 		Document document = documentDescriptor.getDocument();
 		if( document == null )
@@ -611,7 +612,7 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public void include( String name ) throws IOException, DocumentInitializationException, DocumentRunException
 	{
-		DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
 		Document document = documentDescriptor.getDocument();
 		if( document == null )
@@ -645,7 +646,7 @@ public class ExposedContainerForDelegatedResource
 
 		try
 		{
-			DocumentSource.DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
+			DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 			PrudenceScriptletController<ExposedContainerForDelegatedResource> scriptletController = new PrudenceScriptletController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
 				.getScriptletController() );
 
