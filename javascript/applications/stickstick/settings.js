@@ -18,3 +18,5 @@ runtimeAttributes['stickstick.host'] = 'localhost';
 runtimeAttributes['stickstick.database'] = 'stickstick';
 
 showDebugOnError = true;
+
+preheatResources = ['notes/'];

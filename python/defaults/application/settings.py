@@ -72,6 +72,10 @@ resource_source_viewable = True
 
 resource_minimum_time_between_validity_checks = 1000
 
+# List resources here that you wanted heated up as soon as Prudence starts.
+
+preheat_resources = []
+
 #
 # Dynamic Web
 #

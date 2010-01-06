@@ -13,6 +13,7 @@
 	'org.restlet.resource.Directory
 	'com.threecrickets.scripturian.file.DocumentFileSource
 	'com.threecrickets.prudence.util.FallbackRouter
+	'com.threecrickets.prudence.util.PreheatTask
 )
 
 (def classLoader (ClassLoader/getSystemClassLoader))
@@ -130,3 +131,9 @@
 (.put attributes "com.threecrickets.prudence.DelegatedResource.sourceViewable" resource-source-viewable)
 
 (.setMatchingMode (.attach router (fix-url resource-base-url) resources) Template/MODE_STARTS_WITH)
+
+; Preheat resources
+
+(doseq [preheat-resource preheat-resources]
+	(def tasks (conj tasks (PreheatTask. (.getContext component) application-internal-name, preheat-resource)))
+)

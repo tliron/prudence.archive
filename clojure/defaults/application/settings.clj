@@ -72,6 +72,10 @@
 
 (def resource-minimum-time-between-validity-checks 1000)
 
+; List resources here that you wanted heated up as soon as Prudence starts.
+
+(def preheat-resources [])
+
 ;
 ; Dynamic Web
 ;

@@ -13,7 +13,8 @@ importClass(
 	org.restlet.resource.Directory,
 	com.threecrickets.scripturian.Defroster,
 	com.threecrickets.scripturian.file.DocumentFileSource,
-	com.threecrickets.prudence.util.FallbackRouter);
+	com.threecrickets.prudence.util.FallbackRouter,
+	com.threecrickets.prudence.util.PreheatTask);
 
 var classLoader = ClassLoader.systemClassLoader;
 
@@ -138,3 +139,10 @@ attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', do
 attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourceSourceViewable);
 
 router.attach(fixURL(resourceBaseURL), resources).matchingMode = Template.MODE_STARTS_WITH;
+
+// Preheat resources
+
+for(var i in preheatResources) {
+	var preheatResource = preheatResources[i];
+	tasks.push(new PreheatTask(component.context, applicationInternalName, preheatResource));
+}

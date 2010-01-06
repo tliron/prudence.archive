@@ -73,6 +73,10 @@ var resourceSourceViewable = true;
 
 var resourceMinimumTimeBetweenValidityChecks = 1000;
 
+// List resources here that you wanted heated up as soon as Prudence starts.
+
+var preheatResources = [];
+
 //
 // Dynamic Web
 //

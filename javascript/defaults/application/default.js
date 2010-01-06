@@ -7,6 +7,8 @@ importClass(
 	org.restlet.data.MediaType,
 	com.threecrickets.prudence.util.DelegatedStatusService);
 
+var tasks = [];
+
 //
 // Settings
 //
@@ -57,4 +59,13 @@ application.context.setLogger(applicationLoggerName);
 
 for(var key in runtimeAttributes) {
 	attributes.put(key, runtimeAttributes[key]);
+}
+
+//
+// Tasks
+//
+
+for(var i in tasks) {
+	var task = tasks[i];
+	executor.submit(task);
 }

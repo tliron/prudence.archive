@@ -10,7 +10,7 @@ from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Finder, Directory
 from com.threecrickets.scripturian import Defroster
 from com.threecrickets.scripturian.file import DocumentFileSource
-from com.threecrickets.prudence.util import FallbackRouter
+from com.threecrickets.prudence.util import FallbackRouter, PreheatTask
 
 classLoader = ClassLoader.getSystemClassLoader()
 
@@ -120,3 +120,8 @@ attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = docu
 attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resource_source_viewable
 
 router.attach(fix_url(resource_base_url), resources).matchingMode = Template.MODE_STARTS_WITH
+
+# Preheat resources
+
+for preheat_resource in preheat_resources:
+	tasks.apend(PreheatTask(component.context, application_internal_name, preheat_resource))

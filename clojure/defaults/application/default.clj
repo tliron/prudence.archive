@@ -8,6 +8,8 @@
 	'com.threecrickets.prudence.util.DelegatedStatusService
 )
 
+(def tasks [])
+
 ;
 ; Settings
 ;
@@ -56,3 +58,12 @@
 ;
 
 (.putAll attributes runtime-attributes)
+
+
+;
+; Tasks
+;
+
+(doseq [task tasks]
+	(.submit executor task)
+)

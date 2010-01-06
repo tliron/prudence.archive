@@ -20,3 +20,5 @@
 ))
 
 (def show-debug-on-error true)
+
+(def preheat-resources (conj preheat-resource "notes/"))

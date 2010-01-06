@@ -5,6 +5,8 @@
 from org.restlet.data import Reference, MediaType
 from com.threecrickets.prudence.util import DelegatedStatusService
 
+tasks = []
+
 #
 # Settings
 #
@@ -54,3 +56,10 @@ application.context.setLogger(application_logger_name)
 #
 
 attributes.putAll(runtime_attributes)
+
+#
+# Tasks
+#
+
+for task in tasks:
+    executor.submit(task)
