@@ -11,6 +11,7 @@
 	'org.restlet.routing.Template
 	'org.restlet.resource.Finder
 	'org.restlet.resource.Directory
+	'com.threecrickets.scripturian.Defroster
 	'com.threecrickets.scripturian.file.DocumentFileSource
 	'com.threecrickets.prudence.util.FallbackRouter
 	'com.threecrickets.prudence.util.PreheatTask
@@ -96,6 +97,17 @@
 ; Dynamic web
 ;
 
+(def script-engine-manager (ScriptEngineManager.))
+(def document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document (.longValue dynamic-web-minimum-time-between-validity-checks)))
+(if dynamic-web-defrost
+	(.defrost (Defroster. script-engine-manager document-source true) executor)
+)
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.engineManager" script-engine-manager)
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultEngineName" "Clojure")
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.documentSource" document-source)
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" dynamic-web-source-viewable)
+
 (def dynamic-web (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.GeneratedTextResource")))
 (.setMatchingMode (.attach router (fix-url dynamic-web-base-url) dynamic-web) Template/MODE_STARTS_WITH)
 
@@ -106,30 +118,23 @@
 (def static-web (Directory. (.getContext application) (.. (File. (str application-base-path static-web-base-path)) toURI (toString))))
 (.setListingAllowed static-web static-web-directory-listing-allowed)
 (.setNegotiateContent static-web true)
-
-(def script-engine-manager (ScriptEngineManager.))
-(def document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document (.longValue dynamic-web-minimum-time-between-validity-checks)))
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.engineManager" script-engine-manager)
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultEngineName" "Clojure")
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.documentSource" document-source)
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" dynamic-web-source-viewable)
-
 (.setMatchingMode (.attach router (fix-url static-web-base-url) static-web) Template/MODE_STARTS_WITH)
 
 ;
 ; Resources
 ;
 
-(def resources (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
-
 (def document-source (DocumentFileSource. (str application-base-path resource-base-path) resource-default-name (.longValue resource-minimum-time-between-validity-checks))) 
+(if resource-defrost
+	(.defrost (Defroster. script-engine-manager document-source true) executor)
+)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.engineManager" script-engine-manager)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultEngineName" "Clojure")
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultName" resource-default-name)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.documentSource" document-source)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.sourceViewable" resource-source-viewable)
 
+(def resources (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
 (.setMatchingMode (.attach router (fix-url resource-base-url) resources) Template/MODE_STARTS_WITH)
 
 ; Preheat resources

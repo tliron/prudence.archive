@@ -83,17 +83,17 @@ if len(url_add_trailing_slash) > 0:
 # Dynamic web
 #
 
-dynamic_web = Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
-
 script_engine_manager = ScriptEngineManager()
 document_source = DocumentFileSource(application_base_path + dynamic_web_base_path, dynamic_web_default_document, dynamic_web_minimum_time_between_validity_checks)
-
+if dynamic_web_defrost:
+	Defroster(script_engine_manager, document_source, True).defrost(executor)
 attributes['com.threecrickets.prudence.GeneratedTextResource.engineManager'] = script_engine_manager
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultEngineName'] = 'python'
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamic_web_default_document
 attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = document_source
 attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
 
+dynamic_web = Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 router.attach(fix_url(dynamic_web_base_url), dynamic_web).matchingMode = Template.MODE_STARTS_WITH
 
 #
@@ -103,22 +103,22 @@ router.attach(fix_url(dynamic_web_base_url), dynamic_web).matchingMode = Templat
 static_web = Directory(application.context, File(application_base_path + static_web_base_path).toURI().toString())
 static_web.listingAllowed = static_web_directory_listing_allowed
 static_web.negotiateContent = True
-
 router.attach(fix_url(static_web_base_url), static_web).matchingMode = Template.MODE_STARTS_WITH
 
 #
 # Resources
 #
 
-resources = Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
-
 document_source = DocumentFileSource(application_base_path + resource_base_path, resource_default_name, resource_minimum_time_between_validity_checks)
+if resource_defrost:
+	Defroster(script_engine_manager, document_source, True).defrost(executor)
 attributes['com.threecrickets.prudence.DelegatedResource.engineManager'] = script_engine_manager
 attributes['com.threecrickets.prudence.DelegatedResource.defaultEngineName'] = 'python'
 attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resource_default_name
 attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = document_source
 attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resource_source_viewable
 
+resources = Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 router.attach(fix_url(resource_base_url), resources).matchingMode = Template.MODE_STARTS_WITH
 
 # Preheat resources

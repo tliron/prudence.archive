@@ -60,6 +60,11 @@ resource_base_path = '/resources/'
 
 resource_default_name = 'default'
 
+# Set this to True if you want to start to load and compile your
+# resources as soon as Prudence starts.
+
+resource_defrost = True
+
 # This is so we can see the source code for scripts by adding ?source=true
 # to the URL. You probably wouldn't want this for most applications.
 
@@ -71,10 +76,6 @@ resource_source_viewable = True
 # unnecessary hits on the filesystem.
 
 resource_minimum_time_between_validity_checks = 1000
-
-# List resources here that you wanted heated up as soon as Prudence starts.
-
-preheat_resources = []
 
 #
 # Dynamic Web
@@ -92,6 +93,11 @@ dynamic_web_base_path = '/web/dynamic/'
 # contain filenames.
 
 dynamic_web_default_document = 'index'
+
+# Set this to True if you want to start to load and compile your
+# scriptlets as soon as Prudence starts.
+
+dynamic_web_defrost = True
 
 # This is so we can see the source code for scripts by adding ?source=true
 # to the URL. You probably wouldn't want this for most applications.
@@ -120,6 +126,14 @@ static_web_base_path = '/web/static/'
 # automatic creation of an HTML page with a directory listing.
 
 static_web_directory_listing_allowed = True
+
+#
+# Preheater
+#
+# List resources here that you want heated up as soon as Prudence starts.
+#
+
+preheat_resources = []
 
 #
 # URL manipulation

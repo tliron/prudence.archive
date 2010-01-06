@@ -61,6 +61,11 @@ var resourceBasePath = '/resources/';
 
 var resourceDefaultName = 'default';
 
+// Set this to true if you want to start to load and compile your
+// resources as soon as Prudence starts.
+
+var resourceDefrost = true;
+
 // This is so we can see the source code for scripts by adding ?source=true
 // to the URL. You probably wouldn't want this for most applications.
 
@@ -72,10 +77,6 @@ var resourceSourceViewable = true;
 // unnecessary hits on the filesystem.
 
 var resourceMinimumTimeBetweenValidityChecks = 1000;
-
-// List resources here that you wanted heated up as soon as Prudence starts.
-
-var preheatResources = [];
 
 //
 // Dynamic Web
@@ -93,6 +94,11 @@ var dynamicWebBasePath = '/web/dynamic/';
 // contain filenames.
 
 var dynamicWebDefaultDocument = 'index';
+
+// Set this to true if you want to start to load and compile your
+// scriptlets as soon as Prudence starts.
+
+var dynamicWebDefrost = true;
 
 // This is so we can see the source code for scripts by adding ?source=true
 // to the URL. You probably wouldn't want this for most applications.
@@ -121,6 +127,14 @@ var staticWebBasePath = '/web/static/';
 // automatic creation of an HTML page with a directory listing.
 
 var staticWebDirectoryListingAllowed = true;
+
+//
+// Preheater
+//
+// List resources here that you want heated up as soon as Prudence starts.
+//
+
+var preheatResources = [];
 
 //
 // URL manipulation

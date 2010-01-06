@@ -60,6 +60,11 @@
 
 (def resource-default-name "default")
 
+; Set this to True if you want to start to load and compile your
+; resources as soon as Prudence starts.
+
+(def dynamic-web-defrost true)
+
 ; This is so we can see the source code for scripts by adding ?source=true
 ; to the URL. You probably wouldn't want this for most applications.
 
@@ -71,10 +76,6 @@
 ; unnecessary hits on the filesystem.
 
 (def resource-minimum-time-between-validity-checks 1000)
-
-; List resources here that you wanted heated up as soon as Prudence starts.
-
-(def preheat-resources [])
 
 ;
 ; Dynamic Web
@@ -92,6 +93,11 @@
 ; contain filenames.
 
 (def dynamic-web-default-document "index")
+
+; Set this to True if you want to start to load and compile your
+; scriptlets as soon as Prudence starts.
+
+(def dynamic-web-defrost true)
 
 ; This is so we can see the source code for scripts by adding ?source=true
 ; to the URL. You probably wouldn't want this for most applications.
@@ -120,6 +126,14 @@
 ; automatic creation of an HTML page with a directory listing.
 
 (def static-web-directory-listing-allowed true)
+
+;
+; Preheater
+;
+; List resources here that you want heated up as soon as Prudence starts.
+;
+
+(def preheat-resources [])
 
 ;
 ; URL manipulation
