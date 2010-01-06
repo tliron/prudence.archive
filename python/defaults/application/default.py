@@ -3,7 +3,6 @@
 #
 
 from org.restlet.data import Reference, MediaType
-from com.threecrickets.scripturian.file import DocumentFileSource
 from com.threecrickets.prudence.util import DelegatedStatusService
 
 #

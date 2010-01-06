@@ -6,6 +6,7 @@ importClass(
 	java.lang.System,
 	java.io.FileNotFoundException,
 	java.util.logging.LogManager,
+	java.util.concurrent.Executors,
 	org.restlet.Component,
 	com.threecrickets.prudence.util.DelegatedStatusService);
 
@@ -65,6 +66,13 @@ component.logService.loggerName = 'web-requests';
 //
 
 component.statusService = new DelegatedStatusService();
+
+//
+// Executor
+//
+
+var executor = Executors.newSingleThreadExecutor();
+component.context.attributes.put('executor', executor);
 
 //
 // Routing

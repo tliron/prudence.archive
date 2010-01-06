@@ -11,6 +11,7 @@
 	'org.restlet.routing.Template
 	'org.restlet.resource.Finder
 	'org.restlet.resource.Directory
+	'com.threecrickets.scripturian.file.DocumentFileSource
 	'com.threecrickets.prudence.util.FallbackRouter
 )
 
@@ -32,6 +33,12 @@
 		url
 	)
 )
+
+;
+; Internal Router
+;
+
+(.. component getInternalRouter (attach (str "/" application-internal-name application)))
 
 ;
 ; Hosts
@@ -100,12 +107,11 @@
 (.setNegotiateContent static-web true)
 
 (def script-engine-manager (ScriptEngineManager.))
-
+(def document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document (.longValue dynamic-web-minimum-time-between-validity-checks)))
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.engineManager" script-engine-manager)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultEngineName" "Clojure")
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.documentSource"
-	 (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document (.longValue dynamic-web-minimum-time-between-validity-checks)))
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.documentSource" document-source)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" dynamic-web-source-viewable)
 
 (.setMatchingMode (.attach router (fix-url static-web-base-url) static-web) Template/MODE_STARTS_WITH)
@@ -116,11 +122,11 @@
 
 (def resources (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
 
+(def document-source (DocumentFileSource. (str application-base-path resource-base-path) resource-default-name (.longValue resource-minimum-time-between-validity-checks))) 
 (.put attributes "com.threecrickets.prudence.DelegatedResource.engineManager" script-engine-manager)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultEngineName" "Clojure")
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultName" resource-default-name)
-(.put attributes "com.threecrickets.prudence.DelegatedResource.documentSource"
-	(DocumentFileSource. (str application-base-path resource-base-path) resource-default-name (.longValue resource-minimum-time-between-validity-checks)))
+(.put attributes "com.threecrickets.prudence.DelegatedResource.documentSource" document-source)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.sourceViewable" resource-source-viewable)
 
 (.setMatchingMode (.attach router (fix-url resource-base-url) resources) Template/MODE_STARTS_WITH)

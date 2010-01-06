@@ -11,6 +11,8 @@ importClass(
 	org.restlet.routing.Template,
 	org.restlet.resource.Finder,
 	org.restlet.resource.Directory,
+	com.threecrickets.scripturian.Defroster,
+	com.threecrickets.scripturian.file.DocumentFileSource,
 	com.threecrickets.prudence.util.FallbackRouter);
 
 var classLoader = ClassLoader.systemClassLoader;
@@ -30,6 +32,12 @@ function fixURL(url) {
 	}
 	return url;
 }
+
+//
+// Internal Router
+//
+
+component.internalRouter.attach('/' + applicationInternalName, application);
 
 //
 // Hosts
@@ -105,12 +113,12 @@ staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
 staticWeb.negotiatingContent = true;
 
 var scriptEngineManager = new ScriptEngineManager();
-
+var documentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks);
+new Defroster(scriptEngineManager, documentSource, true).defrost(executor);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.engineManager', scriptEngineManager);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultEngineName', 'rhino-nonjdk');
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',
-	 new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks));
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',documentSource);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
 
 router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_STARTS_WITH;
@@ -121,11 +129,12 @@ router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_
 
 resources = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
 
+documentSource = new DocumentFileSource(applicationBasePath + resourceBasePath, resourceDefaultName, resourceMinimumTimeBetweenValidityChecks);
+new Defroster(scriptEngineManager, documentSource, true).defrost(executor);
 attributes.put('com.threecrickets.prudence.DelegatedResource.engineManager', scriptEngineManager);
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultEngineName', 'rhino-nonjdk');
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourceDefaultName);
-attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource',
-	new DocumentFileSource(applicationBasePath + resourceBasePath, resourceDefaultName, resourceMinimumTimeBetweenValidityChecks));
+attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', documentSource);
 attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourceSourceViewable);
 
 router.attach(fixURL(resourceBaseURL), resources).matchingMode = Template.MODE_STARTS_WITH;

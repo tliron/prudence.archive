@@ -19,6 +19,7 @@ for(var i in applicationDirs) {
 	var applicationDir = applicationDirs[i]; 
 	if(applicationDir.isDirectory()) {
 		var applicationName = applicationDir.name;
+		var applicationInternalName = applicationDir.name;
 		var applicationLoggerName = applicationDir.name;
 		var applicationBasePath = applicationDir.path;
 		var applicationDefaultURL = '/' + applicationDir.name + '/';

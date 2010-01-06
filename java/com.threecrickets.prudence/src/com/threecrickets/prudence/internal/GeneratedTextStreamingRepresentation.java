@@ -89,7 +89,7 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		resource.setWriter( writer );
 		try
 		{
-			document.run( false, writer, resource.getErrorWriter(), flushLines, documentContext, container, scriptletController );
+			document.run( false, false, writer, resource.getErrorWriter(), flushLines, documentContext, container, scriptletController );
 		}
 		catch( DocumentInitializationException x )
 		{

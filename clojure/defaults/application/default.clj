@@ -5,7 +5,6 @@
 (import
 	'org.restlet.data.Reference
 	'org.restlet.data.MediaType
-	'com.threecrickets.scripturian.file.DocumentFileSource
 	'com.threecrickets.prudence.util.DelegatedStatusService
 )
 

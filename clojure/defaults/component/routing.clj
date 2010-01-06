@@ -19,6 +19,7 @@
 	(if (.isDirectory application-dir)
 		(let []
 			(def application-name (.getName application-dir))
+      (def application-internal-name (.getName application-dir))
 			(def application-logger-name (.getName application-dir))
 			(def application-base-path (.getPath application-dir))
 			(def application-default-url (str "/" (.getName application-dir) "/"))

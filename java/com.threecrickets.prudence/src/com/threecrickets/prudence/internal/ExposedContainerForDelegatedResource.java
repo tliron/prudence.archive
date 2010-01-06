@@ -596,7 +596,7 @@ public class ExposedContainerForDelegatedResource
 
 		PrudenceScriptletController<ExposedContainerForDelegatedResource> scriptletController = new PrudenceScriptletController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
 			.getScriptletController() );
-		document.run( false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, scriptletController );
+		document.run( false, false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, scriptletController );
 	}
 
 	/**
@@ -628,7 +628,7 @@ public class ExposedContainerForDelegatedResource
 
 		PrudenceScriptletController<ExposedContainerForDelegatedResource> scriptletController = new PrudenceScriptletController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
 			.getScriptletController() );
-		document.run( false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, scriptletController );
+		document.run( false, false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, scriptletController );
 	}
 
 	/**
@@ -660,12 +660,10 @@ public class ExposedContainerForDelegatedResource
 
 				if( existing != null )
 					document = existing;
-				else
-				{
-					// Must run document once and only once
-					document.run( false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, scriptletController );
-				}
 			}
+
+			// Must run document once and only once
+			document.run( true, false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, scriptletController );
 
 			return document.invoke( entryPointName, this, scriptletController );
 		}

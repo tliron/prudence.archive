@@ -21,7 +21,14 @@ format, while everything else goes to prudence.log.</p>
 
 <h3>web.log</h3>
 
+<p>You can throw Prudence's web.log into almost any Apache log file
+analyzer. Here's an example using the ubiquitous
+<a href="http://www.analog.cx/">Analog</a>:
+</p>
 
+<pre>
+analog -C'LOGFORMAT (%Y-%m-%d\t%h:%n:%j\t%S\t%u\t%j\t%j\t%j\t%r\t%q\t%c\t%b\t%j\t%T\t%v\t%B\t%f)' -C'LOCALCHARTDIR local/images/' -C'CHARTDIR images/' -C'HOSTNAME "mysite.org"' log/web.log -Oapplications/myapp/web/static/analog/index.html
+</pre>
 
 
 <%& '../fragments/footer' %>

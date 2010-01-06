@@ -15,6 +15,7 @@ application_dirs = File('applications').listFiles()
 for application_dir in application_dirs:
     if application_dir.isDirectory():
         application_name = application_dir.name
+        application_internal_name = application_dir.name;
         application_logger_name = application_dir.name
         application_base_path = application_dir.path
         application_default_url = '/' + application_dir.name + '/'

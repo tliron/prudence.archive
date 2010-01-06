@@ -588,7 +588,7 @@ public class ExposedContainerForGeneratedTextResource
 			// Do not allow caching in streaming mode
 			PrudenceScriptletController<ExposedContainerForGeneratedTextResource> scriptletController = new PrudenceScriptletController<ExposedContainerForGeneratedTextResource>( this, resource.getContainerName(),
 				resource.getScriptletController() );
-			if( document.run( !isStreaming, writer, resource.getErrorWriter(), false, documentContext, this, scriptletController ) )
+			if( document.run( false, !isStreaming, writer, resource.getErrorWriter(), false, documentContext, this, scriptletController ) )
 			{
 
 				// Did the script ask us to start streaming?
