@@ -1,6 +1,6 @@
 
 set java=java
-set main=com.threecrickets.scripturian.MainDocument
+set main=com.threecrickets.scripturian.Scripturian
 
 set jars=lib/clojure.jar;^
 lib/clojure.contrib.jar;^

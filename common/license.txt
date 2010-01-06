@@ -3,14 +3,14 @@
 License agreement
 =================
 
-Version 1.0, April 2009
+Version 1.1, April 2010
 
 This software distribution is provided to you under the LGPL license
 version 3.0.
 
 In addition, we want to expressly mention that Three Crickets LLC, the only
 copyright holder of the whole source code, has no intention to release future 
-versions of the Prudence open source project under more restrictive licenses, 
+versions of the Scripturian open source project under more restrictive licenses, 
 such as GPL. If we change the license again in the future, it could only be 
 for a less restrictive license (such as Apache Public License).
 
@@ -23,7 +23,7 @@ For special licensing requests, please contact:
     3021 W. Wilson Ave. #3
     Chicago, IL 60625
     USA
-	http://www.threecrickets.com/
+	http://threecrickets.com/
     mailto:legal@threecrickets.com
 
 _______________________________________________________________________

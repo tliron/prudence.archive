@@ -134,7 +134,7 @@
 		<javadoc access="protected" author="true" excludepackagenames="**.internal.*" destdir="${tmp}/api" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" sourcepath="${java-src}" splitindex="true" use="true" version="true" windowtitle="Prudence 1.0" doctitle="Prudence 1.0" verbose="true">
 			<link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
 			<link href="http://java.sun.com/javase/6/docs/api/" />
-			<link href="http://www.threecrickets.com/scripturian/api/" />
+			<link href="http://threecrickets.com/scripturian/api/" />
 			<link href="http://www.restlet.org/documentation/2.0/jse/api/" />
 			<classpath>
 				<fileset dir="${lib}/jsr223/lib" />
@@ -142,7 +142,7 @@
 				<fileset dir="${lib}/restlet/lib" />
 			</classpath>
 			<bottom>
-				<![CDATA[<i>Copyright &#169; 2009-2010 <a target="_top" href="http://www.threecrickets.com/">Three Crickets LLC</a>.</i>]]>
+				<![CDATA[<i>Copyright &#169; 2009-2010 <a target="_top" href="http://threecrickets.com/">Three Crickets LLC</a>.</i>]]>
 			</bottom>
 		</javadoc>
 	</target>

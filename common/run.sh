@@ -6,7 +6,7 @@ cd $here
 java=/usr/bin/java
 #java=/usr/lib/jvm/java-1.5.0-sun/bin/java
 
-main=com.threecrickets.scripturian.MainDocument
+main=com.threecrickets.scripturian.Scripturian
 
 jars=\
 lib/clojure.jar:\
