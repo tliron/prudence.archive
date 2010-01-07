@@ -72,15 +72,15 @@ can be consumes and analyzed by software.</p>
 
 <p>More on logging <a href="logging">here</a>.</p>
 
-<h3>/component/</h3>
+<h3>/instance/</h3>
 
-<p>This is where the Prudence component gets initialized. The
-"component" is the overall container which manages the servers and the
+<p>This is where the Prudence instance gets initialized. The
+instance is the overall container which manages the servers and the
 applications.</p>
 
 <h3>/defaults/</h3>
 
-<p>Here you'll find defaults used in /component/ and /applications/.
+<p>Here you'll find defaults used in /instance/ and /applications/.
 Generally, you'll not want to edit these, but instead override them
 there. Prudence tries to make configuration easy by using sensible default
 behavior, and making it easy to override it. However, you can always
