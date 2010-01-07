@@ -13,13 +13,23 @@ applications, and the <a href="prudence-admin">Prudence administration applicati
 <a href="logging">logging</a> features make it easier to deploy
 and manage multiple applications together. These issues have more to do with your application's
 configuration, rather than its functionality, and it can be useful to handle them outside of the
-Java build process, using live, dynamic languages.
+Java build process, using live, dynamic languages. Deploying your Restlet application to a
+Prudence instance could be as simple as throwing your jar files and copying a few text files,
+which you can then edit on-the-fly.
 </p>
 
-<p>This need is also fulfilled by servlet and Java Enterprise Edition containers, such as
+<p>This need is also fulfilled by servlet and Java Enterprise Edition (JEE) containers, such as
 Tomcat, Resin and JBoss. Indeed, Restlet has a JEE edition, and good support for servlets.
 However, if all you need is a deployment container, Prudence can serve as a straightforward,
 pure REST alternative.
+</p>
+
+<p>Some people also look to JEE containers for their support of Java Server Pages (JSP).
+We urge you to take a good look at Prudence's <a href="dynamic-web">dynamic web</a> support.
+It may be good enough, and even better than JSP for your purposes. In particular, it
+is based on Restlet and offers you the entire Restlet API, and also lets you use many
+wonderful languages other than Java for scriptlets. For example, we at Three Crickets,
+are mad about Clojure. And, of course, Velocity and Succinct are built in.
 </p>
 
 <h3>Custom Resources</h3>
