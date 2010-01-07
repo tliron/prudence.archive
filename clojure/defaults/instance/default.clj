@@ -83,19 +83,19 @@
 ; Routing
 ;
 
-(include-or-default "component/routing")
+(include-or-default "instance/routing")
 
 ;
 ; Clients
 ;
 
-(include-or-default "component/clients")
+(include-or-default "instance/clients")
 
 ;
 ; Servers
 ;
 
-(include-or-default "component/servers")
+(include-or-default "instance/servers")
 
 ;
 ; Start

@@ -69,19 +69,19 @@ component.statusService = DelegatedStatusService()
 # Routing
 #
 
-include_or_default('component/routing')
+include_or_default('instance/routing')
 
 #
 # Clients
 #
 
-include_or_default('component/clients')
+include_or_default('instance/clients')
 
 #
 # Servers
 #
 
-include_or_default('component/servers')
+include_or_default('instance/servers')
 
 #
 # Start

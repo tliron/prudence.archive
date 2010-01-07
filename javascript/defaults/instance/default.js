@@ -78,19 +78,19 @@ component.context.attributes.put('executor', executor);
 // Routing
 //
 
-includeOrDefault('component/routing');
+includeOrDefault('instance/routing');
 
 //
 // Clients
 //
 
-includeOrDefault('component/clients');
+includeOrDefault('instance/clients');
 
 //
 // Servers
 //
 
-includeOrDefault('component/servers');
+includeOrDefault('instance/servers');
 
 //
 // Start
