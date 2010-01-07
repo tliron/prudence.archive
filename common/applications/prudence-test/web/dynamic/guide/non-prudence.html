@@ -1,0 +1,75 @@
+<%velocity #set($document.cacheDuration=5000) #set($prefix = '../') %><%& '../fragments/header' %>
+
+<h2>Integrating Restlet Code</h2>
+
+<p>Though applications can be written in Prudence without a single line of Java
+code, Prudence also acts as a useful container for existing Restlet applications, resources
+or other restlets, written in Java or other JVM languages.</p>
+
+<p>Why use Prudence for a Restlet application that already works?</p>
+
+<p>Prudence makes it easy to handle the bootstrapping and <a href="routing">routing</a> of your
+applications, and the <a href="prudence-admin">Prudence administration application</a> and
+<a href="logging">logging</a> features make it easier to deploy
+and manage multiple applications together. These issues have more to do with your application's
+configuration, rather than its functionality, and it can be useful to handle them outside of the
+Java build process, using live, dynamic languages.
+</p>
+
+<p>This need is also fulfilled by servlet and Java Enterprise Edition containers, such as
+Tomcat, Resin and JBoss. Indeed, Restlet has a JEE edition, and good support for servlets.
+However, if all you need is a deployment container, Prudence can serve as a straightforward,
+pure REST alternative.
+</p>
+
+<h3>Custom Resources</h3>
+
+<p>Use your application's routing file to attach your resources, or otherwise manage
+routing. Example:
+</p>
+
+<pre>
+// Prudence defaults
+prudence.include('defaults/application/routing');
+
+// MyOrg resources
+router.attach('data/item/{id}', classLoader.loadClass('org.myorg.ItemResource'));
+router.attach('data/items', classLoader.loadClass('org.myorg.ItemsResource'));
+</pre>
+
+<p>You can also change Prudence's default routing by detaching and re-attaching routes:
+</p>
+
+<pre>
+// Wrap static web in JavaScript minifying filter
+importClass(org.myorg.JavaScriptMinifyFilter);
+router.detach(staticWeb);
+router.attach(
+	fixURL(staticWebBaseURL),
+	new JavaScriptMinifyFilter(application.context, staticWeb, File(applicationBasePath + staticWebBasePath)))
+	.matchingMode = Template.MODE_STARTS_WITH;
+</pre>
+
+<h3>Custom Application</h3>
+
+<p>
+By default, Prudence creates an instance of the standard Restlet Application class.
+Use your application's application file to override this, and create and configure your own
+application. Example:
+</p>
+
+<pre>
+// MyOrgApplication
+importClass(org.myorg.MyOrgApplication);
+var application = new MyOrgApplication();
+
+// Install our custom tunnel service
+importClass(org.myorg.MyOrgTunnelService);
+application.tunnelService = new MyOrgTunnelService(MyOrgTunnelService.MODE_QUERY);
+
+// These attributes are specific to MyOrgApplication
+application.databaseURI = 'mysql://localhost/myorg';
+application.useTransactions = true;
+</pre>
+
+<%& '../fragments/footer' %>
