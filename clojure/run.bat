@@ -2,9 +2,11 @@
 set java=java
 set main=com.threecrickets.scripturian.Scripturian
 
-set jars=lib/com.mysql.jdbc.jar;^
+set jars=lib/clojure.jar:^
+lib/clojure.contrib.jar:^
+lib/clojure.contrib.jsr223.jar:^
+lib/com.mysql.jdbc.jar;^
 lib/com.sun.grizzly.jar;^
-lib/com.sun.phobos.script.javascript.jar;^
 lib/com.sun.script.velocity.jar;^
 lib/com.threecrickets.prudence.jar;^
 lib/com.threecrickets.scripturian.jar;^
@@ -14,7 +16,6 @@ lib/org.apache.velocity.jar;^
 lib/org.codehaus.jackson.jar:^
 lib/org.codehaus.jackson.mapper.jar:^
 lib/org.json.jar;^
-lib/org.mozilla.javascript.jar;^
 lib/org.restlet.ext.grizzly.jar;^
 lib/org.restlet.ext.jackson.jar:^
 lib/org.restlet.ext.json.jar;^
