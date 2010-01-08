@@ -20,10 +20,10 @@ classLoader = ClassLoader.getSystemClassLoader()
 
 # Makes sure we have slashes where we expect them
 def fix_url(url):
-	url = url.replace('//', '/')
-	if len(url) > 0 and url[0] == '/':
+	url = url.replace('//', '/') # no doubles
+	if len(url) > 0 and url[0] == '/': # never at the beginning
 		url = url[1:]
-	if len(url) > 0 and url[-1] != '/':
+	if len(url) > 0 and url[-1] != '/': # always at the end
 		url = url + '/'
 	return url
 
@@ -37,7 +37,7 @@ component.internalRouter.attach('/' + application_internal_name, application)
 # Hosts
 #
 # Note that the application's context will not be created until we attach the application to at least one
-# virtual host. See component/hosts.js for more information.
+# virtual host. See component/hosts.py for more information.
 #
 
 add_trailing_slash = Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)
@@ -124,4 +124,4 @@ router.attach(fix_url(resource_base_url), resources).matchingMode = Template.MOD
 # Preheat resources
 
 for preheat_resource in preheat_resources:
-	tasks.apend(PreheatTask(component.context, application_internal_name, preheat_resource))
+	tasks.append(PreheatTask(component.context, application_internal_name, preheat_resource))

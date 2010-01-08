@@ -5,6 +5,7 @@
 from java.lang import System
 from java.io import FileNotFoundException
 from java.util.logging import LogManager
+from java.util.concurrent import Executors
 
 from org.restlet import Component
 from com.threecrickets.prudence.util import DelegatedStatusService
@@ -64,6 +65,13 @@ component.logService.loggerName = 'web-requests'
 #
 
 component.statusService = DelegatedStatusService()
+
+#
+# Executor
+#
+
+executor = Executors.newSingleThreadExecutor()
+component.context.attributes['executor'] = executor
 
 #
 # Clients
