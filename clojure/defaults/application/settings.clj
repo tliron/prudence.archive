@@ -63,7 +63,7 @@
 ; Set this to True if you want to start to load and compile your
 ; resources as soon as Prudence starts.
 
-(def dynamic-web-defrost true)
+(def resource-defrost true)
 
 ; This is so we can see the source code for scripts by adding ?source=true
 ; to the URL. You probably wouldn't want this for most applications.

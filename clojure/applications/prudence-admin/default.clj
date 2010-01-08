@@ -1,6 +1,6 @@
-#
-# Prudence Admin Application
-#
+;
+; Prudence Admin Application
+;
 
 (.. document getContainer (include "defaults/application"))
 

@@ -6,30 +6,22 @@
 	'java.lang.System
 	'java.io.FileNotFoundException
 	'java.util.logging.LogManager
+	'java.util.concurrent.Executors
 	'org.restlet.Component
 	'com.threecrickets.prudence.util.DelegatedStatusService
 )
 
 (defn include-or-default
-	(
-		[name default]
+	([name default]
 		(try
 			(.. document getContainer (include name))
 			(catch FileNotFoundException _
 				(.. document getContainer (include
 					(if (nil? default)
 						(str "defaults/" name)
-						default
-					))
-				)
-			)
-		)
-	)
-	(
-		[name]
-		(include-or-default name nil)
-	)
-)
+						default))))))
+	([name]
+		(include-or-default name nil)))
 
 ;
 ; Welcome
@@ -78,6 +70,13 @@
 ;
 
 (.. component (setStatusService (DelegatedStatusService.)))
+
+;
+; Executor
+;
+
+(def executor (Executors/newSingleThreadExecutor))
+(.. component getContext getAttributes (put "executor" executor))
 
 ;
 ; Routing

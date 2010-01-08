@@ -65,5 +65,4 @@
 ;
 
 (doseq [task tasks]
-	(.submit executor task)
-)
+	(.submit executor task))

@@ -1,6 +1,6 @@
-#
-# Prudence Admin Settings
-#
+;
+; Prudence Admin Settings
+;
 
 (.. document getContainer (include "defaults/application/settings"))
 

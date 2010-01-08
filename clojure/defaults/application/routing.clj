@@ -26,21 +26,16 @@
 ; Makes sure we have slashes where we expect them
 (defn fix-url [url]
 	(let [url (.replace url "//" "/")]
-		(if (and (> (.length url) 0) (= (.charAt url 0) "/"))
-			(def url (.substring url 1))
-		)
-		(if (and (> (.length url) 0) (not= (.charAt url (- (.length url) 1)) "/"))
-			(def url (str url "/"))
-		)
-		url
-	)
-)
+		(let [url (if (and (> (.length url) 0) (= (.charAt url 0) \/)) (.substring url 1) url)]
+			(if (and (> (.length url) 0) (not= (.charAt url (- (.length url) 1)) \/))
+				(str url "/")
+				url))))
 
 ;
 ; Internal Router
 ;
 
-(.. component getInternalRouter (attach (str "/" application-internal-name application)))
+(.. component getInternalRouter (attach (str "/" application-internal-name) application))
 
 ;
 ; Hosts
@@ -51,24 +46,20 @@
 
 (def add-trailing-slash (Redirector. (.getContext application) "{ri}/" Redirector/MODE_CLIENT_PERMANENT))
 
-(print (str (.getName application) ": "))
-(doseq [entry (.entrySet hosts)]
-	(let [host (.getKey entry) url (.getValue entry)]
+(defn add-to-hosts [entries]
+	(let [entry (first entries) rest (rest entries) host (.getKey entry) url (.getValue entry)]
 		(let [url (if (nil? url) application-default-url url)]
 			(print (str "\"" url "\"") "on" (.getName host))
 			(.setMatchingMode (.attach host url application) Template/MODE_STARTS_WITH)
 			(if (not= url "/")
-				(do
-					(if (= (.charAt url (- (.length url) 1)) "/")
-						(def url (.substring url (- (.length url) 1)))
-					)
-				)
-				(.attach host url add-trailing-slash)
-			)
-		)
-	)
-	;(print ", ")
-)
+				(let [url (if (= (.charAt url (- (.length url) 1)) \/) (.substring url 0 (- (.length url) 1)) url)]
+					(.attach host url add-trailing-slash))))
+		(if (not (empty? rest)) (do
+			(print ", ")
+			(add-to-hosts rest)))))
+
+(print (str (.getName application) ": "))
+(add-to-hosts (.entrySet hosts))
 (println ".")
 
 (def attributes (.. application getContext (getAttributes)))
@@ -100,8 +91,7 @@
 (def script-engine-manager (ScriptEngineManager.))
 (def document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document (.longValue dynamic-web-minimum-time-between-validity-checks)))
 (if dynamic-web-defrost
-	(.defrost (Defroster. script-engine-manager document-source true) executor)
-)
+	(.defrost (Defroster. script-engine-manager document-source true) executor))
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.engineManager" script-engine-manager)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultEngineName" "Clojure")
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
@@ -126,8 +116,7 @@
 
 (def document-source (DocumentFileSource. (str application-base-path resource-base-path) resource-default-name (.longValue resource-minimum-time-between-validity-checks))) 
 (if resource-defrost
-	(.defrost (Defroster. script-engine-manager document-source true) executor)
-)
+	(.defrost (Defroster. script-engine-manager document-source true) executor))
 (.put attributes "com.threecrickets.prudence.DelegatedResource.engineManager" script-engine-manager)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultEngineName" "Clojure")
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultName" resource-default-name)
@@ -140,5 +129,4 @@
 ; Preheat resources
 
 (doseq [preheat-resource preheat-resources]
-	(def tasks (conj tasks (PreheatTask. (.getContext component) application-internal-name, preheat-resource)))
-)
+	(def tasks (conj tasks (PreheatTask. (.getContext component) application-internal-name preheat-resource))))
