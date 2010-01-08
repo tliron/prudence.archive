@@ -24,12 +24,12 @@ var classLoader = ClassLoader.systemClassLoader;
 
 // Makes sure we have slashes where we expect them
 function fixURL(url) {
-	url = url.replace(/\/\//g, '/');
-	if(url.length > 0 && url[0] == '/') {
+	url = url.replace(/\/\//g, '/'); // no doubles
+	if(url.length > 0 && url[0] == '/') { // never at the beginning
 		url = url.slice(1);
 	}
-	if(url.length > 0 && url[url.length -1] != '/') {
-		url = url + '/';
+	if(url.length > 0 && url[url.length -1] != '/') { // always at the end
+		url += '/';
 	}
 	return url;
 }
