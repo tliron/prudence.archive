@@ -85,16 +85,14 @@ application.inboundRoot = router;
 // Add trailing slashes
 //
 
-if(urlAddTrailingSlash.length > 0) {
-	for(var i in urlAddTrailingSlash) {
-		urlAddTrailingSlash[i] = fixURL(urlAddTrailingSlash[i]);
-		if(urlAddTrailingSlash[i].length > 0) {
-			if(urlAddTrailingSlash[i][urlAddTrailingSlash[i].length - 1] == '/') {
-				// Remove trailing slash for pattern
-				urlAddTrailingSlash[i] = urlAddTrailingSlash[i].slice(0, -1);
-			}
-			router.attach(urlAddTrailingSlash[i], addTrailingSlash);
+for(var i in urlAddTrailingSlash) {
+	urlAddTrailingSlash[i] = fixURL(urlAddTrailingSlash[i]);
+	if(urlAddTrailingSlash[i].length > 0) {
+		if(urlAddTrailingSlash[i][urlAddTrailingSlash[i].length - 1] == '/') {
+			// Remove trailing slash for pattern
+			urlAddTrailingSlash[i] = urlAddTrailingSlash[i].slice(0, -1);
 		}
+		router.attach(urlAddTrailingSlash[i], addTrailingSlash);
 	}
 }
 
