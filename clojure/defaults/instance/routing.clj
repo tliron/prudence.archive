@@ -21,10 +21,10 @@
 	(def application-logger-name (.getName application-dir))
 	(def application-base-path (.getPath application-dir))
 	(def application-default-url (str "/" (.getName application-dir) "/"))
+	(def application nil)
   (include-or-default application-base-path "defaults/application")
-  (def applications (conj applications (resolve 'user/application))))
+  (def applications (conj applications application)))
 
-(if (empty? applications)
-	(do
+(if (empty? applications) (do
  		(print "No applications found. Exiting.")
   	(System/exit 0)))
