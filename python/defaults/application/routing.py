@@ -71,13 +71,12 @@ application.inboundRoot = router
 # Add trailing slashes
 #
 
-if len(url_add_trailing_slash) > 0:
-	for url in url_add_trailing_slash:
-		url = fix_url(url)
-		if len(url) > 0:
-			if url[-1] == '/':
-				url = url[:-1]
-			router.attach(url, add_trailing_slash)
+for url in url_add_trailing_slash:
+	url = fix_url(url)
+	if len(url) > 0:
+		if url[-1] == '/':
+			url = url[:-1]
+		router.attach(url, add_trailing_slash)
 
 #
 # Dynamic web
