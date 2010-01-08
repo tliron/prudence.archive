@@ -777,6 +777,16 @@ public class DelegatedResource extends ServerResource
 	{
 		super.doInit();
 		setAnnotated( false );
+
+		if( isSourceViewable() )
+		{
+			Request request = getRequest();
+			Form query = request.getResourceRef().getQueryAsForm();
+			if( TRUE.equals( query.getFirstValue( SOURCE ) ) )
+				// Bypass doInit delegation
+				return;
+		}
+
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants() );
 		container.invoke( getEntryPointNameForInit() );
 	}

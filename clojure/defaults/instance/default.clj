@@ -79,16 +79,16 @@
 (.. component getContext getAttributes (put "executor" executor))
 
 ;
-; Routing
-;
-
-(include-or-default "instance/routing")
-
-;
 ; Clients
 ;
 
 (include-or-default "instance/clients")
+
+;
+; Routing
+;
+
+(include-or-default "instance/routing")
 
 ;
 ; Servers

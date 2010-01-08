@@ -75,16 +75,16 @@ var executor = Executors.newSingleThreadExecutor();
 component.context.attributes.put('executor', executor);
 
 //
-// Routing
-//
-
-includeOrDefault('instance/routing');
-
-//
 // Clients
 //
 
 includeOrDefault('instance/clients');
+
+//
+// Routing
+//
+
+includeOrDefault('instance/routing');
 
 //
 // Servers

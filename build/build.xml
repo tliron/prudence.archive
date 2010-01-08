@@ -21,6 +21,7 @@
 	<property name="dist-standalone" value="./standalone" />
 	<property name="dist-javascript" value="./javascript" />
 	<property name="dist-python" value="./python" />
+	<property name="dist-clojure" value="./clojure" />
 
 	<!-- Macros -->
 	
@@ -94,9 +95,9 @@
 
 	<!-- Basic -->
 	
-	<target name="build" depends="kitchensink, standalone, javascript, python" description="Build all distributions" />
+	<target name="build" depends="kitchensink, standalone, javascript, python, clojure" description="Build all distributions" />
 	
-	<target name="package" depends="package-kitchensink, package-standalone, package-javascript, package-python" description="Package all distributions" />
+	<target name="package" depends="package-kitchensink, package-standalone, package-javascript, package-python, package-clojure" description="Package all distributions" />
 	
 	<target name="clean" description="Clean">
 		<delete dir="${tmp}" />
@@ -104,6 +105,7 @@
 		<delete dir="${dist-standalone}" />
 		<delete dir="${dist-javascript}" />
 		<delete dir="${dist-python}" />
+		<delete dir="${dist-clojure}" />
 	</target>
 	
 	<target name="rebuild" depends="clean, build" description="Rebuild all distributions" />
@@ -282,6 +284,7 @@
 
 	<target name="content-javascript" depends="javadoc-javascript" description="Fetch content">
 		<fetch-common-content dist="${dist-javascript}" base="${javascript}" />
+		<fetch-syntaxhighlighter dist="${dist-javascript}" application="prudence-test" />
 	</target>
 
 	<!-- Python -->
@@ -323,4 +326,41 @@
 		<fetch-syntaxhighlighter dist="${dist-python}" application="stickstick" />
 	</target>
 	
+	<!-- Clojure -->
+
+	<target name="clojure" depends="libraries-clojure, content-clojure" description="Create distribution" />
+	
+	<target name="package-clojure" depends="clojure" description="Create distribution zip">
+		<package dist="${dist-clojure}" name="clojure" />
+	</target>
+	
+	<target name="jar-clojure" depends="jar" description="Fetch Prudence jar">
+		<fetch-prudence-jar dist="${dist-clojure}" />
+	</target>
+	
+	<target name="libraries-clojure" depends="jar-clojure" description="Fetch libraries">
+		<fetch-library dist="${dist-clojure}" library="clojure" />
+		<fetch-library dist="${dist-clojure}" library="grizzly" />
+		<fetch-library dist="${dist-clojure}" library="json" />
+		<fetch-library dist="${dist-clojure}" library="jsr223" />
+		<fetch-library dist="${dist-clojure}" library="log4j" />
+		<fetch-library dist="${dist-clojure}" library="mysqlconnector" />
+		<fetch-library dist="${dist-clojure}" library="pygments" />
+		<fetch-library dist="${dist-clojure}" library="restlet" />
+		<fetch-library dist="${dist-clojure}" library="scripturian" />
+		<fetch-library dist="${dist-clojure}" library="slf4j" />
+		<fetch-library dist="${dist-clojure}" library="velocity" />
+		<fetch-library-versions dist="${dist-clojure}" />
+	</target>
+
+	<target name="javadoc-clojure" depends="javadoc" description="Fetch Prudence API docs">
+		<fetch-javadocs dist="${dist-clojure}" />
+	</target>
+
+	<target name="content-clojure" depends="javadoc-clojure" description="Fetch content">
+		<fetch-common-content dist="${dist-clojure}" base="${clojure}" />
+		<fetch-syntaxhighlighter dist="${dist-clojure}" application="prudence-test" />
+		<fetch-syntaxhighlighter dist="${dist-clojure}" application="stickstick" />
+	</target>
+
 </project>

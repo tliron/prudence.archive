@@ -66,16 +66,16 @@ component.logService.loggerName = 'web-requests'
 component.statusService = DelegatedStatusService()
 
 #
-# Routing
-#
-
-include_or_default('instance/routing')
-
-#
 # Clients
 #
 
 include_or_default('instance/clients')
+
+#
+# Routing
+#
+
+include_or_default('instance/routing')
 
 #
 # Servers
