@@ -25,9 +25,9 @@
 
 ; Makes sure we have slashes where we expect them
 (defn fix-url [url]
-	(let [url (.replace url "//" "/")]
-		(let [url (if (and (> (.length url) 0) (= (.charAt url 0) \/)) (.substring url 1) url)]
-			(if (and (> (.length url) 0) (not= (.charAt url (- (.length url) 1)) \/))
+	(let [url (.replace url "//" "/")] ; no doubles
+		(let [url (if (.startsWith url "/") (.substring url 1) url)] ; never at the beginning
+			(if (and (> (.length url) 0) (not (.endsWith url "/"))) ; always at the end
 				(str url "/")
 				url))))
 
@@ -52,7 +52,7 @@
 			(print (str "\"" url "\"") "on" (.getName host))
 			(.setMatchingMode (.attach host url application) Template/MODE_STARTS_WITH)
 			(if (not= url "/")
-				(let [url (if (= (.charAt url (- (.length url) 1)) \/) (.substring url 0 (- (.length url) 1)) url)]
+				(let [url (if (.endsWith url "/") (.substring url 0 (- (.length url) 1)) url)]
 					(.attach host url add-trailing-slash))))
 		(if (not (empty? rest)) (do
 			(print ", ")
@@ -76,13 +76,11 @@
 ; Add trailing slashes
 ;
 
-;if len(url-add-trailing-slash) > 0:
-	;for url in url-add-trailing-slash:
-		;url = fix-url(url)
-		;if len(url) > 0:
-			;if url[-1] == '/':
-				;url = url[:-1]
-			;router.attach(url, add-trailing-slash)
+(doseq [url url-add-trailing-slash]
+	(let [url (fix-url url)]
+		(if (> (.length url) 0)
+			(let [url (if (.endsWith url "/") (.substring url (- (.length url) 1)) url)]
+				(.attach router url add-trailing-slash)))))
 
 ;
 ; Dynamic web
