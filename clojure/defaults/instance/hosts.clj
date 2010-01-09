@@ -6,7 +6,7 @@
 ; feature lets you run multiple sites from the same Prudence installation.
 ;
 ; Note that virtual hosts are only indirectly related to Prudence's servers.
-; See servers.py for more information.
+; See servers.clj for more information.
 ;
 
 (import 'org.restlet.routing.VirtualHost)
@@ -42,7 +42,7 @@
 ;
 ; Applications by default will attach only to this host, though they can
 ; choose to attach to any hosts defined here. See the application's
-; routing.js.
+; routing.clj.
 ;
 
 (.setDefaultHost component all-host)

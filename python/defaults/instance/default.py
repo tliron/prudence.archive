@@ -2,7 +2,7 @@
 # Prudence Component
 #
 
-from java.lang import System
+from java.lang import System, Runtime
 from java.io import FileNotFoundException
 from java.util.logging import LogManager
 from java.util.concurrent import Executors
@@ -70,7 +70,7 @@ component.statusService = DelegatedStatusService()
 # Executor
 #
 
-executor = Executors.newSingleThreadExecutor()
+executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors())
 component.context.attributes['executor'] = executor
 
 #

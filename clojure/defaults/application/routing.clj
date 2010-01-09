@@ -41,7 +41,7 @@
 ; Hosts
 ;
 ; Note that the application's context will not be created until we attach the application to at least one
-; virtual host. See component/hosts.js for more information.
+; virtual host. See component/hosts.clj for more information.
 ;
 
 (def add-trailing-slash (Redirector. (.getContext application) "{ri}/" Redirector/MODE_CLIENT_PERMANENT))
@@ -56,7 +56,7 @@
 					(.attach host url add-trailing-slash))))
 		(if (not (empty? rest)) (do
 			(print ", ")
-			(add-to-hosts rest)))))
+			(recur rest)))))
 
 (print (str (.getName application) ": "))
 (add-to-hosts (.entrySet hosts))

@@ -42,7 +42,7 @@ component.hosts.add(mysite_host)
 #
 # Applications by default will attach only to this host, though they can
 # choose to attach to any hosts defined here. See the application's
-# routing.js.
+# routing.py.
 #
 
 component.defaultHost = all_host

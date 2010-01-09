@@ -75,7 +75,7 @@
 ; Executor
 ;
 
-(def executor (Executors/newSingleThreadExecutor))
+(def executor (Executors/newFixedThreadPool (.. Runtime getRuntime (availableProcessors))))
 (.. component getContext getAttributes (put "executor" executor))
 
 ;

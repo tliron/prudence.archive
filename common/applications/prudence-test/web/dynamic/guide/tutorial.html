@@ -1,7 +1,9 @@
 <%velocity #set($document.cacheDuration=5000) #set($prefix = '../') %><%& '../fragments/header' %>
 
-
 <h2>Quick Tutorial</h2>
+
+<p>This is a show-and-tell session going through Prudence's main features.
+Far more detailed explanations are given in the Prudence guide.</p>
 
 <div class="note">
 <p>For now, this is a todo list...</p>
@@ -13,29 +15,166 @@
 
 <h3>2. Your First Application</h3>
 
-<h3>A Static Web Page</h3>
+<h3>3. A Static Web Page</h3>
 
-<h3>A Dynamic Web Page</h3>
+<p>/web/static/index.html:</p>
+<pre>
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Wacky Wiki&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;div&gt;Nothing to see here, for now. Carry on.&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<h3>4. A Dynamic Web Page</h3>
 
 <p>(This is cool, but check out resources, below.)</p>
 
 <p>Print out a timestamp.</p>
 
+<p>/web/dynamic/index.html:</p>
+<pre>
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Wacky Wiki&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;div&gt;It is currently
+&lt;%python
+from datetime import datetime
+now = datetime.now()
+print now.strftime('%H:%M')
+%&gt;
+o' clock, and
+&lt;%
+print now.strftime('%S')
+%&gt;
+seconds
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Or, via the expression tag:</p>
+
+<p>/web/dynamic/index.html:</p>
+<pre>
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Wacky Wiki&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;div&gt;
+&lt;%python
+from datetime import datetime
+now = datetime.now()
+%&gt;
+It is currently &lt;%= now.strftime('%H:%M') %&gt; o' clock, and &lt;%= now.strftime('%S') %&gt; seconds
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>Purposely add a syntax error so we can check out the debug page.</p>
+
 <p>Include from /fragments.</p>
+
+<p>/web/fragments/time.html:</p>
+<pre>
+&lt;%python
+from datetime import datetime
+now = datetime.now()
+%&gt;
+It is currently &lt;%= now.strftime('%H:%M') %&gt; o' clock, and &lt;%= now.strftime('%S') %&gt; seconds
+</pre>
+
+<p>/web/dynamic/index.html:</p>
+<pre>
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Wacky Wiki&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;div&gt;&lt;%& '../fragments/time' %&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
 
 <p>Accessing the query.</p>
 
 <p>Caching. Show how it uses client-side caching (Firebug). Try it with two browsers!</p>
 
+<p>/web/dynamic/index.html:</p>
+<pre>
+&lt;% document.cacheDuration = 10000 %&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Wacky Wiki&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;div&gt;&lt;%& '../fragments/time' %&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
 <p>Handling an HTML form.</p>
+
+<p>/web/fragments/wiki.html:</p>
+<pre>
+&lt;%python
+wiki = 'Nothing in the wiki yet.'
+%&gt;
+Wiki content is: &lt;%= wiki %&gt;
+</pre>
+
+<p>/web/dynamic/index.html:</p>
+<pre>
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Wacky Wiki&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;div&gt;&lt;%& '../fragments/time' %&gt;&lt;/div&gt;
+&lt;div&gt;&lt;%& '../fragments/wiki' %&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
 
 <p>Quick peek at Velocity/Succinct.</p>
 
-<h3>3. A Resource</h3>
+<p>/web/fragments/time.html:</p>
+<pre>
+&lt;%python
+from datetime import datetime
+now = datetime.now()
+clock = now.strftime('%H:%M')
+seconds = now.strftime('%S')
+%&gt;
+&lt;%velocity
+It is currently $clock o' clock, and $seconds seconds
+%&gt;
+</pre>
+
+<h3>5. A Resource</h3>
 
 <p>Return a string.</p>
 
+<p>/resources/wiki.py:</p>
+<pre>
+def handleInit():
+    prudence.addMediaTypeByName('text/plain')
+
+def handleGet():
+    return 'Nothing in the wiki yet.'
+</pre>
+
 <p>Return text or JSON. Use query params.</p>
+
+<p>/resources/wiki.py:</p>
+<pre>
+wiki = 'Nothing in the wiki yet.'
+
+def handleInit():
+    prudence.addMediaTypeByName('text/plain')
+    prudence.addMediaTypeByName('application/json')
+
+def handleGet():
+	if prudence.mediaTypeByName == 'text/plain':
+    	return wiki
+    else:
+    	return '{"content": "%s"}' % wiki
+</pre>
 
 <p>Test in a browser. Add jQuery to dynamic page to test in browser.</p>
 
@@ -44,17 +183,157 @@
 
 <p>Including from /libraries.</p>
 
+<p>/libraries/wiki.py:</p>
+<pre>
+wiki = 'Nothing in the wiki yet.'
+
+def get_wiki():
+    return wiki
+</pre>
+
+<p>/resources/wiki.py:</p>
+<pre>
+sys.path.append(str(prudence.source.basePath) + '/../libraries/')
+from wiki import get_wiki, set_wiki
+
+def handleInit():
+    prudence.addMediaTypeByName('text/plain')
+    prudence.addMediaTypeByName('application/json')
+
+def handleGet():
+	if prudence.mediaTypeByName == 'text/plain':
+    	return get_wiki()
+    else:
+    	return '{"content": "%s"}' % get_wiki()
+</pre>
+
 <p>Put, Post, Delete.</p>
+
+<p>/libraries/wiki.py:</p>
+<pre>
+from threading import RLock
+
+wiki = 'Nothing in the wiki yet.'
+wiki_lock = RLock()
+
+def get_wiki():
+    wiki_lock.acquire()
+    try:
+        return wiki
+	finally:
+        wiki_lock.release()
+
+def set_wiki(content):
+    wiki_lock.acquire()
+    try:
+		wiki = content
+	finally:
+        wiki_lock.release()
+</pre>
+
+<p>Fixing our form handling from earlier using doPost.</p>
 
 <p>Caching (modification dates and ETags).</p>
 
+<p>/libraries/wiki.py:</p>
+<pre>
+from threading import RLock
+from datetime import datetime
+
+def to_milliseconds(dt):
+    return long(mktime(dt.timetuple()) * 1000)
+
+wiki = {content: 'Nothing in the wiki yet.', timestamp: datetime.now()}
+wiki_lock = RLock()
+
+def get_wiki():
+    wiki_lock.acquire()
+    try:
+        # Note that we are returning a copy of our wiki dictionary!
+        return {content: wiki['content'], timestamp: wiki['timestamp']}
+	finally:
+        wiki_lock.release()
+
+def set_wiki(content):
+    wiki_lock.acquire()
+    try:
+		wiki['content'] = content
+		wiki['timestamp'] = datetime.now()
+	finally:
+        wiki_lock.release()
+</pre>
+
+<p>/resources/wiki.py:</p>
+<pre>
+sys.path.append(str(prudence.source.basePath) + '/../libraries/')
+from wiki import get_wiki, set_wiki, to_milliseconds
+
+def handleInit():
+    prudence.addMediaTypeByName('text/plain')
+    prudence.addMediaTypeByName('application/json')
+
+def handleGet():
+	wiki = get_wiki()
+    prudence.modificationTimestamp = to_milliseconds(wiki['timestamp'])
+	if prudence.mediaTypeByName == 'text/plain':
+    	return wiki['content']
+    else:
+    	return '{"content": "%s"}' % wiki['content']
+</pre>
+
 <p>Optimizing with handleGetInfo.</p>
+
+<p>/resources/wiki.py:</p>
+<pre>
+sys.path.append(str(prudence.source.basePath) + '/../libraries/')
+from wiki import get_wiki, set_wiki, to_milliseconds
+
+def handleInit():
+    prudence.addMediaTypeByName('text/plain')
+    prudence.addMediaTypeByName('application/json')
+
+def handleGet():
+	wiki = get_wiki()
+    prudence.modificationTimestamp = to_milliseconds(wiki['timestamp'])
+	if prudence.mediaTypeByName == 'text/plain':
+    	return wiki['content']
+    else:
+    	return '{"content": "%s"}' % wiki['content']
+
+def handleGetInfo():
+	wiki = get_wiki()
+    return to_milliseconds(wiki['timestamp'])
+</pre>
 
 <p>Direct access to resources (ClientResource). Back to dynamic HTML - using your resources there.</p> 
 
+<p>/fragments/wiki.html:</p>
+<pre>
+&lt;%python
+from org.restlet.resource import ClientResource
+from org.restlet.data import MediaType
+resource = ClientResource('riap://application/wiki');
+wiki = r.get(MediaType.APPLICATION_JSON).text
+wiki = eval('(' + wiki + ')')
+%&gt;
+Wiki content is: &lt;%= wiki['content'] %&gt;
+</pre>
+
 <p>External resources: distributing your application.</p>
 
-<h3>4. Advanced Routing</h3>
+<p>/fragments/wiki.html:</p>
+<pre>
+&lt;%python
+from org.restlet.resource import ClientResource
+from org.restlet.data import MediaType
+resource = ClientResource('http://192.168.1.2/wackywiki/wiki');
+wiki = r.get(MediaType.APPLICATION_JSON).text
+wiki = eval('(' + wiki + ')')
+%&gt;
+Wiki content is: &lt;%= wiki['content'] %&gt;
+</pre>
+
+<h3>6. Advanced Routing</h3>
 
 <p>URL patterns. Improve our resource above over the query params.</p>
 
@@ -66,7 +345,7 @@
 
 <p>Just for fun: robots.txt, sitemap.xml.</p>
 
-<h3>Other Features</h3>
+<h3>7. Other Features</h3>
 
 <p>Logging.</p>
 

@@ -4,6 +4,7 @@
 
 importClass(
 	java.lang.System,
+	java.lang.Runtime,
 	java.io.FileNotFoundException,
 	java.util.logging.LogManager,
 	java.util.concurrent.Executors,
@@ -71,7 +72,7 @@ component.statusService = new DelegatedStatusService();
 // Executor
 //
 
-var executor = Executors.newSingleThreadExecutor();
+var executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors());
 component.context.attributes.put('executor', executor);
 
 //
