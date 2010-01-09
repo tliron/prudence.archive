@@ -14,8 +14,7 @@
 	'com.threecrickets.scripturian.Defroster
 	'com.threecrickets.scripturian.file.DocumentFileSource
 	'com.threecrickets.prudence.util.FallbackRouter
-	'com.threecrickets.prudence.util.PreheatTask
-)
+	'com.threecrickets.prudence.util.PreheatTask)
 
 (def classLoader (ClassLoader/getSystemClassLoader))
 

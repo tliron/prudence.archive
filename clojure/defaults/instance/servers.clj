@@ -16,8 +16,7 @@
 
 (import
 	'org.restlet.Server
-	'org.restlet.data.Protocol
-)
+	'org.restlet.data.Protocol)
 
 ;
 ; Default HTTP server

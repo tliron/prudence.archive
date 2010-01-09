@@ -8,8 +8,7 @@
 	'java.util.logging.LogManager
 	'java.util.concurrent.Executors
 	'org.restlet.Component
-	'com.threecrickets.prudence.util.DelegatedStatusService
-)
+	'com.threecrickets.prudence.util.DelegatedStatusService)
 
 (defn include-or-default
 	([name default]
@@ -43,8 +42,7 @@
 (try
 	(import 'org.apache.log4j.PropertyConfigurator)
 	(org.apache.log4j.PropertyConfigurator/configure "conf/logging.conf")
-	(catch Exception _ nil)
-) 
+(catch Exception _ nil)) 
 
 ; JULI: Remove any pre-existing configuration
 (. (LogManager/getLogManager) reset)
@@ -53,8 +51,7 @@
 (try
 	(import 'org.slf4j.bridge.SLF4JBridgeHandler)
 	(org.slf4j.bridge.SLF4JBridgeHandler/install)
-	(catch Exception _ nil)
-) 
+(catch Exception _ nil)) 
 
 ; Set Restlet to use SLF4J, which will use log4j as its engine
 (System/setProperty "org.restlet.engine.loggerFacadeClass" "org.restlet.ext.slf4j.Slf4jLoggerFacade")

@@ -5,8 +5,7 @@
 (import
 	'org.restlet.data.Reference
 	'org.restlet.data.MediaType
-	'com.threecrickets.prudence.util.DelegatedStatusService
-)
+	'com.threecrickets.prudence.util.DelegatedStatusService)
 
 (def tasks [])
 
