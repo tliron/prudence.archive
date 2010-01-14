@@ -642,7 +642,9 @@ public class ExposedContainerForDelegatedResource
 	 */
 	public Object invoke( String entryPointName ) throws ResourceException
 	{
-		String name = PrudenceUtils.getRemainingPart( resource.getRequest(), resource.getDefaultName() );
+		String name = resource.getRequest().getResourceRef().getRemainingPart( true, false );
+		if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
+			name = resource.getDefaultName();
 
 		try
 		{

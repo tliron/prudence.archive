@@ -14,6 +14,7 @@ package com.threecrickets.prudence.util;
 import java.io.IOException;
 
 import org.restlet.Context;
+import org.restlet.data.LocalReference;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 
@@ -44,11 +45,10 @@ public class PreheatTask implements Runnable
 
 	public void run()
 	{
-		System.out.println( "riap://component/" + applicationInternalName + "/" + resourceUri );
-		ClientResource resource = new ClientResource( context, "riap://component/" + applicationInternalName + "/" + resourceUri );
+		ClientResource clientResource = new ClientResource( context, LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, "/" + applicationInternalName + "/" + resourceUri ) );
 		try
 		{
-			System.out.println( resource.get().getText() );
+			System.out.println( clientResource.get().getText() );
 		}
 		catch( ResourceException e )
 		{

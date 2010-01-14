@@ -35,6 +35,7 @@ import org.restlet.routing.Redirector;
 import org.restlet.service.StatusService;
 
 import com.threecrickets.scripturian.exception.DocumentRunException;
+import com.threecrickets.scripturian.exception.StackFrame;
 
 /**
  * Allows delegating the handling of errors to specified restlets.
@@ -213,38 +214,43 @@ public class DelegatedStatusService extends StatusService
 		html.append( "<body style=\"font-family: sans-serif;\">\n" );
 
 		html.append( "<h3>" );
-		html.append( throwable.getMessage().replace( "<", "&lt;" ).replace( ">", "&gt;" ) );
+		html.append( escapeHtml( throwable.getMessage() ) );
 		html.append( "</h3>" );
 
 		if( throwable instanceof DocumentRunException )
 		{
 			DocumentRunException documentRunException = (DocumentRunException) throwable;
-			int lineNumber = documentRunException.getLineNumber();
-			html.append( "<div id=\"error\">" );
-			html.append( "Document: " );
-			html.append( documentRunException.getDocumentName() );
-			html.append( " <a href=\"" );
-			html.append( request.getResourceRef() );
-			html.append( "?source=true" );
-			if( lineNumber >= 0 )
+			if( documentRunException != null )
 			{
-				html.append( "&line=" );
-				html.append( lineNumber );
-			}
-			html.append( "\">" );
-			html.append( "(source)</a>" );
-			html.append( "<br />" );
-			if( documentRunException.getLineNumber() >= 0 )
-			{
-				html.append( "Line: " );
-				html.append( documentRunException.getLineNumber() );
-				html.append( "<br />" );
-			}
-			if( documentRunException.getColumnNumber() >= 0 )
-			{
-				html.append( "Column: " );
-				html.append( documentRunException.getColumnNumber() );
-				html.append( "<br />" );
+				html.append( "<h3>Prudence Stack Trace</h3>" );
+				html.append( "<div id=\"error\">" );
+				for( StackFrame stackFrame : documentRunException.getStack() )
+				{
+					int lineNumber = stackFrame.getLineNumber();
+					html.append( "At: " );
+					html.append( "<a href=\"" );
+					html.append( escapeHtml( request.getResourceRef() ) );
+					html.append( "?source=true" );
+					if( lineNumber >= 0 )
+					{
+						html.append( "&line=" );
+						html.append( lineNumber );
+					}
+					html.append( "\">" );
+					html.append( escapeHtml( stackFrame.getName() ) );
+					if( stackFrame.getLineNumber() >= 0 )
+					{
+						html.append( ", Line: " );
+						html.append( stackFrame.getLineNumber() );
+					}
+					if( stackFrame.getColumnNumber() >= 0 )
+					{
+						html.append( ", Column: " );
+						html.append( stackFrame.getColumnNumber() );
+					}
+					html.append( "</a>" );
+					html.append( "<br />" );
+				}
 			}
 			html.append( "</div>" );
 		}
@@ -252,22 +258,22 @@ public class DelegatedStatusService extends StatusService
 		html.append( "<h3>References</h3>" );
 		html.append( "<div id=\"references\">" );
 		html.append( "Resource: " );
-		html.append( request.getResourceRef() );
+		html.append( escapeHtml( request.getResourceRef() ) );
 		html.append( "<br />" );
 		html.append( "Original: " );
-		html.append( request.getOriginalRef() );
+		html.append( escapeHtml( request.getOriginalRef() ) );
 		html.append( "<br />" );
 		html.append( "Root: " );
-		html.append( request.getRootRef() );
+		html.append( escapeHtml( request.getRootRef() ) );
 		html.append( "<br />" );
 		if( request.getReferrerRef() != null )
 		{
 			html.append( "Referrer: " );
-			html.append( request.getReferrerRef() );
+			html.append( escapeHtml( request.getReferrerRef() ) );
 			html.append( "<br />" );
 		}
 		html.append( "Host: " );
-		html.append( request.getHostRef() );
+		html.append( escapeHtml( request.getHostRef() ) );
 		html.append( "<br />" );
 		html.append( "</div>" );
 
@@ -278,9 +284,9 @@ public class DelegatedStatusService extends StatusService
 			html.append( "<div id=\"query\">" );
 			for( Map.Entry<String, String> entry : form.getValuesMap().entrySet() )
 			{
-				html.append( entry.getKey() );
+				html.append( escapeHtml( entry.getKey() ) );
 				html.append( ": " );
-				html.append( entry.getValue() );
+				html.append( escapeHtml( entry.getValue() ) );
 				html.append( "<br />" );
 			}
 			html.append( "</div>" );
@@ -292,15 +298,15 @@ public class DelegatedStatusService extends StatusService
 			html.append( "<div id=\"cookies\">" );
 			for( Cookie cookie : request.getCookies() )
 			{
-				html.append( cookie.getName() );
+				html.append( escapeHtml( cookie.getName() ) );
 				html.append( ": " );
-				html.append( cookie.getValue() );
+				html.append( escapeHtml( cookie.getValue() ) );
 				html.append( " (" );
-				html.append( cookie.getVersion() );
+				html.append( escapeHtml( cookie.getVersion() ) );
 				html.append( ") for " );
-				html.append( cookie.getDomain() );
+				html.append( escapeHtml( cookie.getDomain() ) );
 				html.append( " " );
-				html.append( cookie.getPath() );
+				html.append( escapeHtml( cookie.getPath() ) );
 				html.append( "<br />" );
 			}
 			html.append( "</div>" );
@@ -308,25 +314,25 @@ public class DelegatedStatusService extends StatusService
 
 		html.append( "<h3>Request</h3>" );
 		html.append( "<div id=\"request\">" );
-		html.append( request.getDate() );
+		html.append( escapeHtml( request.getDate() ) );
 		html.append( "<br />" );
 		html.append( "Method: " );
-		html.append( request.getMethod() );
+		html.append( escapeHtml( request.getMethod() ) );
 		html.append( "<br />" );
 		html.append( "Protocol: " );
-		html.append( request.getProtocol() );
+		html.append( escapeHtml( request.getProtocol() ) );
 		html.append( "<br />" );
 		html.append( "Media Types: " );
-		html.append( clientInfo.getAcceptedMediaTypes() );
+		html.append( escapeHtml( clientInfo.getAcceptedMediaTypes() ) );
 		html.append( "<br />" );
 		html.append( "Encodings: " );
-		html.append( clientInfo.getAcceptedEncodings() );
+		html.append( escapeHtml( clientInfo.getAcceptedEncodings() ) );
 		html.append( "<br />" );
 		html.append( "Character Sets: " );
-		html.append( clientInfo.getAcceptedCharacterSets() );
+		html.append( escapeHtml( clientInfo.getAcceptedCharacterSets() ) );
 		html.append( "<br />" );
 		html.append( "Languages: " );
-		html.append( clientInfo.getAcceptedLanguages() );
+		html.append( escapeHtml( clientInfo.getAcceptedLanguages() ) );
 		html.append( "<br />" );
 		html.append( "</div>" );
 
@@ -337,37 +343,37 @@ public class DelegatedStatusService extends StatusService
 			if( conditions.getModifiedSince() != null )
 			{
 				html.append( "Modified Since: " );
-				html.append( conditions.getModifiedSince() );
+				html.append( escapeHtml( conditions.getModifiedSince() ) );
 				html.append( "<br />" );
 			}
 			if( conditions.getUnmodifiedSince() != null )
 			{
 				html.append( "Unmodified Since: " );
-				html.append( conditions.getUnmodifiedSince() );
+				html.append( escapeHtml( conditions.getUnmodifiedSince() ) );
 				html.append( "<br />" );
 			}
 			if( conditions.getRangeDate() != null )
 			{
 				html.append( "Range Date: " );
-				html.append( conditions.getRangeDate() );
+				html.append( escapeHtml( conditions.getRangeDate() ) );
 				html.append( "<br />" );
 			}
 			if( !conditions.getMatch().isEmpty() )
 			{
 				html.append( "Match tTgs: " );
-				html.append( conditions.getMatch() );
+				html.append( escapeHtml( conditions.getMatch() ) );
 				html.append( "<br />" );
 			}
 			if( !conditions.getNoneMatch().isEmpty() )
 			{
 				html.append( "None-Match Tags: " );
-				html.append( conditions.getNoneMatch() );
+				html.append( escapeHtml( conditions.getNoneMatch() ) );
 				html.append( "<br />" );
 			}
 			if( conditions.getRangeTag() != null )
 			{
 				html.append( "Range Tag: " );
-				html.append( conditions.getRangeTag() );
+				html.append( escapeHtml( conditions.getRangeTag() ) );
 				html.append( "<br />" );
 			}
 			html.append( "</div>" );
@@ -377,7 +383,7 @@ public class DelegatedStatusService extends StatusService
 		{
 			html.append( "<h3>Entity</h3>" );
 			html.append( "<div id=\"entity\">" );
-			html.append( request.getEntity() );
+			html.append( escapeHtml( request.getEntity() ) );
 			html.append( "</div>" );
 		}
 
@@ -400,9 +406,9 @@ public class DelegatedStatusService extends StatusService
 				{
 					if( cacheDirective.getValue().length() > 0 )
 					{
-						html.append( cacheDirective.getName() );
+						html.append( escapeHtml( cacheDirective.getName() ) );
 						html.append( ": " );
-						html.append( cacheDirective.getValue() );
+						html.append( escapeHtml( cacheDirective.getValue() ) );
 						html.append( "<br />" );
 					}
 				}
@@ -413,35 +419,35 @@ public class DelegatedStatusService extends StatusService
 		html.append( "<h3>Client</h3>" );
 		html.append( "<div id=\"client\">" );
 		html.append( "Address: " );
-		html.append( clientInfo.getAddress() );
+		html.append( escapeHtml( clientInfo.getAddress() ) );
 		html.append( " port " );
 		html.append( clientInfo.getPort() );
 		html.append( "<br />" );
 		html.append( "Upstream Address: " );
-		html.append( clientInfo.getUpstreamAddress() );
+		html.append( escapeHtml( clientInfo.getUpstreamAddress() ) );
 		html.append( "<br />" );
 		if( !clientInfo.getForwardedAddresses().isEmpty() )
 		{
 			html.append( "Forwarded Addresses: " );
-			html.append( clientInfo.getForwardedAddresses() );
+			html.append( escapeHtml( clientInfo.getForwardedAddresses() ) );
 			html.append( "<br />" );
 		}
 		html.append( "Agent: " );
-		html.append( clientInfo.getAgentName() );
+		html.append( escapeHtml( clientInfo.getAgentName() ) );
 		html.append( " " );
-		html.append( clientInfo.getAgentVersion() );
+		html.append( escapeHtml( clientInfo.getAgentVersion() ) );
 		html.append( "<br />" );
 		html.append( "Products:<br />" );
 		for( Product product : clientInfo.getAgentProducts() )
 		{
 			html.append( "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" );
-			html.append( product.getName() );
+			html.append( escapeHtml( product.getName() ) );
 			html.append( " " );
-			html.append( product.getVersion() );
+			html.append( escapeHtml( product.getVersion() ) );
 			if( product.getComment() != null )
 			{
 				html.append( " (" );
-				html.append( product.getComment() );
+				html.append( escapeHtml( product.getComment() ) );
 				html.append( ")" );
 			}
 			html.append( "<br />" );
@@ -449,7 +455,7 @@ public class DelegatedStatusService extends StatusService
 		if( clientInfo.getFrom() != null )
 		{
 			html.append( "From: " );
-			html.append( clientInfo.getFrom() );
+			html.append( escapeHtml( clientInfo.getFrom() ) );
 			html.append( "<br />" );
 		}
 		html.append( "</div>" );
@@ -460,7 +466,7 @@ public class DelegatedStatusService extends StatusService
 			html.append( "<div id=\"attributes\">" );
 			for( Map.Entry<String, Object> attribute : request.getAttributes().entrySet() )
 			{
-				html.append( attribute.getKey() );
+				html.append( escapeHtml( attribute.getKey() ) );
 				html.append( ": " );
 				if( attribute.getValue() instanceof Collection<?> )
 				{
@@ -468,13 +474,13 @@ public class DelegatedStatusService extends StatusService
 					for( Object o : (Collection<?>) attribute.getValue() )
 					{
 						html.append( "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" );
-						html.append( o );
+						html.append( escapeHtml( o ) );
 						html.append( "<br />" );
 					}
 				}
 				else
 				{
-					html.append( attribute.getValue() );
+					html.append( escapeHtml( attribute.getValue() ) );
 					html.append( "<br />" );
 				}
 			}
@@ -489,39 +495,41 @@ public class DelegatedStatusService extends StatusService
 			{
 				html.append( warning.getDate() );
 				html.append( ": " );
-				html.append( warning.getText() );
+				html.append( escapeHtml( warning.getText() ) );
 				html.append( ", from " );
-				html.append( warning.getAgent() );
+				html.append( escapeHtml( warning.getAgent() ) );
 				html.append( " (" );
-				html.append( warning.getStatus() );
+				html.append( escapeHtml( warning.getStatus() ) );
 				html.append( ")" );
 				html.append( "<br />" );
 			}
 			html.append( "</div>" );
 		}
 
-		html.append( "<h3>Stack Trace</h3>" );
-
-		html.append( "<div id=\"stack-trace\">" );
-		html.append( "<h4>" );
-		html.append( throwable.getClass().getCanonicalName() );
-		html.append( "</h4>" );
-		for( StackTraceElement stackTraceElement : throwable.getStackTrace() )
+		if( throwable.getStackTrace() != null )
 		{
-			html.append( stackTraceElement.getClassName() );
-			html.append( '.' );
-			html.append( stackTraceElement.getMethodName() );
-			if( stackTraceElement.getFileName() != null )
+			html.append( "<h3>Machine Stack Trace</h3>" );
+			html.append( "<div id=\"stack-trace\">" );
+			html.append( "<h4>" );
+			html.append( escapeHtml( throwable.getClass().getCanonicalName() ) );
+			html.append( "</h4>" );
+			for( StackTraceElement stackTraceElement : throwable.getStackTrace() )
 			{
-				html.append( " (" );
-				html.append( stackTraceElement.getFileName() );
-				html.append( ':' );
-				html.append( stackTraceElement.getLineNumber() );
-				html.append( ')' );
+				html.append( escapeHtml( stackTraceElement.getClassName() ) );
+				html.append( '.' );
+				html.append( escapeHtml( stackTraceElement.getMethodName() ) );
+				if( stackTraceElement.getFileName() != null )
+				{
+					html.append( " (" );
+					html.append( escapeHtml( stackTraceElement.getFileName() ) );
+					html.append( ':' );
+					html.append( stackTraceElement.getLineNumber() );
+					html.append( ')' );
+				}
+				html.append( "<br />" );
 			}
-			html.append( "<br />" );
+			html.append( "</div>" );
 		}
-		html.append( "</div>" );
 
 		html.append( "</body>\n" );
 		html.append( "</html>\n" );
@@ -541,4 +549,9 @@ public class DelegatedStatusService extends StatusService
 	 * Whether we are debugging.
 	 */
 	private volatile boolean isDebugging;
+
+	private static String escapeHtml( Object string )
+	{
+		return string.toString().replace( "<", "&lt;" ).replace( ">", "&gt;" );
+	}
 }

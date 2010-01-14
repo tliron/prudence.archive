@@ -170,10 +170,10 @@ def handleInit():
     prudence.addMediaTypeByName('application/json')
 
 def handleGet():
-	if prudence.mediaTypeByName == 'text/plain':
-    	return wiki
+    if prudence.mediaTypeByName == 'text/plain':
+        return wiki
     else:
-    	return '{"content": "%s"}' % wiki
+        return '{"content": "%s"}' % wiki
 </pre>
 
 <p>Test in a browser. Add jQuery to dynamic page to test in browser.</p>
@@ -201,10 +201,10 @@ def handleInit():
     prudence.addMediaTypeByName('application/json')
 
 def handleGet():
-	if prudence.mediaTypeByName == 'text/plain':
-    	return get_wiki()
+    if prudence.mediaTypeByName == 'text/plain':
+        return get_wiki()
     else:
-    	return '{"content": "%s"}' % get_wiki()
+        return '{"content": "%s"}' % get_wiki()
 </pre>
 
 <p>Put, Post, Delete.</p>
@@ -220,14 +220,14 @@ def get_wiki():
     wiki_lock.acquire()
     try:
         return wiki
-	finally:
+    finally:
         wiki_lock.release()
 
 def set_wiki(content):
     wiki_lock.acquire()
     try:
-		wiki = content
-	finally:
+        wiki = content
+    finally:
         wiki_lock.release()
 </pre>
 
@@ -251,15 +251,15 @@ def get_wiki():
     try:
         # Note that we are returning a copy of our wiki dictionary!
         return {content: wiki['content'], timestamp: wiki['timestamp']}
-	finally:
+    finally:
         wiki_lock.release()
 
 def set_wiki(content):
     wiki_lock.acquire()
     try:
-		wiki['content'] = content
-		wiki['timestamp'] = datetime.now()
-	finally:
+        wiki['content'] = content
+        wiki['timestamp'] = datetime.now()
+    finally:
         wiki_lock.release()
 </pre>
 
@@ -273,12 +273,12 @@ def handleInit():
     prudence.addMediaTypeByName('application/json')
 
 def handleGet():
-	wiki = get_wiki()
+    wiki = get_wiki()
     prudence.modificationTimestamp = to_milliseconds(wiki['timestamp'])
-	if prudence.mediaTypeByName == 'text/plain':
-    	return wiki['content']
+    if prudence.mediaTypeByName == 'text/plain':
+        return wiki['content']
     else:
-    	return '{"content": "%s"}' % wiki['content']
+        return '{"content": "%s"}' % wiki['content']
 </pre>
 
 <p>Optimizing with handleGetInfo.</p>
@@ -293,15 +293,15 @@ def handleInit():
     prudence.addMediaTypeByName('application/json')
 
 def handleGet():
-	wiki = get_wiki()
+    wiki = get_wiki()
     prudence.modificationTimestamp = to_milliseconds(wiki['timestamp'])
-	if prudence.mediaTypeByName == 'text/plain':
-    	return wiki['content']
+    if prudence.mediaTypeByName == 'text/plain':
+        return wiki['content']
     else:
-    	return '{"content": "%s"}' % wiki['content']
+        return '{"content": "%s"}' % wiki['content']
 
 def handleGetInfo():
-	wiki = get_wiki()
+    wiki = get_wiki()
     return to_milliseconds(wiki['timestamp'])
 </pre>
 
@@ -310,11 +310,9 @@ def handleGetInfo():
 <p>/fragments/wiki.html:</p>
 <pre>
 &lt;%python
-from org.restlet.resource import ClientResource
-from org.restlet.data import MediaType
-resource = ClientResource('riap://application/wiki');
-wiki = r.get(MediaType.APPLICATION_JSON).text
-wiki = eval('(' + wiki + ')')
+from com.threecrickets.prudence import Resource
+wiki = Resource.get('wiki', 'application/json');
+wiki = eval('(' + wiki.text + ')')
 %&gt;
 Wiki content is: &lt;%= wiki['content'] %&gt;
 </pre>
@@ -324,11 +322,9 @@ Wiki content is: &lt;%= wiki['content'] %&gt;
 <p>/fragments/wiki.html:</p>
 <pre>
 &lt;%python
-from org.restlet.resource import ClientResource
-from org.restlet.data import MediaType
-resource = ClientResource('http://192.168.1.2/wackywiki/wiki');
-wiki = r.get(MediaType.APPLICATION_JSON).text
-wiki = eval('(' + wiki + ')')
+from com.threecrickets.prudence import Resource
+wiki = Resource.getExternal('http://192.168.1.2/wackywiki/wiki', 'application/json');
+wiki = eval('(' + wiki.text + ')')
 %&gt;
 Wiki content is: &lt;%= wiki['content'] %&gt;
 </pre>

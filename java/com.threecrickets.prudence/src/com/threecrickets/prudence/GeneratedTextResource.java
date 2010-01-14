@@ -34,7 +34,6 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
-import com.threecrickets.prudence.internal.PrudenceUtils;
 import com.threecrickets.prudence.util.RepresentableString;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentDescriptor;
@@ -747,7 +746,9 @@ public class GeneratedTextResource extends ServerResource
 	private Representation run( Representation entity, Variant variant ) throws ResourceException
 	{
 		Request request = getRequest();
-		String name = PrudenceUtils.getRemainingPart( request, getDefaultName() );
+		String name = request.getResourceRef().getRemainingPart( true, false );
+		if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
+			name = getDefaultName();
 
 		try
 		{

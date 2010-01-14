@@ -37,7 +37,6 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.internal.ExposedContainerForDelegatedResource;
-import com.threecrickets.prudence.internal.PrudenceUtils;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentFormatter;
@@ -824,7 +823,9 @@ public class DelegatedResource extends ServerResource
 			Form query = request.getResourceRef().getQueryAsForm();
 			if( TRUE.equals( query.getFirstValue( SOURCE ) ) )
 			{
-				String name = PrudenceUtils.getRemainingPart( request, getDefaultName() );
+				String name = request.getResourceRef().getRemainingPart( true, false );
+				if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
+					name = getDefaultName();
 				int lineNumber = -1;
 				String line = query.getFirstValue( LINE );
 				if( line != null )
