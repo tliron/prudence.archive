@@ -15,7 +15,18 @@ Far more detailed explanations are given in the Prudence guide.</p>
 
 <h3>2. Your First Application</h3>
 
+<p>Your Prudence instance will host all applications under the /applications/ directory.
+Simply create a new subdirectory there. The subdirectory name will be used as a default
+for various things we can change later.
+</p>
+
+<p>So, let's create /applications/wackywiki/</p>
+
 <h3>3. A Static Web Page</h3>
+
+<p>Create /applications/wackywiki/web/static/. Files you put there will served just like
+from any static web server. You can put images, HTML files, CSS or anything else. Let's start
+with a default web page.</p>
 
 <p>/web/static/index.html:</p>
 <pre>
@@ -27,11 +38,23 @@ Far more detailed explanations are given in the Prudence guide.</p>
 &lt;/html&gt;
 </pre>
 
+<p>Restart Prudence, and browse to http://localhost:8080/wackiwiki to see the page.
+You can also see it at http://localhost:8080/wackiwiki/index.html. 
+Check the Prudence administration application at http://localhost:8080/ to make
+sure your new application is there.
+</p>
+
 <h3>4. A Dynamic Web Page</h3>
 
 <p>(This is cool, but check out resources, below.)</p>
 
-<p>Print out a timestamp.</p>
+<p>Create /applications/wackywiki/web/dynamic/. Unlike /web/static/, files in this
+directory must be text files (HTML, XML, plain text, etc.) They are specially processed
+so that they can include "scriptlets" of programming code.
+</p>
+
+<p>Let's move our index.html from /web/static/ to /web/dynamic/ and edit it to add some
+Python scriptlets.</p> 
 
 <p>/web/dynamic/index.html:</p>
 <pre>
@@ -54,7 +77,20 @@ seconds
 &lt;/html&gt;
 </pre>
 
-<p>Or, via the expression tag:</p>
+<p>You'll notice the &lt;% and %&gt; are used to delimit scriptlets, and that we've
+added "python" to the opening delimiter of the first scriptlet. Subsequent scriptlets
+on the page will automatically use the language of the previous scriptlets, so we
+don't have to repeat it.</p>
+
+<p>Note, too, that "print" works by adding output to the stream of text where the
+scriptlet is located.</p>
+
+<p>Final note: Though they are called "scriptlets," they are not "scripts," in the
+common meaning of interpreted code. All scriptlets are, in fact, compiled and run in
+JVM bytecode. That's fast.</p>
+
+<p>Let's make the code above more readable by using special "expression scriptlets."
+They're really just a shorthand for "print."
 
 <p>/web/dynamic/index.html:</p>
 <pre>
@@ -72,9 +108,31 @@ It is currently &lt;%= now.strftime('%H:%M') %&gt; o' clock, and &lt;%= now.strf
 &lt;/html&gt;
 </pre>
 
-<p>Purposely add a syntax error so we can check out the debug page.</p>
+<p>What happens if you have a coding error in your scriptlets? Let's try and introduce an error on purpose.</p>
 
-<p>Include from /fragments.</p>
+<p>/web/dynamic/index.html:</p>
+<pre>
+...
+from dratetime import datetime
+...
+</pre>
+
+<p>If you try to access http://localhost:8080/wackywiki, Prudence will show you a very detailed debug page,
+from where you can also access the source code with the troublesome code line highlighted. Once you
+deploy your application, you can cancel this debug feature.
+</p>
+
+<p>Prudence lets you include others documents in-place using a special scriptlet. This makes it very easy
+to reuse fragments of documents (which can include scriptlets) throughout your dynamic pages. Common uses
+are page headers, footers, and navigation menus.</p>
+
+<p>By convention in Prudence, fragments are put in /web/fragments/, though you can include them from anywhere,
+even from your regular /web/dynamic/ or /web/static/ subdirectories. The advantage of keeping them out of there
+is that users won't be able to access the individual fragments directly. Instead, we must explicitly include
+them in our /web/dynamic/ files.
+</p>
+
+<p>Let's create a fragment that displays the current time.</p>
 
 <p>/web/fragments/time.html:</p>
 <pre>
@@ -95,9 +153,32 @@ It is currently &lt;%= now.strftime('%H:%M') %&gt; o' clock, and &lt;%= now.strf
 &lt;/html&gt;
 </pre>
 
+<p>Note that the include scriptlet, which begins with the &lt;%& delimiter, accepts a real Python
+expression. For example, you can do Pythony things like &lt;%& '%s-%s' % (language, encoding) %&gt;,
+allowing you to include specific fragments according to dynamic circumstances.
+</p>
+
 <p>Accessing the query.</p>
 
-<p>Caching. Show how it uses client-side caching (Firebug). Try it with two browsers!</p>
+<p>Dynamically generating HTML and other text is very powerful. You may be wondering, however,
+how well this scales. Even if the Python code is compiled, it would still need to be run for
+every user request, right? Prudence supports straightforward per-page caching to greatly help
+you scale. By changing document.cacheDuration within a scriptlet, you can dynamically change how
+long Prudence will look for updates in the document. Note that even very short caching times
+can be a great boost to scalability. For example, if your cache duration is 1 second, it means
+that your scriptlets would only be run once every second. In computing terms, that's a very long
+time! For example, imagine that your popular web site is getting 1000 hits per second...
+</p>
+
+<p>Finally, you'll be happy to know that by default Prudence also enables client-side caching.
+It does this by setting a standard HTTP header that tells the client how long the content should
+be cached. All popular web browsers recognize it. This can mean significant bandwidth savings for
+you, because the client will not send an unnecessary request that would return the same content
+from you.
+</p>
+
+<p>Let's enable a simple 10 second cache.</p>
+
 
 <p>/web/dynamic/index.html:</p>
 <pre>
@@ -109,6 +190,34 @@ It is currently &lt;%= now.strftime('%H:%M') %&gt; o' clock, and &lt;%= now.strf
 &lt;/body&gt;
 &lt;/html&gt;
 </pre>
+
+<p>To test the above, go to our page and keep refreshing it in your web browser. You will see
+that the printed time will only be udpated once every 10 seconds.</p>
+
+<p>To verify that client-side caching works correctly, we reccommed using the free Firefox
+browser with the amazing Firebug add-on. In the Firebug network panel, you can see which
+requests are sent to the server. Within those 10 seconds between updates, you will see the
+that the request for the page returns a 304 status code: "the document has not been modified."
+</p>
+
+<p>For an even more elaborate experiment, try running two browsers at the same time on different
+machines, and keep refreshing them. You'll see each client caching individually, and yet the
+server still returning a different page only after the 10 second cache duration has passed.
+</p>
+
+<p>Caching is very powerful, but obviously only useful for specific pages. For example, if it's
+important for a page to always show the up-to-date to the moment information, you might not be able
+to afford even a one second cache. It's useful, then, to know that Prudence's document.cacheDuration
+works at the level of the current document, so that each included fragment can set its own cache
+duration. Just remember that the top document or fragment requests will determine the caching for
+included fragments, too. If your index.html has a cache duration of 10 seconds, then even if
+an included fragment has a cache duration of 1 second, it would only appear to update every
+10 seconds.
+</p>
+
+<p>Scriptlets can also dynamically change the cache duration according to changing circumstances.
+For example, under heavy load, you might want your application to cache for longer periods of
+time.</p>
 
 <p>Handling an HTML form.</p>
 
