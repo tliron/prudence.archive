@@ -81,7 +81,6 @@ foreach($factories as $factory) {
 <p><?= $form->getFirstValue('id') ?></p>
 <h3>A few tests:</h3>
 <?
-global $george;
 for($i = 0; $i < 10; $i++) {
 ?>
 A multiple of three: 

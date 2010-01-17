@@ -13,8 +13,8 @@
 // that the included files are not run through Scripturian.
 //
 // Another consequence is that we absolutely must use the file system for our included scripts,
-// unlike our reliance on the ScriptSource, which allows us to plug in our Scripturian's
-// ScriptSource. This is unfortunate, because our ScriptSource can offer certain advantages.
+// unlike our reliance on the DocumentSource, which allows us to plug in our Scripturian's
+// DocumentSource. This is unfortunate, because our ScriptSource can offer certain advantages.
 // For example, we could implement it via a ClassLoader to load scripts from a .jar file
 // or load it from a network location. This is currently impossible with Quercus. 
 //
