@@ -54,7 +54,7 @@
 							<p>
 							Routes:
 							#foreach($route in $host.routes)
-								<a href="$route">$route</a>
+								<a href="$route.template.pattern">$route.template.pattern</a>
 							#end
 							</p>
 						</div>
