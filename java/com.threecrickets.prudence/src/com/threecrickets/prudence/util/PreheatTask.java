@@ -12,9 +12,11 @@
 package com.threecrickets.prudence.util;
 
 import java.util.Collection;
+import java.util.logging.Level;
 
 import org.restlet.Context;
 import org.restlet.data.LocalReference;
+import org.restlet.data.Status;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 
@@ -72,17 +74,29 @@ public class PreheatTask implements Runnable
 	{
 		String uri = "/" + applicationInternalName + "/" + resourceUri;
 		uri = uri.replace( "//", "/" ); // Remove double slashes
-		context.getLogger().info( "Preheating: " + uri );
 		ClientResource clientResource = new ClientResource( context, LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, uri ) );
 		try
 		{
+			context.getLogger().fine( "Preheating: " + uri );
 			clientResource.get();
-			// System.out.println( clientResource.get().getText() );
+			context.getLogger().fine( "Preheated: " + uri );
+			/*
+			 * try { System.out.println( clientResource.get().getText() ); }
+			 * catch( IOException x ) { }
+			 */
 		}
-		catch( ResourceException e )
+		catch( ResourceException x )
 		{
-			System.err.print( clientResource.getReference() + " - " );
-			e.printStackTrace();
+			if( x.getStatus().equals( Status.CLIENT_ERROR_NOT_FOUND ) )
+			{
+				context.getLogger().warning( "Could not find resource to preheat: " + uri );
+			}
+			else
+			{
+				context.getLogger().log( Level.SEVERE, "Preheating error: " + uri, x );
+				System.err.print( clientResource.getReference() + " - " );
+				x.printStackTrace();
+			}
 		}
 	}
 

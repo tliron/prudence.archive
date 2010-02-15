@@ -8,7 +8,8 @@
 	'java.util.logging.LogManager
 	'java.util.concurrent.Executors
 	'org.restlet.Component
-	'com.threecrickets.prudence.util.DelegatedStatusService)
+	'com.threecrickets.prudence.util.DelegatedStatusService
+	'com.threecrickets.prudence.util.MessageTask)
 
 (defn include-or-default
 	([name default]
@@ -106,5 +107,9 @@
 ; Tasks
 ;
 
-(doseq [task tasks]
-	(.submit executor task))
+(if (not (empty? tasks))
+	(.submit executor (MessageTask. (.getContext component) (str "Executing " (len tasks) " tasks...")))
+	(doseq [task tasks]
+		(.submit executor task))
+	(.submit executor (MessageTask. (.getContext component) "Finished tasks"))
+)
