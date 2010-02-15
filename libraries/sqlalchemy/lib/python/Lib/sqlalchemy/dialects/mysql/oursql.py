@@ -54,7 +54,7 @@ class MySQL_oursqlExecutionContext(MySQLExecutionContext):
     
     @property
     def plain_query(self):
-        return self._connection.options.get('plain_query', False)
+        return self.execution_options.get('_oursql_plain_query', False)
 
 
 class MySQL_oursql(MySQLDialect):
@@ -90,7 +90,7 @@ class MySQL_oursql(MySQLDialect):
         connection.cursor().execute('BEGIN', plain_query=True)
 
     def _xa_query(self, connection, query, xid):
-        connection._with_options(plain_query=True).execute(query % connection.connection._escape_string(xid))
+        connection.execution_options(_oursql_plain_query=True).execute(query % connection.connection._escape_string(xid))
 
     # Because mysql is bad, these methods have to be reimplemented to use _PlainQuery. Basically, some queries
     # refuse to return any data if they're run through the parameterized query API, or refuse to be parameterized
@@ -115,12 +115,12 @@ class MySQL_oursql(MySQLDialect):
         self._xa_query(connection, 'XA COMMIT "%s"', xid)
 
     def has_table(self, connection, table_name, schema=None):
-        return MySQLDialect.has_table(self, connection._with_options(plain_query=True), table_name, schema)
+        return MySQLDialect.has_table(self, connection.execution_options(_oursql_plain_query=True), table_name, schema)
 
     def _show_create_table(self, connection, table, charset=None,
                            full_name=None):
         return MySQLDialect._show_create_table(self, 
-            connection.contextual_connect(close_with_result=True)._with_options(plain_query=True), 
+            connection.contextual_connect(close_with_result=True).execution_options(_oursql_plain_query=True), 
             table, charset, full_name)
 
     def is_disconnect(self, e):
@@ -147,9 +147,8 @@ class MySQL_oursql(MySQLDialect):
 
         # FOUND_ROWS must be set in CLIENT_FLAGS to enable
         # supports_sane_rowcount.
-        opts['found_rows'] = True
-        # And sqlalchemy assumes that you get an exception when mysql reports a warning.
-        opts['raise_on_warnings'] = True
+        opts.setdefault('found_rows', True)
+
         return [[], opts]
     
     def _get_server_version_info(self, connection):

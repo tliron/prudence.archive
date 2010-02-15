@@ -1,5 +1,5 @@
 # compiler.py
-# Copyright (C) 2005, 2006, 2007, 2008, 2009 Michael Bayer mike_mp@zzzcomputing.com
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Michael Bayer mike_mp@zzzcomputing.com
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -47,7 +47,7 @@ RESERVED_WORDS = set([
     'using', 'verbose', 'when', 'where'])
 
 LEGAL_CHARACTERS = re.compile(r'^[A-Z0-9_$]+$', re.I)
-ILLEGAL_INITIAL_CHARACTERS = set(xrange(0, 10)).union(['$'])
+ILLEGAL_INITIAL_CHARACTERS = set([str(x) for x in xrange(0, 10)]).union(['$'])
 
 BIND_PARAMS = re.compile(r'(?<![:\w\$\x5c]):([\w\$]+)(?![:\w\$])', re.UNICODE)
 BIND_PARAMS_ESC = re.compile(r'\x5c(:[\w\$]+)(?![:\w\$])', re.UNICODE)
@@ -1217,6 +1217,12 @@ class GenericTypeCompiler(engine.TypeCompiler):
 
     def visit_BLOB(self, type_):
         return "BLOB"
+
+    def visit_BINARY(self, type_):
+        return "BINARY" + (type_.length and "(%d)" % type_.length or "")
+
+    def visit_VARBINARY(self, type_):
+        return "VARBINARY" + (type_.length and "(%d)" % type_.length or "")
     
     def visit_BOOLEAN(self, type_):
         return "BOOLEAN"
@@ -1224,7 +1230,7 @@ class GenericTypeCompiler(engine.TypeCompiler):
     def visit_TEXT(self, type_):
         return "TEXT"
     
-    def visit_binary(self, type_):
+    def visit_large_binary(self, type_):
         return self.visit_BLOB(type_)
         
     def visit_boolean(self, type_): 

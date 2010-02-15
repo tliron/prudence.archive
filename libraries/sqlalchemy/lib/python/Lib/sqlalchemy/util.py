@@ -1,5 +1,5 @@
 # util.py
-# Copyright (C) 2005, 2006, 2007, 2008, 2009 Michael Bayer mike_mp@zzzcomputing.com
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Michael Bayer mike_mp@zzzcomputing.com
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -138,7 +138,36 @@ except ImportError:
             return 'defaultdict(%s, %s)' % (self.default_factory,
                                             dict.__repr__(self))
 
-        
+class frozendict(dict):
+    def _blocked_attribute(obj):
+        raise AttributeError, "A frozendict cannot be modified."
+    _blocked_attribute = property(_blocked_attribute)
+
+    __delitem__ = __setitem__ = clear = _blocked_attribute
+    pop = popitem = setdefault = update = _blocked_attribute
+
+    def __new__(cls, *args):
+        new = dict.__new__(cls)
+        dict.__init__(new, *args)
+        return new
+
+    def __init__(self, *args):
+        pass
+
+    def __reduce__(self):
+        return frozendict, (dict(self), )
+
+    def union(self, d):
+        if not self:
+            return frozendict(d)
+        else:
+            d2 = self.copy()
+            d2.update(d)
+            return frozendict(d2)
+            
+    def __repr__(self):
+        return "frozendict(%s)" % dict.__repr__(self)
+
 def to_list(x, default=None):
     if x is None:
         return default
@@ -320,7 +349,7 @@ def get_cls_kwargs(cls):
         if has_kw:
             stack.update(class_.__bases__)
     args.discard('self')
-    return list(args)
+    return args
 
 def get_func_kwargs(func):
     """Return the full set of legal kwargs for the given `func`."""
@@ -642,11 +671,12 @@ class NamedTuple(tuple):
     
     """
 
-    def __new__(cls, labels, vals):
+    def __new__(cls, vals, labels=None):
         vals = list(vals)
         t = tuple.__new__(cls, vals)
-        t.__dict__ = dict(itertools.izip(labels, vals))
-        t._labels = labels
+        if labels:
+            t.__dict__ = dict(itertools.izip(labels, vals))
+            t._labels = labels
         return t
 
     def keys(self):
@@ -1496,17 +1526,17 @@ class WeakIdentityMapping(weakref.WeakKeyDictionary):
         return self._keyed_weakref(object, self._cleanup)
 
 
-def warn(msg):
+def warn(msg, stacklevel=3):
     if isinstance(msg, basestring):
-        warnings.warn(msg, exc.SAWarning, stacklevel=3)
+        warnings.warn(msg, exc.SAWarning, stacklevel=stacklevel)
     else:
-        warnings.warn(msg, stacklevel=3)
+        warnings.warn(msg, stacklevel=stacklevel)
 
-def warn_deprecated(msg):
-    warnings.warn(msg, exc.SADeprecationWarning, stacklevel=3)
+def warn_deprecated(msg, stacklevel=3):
+    warnings.warn(msg, exc.SADeprecationWarning, stacklevel=stacklevel)
 
-def warn_pending_deprecation(msg):
-    warnings.warn(msg, exc.SAPendingDeprecationWarning, stacklevel=3)
+def warn_pending_deprecation(msg, stacklevel=3):
+    warnings.warn(msg, exc.SAPendingDeprecationWarning, stacklevel=stacklevel)
 
 def deprecated(message=None, add_deprecation_to_docstring=True):
     """Decorates a function and issues a deprecation warning on use.

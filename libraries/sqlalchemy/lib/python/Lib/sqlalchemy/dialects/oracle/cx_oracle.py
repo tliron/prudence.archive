@@ -118,6 +118,8 @@ class _OracleChar(sqltypes.CHAR):
         return dbapi.FIXED_CHAR
 
 class _OracleNVarChar(sqltypes.NVARCHAR):
+    def get_dbapi_type(self, dbapi):
+        return dbapi.UNICODE
     def result_processor(self, dialect, coltype):
         if dialect._cx_oracle_native_nvarchar:
             return None
@@ -145,6 +147,9 @@ class _OracleUnicodeText(sqltypes.UnicodeText):
                     return value
             return process
         else:
+            # TODO: this is wrong - we are getting a LOB here
+            # no matter what version of oracle, so process() 
+            # is still needed
             return super(_OracleUnicodeText, self).result_processor(dialect, coltype)
 
 class _OracleInteger(sqltypes.Integer):
@@ -155,22 +160,26 @@ class _OracleInteger(sqltypes.Integer):
             return val
         return to_int
         
-class _OracleBinary(_LOBMixin, sqltypes.Binary):
+class _OracleBinary(_LOBMixin, sqltypes.LargeBinary):
     def get_dbapi_type(self, dbapi):
         return dbapi.BLOB
 
     def bind_processor(self, dialect):
         return None
 
-
+class _OracleInterval(oracle.INTERVAL):
+    def get_dbapi_type(self, dbapi):
+        return dbapi.INTERVAL
+    
 class _OracleRaw(oracle.RAW):
     pass
 
-
 colspecs = {
     sqltypes.Date : _OracleDate,
-    sqltypes.Binary : _OracleBinary,
+    sqltypes.LargeBinary : _OracleBinary,
     sqltypes.Boolean : oracle._OracleBoolean,
+    sqltypes.Interval : _OracleInterval,
+    oracle.INTERVAL : _OracleInterval,
     sqltypes.Text : _OracleText,
     sqltypes.UnicodeText : _OracleUnicodeText,
     sqltypes.CHAR : _OracleChar,
@@ -201,7 +210,7 @@ class Oracle_cx_oracleExecutionContext(OracleExecutionContext):
                     del param[fromname]
 
         if self.dialect.auto_setinputsizes:
-            self.set_input_sizes(quoted_bind_names, exclude_types=(self.dialect.dbapi.STRING,))
+            self.set_input_sizes(quoted_bind_names)
             
         if len(self.compiled_parameters) == 1:
             for key in self.compiled.binds:

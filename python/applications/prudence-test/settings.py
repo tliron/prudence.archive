@@ -14,3 +14,5 @@ application_contact_email = 'prudence@threecrickets.com'
 hosts = {component.defaultHost: None, mysite_host: None}
 
 show_debug_on_error = True
+
+preheat_resources = ['/data/jython', '/data/jruby', '/data/groovy', '/data/clojure', '/data/rhino']

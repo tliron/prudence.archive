@@ -86,13 +86,13 @@
 ;
 
 (def script-engine-manager (ScriptEngineManager.))
-(def document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document (.longValue dynamic-web-minimum-time-between-validity-checks)))
+(def dynamic-web-document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document (.longValue dynamic-web-minimum-time-between-validity-checks)))
 (if dynamic-web-defrost
 	(.defrost (Defroster. script-engine-manager document-source true) executor))
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.engineManager" script-engine-manager)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultEngineName" "Clojure")
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.documentSource" document-source)
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.documentSource" dynamic-web-document-source)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" dynamic-web-source-viewable)
 
 (def dynamic-web (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.GeneratedTextResource")))
@@ -111,19 +111,25 @@
 ; Resources
 ;
 
-(def document-source (DocumentFileSource. (str application-base-path resource-base-path) resource-default-name (.longValue resource-minimum-time-between-validity-checks))) 
-(if resource-defrost
+(def resources-document-source (DocumentFileSource. (str application-base-path resources-base-path) resources-default-name (.longValue resources-minimum-time-between-validity-checks))) 
+(if resources-defrost
 	(.defrost (Defroster. script-engine-manager document-source true) executor))
 (.put attributes "com.threecrickets.prudence.DelegatedResource.engineManager" script-engine-manager)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultEngineName" "Clojure")
-(.put attributes "com.threecrickets.prudence.DelegatedResource.defaultName" resource-default-name)
-(.put attributes "com.threecrickets.prudence.DelegatedResource.documentSource" document-source)
-(.put attributes "com.threecrickets.prudence.DelegatedResource.sourceViewable" resource-source-viewable)
+(.put attributes "com.threecrickets.prudence.DelegatedResource.defaultName" resources-default-name)
+(.put attributes "com.threecrickets.prudence.DelegatedResource.documentSource" resources-document-source)
+(.put attributes "com.threecrickets.prudence.DelegatedResource.sourceViewable" resources-source-viewable)
 
 (def resources (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
-(.setMatchingMode (.attach router (fix-url resource-base-url) resources) Template/MODE_STARTS_WITH)
+(.setMatchingMode (.attach router (fix-url resources-base-url) resources) Template/MODE_STARTS_WITH)
 
-; Preheat resources
+;
+; Preheat
+;
+
+(if dynamic-web-preheat
+	(doseq [preheat-task (PreheatTask/create (.getContext component) application-internal-name dynamic-web-document-source)]
+		(def tasks (conj tasks preheat-task))))
 
 (doseq [preheat-resource preheat-resources]
 	(def tasks (conj tasks (PreheatTask. (.getContext component) application-internal-name preheat-resource))))

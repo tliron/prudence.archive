@@ -1,5 +1,5 @@
 # types.py
-# Copyright (C) 2005, 2006, 2007, 2008, 2009 Michael Bayer mike_mp@zzzcomputing.com
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Michael Bayer mike_mp@zzzcomputing.com
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -16,7 +16,7 @@ __all__ = [ 'TypeEngine', 'TypeDecorator', 'AbstractType', 'UserDefinedType',
             'FLOAT', 'NUMERIC', 'DECIMAL', 'TIMESTAMP', 'DATETIME', 'CLOB',
             'BLOB', 'BOOLEAN', 'SMALLINT', 'INTEGER', 'DATE', 'TIME',
             'String', 'Integer', 'SmallInteger', 'BigInteger', 'Numeric',
-            'Float', 'DateTime', 'Date', 'Time', 'Binary', 'Boolean',
+            'Float', 'DateTime', 'Date', 'Time', 'LargeBinary', 'Binary', 'Boolean',
             'Unicode', 'MutableType', 'Concatenable', 'UnicodeText',
             'PickleType', 'Interval', 'type_map', 'Enum' ]
 
@@ -31,7 +31,7 @@ import sys
 schema.types = expression.sqltypes =sys.modules['sqlalchemy.types']
 from sqlalchemy.util import pickle
 from sqlalchemy.sql.visitors import Visitable
-import sqlalchemy.util as util
+from sqlalchemy import util
 NoneType = type(None)
 if util.jython:
     import array
@@ -131,10 +131,12 @@ class TypeEngine(AbstractType):
         return {}
 
     def dialect_impl(self, dialect, **kwargs):
+        key = (dialect.__class__, dialect.server_version_info)
+        
         try:
-            return self._impl_dict[dialect.__class__]
+            return self._impl_dict[key]
         except KeyError:
-            return self._impl_dict.setdefault(dialect.__class__, dialect.__class__.type_descriptor(self))
+            return self._impl_dict.setdefault(key, dialect.type_descriptor(self))
 
     def __getstate__(self):
         d = self.__dict__.copy()
@@ -256,19 +258,18 @@ class TypeDecorator(AbstractType):
         return cls()
         
     def dialect_impl(self, dialect):
+        key = (dialect.__class__, dialect.server_version_info)
         try:
-            return self._impl_dict[dialect.__class__]
-        except AttributeError:
-            self._impl_dict = {}
+            return self._impl_dict[key]
         except KeyError:
             pass
 
         # adapt the TypeDecorator first, in
         # the case that the dialect maps the TD
         # to one of its native types (i.e. PGInterval)
-        adapted = dialect.__class__.type_descriptor(self)
+        adapted = dialect.type_descriptor(self)
         if adapted is not self:
-            self._impl_dict[dialect] = adapted
+            self._impl_dict[key] = adapted
             return adapted
 
         # otherwise adapt the impl type, link
@@ -280,7 +281,7 @@ class TypeDecorator(AbstractType):
             raise AssertionError("Type object %s does not properly implement the copy() "
                     "method, it must return an object of type %s" % (self, self.__class__))
         tt.impl = typedesc
-        self._impl_dict[dialect] = tt
+        self._impl_dict[key] = tt
         return tt
 
     @util.memoized_property
@@ -304,7 +305,7 @@ class TypeDecorator(AbstractType):
         if isinstance(self.impl, TypeDecorator):
             return self.impl.dialect_impl(dialect)
         else:
-            return dialect.__class__.type_descriptor(self.impl)
+            return dialect.type_descriptor(self.impl)
 
     def __getattr__(self, key):
         """Proxy all other undefined accessors to the underlying implementation."""
@@ -348,6 +349,7 @@ class TypeDecorator(AbstractType):
     def copy(self):
         instance = self.__class__.__new__(self.__class__)
         instance.__dict__.update(self.__dict__)
+        instance._impl_dict = {}
         return instance
 
     def get_dbapi_type(self, dbapi):
@@ -386,9 +388,9 @@ def to_instance(typeobj):
     if typeobj is None:
         return NULLTYPE
 
-    try:
+    if util.callable(typeobj):
         return typeobj()
-    except TypeError:
+    else:
         return typeobj
 
 def adapt_type(typeobj, colspecs):
@@ -478,11 +480,19 @@ class String(Concatenable, TypeEngine):
           If False, may be overridden by
           :attr:`sqlalchemy.engine.base.Dialect.convert_unicode`.
           
-          If the dialect has been detected as returning unicode 
-          strings from a VARCHAR result column, no unicode translation
-          will be done on results.   To force unicode translation
-          for individual types regardless of dialect setting,
-          set convert_unicode='force'.
+          If the DBAPI in use has been detected to return unicode 
+          strings from a VARCHAR result column, the String object will
+          assume all subsequent results are already unicode objects, and no
+          type detection will be done to verify this.  The 
+          rationale here is that isinstance() calls are enormously
+          expensive at the level of column-fetching.  To
+          force the check to occur regardless, set 
+          convert_unicode='force'.
+          
+          Similarly, if the dialect is known to accept bind parameters
+          as unicode objects, no translation from unicode to bytestring
+          is performed on binds.  Again, encoding to a bytestring can be 
+          forced for special circumstances by setting convert_unicode='force'.
 
         :param assert_unicode:
 
@@ -523,7 +533,7 @@ class String(Concatenable, TypeEngine):
                             raise exc.InvalidRequestError("Unicode type received non-unicode bind param value %r" % value)
                     else:
                         return value
-            elif dialect.supports_unicode_binds:
+            elif dialect.supports_unicode_binds and self.convert_unicode != 'force':
                 return None
             else:
                 def process(value):
@@ -583,7 +593,15 @@ class Unicode(String):
     ``u'somevalue'``) into encoded bytestrings when passing the value
     to the database driver, and similarly decodes values from the
     database back into Python ``unicode`` objects.
-
+    
+    It's roughly equivalent to using a ``String`` object with
+    ``convert_unicode=True`` and ``assert_unicode='warn'``, however
+    the type has other significances in that it implies the usage 
+    of a unicode-capable type being used on the backend, such as NVARCHAR.
+    This may affect what type is emitted when issuing CREATE TABLE
+    and also may effect some DBAPI-specific details, such as type
+    information passed along to ``setinputsizes()``.
+    
     When using the ``Unicode`` type, it is only appropriate to pass
     Python ``unicode`` objects, and not plain ``str``.  If a
     bytestring (``str``) is passed, a runtime warning is issued.  If
@@ -625,6 +643,9 @@ class UnicodeText(Text):
 
     See :class:`Unicode` for details on the unicode
     behavior of this object.
+
+    Like ``Unicode``, usage the ``UnicodeText`` type implies a 
+    unicode-capable type being used on the backend, such as NCLOB.
 
     """
 
@@ -680,7 +701,8 @@ class Numeric(TypeEngine):
     """A type for fixed precision numbers.
 
     Typically generates DECIMAL or NUMERIC.  Returns
-    ``decimal.Decimal`` objects by default.
+    ``decimal.Decimal`` objects by default, applying
+    conversion as needed.
 
     """
 
@@ -694,10 +716,27 @@ class Numeric(TypeEngine):
 
         :param scale: the numeric scale for use in DDL ``CREATE TABLE``.
 
-        :param asdecimal: default True.  If False, values will be
-          returned as-is from the DB-API, and may be either
-          ``Decimal`` or ``float`` types depending on the DB-API in
-          use.
+        :param asdecimal: default True.  Return whether or not
+          values should be sent as Python Decimal objects, or
+          as floats.   Different DBAPIs send one or the other based on
+          datatypes - the Numeric type will ensure that return values
+          are one or the other across DBAPIs consistently.  
+          
+        When using the ``Numeric`` type, care should be taken to ensure
+        that the asdecimal setting is apppropriate for the DBAPI in use -
+        when Numeric applies a conversion from Decimal->float or float->
+        Decimal, this conversion incurs an additional performance overhead
+        for all result columns received. 
+        
+        DBAPIs that return Decimal natively (e.g. psycopg2) will have 
+        better accuracy and higher performance with a setting of ``True``,
+        as the native translation to Decimal reduces the amount of floating-
+        point issues at play, and the Numeric type itself doesn't need
+        to apply any further conversions.  However, another DBAPI which 
+        returns floats natively *will* incur an additional conversion 
+        overhead, and is still subject to floating point data loss - in 
+        which case ``asdecimal=False`` will at least remove the extra
+        conversion overhead.
 
         """
         self.precision = precision
@@ -734,7 +773,12 @@ class Numeric(TypeEngine):
 
 
 class Float(Numeric):
-    """A type for ``float`` numbers."""
+    """A type for ``float`` numbers.  
+    
+    Returns Python ``float`` objects by default, applying
+    conversion as needed.
+    
+    """
 
     __visit_name__ = 'float'
 
@@ -743,6 +787,9 @@ class Float(Numeric):
         Construct a Float.
 
         :param precision: the numeric precision for use in DDL ``CREATE TABLE``.
+        
+        :param asdecimal: the same flag as that of :class:`Numeric`, but
+          defaults to ``False``.
 
         """
         self.precision = precision
@@ -798,31 +845,14 @@ class Time(TypeEngine):
     def get_dbapi_type(self, dbapi):
         return dbapi.DATETIME
 
-
-class Binary(TypeEngine):
-    """A type for binary byte data.
-
-    The Binary type generates BLOB or BYTEA when tables are created,
-    and also converts incoming values using the ``Binary`` callable
-    provided by each DB-API.
-
-    """
-
-    __visit_name__ = 'binary'
+class _Binary(TypeEngine):
+    """Define base behavior for binary types."""
 
     def __init__(self, length=None):
-        """
-        Construct a Binary type.
-
-        :param length: optional, a length for the column for use in
-          DDL statements.  May be safely omitted if no ``CREATE
-          TABLE`` will be issued.  Certain databases may require a
-          *length* for use in DDL, and will raise an exception when
-          the ``CREATE TABLE`` DDL is issued.
-
-        """
         self.length = length
 
+    # Python 3 - sqlite3 doesn't need the `Binary` conversion
+    # here, though pg8000 does to indicate "bytea"
     def bind_processor(self, dialect):
         DBAPIBinary = dialect.dbapi.Binary
         def process(value):
@@ -832,6 +862,10 @@ class Binary(TypeEngine):
                 return None
         return process
 
+    # Python 3 has native bytes() type 
+    # both sqlite3 and pg8000 seem to return it
+    # (i.e. and not 'memoryview')
+    # Py2K
     def result_processor(self, dialect, coltype):
         if util.jython:
             def process(value):
@@ -848,12 +882,47 @@ class Binary(TypeEngine):
                 else:
                     return None
         return process
-
+    # end Py2K
+    
     def adapt(self, impltype):
         return impltype(length=self.length)
 
     def get_dbapi_type(self, dbapi):
         return dbapi.BINARY
+    
+class LargeBinary(_Binary):
+    """A type for large binary byte data.
+
+    The Binary type generates BLOB or BYTEA when tables are created,
+    and also converts incoming values using the ``Binary`` callable
+    provided by each DB-API.
+
+    """
+
+    __visit_name__ = 'large_binary'
+
+    def __init__(self, length=None):
+        """
+        Construct a LargeBinary type.
+
+        :param length: optional, a length for the column for use in
+          DDL statements, for those BLOB types that accept a length
+          (i.e. MySQL).  It does *not* produce a small BINARY/VARBINARY
+          type - use the BINARY/VARBINARY types specifically for those.
+          May be safely omitted if no ``CREATE
+          TABLE`` will be issued.  Certain databases may require a
+          *length* for use in DDL, and will raise an exception when
+          the ``CREATE TABLE`` DDL is issued.
+
+        """
+        _Binary.__init__(self, length=length)
+
+class Binary(LargeBinary):
+    """Deprecated.  Renamed to LargeBinary."""
+    
+    def __init__(self, *arg, **kw):
+        util.warn_deprecated("The Binary type has been renamed to LargeBinary.")
+        LargeBinary.__init__(self, *arg, **kw)
 
 class SchemaType(object):
     """Mark a type as possibly requiring schema-level DDL for usage.
@@ -886,7 +955,6 @@ class SchemaType(object):
                                                 self._on_metadata_create)
             table.metadata.append_ddl_listener('after-drop',
                                                 self._on_metadata_drop)
-
     
     @property
     def bind(self):
@@ -940,52 +1008,55 @@ class Enum(String, SchemaType):
     
     By default, uses the backend's native ENUM type if available, 
     else uses VARCHAR + a CHECK constraint.
-    
-    Keyword arguments which don't apply to a specific backend are ignored
-    by that backend.
-    
-    :param \*enums: string or unicode enumeration labels. If unicode labels
-        are present, the `convert_unicode` flag is auto-enabled.
-    
-    :param assert_unicode: Enable unicode asserts for bind parameter values.
-        This flag is equivalent to that of ``String``.
-
-    :param convert_unicode: Enable unicode-aware bind parameter and result-set
-        processing for this Enum's data. This is set automatically based on
-        the presence of unicode label strings.
-
-    :param metadata: Associate this type directly with a ``MetaData`` object.
-        For types that exist on the target database as an independent schema
-        construct (Postgresql), this type will be created and dropped within
-        ``create_all()`` and ``drop_all()`` operations. If the type is not
-        associated with any ``MetaData`` object, it will associate itself with
-        each ``Table`` in which it is used, and will be created when any of
-        those individual tables are created, after a check is performed for
-        it's existence. The type is only dropped when ``drop_all()`` is called
-        for that ``Table`` object's metadata, however.
-    
-    :param name: The name of this type. This is required for Postgresql and
-        any future supported database which requires an explicitly named type,
-        or an explicitly named constraint in order to generate the type and/or
-        a table that uses it.
-    
-    :param native_enum: Use the database's native ENUM type when available.
-        Defaults to True.  When False, uses VARCHAR + check constraint
-        for all backends.
-    
-    :param schema: Schemaname of this type. For types that exist on the target
-        database as an independent schema construct (Postgresql), this
-        parameter specifies the named schema in which the type is present.
-    
-    :param quote: Force quoting to be on or off on the type's name. If left as
-        the default of `None`, the usual schema-level "case
-        sensitive"/"reserved name" rules are used to determine if this type's
-        name should be quoted.
-    
     """
+    
     __visit_name__ = 'enum'
     
     def __init__(self, *enums, **kw):
+        """Construct an enum.
+        
+        Keyword arguments which don't apply to a specific backend are ignored
+        by that backend.
+
+        :param \*enums: string or unicode enumeration labels. If unicode labels
+            are present, the `convert_unicode` flag is auto-enabled.
+
+        :param assert_unicode: Enable unicode asserts for bind parameter values.
+            This flag is equivalent to that of ``String``.
+
+        :param convert_unicode: Enable unicode-aware bind parameter and result-set
+            processing for this Enum's data. This is set automatically based on
+            the presence of unicode label strings.
+
+        :param metadata: Associate this type directly with a ``MetaData`` object.
+            For types that exist on the target database as an independent schema
+            construct (Postgresql), this type will be created and dropped within
+            ``create_all()`` and ``drop_all()`` operations. If the type is not
+            associated with any ``MetaData`` object, it will associate itself with
+            each ``Table`` in which it is used, and will be created when any of
+            those individual tables are created, after a check is performed for
+            it's existence. The type is only dropped when ``drop_all()`` is called
+            for that ``Table`` object's metadata, however.
+
+        :param name: The name of this type. This is required for Postgresql and
+            any future supported database which requires an explicitly named type,
+            or an explicitly named constraint in order to generate the type and/or
+            a table that uses it.
+
+        :param native_enum: Use the database's native ENUM type when available.
+            Defaults to True.  When False, uses VARCHAR + check constraint
+            for all backends.
+
+        :param schema: Schemaname of this type. For types that exist on the target
+            database as an independent schema construct (Postgresql), this
+            parameter specifies the named schema in which the type is present.
+
+        :param quote: Force quoting to be on or off on the type's name. If left as
+            the default of `None`, the usual schema-level "case
+            sensitive"/"reserved name" rules are used to determine if this type's
+            name should be quoted.
+
+        """
         self.enums = enums
         self.native_enum = kw.pop('native_enum', True)
         convert_unicode= kw.pop('convert_unicode', None)
@@ -1044,7 +1115,7 @@ class PickleType(MutableType, TypeDecorator):
 
     """
 
-    impl = Binary
+    impl = LargeBinary
 
     def __init__(self, protocol=pickle.HIGHEST_PROTOCOL, pickler=None, mutable=True, comparator=None):
         """
@@ -1135,11 +1206,11 @@ class Boolean(TypeEngine, SchemaType):
         """Construct a Boolean.
         
         :param create_constraint: defaults to True.  If the boolean 
-        is generated as an int/smallint, also create a CHECK constraint
-        on the table that ensures 1 or 0 as a value.
+          is generated as an int/smallint, also create a CHECK constraint
+          on the table that ensures 1 or 0 as a value.
         
         :param name: if a CHECK constraint is generated, specify
-        the name of the constraint.
+          the name of the constraint.
         
         """
         self.create_constraint = create_constraint
@@ -1182,6 +1253,36 @@ class Interval(TypeDecorator):
     impl = DateTime
     epoch = dt.datetime.utcfromtimestamp(0)
 
+    def __init__(self, native=True, 
+                        second_precision=None, 
+                        day_precision=None):
+        """Construct an Interval object.
+        
+        :param native: when True, use the actual
+        INTERVAL type provided by the database, if
+        supported (currently Postgresql, Oracle).  
+        Otherwise, represent the interval data as 
+        an epoch value regardless.
+        
+        :param second_precision: For native interval types
+        which support a "fractional seconds precision" parameter,
+        i.e. Oracle and Postgresql
+        
+        :param day_precision: for native interval types which 
+        support a "day precision" parameter, i.e. Oracle.
+        
+        """
+        super(Interval, self).__init__()
+        self.native = native
+        self.second_precision = second_precision
+        self.day_precision = day_precision
+        
+    def adapt(self, cls):
+        if self.native:
+            return cls._adapt_from_generic_interval(self)
+        else:
+            return self
+    
     def bind_processor(self, dialect):
         impl_processor = self.impl.bind_processor(dialect)
         epoch = self.epoch
@@ -1212,6 +1313,10 @@ class Interval(TypeDecorator):
                     return None
                 return value - epoch
         return process
+
+    @property
+    def _type_affinity(self):
+        return Interval
 
 class FLOAT(Float):
     """The SQL FLOAT type."""
@@ -1308,10 +1413,20 @@ class NCHAR(Unicode):
     __visit_name__ = 'NCHAR'
 
 
-class BLOB(Binary):
+class BLOB(LargeBinary):
     """The SQL BLOB type."""
 
     __visit_name__ = 'BLOB'
+
+class BINARY(_Binary):
+    """The SQL BINARY type."""
+
+    __visit_name__ = 'BINARY'
+
+class VARBINARY(_Binary):
+    """The SQL VARBINARY type."""
+
+    __visit_name__ = 'VARBINARY'
 
 
 class BOOLEAN(Boolean):

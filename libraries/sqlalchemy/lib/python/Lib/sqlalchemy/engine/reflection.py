@@ -72,7 +72,7 @@ class Inspector(object):
 
     @property
     def default_schema_name(self):
-        return self.dialect.get_default_schema_name(self.conn)
+        return self.dialect.default_schema_name
 
     def get_schema_names(self):
         """Return all schema names.
@@ -292,7 +292,9 @@ class Inspector(object):
             }
             if 'autoincrement' in col_d:
                 col_kw['autoincrement'] = col_d['autoincrement']
-            
+            if 'quote' in col_d:
+                col_kw['quote'] = col_d['quote']
+                
             colargs = []
             if col_d.get('default') is not None:
                 # the "default" value is assumed to be a literal SQL expression,

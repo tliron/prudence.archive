@@ -1,5 +1,5 @@
 # kinterbasdb.py
-# Copyright (C) 2005, 2006, 2007, 2008, 2009 Michael Bayer mike_mp@zzzcomputing.com
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Michael Bayer mike_mp@zzzcomputing.com
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -90,11 +90,10 @@ class Firebird_kinterbasdb(FBDialect):
         return tuple([int(x) for x in m.group(5, 6, 4)])
 
     def is_disconnect(self, e):
-        if isinstance(e, self.dbapi.OperationalError):
-            return 'Unable to complete network request to host' in str(e)
-        elif isinstance(e, self.dbapi.ProgrammingError):
+        if isinstance(e, (self.dbapi.OperationalError, self.dbapi.ProgrammingError)):
             msg = str(e)
-            return ('Invalid connection state' in msg or
+            return ('Unable to complete network request to host' in msg or
+                    'Invalid connection state' in msg or
                     'Invalid cursor state' in msg)
         else:
             return False

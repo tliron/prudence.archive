@@ -17,8 +17,7 @@ import org.json.JSONObject
 
 # Include the context library
 
-$prudence.include '../libraries/jruby/context'
-include $static_module
+require @prudence.source.base_path.to_s + '/../libraries/jruby/context.rb'
 
 # State
 #
@@ -38,24 +37,24 @@ def get_state
 end
 
 def set_state value
-	$prudence.resource.context.attributes['jruby.state'] = value
+	@prudence.resource.context.attributes['jruby.state'] = value
 end
 
-$state = get_state()
-$state_lock = get_state_lock()
+@state = get_state()
+@state_lock = get_state_lock()
 
 # This method is called when the resource is initialized. We will use it to set
 # general characteristics for the resource.
 	
-def handle_init
+def handleInit
 
 	# The order in which we add the variants is their order of preference.
 	# Note that clients often include a wildcard (such as "*/*") in the
 	# "Accept" attribute of their request header, specifying that any media type
 	# will do, in which case the first one we add will be used.
 
-    $prudence.add_media_type_by_name('application/json')
-    $prudence.add_media_type_by_name('text/plain')
+    @prudence.add_media_type_by_name('application/json')
+    @prudence.add_media_type_by_name('text/plain')
 	
 end
 
@@ -67,13 +66,13 @@ end
 # org.restlet.resource.Representation. Other types will be automatically converted to
 # string representation using the client's requested media type and character set.
 # These, and the language of the representation (defaulting to None), can be read and
-# changed via $prudence.media_type, $prudence.character_set, and
-# $prudence.language.
+# changed via @prudence.media_type, @prudence.character_set, and
+# @prudence.language.
 #
-# Additionally, you can use $prudence.variant to interrogate the client's provided
+# Additionally, you can use @prudence.variant to interrogate the client's provided
 # list of supported languages and encoding.
 
-def handle_get
+def handleGet
 
 	r = nil
 	state_lock = get_state_lock()
@@ -89,7 +88,7 @@ def handle_get
 	# Return a representation appropriate for the requested media type
 	# of the possible options we created in handle_init()
 
-	if $prudence.media_type_name == 'application/json'
+	if @prudence.media_type_name == 'application/json'
 		return JsonRepresentation.new r
 	end
 
@@ -104,14 +103,14 @@ end
 # that will affect future calls to handle_get(). As such, it may be possible
 # to accept logically partial representations of the state.
 #
-# You may optionally return a representation, in the same way as handle_get().
+# You may optionally return a representation, in the same way as handleGet().
 # Because Ruby methods return the last statement's value by default,
 # you must explicitly return a None if you do not want to return a representation
 # to the client.
 
-def handle_post
+def handlePost
 
-	update = JSONObject.new $prudence.entity.text
+	update = JSONObject.new @prudence.entity.text
 	state_lock = get_state_lock()
 	state = get_state()
 	
@@ -125,7 +124,7 @@ def handle_post
 		state_lock.write_lock.unlock
 	end
 	
-	return handle_get
+	return handleGet
 	
 end
 
@@ -133,17 +132,17 @@ end
 # logical "create" of the resource's state.
 #
 # The expectation is that prudence.entity represents an entirely new state,
-# that will affect future calls to handle_get(). Unlike handle_post(),
+# that will affect future calls to handleGet(). Unlike handlePost(),
 # it is expected that the representation be logically complete.
 #
-# You may optionally return a representation, in the same way as handle_get().
+# You may optionally return a representation, in the same way as handleGet().
 # Because Ruby methods return the last statement's value by default,
 # you must explicitly return a nil if you do not want to return a representation
 # to the client.
 
-def handle_put
+def handlePut
 
-	update = JSONObject.new $prudence.entity.text
+	update = JSONObject.new @prudence.entity.text
 
 	state = {}	
 	for key in update.keys
@@ -152,30 +151,21 @@ def handle_put
 	
 	set_state state
 	
-	return handle_get
+	return handleGet
 	
 end
 
 # This method is called for the DELETE verb, which is expected to behave as a
 # logical "delete" of the resource's state.
 #
-# The expectation is that subsequent calls to handle_get() will fail. As such,
+# The expectation is that subsequent calls to handleGet() will fail. As such,
 # it doesn't make sense to return a representation, and any returned value will
 # ignored. Still, it's a good idea to return nil to avoid any passing of value.
 
-def handle_delete
+def handleDelete
 
 	set_state({})
 
 	return nil
 	
 end
-
-# For our methods to be invocable from the outside as entry points, we must store them
-# as closures in global variables named for the entry points.
-
-$handleInit = method :handle_init
-$handleGet = method :handle_get
-$handlePost = method :handle_post
-$handlePut = method :handle_put
-$handleDelete = method :handle_delete 

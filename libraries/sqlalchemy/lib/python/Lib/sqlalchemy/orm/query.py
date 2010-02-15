@@ -1,5 +1,5 @@
 # orm/query.py
-# Copyright (C) 2005, 2006, 2007, 2008, 2009 Michael Bayer mike_mp@zzzcomputing.com
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Michael Bayer mike_mp@zzzcomputing.com
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -79,14 +79,14 @@ class Query(object):
     _from_obj = ()
     _filter_aliases = None
     _from_obj_alias = None
-    _joinpath = _joinpoint = {}
+    _joinpath = _joinpoint = util.frozendict()
+    _execution_options = util.frozendict()
+    _params = util.frozendict()
+    _attributes = util.frozendict()
+    _with_options = ()
     
     def __init__(self, entities, session=None):
         self.session = session
-
-        self._with_options = []
-        self._params = {}
-        self._attributes = {}
         self._polymorphic_adapters = {}
         self._set_entities(entities)
 
@@ -488,9 +488,17 @@ class Query(object):
         collections will be cleared for a new load when encountered in a
         subsequent result batch.
 
+        Also note that many DBAPIs do not "stream" results, pre-buffering
+        all rows before making them available, including mysql-python and 
+        psycopg2.  yield_per() will also set the ``stream_results`` execution
+        option to ``True``, which currently is only understood by psycopg2
+        and causes server side cursors to be used.
+        
         """
         self._yield_per = count
-
+        self._execution_options = self._execution_options.copy()
+        self._execution_options['stream_results'] = True
+        
     def get(self, ident):
         """Return an instance of the object based on the given identifier, or None if not found.
 
@@ -658,7 +666,7 @@ class Query(object):
         # most MapperOptions write to the '_attributes' dictionary,
         # so copy that as well
         self._attributes = self._attributes.copy()
-        opts = [o for o in util.flatten_iterator(args)]
+        opts = tuple(util.flatten_iterator(args))
         self._with_options = self._with_options + opts
         if conditional:
             for opt in opts:
@@ -666,6 +674,23 @@ class Query(object):
         else:
             for opt in opts:
                 opt.process_query(self)
+
+    @_generative()
+    def execution_options(self, **kwargs):
+        """ Set non-SQL options for the resulting statement, 
+        such as dialect-specific options.
+        
+        The only option currently understood is ``stream_results=True``, 
+        only used by Psycopg2 to enable "server side cursors".  This option
+        only has a useful effect if used in conjunction with
+        :meth:`~sqlalchemy.orm.query.Query.yield_per()`,
+        which currently sets ``stream_results`` to ``True`` automatically.
+
+        """
+        _execution_options = self._execution_options.copy()
+        for key, value in kwargs.items():
+            _execution_options[key] = value
+        self._execution_options = _execution_options
 
     @_generative()
     def with_lockmode(self, mode):
@@ -1142,14 +1167,24 @@ class Query(object):
         """Set the `from_obj` parameter of the query and return the newly
         resulting ``Query``.  This replaces the table which this Query selects
         from with the given table.
+        
+        ``select_from()`` also accepts class arguments.   Though usually not necessary,
+        can ensure that the full selectable of the given mapper is applied, e.g.
+        for joined-table mappers.
 
         """
         
+        obj = []
         for fo in from_obj:
-            if not isinstance(fo, expression.FromClause):
+            if _is_mapped_class(fo):
+                mapper, selectable, is_aliased_class = _entity_info(fo)
+                obj.append(selectable)
+            elif not isinstance(fo, expression.FromClause):
                 raise sa_exc.ArgumentError("select_from() accepts FromClause objects only.")
+            else:
+                obj.append(fo)  
                 
-        self._set_select_from(*from_obj)
+        self._set_select_from(*obj)
 
     def __getitem__(self, item):
         if isinstance(item, slice):
@@ -1375,8 +1410,7 @@ class Query(object):
             elif single_entity:
                 rows = [process[0](row, None) for row in fetch]
             else:
-                rows = [util.NamedTuple(labels,
-                                        [proc(row, None) for proc in process])
+                rows = [util.NamedTuple([proc(row, None) for proc in process], labels)
                         for row in fetch]
 
             if filter:
@@ -1399,6 +1433,59 @@ class Query(object):
             if not self._yield_per:
                 break
 
+    def merge_result(self, iterator, load=True):
+        """Merge a result into this Query's Session.
+        
+        Given an iterator returned by a Query of the same structure as this one,
+        return an identical iterator of results, with all mapped instances
+        merged into the session using Session.merge().   This is an optimized
+        method which will merge all mapped instances, preserving the structure
+        of the result rows and unmapped columns with less method overhead than
+        that of calling Session.merge() explicitly for each value.
+        
+        The structure of the results is determined based on the column list
+        of this Query - if these do not correspond, unchecked errors will occur.
+        
+        The 'load' argument is the same as that of Session.merge().
+        
+        """
+        
+        session = self.session
+        if load:
+            # flush current contents if we expect to load data
+            session._autoflush()
+            
+        autoflush = session.autoflush
+        try:
+            session.autoflush = False
+            single_entity = len(self._entities) == 1
+            if single_entity:
+                if isinstance(self._entities[0], _MapperEntity):
+                    result = [session._merge(
+                            attributes.instance_state(instance), 
+                            attributes.instance_dict(instance), 
+                            load=load, _recursive={})
+                            for instance in iterator]
+                else:
+                    result = list(iterator)
+            else:
+                mapped_entities = [i for i, e in enumerate(self._entities) 
+                                        if isinstance(e, _MapperEntity)]
+                result = []
+                for row in iterator:
+                    newrow = list(row)
+                    for i in mapped_entities:
+                        newrow[i] = session._merge(
+                                attributes.instance_state(newrow[i]), 
+                                attributes.instance_dict(newrow[i]), 
+                                load=load, _recursive={})
+                    result.append(util.NamedTuple(newrow, row._labels))  
+            
+            return iter(result)
+        finally:
+            session.autoflush = autoflush
+        
+        
     def _get(self, key=None, ident=None, refresh_state=None, lockmode=None,
                                         only_load_props=None, passive=None):
         lockmode = lockmode or self._lockmode
@@ -1628,7 +1715,8 @@ class Query(object):
                 if self.whereclause is not None:
                     eval_condition = evaluator_compiler.process(self.whereclause)
                 else:
-                    eval_condition = evaluator_compiler.process(expression._Null)
+                    def eval_condition(obj):
+                        return True
                     
             except evaluator.UnevaluatableError:
                 raise sa_exc.InvalidRequestError("Could not evaluate current criteria in Python.  "
@@ -1713,6 +1801,12 @@ class Query(object):
         #TODO: updates of manytoone relations need to be converted to fk assignments
         #TODO: cascades need handling.
 
+        if synchronize_session == 'expire':
+            util.warn_deprecated("The 'expire' value as applied to "
+                                    "the synchronize_session argument of "
+                                    "query.update() is now called 'fetch'")
+            synchronize_session = 'fetch'
+            
         if synchronize_session not in [False, 'evaluate', 'fetch']:
             raise sa_exc.ArgumentError("Valid strategies for session synchronization are False, 'evaluate' and 'fetch'")
         self._no_select_modifiers("update")
@@ -1732,8 +1826,8 @@ class Query(object):
                 if self.whereclause is not None:
                     eval_condition = evaluator_compiler.process(self.whereclause)
                 else:
-                    eval_condition = evaluator_compiler.process(expression._Null)
-                    
+                    def eval_condition(obj):
+                        return True
 
                 value_evaluators = {}
                 for key,value in values.iteritems():
@@ -1857,6 +1951,8 @@ class Query(object):
             context.adapter = sql_util.ColumnAdapter(inner, equivs)
 
             statement = sql.select([inner] + context.secondary_columns, for_update=for_update, use_labels=labels)
+            if self._execution_options:
+                statement = statement.execution_options(**self._execution_options)
 
             from_clause = inner
             for eager_join in eager_joins:
@@ -1890,6 +1986,8 @@ class Query(object):
                             order_by=context.order_by,
                             **self._select_args
                         )
+            if self._execution_options:
+                statement = statement.execution_options(**self._execution_options)
 
             if self._correlate:
                 statement = statement.correlate(*self._correlate)
@@ -1960,7 +2058,7 @@ class _MapperEntity(_QueryEntity):
         if is_aliased_class:
             self.path_entity = self.entity = self.entity_zero = entity
         else:
-            self.path_entity = mapper.base_mapper
+            self.path_entity = mapper
             self.entity = self.entity_zero = mapper
 
     def set_with_polymorphic(self, query, cls_or_mappers, selectable, discriminator):
@@ -1979,10 +2077,10 @@ class _MapperEntity(_QueryEntity):
             self.adapter = query._get_polymorphic_adapter(self, from_obj)
 
     def corresponds_to(self, entity):
-        if _is_aliased_class(entity):
+        if _is_aliased_class(entity) or self.is_aliased_class:
             return entity is self.path_entity
         else:
-            return entity.base_mapper is self.path_entity
+            return entity.common_parent(self.path_entity)
 
     def adapt_to_selectable(self, query, sel):
         query._entities.append(self)
@@ -2144,7 +2242,7 @@ class _ColumnEntity(_QueryEntity):
             return entity is self.entity_zero
         else:
             return not _is_aliased_class(self.entity_zero) and \
-                    entity.base_mapper.common_parent(self.entity_zero)
+                    entity.common_parent(self.entity_zero)
 
     def _resolve_expr_against_query_aliases(self, query, expr, context):
         return query._adapt_clause(expr, False, True)

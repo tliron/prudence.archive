@@ -1,5 +1,5 @@
 # schema.py
-# Copyright (C) 2005, 2006, 2007, 2008, 2009 Michael Bayer mike_mp@zzzcomputing.com
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Michael Bayer mike_mp@zzzcomputing.com
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -250,7 +250,12 @@ class Table(SchemaItem, expression.TableClause):
             if autoload_with:
                 autoload_with.reflecttable(self, include_columns=include_columns)
             else:
-                _bind_or_error(metadata).reflecttable(self, include_columns=include_columns)
+                _bind_or_error(metadata, msg="No engine is bound to this Table's MetaData. "
+                                        "Pass an engine to the Table via "
+                                        "autoload_with=<someengine>, "
+                                        "or associate the MetaData with an engine via "
+                                        "metadata.bind=<someengine>").\
+                                        reflecttable(self, include_columns=include_columns)
 
         # initialize all the column, etc. objects.  done after reflection to
         # allow user-overrides
@@ -392,9 +397,7 @@ class Table(SchemaItem, expression.TableClause):
         if bind is None:
             bind = _bind_or_error(self)
 
-        def do(conn):
-            return conn.dialect.has_table(conn, self.name, schema=self.schema)
-        return bind.run_callable(do)
+        return bind.run_callable(bind.dialect.has_table, self.name, schema=self.schema)
 
     def create(self, bind=None, checkfirst=False):
         """Issue a ``CREATE`` statement for this table.
@@ -616,8 +619,8 @@ class Column(SchemaItem, expression.ColumnClause):
 
         name = kwargs.pop('name', None)
         type_ = kwargs.pop('type_', None)
+        args = list(args)
         if args:
-            args = list(args)
             if isinstance(args[0], basestring):
                 if name is not None:
                     raise exc.ArgumentError(
@@ -670,7 +673,10 @@ class Column(SchemaItem, expression.ColumnClause):
                 args.append(DefaultClause(self.server_default))
                 
         if self.onupdate is not None:
-            args.append(ColumnDefault(self.onupdate, for_update=True))
+            if isinstance(self.onupdate, (ColumnDefault, Sequence)):
+                args.append(self.onupdate)
+            else:
+                args.append(ColumnDefault(self.onupdate, for_update=True))
             
         if self.server_onupdate is not None:
             if isinstance(self.server_onupdate, FetchedValue):
@@ -794,10 +800,15 @@ class Column(SchemaItem, expression.ColumnClause):
         This is used in ``Table.tometadata``.
 
         """
+        
+        # Constraint objects plus non-constraint-bound ForeignKey objects
+        args = \
+            [c.copy(**kw) for c in self.constraints] + \
+            [c.copy(**kw) for c in self.foreign_keys if not c.constraint]
+            
         return Column(
-                self.name, 
-                self.type, 
-                self.default, 
+                name=self.name, 
+                type_=self.type, 
                 key = self.key, 
                 primary_key = self.primary_key, 
                 nullable = self.nullable, 
@@ -808,7 +819,8 @@ class Column(SchemaItem, expression.ColumnClause):
                 server_default=self.server_default,
                 onupdate=self.onupdate,
                 server_onupdate=self.server_onupdate,
-                *[c.copy(**kw) for c in self.constraints])
+                *args
+                )
 
     def _make_proxy(self, selectable, name=None):
         """Create a *proxy* for this column.
@@ -845,7 +857,7 @@ class Column(SchemaItem, expression.ColumnClause):
 
 
 class ForeignKey(SchemaItem):
-    """Defines a column-level FOREIGN KEY constraint between two columns.
+    """Defines a dependency between two columns.
 
     ``ForeignKey`` is specified as an argument to a :class:`Column` object,
     e.g.::
@@ -853,10 +865,28 @@ class ForeignKey(SchemaItem):
         t = Table("remote_table", metadata, 
             Column("remote_id", ForeignKey("main_table.id"))
         )
-
-    For a composite (multiple column) FOREIGN KEY, use a
-    :class:`ForeignKeyConstraint` object specified at the level of the
-    :class:`Table`.
+    
+    Note that ``ForeignKey`` is only a marker object that defines
+    a dependency between two columns.   The actual constraint
+    is in all cases represented by the :class:`ForeignKeyConstraint`
+    object.   This object will be generated automatically when
+    a ``ForeignKey`` is associated with a :class:`Column` which 
+    in turn is associated with a :class:`Table`.   Conversely,
+    when :class:`ForeignKeyConstraint` is applied to a :class:`Table`,
+    ``ForeignKey`` markers are automatically generated to be
+    present on each associated :class:`Column`, which are also
+    associated with the constraint object.
+    
+    Note that you cannot define a "composite" foreign key constraint,
+    that is a constraint between a grouping of multiple parent/child
+    columns, using ``ForeignKey`` objects.   To define this grouping,
+    the :class:`ForeignKeyConstraint` object must be used, and applied
+    to the :class:`Table`.   The associated ``ForeignKey`` objects
+    are created automatically.
+    
+    The ``ForeignKey`` objects associated with an individual 
+    :class:`Column` object are available in the `foreign_keys` collection
+    of that column.
     
     Further examples of foreign key configuration are in
     :ref:`metadata_foreignkeys`.
@@ -911,7 +941,15 @@ class ForeignKey(SchemaItem):
         """
 
         self._colspec = column
+        
+        # the linked ForeignKeyConstraint.
+        # ForeignKey will create this when parent Column
+        # is attached to a Table, *or* ForeignKeyConstraint
+        # object passes itself in when creating ForeignKey 
+        # markers.
         self.constraint = _constraint
+        
+        
         self.use_alter = use_alter
         self.name = name
         self.onupdate = onupdate
@@ -925,7 +963,7 @@ class ForeignKey(SchemaItem):
 
     def copy(self, schema=None):
         """Produce a copy of this ForeignKey object."""
-
+        
         return ForeignKey(
                 self._get_colspec(schema=schema),
                 use_alter=self.use_alter,
@@ -1054,11 +1092,12 @@ class ForeignKey(SchemaItem):
                 return
             raise exc.InvalidRequestError("This ForeignKey already has a parent !")
         self.parent = column
-
         self.parent.foreign_keys.add(self)
         self.parent._on_table_attach(self._set_table)
     
     def _set_table(self, table, column):
+        # standalone ForeignKey - create ForeignKeyConstraint
+        # on the hosting Table when attached to the Table.
         if self.constraint is None and isinstance(table, Table):
             self.constraint = ForeignKeyConstraint(
                 [], [], use_alter=self.use_alter, name=self.name,
@@ -1489,6 +1528,11 @@ class ForeignKeyConstraint(Constraint):
         self.use_alter = use_alter
 
         self._elements = util.OrderedDict()
+        
+        # standalone ForeignKeyConstraint - create
+        # associated ForeignKey objects which will be applied to hosted
+        # Column objects (in col.foreign_keys), either now or when attached 
+        # to the Table for string-specified names
         for col, refcol in zip(columns, refcolumns):
             self._elements[col] = ForeignKey(
                     refcol, 
@@ -1514,6 +1558,8 @@ class ForeignKeyConstraint(Constraint):
     def _set_parent(self, table):
         super(ForeignKeyConstraint, self)._set_parent(table)
         for col, fk in self._elements.iteritems():
+            # string-specified column names now get
+            # resolved to Column objects
             if isinstance(col, basestring):
                 col = table.c[col]
             fk._set_parent(col)
@@ -1984,11 +2030,11 @@ class SchemaVisitor(visitors.ClauseVisitor):
     __traverse_options__ = {'schema_visitor':True}
 
 
-class DDLElement(expression.ClauseElement):
+class DDLElement(expression._Executable, expression.ClauseElement):
     """Base class for DDL expression constructs."""
     
-    supports_execution = True
-    _autocommit = True
+    _execution_options = expression._Executable.\
+                            _execution_options.union({'autocommit':True})
 
     target = None
     on = None
@@ -2298,7 +2344,7 @@ class DropConstraint(_CreateDropBase):
         super(DropConstraint, self).__init__(element, **kw)
         element._create_rule = lambda compiler: False
 
-def _bind_or_error(schemaitem):
+def _bind_or_error(schemaitem, msg=None):
     bind = schemaitem.bind
     if not bind:
         name = schemaitem.__class__.__name__
@@ -2312,11 +2358,12 @@ def _bind_or_error(schemaitem):
             bindable = "the %s's .bind" % name
         else:
             bindable = "this %s's .metadata.bind" % name
-
-        msg = ('The %s is not bound to an Engine or Connection.  '
-               'Execution can not proceed without a database to execute '
-               'against.  Either execute with an explicit connection or '
-               'assign %s to enable implicit execution.') % (item, bindable)
+        
+        if msg is None:
+            msg = ('The %s is not bound to an Engine or Connection.  '
+                   'Execution can not proceed without a database to execute '
+                   'against.  Either execute with an explicit connection or '
+                   'assign %s to enable implicit execution.') % (item, bindable)
         raise exc.UnboundExecutionError(msg)
     return bind
 

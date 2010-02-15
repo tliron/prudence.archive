@@ -307,7 +307,10 @@ default schema is used.
 from sqlalchemy import Table, MetaData, join
 from sqlalchemy import schema, sql
 from sqlalchemy.engine.base import Engine
-from sqlalchemy.orm import scoped_session, sessionmaker, mapper, class_mapper, relation, session
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper, \
+                            class_mapper, relation, session,\
+                            object_session
+from sqlalchemy.orm.interfaces import MapperExtension, EXT_CONTINUE
 from sqlalchemy.exceptions import SQLAlchemyError, InvalidRequestError, ArgumentError
 from sqlalchemy.sql import expression
 
@@ -315,6 +318,30 @@ from sqlalchemy.sql import expression
 __all__ = ['PKNotFoundError', 'SqlSoup']
 
 Session = scoped_session(sessionmaker(autoflush=True, autocommit=False))
+
+class AutoAdd(MapperExtension):
+    def __init__(self, scoped_session):
+        self.scoped_session = scoped_session
+
+    def instrument_class(self, mapper, class_):
+        class_.__init__ = self._default__init__(mapper)
+
+    def _default__init__(ext, mapper):
+        def __init__(self, **kwargs):
+            for key, value in kwargs.iteritems():
+                setattr(self, key, value)
+        return __init__
+
+    def init_instance(self, mapper, class_, oldinit, instance, args, kwargs):
+        session = self.scoped_session()
+        session._save_without_cascade(instance)
+        return EXT_CONTINUE
+
+    def init_failed(self, mapper, class_, oldinit, instance, args, kwargs):
+        sess = object_session(instance)
+        if sess:
+            sess.expunge(instance)
+        return EXT_CONTINUE
 
 class PKNotFoundError(SQLAlchemyError):
     pass
@@ -368,14 +395,15 @@ def _selectable_name(selectable):
             x = x[1:]
         return x
 
-def class_for_table(selectable, **mapper_kwargs):
+def _class_for_table(session, engine, selectable, **mapper_kwargs):
     selectable = expression._clause_element_as_expr(selectable)
     mapname = 'Mapped' + _selectable_name(selectable)
     # Py2K
     if isinstance(mapname, unicode): 
-        engine_encoding = selectable.metadata.bind.dialect.encoding 
+        engine_encoding = engine.dialect.encoding 
         mapname = mapname.encode(engine_encoding)
     # end Py2K
+    
     if isinstance(selectable, Table):
         klass = TableClassType(mapname, (object,), {})
     else:
@@ -395,20 +423,20 @@ def class_for_table(selectable, **mapper_kwargs):
         L = ["%s=%r" % (key, getattr(self, key, ''))
              for key in self.__class__.c.keys()]
         return '%s(%s)' % (self.__class__.__name__, ','.join(L))
-
+        
     for m in ['__cmp__', '__repr__']:
         setattr(klass, m, eval(m))
     klass._table = selectable
     klass.c = expression.ColumnCollection()
     mappr = mapper(klass,
                    selectable,
-                   extension=Session.extension,
+                   extension=AutoAdd(session),
                    **mapper_kwargs)
                    
     for k in mappr.iterate_properties:
         klass.c[k.key] = k.columns[0]
-
-    klass._query = Session.query_property()
+    
+    klass._query = session.query_property()
     return klass
 
 class SqlSoup(object):
@@ -430,11 +458,11 @@ class SqlSoup(object):
             
         self._cache = {}
         self.schema = None
-        
+    
+    @property
     def engine(self):
         return self._metadata.bind
 
-    engine = property(engine)
     bind = engine
 
     def delete(self, *args, **kwargs):
@@ -475,7 +503,7 @@ class SqlSoup(object):
         try:
             t = self._cache[selectable]
         except KeyError:
-            t = class_for_table(selectable, **kwargs)
+            t = _class_for_table(self.session, self.engine, selectable, **kwargs)
             self._cache[selectable] = t
         return t
 
@@ -498,7 +526,7 @@ class SqlSoup(object):
             if not table.primary_key.columns:
                 raise PKNotFoundError('table %r does not have a primary key defined [columns: %s]' % (attr, ','.join(table.c.keys())))
             if table.columns:
-                t = class_for_table(table)
+                t = _class_for_table(self.session, self.engine, table)
             else:
                 t = None
             self._cache[attr] = t

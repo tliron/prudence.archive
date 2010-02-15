@@ -11,19 +11,19 @@
 # Accessing the request
 #
 
-form = $prudence.resource.request.resource_ref.query_as_form
+form = @prudence.resource.request.resource_ref.query_as_form
 
 #
 # Stream this document
 #
 
 if form.get_first_value('stream') == 'true'
-	if $prudence.stream()
+	if @prudence.stream()
 		raise
 	end
 end
 
-$document.cache_duration = 5000
+@document.cache_duration = 5000
 
 #
 # Calling Java
@@ -38,16 +38,12 @@ print 'This page was dynamically generated at ', System.current_time_millis
 #
 # This is identical to:
 #
-#   $prudence.include_document 'path'
+#   @prudence.include_document 'path'
 #
 
 %>
 <%& '../fragments/test/jruby' %>
 <%
-
-# (See comments in jruby-fragment.html)
-
-include $my_module
 
 #
 # An example of a method
@@ -75,11 +71,11 @@ end
 %>
 <h3>Script engine used:</h3>
 <%
-print_factory $document.engine.factory
+print_factory @document.engine.factory
 %>
 <h3>Available script engines:</h3>
 <%
-factories = $document.engine_manager.engine_factories.to_array
+factories = @document.engine_manager.engine_factories.to_array
 for factory in factories
 	print_factory factory
 end

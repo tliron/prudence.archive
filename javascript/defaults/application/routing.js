@@ -101,14 +101,14 @@ for(var i in urlAddTrailingSlash) {
 //
 
 var scriptEngineManager = new ScriptEngineManager();
-var documentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks);
+var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks);
 if(dynamicWebDefrost) {
-	new Defroster(scriptEngineManager, documentSource, true).defrost(executor);
+	new Defroster(scriptEngineManager, dynamicWebDocumentSource, true).defrost(executor);
 }
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.engineManager', scriptEngineManager);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultEngineName', 'rhino-nonjdk');
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',documentSource);
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
 
 var dynamicWeb = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'));
@@ -127,20 +127,29 @@ router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_
 // Resources
 //
 
-documentSource = new DocumentFileSource(applicationBasePath + resourceBasePath, resourceDefaultName, resourceMinimumTimeBetweenValidityChecks);
-if(resourceDefrost) {
-	new Defroster(scriptEngineManager, documentSource, true).defrost(executor);
+var resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, resourcesMinimumTimeBetweenValidityChecks);
+if(resourcesDefrost) {
+	new Defroster(scriptEngineManager, resourcesDocumentSource, true).defrost(executor);
 }
 attributes.put('com.threecrickets.prudence.DelegatedResource.engineManager', scriptEngineManager);
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultEngineName', 'rhino-nonjdk');
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourceDefaultName);
-attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', documentSource);
-attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourceSourceViewable);
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName);
+attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource);
+attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable);
 
 resources = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
-router.attach(fixURL(resourceBaseURL), resources).matchingMode = Template.MODE_STARTS_WITH;
+router.attach(fixURL(resourcesBaseURL), resources).matchingMode = Template.MODE_STARTS_WITH;
 
-// Preheat resources
+//
+// Preheat
+//
+
+if(dynamicWebPreheat) {
+	var preheatTasks = PreheatTask.create(component.context, applicationInternalName, dynamicWebDocumentSource);
+	for(var i in preheatTasks) {
+		tasks.push(preheatTasks[i]);
+	}
+}
 
 for(var i in preheatResources) {
 	var preheatResource = preheatResources[i];

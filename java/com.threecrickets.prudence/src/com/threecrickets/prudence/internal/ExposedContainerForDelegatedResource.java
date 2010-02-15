@@ -32,9 +32,9 @@ import com.threecrickets.scripturian.DocumentContext;
 import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.ScriptletController;
+import com.threecrickets.scripturian.Scripturian;
 import com.threecrickets.scripturian.exception.DocumentInitializationException;
 import com.threecrickets.scripturian.exception.DocumentRunException;
-import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * This is the <code>prudence</code> variable exposed to scriptlets.
@@ -617,7 +617,7 @@ public class ExposedContainerForDelegatedResource
 		Document document = documentDescriptor.getDocument();
 		if( document == null )
 		{
-			String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), resource.getEngineManager() );
+			String scriptEngineName = Scripturian.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), resource.getEngineManager() );
 			String text = documentDescriptor.getText();
 			document = new Document( name, text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
 
@@ -655,7 +655,7 @@ public class ExposedContainerForDelegatedResource
 			Document document = documentDescriptor.getDocument();
 			if( document == null )
 			{
-				String scriptEngineName = ScripturianUtil.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), resource.getEngineManager() );
+				String scriptEngineName = Scripturian.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), resource.getEngineManager() );
 				String text = documentDescriptor.getText();
 				document = new Document( name, text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
 				Document existing = documentDescriptor.setDocumentIfAbsent( document );

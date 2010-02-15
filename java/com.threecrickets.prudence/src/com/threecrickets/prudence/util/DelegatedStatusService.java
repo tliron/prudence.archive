@@ -552,6 +552,8 @@ public class DelegatedStatusService extends StatusService
 
 	private static String escapeHtml( Object string )
 	{
+		if( string == null )
+			return "";
 		return string.toString().replace( "<", "&lt;" ).replace( ">", "&gt;" );
 	}
 }

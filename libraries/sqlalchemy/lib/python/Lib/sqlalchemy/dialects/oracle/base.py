@@ -1,5 +1,5 @@
 # oracle/base.py
-# Copyright (C) 2005, 2006, 2007, 2008, 2009 Michael Bayer mike_mp@zzzcomputing.com
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Michael Bayer mike_mp@zzzcomputing.com
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -122,7 +122,7 @@ from sqlalchemy.types import VARCHAR, NVARCHAR, CHAR, DATE, DATETIME, \
                 
 RESERVED_WORDS = set('''SHARE RAW DROP BETWEEN FROM DESC OPTION PRIOR LONG THEN DEFAULT ALTER IS INTO MINUS INTEGER NUMBER GRANT IDENTIFIED ALL TO ORDER ON FLOAT DATE HAVING CLUSTER NOWAIT RESOURCE ANY TABLE INDEX FOR UPDATE WHERE CHECK SMALLINT WITH DELETE BY ASC REVOKE LIKE SIZE RENAME NOCOMPRESS NULL GROUP VALUES AS IN VIEW EXCLUSIVE COMPRESS SYNONYM SELECT INSERT EXISTS NOT TRIGGER ELSE CREATE INTERSECT PCTFREE DISTINCT USER CONNECT SET MODE OF UNIQUE VARCHAR2 VARCHAR LOCK OR CHAR DECIMAL UNION PUBLIC AND START UID COMMENT'''.split()) 
 
-class RAW(sqltypes.Binary):
+class RAW(sqltypes.LargeBinary):
     pass
 OracleRaw = RAW
 
@@ -140,6 +140,14 @@ class NUMBER(sqltypes.Numeric, sqltypes.Integer):
             asdecimal = bool(scale and scale > 0)
                 
         super(NUMBER, self).__init__(precision=precision, scale=scale, asdecimal=asdecimal)
+    
+    @property
+    def _type_affinity(self):
+        if bool(self.scale and self.scale > 0):
+            return sqltypes.Numeric
+        else:
+            return sqltypes.Integer
+    
             
 class DOUBLE_PRECISION(sqltypes.Numeric):
     __visit_name__ = 'DOUBLE_PRECISION'
@@ -149,11 +157,45 @@ class DOUBLE_PRECISION(sqltypes.Numeric):
                 
         super(DOUBLE_PRECISION, self).__init__(precision=precision, scale=scale, asdecimal=asdecimal)
 
-class BFILE(sqltypes.Binary):
+class BFILE(sqltypes.LargeBinary):
     __visit_name__ = 'BFILE'
 
 class LONG(sqltypes.Text):
     __visit_name__ = 'LONG'
+
+class INTERVAL(sqltypes.TypeEngine):
+    __visit_name__ = 'INTERVAL'
+    
+    def __init__(self, 
+                    day_precision=None, 
+                    second_precision=None):
+        """Construct an INTERVAL.
+        
+        Note that only DAY TO SECOND intervals are currently supported.
+        This is due to a lack of support for YEAR TO MONTH intervals
+        within available DBAPIs (cx_oracle and zxjdbc).
+        
+        :param day_precision: the day precision value.  this is the number of digits
+        to store for the day field.  Defaults to "2"
+        :param second_precision: the second precision value.  this is the number of digits
+        to store for the fractional seconds field.  Defaults to "6".
+        
+        """
+        self.day_precision = day_precision
+        self.second_precision = second_precision
+    
+    @classmethod
+    def _adapt_from_generic_interval(cls, interval):
+        return INTERVAL(day_precision=interval.day_precision,
+                        second_precision=interval.second_precision)
+        
+    def adapt(self, impltype):
+        return impltype(day_precision=self.day_precision, 
+                        second_precision=self.second_precision)
+
+    @property
+    def _type_affinity(self):
+        return sqltypes.Interval
     
 class _OracleBoolean(sqltypes.Boolean):
     def get_dbapi_type(self, dbapi):
@@ -161,6 +203,7 @@ class _OracleBoolean(sqltypes.Boolean):
 
 colspecs = {
     sqltypes.Boolean : _OracleBoolean,
+    sqltypes.Interval : INTERVAL,
 }
 
 ischema_names = {
@@ -196,7 +239,17 @@ class OracleTypeCompiler(compiler.GenericTypeCompiler):
         
     def visit_unicode(self, type_):
         return self.visit_NVARCHAR(type_)
- 
+    
+    def visit_INTERVAL(self, type_):
+        return "INTERVAL DAY%s TO SECOND%s" % (
+            type_.day_precision is not None and 
+                "(%d)" % type_.day_precision or
+                "",
+            type_.second_precision is not None and 
+                "(%d)" % type_.second_precision or
+                "",
+        )
+            
     def visit_DOUBLE_PRECISION(self, type_):
         return self._generate_numeric(type_, "DOUBLE PRECISION")
         
@@ -229,7 +282,7 @@ class OracleTypeCompiler(compiler.GenericTypeCompiler):
     def visit_unicode_text(self, type_):
         return self.visit_NCLOB(type_)
 
-    def visit_binary(self, type_):
+    def visit_large_binary(self, type_):
         return self.visit_BLOB(type_)
 
     def visit_big_integer(self, type_):
@@ -298,9 +351,14 @@ class OracleCompiler(compiler.SQLCompiler):
                 clauses.append(visitors.cloned_traverse(join.onclause, {}, {'binary':visit_binary}))
             else:
                 clauses.append(join.onclause)
-
+            
+            for j in join.left, join.right:
+                if isinstance(j, expression.Join):
+                    visit_join(j)
+                
         for f in froms:
-            visitors.traverse(f, {}, {'join':visit_join})
+            if isinstance(f, expression.Join):
+                visit_join(f)
         return sql.and_(*clauses)
 
     def visit_outer_join_column(self, vc):
@@ -351,7 +409,7 @@ class OracleCompiler(compiler.SQLCompiler):
                     existingfroms = self.stack[-1]['from']
                 else:
                     existingfroms = None
-
+                
                 froms = select._get_display_froms(existingfroms)
                 whereclause = self._get_nonansi_join_whereclause(froms)
                 if whereclause is not None:
@@ -432,7 +490,7 @@ class OracleDDLCompiler(compiler.DDLCompiler):
         if constraint.onupdate is not None:
             util.warn(
                 "Oracle does not contain native UPDATE CASCADE "
-                 "functionality - onupdates will not be rendered for foreign keys."
+                 "functionality - onupdates will not be rendered for foreign keys. "
                  "Consider using deferrable=True, initially='deferred' or triggers.")
         
         return text
@@ -504,6 +562,10 @@ class OracleDialect(default.DefaultDialect):
         self.implicit_returning = self.server_version_info > (10, ) and \
                                         self.__dict__.get('implicit_returning', True)
 
+        if self.server_version_info < (9,):
+            self.colspecs = self.colspecs.copy()
+            self.colspecs.pop(sqltypes.Interval)
+
     def do_release_savepoint(self, connection, name):
         # Oracle does not support RELEASE SAVEPOINT
         pass
@@ -549,17 +611,13 @@ class OracleDialect(default.DefaultDialect):
     def table_names(self, connection, schema):
         # note that table_names() isnt loading DBLINKed or synonym'ed tables
         if schema is None:
-            cursor = connection.execute(
-                "SELECT table_name FROM all_tables "
-                "WHERE nvl(tablespace_name, 'no tablespace') NOT IN ('SYSTEM', 'SYSAUX') "
-                "AND IOT_NAME IS NULL")
-        else:
-            s = sql.text(
-                "SELECT table_name FROM all_tables "
-                "WHERE nvl(tablespace_name, 'no tablespace') NOT IN ('SYSTEM', 'SYSAUX') "
-                "AND OWNER = :owner "
-                "AND IOT_NAME IS NULL")
-            cursor = connection.execute(s, owner=self.denormalize_name(schema))
+            schema = self.default_schema_name
+        s = sql.text(
+            "SELECT table_name FROM all_tables "
+            "WHERE nvl(tablespace_name, 'no tablespace') NOT IN ('SYSTEM', 'SYSAUX') "
+            "AND OWNER = :owner "
+            "AND IOT_NAME IS NULL")
+        cursor = connection.execute(s, owner=self.denormalize_name(schema))
         return [self.normalize_name(row[0]) for row in cursor]
 
     def _resolve_synonym(self, connection, desired_owner=None, desired_synonym=None, desired_table=None):
@@ -660,12 +718,13 @@ class OracleDialect(default.DefaultDialect):
         c = connection.execute(sql.text(
                 "SELECT column_name, data_type, data_length, data_precision, data_scale, "
                 "nullable, data_default FROM ALL_TAB_COLUMNS%(dblink)s "
-                "WHERE table_name = :table_name AND owner = :owner" % {'dblink': dblink}),
+                "WHERE table_name = :table_name AND owner = :owner " 
+                "ORDER BY column_id" % {'dblink': dblink}),
                                table_name=table_name, owner=schema)
 
         for row in c:
-            (colname, coltype, length, precision, scale, nullable, default) = \
-                (self.normalize_name(row[0]), row[1], row[2], row[3], row[4], row[5]=='Y', row[6])
+            (colname, orig_colname, coltype, length, precision, scale, nullable, default) = \
+                (self.normalize_name(row[0]), row[0], row[1], row[2], row[3], row[4], row[5]=='Y', row[6])
 
             if coltype == 'NUMBER' :
                 coltype = NUMBER(precision, scale)
@@ -686,6 +745,9 @@ class OracleDialect(default.DefaultDialect):
                 'nullable': nullable,
                 'default': default,
             }
+            if orig_colname.lower() == orig_colname:
+                cdict['quote'] = True
+
             columns.append(cdict)
         return columns
 

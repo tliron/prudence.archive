@@ -50,32 +50,32 @@ hosts = {component.defaultHost: None}
 # is directly linked to the base URL.
 #
 
-resource_base_url = '/'
-resource_base_path = '/resources/'
+resources_base_url = '/'
+resources_base_path = '/resources/'
 
 # If the URL points to a directory rather than a file, and that directory
 # contains a file with this name, then it will be used. This allows
 # you to use the directory structure to create nice URLs without relying
 # on filenames.
 
-resource_default_name = 'default'
+resources_default_name = 'default'
 
 # Set this to True if you want to start to load and compile your
 # resources as soon as Prudence starts.
 
-resource_defrost = True
+resources_defrost = True
 
 # This is so we can see the source code for scripts by adding ?source=true
 # to the URL. You probably wouldn't want this for most applications.
 
-resource_source_viewable = True
+resources_source_viewable = True
 
 # This is the time (in milliseconds) allowed to pass until a script file
 # is tested to see if it was changed. During development, you'd want this
 # to be low, but during production, it should be high in order to avoid
 # unnecessary hits on the filesystem.
 
-resource_minimum_time_between_validity_checks = 1000
+resources_minimum_time_between_validity_checks = 1000
 
 #
 # Dynamic Web
@@ -94,10 +94,15 @@ dynamic_web_base_path = '/web/dynamic/'
 
 dynamic_web_default_document = 'index'
 
-# Set this to True if you want to start to load and compile your
-# scriptlets as soon as Prudence starts.
+# Set this to true if you want to compile your scriptlets as soon as Prudence
+# starts.
 
 dynamic_web_defrost = True
+
+# Set this to true if you want to load all your dynamic web documents as soon
+# as Prudence starts.
+
+dynamic_web_preheat = True
 
 # This is so we can see the source code for scripts by adding ?source=true
 # to the URL. You probably wouldn't want this for most applications.

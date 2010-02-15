@@ -1,5 +1,5 @@
 # engine/default.py
-# Copyright (C) 2005, 2006, 2007, 2008, 2009 Michael Bayer mike_mp@zzzcomputing.com
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Michael Bayer mike_mp@zzzcomputing.com
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -56,6 +56,8 @@ class DefaultDialect(base.Dialect):
     default_paramstyle = 'named'
     supports_default_values = False
     supports_empty_insert = True
+    
+    server_version_info = None
     
     # indicates symbol names are 
     # UPPERCASEd if they are case insensitive
@@ -142,8 +144,7 @@ class DefaultDialect(base.Dialect):
         cursor.close()
         return result
         
-    @classmethod
-    def type_descriptor(cls, typeobj):
+    def type_descriptor(self, typeobj):
         """Provide a database-specific ``TypeEngine`` object, given
         the generic object which comes from the types module.
 
@@ -152,7 +153,7 @@ class DefaultDialect(base.Dialect):
         and passes on to ``types.adapt_type()``.
 
         """
-        return sqltypes.adapt_type(typeobj, cls.colspecs)
+        return sqltypes.adapt_type(typeobj, self.colspecs)
 
     def reflecttable(self, connection, table, include_columns):
         insp = reflection.Inspector.from_engine(connection)
@@ -223,32 +224,61 @@ class DefaultDialect(base.Dialect):
 
 
 class DefaultExecutionContext(base.ExecutionContext):
+    execution_options = util.frozendict()
+    isinsert = False
+    isupdate = False
+    isdelete = False
+    executemany = False
+    result_map = None
+    compiled = None
+    statement = None
     
-    def __init__(self, dialect, connection, compiled_sql=None, compiled_ddl=None, statement=None, parameters=None):
+    def __init__(self, 
+                    dialect, 
+                    connection, 
+                    compiled_sql=None, 
+                    compiled_ddl=None, 
+                    statement=None, 
+                    parameters=None):
+        
         self.dialect = dialect
         self._connection = self.root_connection = connection
         self.engine = connection.engine
-
+        
         if compiled_ddl is not None:
             self.compiled = compiled = compiled_ddl
+
+            if compiled.statement._execution_options:
+                self.execution_options = compiled.statement._execution_options
+            if connection._execution_options:
+                self.execution_options = self.execution_options.union(
+                                                    connection._execution_options
+                                                    )
+
             if not dialect.supports_unicode_statements:
                 self.statement = unicode(compiled).encode(self.dialect.encoding)
             else:
                 self.statement = unicode(compiled)
-            self.isinsert = self.isupdate = self.isdelete = self.executemany = False
-            self.should_autocommit = True
-            self.result_map = None
+                
             self.cursor = self.create_cursor()
             self.compiled_parameters = []
             self.parameters = [self._default_params]
+            
         elif compiled_sql is not None:
             self.compiled = compiled = compiled_sql
 
-            # compiled clauseelement.  process bind params, process table defaults,
-            # track collections used by ResultProxy to target and process results
-
             if not compiled.can_execute:
                 raise exc.ArgumentError("Not an executable clause: %s" % compiled)
+
+            if compiled.statement._execution_options:
+                self.execution_options = compiled.statement._execution_options
+            if connection._execution_options:
+                self.execution_options = self.execution_options.union(
+                                                        connection._execution_options
+                                                        )
+
+            # compiled clauseelement.  process bind params, process table defaults,
+            # track collections used by ResultProxy to target and process results
 
             self.processors = dict(
                 (key, value) for key, value in
@@ -267,15 +297,13 @@ class DefaultExecutionContext(base.ExecutionContext):
             self.isinsert = compiled.isinsert
             self.isupdate = compiled.isupdate
             self.isdelete = compiled.isdelete
-            self.should_autocommit = compiled.statement._autocommit
-            if self.should_autocommit is expression.PARSE_AUTOCOMMIT:
-                self.should_autocommit = self.should_autocommit_text(self.statement)
 
             if not parameters:
                 self.compiled_parameters = [compiled.construct_params()]
-                self.executemany = False
             else:
-                self.compiled_parameters = [compiled.construct_params(m, _group_number=grp) for grp,m in enumerate(parameters)]
+                self.compiled_parameters = [compiled.construct_params(m, _group_number=grp) for
+                                            grp,m in enumerate(parameters)]
+                                            
                 self.executemany = len(parameters) > 1
 
             self.cursor = self.create_cursor()
@@ -284,22 +312,35 @@ class DefaultExecutionContext(base.ExecutionContext):
             self.parameters = self.__convert_compiled_params(self.compiled_parameters)
         elif statement is not None:
             # plain text statement
-            self.result_map = self.compiled = None
+            if connection._execution_options:
+                self.execution_options = self.execution_options.union(connection._execution_options)
             self.parameters = self.__encode_param_keys(parameters)
             self.executemany = len(parameters) > 1
             if isinstance(statement, unicode) and not dialect.supports_unicode_statements:
                 self.statement = statement.encode(self.dialect.encoding)
             else:
                 self.statement = statement
-            self.isinsert = self.isupdate = self.isdelete = False
-            self.should_autocommit = self.should_autocommit_text(statement)
             self.cursor = self.create_cursor()
         else:
             # no statement. used for standalone ColumnDefault execution.
-            self.statement = self.compiled = None
-            self.isinsert = self.isupdate = self.isdelete = self.executemany = self.should_autocommit = False
+            if connection._execution_options:
+                self.execution_options = self.execution_options.union(connection._execution_options)
             self.cursor = self.create_cursor()
-    
+        
+            
+    @util.memoized_property
+    def should_autocommit(self):
+        autocommit = self.execution_options.get('autocommit', 
+                                                not self.compiled and 
+                                                self.statement and
+                                                expression.PARSE_AUTOCOMMIT 
+                                                or False)
+                                                
+        if autocommit is expression.PARSE_AUTOCOMMIT:
+            return self.should_autocommit_text(self.statement)
+        else:
+            return autocommit
+            
     @util.memoized_property
     def _is_explicit_returning(self):
         return self.compiled and \

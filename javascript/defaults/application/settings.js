@@ -51,32 +51,32 @@ var hosts = [[component.defaultHost, null]];
 // is directly linked to the base URL.
 //
 
-var resourceBaseURL = '/';
-var resourceBasePath = '/resources/';
+var resourcesBaseURL = '/';
+var resourcesBasePath = '/resources/';
 
 // If the URL points to a directory rather than a file, and that directory
 // contains a file with this name, then it will be used. This allows
 // you to use the directory structure to create nice URLs without relying
 // on filenames.
 
-var resourceDefaultName = 'default';
+var resourcesDefaultName = 'default';
 
 // Set this to true if you want to start to load and compile your
 // resources as soon as Prudence starts.
 
-var resourceDefrost = true;
+var resourcesDefrost = true;
 
 // This is so we can see the source code for scripts by adding ?source=true
 // to the URL. You probably wouldn't want this for most applications.
 
-var resourceSourceViewable = true;
+var resourcesSourceViewable = true;
 
 // This is the time (in milliseconds) allowed to pass until a script file
 // is tested to see if it was changed. During development, you'd want this
 // to be low, but during production, it should be high in order to avoid
 // unnecessary hits on the filesystem.
 
-var resourceMinimumTimeBetweenValidityChecks = 1000;
+var resourcesMinimumTimeBetweenValidityChecks = 1000;
 
 //
 // Dynamic Web
@@ -95,10 +95,15 @@ var dynamicWebBasePath = '/web/dynamic/';
 
 var dynamicWebDefaultDocument = 'index';
 
-// Set this to true if you want to start to load and compile your
-// scriptlets as soon as Prudence starts.
+// Set this to true if you want to compile your scriptlets as soon as Prudence
+// starts.
 
 var dynamicWebDefrost = true;
+
+// Set this to true if you want to load all your dynamic web documents as soon
+// as Prudence starts.
+
+var dynamicWebPreheat = true;
 
 // This is so we can see the source code for scripts by adding ?source=true
 // to the URL. You probably wouldn't want this for most applications.

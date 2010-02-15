@@ -1,9 +1,10 @@
 from sqlalchemy.util import EMPTY_SET
 import weakref
 from sqlalchemy import util
-from sqlalchemy.orm.attributes import PASSIVE_NO_RESULT, PASSIVE_OFF, NEVER_SET, NO_VALUE, manager_of_class, ATTR_WAS_SET
-from sqlalchemy.orm import attributes
-from sqlalchemy.orm import interfaces
+from sqlalchemy.orm.attributes import PASSIVE_NO_RESULT, PASSIVE_OFF, \
+                                        NEVER_SET, NO_VALUE, manager_of_class, \
+                                        ATTR_WAS_SET
+from sqlalchemy.orm import attributes, exc as orm_exc, interfaces
 
 class InstanceState(object):
     """tracks state information at the instance level."""
@@ -67,10 +68,6 @@ class InstanceState(object):
     @property
     def sort_key(self):
         return self.key and self.key[1] or (self.insert_order, )
-
-    def check_modified(self):
-        # TODO: deprecate
-        return self.modified
 
     def initialize_instance(*mixed, **kwargs):
         self, instance, args = mixed[0], mixed[1], mixed[2:]
@@ -151,8 +148,16 @@ class InstanceState(object):
     def __setstate__(self, state):
         self.obj = weakref.ref(state['instance'], self._cleanup)
         self.class_ = state['instance'].__class__
-        self.manager = manager_of_class(self.class_)
-
+        self.manager = manager = manager_of_class(self.class_)
+        if manager is None:
+            raise orm_exc.UnmappedInstanceError(
+                        state['instance'],
+                        "Cannot deserialize object of type %r - no mapper() has"
+                        " been configured for this class within the current Python process!" %
+                        self.class_)
+        elif manager.mapper and not manager.mapper.compiled:
+            manager.mapper.compile()
+            
         self.committed_state = state.get('committed_state', {})
         self.pending = state.get('pending', {})
         self.parents = state.get('parents', {})
@@ -163,11 +168,11 @@ class InstanceState(object):
         if self.modified:
             self._strong_obj = state['instance']
             
-        self.__dict__.update(
+        self.__dict__.update([
             (k, state[k]) for k in (
                 'key', 'load_options', 'expired_attributes', 'mutable_dict'
             ) if k in state 
-        )
+        ])
 
         if 'load_path' in state:
             self.load_path = interfaces.deserialize_path(state['load_path'])
@@ -352,6 +357,13 @@ class InstanceState(object):
         self._strong_obj = None
 
 class MutableAttrInstanceState(InstanceState):
+    """InstanceState implementation for objects that reference 'mutable' 
+    attributes.
+    
+    Has a more involved "cleanup" handler that checks mutable attributes
+    for changes upon dereference, resurrecting if needed.
+    
+    """
     def __init__(self, obj, manager):
         self.mutable_dict = {}
         InstanceState.__init__(self, obj, manager)

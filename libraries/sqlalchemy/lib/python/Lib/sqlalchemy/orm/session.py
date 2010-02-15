@@ -1,5 +1,5 @@
 # session.py
-# Copyright (C) 2005, 2006, 2007, 2008, 2009 Michael Bayer mike_mp@zzzcomputing.com
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Michael Bayer mike_mp@zzzcomputing.com
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -864,7 +864,7 @@ class Session(object):
             context.append('mapper %s' % c_mapper)
         if clause is not None:
             context.append('SQL expression')
-
+        
         raise sa_exc.UnboundExecutionError(
             "Could not locate a bind configured on %s or this Session" % (
             ', '.join(context)))
@@ -1049,7 +1049,8 @@ class Session(object):
         self._cascade_save_or_update(state)
 
     def _cascade_save_or_update(self, state):
-        for state, mapper in _cascade_unknown_state_iterator('save-update', state, halt_on=lambda c:c in self):
+        for state, mapper in _cascade_unknown_state_iterator(
+                                    'save-update', state, halt_on=lambda c:c in self):
             self._save_or_update_impl(state)
 
     def delete(self, instance):
@@ -1103,24 +1104,29 @@ class Session(object):
             load = not kw['dont_load']
             util.warn_deprecated("dont_load=True has been renamed to load=False.")
         
-        # TODO: this should be an IdentityDict for instances, but will
-        # need a separate dict for PropertyLoader tuples
         _recursive = {}
-        self._autoflush()
+        
+        if load:
+            # flush current contents if we expect to load data
+            self._autoflush()
+            
+        _object_mapper(instance) # verify mapped
         autoflush = self.autoflush
         try:
             self.autoflush = False
-            return self._merge(instance, load=load, _recursive=_recursive)
+            return self._merge(
+                            attributes.instance_state(instance), 
+                            attributes.instance_dict(instance), 
+                            load=load, _recursive=_recursive)
         finally:
             self.autoflush = autoflush
         
-    def _merge(self, instance, load=True, _recursive=None):
-        mapper = _object_mapper(instance)
-        if instance in _recursive:
-            return _recursive[instance]
+    def _merge(self, state, state_dict, load=True, _recursive=None):
+        mapper = _state_mapper(state)
+        if state in _recursive:
+            return _recursive[state]
 
         new_instance = False
-        state = attributes.instance_state(instance)
         key = state.key
         
         if key is None:
@@ -1134,6 +1140,7 @@ class Session(object):
 
         if key in self.identity_map:
             merged = self.identity_map[key]
+            
         elif not load:
             if state.modified:
                 raise sa_exc.InvalidRequestError(
@@ -1154,16 +1161,27 @@ class Session(object):
         if merged is None:
             merged = mapper.class_manager.new_instance()
             merged_state = attributes.instance_state(merged)
+            merged_dict = attributes.instance_dict(merged)
             new_instance = True
-            self.add(merged)
+            self._save_or_update_state(merged_state)
+        else:
+            merged_state = attributes.instance_state(merged)
+            merged_dict = attributes.instance_dict(merged)
+            
+        _recursive[state] = merged
 
-        _recursive[instance] = merged
-
-        for prop in mapper.iterate_properties:
-            prop.merge(self, instance, merged, load, _recursive)
+        # check that we didn't just pull the exact same
+        # state out.   
+        if state is not merged_state:
+            merged_state.load_path = state.load_path
+            merged_state.load_options = state.load_options
+            
+            for prop in mapper.iterate_properties:
+                prop.merge(self, state, state_dict, merged_state, merged_dict, load, _recursive)
 
         if not load:
-            attributes.instance_state(merged).commit_all(attributes.instance_dict(merged), self.identity_map)  # remove any history
+            # remove any history
+            merged_state.commit_all(merged_dict, self.identity_map)  
 
         if new_instance:
             merged_state._run_on_load(merged)

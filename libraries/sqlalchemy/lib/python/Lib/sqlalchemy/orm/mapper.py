@@ -1,5 +1,5 @@
 # mapper.py
-# Copyright (C) 2005, 2006, 2007, 2008, 2009 Michael Bayer mike_mp@zzzcomputing.com
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Michael Bayer mike_mp@zzzcomputing.com
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -94,6 +94,7 @@ class Mapper(object):
                  column_prefix=None,
                  include_properties=None,
                  exclude_properties=None,
+                 passive_updates=True,
                  eager_defaults=False):
         """Construct a new mapper.
 
@@ -131,6 +132,7 @@ class Mapper(object):
         self.polymorphic_on = polymorphic_on
         self._dependency_processors = []
         self._validators = {}
+        self.passive_updates = passive_updates
         self._clause_adapter = None
         self._requires_row_aliasing = False
         self._inherits_equated_pairs = None
@@ -231,7 +233,9 @@ class Mapper(object):
                     self.mapped_table = sql.join(self.inherits.mapped_table, self.local_table, self.inherit_condition)
 
                     fks = util.to_set(self.inherit_foreign_keys)
-                    self._inherits_equated_pairs = sqlutil.criterion_as_pairs(self.mapped_table.onclause, consider_as_foreign_keys=fks)
+                    self._inherits_equated_pairs = \
+                                sqlutil.criterion_as_pairs(self.mapped_table.onclause,
+                                                            consider_as_foreign_keys=fks)
             else:
                 self.mapped_table = self.local_table
 
@@ -254,6 +258,7 @@ class Mapper(object):
             self.batch = self.inherits.batch
             self.inherits._inheriting_mappers.add(self)
             self.base_mapper = self.inherits.base_mapper
+            self.passive_updates = self.inherits.passive_updates
             self._all_tables = self.inherits._all_tables
 
             if self.polymorphic_identity is not None:
@@ -317,7 +322,7 @@ class Mapper(object):
 
         """
         manager = attributes.manager_of_class(self.class_)
-
+        
         if self.non_primary:
             if not manager or manager.mapper is None:
                 raise sa_exc.InvalidRequestError(
@@ -753,7 +758,9 @@ class Mapper(object):
             self.logger.info(
                 "(" + self.class_.__name__ + 
                 "|" + 
-                (self.local_table and self.local_table.description or str(self.local_table)) +
+                (self.local_table is not None and 
+                    self.local_table.description or 
+                    str(self.local_table)) +
                 (self.non_primary and "|non-primary" or "") + ") " + 
                 msg)
 
@@ -762,7 +769,9 @@ class Mapper(object):
             self.logger.debug(
                 "(" + self.class_.__name__ + 
                 "|" + 
-                (self.local_table and self.local_table.description or str(self.local_table)) + 
+                (self.local_table is not None and 
+                    self.local_table.description 
+                    or str(self.local_table)) + 
                 (self.non_primary and "|non-primary" or "") + ") " + 
                 msg)
 
@@ -799,7 +808,8 @@ class Mapper(object):
     def get_property(self, key, resolve_synonyms=False, raiseerr=True):
         """return a MapperProperty associated with the given key."""
 
-        self.compile()
+        if not self.compiled:
+            self.compile()
         return self._get_property(key, resolve_synonyms=resolve_synonyms, raiseerr=raiseerr)
 
     def _get_property(self, key, resolve_synonyms=False, raiseerr=True):
@@ -814,7 +824,8 @@ class Mapper(object):
     @property
     def iterate_properties(self):
         """return an iterator of all MapperProperty objects."""
-        self.compile()
+        if not self.compiled:
+            self.compile()
         return self._props.itervalues()
 
     def _mappers_from_spec(self, spec, selectable):
@@ -1379,7 +1390,8 @@ class Mapper(object):
                                 history = attributes.get_state_history(state, prop.key, passive=True)
                                 if history.added:
                                     hasdata = True
-                        elif mapper.polymorphic_on is not None and mapper.polymorphic_on.shares_lineage(col) and col not in pks:
+                        elif mapper.polymorphic_on is not None and \
+                                mapper.polymorphic_on.shares_lineage(col) and col not in pks:
                             pass
                         else:
                             if post_update_cols is not None and col not in post_update_cols:
@@ -1394,16 +1406,29 @@ class Mapper(object):
                                     value_params[col] = history.added[0]
                                 else:
                                     params[col.key] = prop.get_col_value(col, history.added[0])
+
                                 if col in pks:
-                                    if history.deleted:
-                                        params[col._label] = prop.get_col_value(col, history.deleted[0])
+                                    # if passive_updates and sync detected this was a 
+                                    # pk->pk sync, use the new value to locate the row, 
+                                    # since the DB would already have set this
+                                    if ("pk_cascaded", state, col) in \
+                                                    uowtransaction.attributes:
+                                        params[col._label] = \
+                                                prop.get_col_value(col, history.added[0])
+                                        hasdata = True
+                                        
+                                    elif history.deleted:
+                                        # PK is changing - use the old value to locate the row
+                                        params[col._label] = \
+                                                prop.get_col_value(col, history.deleted[0])
                                         hasdata = True
                                     else:
                                         # row switch logic can reach us here
                                         # remove the pk from the update params so the update doesn't
                                         # attempt to include the pk in the update statement
                                         del params[col.key]
-                                        params[col._label] = prop.get_col_value(col, history.added[0])
+                                        params[col._label] = \
+                                                    prop.get_col_value(col, history.added[0])
                                 else:
                                     hasdata = True
                             elif col in pks:
@@ -1418,14 +1443,19 @@ class Mapper(object):
                 for col in mapper._pks_by_table[table]:
                     clause.clauses.append(col == sql.bindparam(col._label, type_=col.type))
 
-                if mapper.version_id_col is not None and table.c.contains_column(mapper.version_id_col):
-                    clause.clauses.append(mapper.version_id_col == sql.bindparam(mapper.version_id_col._label, type_=col.type))
+                if mapper.version_id_col is not None and \
+                            table.c.contains_column(mapper.version_id_col):
+                            
+                    clause.clauses.append(mapper.version_id_col ==\
+                            sql.bindparam(mapper.version_id_col._label, type_=col.type))
 
                 statement = table.update(clause)
+                
                 rows = 0
                 for state, params, mapper, connection, value_params in update:
                     c = connection.execute(statement.values(value_params), params)
-                    mapper._postfetch(uowtransaction, connection, table, state, c, c.last_updated_params(), value_params)
+                    mapper._postfetch(uowtransaction, connection, table, 
+                                        state, c, c.last_updated_params(), value_params)
 
                     rows += c.rowcount
 
@@ -1437,7 +1467,8 @@ class Mapper(object):
                         
                 elif mapper.version_id_col is not None:
                     util.warn("Dialect %s does not support updated rowcount "
-                            "- versioning cannot be verified." % c.dialect.dialect_description)
+                            "- versioning cannot be verified." % c.dialect.dialect_description,
+                              stacklevel=12)
                     
             if insert:
                 statement = table.insert()
@@ -1448,19 +1479,14 @@ class Mapper(object):
                     if primary_key is not None:
                         # set primary key attributes
                         for i, col in enumerate(mapper._pks_by_table[table]):
-                            if mapper._get_state_attr_by_column(state, col) is None and len(primary_key) > i:
+                            if mapper._get_state_attr_by_column(state, col) is None and \
+                                                                len(primary_key) > i:
                                 mapper._set_state_attr_by_column(state, col, primary_key[i])
-                    mapper._postfetch(uowtransaction, connection, table, state, c, c.last_inserted_params(), value_params)
+                                
+                    mapper._postfetch(uowtransaction, connection, table, 
+                                        state, c, c.last_inserted_params(), value_params)
 
-                    # synchronize newly inserted ids from one table to the next
-                    # TODO: this performs some unnecessary attribute transfers
-                    # from an attribute to itself, since the attribute is often mapped
-                    # to multiple, equivalent columns.  it also may fire off more
-                    # than needed overall.
-                    for m in mapper.iterate_to_root():
-                        if m._inherits_equated_pairs:
-                            sync.populate(state, m, state, m, m._inherits_equated_pairs)
-
+                        
         if not postupdate:
             for state, mapper, connection, has_identity, instance_key in tups:
 
@@ -1488,7 +1514,8 @@ class Mapper(object):
                     if 'after_update' in mapper.extension:
                         mapper.extension.after_update(mapper, connection, state.obj())
 
-    def _postfetch(self, uowtransaction, connection, table, state, resultproxy, params, value_params):
+    def _postfetch(self, uowtransaction, connection, table, 
+                                state, resultproxy, params, value_params):
         """Expire attributes in need of newly persisted database state."""
 
         postfetch_cols = resultproxy.postfetch_cols()
@@ -1510,6 +1537,18 @@ class Mapper(object):
 
         if deferred_props:
             _expire_state(state, deferred_props)
+
+        # synchronize newly inserted ids from one table to the next
+        # TODO: this still goes a little too often.  would be nice to
+        # have definitive list of "columns that changed" here
+        cols = set(table.c)
+        for m in self.iterate_to_root():
+            if m._inherits_equated_pairs and \
+                        cols.intersection([l for l, r in m._inherits_equated_pairs]):
+                sync.populate(state, m, state, m, 
+                                                m._inherits_equated_pairs, 
+                                                uowtransaction,
+                                                self.passive_updates)
 
     def _delete_obj(self, states, uowtransaction):
         """Issue ``DELETE`` statements for a list of objects.
@@ -1799,7 +1838,18 @@ class Mapper(object):
                 raise AssertionError("No such polymorphic_identity %r is defined" % discriminator)
             if mapper is self:
                 return None
-            return mapper._instance_processor(context, path, adapter, polymorphic_from=self)
+                
+            # replace the tip of the path info with the subclass mapper being used.
+            # that way accurate "load_path" info is available for options
+            # invoked during deferred loads.
+            # we lose AliasedClass path elements this way, but currently,
+            # those are not needed at this stage.
+            
+            # this asserts to true
+            #assert mapper.isa(_class_to_mapper(path[-1]))
+            
+            return mapper._instance_processor(context, path[0:-1] + (mapper,), 
+                                                    adapter, polymorphic_from=self)
         return configure_subclass_mapper
 
 log.class_logger(Mapper)

@@ -1,5 +1,5 @@
 # engine/base.py
-# Copyright (C) 2005, 2006, 2007, 2008, 2009 Michael Bayer mike_mp@zzzcomputing.com
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Michael Bayer mike_mp@zzzcomputing.com
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -173,7 +173,7 @@ class Dialect(object):
         """Transform a generic type to a dialect-specific type.
 
         Dialect classes will usually use the
-        :func:`~sqlalchemy.types.adapt_type` method in the types module to
+        :func:`~sqlalchemy.types.adapt_type` function in the types module to
         make this job easy.
 
         The returned result is cached *per dialect class* so can
@@ -581,6 +581,19 @@ class ExecutionContext(object):
 
         raise NotImplementedError()
 
+    def get_rowcount(self):
+        """Return the number of rows produced (by a SELECT query)
+        or affected (by an INSERT/UPDATE/DELETE statement).
+
+        Note that this row count may not be properly implemented 
+        in some dialects; this is indicated by the 
+        ``supports_sane_rowcount`` and ``supports_sane_multi_rowcount``
+        dialect attributes.
+        
+        """
+
+        raise NotImplementedError()
+
 
 class Compiled(object):
     """Represent a compiled SQL or DDL expression.
@@ -706,26 +719,25 @@ class Connection(Connectable):
     .. index::
       single: thread safety; Connection
     """
-    options = {}
+    _execution_options = util.frozendict()
     
     def __init__(self, engine, connection=None, close_with_result=False,
-                 _branch=False, _options=None):
+                 _branch=False, _execution_options=None):
         """Construct a new Connection.
 
         Connection objects are typically constructed by an
         :class:`~sqlalchemy.engine.Engine`, see the ``connect()`` and
         ``contextual_connect()`` methods of Engine.
         """
-
         self.engine = engine
         self.__connection = connection or engine.raw_connection()
         self.__transaction = None
-        self.__close_with_result = close_with_result
+        self.should_close_with_result = close_with_result
         self.__savepoint_seq = 0
         self.__branch = _branch
         self.__invalid = False
-        if _options:
-            self.options = _options
+        if _execution_options:
+            self._execution_options = self._execution_options.union(_execution_options)
 
     def _branch(self):
         """Return a new Connection which references this Connection's
@@ -738,7 +750,7 @@ class Connection(Connectable):
 
         return self.engine.Connection(self.engine, self.__connection, _branch=True)
     
-    def _with_options(self, **opt):
+    def execution_options(self, **opt):
         """Add keyword options to a Connection generatively.
         
         Experimental.  May change the name/signature at 
@@ -751,8 +763,8 @@ class Connection(Connectable):
         """
         return self.engine.Connection(
                     self.engine, self.__connection,
-                     _branch=self.__branch, _options=opt)
-        
+                     _branch=self.__branch, _execution_options=opt)
+    
     @property
     def dialect(self):
         "Dialect used by this Connection."
@@ -785,14 +797,6 @@ class Connection(Connectable):
                 self.__invalid = False
                 return self.__connection
             raise exc.InvalidRequestError("This Connection is closed")
-
-    @property
-    def should_close_with_result(self):
-        """Indicates if this Connection should be closed when a corresponding
-        ResultProxy is closed; this is essentially an auto-release mode.
-        """
-
-        return self.__close_with_result
 
     @property
     def info(self):
@@ -875,9 +879,9 @@ class Connection(Connectable):
 
         if self.__transaction is None:
             self.__transaction = RootTransaction(self)
+            return self.__transaction
         else:
             return Transaction(self, self.__transaction)
-        return self.__transaction
 
     def begin_nested(self):
         """Begin a nested transaction and return a Transaction handle.
@@ -1013,7 +1017,8 @@ class Connection(Connectable):
             conn.close()
         self.__invalid = False
         del self.__connection
-
+        self.__transaction = None
+        
     def scalar(self, object, *multiparams, **params):
         """Executes and returns the first column of the first row.
 
@@ -1067,7 +1072,7 @@ class Connection(Connectable):
     def _execute_default(self, default, multiparams, params):
         ctx = self.__create_execution_context()
         ret = ctx._exec_default(default)
-        if self.__close_with_result:
+        if self.should_close_with_result:
             self.close()
         return ret
 
@@ -1119,8 +1124,8 @@ class Connection(Connectable):
             
             if context.isinsert and not context.executemany:
                 context.post_insert()
-            
-        if context.should_autocommit and not self.in_transaction():
+        
+        if self.__transaction is None and context.should_autocommit:
             self._commit_impl()
             
         return context.get_result_proxy()._autoclose()
@@ -1148,7 +1153,7 @@ class Connection(Connectable):
                 if cursor:
                     cursor.close()
                 self._autorollback()
-                if self.__close_with_result:
+                if self.should_close_with_result:
                     self.close()
             # Py3K
             #raise exc.DBAPIError.instance(statement, parameters, e, connection_invalidated=is_disconnect) from e
@@ -1215,8 +1220,28 @@ class Connection(Connectable):
     def default_schema_name(self):
         return self.engine.dialect.get_default_schema_name(self)
 
-    def run_callable(self, callable_):
-        return callable_(self)
+    def transaction(self, callable_, *args, **kwargs):
+        """Execute the given function within a transaction boundary.
+
+        This is a shortcut for explicitly calling `begin()` and `commit()`
+        and optionally `rollback()` when exceptions are raised.  The
+        given `*args` and `**kwargs` will be passed to the function.
+        
+        See also transaction() on engine.
+        
+        """
+
+        trans = self.begin()
+        try:
+            ret = self.run_callable(callable_, *args, **kwargs)
+            trans.commit()
+            return ret
+        except:
+            trans.rollback()
+            raise
+
+    def run_callable(self, callable_, *args, **kwargs):
+        return callable_(self, *args, **kwargs)
 
 
 class Transaction(object):
@@ -1401,42 +1426,31 @@ class Engine(Connectable):
             if connection is None:
                 conn.close()
 
-    def transaction(self, callable_, connection=None, *args, **kwargs):
+    def transaction(self, callable_, *args, **kwargs):
         """Execute the given function within a transaction boundary.
 
         This is a shortcut for explicitly calling `begin()` and `commit()`
         and optionally `rollback()` when exceptions are raised.  The
-        given `*args` and `**kwargs` will be passed to the function, as
-        well as the Connection used in the transaction.
+        given `*args` and `**kwargs` will be passed to the function.
+        
+        The connection used is that of contextual_connect().
+        
+        See also the similar method on Connection itself.
+        
         """
-
-        if connection is None:
-            conn = self.contextual_connect()
-        else:
-            conn = connection
+        
+        conn = self.contextual_connect()
         try:
-            trans = conn.begin()
-            try:
-                ret = callable_(conn, *args, **kwargs)
-                trans.commit()
-                return ret
-            except:
-                trans.rollback()
-                raise
+            return conn.transaction(callable_, *args, **kwargs)
         finally:
-            if connection is None:
-                conn.close()
+            conn.close()
 
-    def run_callable(self, callable_, connection=None, *args, **kwargs):
-        if connection is None:
-            conn = self.contextual_connect()
-        else:
-            conn = connection
+    def run_callable(self, callable_, *args, **kwargs):
+        conn = self.contextual_connect()
         try:
-            return callable_(conn, *args, **kwargs)
+            return conn.run_callable(callable_, *args, **kwargs)
         finally:
-            if connection is None:
-                conn.close()
+            conn.close()
 
     def execute(self, statement, *multiparams, **params):
         connection = self.contextual_connect(close_with_result=True)
@@ -1501,7 +1515,7 @@ class Engine(Connectable):
                 conn.close()
 
     def has_table(self, table_name, schema=None):
-        return self.run_callable(lambda c: self.dialect.has_table(c, table_name, schema=schema))
+        return self.run_callable(self.dialect.has_table, table_name, schema)
 
     def raw_connection(self):
         """Return a DB-API connection."""
@@ -1523,11 +1537,41 @@ def _proxy_connection_cls(cls, proxy):
         def _cursor_executemany(self, cursor, statement, parameters, context=None):
             return proxy.cursor_execute(super(ProxyConnection, self)._cursor_executemany, cursor, statement, parameters, context, True)
 
+        def _begin_impl(self):
+            return proxy.begin(self, super(ProxyConnection, self)._begin_impl)
+            
+        def _rollback_impl(self):
+            return proxy.rollback(self, super(ProxyConnection, self)._rollback_impl)
+
+        def _commit_impl(self):
+            return proxy.commit(self, super(ProxyConnection, self)._commit_impl)
+
+        def _savepoint_impl(self, name=None):
+            return proxy.savepoint(self, super(ProxyConnection, self)._savepoint_impl, name=name)
+
+        def _rollback_to_savepoint_impl(self, name, context):
+            return proxy.rollback_savepoint(self, super(ProxyConnection, self)._rollback_to_savepoint_impl, name, context)
+            
+        def _release_savepoint_impl(self, name, context):
+            return proxy.release_savepoint(self, super(ProxyConnection, self)._release_savepoint_impl, name, context)
+
+        def _begin_twophase_impl(self, xid):
+            return proxy.begin_twophase(self, super(ProxyConnection, self)._begin_twophase_impl, xid)
+
+        def _prepare_twophase_impl(self, xid):
+            return proxy.prepare_twophase(self, super(ProxyConnection, self)._prepare_twophase_impl, xid)
+
+        def _rollback_twophase_impl(self, xid, is_prepared):
+            return proxy.rollback_twophase(self, super(ProxyConnection, self)._rollback_twophase_impl, xid, is_prepared)
+
+        def _commit_twophase_impl(self, xid, is_prepared):
+            return proxy.commit_twophase(self, super(ProxyConnection, self)._commit_twophase_impl, xid, is_prepared)
+
     return ProxyConnection
 
 
 class RowProxy(object):
-    """Proxy a single cursor row for a parent ResultProxy.
+    """Proxy values from a single cursor row.
 
     Mostly follows "ordered dictionary" behavior, mapping result
     values to the string-based column name, the integer position of
@@ -1539,19 +1583,13 @@ class RowProxy(object):
     __slots__ = ['__parent', '__row', '__colfuncs']
 
     def __init__(self, parent, row):
-        """RowProxy objects are constructed by ResultProxy objects."""
 
         self.__parent = parent
         self.__row = row
         self.__colfuncs = parent._colfuncs
         if self.__parent._echo:
-            self.__parent.context.engine.logger.debug("Row %r", row)
+            self.__parent.logger.debug("Row %r", row)
         
-    def close(self):
-        """Close the parent ResultProxy."""
-
-        self.__parent.close()
-
     def __contains__(self, key):
         return self.__parent._has_key(self.__row, key)
 
@@ -1561,7 +1599,7 @@ class RowProxy(object):
     def __getstate__(self):
         return {
             '__row':[self.__colfuncs[i][0](self.__row) for i in xrange(len(self.__row))],
-            '__parent':PickledResultProxy(self.__parent)
+            '__parent':self.__parent
         }
     
     def __setstate__(self, d):
@@ -1637,167 +1675,20 @@ class RowProxy(object):
     def itervalues(self):
         return iter(self)
 
-class PickledResultProxy(object):
-    """a 'mock' ResultProxy used by a RowProxy being pickled."""
+class ResultMetaData(object):
+    """Handle cursor.description, applying additional info from an execution context."""
     
-    _echo = False
-    
-    def __init__(self, resultproxy):
-        self._pickled_colfuncs = \
-                    dict(
-                        (key, (i, type_)) 
-                        for key, (fn, i, type_) in resultproxy._colfuncs.iteritems() 
-                        if isinstance(key, (basestring, int))
-                    )
-        self._keys = resultproxy.keys
-    
-    @util.memoized_property
-    def _colfuncs(self):
-        d = {}
-        for key, (index, type_) in self._pickled_colfuncs.iteritems():
-            if type_ == 'ambiguous':
-                d[key] = (ResultProxy._ambiguous_processor(key), index, type_)
-            else:
-                d[key] = (operator.itemgetter(index), index, "itemgetter")
-        return d
-        
-    @util.memoized_property
-    def _colfunc_list(self):
-        funcs = self._colfuncs
-        return [funcs[i][0] for i in xrange(len(self.keys))]
-
-    def _key_fallback(self, key):
-        if key in self._colfuncs:
-            return self._colfuncs[key]
-            
-        if isinstance(key, basestring):
-            key = key.lower()
-            if key in self._colfuncs:
-                return self._colfuncs[key]
-
-        if isinstance(key, expression.ColumnElement):
-            if key._label and key._label.lower() in self._colfuncs:
-                return self._colfuncs[key._label.lower()]
-            elif hasattr(key, 'name') and key.name.lower() in self._colfuncs:
-                return self._colfuncs[key.name.lower()]
-        
-        return None
-        
-    def close(self):
-        pass
-        
-    def _has_key(self, row, key):
-        return self._key_fallback(key) is not None
-        
-    @property
-    def keys(self):
-        return self._keys
-        
-        
-class ResultProxy(object):
-    """Wraps a DB-API cursor object to provide easier access to row columns.
-
-    Individual columns may be accessed by their integer position,
-    case-insensitive column name, or by ``schema.Column``
-    object. e.g.::
-
-      row = fetchone()
-
-      col1 = row[0]    # access via integer position
-
-      col2 = row['col2']   # access via name
-
-      col3 = row[mytable.c.mycol] # access via Column object.
-
-    ResultProxy also contains a map of TypeEngine objects and will
-    invoke the appropriate ``result_processor()`` method before
-    returning columns, as well as the ExecutionContext corresponding
-    to the statement execution.  It provides several methods for which
-    to obtain information from the underlying ExecutionContext.
-    """
-
-    _process_row = RowProxy
-    out_parameters = None
-    
-    def __init__(self, context):
-        self.context = context
-        self.dialect = context.dialect
-        self.closed = False
-        self.cursor = context.cursor
-        self.connection = context.root_connection
-        self._echo = context.engine._should_log_info
-        self._init_metadata()
-            
-    @util.memoized_property
-    def rowcount(self):
-        """Return the 'rowcount' for this result.
-        
-        The 'rowcount' reports the number of rows affected
-        by an UPDATE or DELETE statement.  It has *no* other
-        uses and is not intended to provide the number of rows
-        present from a SELECT.
-        
-        Additionally, this value is only meaningful if the
-        dialect's supports_sane_rowcount flag is True for
-        single-parameter executions, or supports_sane_multi_rowcount
-        is true for multiple parameter executions - otherwise
-        results are undefined.
-        
-        rowcount may not work at this time for a statement
-        that uses ``returning()``.
-        
-        """
-        return self.context.rowcount
-
-    @property
-    def lastrowid(self):
-        """return the 'lastrowid' accessor on the DBAPI cursor.
-        
-        This is a DBAPI specific method and is only functional
-        for those backends which support it, for statements
-        where it is appropriate.  It's behavior is not 
-        consistent across backends.
-        
-        Usage of this method is normally unnecessary; the
-        inserted_primary_key method provides a
-        tuple of primary key values for a newly inserted row,
-        regardless of database backend.
-        
-        """
-        return self.cursor.lastrowid
-    
-    def _cursor_description(self):
-        return self.cursor.description
-            
-    def _autoclose(self):
-        if self.context.isinsert:
-            if self.context._is_implicit_returning:
-                self.context._fetch_implicit_returning(self)
-                self.close()
-            elif not self.context._is_explicit_returning:
-                self.close()
-        elif self._metadata is None:
-            # no results, get rowcount 
-            # (which requires open cursor on some DB's such as firebird),
-            self.rowcount
-            self.close() # autoclose
-            
-        return self
-    
-            
-    def _init_metadata(self):
-        self._metadata = metadata = self._cursor_description()
-        if metadata is None:
-            return
-        
+    def __init__(self, parent, metadata):
         self._colfuncs = colfuncs = {}
         self.keys = []
-
-        typemap = self.dialect.dbapi_type_map
+        self._echo = parent._echo
+        context = parent.context
+        dialect = context.dialect
+        typemap = dialect.dbapi_type_map
 
         for i, (colname, coltype) in enumerate(m[0:2] for m in metadata):
-            if self.dialect.description_encoding:
-                colname = colname.decode(self.dialect.description_encoding)
+            if dialect.description_encoding:
+                colname = colname.decode(dialect.description_encoding)
 
             if '.' in colname:
                 # sqlite will in some circumstances prepend table name to
@@ -1807,17 +1698,17 @@ class ResultProxy(object):
             else:
                 origname = None
 
-            if self.context.result_map:
+            if context.result_map:
                 try:
-                    name, obj, type_ = self.context.result_map[colname.lower()]
+                    name, obj, type_ = context.result_map[colname.lower()]
                 except KeyError:
                     name, obj, type_ = \
                         colname, None, typemap.get(coltype, types.NULLTYPE)
             else:
                 name, obj, type_ = (colname, None, typemap.get(coltype, types.NULLTYPE))
 
-            processor = type_.dialect_impl(self.dialect).\
-                            result_processor(self.dialect, coltype)
+            processor = type_.dialect_impl(dialect).\
+                            result_processor(dialect, coltype)
             
             if processor:
                 def make_colfunc(processor, index):
@@ -1841,10 +1732,10 @@ class ResultProxy(object):
             # store the "origname" if we truncated (sqlite only)
             if origname and \
                     colfuncs.setdefault(origname.lower(), rec) is not rec:
-                colfuncs[name.lower()] = (self._ambiguous_processor(origname), i, "ambiguous")
+                colfuncs[origname.lower()] = (self._ambiguous_processor(origname), i, "ambiguous")
             
-            if self.dialect.requires_name_normalize:
-                colname = self.dialect.normalize_name(colname)
+            if dialect.requires_name_normalize:
+                colname = dialect.normalize_name(colname)
                 
             self.keys.append(colname)
             if obj:
@@ -1852,13 +1743,14 @@ class ResultProxy(object):
                     colfuncs[o] = rec
 
         if self._echo:
-            self.context.engine.logger.debug(
+            self.logger = context.engine.logger
+            self.logger.debug(
                 "Col %r", tuple(x[0] for x in metadata))
 
     @util.memoized_property
     def _colfunc_list(self):
         funcs = self._colfuncs
-        return [funcs[i][0] for i in xrange(len(self._metadata))]
+        return [funcs[i][0] for i in xrange(len(self.keys))]
 
     def _key_fallback(self, key):
         funcs = self._colfuncs
@@ -1876,8 +1768,15 @@ class ResultProxy(object):
                 return funcs[key._label.lower()]
             elif hasattr(key, 'name') and key.name.lower() in funcs:
                 return funcs[key.name.lower()]
-        
+
         return None
+
+    def _has_key(self, row, key):
+        if key in self._colfuncs:
+            return True
+        else:
+            key = self._key_fallback(key)
+            return key is not None
 
     @classmethod
     def _ambiguous_processor(cls, colname):
@@ -1886,7 +1785,128 @@ class ResultProxy(object):
                     "Ambiguous column name '%s' in result set! "
                     "try 'use_labels' option on select statement." % colname)
         return process
+    
+    def __len__(self):
+        return len(self.keys)
 
+    def __getstate__(self):
+        return {
+            '_pickled_colfuncs':dict(
+                (key, (i, type_)) 
+                for key, (fn, i, type_) in self._colfuncs.iteritems() 
+                if isinstance(key, (basestring, int))
+            ),
+            'keys':self.keys
+        }
+    
+    def __setstate__(self, state):
+        pickled_colfuncs = state['_pickled_colfuncs']
+        self._colfuncs = d = {}
+        for key, (index, type_) in pickled_colfuncs.iteritems():
+            if type_ == 'ambiguous':
+                d[key] = (self._ambiguous_processor(key), index, type_)
+            else:
+                d[key] = (operator.itemgetter(index), index, "itemgetter")
+        self.keys = state['keys']
+        self._echo = False
+        
+class ResultProxy(object):
+    """Wraps a DB-API cursor object to provide easier access to row columns.
+
+    Individual columns may be accessed by their integer position,
+    case-insensitive column name, or by ``schema.Column``
+    object. e.g.::
+
+      row = fetchone()
+
+      col1 = row[0]    # access via integer position
+
+      col2 = row['col2']   # access via name
+
+      col3 = row[mytable.c.mycol] # access via Column object.
+
+    ``ResultProxy`` also handles post-processing of result column
+    data using ``TypeEngine`` objects, which are referenced from 
+    the originating SQL statement that produced this result set.
+
+    """
+
+    _process_row = RowProxy
+    out_parameters = None
+    
+    def __init__(self, context):
+        self.context = context
+        self.dialect = context.dialect
+        self.closed = False
+        self.cursor = context.cursor
+        self.connection = context.root_connection
+        self._echo = context.engine._should_log_info
+        self._init_metadata()
+
+    def _init_metadata(self):
+        metadata = self._cursor_description()
+        if metadata is None:
+            self._metadata = None
+        else:
+            self._metadata = ResultMetaData(self, metadata)
+
+    @util.memoized_property
+    def rowcount(self):
+        """Return the 'rowcount' for this result.
+        
+        The 'rowcount' reports the number of rows affected
+        by an UPDATE or DELETE statement.  It has *no* other
+        uses and is not intended to provide the number of rows
+        present from a SELECT.
+        
+        Note that this row count may not be properly implemented
+        in some dialects; this is indicated by
+         :meth:`~sqlalchemy.engine.base.ResultProxy.supports_sane_rowcount()` and
+         :meth:`~sqlalchemy.engine.base.ResultProxy.supports_sane_multi_rowcount()`.
+        
+        ``rowcount()`` also may not work at this time for a statement
+        that uses ``returning()``.
+        
+        """
+        return self.context.rowcount
+
+    @property
+    def lastrowid(self):
+        """return the 'lastrowid' accessor on the DBAPI cursor.
+        
+        This is a DBAPI specific method and is only functional
+        for those backends which support it, for statements
+        where it is appropriate.  It's behavior is not 
+        consistent across backends.
+        
+        Usage of this method is normally unnecessary; the
+        inserted_primary_key method provides a
+        tuple of primary key values for a newly inserted row,
+        regardless of database backend.
+        
+        """
+        return self.cursor.lastrowid
+    
+    def _cursor_description(self):
+        """May be overridden by subclasses."""
+        
+        return self.cursor.description
+            
+    def _autoclose(self):
+        if self.context.isinsert:
+            if self.context._is_implicit_returning:
+                self.context._fetch_implicit_returning(self)
+                self.close()
+            elif not self.context._is_explicit_returning:
+                self.close()
+        elif self._metadata is None:
+            # no results, get rowcount 
+            # (which requires open cursor on some DB's such as firebird),
+            self.rowcount
+            self.close() # autoclose
+            
+        return self
+            
     def close(self):
         """Close this ResultProxy.
 
@@ -1910,13 +1930,6 @@ class ResultProxy(object):
             self.cursor.close()
             if self.connection.should_close_with_result:
                 self.connection.close()
-
-    def _has_key(self, row, key):
-        if key in self._colfuncs:
-            return True
-        else:
-            key = self._key_fallback(key)
-            return key is not None
 
     def __iter__(self):
         while True:
@@ -2006,7 +2019,8 @@ class ResultProxy(object):
 
         try:
             process_row = self._process_row
-            l = [process_row(self, row) for row in self._fetchall_impl()]
+            metadata = self._metadata
+            l = [process_row(metadata, row) for row in self._fetchall_impl()]
             self.close()
             return l
         except Exception, e:
@@ -2023,7 +2037,8 @@ class ResultProxy(object):
 
         try:
             process_row = self._process_row
-            l = [process_row(self, row) for row in self._fetchmany_impl(size)]
+            metadata = self._metadata
+            l = [process_row(metadata, row) for row in self._fetchmany_impl(size)]
             if len(l) == 0:
                 self.close()
             return l
@@ -2042,7 +2057,7 @@ class ResultProxy(object):
         try:
             row = self._fetchone_impl()
             if row is not None:
-                return self._process_row(self, row)
+                return self._process_row(self._metadata, row)
             else:
                 self.close()
                 return None
@@ -2064,7 +2079,7 @@ class ResultProxy(object):
 
         try:
             if row is not None:
-                return self._process_row(self, row)
+                return self._process_row(self._metadata, row)
             else:
                 return None
         finally:
@@ -2153,7 +2168,7 @@ class FullyBufferedResultProxy(ResultProxy):
     def _init_metadata(self):
         super(FullyBufferedResultProxy, self)._init_metadata()
         self.__rowbuffer = self._buffer_rows()
-        
+
     def _buffer_rows(self):
         return self.cursor.fetchall()
         
@@ -2198,13 +2213,13 @@ class BufferedColumnResultProxy(ResultProxy):
 
     def _init_metadata(self):
         super(BufferedColumnResultProxy, self)._init_metadata()
-        self._orig_colfuncs = self._colfuncs
-        self._colfuncs = colfuncs = {}
+        self._metadata._orig_colfuncs = self._metadata._colfuncs
+        self._metadata._colfuncs = colfuncs = {}
         # replace the parent's _colfuncs dict, replacing 
         # column processors with straight itemgetters.
         # the original _colfuncs dict is used when each row
         # is constructed.
-        for k, (colfunc, index, type_) in self._orig_colfuncs.iteritems():
+        for k, (colfunc, index, type_) in self._metadata._orig_colfuncs.iteritems():
             if type_ == "colfunc":
                 colfuncs[k] = (operator.itemgetter(index), index, "itemgetter")
             else:

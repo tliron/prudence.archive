@@ -14,3 +14,5 @@
 (def hosts {(.getDefaultHost component) nil mysite-host nil})
 
 (def show-debug-on-error true)
+
+(def preheat-resources ["/data/jython/" "/data/jruby/" "/data/groovy/" "/data/clojure/" "/data/rhino/"])

@@ -50,32 +50,32 @@
 ; is directly linked to the base URL.
 ;
 
-(def resource-base-url "/")
-(def resource-base-path "/resources/")
+(def resources-base-url "/")
+(def resources-base-path "/resources/")
 
 ; If the URL points to a directory rather than a file, and that directory
 ; contains a file with this name, then it will be used. This allows
 ; you to use the directory structure to create nice URLs without relying
 ; on filenames.
 
-(def resource-default-name "default")
+(def resources-default-name "default")
 
 ; Set this to True if you want to start to load and compile your
 ; resources as soon as Prudence starts.
 
-(def resource-defrost true)
+(def resources-defrost true)
 
 ; This is so we can see the source code for scripts by adding ?source=true
 ; to the URL. You probably wouldn't want this for most applications.
 
-(def resource-source-viewable true)
+(def resources-source-viewable true)
 
 ; This is the time (in milliseconds) allowed to pass until a script file
 ; is tested to see if it was changed. During development, you'd want this
 ; to be low, but during production, it should be high in order to avoid
 ; unnecessary hits on the filesystem.
 
-(def resource-minimum-time-between-validity-checks 1000)
+(def resources-minimum-time-between-validity-checks 1000)
 
 ;
 ; Dynamic Web
@@ -94,10 +94,15 @@
 
 (def dynamic-web-default-document "index")
 
-; Set this to True if you want to start to load and compile your
-; scriptlets as soon as Prudence starts.
+; Set this to true if you want to compile your scriptlets as soon as Prudence
+; starts.
 
 (def dynamic-web-defrost true)
+
+; Set this to true if you want to load all your dynamic web documents as soon
+; as Prudence starts.
+
+(def dynamic-web-preheat true)
 
 ; This is so we can see the source code for scripts by adding ?source=true
 ; to the URL. You probably wouldn't want this for most applications.

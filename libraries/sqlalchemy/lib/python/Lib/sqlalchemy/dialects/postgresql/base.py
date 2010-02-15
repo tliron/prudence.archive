@@ -1,5 +1,5 @@
 # postgresql.py
-# Copyright (C) 2005, 2006, 2007, 2008, 2009 Michael Bayer mike_mp@zzzcomputing.com
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Michael Bayer mike_mp@zzzcomputing.com
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -65,8 +65,6 @@ option to the Index constructor::
 
   Index('my_index', my_table.c.id, postgresql_where=tbl.c.value > 10)
 
-
-
 """
 
 import re
@@ -85,7 +83,7 @@ from sqlalchemy.types import INTEGER, BIGINT, SMALLINT, VARCHAR, \
 class REAL(sqltypes.Float):
     __visit_name__ = "REAL"
 
-class BYTEA(sqltypes.Binary):
+class BYTEA(sqltypes.LargeBinary):
     __visit_name__ = 'BYTEA'
 
 class DOUBLE_PRECISION(sqltypes.Float):
@@ -110,6 +108,14 @@ class INTERVAL(sqltypes.TypeEngine):
     
     def adapt(self, impltype):
         return impltype(self.precision)
+
+    @classmethod
+    def _adapt_from_generic_interval(cls, interval):
+        return INTERVAL(precision=interval.second_precision)
+
+    @property
+    def _type_affinity(self):
+        return sqltypes.Interval
         
 PGInterval = INTERVAL
 
@@ -125,6 +131,27 @@ class ARRAY(sqltypes.MutableType, sqltypes.Concatenable, sqltypes.TypeEngine):
     __visit_name__ = 'ARRAY'
     
     def __init__(self, item_type, mutable=True):
+        """Construct an ARRAY.
+
+        E.g.::
+
+          Column('myarray', ARRAY(Integer))
+
+        Arguments are:
+
+        :param item_type: The data type of items of this array. Note that dimensionality is
+          irrelevant here, so multi-dimensional arrays like ``INTEGER[][]``, are constructed as
+          ``ARRAY(Integer)``, not as ``ARRAY(ARRAY(Integer))`` or such. The type mapping figures
+          out on the fly
+
+        :param mutable: Defaults to True: specify whether lists passed to this class should be
+          considered mutable.  If so, generic copy operations (typically used by the ORM) will
+          shallow-copy values.
+          
+        """
+        if isinstance(item_type, ARRAY):
+            raise ValueError("Do not nest ARRAY types; ARRAY(basetype) "
+                            "handles multi-dimensional arrays of basetype")
         if isinstance(item_type, type):
             item_type = item_type()
         self.item_type = item_type
@@ -322,8 +349,16 @@ class PGCompiler(compiler.SQLCompiler):
 
     def visit_extract(self, extract, **kwargs):
         field = self.extract_map.get(extract.field, extract.field)
+        affinity = sql_util.determine_date_affinity(extract.expr)
+
+        casts = {sqltypes.Date:'date', sqltypes.DateTime:'timestamp', sqltypes.Interval:'interval', sqltypes.Time:'time'}
+        cast = casts.get(affinity, None)
+        if isinstance(extract.expr, sql.ColumnElement) and cast is not None:
+            expr = extract.expr.op('::')(sql.literal_column(cast))
+        else:
+            expr = extract.expr
         return "EXTRACT(%s FROM %s)" % (
-            field, self.process(extract.expr.op('::')(sql.literal_column('timestamp'))))
+            field, self.process(expr))
 
 class PGDDLCompiler(compiler.DDLCompiler):
     def get_column_specification(self, column, **kwargs):
@@ -415,7 +450,7 @@ class PGTypeCompiler(compiler.GenericTypeCompiler):
         return self.visit_TIMESTAMP(type_)
     
     def visit_enum(self, type_):
-        if not type_.native_enum:
+        if not type_.native_enum or not self.dialect.supports_native_enum:
             return super(PGTypeCompiler, self).visit_enum(type_)
         else:
             return self.visit_ENUM(type_)
@@ -441,7 +476,7 @@ class PGTypeCompiler(compiler.GenericTypeCompiler):
     def visit_UUID(self, type_):
         return "UUID"
 
-    def visit_binary(self, type_):
+    def visit_large_binary(self, type_):
         return self.visit_BYTEA(type_)
         
     def visit_BYTEA(self, type_):
@@ -554,7 +589,11 @@ class PGDialect(default.DefaultDialect):
         super(PGDialect, self).initialize(connection)
         self.implicit_returning = self.server_version_info > (8, 2) and \
                                         self.__dict__.get('implicit_returning', True)
-        
+        self.supports_native_enum = self.server_version_info >= (8, 3)
+        if not self.supports_native_enum:
+            self.colspecs = self.colspecs.copy()
+            del self.colspecs[ENUM]
+            
     def visit_pool(self, pool):
         if self.isolation_level is not None:
             class SetIsolationLevel(object):
@@ -694,10 +733,10 @@ class PGDialect(default.DefaultDialect):
 
     def _get_server_version_info(self, connection):
         v = connection.execute("select version()").scalar()
-        m = re.match('PostgreSQL (\d+)\.(\d+)\.(\d+)', v)
+        m = re.match('PostgreSQL (\d+)\.(\d+)(?:\.(\d+))?(?:devel)?', v)
         if not m:
             raise AssertionError("Could not determine version from string '%s'" % v)
-        return tuple([int(x) for x in m.group(1, 2, 3)])
+        return tuple([int(x) for x in m.group(1, 2, 3) if x is not None])
 
     @reflection.cache
     def get_table_oid(self, connection, table_name, schema=None, **kw):
@@ -891,7 +930,7 @@ class PGDialect(default.DefaultDialect):
             if coltype:
                 coltype = coltype(*args, **kwargs)
                 if is_array:
-                    coltype = PGArray(coltype)
+                    coltype = ARRAY(coltype)
             else:
                 util.warn("Did not recognize type '%s' of column '%s'" %
                           (attype, name))
@@ -1012,6 +1051,9 @@ class PGDialect(default.DefaultDialect):
         return indexes
 
     def _load_enums(self, connection):
+        if not self.supports_native_enum:
+            return {}
+
         ## Load data types for enums:
         SQL_ENUMS = """
             SELECT t.typname as "name",
