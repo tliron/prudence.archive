@@ -12,7 +12,7 @@
 (def application-description "This is a Prudence application.")
 (def application-author "Anonymous")
 (def application-owner "Public Domain")
-(def application-home-url "http://www.threecrickets.com/prudence/")
+(def application-home-url "http://threecrickets.com/prudence/")
 (def application-contact-email "prudence@threecrickets.com")
 
 ;

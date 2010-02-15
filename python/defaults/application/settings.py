@@ -12,7 +12,7 @@
 application_description = 'This is a Prudence application.'
 application_author = 'Anonymous'
 application_owner = 'Public Domain'
-application_home_url = 'http://www.threecrickets.com/prudence/'
+application_home_url = 'http://threecrickets.com/prudence/'
 application_contact_email = 'prudence@threecrickets.com'
 
 #

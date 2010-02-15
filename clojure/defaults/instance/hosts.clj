@@ -18,7 +18,7 @@
 ;
 
 (def all-host (VirtualHost. (.getContext component)))
-(.setName all-host "all")
+(.setName all-host "all hosts")
 
 (.. component getHosts (add all-host))
 

@@ -12,7 +12,7 @@
 var applicationDescription = 'This is a Prudence application.';
 var applicationAuthor = 'Anonymous';
 var applicationOwner = 'Public Domain';
-var applicationHomeURL = 'http://www.threecrickets.com/prudence/';
+var applicationHomeURL = 'http://threecrickets.com/prudence/';
 var applicationContactEmail = 'prudence@threecrickets.com';
 
 //

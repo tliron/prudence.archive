@@ -8,7 +8,7 @@ applicationName = 'Prudence Test';
 applicationDescription = 'Used to test that Prudence works for you, and useful as a skeleton for creating your own applications';
 applicationAuthor = 'Tal Liron';
 applicationOwner = 'Three Crickets';
-applicationHomeURL = 'http://www.threecrickets.com/prudence/';
+applicationHomeURL = 'http://threecrickets.com/prudence/';
 applicationContactEmail = 'prudence@threecrickets.com';
 
 hosts = [[component.defaultHost, null], [mysiteHost, null]];

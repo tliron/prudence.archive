@@ -19,7 +19,7 @@ importClass(
 //
 
 var allHost = new VirtualHost(component.context);
-allHost.name = 'all';
+allHost.name = 'all hosts';
 
 component.hosts.add(allHost);
 

@@ -18,7 +18,7 @@ from org.restlet.routing import VirtualHost
 #
 
 all_host = VirtualHost(component.context)
-all_host.name = 'all'
+all_host.name = 'all hosts'
 
 component.hosts.add(all_host)
 

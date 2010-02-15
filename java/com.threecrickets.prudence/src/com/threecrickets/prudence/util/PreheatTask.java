@@ -81,7 +81,7 @@ public class PreheatTask implements Runnable
 		}
 		catch( ResourceException e )
 		{
-			System.err.println( uri );
+			System.err.print( clientResource.getReference() + " - " );
 			e.printStackTrace();
 		}
 	}

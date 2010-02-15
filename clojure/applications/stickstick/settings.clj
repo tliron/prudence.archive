@@ -8,7 +8,7 @@
 (def application-description "Share online sticky notes")
 (def application-author "Tal Liron")
 (def application-owner "Three Crickets")
-(def application-home-url "http://www.threecrickets.com/prudence/stickstick/")
+(def application-home-url "http://threecrickets.com/prudence/stickstick/")
 (def application-contact-email "prudence@threecrickets.com")
 
 (def runtime-attributes (merge runtime-attributes
