@@ -18,6 +18,8 @@ def include_or_default(name, default=None):
 			default = 'defaults/' + name 
 		document.container.include(default)
 
+tasks = []
+
 #
 # Welcome
 #
@@ -97,3 +99,10 @@ include_or_default('instance/servers')
 
 component.context.attributes['applications'] = applications
 component.start()
+
+#
+# Tasks
+#
+
+for task in tasks:
+    executor.submit(task)

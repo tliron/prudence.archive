@@ -22,6 +22,8 @@
 	([name]
 		(include-or-default name nil)))
 
+(def tasks [])
+
 ;
 ; Welcome
 ;
@@ -99,3 +101,10 @@
 
 (.. component getContext getAttributes (put "applications" applications))
 (.start component)
+
+;
+; Tasks
+;
+
+(doseq [task tasks]
+	(.submit executor task))

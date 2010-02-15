@@ -22,6 +22,8 @@ function includeOrDefault(name, def) {
 	}
 }
 
+var tasks = [];
+
 //
 // Welcome
 //
@@ -98,3 +100,12 @@ includeOrDefault('instance/servers');
 //
 
 component.start();
+
+//
+// Tasks
+//
+
+for(var i in tasks) {
+	var task = tasks[i];
+	executor.submit(task);
+}
