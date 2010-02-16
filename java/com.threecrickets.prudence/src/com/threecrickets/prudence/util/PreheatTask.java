@@ -90,6 +90,7 @@ public class PreheatTask implements Runnable
 			if( x.getStatus().equals( Status.CLIENT_ERROR_NOT_FOUND ) )
 			{
 				context.getLogger().warning( "Could not find resource to preheat: " + uri );
+				System.err.println( "Could not find resource to preheat: " + clientResource.getReference() );
 			}
 			else
 			{

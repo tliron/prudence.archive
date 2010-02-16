@@ -34,7 +34,7 @@
 ; Internal Router
 ;
 
-(.. component getInternalRouter (attach (str "/" application-internal-name) application))
+(.setMatchingMode (.. component getInternalRouter (attach (str "/" application-internal-name) application)) Template/MODE_STARTS_WITH)
 
 ;
 ; Hosts

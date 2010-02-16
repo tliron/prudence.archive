@@ -31,7 +31,7 @@ def fix_url(url):
 # Internal Router
 #
 
-component.internalRouter.attach('/' + application_internal_name, application)
+component.internalRouter.attach('/' + application_internal_name, application).matchingMode = Template.MODE_STARTS_WITH
 
 #
 # Hosts

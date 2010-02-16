@@ -199,7 +199,8 @@ public class Fallback extends Restlet
 	protected boolean wasHandled( Request request, Response response )
 	{
 		Status status = response.getStatus();
-		return !status.equals( Status.CLIENT_ERROR_NOT_FOUND ) && !status.equals( Status.CLIENT_ERROR_METHOD_NOT_ALLOWED );
+		// TODO: temp added 500 check for Directory bug
+		return !status.equals( Status.CLIENT_ERROR_NOT_FOUND ) && !status.equals( Status.CLIENT_ERROR_METHOD_NOT_ALLOWED ) && !status.equals( Status.SERVER_ERROR_INTERNAL );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
