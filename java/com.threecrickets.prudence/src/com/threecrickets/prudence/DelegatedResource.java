@@ -787,7 +787,16 @@ public class DelegatedResource extends ServerResource
 		}
 
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants() );
-		container.invoke( getEntryPointNameForInit() );
+		try
+		{
+			container.invoke( getEntryPointNameForInit() );
+		}
+		catch( ResourceException x )
+		{
+			// TODO: restlet bug; not setting the status correctly for thrown
+			// exceptions
+			getResponse().setStatus( x.getStatus() );
+		}
 	}
 
 	/**
