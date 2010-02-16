@@ -12,10 +12,11 @@ form is that you have less addresses, and what some people would call a more ele
 /animal/cat/12 -> Just one cat
 /animal/cat/ -> All cats
 </pre>
-<p>Why add another URL base form when one does the work? One reason is that you can help
-the client avoid potential errors. For example, the client probably uses a variable to hold
-the ID of the cat and then constructs the URL dynamically. But, what if the client forgets
-to check for null IDs? It might then construct a URL in the form "/animal/cat//" which
+<p>Why add another URL when a single one is enough to do the work?
+</p>
+<p>One reason is that you can help the client avoid potential errors. For example, the client probably
+uses a variable to hold the ID of the cat and then constructs the URL dynamically. But, what if the client
+forgets to check for null IDs? It might then construct a URL in the form "/animal/cat//" which
 would then successfully access <i>all</i> cats. This can cause unintended consequences and be
 difficult to debug. If, however, we used this scheme:
 </p>
@@ -26,8 +27,8 @@ difficult to debug. If, however, we used this scheme:
 <p>...then the form "/animal/cat//" would route to our singular cat resource, which would
 indeed not find the cat and return the expected, debuggable 404 error.
 </p>
-<p>A good rule of thumb, then, is to clearly separate URLs at their base by usage, so that
-mistakes cannot happen.
+<p>From this example, we can extract a good rule of thumb: clearly separate URLs at their base by usage,
+so that mistakes cannot happen. More addresses means more debuggability.
 </p>
 
 <h3>How well does Prudence perform? How well does it scale?</h3>
