@@ -52,7 +52,7 @@ public class Fallback extends Restlet
 
 	/**
 	 * Construct a fallback for an array of target restlets with a default cache
-	 * length of 5 seconds.
+	 * duration of 5 seconds.
 	 * 
 	 * @param context
 	 *        The context
@@ -69,19 +69,19 @@ public class Fallback extends Restlet
 	 * 
 	 * @param context
 	 *        The context
-	 * @param remember
-	 *        The cache length, in milliseconds
+	 * @param cacheDuration
+	 *        The cache duration, in milliseconds
 	 * @param targets
 	 *        The target restlets
 	 */
-	public Fallback( Context context, AtomicInteger remember, Restlet... targets )
+	public Fallback( Context context, AtomicInteger cacheDuration, Restlet... targets )
 	{
 		super( context );
 		setOwner( "Prudence" );
 		setAuthor( "Tal Liron" );
 		setName( "Fallback" );
 		setDescription( "Delegates to a series of targets in sequence, stopping at the first target that handles the request" );
-		this.remember = remember;
+		this.cacheDuration = cacheDuration;
 		for( Restlet target : targets )
 			addTarget( target );
 	}
@@ -112,24 +112,24 @@ public class Fallback extends Restlet
 	}
 
 	/**
-	 * The cache length, in milliseconds.
+	 * The cache duration, in milliseconds.
 	 * 
-	 * @return The cache length, in milliseconds
+	 * @return The cache duration, in milliseconds
 	 */
-	public int getRemember()
+	public int getCacheDuration()
 	{
-		return remember.get();
+		return cacheDuration.get();
 	}
 
 	/**
-	 * The cache length, in milliseconds. (Modifiable by concurrent threads.)
+	 * The cache duration, in milliseconds. (Modifiable by concurrent threads.)
 	 * 
-	 * @param remember
-	 *        The cache length, in milliseconds
+	 * @param cacheDuration
+	 *        The cache duration, in milliseconds
 	 */
-	public void setRemember( int remember )
+	public void setCacheDuration( int cacheDuration )
 	{
-		this.remember.set( remember );
+		this.cacheDuration.set( cacheDuration );
 	}
 
 	//
@@ -142,17 +142,17 @@ public class Fallback extends Restlet
 		super.handle( request, response );
 
 		String reference = request.getResourceRef().getRemainingPart();
-		Node node = remembered.get( reference );
+		Node node = cache.get( reference );
 		if( node != null )
 		{
-			if( System.currentTimeMillis() - node.timestamp > remember.get() )
+			if( System.currentTimeMillis() - node.timestamp > cacheDuration.get() )
 			{
 				// Invalidate
-				remembered.remove( reference );
+				cache.remove( reference );
 			}
 			else
 			{
-				// Use remembered restlet
+				// Use cached restlet
 				node.target.handle( request, response );
 				if( wasHandled( request, response ) )
 					return;
@@ -167,11 +167,11 @@ public class Fallback extends Restlet
 			if( wasHandled( request, response ) )
 			{
 				// Found a good one
-				if( remember.get() > 0 )
+				if( cacheDuration.get() > 0 )
 				{
-					// Remember this target
-					// (erasing any previously remembered one)
-					remembered.put( reference, new Node( target ) );
+					// Cache this target
+					// (erasing any previously cached one)
+					cache.put( reference, new Node( target ) );
 				}
 				// Stop here
 				return;
@@ -212,14 +212,14 @@ public class Fallback extends Restlet
 	private final CopyOnWriteArrayList<Restlet> targets = new CopyOnWriteArrayList<Restlet>();
 
 	/**
-	 * The cache length, in milliseconds.
+	 * The cache duration, in milliseconds.
 	 */
-	private final AtomicInteger remember;
+	private final AtomicInteger cacheDuration;
 
 	/**
 	 * The cache (references mapped to nodes).
 	 */
-	private final ConcurrentHashMap<String, Node> remembered = new ConcurrentHashMap<String, Node>();
+	private final ConcurrentHashMap<String, Node> cache = new ConcurrentHashMap<String, Node>();
 
 	/**
 	 * A cached node.

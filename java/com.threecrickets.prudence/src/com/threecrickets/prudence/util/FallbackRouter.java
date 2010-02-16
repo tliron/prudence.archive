@@ -39,7 +39,7 @@ public class FallbackRouter extends Router
 	//
 
 	/**
-	 * Constructs a fallback router with a default cache length of 5 seconds.
+	 * Constructs a fallback router with a default cache duration of 5 seconds.
 	 * 
 	 * @param context
 	 *        The context
@@ -54,17 +54,17 @@ public class FallbackRouter extends Router
 	 * 
 	 * @param context
 	 *        The context
-	 * @param remember
-	 *        The cache length, in milliseconds
+	 * @param cacheDuration
+	 *        The cache duration, in milliseconds
 	 */
-	public FallbackRouter( Context context, int remember )
+	public FallbackRouter( Context context, int cacheDuration )
 	{
 		super( context );
 		setOwner( "Prudence" );
 		setAuthor( "Tal Liron" );
 		setName( "FallbackRouter" );
 		setDescription( "A router that takes care to bunch identical routes under Fallback restlets" );
-		this.remember = new AtomicInteger( remember );
+		this.cacheDuration = new AtomicInteger( cacheDuration );
 	}
 
 	//
@@ -72,26 +72,26 @@ public class FallbackRouter extends Router
 	//
 
 	/**
-	 * The cache length, in milliseconds.
+	 * The cache duration, in milliseconds.
 	 * 
-	 * @return The cache length, in milliseconds
-	 * @see Fallback#getRemember()
+	 * @return The cache duration, in milliseconds
+	 * @see Fallback#getCacheDuration()
 	 */
-	public int getRemember()
+	public int getCacheDuration()
 	{
-		return remember.get();
+		return cacheDuration.get();
 	}
 
 	/**
-	 * The cache length, in milliseconds. (Modifiable by concurrent threads.)
+	 * The cache duration, in milliseconds. (Modifiable by concurrent threads.)
 	 * 
-	 * @param remember
-	 *        The cache length, in milliseconds
-	 * @see Fallback#setRemember(int)
+	 * @param cacheDuration
+	 *        The cache duration, in milliseconds
+	 * @see Fallback#setCacheDuration(int)
 	 */
-	public void setRemember( int remember )
+	public void setCacheDuration( int cacheDuration )
 	{
-		this.remember.set( remember );
+		this.cacheDuration.set( cacheDuration );
 	}
 
 	//
@@ -122,7 +122,7 @@ public class FallbackRouter extends Router
 			else
 			{
 				// Replace current target with Fallback
-				Fallback fallback = new Fallback( getContext(), remember, current, target );
+				Fallback fallback = new Fallback( getContext(), cacheDuration, current, target );
 				existingRoute.setNext( fallback );
 			}
 
@@ -178,7 +178,7 @@ public class FallbackRouter extends Router
 	// Private
 
 	/**
-	 * The cache length, in milliseconds.
+	 * The cache duration, in milliseconds.
 	 */
-	private final AtomicInteger remember;
+	private final AtomicInteger cacheDuration;
 }

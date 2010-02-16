@@ -38,7 +38,7 @@ function fixURL(url) {
 // Internal Router
 //
 
-component.internalRouter.attach('/' + applicationInternalName, application).matchingMode = Template.MODE_STARTS_WITH;
+component.internalRouter.attach('/' + applicationInternalName + '/', application).matchingMode = Template.MODE_STARTS_WITH;
 
 //
 // Hosts
