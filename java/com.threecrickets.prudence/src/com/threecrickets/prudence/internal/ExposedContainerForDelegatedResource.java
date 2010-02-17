@@ -671,7 +671,10 @@ public class ExposedContainerForDelegatedResource
 		}
 		catch( FileNotFoundException x )
 		{
-			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
+			// TODO: restlet bug; not setting the status correctly for thrown
+			// exceptions with causes
+			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+			// throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
 		}
 		catch( IOException x )
 		{
