@@ -149,33 +149,15 @@ import com.threecrickets.scripturian.formatter.PygmentsDocumentFormatter;
  * <ul>
  * <li><code>prudence.entity</code>: The {@link Representation} of an entity
  * provided with this request. Available only in <code>handlePost()</code> and
- * <code>handlePut()</code>. Note that
- * <li><code>prudence.expirationDate</code>: Smart clients can use this optional
- * value to cache results and avoid unnecessary requests. Most useful in
- * conjunction with <code>getInfo()</code>.</li> <code>prudence.variant</code>
- * is identical to <code>prudence.entity</code> when available.</li>
- * <li><code>prudence.httpTag</code>: See <code>prudence.tag</code>.</li>
+ * <code>handlePut()</code>.
+ * <li><code>prudence.isInternal</code>: This boolean is true if the request was
+ * received via the RIAP protocol.</li>
  * <li><code>prudence.resource</code>: The instance of this resource. Acts as a
  * "this" reference for scriptlets. For example, during a call to
  * <code>handleInit()</code>, this can be used to change the characteristics of
  * the resource. Otherwise, you can use it to access the request and response.</li>
- * <li><code>prudence.modificationDate</code>: Smart clients can use this
- * optional value to cache results and avoid unnecessary requests. Most useful
- * in conjunction with <code>getInfo()</code>. Note that you need to use
- * {@link Date} instances here. Use <code>prudence.modificationTimestamp</code>
- * to access this value as a timestamp (long).</li>
- * <li><code>prudence.modificationTimestamp</code>: See
- * <code>prudence.modificationDate</code>.</li>
- * <li><code>prudence.statusCode</code>: A convenient way to set the response
- * status code. This is equivalent to setting
- * <code>prudence.response.status</code> using {@link Status#valueOf(int)}.</li>
  * <li><code>prudence.source</code>: The source used for the document; see
  * {@link #getDocumentSource()}.</li>
- * <li><code>prudence.tag</code>: Smart clients can use this optional value to
- * cache results and avoid unnecessary requests. Most useful in conjunction with
- * <code>getInfo()</code>. Note that you need to use {@link Tag} instances here.
- * Use <code>prudence.httpTag</code> to access this value as an HTTP ETag
- * string.</li>
  * <li><code>prudence.variant</code>: The {@link Variant} of this request.
  * Useful for interrogating the client's preferences. This is available only in
  * <code>handleGet()</code>, <code>handlePost()</code> and
@@ -190,18 +172,39 @@ import com.threecrickets.scripturian.formatter.PygmentsDocumentFormatter;
  * </ul>
  * Modifiable attributes:
  * <ul>
- * <li><code>prudence.mediaType</code>: The {@link MediaType} that will be used
- * if you return an arbitrary type for <code>handleGet()</code>,
- * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to what the
- * client requested (in <code>prudence.variant</code>).</li>
  * <li><code>prudence.characterSet</code>: The {@link CharacterSet} that will be
  * used if you return an arbitrary type for <code>handleGet()</code>,
  * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to what the
  * client requested (in <code>prudence.variant</code>), or to the value of
  * {@link #getDefaultCharacterSet()} if the client did not specify it.</li>
+ * <li><code>prudence.expirationDate</code>: Smart clients can use this optional
+ * value to cache results and avoid unnecessary requests. Most useful in
+ * conjunction with <code>getInfo()</code>.</li> <code>prudence.variant</code>
+ * is identical to <code>prudence.entity</code> when available.</li>
+ * <li><code>prudence.httpTag</code>: See <code>prudence.tag</code>.</li>
  * <li><code>prudence.language</code>: The {@link Language} that will be used if
  * you return an arbitrary type for <code>handleGet()</code>,
  * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to null.</li>
+ * <li><code>prudence.mediaType</code>: The {@link MediaType} that will be used
+ * if you return an arbitrary type for <code>handleGet()</code>,
+ * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to what the
+ * client requested (in <code>prudence.variant</code>).</li>
+ * <li><code>prudence.modificationDate</code>: Smart clients can use this
+ * optional value to cache results and avoid unnecessary requests. Most useful
+ * in conjunction with <code>getInfo()</code>. Note that you need to use
+ * {@link Date} instances here. Use <code>prudence.modificationTimestamp</code>
+ * to access this value as a timestamp (long).</li>
+ * <li><code>prudence.modificationTimestamp</code>: See
+ * <code>prudence.modificationDate</code>.</li>
+ * <li><code>prudence.statusCode</code>: A convenient way to set the response
+ * status code. This is equivalent to setting
+ * <code>prudence.resource.response.status</code> using
+ * {@link Status#valueOf(int)}.</li>
+ * <li><code>prudence.tag</code>: Smart clients can use this optional value to
+ * cache results and avoid unnecessary requests. Most useful in conjunction with
+ * <code>getInfo()</code>. Note that you need to use {@link Tag} instances here.
+ * Use <code>prudence.httpTag</code> to access this value as an HTTP ETag
+ * string.</li>
  * </ul>
  * <p>
  * In addition to the above, a {@link ScriptletController} can be set to add

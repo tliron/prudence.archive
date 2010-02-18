@@ -123,6 +123,8 @@ import com.threecrickets.scripturian.formatter.PygmentsDocumentFormatter;
  * <ul>
  * <li><code>prudence.entity</code>: The entity of this request. Available only
  * for post and put.</li>
+ * <li><code>prudence.isInternal</code>: This boolean is true if the request was
+ * received via the RIAP protocol.</li>
  * <li><code>prudence.isStreaming</code>: This boolean is true when the writer
  * is in streaming mode (see above).</li>
  * <li><code>prudence.resource</code>: The instance of this resource. Acts as a
@@ -147,6 +149,10 @@ import com.threecrickets.scripturian.formatter.PygmentsDocumentFormatter;
  * for the generated string. Defaults to what the client requested (in
  * <code>prudence.variant</code>). If not in streaming mode, your scriptlets can
  * change this to something else.</li>
+ * <li><code>prudence.statusCode</code>: A convenient way to set the response
+ * status code. This is equivalent to setting
+ * <code>prudence.resource.response.status</code> using
+ * {@link Status#valueOf(int)}.</li>
  * </ul>
  * <p>
  * In addition to the above, a {@link ScriptletController} can be set to add

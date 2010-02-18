@@ -101,6 +101,19 @@ public class PreheatTask implements Runnable
 		}
 	}
 
+	//
+	// Object
+	//
+
+	@Override
+	public String toString()
+	{
+		if( applicationInternalName != null )
+			return applicationInternalName + ", " + resourceUri;
+		else
+			return resourceUri;
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 

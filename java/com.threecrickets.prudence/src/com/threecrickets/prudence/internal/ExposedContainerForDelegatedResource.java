@@ -18,8 +18,10 @@ import java.util.List;
 
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
+import org.restlet.data.LocalReference;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
+import org.restlet.data.Protocol;
 import org.restlet.data.Status;
 import org.restlet.data.Tag;
 import org.restlet.representation.Representation;
@@ -42,7 +44,7 @@ import com.threecrickets.scripturian.exception.DocumentRunException;
  * @author Tal Liron
  * @see DelegatedResource
  */
-public class ExposedContainerForDelegatedResource
+public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 {
 	//
 	// Construction
@@ -519,6 +521,30 @@ public class ExposedContainerForDelegatedResource
 		return resource.getDocumentSource();
 	}
 
+	/**
+	 * Checks if the request was received via the RIAP protocol
+	 * 
+	 * @return True if the request was received via the RIAP protocol
+	 * @see LocalReference
+	 */
+	public boolean isInternal()
+	{
+		return resource.getRequest().getResourceRef().getSchemeProtocol().equals( Protocol.RIAP );
+	}
+
+	/**
+	 * Identical to {@link #isInternal()}. Supports scripting engines which
+	 * don't know how to recognize the "is" getter notation, but can recognize
+	 * the "get" notation.
+	 * 
+	 * @return True if the request was received via the RIAP protocol
+	 * @see #isInternal()
+	 */
+	public boolean getIsInternal()
+	{
+		return isInternal();
+	}
+
 	//
 	// Operations
 	//
@@ -718,13 +744,6 @@ public class ExposedContainerForDelegatedResource
 	private final Representation entity;
 
 	/**
-	 * The {@link MediaType} that will be used if you return an arbitrary type
-	 * for <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>.
-	 */
-	private MediaType mediaType;
-
-	/**
 	 * The {@link CharacterSet} that will be used if you return an arbitrary
 	 * type for <code>handleGet()</code>, <code>handlePost()</code> and
 	 * <code>handlePut()</code>.
@@ -739,11 +758,11 @@ public class ExposedContainerForDelegatedResource
 	private Language language;
 
 	/**
-	 * The {@link Tag} that will be used if you return an arbitrary type for
-	 * <code>handleGet()</code>, <code>handlePost()</code> and
+	 * The {@link MediaType} that will be used if you return an arbitrary type
+	 * for <code>handleGet()</code>, <code>handlePost()</code> and
 	 * <code>handlePut()</code>.
 	 */
-	private Tag tag;
+	private MediaType mediaType;
 
 	/**
 	 * The {@link Date} that will be used if you return an arbitrary type for
@@ -760,7 +779,14 @@ public class ExposedContainerForDelegatedResource
 	private Date modificationDate;
 
 	/**
-	 * The composite script context.
+	 * The {@link Tag} that will be used if you return an arbitrary type for
+	 * <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>.
+	 */
+	private Tag tag;
+
+	/**
+	 * The document context.
 	 */
 	private final DocumentContext documentContext;
 }

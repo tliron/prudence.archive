@@ -42,6 +42,16 @@ public class MessageTask implements Runnable
 		System.out.println( message );
 	}
 
+	//
+	// Object
+	//
+
+	@Override
+	public String toString()
+	{
+		return "\"" + message + "\"";
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 

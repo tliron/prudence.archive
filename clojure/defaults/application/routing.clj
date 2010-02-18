@@ -11,7 +11,7 @@
 	'org.restlet.routing.Template
 	'org.restlet.resource.Finder
 	'org.restlet.resource.Directory
-	'com.threecrickets.scripturian.Defroster
+	'com.threecrickets.scripturian.DefrostTask
 	'com.threecrickets.scripturian.file.DocumentFileSource
 	'com.threecrickets.prudence.util.FallbackRouter
 	'com.threecrickets.prudence.util.PreheatTask)
@@ -88,7 +88,8 @@
 (def script-engine-manager (ScriptEngineManager.))
 (def dynamic-web-document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document (.longValue dynamic-web-minimum-time-between-validity-checks)))
 (if dynamic-web-defrost
-	(.defrost (Defroster. script-engine-manager document-source true) executor))
+	(doseq [defrost-task (DefrostTask/create dynamic-web-document-source, script-engine-manager, True)]
+		(def tasks (conj tasks defrost-task))))
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.engineManager" script-engine-manager)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultEngineName" "Clojure")
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
@@ -113,7 +114,8 @@
 
 (def resources-document-source (DocumentFileSource. (str application-base-path resources-base-path) resources-default-name (.longValue resources-minimum-time-between-validity-checks))) 
 (if resources-defrost
-	(.defrost (Defroster. script-engine-manager document-source true) executor))
+	(doseq [defrost-task (DefrostTask/create resources-document-source, script-engine-manager, True)]
+		(def tasks (conj tasks defrost-task))))
 (.put attributes "com.threecrickets.prudence.DelegatedResource.engineManager" script-engine-manager)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultEngineName" "Clojure")
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultName" resources-default-name)

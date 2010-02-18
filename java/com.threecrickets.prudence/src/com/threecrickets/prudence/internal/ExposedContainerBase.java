@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence;
+package com.threecrickets.prudence.internal;
 
 import org.restlet.Application;
 import org.restlet.data.LocalReference;
@@ -22,9 +22,13 @@ import org.restlet.resource.ClientResource;
  * 
  * @author Tal Liron
  */
-public abstract class Resource
+public abstract class ExposedContainerBase
 {
-	public static Representation get( String resourceUri, String mediaType )
+	//
+	// Attributes
+	//
+
+	public Representation get( String resourceUri, String mediaType )
 	{
 		ClientResource clientResource = new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_APPLICATION, resourceUri ) );
 		if( mediaType == null )
@@ -33,7 +37,7 @@ public abstract class Resource
 			return clientResource.get( getMediaType( mediaType ) );
 	}
 
-	public static Representation get( String applicationInternalName, String resourceUri, String mediaType )
+	public Representation get( String applicationInternalName, String resourceUri, String mediaType )
 	{
 		ClientResource clientResource = new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, "/" + applicationInternalName + "/" + resourceUri ) );
 		if( mediaType == null )
@@ -42,7 +46,7 @@ public abstract class Resource
 			return clientResource.get( getMediaType( mediaType ) );
 	}
 
-	public static Representation getExternal( String uri, String mediaType )
+	public Representation getExternal( String uri, String mediaType )
 	{
 		ClientResource clientResource = new ClientResource( uri );
 		if( mediaType == null )
@@ -53,13 +57,6 @@ public abstract class Resource
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
-
-	/**
-	 * Private constructor.
-	 */
-	private Resource()
-	{
-	}
 
 	private static MediaType getMediaType( String name )
 	{

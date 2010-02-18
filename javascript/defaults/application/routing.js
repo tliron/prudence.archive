@@ -11,7 +11,7 @@ importClass(
 	org.restlet.routing.Template,
 	org.restlet.resource.Finder,
 	org.restlet.resource.Directory,
-	com.threecrickets.scripturian.Defroster,
+	com.threecrickets.scripturian.DefrostTask,
 	com.threecrickets.scripturian.file.DocumentFileSource,
 	com.threecrickets.prudence.util.FallbackRouter,
 	com.threecrickets.prudence.util.PreheatTask);
@@ -103,7 +103,10 @@ for(var i in urlAddTrailingSlash) {
 var scriptEngineManager = new ScriptEngineManager();
 var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks);
 if(dynamicWebDefrost) {
-	new Defroster(scriptEngineManager, dynamicWebDocumentSource, true).defrost(executor);
+	var defrostTasks = DefrostTask.create(dynamicWebDocumentSource, scriptEngineManager, true);
+	for(var i in defrostTasks) {
+		tasks.push(defrostTasks[i]);
+	}
 }
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.engineManager', scriptEngineManager);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultEngineName', 'rhino-nonjdk');
@@ -129,7 +132,10 @@ router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_
 
 var resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, resourcesMinimumTimeBetweenValidityChecks);
 if(resourcesDefrost) {
-	new Defroster(scriptEngineManager, resourcesDocumentSource, true).defrost(executor);
+	var defrostTasks = DefrostTask.create(resourcesDocumentSource, scriptEngineManager, true);
+	for(var i in defrostTasks) {
+		tasks.push(defrostTasks[i]);
+	}
 }
 attributes.put('com.threecrickets.prudence.DelegatedResource.engineManager', scriptEngineManager);
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultEngineName', 'rhino-nonjdk');

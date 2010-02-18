@@ -8,7 +8,7 @@ from javax.script import ScriptEngineManager
 
 from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Finder, Directory
-from com.threecrickets.scripturian import Defroster
+from com.threecrickets.scripturian import DefrostTask
 from com.threecrickets.scripturian.file import DocumentFileSource
 from com.threecrickets.prudence.util import FallbackRouter, PreheatTask
 
@@ -85,7 +85,8 @@ for url in url_add_trailing_slash:
 script_engine_manager = ScriptEngineManager()
 dynamic_web_document_source = DocumentFileSource(application_base_path + dynamic_web_base_path, dynamic_web_default_document, dynamic_web_minimum_time_between_validity_checks)
 if dynamic_web_defrost:
-	Defroster(script_engine_manager, dynamic_web_document_source, True).defrost(executor)
+	for defrost_task in DefrostTask.create(dynamic_web_document_source, script_engine_manager, True):
+		tasks.push(defrost_task)
 attributes['com.threecrickets.prudence.GeneratedTextResource.engineManager'] = script_engine_manager
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultEngineName'] = 'python'
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamic_web_default_document
@@ -110,7 +111,8 @@ router.attach(fix_url(static_web_base_url), static_web).matchingMode = Template.
 
 resources_document_source = DocumentFileSource(application_base_path + resources_base_path, resources_default_name, resources_minimum_time_between_validity_checks)
 if resources_defrost:
-	Defroster(script_engine_manager, resources_document_source, True).defrost(executor)
+	for defrost_task in DefrostTask.create(resources_document_source, script_engine_manager, True):
+		tasks.push(defrost_task)
 attributes['com.threecrickets.prudence.DelegatedResource.engineManager'] = script_engine_manager
 attributes['com.threecrickets.prudence.DelegatedResource.defaultEngineName'] = 'python'
 attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resources_default_name

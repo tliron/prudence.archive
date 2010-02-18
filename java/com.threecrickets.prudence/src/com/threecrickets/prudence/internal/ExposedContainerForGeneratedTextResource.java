@@ -19,7 +19,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
+import org.restlet.data.LocalReference;
 import org.restlet.data.MediaType;
+import org.restlet.data.Protocol;
+import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 
@@ -38,7 +41,7 @@ import com.threecrickets.scripturian.exception.DocumentRunException;
  * 
  * @author Tal Liron
  */
-public class ExposedContainerForGeneratedTextResource
+public class ExposedContainerForGeneratedTextResource extends ExposedContainerBase
 {
 	//
 	// Construction
@@ -282,6 +285,29 @@ public class ExposedContainerForGeneratedTextResource
 	}
 
 	/**
+	 * The response status code.
+	 * 
+	 * @return The response status code
+	 * @see #setStatusCode(int)
+	 */
+	public int getStatusCode()
+	{
+		return resource.getResponse().getStatus().getCode();
+	}
+
+	/**
+	 * The response status code.
+	 * 
+	 * @param statusCode
+	 *        The response status code
+	 * @see #getStatusCode()
+	 */
+	public void setStatusCode( int statusCode )
+	{
+		resource.getResponse().setStatus( Status.valueOf( statusCode ) );
+	}
+
+	/**
 	 * The instance of this resource. Acts as a "this" reference for scriptlets.
 	 * You can use it to access the request and response.
 	 * 
@@ -344,6 +370,30 @@ public class ExposedContainerForGeneratedTextResource
 	public boolean getIsStreaming()
 	{
 		return isStreaming();
+	}
+
+	/**
+	 * Checks if the request was received via the RIAP protocol
+	 * 
+	 * @return True if the request was received via the RIAP protocol
+	 * @see LocalReference
+	 */
+	public boolean isInternal()
+	{
+		return resource.getRequest().getResourceRef().getSchemeProtocol().equals( Protocol.RIAP );
+	}
+
+	/**
+	 * Identical to {@link #isInternal()}. Supports scripting engines which
+	 * don't know how to recognize the "is" getter notation, but can recognize
+	 * the "get" notation.
+	 * 
+	 * @return True if the request was received via the RIAP protocol
+	 * @see #isInternal()
+	 */
+	public boolean getIsInternal()
+	{
+		return isInternal();
 	}
 
 	//
@@ -508,11 +558,6 @@ public class ExposedContainerForGeneratedTextResource
 	private boolean flushLines;
 
 	/**
-	 * The {@link MediaType} that will be used for the generated string.
-	 */
-	private MediaType mediaType;
-
-	/**
 	 * The {@link CharacterSet} that will be used for the generated string.
 	 */
 	private CharacterSet characterSet;
@@ -521,6 +566,11 @@ public class ExposedContainerForGeneratedTextResource
 	 * The {@link Language} that will be used for the generated string.
 	 */
 	private Language language;
+
+	/**
+	 * The {@link MediaType} that will be used for the generated string.
+	 */
+	private MediaType mediaType;
 
 	/**
 	 * This boolean is true when the writer is in streaming mode.
@@ -533,7 +583,7 @@ public class ExposedContainerForGeneratedTextResource
 	private StringBuffer buffer;
 
 	/**
-	 * The composite script context.
+	 * The document context.
 	 */
 	private final DocumentContext documentContext;
 
