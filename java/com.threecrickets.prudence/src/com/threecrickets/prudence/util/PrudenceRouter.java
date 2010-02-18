@@ -50,24 +50,24 @@ public class PrudenceRouter extends FallbackRouter
 
 	/**
 	 * @param pathTemplate
-	 * @param className
+	 * @param targetClassName
 	 * @return
 	 * @throws ClassNotFoundException
 	 */
-	public Route attach( String pathTemplate, String className ) throws ClassNotFoundException
+	public Route attach( String pathTemplate, String targetClassName ) throws ClassNotFoundException
 	{
-		return attach( pathTemplate, getClass().getClassLoader().loadClass( className ) );
+		return attach( pathTemplate, getClass().getClassLoader().loadClass( targetClassName ) );
 	}
 
 	/**
 	 * @param pathTemplate
-	 * @param className
+	 * @param targetClassName
 	 * @return
 	 * @throws ClassNotFoundException
 	 */
-	public Route attachBase( String pathTemplate, String className ) throws ClassNotFoundException
+	public Route attachBase( String pathTemplate, String targetClassName ) throws ClassNotFoundException
 	{
-		Route route = attach( pathTemplate, className );
+		Route route = attach( pathTemplate, targetClassName );
 		route.setMatchingMode( Template.MODE_STARTS_WITH );
 		return route;
 	}
@@ -86,11 +86,11 @@ public class PrudenceRouter extends FallbackRouter
 
 	/**
 	 * @param pathTemplate
-	 * @param redirectPathTemplate
+	 * @param rewrittenPathTemplate
 	 * @return
 	 */
-	public Route rewrite( String pathTemplate, String redirectPathTemplate )
+	public Route rewrite( String pathTemplate, String rewrittenPathTemplate )
 	{
-		return attach( pathTemplate, new Redirector( getContext(), redirectPathTemplate, Redirector.MODE_SERVER_DISPATCHER ) );
+		return attach( pathTemplate, new Redirector( getContext(), rewrittenPathTemplate, Redirector.MODE_SERVER_DISPATCHER ) );
 	}
 }
