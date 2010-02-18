@@ -13,7 +13,7 @@
 	'org.restlet.resource.Directory
 	'com.threecrickets.scripturian.DefrostTask
 	'com.threecrickets.scripturian.file.DocumentFileSource
-	'com.threecrickets.prudence.util.FallbackRouter
+	'com.threecrickets.prudence.util.PrudenceRouter
 	'com.threecrickets.prudence.util.PreheatTask)
 
 (def classLoader (ClassLoader/getSystemClassLoader))
@@ -67,7 +67,7 @@
 ; Inbound root
 ;
 
-(def router (FallbackRouter. (.getContext application)))
+(def router (PrudenceRouter. (.getContext application)))
 (.setRoutingMode router Router/MODE_BEST_MATCH)
 (.setInboundRoot application router)
 

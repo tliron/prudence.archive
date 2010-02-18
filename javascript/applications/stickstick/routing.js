@@ -4,4 +4,4 @@
 
 document.container.include('defaults/application/routing');
 
-router.attach(fixURL(resourcesBaseURL + '/note/{id}'), new Redirector(application.context, '{fi}note', Redirector.MODE_SERVER_DISPATCHER));
+router.rewrite(fixURL(resourcesBaseURL + '/note/{id}'), '{fi}note');

@@ -10,7 +10,7 @@ from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Finder, Directory
 from com.threecrickets.scripturian import DefrostTask
 from com.threecrickets.scripturian.file import DocumentFileSource
-from com.threecrickets.prudence.util import FallbackRouter, PreheatTask
+from com.threecrickets.prudence.util import PrudenceRouter, PreheatTask
 
 classLoader = ClassLoader.getSystemClassLoader()
 
@@ -63,7 +63,7 @@ attributes = application.context.attributes
 # Inbound root
 #
 
-router = FallbackRouter(application.context)
+router = PrudenceRouter(application.context)
 router.routingMode = Router.MODE_BEST_MATCH
 application.inboundRoot = router
 

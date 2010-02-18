@@ -13,7 +13,7 @@ importClass(
 	org.restlet.resource.Directory,
 	com.threecrickets.scripturian.DefrostTask,
 	com.threecrickets.scripturian.file.DocumentFileSource,
-	com.threecrickets.prudence.util.FallbackRouter,
+	com.threecrickets.prudence.util.PrudenceRouter,
 	com.threecrickets.prudence.util.PreheatTask);
 
 var classLoader = ClassLoader.systemClassLoader;
@@ -77,7 +77,7 @@ var attributes = application.context.attributes;
 // Inbound root
 //
 
-var router = new FallbackRouter(application.context);
+var router = new PrudenceRouter(application.context);
 router.routingMode = Router.MODE_BEST_MATCH;
 application.inboundRoot = router;
 
