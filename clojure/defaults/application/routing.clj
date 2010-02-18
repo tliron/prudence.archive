@@ -31,7 +31,7 @@
 				url))))
 
 ;
-; Internal Router
+; Internal router
 ;
 
 (.setMatchingMode (.. component getInternalRouter (attach (str "/" application-internal-name "/") application)) Template/MODE_STARTS_WITH)
@@ -97,7 +97,7 @@
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" dynamic-web-source-viewable)
 
 (def dynamic-web (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.GeneratedTextResource")))
-(.setMatchingMode (.attach router (fix-url dynamic-web-base-url) dynamic-web) Template/MODE_STARTS_WITH)
+(.attachBase router (fix-url dynamic-web-base-url) dynamic-web)
 
 ;
 ; Static web
@@ -106,7 +106,7 @@
 (def static-web (Directory. (.getContext application) (.. (File. (str application-base-path static-web-base-path)) toURI (toString))))
 (.setListingAllowed static-web static-web-directory-listing-allowed)
 (.setNegotiateContent static-web true)
-(.setMatchingMode (.attach router (fix-url static-web-base-url) static-web) Template/MODE_STARTS_WITH)
+(.attachBase router (fix-url static-web-base-url) static-web)
 
 ;
 ; Resources
@@ -123,7 +123,7 @@
 (.put attributes "com.threecrickets.prudence.DelegatedResource.sourceViewable" resources-source-viewable)
 
 (def resources (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
-(.setMatchingMode (.attach router (fix-url resources-base-url) resources) Template/MODE_STARTS_WITH)
+(.attachBase router (fix-url resources-base-url) resources)
 
 ;
 ; Preheat

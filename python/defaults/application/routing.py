@@ -28,7 +28,7 @@ def fix_url(url):
 	return url
 
 #
-# Internal Router
+# Internal router
 #
 
 component.internalRouter.attach('/' + application_internal_name, application + '/').matchingMode = Template.MODE_STARTS_WITH
@@ -94,7 +94,7 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = 
 attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
 
 dynamic_web = Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
-router.attach(fix_url(dynamic_web_base_url), dynamic_web).matchingMode = Template.MODE_STARTS_WITH
+router.attach_base(fix_url(dynamic_web_base_url), dynamic_web)
 
 #
 # Static web
@@ -103,7 +103,7 @@ router.attach(fix_url(dynamic_web_base_url), dynamic_web).matchingMode = Templat
 static_web = Directory(application.context, File(application_base_path + static_web_base_path).toURI().toString())
 static_web.listingAllowed = static_web_directory_listing_allowed
 static_web.negotiateContent = True
-router.attach(fix_url(static_web_base_url), static_web).matchingMode = Template.MODE_STARTS_WITH
+router.attach_base(fix_url(static_web_base_url), static_web)
 
 #
 # Resources
@@ -120,7 +120,7 @@ attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = reso
 attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resources_source_viewable
 
 resources = Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
-router.attach(fix_url(resources_base_url), resources).matchingMode = Template.MODE_STARTS_WITH
+router.attach_base(fix_url(resources_base_url), resources)
 
 #
 # Preheat

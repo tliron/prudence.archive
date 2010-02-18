@@ -35,7 +35,7 @@ function fixURL(url) {
 }
 
 //
-// Internal Router
+// Internal router
 //
 
 component.internalRouter.attach('/' + applicationInternalName + '/', application).matchingMode = Template.MODE_STARTS_WITH;
@@ -115,7 +115,7 @@ attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource'
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
 
 var dynamicWeb = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'));
-router.attach(fixURL(dynamicWebBaseURL), dynamicWeb).matchingMode = Template.MODE_STARTS_WITH;
+router.attachBase(fixURL(dynamicWebBaseURL), dynamicWeb);
 
 //
 // Static web
@@ -124,7 +124,7 @@ router.attach(fixURL(dynamicWebBaseURL), dynamicWeb).matchingMode = Template.MOD
 var staticWeb = new Directory(router.context, File(applicationBasePath + staticWebBasePath).toURI().toString());
 staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
 staticWeb.negotiatingContent = true;
-router.attach(fixURL(staticWebBaseURL), staticWeb).matchingMode = Template.MODE_STARTS_WITH;
+router.attachBase(fixURL(staticWebBaseURL), staticWeb);
 
 //
 // Resources
@@ -144,7 +144,7 @@ attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', re
 attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable);
 
 resources = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
-router.attach(fixURL(resourcesBaseURL), resources).matchingMode = Template.MODE_STARTS_WITH;
+router.attachBase(fixURL(resourcesBaseURL), resources);
 
 //
 // Preheat

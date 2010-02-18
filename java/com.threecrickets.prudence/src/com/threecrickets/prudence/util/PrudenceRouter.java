@@ -12,8 +12,10 @@
 package com.threecrickets.prudence.util;
 
 import org.restlet.Context;
+import org.restlet.Restlet;
 import org.restlet.routing.Redirector;
 import org.restlet.routing.Route;
+import org.restlet.routing.Template;
 
 /**
  * @author Tal Liron
@@ -55,6 +57,31 @@ public class PrudenceRouter extends FallbackRouter
 	public Route attach( String pathTemplate, String className ) throws ClassNotFoundException
 	{
 		return attach( pathTemplate, getClass().getClassLoader().loadClass( className ) );
+	}
+
+	/**
+	 * @param pathTemplate
+	 * @param className
+	 * @return
+	 * @throws ClassNotFoundException
+	 */
+	public Route attachBase( String pathTemplate, String className ) throws ClassNotFoundException
+	{
+		Route route = attach( pathTemplate, className );
+		route.setMatchingMode( Template.MODE_STARTS_WITH );
+		return route;
+	}
+
+	/**
+	 * @param pathTemplate
+	 * @param target
+	 * @return
+	 */
+	public Route attachBase( String pathTemplate, Restlet target )
+	{
+		Route route = attach( pathTemplate, target );
+		route.setMatchingMode( Template.MODE_STARTS_WITH );
+		return route;
 	}
 
 	/**
