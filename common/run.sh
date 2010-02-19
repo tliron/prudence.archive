@@ -16,7 +16,6 @@ lib/com.sun.grizzly.jar:\
 lib/com.sun.phobos.script.javascript.jar:\
 lib/com.caucho.quercus.jar:\
 lib/com.caucho.resin.util.jar:\
-lib/com.sun.script.jruby.jar:\
 lib/com.sun.script.velocity.jar:\
 lib/com.threecrickets.prudence.jar:\
 lib/com.threecrickets.scripturian.jar:\
