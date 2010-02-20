@@ -52,7 +52,7 @@
 			(.setMatchingMode (.attach host url application) Template/MODE_STARTS_WITH)
 			(if (not= url "/")
 				(let [url (if (.endsWith url "/") (.substring url 0 (- (.length url) 1)) url)]
-					(.attach host url add-trailing-slash))))
+					(.setMatchingMode (.attach host url add-trailing-slash)))) Template/MODE_EQUALS)
 		(if (not (empty? rest)) (do
 			(print ", ")
 			(recur rest)))))

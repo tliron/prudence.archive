@@ -63,7 +63,7 @@ for(var i in hosts) {
 		if(url[url.length - 1] == '/') {
 			url = url.slice(0, -1);
 		}
-		host.attach(url, addTrailingSlash);
+		host.attach(url, addTrailingSlash).matchingMode = Template.MODE_EQUALS;
 	}
 	if(i < hosts.length - 1) {
 		print(', ');

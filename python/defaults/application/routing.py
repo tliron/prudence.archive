@@ -52,7 +52,7 @@ for i in range(len(hosts)):
 	if url != '/':
 		if url[-1] == '/':
 			url = url[:-1]
-		host.attach(url, add_trailing_slash)
+		host.attach(url, add_trailing_slash).matchingMode = Template.MODE_EQUALS
 	if i < len(hosts) - 1:
 		sys.stdout.write(', ')
 print '.'
