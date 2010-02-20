@@ -10,6 +10,7 @@ lib/com.sun.phobos.script.javascript.jar;^
 lib/com.caucho.quercus.jar;^
 lib/com.caucho.resin.util.jar;^
 lib/com.sun.script.velocity.jar;^
+lib/com.threecrickets.jygments.jar;^
 lib/com.threecrickets.prudence.jar;^
 lib/com.threecrickets.scripturian.jar;^
 lib/javax.script.jar;^

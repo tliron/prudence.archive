@@ -175,6 +175,7 @@
 		<fetch-library dist="${dist-kitchensink}" library="jruby" />
 		<fetch-library dist="${dist-kitchensink}" library="json" />
 		<fetch-library dist="${dist-kitchensink}" library="jsr223" />
+		<fetch-library dist="${dist-kitchensink}" library="jygments" />
 		<fetch-library dist="${dist-kitchensink}" library="jython" />
 		<fetch-library dist="${dist-kitchensink}" library="log4j" />
 		<fetch-library dist="${dist-kitchensink}" library="mysqlconnector" />
@@ -269,6 +270,7 @@
 		<fetch-library dist="${dist-javascript}" library="grizzly" />
 		<fetch-library dist="${dist-javascript}" library="json" />
 		<fetch-library dist="${dist-javascript}" library="jsr223" />
+		<fetch-library dist="${dist-javascript}" library="jygments" />
 		<fetch-library dist="${dist-javascript}" library="log4j" />
 		<fetch-library dist="${dist-javascript}" library="restlet" />
 		<fetch-library dist="${dist-javascript}" library="rhino" />
@@ -304,6 +306,7 @@
 		<fetch-library dist="${dist-python}" library="jepp" />
 		<fetch-library dist="${dist-python}" library="json" />
 		<fetch-library dist="${dist-python}" library="jsr223" />
+		<fetch-library dist="${dist-python}" library="jygments" />
 		<fetch-library dist="${dist-python}" library="jython" />
 		<fetch-library dist="${dist-python}" library="log4j" />
 		<fetch-library dist="${dist-python}" library="mysqlconnector" />
@@ -343,6 +346,7 @@
 		<fetch-library dist="${dist-clojure}" library="grizzly" />
 		<fetch-library dist="${dist-clojure}" library="json" />
 		<fetch-library dist="${dist-clojure}" library="jsr223" />
+		<fetch-library dist="${dist-clojure}" library="jygments" />
 		<fetch-library dist="${dist-clojure}" library="log4j" />
 		<fetch-library dist="${dist-clojure}" library="mysqlconnector" />
 		<fetch-library dist="${dist-clojure}" library="pygments" />

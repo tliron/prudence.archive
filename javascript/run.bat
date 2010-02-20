@@ -6,6 +6,7 @@ set jars=lib/com.mysql.jdbc.jar;^
 lib/com.sun.grizzly.jar;^
 lib/com.sun.phobos.script.javascript.jar;^
 lib/com.sun.script.velocity.jar;^
+lib/com.threecrickets.jygments.jar;^
 lib/com.threecrickets.prudence.jar;^
 lib/com.threecrickets.scripturian.jar;^
 lib/javax.script.jar;^
