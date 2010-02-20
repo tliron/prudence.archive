@@ -50,7 +50,7 @@ public class FallbackRouter extends Router
 	}
 
 	/**
-	 * Construct a fallback router.
+	 * Constructs a fallback router.
 	 * 
 	 * @param context
 	 *        The context
