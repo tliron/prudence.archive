@@ -37,7 +37,7 @@ public class PreheatTask implements Runnable
 	 * @param context
 	 * @param applicationInternalName
 	 * @param documentSource
-	 * @return
+	 * @return An array of tasks
 	 */
 	public static PreheatTask[] create( Context context, String applicationInternalName, DocumentSource<Document> documentSource )
 	{
