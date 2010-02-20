@@ -810,7 +810,13 @@ public class GeneratedTextResource extends ServerResource
 		}
 		catch( DocumentRunException x )
 		{
-			throw new ResourceException( x );
+			if( getResponse().getStatus().isSuccess() )
+				// An unintended document exception
+				throw new ResourceException( x );
+			else
+				// This was an intended exception, so we will preserve the
+				// status code
+				return null;
 		}
 	}
 }
