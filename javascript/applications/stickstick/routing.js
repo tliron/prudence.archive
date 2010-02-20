@@ -4,4 +4,4 @@
 
 document.container.include('defaults/application/routing');
 
-router.rewrite(fixURL(resourcesBaseURL + '/note/{id}'), '{fi}note');
+router.rewrite(fixURL(resourcesBaseURL + '/note/{id}/'), '{ri}..');

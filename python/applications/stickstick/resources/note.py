@@ -7,7 +7,12 @@ from stickstick.data import *
 import minjson as json
 
 def get_id():
-    return int(prudence.resource.request.attributes.get('id'))
+    try:
+        return int(prudence.resource.request.attributes.get('id'))
+    except ValueError:
+        return None
+    except TypeError:
+        return None
     #form = prudence.resource.request.resourceRef.queryAsForm
     #return int(form.getFirstValue('id'))
 

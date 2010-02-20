@@ -1,7 +1,33 @@
 <%velocity
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 #set($component = $prudence.resource.context.attributes.get('component'))
 #set($applications = $component.context.attributes.get('applications'))
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+#set($form = $prudence.resource.request.resourceRef.queryAsForm)
+#set($action = $form.getFirstValue('action'))
+#set($item = $form.getFirstValue('item'))
+#set($index = $form.getFirstValue('index'))
+#if($index)
+	#set($Integer = 0)
+	#set($index = $Integer.valueOf($index) - 1)
+	#if($item == 'host')
+		#set($item = $component.hosts.get($index))
+	#elseif($item == 'server')
+		#set($item = $component.servers.get($index))
+	#elseif($item == 'application')
+		#set($item = $applications.get($index))
+	#else
+		#set($item = '')
+	#end
+	#if($item)
+		#if($action == 'stop')
+			$item.stop()
+		#elseif($action == 'start')
+			$item.start()
+		#end
+	#end
+#end
+
 <html>
 <head>
 	<title>Prudence Administration</title>
@@ -21,8 +47,8 @@
 				<h1>Prudence Administration</h1>
 				<p>
 					Here you can see applications, virtual hosts and servers configured in this
-					instance of Prudence. You can create some runtime changes here, though
-					note that they will be lost when you restart Prudence.
+					instance of Prudence. You can make changes here, though note that they will
+					be lost when you restart Prudence.
 				</p>
 				<p>
 					<a href="http://threecrickets.com/prudence/" class="neutral"><img src="$!{prefix}images/bullfinch-small.png" border="0"></a>
@@ -34,29 +60,55 @@
 				<table width="100%" cellpadding="10" cellspacing="0"><tr valign="top">
 					<td width="50%">
 				
+						<h2>Applications</h2>
+						
+						#foreach($application in $applications)
+						<h3>$application.name</h3>
+						<div class="node">
+							<p>$application.description</p>
+							<p>
+								<b>Owner:</b> $application.owner<br />
+								<b>Author:</b> $application.author
+							</p>
+							<p align="right">
+						 		#if($application.started)<span style="color: green;">Running</span> (<a href="?action=stop&item=application&index=$velocityCount">stop</a>)#else <span style="color: red;">Stopped</span> (<a href="?action=start&item=application&index=$velocityCount">start</a>)#end
+						 	</p>
+						</div>
+						#end
+
+					</td>
+					<td width="50%">
+						
 						<h2>Virtual Hosts</h2>
 						
 						#foreach($host in $component.hosts)
 						<h3>$host.name</h3>
 						<div class="node">
 							<p>
-							Local Host: $host.localHostName, $host.localHostAddress
-							</p>
-							<p>
-							Host: $host.hostScheme://$host.hostDomain:$host.hostPort
-							</p>
-							<p>
-							Server: $host.serverAddress:$host.serverPort
-							</p>
-							<p>
-							Resources: $host.resourceScheme://$host.resourceDomain:$host.resourcePort
-							</p>
+							Requests:
+							<ul>
+								<li><b>To hosts:</b> $host.hostScheme://$host.hostDomain:$host.hostPort</li>
+								<li><b>For resources:</b> $host.resourceScheme://$host.resourceDomain:$host.resourcePort</li>
+								<li><b>Via servers on:</b> $host.serverAddress:$host.serverPort</li>
+								<li><b>Via local hosts:</b> $host.localHostName, $host.localHostAddress</li>
+							</ul>
 							<p>
 							Routes:
+							<ul>
 							#foreach($route in $host.routes)
-								<a href="$route.template.pattern">$route.template.pattern</a>
+								<li><a href="$route.template.pattern">$route.template.pattern#if($route.matchingMode==1)*#end</a> -
+								#if($route.next.class.name == 'org.restlet.Application')
+									<i>$route.next.name</i>
+								#else
+									$route.next.class.simpleName
+								#end
+								</li>
 							#end
+							</ul>
 							</p>
+							<p align="right">
+						 		#if($host.started)<span style="color: green;">Running</span> (<a href="?action=stop&item=host&index=$velocityCount">stop</a>)#else <span style="color: red;">Stopped</span> (<a href="?action=start&item=host&index=$velocityCount">start</a>)#end
+						 	</p>
 						</div>
 						#end
 						
@@ -65,21 +117,13 @@
 						#foreach($server in $component.servers)
 						<h3>$server.name</h3>
 						<div class="node">
-							<p>Listening on: $!server.address:$server.port</p>
-							<p>Protocols: $server.protocols</p>
-						</div>
-						#end
-
-					</td>
-					<td width="50%">
-						
-						<h2>Applications</h2>
-						
-						#foreach($application in $applications)
-						<h3>$application.name</h3>
-						<div class="node">
-							<p>$application.description</p>
-							<p>Author: $application.author</p>
+							<p>
+								<b>Listening on:</b> #if($server.address) $server.address#else *#end:$server.port<br />
+								<b>For protocols:</b> $server.protocols
+							</p>
+							<p align="right">
+						 		#if($server.started)<span style="color: green;">Running</span> (<a href="?action=stop&item=server&index=$velocityCount">stop</a>)#else <span style="color: red;">Stopped</span> (<a href="?action=start&item=server&index=$velocityCount">start</a>)#end
+						 	</p>
 						</div>
 						#end
 						

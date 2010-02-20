@@ -141,6 +141,9 @@ public class Fallback extends Restlet
 	{
 		super.handle( request, response );
 
+		if( isStopped() )
+			return;
+
 		String reference = request.getResourceRef().getRemainingPart();
 		Node node = cache.get( reference );
 		if( node != null )
@@ -153,9 +156,15 @@ public class Fallback extends Restlet
 			else
 			{
 				// Use cached restlet
-				node.target.handle( request, response );
-				if( wasHandled( request, response ) )
-					return;
+				if( node.target.isStarted() )
+				{
+					node.target.handle( request, response );
+					if( wasHandled( request, response ) )
+						return;
+					else
+						// Invalidate
+						cache.remove( reference );
+				}
 			}
 		}
 
@@ -163,20 +172,39 @@ public class Fallback extends Restlet
 		for( Restlet target : targets )
 		{
 			response.setStatus( Status.SUCCESS_OK );
-			target.handle( request, response );
-			if( wasHandled( request, response ) )
+			if( target.isStarted() )
 			{
-				// Found a good one
-				if( cacheDuration.get() > 0 )
+				target.handle( request, response );
+				if( wasHandled( request, response ) )
 				{
-					// Cache this target
-					// (erasing any previously cached one)
-					cache.put( reference, new Node( target ) );
+					// Found a good one
+					if( cacheDuration.get() > 0 )
+					{
+						// Cache this target
+						// (erasing any previously cached one)
+						cache.put( reference, new Node( target ) );
+					}
+					// Stop here
+					return;
 				}
-				// Stop here
-				return;
 			}
 		}
+	}
+
+	@Override
+	public void start() throws Exception
+	{
+		super.start();
+		for( Restlet target : targets )
+			target.start();
+	}
+
+	@Override
+	public void stop() throws Exception
+	{
+		super.stop();
+		for( Restlet target : targets )
+			target.stop();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

@@ -83,7 +83,7 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
-	 * As {@link #attach(String, String)}, but with matching mode
+	 * As {@link #attach(String, String)}, but enforces matching mode
 	 * {@link Template#MODE_STARTS_WITH}.
 	 * 
 	 * @param pathTemplate
@@ -104,7 +104,7 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
-	 * As {@link #attach(String, Restlet)}, but with matching mode
+	 * As {@link #attach(String, Restlet)}, but enforces matching mode
 	 * {@link Template#MODE_STARTS_WITH}.
 	 * 
 	 * @param pathTemplate
@@ -125,7 +125,9 @@ public class PrudenceRouter extends FallbackRouter
 	 * Internally redirects a URI to a new URI, with support for URI templating.
 	 * This is often called "URI rewriting."
 	 * <p>
-	 * This is handled via a {@link Redirector} in
+	 * Enforces matching mode {@link Template#MODE_EQUALS}.
+	 * <p>
+	 * This is handled via a {@link Rewriter} in
 	 * {@link Redirector#MODE_SERVER_DISPATCHER} mode.
 	 * 
 	 * @param pathTemplate
@@ -134,11 +136,13 @@ public class PrudenceRouter extends FallbackRouter
 	 * @param rewrittenPathTemplate
 	 *        The URI path to which we will redirect
 	 * @return The created route
-	 * @see Redirector
+	 * @see Rewriter
 	 * @see Resolver#createResolver(Request, Response)
 	 */
 	public Route rewrite( String pathTemplate, String rewrittenPathTemplate )
 	{
-		return attach( pathTemplate, new Redirector( getContext(), rewrittenPathTemplate, Redirector.MODE_SERVER_DISPATCHER ) );
+		Route route = attach( pathTemplate, new Rewriter( getContext(), rewrittenPathTemplate, Redirector.MODE_SERVER_DISPATCHER ) );
+		route.setMatchingMode( Template.MODE_EQUALS );
+		return route;
 	}
 }
