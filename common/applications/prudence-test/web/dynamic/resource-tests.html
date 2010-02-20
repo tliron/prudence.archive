@@ -85,12 +85,22 @@ function seeMainSource() {
 <p>
 	<i>Resource:</i>
 	<select id="resource">
+<% #if($document.engineManager.getEngineByName('jython')) %>
 		<option value="data/jython/">Python</option>
+<% #end %>
 		<!-- <option value="resource/test/jepp/">Python (Jepp) [BROKEN]</option> -->
+<% #if($document.engineManager.getEngineByName('ruby')) %>
 		<option value="data/jruby/">Ruby</option>
+<% #end %>
+<% #if($document.engineManager.getEngineByName('groovy')) %>
 		<option value="data/groovy/">Groovy</option>
+<% #end %>
+<% #if($document.engineManager.getEngineByName('Clojure')) %>
 		<option value="data/clojure/">Clojure</option>
+<% #end %>
+<% #if($document.engineManager.getEngineByName('javascript')) %>
 		<option value="data/rhino/">JavaScript</option>
+<% #end %>
 		<!-- <option value="resource/test/quercus/">PHP [BROKEN]</option> -->
 	</select>
 	<input type="button" onclick="seeMainSource()" value="Source" />
