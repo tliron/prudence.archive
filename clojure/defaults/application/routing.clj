@@ -87,9 +87,6 @@
 
 (def script-engine-manager (ScriptEngineManager.))
 (def dynamic-web-document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document (.longValue dynamic-web-minimum-time-between-validity-checks)))
-(if dynamic-web-defrost
-	(doseq [defrost-task (DefrostTask/create dynamic-web-document-source, script-engine-manager, True)]
-		(def tasks (conj tasks defrost-task))))
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.engineManager" script-engine-manager)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultEngineName" "Clojure")
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
@@ -98,6 +95,10 @@
 
 (def dynamic-web (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.GeneratedTextResource")))
 (.attachBase router (fix-url dynamic-web-base-url) dynamic-web)
+
+(if dynamic-web-defrost
+	(doseq [defrost-task (DefrostTask/create dynamic-web-document-source, script-engine-manager, True)]
+		(def tasks (conj tasks defrost-task))))
 
 ;
 ; Static web
@@ -113,9 +114,6 @@
 ;
 
 (def resources-document-source (DocumentFileSource. (str application-base-path resources-base-path) resources-default-name (.longValue resources-minimum-time-between-validity-checks))) 
-(if resources-defrost
-	(doseq [defrost-task (DefrostTask/create resources-document-source, script-engine-manager, True)]
-		(def tasks (conj tasks defrost-task))))
 (.put attributes "com.threecrickets.prudence.DelegatedResource.engineManager" script-engine-manager)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultEngineName" "Clojure")
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultName" resources-default-name)
@@ -124,6 +122,10 @@
 
 (def resources (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
 (.attachBase router (fix-url resources-base-url) resources)
+
+(if resources-defrost
+	(doseq [defrost-task (DefrostTask/create resources-document-source, script-engine-manager, True)]
+		(def tasks (conj tasks defrost-task))))
 
 ;
 ; Preheat

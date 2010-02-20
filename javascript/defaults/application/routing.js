@@ -102,12 +102,6 @@ for(var i in urlAddTrailingSlash) {
 
 var scriptEngineManager = new ScriptEngineManager();
 var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks);
-if(dynamicWebDefrost) {
-	var defrostTasks = DefrostTask.create(dynamicWebDocumentSource, scriptEngineManager, true);
-	for(var i in defrostTasks) {
-		tasks.push(defrostTasks[i]);
-	}
-}
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.engineManager', scriptEngineManager);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultEngineName', 'rhino-nonjdk');
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
@@ -116,6 +110,13 @@ attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable'
 
 var dynamicWeb = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'));
 router.attachBase(fixURL(dynamicWebBaseURL), dynamicWeb);
+
+if(dynamicWebDefrost) {
+	var defrostTasks = DefrostTask.create(dynamicWebDocumentSource, scriptEngineManager, true);
+	for(var i in defrostTasks) {
+		tasks.push(defrostTasks[i]);
+	}
+}
 
 //
 // Static web
@@ -131,12 +132,6 @@ router.attachBase(fixURL(staticWebBaseURL), staticWeb);
 //
 
 var resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, resourcesMinimumTimeBetweenValidityChecks);
-if(resourcesDefrost) {
-	var defrostTasks = DefrostTask.create(resourcesDocumentSource, scriptEngineManager, true);
-	for(var i in defrostTasks) {
-		tasks.push(defrostTasks[i]);
-	}
-}
 attributes.put('com.threecrickets.prudence.DelegatedResource.engineManager', scriptEngineManager);
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultEngineName', 'rhino-nonjdk');
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName);
@@ -145,6 +140,13 @@ attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', re
 
 resources = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
 router.attachBase(fixURL(resourcesBaseURL), resources);
+
+if(resourcesDefrost) {
+	var defrostTasks = DefrostTask.create(resourcesDocumentSource, scriptEngineManager, true);
+	for(var i in defrostTasks) {
+		tasks.push(defrostTasks[i]);
+	}
+}
 
 //
 // Preheat
