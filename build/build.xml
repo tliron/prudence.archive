@@ -29,7 +29,7 @@
 		<attribute name="dist" />
 		<attribute name="library" />
 		<sequential>
-			<copy todir="@{dist}/content/lib">
+			<copy todir="@{dist}/content/libraries">
 				<fileset dir="${lib}/@{library}/lib" />
 			</copy>
 			<copy todir="@{dist}/content/licenses/@{library}">
@@ -41,7 +41,7 @@
 	<macrodef name="fetch-library-versions">
 		<attribute name="dist" />
 		<sequential>
-			<copy todir="@{dist}/content/lib" file="${lib}/versions.txt" />
+			<copy todir="@{dist}/content/libraries" file="${lib}/versions.txt" />
 		</sequential>
 	</macrodef>
 
@@ -57,7 +57,7 @@
 	<macrodef name="fetch-prudence-jar">
 		<attribute name="dist" />
 		<sequential>
-			<copy todir="@{dist}/content/lib" file="${tmp}/lib/com.threecrickets.prudence.jar" />
+			<copy todir="@{dist}/content/libraries" file="${tmp}/lib/com.threecrickets.prudence.jar" />
 		</sequential>
 	</macrodef>
 	
@@ -66,10 +66,10 @@
 		<attribute name="base" />
 		<sequential>
 			<copy todir="@{dist}/content">
-				<fileset dir="${common}" excludes="log/, run.*" />
+				<fileset dir="${common}" excludes="log/, bin/" />
 				<fileset dir="@{base}" />
 			</copy>
-			<chmod file="@{dist}/content/run.sh" perm="ugo+rx"/>
+			<chmod file="@{dist}/content/bin/run.sh" perm="ugo+rx"/>
 		</sequential>
 	</macrodef>
 
@@ -250,7 +250,7 @@
 
 	<target name="content-standalone" depends="javadoc-standalone" description="Fetch content">
 		<copy todir="${dist-standalone}/content">
-			<fileset dir="${common}" excludes="log/, conf/, applications/, run.*" />
+			<fileset dir="${common}" excludes="log/, configuration/, applications/, bin/" />
 		</copy>
 	</target>
 

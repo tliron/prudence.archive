@@ -44,7 +44,7 @@ var component = new Component();
 // log4j: This is our actual logging engine
 try {
 	importClass(org.apache.log4j.PropertyConfigurator);
-	PropertyConfigurator.configure('conf/logging.conf');
+	PropertyConfigurator.configure('configuration/logging.conf');
 } catch(x) {}
 
 // JULI: Remove any pre-existing configuration
@@ -60,7 +60,7 @@ try {
 System.setProperty('org.restlet.engine.loggerFacadeClass', 'org.restlet.ext.slf4j.Slf4jLoggerFacade');
 
 // Velocity logging
-System.setProperty('com.sun.script.velocity.properties', 'conf/velocity.conf');
+System.setProperty('com.sun.script.velocity.properties', 'configuration/velocity.conf');
 
 // Web requests
 component.logService.loggerName = 'web-requests';

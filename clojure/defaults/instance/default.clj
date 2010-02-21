@@ -44,7 +44,7 @@
 ; log4j: This is our actual logging engine
 (try
 	(import 'org.apache.log4j.PropertyConfigurator)
-	(org.apache.log4j.PropertyConfigurator/configure "conf/logging.conf")
+	(org.apache.log4j.PropertyConfigurator/configure "configuration/logging.conf")
 (catch Exception _ nil)) 
 
 ; JULI: Remove any pre-existing configuration
@@ -60,7 +60,7 @@
 (System/setProperty "org.restlet.engine.loggerFacadeClass" "org.restlet.ext.slf4j.Slf4jLoggerFacade")
 
 ; Velocity logging
-(System/setProperty "com.sun.script.velocity.properties" "conf/velocity.conf")
+(System/setProperty "com.sun.script.velocity.properties" "configuration/velocity.conf")
 
 ; Web requests
 (.. component getLogService (setLoggerName "web-requests"))
