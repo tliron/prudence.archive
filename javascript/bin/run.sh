@@ -1,7 +1,7 @@
 #!/bin/bash
 
 here=$(readlink -f "$(dirname "$0")")
-cd $here
+cd $here/..
 
 java=/usr/bin/java
 #java=/usr/lib/jvm/java-1.5.0-sun/bin/java
