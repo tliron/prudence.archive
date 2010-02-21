@@ -42,7 +42,7 @@ import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentFormatter;
 import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.ScriptletController;
-import com.threecrickets.scripturian.formatter.PygmentsDocumentFormatter;
+import com.threecrickets.scripturian.formatter.JygmentsDocumentFormatter;
 
 /**
  * A Restlet resource which delegates functionality to a Scripturian
@@ -753,7 +753,9 @@ public class DelegatedResource extends ServerResource
 			if( documentFormatter == null )
 			{
 				// documentFormatter = new SyntaxHighlighterDocumentFormatter();
-				documentFormatter = new PygmentsDocumentFormatter<Document>();
+				// documentFormatter = new
+				// PygmentsDocumentFormatter<Document>();
+				documentFormatter = new JygmentsDocumentFormatter<Document>();
 
 				DocumentFormatter<Document> existing = (DocumentFormatter<Document>) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.documentFormatter", documentFormatter );
 				if( existing != null )

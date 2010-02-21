@@ -42,7 +42,7 @@ import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.ScriptletController;
 import com.threecrickets.scripturian.exception.DocumentInitializationException;
 import com.threecrickets.scripturian.exception.DocumentRunException;
-import com.threecrickets.scripturian.formatter.PygmentsDocumentFormatter;
+import com.threecrickets.scripturian.formatter.JygmentsDocumentFormatter;
 
 /**
  * A Restlet resource which runs a Scripturian {@link Document} for HTTP GET and
@@ -541,7 +541,7 @@ public class GeneratedTextResource extends ServerResource
 	 * code.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.documentFormatter</code>
+	 * <code>com.threecrickets.prudence.GeneratedtextResource.documentFormatter</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The source representer or null
@@ -553,15 +553,16 @@ public class GeneratedTextResource extends ServerResource
 		if( documentFormatter == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			documentFormatter = (DocumentFormatter<Document>) attributes.get( "com.threecrickets.prudence.DelegatedResource.documentFormatter" );
+			documentFormatter = (DocumentFormatter<Document>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentFormatter" );
 
 			if( documentFormatter == null )
 			{
-				// documentFormatter = new SyntaxHighlighterDocumentFormatter(
-				// getContext() );
-				documentFormatter = new PygmentsDocumentFormatter<Document>();
+				// documentFormatter = new SyntaxHighlighterDocumentFormatter();
+				// documentFormatter = new
+				// PygmentsDocumentFormatter<Document>();
+				documentFormatter = new JygmentsDocumentFormatter<Document>();
 
-				DocumentFormatter<Document> existing = (DocumentFormatter<Document>) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.documentFormatter", documentFormatter );
+				DocumentFormatter<Document> existing = (DocumentFormatter<Document>) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.documentFormatter", documentFormatter );
 				if( existing != null )
 					documentFormatter = existing;
 			}
