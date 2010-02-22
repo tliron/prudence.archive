@@ -112,7 +112,7 @@ def get_engine(fresh=False):
                     connection.execute('DROP DATABASE %s' % attributes['stickstick.database'])
                 connection.execute('CREATE DATABASE IF NOT EXISTS %s' % attributes['stickstick.database'])
                 connection.close()
-    
+
             # Connect to database
             engine = create_engine('%s://%s:%s@%s/%s' % (
                 attributes['stickstick.backend'],
@@ -123,7 +123,15 @@ def get_engine(fresh=False):
                 convert_unicode=True,
                 pool_recycle=3600)
             Session.configure(bind=engine)
-            
+
+            if not attributes['stickstick.host'] and fresh:
+                if attributes['stickstick.backend'] == 'h2':
+                    connection = engine.connect()
+                    connection.execute('DROP ALL OBJECTS')
+                    connection.close()
+                else:
+                    Base.metadata.drop_all(engine)
+
             # Make sure tables exist
             Base.metadata.create_all(engine)
             

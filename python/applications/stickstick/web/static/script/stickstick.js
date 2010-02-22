@@ -93,6 +93,8 @@ $(function() {
 			cache: false
 		});
 	}
+
+	$('#content').loading({onAjax: true, align: {top: 2, left: 2}, text: 'Please wait...'});
 	
 	$('#new-small').stickynote({
 		containment: 'content',

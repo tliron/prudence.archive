@@ -1,9 +1,7 @@
 sys.path.append(str(prudence.source.basePath) + '/../libraries/')
 
 from sqlalchemy.orm.exc import NoResultFound
-
 from stickstick.data import *
-
 import minjson as json
 
 def get_id():
