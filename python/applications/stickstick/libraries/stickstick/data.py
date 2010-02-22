@@ -100,17 +100,18 @@ def get_engine(fresh=False):
             attributes = Application.getCurrent().context.attributes
 
             # Make sure database exists
-            root_engine = create_engine('%s://%s:%s@%s/' % (
-                attributes['stickstick.backend'],
-                attributes['stickstick.username'],
-                attributes['stickstick.password'],
-                attributes['stickstick.host']),
-                convert_unicode=True)
-            connection = root_engine.connect()
-            if fresh:
-                connection.execute('DROP DATABASE %s' % attributes['stickstick.database'])
-            connection.execute('CREATE DATABASE IF NOT EXISTS %s' % attributes['stickstick.database'])
-            connection.close()
+            if attributes['stickstick.host']:
+                root_engine = create_engine('%s://%s:%s@%s/' % (
+                    attributes['stickstick.backend'],
+                    attributes['stickstick.username'],
+                    attributes['stickstick.password'],
+                    attributes['stickstick.host']),
+                    convert_unicode=True)
+                connection = root_engine.connect()
+                if fresh:
+                    connection.execute('DROP DATABASE %s' % attributes['stickstick.database'])
+                connection.execute('CREATE DATABASE IF NOT EXISTS %s' % attributes['stickstick.database'])
+                connection.close()
     
             # Connect to database
             engine = create_engine('%s://%s:%s@%s/%s' % (
