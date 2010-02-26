@@ -116,8 +116,9 @@
 		<mkdir dir="${tmp}/classes" />
 		<javac srcdir="${java-src}" destdir="${tmp}/classes" target="1.5">
 			<classpath>
-				<fileset dir="${lib}/scripturian/lib" />
 				<fileset dir="${lib}/restlet/lib" />
+				<fileset dir="${lib}/scripturian/lib" />
+				<fileset dir="${lib}/jygments/lib" />
 			</classpath>
 		</javac>
 	</target>
