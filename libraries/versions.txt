@@ -8,7 +8,7 @@ jruby				1.5.0 (Revision 6586)
 json				?
 jsr-223				?
 jython				2.5.2 (Revision 6980)
-jygments			1.0 (Revision 19)
+jygments			1.0 (Revision 20)
 log4j				1.2.15
 mysqlconnector		5.1.8
 pygments			1.1.1
@@ -18,6 +18,6 @@ rhino				1.7R2
 scripturian			1.0 (Revision 110)
 slf4j				1.5.8
 succinct			1.0 alpha 1
-sqlalchemy			0.6 (Revision 6720)
+sqlalchemy			0.6 (Revision 6720 + H2 patch)
 syntaxhighlighter	2.1.364
 velocity			1.6.2
