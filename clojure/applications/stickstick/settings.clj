@@ -12,11 +12,11 @@
 (def application-contact-email "prudence@threecrickets.com")
 
 (def runtime-attributes (merge runtime-attributes
-	{"stickstick.backend" "mysql+zxjdbc"}
+	{"stickstick.backend" "h2"}
 	{"stickstick.username" "root"}
 	{"stickstick.password" "root"}
-	{"stickstick.host" "localhost"}
-	{"stickstick.database" "stickstick"}))
+	{"stickstick.host" ""}
+	{"stickstick.database" "h2/stickstick"}))
 
 (def show-debug-on-error true)
 

@@ -11,11 +11,11 @@ applicationOwner = 'Three Crickets';
 applicationHomeURL = 'http://threecrickets.com/prudence/stickstick/';
 applicationContactEmail = 'prudence@threecrickets.com';
 
-runtimeAttributes['stickstick.backend'] = 'mysql+zxjdbc';
+runtimeAttributes['stickstick.backend'] = 'h2';
 runtimeAttributes['stickstick.username'] = 'root';
 runtimeAttributes['stickstick.password'] = 'root';
-runtimeAttributes['stickstick.host'] = 'localhost';
-runtimeAttributes['stickstick.database'] = 'stickstick';
+runtimeAttributes['stickstick.host'] = '';
+runtimeAttributes['stickstick.database'] = 'h2/stickstick';
 
 showDebugOnError = true;
 
