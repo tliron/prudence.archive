@@ -34,6 +34,7 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
+import com.threecrickets.prudence.internal.PrudenceJygmentsDocumentFormatter;
 import com.threecrickets.prudence.util.RepresentableString;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentDescriptor;
@@ -42,7 +43,6 @@ import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.ScriptletController;
 import com.threecrickets.scripturian.exception.DocumentInitializationException;
 import com.threecrickets.scripturian.exception.DocumentRunException;
-import com.threecrickets.scripturian.formatter.JygmentsDocumentFormatter;
 
 /**
  * A Restlet resource which runs a Scripturian {@link Document} for HTTP GET and
@@ -560,7 +560,7 @@ public class GeneratedTextResource extends ServerResource
 				// documentFormatter = new SyntaxHighlighterDocumentFormatter();
 				// documentFormatter = new
 				// PygmentsDocumentFormatter<Document>();
-				documentFormatter = new JygmentsDocumentFormatter<Document>();
+				documentFormatter = new PrudenceJygmentsDocumentFormatter<Document>();
 
 				DocumentFormatter<Document> existing = (DocumentFormatter<Document>) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.documentFormatter", documentFormatter );
 				if( existing != null )

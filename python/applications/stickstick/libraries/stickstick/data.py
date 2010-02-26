@@ -1,4 +1,3 @@
-
 from sqlalchemy import Column, Integer, String, Text, DateTime
 from sqlalchemy.orm.exc import NoResultFound
 from threading import RLock
@@ -9,6 +8,15 @@ from time import time, mktime
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import logging
+
+logging.basicConfig(filename='logs/stickstick-python.log')
+logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+logging.getLogger('sqlalchemy.orm.attributes').setLevel(logging.DEBUG)
+logging.getLogger('sqlalchemy.orm.mapper').setLevel(logging.DEBUG)
+logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.DEBUG)
+logging.getLogger('sqlalchemy.orm.strategies').setLevel(logging.DEBUG)
+logging.getLogger('sqlalchemy.orm.sync').setLevel(logging.DEBUG)
 
 Base = declarative_base()
 Session = sessionmaker()
@@ -124,6 +132,10 @@ def get_engine(fresh=False):
                 pool_recycle=3600)
             Session.configure(bind=engine)
 
+            #connection = engine.connect()
+            #connection.execute('SET AUTOCOMMIT ON')
+            #connection.close()
+            
             if not attributes['stickstick.host'] and fresh:
                 if attributes['stickstick.backend'] == 'h2':
                     connection = engine.connect()

@@ -8,5 +8,6 @@ __all__ = (
     'oracle',
     'postgresql',
     'sqlite',
+    'h2',
 #    'sybase',
     )
