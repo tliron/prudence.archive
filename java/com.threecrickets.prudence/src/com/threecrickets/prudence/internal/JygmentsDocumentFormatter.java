@@ -33,11 +33,17 @@ public class JygmentsDocumentFormatter<D> implements DocumentFormatter<D>
 	// Construction
 	//
 
+	/**
+	 * 
+	 */
 	public JygmentsDocumentFormatter()
 	{
 		this( "vs" );
 	}
 
+	/**
+	 * @param theme
+	 */
 	public JygmentsDocumentFormatter( String theme )
 	{
 		this.theme = theme;
@@ -99,6 +105,9 @@ public class JygmentsDocumentFormatter<D> implements DocumentFormatter<D>
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * 
+	 */
 	@SuppressWarnings("unused")
 	private final String theme;
 }

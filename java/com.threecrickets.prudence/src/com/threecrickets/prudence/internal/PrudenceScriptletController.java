@@ -16,12 +16,23 @@ import javax.script.ScriptContext;
 import com.threecrickets.scripturian.ScriptletController;
 import com.threecrickets.scripturian.exception.DocumentRunException;
 
+/**
+ * Adds Prudence container variable to context.
+ * 
+ * @author Tal Liron
+ * @param <C>
+ */
 public class PrudenceScriptletController<C> implements ScriptletController
 {
 	//
 	// Construction
 	//
 
+	/**
+	 * @param container
+	 * @param name
+	 * @param scriptletController
+	 */
 	public PrudenceScriptletController( C container, String name, ScriptletController scriptletController )
 	{
 		this.container = container;
@@ -49,9 +60,18 @@ public class PrudenceScriptletController<C> implements ScriptletController
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * 
+	 */
 	private final C container;
 
+	/**
+	 * 
+	 */
 	private final String name;
 
+	/**
+	 * 
+	 */
 	private final ScriptletController scriptletController;
 }
