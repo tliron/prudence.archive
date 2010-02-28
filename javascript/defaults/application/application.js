@@ -3,6 +3,6 @@
 //
 
 importClass(
-	org.restlet.Application);
+	com.threecrickets.prudence.util.PrudenceApplication);
 
-var application = new Application();
+var application = new PrudenceApplication();

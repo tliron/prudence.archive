@@ -2,6 +2,6 @@
 # Prudence Application
 #
 
-from org.restlet import Application
+from com.threecrickets.prudence.util import PrudenceApplication
 
-application = Application()
+application = PrudenceApplication()

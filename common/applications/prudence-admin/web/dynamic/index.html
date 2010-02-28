@@ -25,6 +25,10 @@
 		#elseif($action == 'start')
 			$item.start()
 		#end
+		
+		#set($prudence.resource.response.locationRef=$prudence.resource.request.resourceRef.baseRef)
+		#set($prudence.statusCode=303)
+		#stop
 	#end
 #end
 
