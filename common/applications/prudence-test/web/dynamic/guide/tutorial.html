@@ -9,18 +9,23 @@ Far more detailed explanations are given in the Prudence guide.</p>
 <p>For now, this is a todo list...</p>
 </div>
 
+
+
 <h3>1. Run the Prudence Instance</h3>
 
-<p>Quick look at the administration application.</p>
+<p>[Quick look at the administration application.]</p>
 
 <h3>2. Your First Application</h3>
 
 <p>Your Prudence instance will host all applications under the /applications/ directory.
-Simply create a new subdirectory there. The subdirectory name will be used as a default
-for various things we can change later.
+To install a new application, simply create a new subdirectory there.
+The subdirectory name will be used as a default
+for various things: the base URL, logging, etc. We can change those later.
 </p>
 
 <p>So, let's create /applications/wackywiki/</p>
+
+
 
 <h3>3. A Static Web Page</h3>
 
@@ -39,14 +44,18 @@ with a default web page.</p>
 </pre>
 
 <p>Restart Prudence, and browse to http://localhost:8080/wackiwiki to see the page.
-You can also see it at http://localhost:8080/wackiwiki/index.html. 
 Check the Prudence administration application at http://localhost:8080/ to make
 sure your new application is there.
 </p>
 
+
+
 <h3>4. A Dynamic Web Page</h3>
 
-<p>(This is cool, but check out resources, below.)</p>
+<p>Important! While Prudence does dynamic web pages well, it really stands out
+from other web frameworks in its support for REST resources, which we'll see in
+the next section. We decided to start this tutorial with web pages, because the
+topic would likely be more familiar to most newcomers to Prudence.</p>
 
 <p>Create /applications/wackywiki/web/dynamic/. Unlike /web/static/, files in this
 directory must be text files (HTML, XML, plain text, etc.) They are specially processed
@@ -80,13 +89,13 @@ seconds
 <p>You'll notice the &lt;% and %&gt; are used to delimit scriptlets, and that we've
 added "python" to the opening delimiter of the first scriptlet. Subsequent scriptlets
 on the page will automatically use the language of the previous scriptlets, so we
-don't have to repeat it.</p>
+don't have to repeat "python".</p>
 
 <p>Note, too, that "print" works by adding output to the stream of text where the
 scriptlet is located.</p>
 
 <p>Final note: Though they are called "scriptlets," they are not "scripts," in the
-common meaning of interpreted code. All scriptlets are, in fact, compiled and run in
+common meaning of interpreted code. All scriptlets are, in fact, compiled and run as
 JVM bytecode. That's fast.</p>
 
 <p>Let's make the code above more readable by using special "expression scriptlets."
@@ -117,19 +126,20 @@ from dratetime import datetime
 ...
 </pre>
 
-<p>If you try to access http://localhost:8080/wackywiki, Prudence will show you a very detailed debug page,
+<p>If you try to access http://localhost:8080/wackywiki, Prudence will show you a detailed debug page,
 from where you can also access the source code with the troublesome code line highlighted. Once you
-deploy your application, you can cancel this debug feature.
+deploy your application, you can cancel this debug feature, and instead show a user-friendly
+error pages. We'll get to that below.
 </p>
 
 <p>Prudence lets you include others documents in-place using a special scriptlet. This makes it very easy
-to reuse fragments of documents (which can include scriptlets) throughout your dynamic pages. Common uses
-are page headers, footers, and navigation menus.</p>
+to reuse fragments of documents (which can include scriptlets) throughout your dynamic pages. Common reusbale
+fragments are page headers, footers, and navigation menus.</p>
 
 <p>By convention in Prudence, fragments are put in /web/fragments/, though you can include them from anywhere,
-even from your regular /web/dynamic/ or /web/static/ subdirectories. The advantage of keeping them out of there
-is that users won't be able to access the individual fragments directly. Instead, we must explicitly include
-them in our /web/dynamic/ files.
+even from your regular /web/dynamic/ or /web/static/ subdirectories. The advantage of keeping them out of those
+subdiretories is that users won't be able to access the individual fragments directly. Instead, we must explicitly
+include them in our /web/dynamic/ files.
 </p>
 
 <p>Let's create a fragment that displays the current time.</p>
@@ -153,12 +163,12 @@ It is currently &lt;%= now.strftime('%H:%M') %&gt; o' clock, and &lt;%= now.strf
 &lt;/html&gt;
 </pre>
 
-<p>Note that the include scriptlet, which begins with the &lt;%& delimiter, accepts a real Python
-expression. For example, you can do Pythony things like &lt;%& '%s-%s' % (language, encoding) %&gt;,
-allowing you to include specific fragments according to dynamic circumstances.
+<p>Note that the included scriptlet, which begins with the &lt;%& delimiter, accepts a real Python
+expression. For example, you can do Pythony things like string interpolation: &lt;%& '%s-%s' % (language, encoding) %&gt;,
+allowing you to include different fragments according to changing circumstances.
 </p>
 
-<p>Accessing the query.</p>
+<p>[Accessing the query matrix.]</p>
 
 <p>Dynamically generating HTML and other text is very powerful. You may be wondering, however,
 how well this scales. Even if the Python code is compiled, it would still need to be run for
@@ -167,22 +177,21 @@ you scale. By changing document.cacheDuration within a scriptlet, you can dynami
 long Prudence will look for updates in the document. Note that even very short caching times
 can be a great boost to scalability. For example, if your cache duration is 1 second, it means
 that your scriptlets would only be run once every second. In computing terms, that's a very long
-time! For example, imagine that your popular web site is getting 1000 hits per second...
+time! Imagine that your popular web site is getting 1000 hits per second...
 </p>
 
 <p>Finally, you'll be happy to know that by default Prudence also enables client-side caching.
 It does this by setting a standard HTTP header that tells the client how long the content should
-be cached. All popular web browsers recognize it. This can mean significant bandwidth savings for
-you, because the client will not send an unnecessary request that would return the same content
-from you.
+be cached. All popular desktop and mobile web browsers recognize it. This means
+bandwidth savings for you, because the client will not download content it already has
+in its cache.
 </p>
 
-<p>Let's enable a simple 10 second cache.</p>
-
+<p>Let's enable a simple 60 second cache.</p>
 
 <p>/web/dynamic/index.html:</p>
 <pre>
-&lt;% document.cacheDuration = 10000 %&gt;
+&lt;% document.cacheDuration = 60000 %&gt;
 &lt;html&gt;
 &lt;head&gt;&lt;title&gt;Wacky Wiki&lt;/title&gt;&lt;/head&gt;
 &lt;body&gt;
@@ -194,25 +203,26 @@ from you.
 <p>To test the above, go to our page and keep refreshing it in your web browser. You will see
 that the printed time will only be udpated once every 10 seconds.</p>
 
-<p>To verify that client-side caching works correctly, we reccommed using the free Firefox
-browser with the amazing Firebug add-on. In the Firebug network panel, you can see which
-requests are sent to the server. Within those 10 seconds between updates, you will see the
+<p>To verify that client-side caching works correctly, we recommend using the free Firefox
+browser with the <a href="http://getfirebug.com/">Firebug</a> add-on. In the Firebug network panel,
+you can see which
+requests are sent to the server. Within those 60 seconds between updates, you will see the
 that the request for the page returns a 304 status code: "the document has not been modified."
 </p>
 
 <p>For an even more elaborate experiment, try running two browsers at the same time on different
 machines, and keep refreshing them. You'll see each client caching individually, and yet the
-server still returning a different page only after the 10 second cache duration has passed.
+server still returning a different page only after the 60 second cache duration has passed.
 </p>
 
 <p>Caching is very powerful, but obviously only useful for specific pages. For example, if it's
 important for a page to always show the up-to-date to the moment information, you might not be able
 to afford even a one second cache. It's useful, then, to know that Prudence's document.cacheDuration
-works at the level of the current document, so that each included fragment can set its own cache
+works at the level of the actual document, so that each included fragment can set its own cache
 duration. Just remember that the top document or fragment requests will determine the caching for
-included fragments, too. If your index.html has a cache duration of 10 seconds, then even if
+included fragments, too. If your index.html has a cache duration of 60 seconds, then even if
 an included fragment has a cache duration of 1 second, it would only appear to update every
-10 seconds.
+60 seconds.
 </p>
 
 <p>Scriptlets can also dynamically change the cache duration according to changing circumstances.
@@ -240,7 +250,15 @@ Wiki content is: &lt;%= wiki %&gt;
 &lt;/html&gt;
 </pre>
 
-<p>Quick peek at Velocity/Succinct.</p>
+<p>You might wonder what other options are available to you other than "python" for scriptlets.
+You can choose other languages -- Ruby, JavaScript, Clojure, PHP, etc. -- if you have them installed.
+But, more importantly, you can choose to use one of the pre-included templating languages, Succint and
+Velocity.</p>
+
+<p>Templating languages have far less features than any of the above programming languages, but
+this can be an advantage if you all you need is simple templating. They tend to be more readable for
+templates. Best of all, you can mix scriptlets from various languages in one page.
+Here's an example of using Velocity and Python:</p> 
 
 <p>/web/fragments/time.html:</p>
 <pre>
@@ -255,12 +273,35 @@ It is currently $clock o' clock, and $seconds seconds
 %&gt;
 </pre>
 
-<p>Returning an error status code.</p>
+<p>[Returning an error status code.]</p>
+
+<p>[URL rewriting and attributes.]</p>
+
 
 
 <h3>5. A Resource</h3>
 
-<p>Return a string.</p>
+<p>As stated earlier, where Prudence truly shines is in its support for
+REST resources. A resource is a piece of data associated with a URL, which
+clients can optionally create, read, update or delete. An HTML web page is an example of a
+resource which is usually read, and sometimes supports writing (for handling
+HTML forms). Prudence lets you create resources that support one or more
+formats, all create/read/update/delete (CRUD) operations, and advanced caching.
+</p>
+
+<p>Resources are key to "AJAX" and other rich client
+applications. Additionally, resources can form a scalable backend conduit
+between servers. Depending on how you look at it, they are a kind of online database,
+or an API for your service.
+</p>
+
+<p>You might want to take a look at <a href="../rest">Making the Case for REST</a>
+for a better understanding of REST and what it can do for you.
+</p>
+
+<p>Let's start with a resource that can be read for some plain text. Resources
+are put in the /resources/ subdirectory, and, like /web/dynamic/ and /web/static/,
+the filename and directory tree define the URL:</p>
 
 <p>/resources/wiki.py:</p>
 <pre>
@@ -271,7 +312,17 @@ def handleGet():
     return 'Nothing in the wiki yet.'
 </pre>
 
-<p>Return text or JSON. Use query params.</p>
+<p>handleInit() always gets called first, before any of the other handler functions.
+</p>
+
+<p>Try browsing to http://localhost/wiki to see your resource.</p>
+
+<p>Plain text is good for us humans to read. But, we might want to support
+formats that are more useful for client applications, such as <a href="http://www.json.org/">JSON</a> for
+browser-based JavaScript.
+</p>
+
+<p>Let's add support for JSON to our resource:</p>
 
 <p>/resources/wiki.py:</p>
 <pre>
@@ -288,12 +339,11 @@ def handleGet():
         return '{"content": "%s"}' % wiki
 </pre>
 
-<p>Test in a browser. Add jQuery to dynamic page to test in browser.</p>
+<p>[Add jQuery to dynamic page to test in browser.]</p>
 
-<p>You might want to take a look at <a href="../rest">Making the Case for REST</a>.
-</p>
-
-<p>Including from /libraries.</p>
+<p>Just as /web/fragments/ was a useful place for us to put reusable web fragments,
+we can use /libraries/ for reusable code for resources, as well as dynamic web
+scriptlets. Let's create a library to handle our wiki:</p>
 
 <p>/libraries/wiki.py:</p>
 <pre>
@@ -303,10 +353,13 @@ def get_wiki():
     return wiki
 </pre>
 
+<p>Let's make use of our library in our resource:
+</p>
+
 <p>/resources/wiki.py:</p>
 <pre>
 sys.path.append(str(prudence.source.basePath) + '/../libraries/')
-from wiki import get_wiki, set_wiki
+from wiki import get_wiki
 
 def handleInit():
     prudence.addMediaTypeByName('text/plain')
@@ -319,7 +372,7 @@ def handleGet():
         return '{"content": "%s"}' % get_wiki()
 </pre>
 
-<p>Put, Post, Delete.</p>
+<p>[Put, Post, Delete.]</p>
 
 <p>/libraries/wiki.py:</p>
 <pre>
@@ -343,9 +396,15 @@ def set_wiki(content):
         wiki_lock.release()
 </pre>
 
-<p>Fixing our form handling from earlier using doPost.</p>
+<p>[Fixing our form handling from earlier using doPost.]</p>
 
-<p>Caching (modification dates and ETags).</p>
+<p>Remember how we supported client-side caching for our dynamic web pages?
+We have much more control over this process in resources. We can set
+explicit modification dates and ETags.
+</p>
+
+<p>Let's give our wiki resources a modification date, so that clients
+can properly cache it:</p>
 
 <p>/libraries/wiki.py:</p>
 <pre>
@@ -393,7 +452,17 @@ def handleGet():
         return '{"content": "%s"}' % wiki['content']
 </pre>
 
-<p>Optimizing with handleGetInfo.</p>
+<p>Support for modification date can go a long way towards saving us
+bandwidth. However, note that we still have to fetch the entire wiki
+in order to get its modification date. This could potentially be
+a costly operation, say, if the wiki is stored in a database.
+</p>
+
+<p>Prudence lets you optimize this by letting you check only the
+modification date (or ETag) before actually fetching the resource.
+</p>
+
+<p>Let's add handleGetInfo():</p>
 
 <p>/resources/wiki.py:</p>
 <pre>
@@ -417,29 +486,43 @@ def handleGetInfo():
     return to_milliseconds(wiki['timestamp'])
 </pre>
 
-<p>Direct access to resources (ClientResource). Back to dynamic HTML - using your resources there.</p> 
+<p>Our trivial example didn't offer any significant savings. But, suppose our resource
+involved fetching lots of wiki pages at once? We could save computing power if you we only
+had to fetch a modification date.
+</p>
+
+<p>As we said earlier, our resources can be seen as an API. Indeed, there's no reason to
+maintain two sets of APIs, one for "the world" to access via your resources, and one for
+your application to use internally. You can use easily use your resources internally:</p> 
 
 <p>/fragments/wiki.html:</p>
 <pre>
 &lt;%python
-from com.threecrickets.prudence import Resource
-wiki = Resource.get('wiki', 'application/json');
+wiki = prudence.get('wiki', 'application/json');
 wiki = eval('(' + wiki.text + ')')
 %&gt;
 Wiki content is: &lt;%= wiki['content'] %&gt;
 </pre>
 
-<p>External resources: distributing your application.</p>
+<p>The above is wasteful because we are turning the wiki data into JSON and then back again.
+For internal API uses, it's possible to support direct access to the object:
+</p>
+
+<p>[ObjectRepresentation]</p>
+
+<p>For completion, here's an example of how to access our resources from another Prudence-based
+application:</p>
 
 <p>/fragments/wiki.html:</p>
 <pre>
 &lt;%python
-from com.threecrickets.prudence import Resource
-wiki = Resource.getExternal('http://192.168.1.2/wackywiki/wiki', 'application/json');
+wiki = prudence.get('http://192.168.1.2/wackywiki/wiki', 'application/json');
 wiki = eval('(' + wiki.text + ')')
 %&gt;
 Wiki content is: &lt;%= wiki['content'] %&gt;
 </pre>
+
+
 
 <h3>6. Advanced Routing</h3>
 
@@ -452,6 +535,8 @@ Wiki content is: &lt;%= wiki['content'] %&gt;
 <p>Status handlers -- custom 404.</p>
 
 <p>Just for fun: robots.txt, sitemap.xml.</p>
+
+
 
 <h3>7. Other Features</h3>
 
