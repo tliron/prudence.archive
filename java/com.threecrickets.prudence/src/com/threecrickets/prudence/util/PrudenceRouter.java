@@ -15,7 +15,7 @@ import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.Restlet;
-import org.restlet.resource.Resource;
+import org.restlet.resource.ServerResource;
 import org.restlet.routing.Redirector;
 import org.restlet.routing.Route;
 import org.restlet.routing.Template;
@@ -64,8 +64,8 @@ public class PrudenceRouter extends FallbackRouter
 	//
 
 	/**
-	 * Attach a {@link Resource} with the specified class name. The class is
-	 * loaded using this class's class loader.
+	 * Attach a {@link ServerResource} with the specified class name. The class
+	 * is loaded using this class's class loader.
 	 * 
 	 * @param pathTemplate
 	 *        The URI path template that must match the relative part of the
