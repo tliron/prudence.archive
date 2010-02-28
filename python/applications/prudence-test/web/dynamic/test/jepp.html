@@ -28,7 +28,7 @@ document.setCacheDuration(5000)
 #
 
 from java.lang import *
-sys.stdout.write('This page was dynamically generated at ' + str(System.currentTimeMillis()))
+sys.stdout.write('<p>This page was dynamically generated at %s</p>' % System.currentTimeMillis())
 
 # (Note: Python's print statement can be used here, too, but it may not be the best choice
 # for outputting HTML due to its "softspace" feature. It is meant more for debugging than
@@ -78,6 +78,7 @@ for factory in factories:
 <h3>The "id" attribute in the URL query is:</h3>
 <p><%= form.getFirstValue('id') %></p>
 <h3>A few tests:</h3>
+<p>
 <%
 for i in range(10):
 	%>A multiple of three: <%
@@ -85,6 +86,7 @@ for i in range(10):
 	%><br /><%
 
 %>
+</p>
 </td></tr></table>
 </body>
 <html>

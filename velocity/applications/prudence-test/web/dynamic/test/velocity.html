@@ -38,7 +38,7 @@
 context.setAttribute('currentTimeMillis', String(java.lang.System.currentTimeMillis()), javax.script.ScriptContext.GLOBAL_SCOPE);
 %><%velocity
 
-This page was dynamically generated at $currentTimeMillis
+<p>This page was dynamically generated at $currentTimeMillis</p>
 
 ##
 ## Including a document
@@ -75,12 +75,13 @@ This page was dynamically generated at $currentTimeMillis
 <h3>The "id" attribute in the URL query is:</h3>
 <p>$form.getFirstValue('id')</p>
 <h3>A few tests:</h3>
+<p>
 #foreach($i in [0..9])
 	A multiple of three:
 	#printTriple($i)
 	<br />
 #end
-
+</p>
 %>
 </td></tr></table>
 </body>

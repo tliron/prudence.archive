@@ -28,7 +28,7 @@
 ;
 
 (.setCacheDuration document 5000)
-(print "This page was dynamically generated at " (System/currentTimeMillis))
+(print "<p>This page was dynamically generated at " (System/currentTimeMillis) "</p>")
 
 ;
 ; Including a document
@@ -81,6 +81,7 @@
 <h3>The "id" attribute in the URL query is:</h3>
 <p><%= (or (.getFirstValue form "id") "") %></p>
 <h3>A few tests:</h3>
+<p>
 <%
 (doseq [i (range 10)]
 %>
@@ -92,6 +93,7 @@ A multiple of three:
 <%
 )
 %>
+</p>
 </td></tr></table>
 </body>
 <html>

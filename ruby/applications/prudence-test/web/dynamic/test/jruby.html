@@ -31,7 +31,7 @@ end
 
 require 'java'
 import java.lang.System
-print 'This page was dynamically generated at ', System.current_time_millis
+print '<p>This page was dynamically generated at ', System.current_time_millis, '</p>'
 
 #
 # Including a document
@@ -84,6 +84,7 @@ end
 <h3>The "id" attribute in the URL query is:</h3>
 <p><%= form.get_first_value('id') %></p>
 <h3>A few tests:</h3>
+<p>
 <%
 for i in 0 .. 9
 %>
@@ -95,6 +96,7 @@ A multiple of three:
 <%
 end
 %>
+</p>
 </td></tr></table>
 </body>
 <html>

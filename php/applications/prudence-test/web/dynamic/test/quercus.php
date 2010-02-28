@@ -26,7 +26,7 @@ $document->cacheDuration = 5000;
 //
 
 import java.lang.System;
-print 'This page was dynamically generated at ' . System::currentTimeMillis();
+print '<p>This page was dynamically generated at ' . System::currentTimeMillis() . '</p>';
 
 //
 // Including a document
@@ -80,6 +80,7 @@ foreach($factories as $factory) {
 <h3>The "id" attribute in the URL query is:</h3>
 <p><?= $form->getFirstValue('id') ?></p>
 <h3>A few tests:</h3>
+<p>
 <?
 for($i = 0; $i < 10; $i++) {
 ?>
@@ -91,6 +92,7 @@ A multiple of three:
 <?
 }
 ?>
+</p>
 </td></tr></table>
 </body>
 <html>

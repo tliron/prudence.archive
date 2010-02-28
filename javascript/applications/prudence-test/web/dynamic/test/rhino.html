@@ -24,7 +24,7 @@ if(form.getFirstValue('stream') == 'true') if(prudence.stream()) throw null;
 //
 
 document.cacheDuration = 5000;
-print('This page was dynamically generated at ' + java.lang.System.currentTimeMillis());
+print('<p>This page was dynamically generated at ' + java.lang.System.currentTimeMillis() + '</p>');
 
 //
 // Including a document
@@ -76,10 +76,11 @@ for(var i = 0; i < factories.length; i++) {
 <h3>The "id" attribute in the URL query is:</h3>
 <p><%= form.getFirstValue('id') || '' %></p>
 <h3>A few tests:</h3>
+<p>
 <%
 for(var i = 0; i < 10; i++) {
 %>
-A multiple of three: 
+A multiple of three:
 <%
 	printTriple(i);
 %>
@@ -87,6 +88,7 @@ A multiple of three:
 <%
 }
 %>
+</p>
 </td></tr></table>
 </body>
 <html>
