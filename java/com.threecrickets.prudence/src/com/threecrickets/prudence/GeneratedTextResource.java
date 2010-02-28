@@ -34,7 +34,7 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
-import com.threecrickets.prudence.internal.PrudenceJygmentsDocumentFormatter;
+import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.prudence.util.RepresentableString;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentDescriptor;
@@ -560,7 +560,7 @@ public class GeneratedTextResource extends ServerResource
 				// documentFormatter = new SyntaxHighlighterDocumentFormatter();
 				// documentFormatter = new
 				// PygmentsDocumentFormatter<Document>();
-				documentFormatter = new PrudenceJygmentsDocumentFormatter<Document>();
+				documentFormatter = new JygmentsDocumentFormatter<Document>();
 
 				DocumentFormatter<Document> existing = (DocumentFormatter<Document>) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.documentFormatter", documentFormatter );
 				if( existing != null )

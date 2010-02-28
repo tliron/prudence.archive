@@ -8,7 +8,7 @@ jruby				1.5.0 (Revision 6586)
 json				?
 jsr-223				?
 jython				2.5.2 (Revision 6980)
-jygments			1.0 (Revision 20)
+jygments			1.0 (Revision 21)
 log4j				1.2.15
 mysqlconnector		5.1.8
 pygments			1.1.1

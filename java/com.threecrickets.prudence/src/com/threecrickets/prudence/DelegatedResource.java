@@ -37,7 +37,7 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.internal.ExposedContainerForDelegatedResource;
-import com.threecrickets.prudence.internal.PrudenceJygmentsDocumentFormatter;
+import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentFormatter;
@@ -755,7 +755,7 @@ public class DelegatedResource extends ServerResource
 				// documentFormatter = new SyntaxHighlighterDocumentFormatter();
 				// documentFormatter = new
 				// PygmentsDocumentFormatter<Document>();
-				documentFormatter = new PrudenceJygmentsDocumentFormatter<Document>();
+				documentFormatter = new JygmentsDocumentFormatter<Document>();
 
 				DocumentFormatter<Document> existing = (DocumentFormatter<Document>) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.documentFormatter", documentFormatter );
 				if( existing != null )

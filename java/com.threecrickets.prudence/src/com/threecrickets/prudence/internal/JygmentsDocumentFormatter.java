@@ -27,18 +27,18 @@ import com.threecrickets.scripturian.DocumentFormatter;
  * 
  * @author Tal Liron
  */
-public class PrudenceJygmentsDocumentFormatter<D> implements DocumentFormatter<D>
+public class JygmentsDocumentFormatter<D> implements DocumentFormatter<D>
 {
 	//
 	// Construction
 	//
 
-	public PrudenceJygmentsDocumentFormatter()
+	public JygmentsDocumentFormatter()
 	{
 		this( "vs" );
 	}
 
-	public PrudenceJygmentsDocumentFormatter( String theme )
+	public JygmentsDocumentFormatter( String theme )
 	{
 		this.theme = theme;
 	}
@@ -80,6 +80,8 @@ public class PrudenceJygmentsDocumentFormatter<D> implements DocumentFormatter<D
 		try
 		{
 			lexer = Lexer.getByName( language );
+			if( lexer == null )
+				lexer = Lexer.getByName( "" );
 			Formatter formatter = Formatter.getByName( "html" );
 			Jygments.highlight( documentDescriptor.getText(), lexer, formatter, r );
 			return r.toString();
