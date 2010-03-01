@@ -138,6 +138,7 @@ public class DelegatedStatusService extends StatusService
 	 */
 	public void redirect( int status, String targetPattern, Context context )
 	{
+		// TODO: capture
 		setHandler( status, new Redirector( context, targetPattern, Redirector.MODE_SERVER_OUTBOUND ) );
 	}
 
