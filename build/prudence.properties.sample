@@ -1,4 +1,19 @@
+#
+# Copy this file as "prudence.properties" and change it as necessary.
+#
+
+# Whether to include debug information in the compiled Java classes
 debug=true
+
+# Which flavor to use as the base for the Kitchen Sink distribution
 kitchensink-base=${javascript}
+
+#
+# The following values are only used for the "test-kitchensink" target.
+#
+
+# The full path to the Java VM to run
 test-jvm=/usr/lib/jvm/jdk1.5.0_22/bin/java
+
+# The directory in which the Jepp binaries are located
 jepp-path=/usr/local/lib
