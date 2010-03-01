@@ -1,0 +1,4 @@
+debug=true
+kitchensink-base=${javascript}
+test-jvm=/usr/lib/jvm/jdk1.5.0_22/bin/java
+jepp-path=/usr/local/lib
