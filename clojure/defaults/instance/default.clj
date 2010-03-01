@@ -115,5 +115,4 @@
 	(.submit executor (MessageTask. (.getContext component) (str "Executing " (len tasks) " tasks...")))
 	(doseq [task tasks]
 		(.submit executor task))
-	(.submit executor (MessageTask. (.getContext component) "Finished tasks"))
-)
+	(.submit executor (MessageTask. (.getContext component) "Finished tasks")))
