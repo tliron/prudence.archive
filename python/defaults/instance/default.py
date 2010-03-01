@@ -24,7 +24,12 @@ tasks = []
 # Welcome
 #
 
-print 'Prudence 1.0 for Python.'
+revision = '%REVISION%'
+if revision[0] == '%':
+	revision = ''
+else:
+	revision = '-' + revision
+print 'Prudence 1.0%s for Python.' % revision
 
 #
 # Component

@@ -1,12 +1,9 @@
 <?xml version="1.0"?>
 <project name="Prudence" default="build">
 
-	<!-- Configuration -->
+	<property file="prudence.properties" />
 
-	<property name="debug" value="true" />
-	<property name="kitchensink-base" value="${javascript}" />
-	<property name="test-jvm" value="/usr/lib/jvm/jdk1.5.0_22/bin/java" />
-	<property name="jepp-path" value="/usr/local/lib" />
+	<!-- Configuration -->
 
 	<property name="lib" value="../libraries" />
 	<property name="common" value="../common" />
@@ -27,6 +24,16 @@
 	<property name="dist-python" value="./python" />
 	<property name="dist-clojure" value="./clojure" />
 
+	<property name="revision" value="" />
+
+	<!-- Tasks -->
+
+	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml">
+		<classpath>
+			<fileset dir="${lib}/svnant/lib" includes="*.jar" />
+		</classpath>
+	</typedef>
+	
 	<!-- Macros -->
 
 	<macrodef name="fetch-library">
@@ -81,6 +88,10 @@
 				<fileset dir="@{base}" />
 			</copy>
 			<chmod file="@{dist}/content/bin/run.sh" perm="ugo+rx" />
+			<svn svnkit="true" javahl="false">
+				<status path=".." revisionProperty="revision" />
+			</svn>
+			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%REVISION%" value="${revision}" />
 		</sequential>
 	</macrodef>
 
@@ -208,6 +219,7 @@
 </target>
 
 <target name="content-kitchensink" depends="javadoc-kitchensink" description="Fetch content">
+	<echo>Using ${kitchensink-base} as base for Kitchen Sink distribution.</echo>
 	<fetch-common-content dist="${dist-kitchensink}" base="${kitchensink-base}" />
 	<!-- Fetch Prudence Test -->
 	<copy todir="${dist-kitchensink}/content/applications/prudence-test/web">

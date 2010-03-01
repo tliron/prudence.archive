@@ -29,7 +29,11 @@
 ; Welcome
 ;
 
-(println "Prudence 1.0 for Clojure.")
+(def revision "%REVISION%")
+(if (.startsWith revision "%")
+	(def revision "")
+	(def revision (str "-" revision)))
+(println (str "Prudence 1.0" revision " for Clojure."))
 
 ;
 ; Component

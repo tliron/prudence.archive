@@ -29,7 +29,13 @@ var tasks = [];
 // Welcome
 //
 
-print('Prudence 1.0 for JavaScript.\n');
+var revision = '%REVISION%';
+if(revision[0] == '%') {
+	revision = '';
+} else {
+	revision = '-' + revision;
+}
+print('Prudence 1.0' + revision + ' for JavaScript.\n');
 
 //
 // Component
