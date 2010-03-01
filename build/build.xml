@@ -5,6 +5,8 @@
 
 	<property name="debug" value="true" />
 	<property name="kitchensink-base" value="${javascript}" />
+	<property name="test-jvm" value="/usr/lib/jvm/jdk1.5.0_22/bin/java" />
+	<property name="jepp-path" value="/usr/local/lib" />
 
 	<property name="lib" value="../libraries" />
 	<property name="common" value="../common" />
@@ -240,13 +242,17 @@
 </target>
 
 <target name="test-kitchensink" depends="kitchensink" description="Unit tests">
-	<junit haltonfailure="true" showoutput="true" fork="true" forkmode="once" dir="${dist-kitchensink}/content">
-		<test name="com.threecrickets.prudence.test.Main" />
+	<junit dir="${dist-kitchensink}/content" haltonfailure="true" showoutput="true" fork="true" forkmode="perBatch" newenvironment="true" jvm="${test-jvm}">
+		<test name="com.threecrickets.prudence.test.KitchenSink" />
 		<classpath>
 			<fileset dir="${dist-kitchensink}/content/libraries">
 				<include name="*.jar" />
 			</fileset>
 		</classpath>
+		<jvmarg value="-Djava.library.path=${jepp-path}" />
+		<jvmarg value="-Dpython.home=libraries/python" />
+		<jvmarg value="-Dpython.cachedir=cache" />
+		<jvmarg value="-Dython.verbose=warning" />
 		<formatter type="plain" usefile="false" />
 	</junit>
 </target>
