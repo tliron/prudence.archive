@@ -4,4 +4,6 @@
 
 document.container.include('defaults/application/routing');
 
-router.rewrite(fixURL(resourcesBaseURL + '/note/{id}/'), '{ri}..');
+router.redirectRelative(fixURL(resourcesBaseURL + '/note/{id}/'), '..');
+//router.capture(fixURL(resourcesBaseURL + '/note/{id}/'), '/note');
+//router.captureOther(fixURL(resourcesBaseURL + '/note/{id}/'), 'stickstick', '/note');

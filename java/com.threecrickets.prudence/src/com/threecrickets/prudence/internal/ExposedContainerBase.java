@@ -28,6 +28,11 @@ public abstract class ExposedContainerBase
 	// Attributes
 	//
 
+	/**
+	 * @param resourceUri
+	 * @param mediaType
+	 * @return
+	 */
 	public Representation get( String resourceUri, String mediaType )
 	{
 		ClientResource clientResource = new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_APPLICATION, resourceUri ) );
@@ -37,6 +42,12 @@ public abstract class ExposedContainerBase
 			return clientResource.get( getMediaType( mediaType ) );
 	}
 
+	/**
+	 * @param applicationInternalName
+	 * @param resourceUri
+	 * @param mediaType
+	 * @return
+	 */
 	public Representation get( String applicationInternalName, String resourceUri, String mediaType )
 	{
 		ClientResource clientResource = new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, "/" + applicationInternalName + "/" + resourceUri ) );
@@ -46,6 +57,11 @@ public abstract class ExposedContainerBase
 			return clientResource.get( getMediaType( mediaType ) );
 	}
 
+	/**
+	 * @param uri
+	 * @param mediaType
+	 * @return
+	 */
 	public Representation getExternal( String uri, String mediaType )
 	{
 		ClientResource clientResource = new ClientResource( uri );

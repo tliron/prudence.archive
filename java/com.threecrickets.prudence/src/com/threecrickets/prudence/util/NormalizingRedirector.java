@@ -18,11 +18,11 @@ import org.restlet.data.Reference;
 import org.restlet.routing.Redirector;
 
 /**
- * A {@link Redirector} that can handle relative paths.
+ * A {@link Redirector} that normalizes relative paths.
  * 
  * @author Tal Liron
  */
-public class Rewriter extends Redirector
+public class NormalizingRedirector extends Redirector
 {
 	//
 	// Construction
@@ -32,7 +32,7 @@ public class Rewriter extends Redirector
 	 * @param context
 	 * @param targetTemplate
 	 */
-	public Rewriter( Context context, String targetTemplate )
+	public NormalizingRedirector( Context context, String targetTemplate )
 	{
 		super( context, targetTemplate );
 	}
@@ -42,7 +42,7 @@ public class Rewriter extends Redirector
 	 * @param targetPattern
 	 * @param mode
 	 */
-	public Rewriter( Context context, String targetPattern, int mode )
+	public NormalizingRedirector( Context context, String targetPattern, int mode )
 	{
 		super( context, targetPattern, mode );
 	}
@@ -58,7 +58,7 @@ public class Rewriter extends Redirector
 	protected Reference getTargetRef( Request request, Response response )
 	{
 		Reference reference = super.getTargetRef( request, response );
-		reference.setBaseRef( request.getResourceRef().getBaseRef() );
+		// reference.setBaseRef( request.getResourceRef().getBaseRef() );
 		return reference.getTargetRef();
 	}
 }

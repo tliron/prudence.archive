@@ -122,26 +122,81 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
-	 * Internally redirects a URI to a new URI, with support for URI templating.
-	 * This is often called "URI rewriting."
+	 * Redirects a URI to a new URI relative to the original. You can use
+	 * template variables in the URIs.
 	 * <p>
 	 * Enforces matching mode {@link Template#MODE_EQUALS}.
 	 * <p>
-	 * This is handled via a {@link Rewriter} in
-	 * {@link Redirector#MODE_SERVER_DISPATCHER} mode.
+	 * This is handled via a {@link NormalizingRedirector} in
+	 * {@link Redirector#MODE_SERVER_INBOUND} mode.
 	 * 
 	 * @param pathTemplate
 	 *        The URI path template that must match the relative part of the
 	 *        resource URI
-	 * @param rewrittenPathTemplate
+	 * @param relativePathTemplate
 	 *        The URI path to which we will redirect
 	 * @return The created route
-	 * @see Rewriter
+	 * @see NormalizingRedirector
 	 * @see Resolver#createResolver(Request, Response)
 	 */
-	public Route rewrite( String pathTemplate, String rewrittenPathTemplate )
+	public Route redirectRelative( String pathTemplate, String relativePathTemplate )
 	{
-		Route route = attach( pathTemplate, new Rewriter( getContext(), rewrittenPathTemplate, Redirector.MODE_SERVER_DISPATCHER ) );
+		String targetPathTemplate = "{ri}" + relativePathTemplate;
+		Route route = attach( pathTemplate, new NormalizingRedirector( getContext(), targetPathTemplate, Redirector.MODE_SERVER_INBOUND ) );
+		route.setMatchingMode( Template.MODE_EQUALS );
+		return route;
+	}
+
+	/**
+	 * Internally redirects a URI to a new URI within this router's application.
+	 * You can use template variables in the URIs.
+	 * <p>
+	 * Enforces matching mode {@link Template#MODE_EQUALS}.
+	 * <p>
+	 * This is handled via a {@link Redirector} in
+	 * {@link Redirector#MODE_SERVER_OUTBOUND} mode.
+	 * 
+	 * @param pathTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param internalPathTemplate
+	 *        The internal URI path to which we will redirect
+	 * @return The created route
+	 * @see NormalizingRedirector
+	 * @see Resolver#createResolver(Request, Response)
+	 */
+	public Route capture( String pathTemplate, String internalPathTemplate )
+	{
+		String targetPathTemplate = "riap://application/" + internalPathTemplate;
+		Route route = attach( pathTemplate, new Redirector( getContext(), targetPathTemplate, Redirector.MODE_SERVER_OUTBOUND ) );
+		route.setMatchingMode( Template.MODE_EQUALS );
+		return route;
+	}
+
+	/**
+	 * Internally redirects a URI to a new URI within any application installed
+	 * in this router's component. You can use template variables in the URIs.
+	 * <p>
+	 * Enforces matching mode {@link Template#MODE_EQUALS}.
+	 * <p>
+	 * This is handled via a {@link Redirector} in
+	 * {@link Redirector#MODE_SERVER_OUTBOUND} mode.
+	 * 
+	 * @param pathTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param application
+	 *        The internal application name
+	 * @param internalPathTemplate
+	 *        The internal URI path to which we will redirect
+	 * @return The created route
+	 * @see NormalizingRedirector
+	 * @see Resolver#createResolver(Request, Response)
+	 */
+	public Route captureOther( String pathTemplate, String application, String internalPathTemplate )
+	{
+		String targetPathTemplate = "riap://component/" + application + "/" + internalPathTemplate;
+		Route route = attach( pathTemplate, new Redirector( getContext(), targetPathTemplate, Redirector.MODE_SERVER_OUTBOUND ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}

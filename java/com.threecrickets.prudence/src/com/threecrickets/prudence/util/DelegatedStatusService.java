@@ -127,7 +127,7 @@ public class DelegatedStatusService extends StatusService
 
 	/**
 	 * Sets the handler for an error status to be a {@link Redirector} with mode
-	 * {@link Redirector#MODE_SERVER_DISPATCHER}.
+	 * {@link Redirector#MODE_SERVER_OUTBOUND}.
 	 * 
 	 * @param status
 	 *        The status code
@@ -138,7 +138,7 @@ public class DelegatedStatusService extends StatusService
 	 */
 	public void redirect( int status, String targetPattern, Context context )
 	{
-		setHandler( status, new Redirector( context, targetPattern, Redirector.MODE_SERVER_DISPATCHER ) );
+		setHandler( status, new Redirector( context, targetPattern, Redirector.MODE_SERVER_OUTBOUND ) );
 	}
 
 	/**
