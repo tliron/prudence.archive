@@ -21,21 +21,29 @@ def include_or_default(name, default=None):
 tasks = []
 
 #
+# Version
+#
+
+prudence_version = '1.0'
+prudence_revision = '-%REVISION%'
+if revision.length == 1:
+	revision = ''
+prudence_flavor = 'Python'
+
+#
 # Welcome
 #
 
-revision = '%REVISION%'
-if revision[0] == '%':
-	revision = ''
-else:
-	revision = '-' + revision
-print 'Prudence 1.0%s for Python.' % revision
+print 'Prudence %s%s for %s.' % (prudence_version, prudence_revision, prudence_flavor)
 
 #
 # Component
 #
 
 component = Component()
+component.context.attributes['prudence_version'] = prudence_version
+component.context.attributes['prudence_revision'] = prudence_revision
+component.context.attributes['prudence_flavor'] = prudence_flavor
 
 #
 # Logging
@@ -78,7 +86,7 @@ component.statusService = DelegatedStatusService()
 #
 
 executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors())
-component.context.attributes['executor'] = executor
+component.context.attributes['prudence.executor'] = executor
 
 #
 # Clients

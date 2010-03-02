@@ -26,22 +26,30 @@ function includeOrDefault(name, def) {
 var tasks = [];
 
 //
+// Version
+//
+
+var prudenceVersion = '1.0';
+var prudenceRevision = '-%REVISION%';
+if(prudenceRevision.length == 1) {
+	prudenceRevision = '';
+}
+var prudenceFlavor = 'JavaScript';
+
+//
 // Welcome
 //
 
-var revision = '%REVISION%';
-if(revision[0] == '%') {
-	revision = '';
-} else {
-	revision = '-' + revision;
-}
-print('Prudence 1.0' + revision + ' for JavaScript.\n');
+print('Prudence ' + prudenceVersion + prudenceRevision + ' for ' + prudenceFlavor + '.\n');
 
 //
 // Component
 //
 
 var component = new Component();
+component.context.attributes.put('prudence.version', prudenceVersion);
+component.context.attributes.put('prudence.revision', prudenceRevision);
+component.context.attributes.put('prudence.flavor', prudenceFlavor);
 
 //
 // Logging
@@ -82,7 +90,7 @@ component.statusService = new DelegatedStatusService();
 //
 
 var executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors());
-component.context.attributes.put('executor', executor);
+component.context.attributes.put('prudence.executor', executor);
 
 //
 // Clients

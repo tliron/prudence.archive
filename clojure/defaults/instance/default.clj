@@ -26,20 +26,29 @@
 (def tasks [])
 
 ;
+; Version
+;
+
+(def prudence-version "1.0")
+(def prudence-revision "-%REVISION%")
+(if (= (len prudence-revision) 1)
+	(def prudence-revision ""))
+(def prudence-flavor "Clojure")
+
+;
 ; Welcome
 ;
 
-(def revision "%REVISION%")
-(if (.startsWith revision "%")
-	(def revision "")
-	(def revision (str "-" revision)))
-(println (str "Prudence 1.0" revision " for Clojure."))
+(println (str "Prudence " prudence-version prudence-revision " for " prudence-flavor "."))
 
 ;
 ; Component
 ;
 
 (def component (Component.))
+(.. component getContext getAttributes (put "prudence.version" prudence-version))
+(.. component getContext getAttributes (put "prudence.revision" prudence-revision))
+(.. component getContext getAttributes (put "prudence.flavor" prudence-flavor))
 
 ;
 ; Logging
@@ -80,7 +89,7 @@
 ;
 
 (def executor (Executors/newFixedThreadPool (.. Runtime getRuntime (availableProcessors))))
-(.. component getContext getAttributes (put "executor" executor))
+(.. component getContext getAttributes (put "prudence.executor" executor))
 
 ;
 ; Clients
