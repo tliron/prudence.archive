@@ -52,7 +52,7 @@
 			(.setMatchingMode (.attach host url application) Template/MODE_STARTS_WITH)
 			(if (not= url "/")
 				(let [url (if (.endsWith url "/") (.substring url 0 (- (.length url) 1)) url)]
-					(.setMatchingMode (.attach host url add-trailing-slash)))) Template/MODE_EQUALS)
+					(.setMatchingMode (.attach host url add-trailing-slash) Template/MODE_EQUALS))))
 		(if (not (empty? rest)) (do
 			(print ", ")
 			(recur rest)))))
@@ -97,7 +97,7 @@
 (.attachBase router (fix-url dynamic-web-base-url) dynamic-web)
 
 (if dynamic-web-defrost
-	(doseq [defrost-task (DefrostTask/create dynamic-web-document-source, script-engine-manager, True)]
+	(doseq [defrost-task (DefrostTask/create dynamic-web-document-source, script-engine-manager, true)]
 		(def tasks (conj tasks defrost-task))))
 
 ;
@@ -124,7 +124,7 @@
 (.attachBase router (fix-url resources-base-url) resources)
 
 (if resources-defrost
-	(doseq [defrost-task (DefrostTask/create resources-document-source, script-engine-manager, True)]
+	(doseq [defrost-task (DefrostTask/create resources-document-source, script-engine-manager, true)]
 		(def tasks (conj tasks defrost-task))))
 
 ;

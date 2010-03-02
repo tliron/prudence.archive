@@ -31,7 +31,7 @@
 
 (def prudence-version "1.0")
 (def prudence-revision "-%REVISION%")
-(if (= (len prudence-revision) 1)
+(if (= (.length prudence-revision) 1)
 	(def prudence-revision ""))
 (def prudence-flavor "Clojure")
 
@@ -121,7 +121,8 @@
 ;
 
 (if (not (empty? tasks))
-	(.submit executor (MessageTask. (.getContext component) (str "Executing " (len tasks) " tasks...")))
-	(doseq [task tasks]
-		(.submit executor task))
-	(.submit executor (MessageTask. (.getContext component) "Finished tasks")))
+	(do
+		(.submit executor (MessageTask. (.getContext component) (str "Executing " (count tasks) " tasks...")))
+		(doseq [task tasks]
+			(.submit executor task))
+		(.submit executor (MessageTask. (.getContext component) "Finished tasks"))))
