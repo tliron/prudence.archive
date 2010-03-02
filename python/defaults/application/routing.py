@@ -31,7 +31,7 @@ def fix_url(url):
 # Internal router
 #
 
-component.internalRouter.attach('/' + application_internal_name, application + '/').matchingMode = Template.MODE_STARTS_WITH
+component.internalRouter.attach('/%s/' % application_internal_name, application).matchingMode = Template.MODE_STARTS_WITH
 
 #
 # Hosts
@@ -91,11 +91,11 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = 
 attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
 
 dynamic_web = Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
-router.attach_base(fix_url(dynamic_web_base_url), dynamic_web)
+router.attachBase(fix_url(dynamic_web_base_url), dynamic_web)
 
 if dynamic_web_defrost:
 	for defrost_task in DefrostTask.create(dynamic_web_document_source, script_engine_manager, True):
-		tasks.push(defrost_task)
+		tasks.append(defrost_task)
 
 #
 # Static web
@@ -104,7 +104,7 @@ if dynamic_web_defrost:
 static_web = Directory(application.context, File(application_base_path + static_web_base_path).toURI().toString())
 static_web.listingAllowed = static_web_directory_listing_allowed
 static_web.negotiateContent = True
-router.attach_base(fix_url(static_web_base_url), static_web)
+router.attachBase(fix_url(static_web_base_url), static_web)
 
 #
 # Resources
@@ -118,11 +118,11 @@ attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = reso
 attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resources_source_viewable
 
 resources = Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
-router.attach_base(fix_url(resources_base_url), resources)
+router.attachBase(fix_url(resources_base_url), resources)
 
 if resources_defrost:
 	for defrost_task in DefrostTask.create(resources_document_source, script_engine_manager, True):
-		tasks.push(defrost_task)
+		tasks.append(defrost_task)
 
 #
 # Preheat
@@ -130,7 +130,7 @@ if resources_defrost:
 
 if dynamic_web_preheat:
 	for preheat_task in PreheatTask.create(component.context, application_internal_name, dynamic_web_document_source):
-		tasks.push(preheat_task)
+		tasks.append(preheat_task)
 
 for preheat_resource in preheat_resources:
 	tasks.append(PreheatTask(component.context, application_internal_name, preheat_resource))

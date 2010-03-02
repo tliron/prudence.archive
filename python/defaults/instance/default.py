@@ -26,8 +26,8 @@ tasks = []
 
 prudence_version = '1.0'
 prudence_revision = '-%REVISION%'
-if revision.length == 1:
-	revision = ''
+if len(prudence_revision) == 1:
+	prudence_revision = ''
 prudence_flavor = 'Python'
 
 #
@@ -41,9 +41,9 @@ print 'Prudence %s%s for %s.' % (prudence_version, prudence_revision, prudence_f
 #
 
 component = Component()
-component.context.attributes['prudence_version'] = prudence_version
-component.context.attributes['prudence_revision'] = prudence_revision
-component.context.attributes['prudence_flavor'] = prudence_flavor
+component.context.attributes['prudence.version'] = prudence_version
+component.context.attributes['prudence.revision'] = prudence_revision
+component.context.attributes['prudence.flavor'] = prudence_flavor
 
 #
 # Logging
@@ -85,7 +85,7 @@ component.statusService = DelegatedStatusService()
 # Executor
 #
 
-executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors())
+executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
 component.context.attributes['prudence.executor'] = executor
 
 #
