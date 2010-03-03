@@ -115,31 +115,47 @@ public class DelegatedStatusService extends StatusService
 	/**
 	 * Sets the handler for an error status.
 	 * 
-	 * @param status
+	 * @param statusCode
 	 *        The status code
 	 * @param errorHandler
 	 *        The error handler
 	 */
-	public void setHandler( int status, Restlet errorHandler )
+	public void setHandler( int statusCode, Restlet errorHandler )
 	{
-		errorHandlers.put( status, errorHandler );
+		errorHandlers.put( statusCode, errorHandler );
 	}
 
+	/*
+	 * Redirects an error status to a URI. You can use template variables in the
+	 * URI. <p> This is handled via a {@link Redirector} with mode {@link
+	 * Redirector#MODE_CLIENT_SEE_OTHER}.
+	 * @param statusCode The status code
+	 * @param uriTemplate The URI template
+	 * @param context The context public void redirect( int statusCode, String
+	 * uriTemplate, Context context ) { setHandler( statusCode, new Redirector(
+	 * context, uriTemplate, Redirector.MODE_CLIENT_SEE_OTHER ) ); }
+	 */
+
 	/**
-	 * Sets the handler for an error status to be a {@link Redirector} with mode
+	 * Captures (internally redirects) an error status to a URI within an
+	 * application. You can use template variables in the URI.
+	 * <p>
+	 * F This is handled via a {@link Redirector} with mode
 	 * {@link Redirector#MODE_SERVER_OUTBOUND}.
 	 * 
-	 * @param status
+	 * @param statusCode
 	 *        The status code
-	 * @param targetPattern
-	 *        The URI pattern
+	 * @param application
+	 *        The internal application name
+	 * @param internalUriTemplate
+	 *        The internal URI template to which we will redirect
 	 * @param context
 	 *        The context
 	 */
-	public void redirect( int status, String targetPattern, Context context )
+	public void capture( int statusCode, String application, String internalUriTemplate, Context context )
 	{
-		// TODO: capture
-		setHandler( status, new Redirector( context, targetPattern, Redirector.MODE_SERVER_OUTBOUND ) );
+		String targetUriTemplate = "riap://component/" + application + "/" + internalUriTemplate;
+		setHandler( statusCode, new Redirector( context, targetUriTemplate, Redirector.MODE_SERVER_OUTBOUND ) );
 	}
 
 	/**

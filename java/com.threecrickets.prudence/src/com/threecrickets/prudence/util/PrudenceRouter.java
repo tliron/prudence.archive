@@ -67,7 +67,7 @@ public class PrudenceRouter extends FallbackRouter
 	 * Attach a {@link ServerResource} with the specified class name. The class
 	 * is loaded using this class's class loader.
 	 * 
-	 * @param pathTemplate
+	 * @param uriTemplate
 	 *        The URI path template that must match the relative part of the
 	 *        resource URI
 	 * @param targetClassName
@@ -77,16 +77,16 @@ public class PrudenceRouter extends FallbackRouter
 	 *         If the named class was not found
 	 * @see #attach(String, Class)
 	 */
-	public Route attach( String pathTemplate, String targetClassName ) throws ClassNotFoundException
+	public Route attach( String uriTemplate, String targetClassName ) throws ClassNotFoundException
 	{
-		return attach( pathTemplate, getClass().getClassLoader().loadClass( targetClassName ) );
+		return attach( uriTemplate, getClass().getClassLoader().loadClass( targetClassName ) );
 	}
 
 	/**
 	 * As {@link #attach(String, String)}, but enforces matching mode
 	 * {@link Template#MODE_STARTS_WITH}.
 	 * 
-	 * @param pathTemplate
+	 * @param uriTemplate
 	 *        The URI path template that must match the relative part of the
 	 *        resource URI
 	 * @param targetClassName
@@ -96,9 +96,9 @@ public class PrudenceRouter extends FallbackRouter
 	 *         If the named class was not found
 	 * @see #attach(String, Class)
 	 */
-	public Route attachBase( String pathTemplate, String targetClassName ) throws ClassNotFoundException
+	public Route attachBase( String uriTemplate, String targetClassName ) throws ClassNotFoundException
 	{
-		Route route = attach( pathTemplate, targetClassName );
+		Route route = attach( uriTemplate, targetClassName );
 		route.setMatchingMode( Template.MODE_STARTS_WITH );
 		return route;
 	}
@@ -107,16 +107,16 @@ public class PrudenceRouter extends FallbackRouter
 	 * As {@link #attach(String, Restlet)}, but enforces matching mode
 	 * {@link Template#MODE_STARTS_WITH}.
 	 * 
-	 * @param pathTemplate
+	 * @param uriTemplate
 	 *        The URI path template that must match the relative part of the
 	 *        resource URI
 	 * @param target
 	 *        The target Restlet to attach
 	 * @return The created route
 	 */
-	public Route attachBase( String pathTemplate, Restlet target )
+	public Route attachBase( String uriTemplate, Restlet target )
 	{
-		Route route = attach( pathTemplate, target );
+		Route route = attach( uriTemplate, target );
 		route.setMatchingMode( Template.MODE_STARTS_WITH );
 		return route;
 	}
@@ -130,45 +130,45 @@ public class PrudenceRouter extends FallbackRouter
 	 * This is handled via a {@link NormalizingRedirector} in
 	 * {@link Redirector#MODE_SERVER_INBOUND} mode.
 	 * 
-	 * @param pathTemplate
+	 * @param uriTemplate
 	 *        The URI path template that must match the relative part of the
 	 *        resource URI
-	 * @param relativePathTemplate
+	 * @param relativeUriTemplate
 	 *        The URI path to which we will redirect
 	 * @return The created route
 	 * @see NormalizingRedirector
 	 * @see Resolver#createResolver(Request, Response)
 	 */
-	public Route redirectRelative( String pathTemplate, String relativePathTemplate )
+	public Route redirectRelative( String uriTemplate, String relativeUriTemplate )
 	{
-		String targetPathTemplate = "{ri}" + relativePathTemplate;
-		Route route = attach( pathTemplate, new NormalizingRedirector( getContext(), targetPathTemplate, Redirector.MODE_SERVER_INBOUND ) );
+		String targetPathTemplate = "{ri}" + relativeUriTemplate;
+		Route route = attach( uriTemplate, new NormalizingRedirector( getContext(), targetPathTemplate, Redirector.MODE_SERVER_INBOUND ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}
 
 	/**
-	 * Internally redirects a URI to a new URI within this router's application.
-	 * You can use template variables in the URIs.
+	 * Captures (internally redirects) a URI to a new URI within this router's
+	 * application. You can use template variables in the URIs.
 	 * <p>
 	 * Enforces matching mode {@link Template#MODE_EQUALS}.
 	 * <p>
 	 * This is handled via a {@link Redirector} in
 	 * {@link Redirector#MODE_SERVER_OUTBOUND} mode.
 	 * 
-	 * @param pathTemplate
+	 * @param uriTemplate
 	 *        The URI path template that must match the relative part of the
 	 *        resource URI
-	 * @param internalPathTemplate
+	 * @param internalUriTemplate
 	 *        The internal URI path to which we will redirect
 	 * @return The created route
 	 * @see NormalizingRedirector
 	 * @see Resolver#createResolver(Request, Response)
 	 */
-	public Route capture( String pathTemplate, String internalPathTemplate )
+	public Route capture( String uriTemplate, String internalUriTemplate )
 	{
-		String targetPathTemplate = "riap://application/" + internalPathTemplate;
-		Route route = attach( pathTemplate, new Redirector( getContext(), targetPathTemplate, Redirector.MODE_SERVER_OUTBOUND ) );
+		String targetUriTemplate = "riap://application/" + internalUriTemplate;
+		Route route = attach( uriTemplate, new Redirector( getContext(), targetUriTemplate, Redirector.MODE_SERVER_OUTBOUND ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}
@@ -182,21 +182,21 @@ public class PrudenceRouter extends FallbackRouter
 	 * This is handled via a {@link Redirector} in
 	 * {@link Redirector#MODE_SERVER_OUTBOUND} mode.
 	 * 
-	 * @param pathTemplate
+	 * @param uriTemplate
 	 *        The URI path template that must match the relative part of the
 	 *        resource URI
 	 * @param application
 	 *        The internal application name
-	 * @param internalPathTemplate
+	 * @param internalUriTemplate
 	 *        The internal URI path to which we will redirect
 	 * @return The created route
 	 * @see NormalizingRedirector
 	 * @see Resolver#createResolver(Request, Response)
 	 */
-	public Route captureOther( String pathTemplate, String application, String internalPathTemplate )
+	public Route captureOther( String uriTemplate, String application, String internalUriTemplate )
 	{
-		String targetPathTemplate = "riap://component/" + application + "/" + internalPathTemplate;
-		Route route = attach( pathTemplate, new Redirector( getContext(), targetPathTemplate, Redirector.MODE_SERVER_OUTBOUND ) );
+		String targetUriTemplate = "riap://component/" + application + "/" + internalUriTemplate;
+		Route route = attach( uriTemplate, new Redirector( getContext(), targetUriTemplate, Redirector.MODE_SERVER_OUTBOUND ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}
