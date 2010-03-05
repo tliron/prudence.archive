@@ -2,25 +2,41 @@
 
 <h2>Quick Tutorial</h2>
 
-<p>This is a show-and-tell session going through Prudence's main features.
-Far more detailed explanations are given in the Prudence guide.</p>
-
-<div class="note">
-<p>For now, this is a todo list...</p>
-</div>
-
-
-
 <h3>1. Run the Prudence Instance</h3>
 
-<p>[Quick look at the administration application.]</p>
+<p>Prudence comes ready to rumble!</p>
+
+<p>All you need is a Java Virtual Machine (JVM), minimally version 5.
+Your operating system may already have one. Typing "java" from the
+command line will usually tell you so.
+Otherwise, an excellent, open-source JVM is available from the
+<a href="http://openjdk.java.net/">OpenJDK</a> project.</p>
+
+<div class="note">
+<p>A Java Runtime Environment (JRE) is enough for Prudence. You need a
+Java Development Kit (JDK) only if you plan to write code in Java.</p>
+
+<p>A single installation of Prudence works as a container for
+multiple applications and hosts, so there is rarely a need to install
+it more than once per machine.</p>
+
+<p>Also, Prudence does not require anything from Java Enterprise Edition (JEE).
+In fact, you can see Prudence as a RESTful, minimal alternative to developing web
+applications under JEE.</p>
+</div>
+
+<p>Try Prudence! Run /bin/run.sh. Prudence should list the installed demo applications.
+When it announces that it is listening on port 8080, it is ready to go.
+Open your web browser to http://localhost:8080/. You should see the Prudence Administration
+application, where you can access the demos.
+</p>
 
 <h3>2. Your First Application</h3>
 
-<p>Your Prudence instance will host all applications under the /applications/ directory.
+<p>Your Prudence instance hosts all applications under the /applications/ directory.
 To install a new application, simply create a new subdirectory there.
-The subdirectory name will be used as a default
-for various things: the base URL, logging, etc. We can change those later.
+The subdirectory name will be used as a default for various things: the base URL,
+logging, etc. We can change those later.
 </p>
 
 <p>So, let's create /applications/wackywiki/</p>
@@ -128,7 +144,7 @@ from dratetime import datetime
 
 <p>If you try to access http://localhost:8080/wackywiki, Prudence will show you a detailed debug page,
 from where you can also access the source code with the troublesome code line highlighted. Once you
-deploy your application, you can cancel this debug feature, and instead show a user-friendly
+deploy your application, you can cancel this debug feature, and instead show your custom, user-friendly
 error pages. We'll get to that below.
 </p>
 
@@ -526,11 +542,11 @@ Wiki content is: &lt;%= wiki['content'] %&gt;
 
 <h3>6. Advanced Routing</h3>
 
-<p>URL patterns. Improve our resource above over the query params.</p>
+<p>Capturing URL patterns. Improve our resource above over the query params.</p>
+
+<div class="note">By the way: Difference between URL and URI.</div>
 
 <p>Virtual hosting, multiple servers.</p>
-
-<p>URL rewriting.</p>
 
 <p>Status handlers -- custom 404.</p>
 
