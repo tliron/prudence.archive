@@ -81,6 +81,17 @@ function refresh() {
 	});
 }
 
+function forceRefresh() {
+	$.ajax({
+		cache: false,
+		url: 'notes/',
+		dataType: 'json',
+		contentType: 'application/json',
+		success: show,
+		error: fail
+	});
+}
+
 function fail(request, status, error) {
 	var dialog = $('<div title="Error"></div>').html(error || 'There was a communication error.');
 	$(dialog).dialog({modal: true, resizable: false});
@@ -94,7 +105,12 @@ $(function() {
 		});
 	}
 
-	$('#content').loading({onAjax: true, align: {top: 2, left: 2}, text: 'Please wait...'});
+	// jQuery Loading plugin
+	$('#content').loading({
+		onAjax: true,
+		align: {top: 2, left: 2},
+		text: 'Please wait...'
+	});
 	
 	$('#new-small').stickynote({
 		containment: 'content',
@@ -114,5 +130,5 @@ $(function() {
 
 	$('#refresh').click(refresh);
 	
-	refresh();
+	forceRefresh();
 });
