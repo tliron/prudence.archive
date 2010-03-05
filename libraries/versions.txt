@@ -1,5 +1,5 @@
 clojure				1.0.0
-grizzly				1.9.18-e
+grizzly				1.9.18-k
 groovy				1.7.0
 h2					1.2.129
 jackson				1.3.0
