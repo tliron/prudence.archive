@@ -13,25 +13,31 @@ def handleGet():
     form = prudence.resource.request.resourceRef.queryAsForm
     fresh = form.getFirstValue('fresh') == 'true'
 
+    max_timestamp = None
+    board_list = []
     session = get_session(fresh)
     try:
-        notes = session.query(Note).all()
-
-        max_timestamp = None
-        note_list = []
-        for note in notes:
-            note_list.append(note.to_dict())
-            timestamp = note.timestamp
+        boards = session.query(Board).all()
+        for board in boards:
+            board_list.append(board.id)
+            timestamp = board.timestamp
             if max_timestamp is None or timestamp > max_timestamp:
                 max_timestamp = timestamp
     except NoResultFound:
-        return None
-    finally:
         session.close()
+        return None
+
+    note_list = []
+    try:
+        notes = session.query(Note).all()
+        for note in notes:
+            note_list.append(note.to_dict())
+    except NoResultFound:
+        pass
 
     if max_timestamp is not None:
         prudence.modificationTimestamp = datetime_to_milliseconds(max_timestamp)
-    return json.write(note_list)
+    return json.write({'boards': board_list, 'notes': note_list})
 
 def handleGetInfo():
     session = get_session()

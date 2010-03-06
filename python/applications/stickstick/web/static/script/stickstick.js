@@ -1,26 +1,56 @@
 
-var board = 'For All';
-
 function clear() {
 	$('div.stickynote').remove();
 }
 
-function show(notes) {
+function getBoard() {
+	return $('#board').val();
+}
+
+function updateBoards(boards) {
+	var board = $('#board');
+	var selected = board.val();
+	board.empty();
+	for(var i in boards) {
+		if(boards[i] == selected) {
+			board.append('<option value="' + boards[i] + '" selected>' + boards[i] + '</option>');
+		} else {
+			board.append('<option value="' + boards[i] + '">' + boards[i] + '</option>');
+		}
+	}
+}
+
+function showBoard() {
+	var board = getBoard();
+	$('#content div.stickynote').each(function(index, element) {
+		element = $(element);
+		if(element.data('stickstick.board') == board) {
+			element.show();
+		} else {
+			element.hide();
+		}
+	});
+}
+
+function show(data) {
 	clear();
-	for(var i in notes) {
-		$('#content').stickynote.create({
+	for(var i in data.notes) {
+		var stickynote = $('#content').stickynote.create({
 			containment: 'content',
-			x: notes[i].x,
-			y: notes[i].y,
-			size: notes[i].size == 2 ? 'large' : 'small',
-			content: notes[i].content,
+			x: data.notes[i].x,
+			y: data.notes[i].y,
+			size: data.notes[i].size == 2 ? 'large' : 'small',
+			content: data.notes[i].content,
 			ontop: true,
 			ondelete: destroy,
 			onstop: move
 		})
-		.data('stickstick.id', notes[i].id)
-		.data('stickstick.board', notes[i].board);
+		.data('stickstick.id', data.notes[i].id)
+		.data('stickstick.board', data.notes[i].board).
+		hide();
 	}
+	updateBoards(data.boards);
+	showBoard();
 }
 
 function create(note, text) {
@@ -28,11 +58,11 @@ function create(note, text) {
 	text = text.replace(/\n/g, '<br />'); // JSON is unhappy with newlines
 	$.ajax({
 		type: 'put',
-		url: 'notes/',
+		url: 'data/',
 		dataType: 'json',
 		contentType: 'application/json',
 		data: JSON.stringify({
-			board: board,
+			board: getBoard(),
 			x: pos.left,
 			y: pos.top,
 			size: note.hasClass('stickynote-large') ? 2 : 1,
@@ -49,7 +79,7 @@ function move(event, note) {
 		var pos = note.position;
 		$.ajax({
 			type: 'post',
-			url: 'note/' + id +'/',
+			url: 'data/note/' + id +'/',
 			dataType: 'json',
 			contentType: 'application/json',
 			data: JSON.stringify({x: pos.left, y: pos.top}),
@@ -64,7 +94,7 @@ function destroy(note) {
 	if(id) {
 		$.ajax({
 			type: 'delete',
-			url: 'note/' + id + '/',
+			url: 'data/note/' + id + '/',
 			success: refresh,
 			error: fail
 		});
@@ -73,7 +103,7 @@ function destroy(note) {
 
 function refresh() {
 	$.ajax({
-		url: 'notes/',
+		url: 'data/',
 		dataType: 'json',
 		contentType: 'application/json',
 		success: show,
@@ -84,7 +114,7 @@ function refresh() {
 function forceRefresh() {
 	$.ajax({
 		cache: false,
-		url: 'notes/',
+		url: 'data/',
 		dataType: 'json',
 		contentType: 'application/json',
 		success: show,
@@ -129,6 +159,8 @@ $(function() {
 	});
 
 	$('#refresh').click(refresh);
+	
+	$('#board').change(showBoard);
 	
 	forceRefresh();
 });

@@ -19,4 +19,4 @@ runtimeAttributes['stickstick.database'] = 'h2/stickstick';
 
 showDebugOnError = true;
 
-preheatResources = ['notes/'];
+preheatResources = ['data/'];

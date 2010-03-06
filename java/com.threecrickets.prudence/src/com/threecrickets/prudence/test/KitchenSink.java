@@ -88,7 +88,7 @@ public class KitchenSink
 		testOK( "/stickstick/style/soft-cricket.css" );
 
 		// /resources/
-		testOK( "/stickstick/notes/" );
+		testOK( "/stickstick/data/" );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

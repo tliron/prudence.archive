@@ -10,6 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import logging
 
+# SQLAlchemy logging
 logging.basicConfig(filename='logs/stickstick-python.log')
 logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 logging.getLogger('sqlalchemy.orm.attributes').setLevel(logging.DEBUG)
@@ -143,9 +144,15 @@ def get_engine(fresh=False):
                     connection.close()
                 else:
                     Base.metadata.drop_all(engine)
-
+                    
             # Make sure tables exist
             Base.metadata.create_all(engine)
+
+            session = Session()
+            session.add(Board('Todo List'))
+            session.add(Board('Great Ideas'))
+            session.add(Board('Sandbox'))
+            session.flush()
             
         return engine
     finally:

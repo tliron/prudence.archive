@@ -18,4 +18,4 @@ runtime_attributes.update({
 
 show_debug_on_error = True
 
-preheat_resources = ['notes/']
+preheat_resources = ['data/']

@@ -245,12 +245,12 @@
 		<fileset dir="${clojure}/applications/prudence-test/libraries" />
 		<fileset dir="${javascript}/applications/prudence-test/libraries" />
 	</copy>
-	<fetch-syntaxhighlighter dist="${dist-kitchensink}" application="prudence-test" />
+	<!-- <fetch-syntaxhighlighter dist="${dist-kitchensink}" application="prudence-test" /> -->
 	<!-- Fetch other applications -->
 	<copy todir="${dist-kitchensink}/content/applications/stickstick">
 		<fileset dir="${python}/applications/stickstick" excludes="*" />
 	</copy>
-	<fetch-syntaxhighlighter dist="${dist-kitchensink}" application="stickstick" />
+	<!-- <fetch-syntaxhighlighter dist="${dist-kitchensink}" application="stickstick" /> -->
 </target>
 
 <target name="test-kitchensink" depends="kitchensink" description="Unit tests">
@@ -331,7 +331,7 @@
 
 <target name="content-javascript" depends="javadoc-javascript" description="Fetch content">
 	<fetch-common-content dist="${dist-javascript}" base="${javascript}" />
-	<fetch-syntaxhighlighter dist="${dist-javascript}" application="prudence-test" />
+	<!-- <fetch-syntaxhighlighter dist="${dist-javascript}" application="prudence-test" /> -->
 </target>
 
 <!-- Python -->
@@ -370,8 +370,8 @@
 
 <target name="content-python" depends="javadoc-python" description="Fetch content">
 	<fetch-common-content dist="${dist-python}" base="${python}" />
-	<fetch-syntaxhighlighter dist="${dist-python}" application="prudence-test" />
-	<fetch-syntaxhighlighter dist="${dist-python}" application="stickstick" />
+	<!-- <fetch-syntaxhighlighter dist="${dist-python}" application="prudence-test" />
+	<fetch-syntaxhighlighter dist="${dist-python}" application="stickstick" /> -->
 </target>
 
 <!-- Clojure -->
@@ -408,8 +408,8 @@
 
 <target name="content-clojure" depends="javadoc-clojure" description="Fetch content">
 	<fetch-common-content dist="${dist-clojure}" base="${clojure}" />
-	<fetch-syntaxhighlighter dist="${dist-clojure}" application="prudence-test" />
-	<fetch-syntaxhighlighter dist="${dist-clojure}" application="stickstick" />
+	<!-- <fetch-syntaxhighlighter dist="${dist-clojure}" application="prudence-test" />
+	<fetch-syntaxhighlighter dist="${dist-clojure}" application="stickstick" /> -->
 </target>
 
 </project>

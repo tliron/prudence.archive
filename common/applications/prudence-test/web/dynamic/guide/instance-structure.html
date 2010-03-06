@@ -47,6 +47,23 @@ can be consumes and analyzed by software.</p>
 instance is the overall container which manages the servers and the
 applications.</p>
 
+<p>Most instance and application configuration files are written
+in programming language code, rather than XML or other configuration
+formats.</p> 
+
+<p>This is an enormous advantage! It means you can have your
+configuration be dynamic -- the same file can work differently depending
+on different deployment environments and runtime circumstances.
+For example, you can deploy the same instance to a development
+environment, where it will start various debugging processes and logs,
+and a production environment, where it will optimize for
+performance and scale. You can even have different optimizations
+for different deployments. For example, a weak cloud-based instance
+with a single virtual CPU might be different from a dedicated box
+with 8 cores and a lot of RAM. You can dynamically test for the
+presence of installed optional components, etc.
+</p>
+
 
 <h3>/defaults/</h3>
 
