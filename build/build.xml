@@ -142,6 +142,7 @@
 				<fileset dir="${lib}/scripturian/lib" />
 				<fileset dir="${lib}/jygments/lib" />
 				<fileset dir="${lib}/junit/lib" />
+				<fileset dir="${lib}/groboutils/lib" />
 			</classpath>
 		</javac>
 	</target>
