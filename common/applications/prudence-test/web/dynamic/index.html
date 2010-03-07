@@ -1,11 +1,11 @@
-<%velocity #set($document.cacheDuration=5000) %><%& '../fragments/header' %>
+<%velocity #set($document.cacheDuration=5000) #set($prefix = 'index/') %><%& '../fragments/header' %>
 
 <table width="100%" cellpadding="10" cellspacing="0"><tr valign="top">
 	<td width="50%">
 		<h2>About Prudence</h2>
 		<p>
 			Prudence is an open source framework for building scalable web frontends and network services.
-			It comes in <a href="flavors">several flavors</a>: Python, Ruby, Groovy, Clojure, JavaScript and PHP.
+			It comes in <a href="flavors/">several flavors</a>: Python, Ruby, Groovy, Clojure, JavaScript and PHP.
 			Your applications can support rich clients (AJAX), thin clients (pure HTML), and happy mixes between the two.
 			Not just a framework, Prudence also works as a powerful and flexible container for your web site,
 			addressing real-world, practical concerns, from virtual hosting and URI rewriting to caching.
@@ -23,7 +23,7 @@
 		<p>
 			Each flavor comes with a relevant example data-driven application,
 			showing how to integrate Prudence with a data backend.
-			The detailed <a href="guide/tutorial">tutorial</a> is a great place to start!
+			The detailed <a href="guide/tutorial/">tutorial</a> is a great place to start!
 		</p>
 		<p>
 			All you need is a Java 5 Standard Edition environment or above.
@@ -32,19 +32,19 @@
 		</p>
 		<p>
 			For Java developers, Prudence is also available as an embeddable, standalone library.
-			It also works well as a <a href="guide/non-prudence">container</a> for
+			It also works well as a <a href="guide/non-prudence/">container</a> for
 			your Restlet applications.
 		</p>
 	</td>
 	<td width="50%">		
 		<h3>Features</h3>
 		<p>
-			Prudence makes it very easy to create <a href="resource-tests">REST resources</a>.
+			Prudence makes it very easy to create <a href="resource-tests/">REST resources</a>.
 			In seconds, you can write code to process and answer an HTTP "PUT" or "GET" with a representation of your resource,
 			and attach this code to a URL. Format negotiation with the client is handled automatically.
 		</p>
 		<p>
-			Additionally, Prudence offers classic <a href="html-tests">HTML generation</a> by letting you embed code "scriptlets"
+			Additionally, Prudence offers classic <a href="html-tests/">HTML generation</a> by letting you embed code "scriptlets"
 			into text documents, similarly to how PHP, JSP and ASP work.
 			Scriptlets can be written in any of the supported programming languages, or you can choose better-performing,
 			more manageable templating languages: <a href="http://threecrickets.com/succinct/">Succinct</a> and

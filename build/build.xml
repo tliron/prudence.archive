@@ -24,8 +24,6 @@
 	<property name="dist-python" value="./python" />
 	<property name="dist-clojure" value="./clojure" />
 
-	<property name="revision" value="" />
-
 	<!-- Tasks -->
 
 	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml">
@@ -33,7 +31,7 @@
 			<fileset dir="${lib}/svnant/lib" includes="*.jar" />
 		</classpath>
 	</typedef>
-	
+
 	<!-- Macros -->
 
 	<macrodef name="fetch-library">
@@ -88,10 +86,7 @@
 				<fileset dir="@{base}" />
 			</copy>
 			<chmod file="@{dist}/content/bin/run.sh" perm="ugo+rx" />
-			<svn svnkit="true" javahl="false">
-				<status path=".." revisionProperty="revision" />
-			</svn>
-			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%REVISION%" value="${revision}" />
+			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%REVISION%" value="${revision.max}" />
 		</sequential>
 	</macrodef>
 
@@ -133,6 +128,13 @@
 	<target name="rebuild" depends="clean, build" description="Rebuild all distributions" />
 
 	<!-- Essentials -->
+	
+	<target name="revision" unless="revision.max">
+		<svn svnkit="true" javahl="false">
+			<wcVersion path=".." />
+		</svn>
+		<echo>Revision ${revision.max}.</echo>
+	</target>
 
 	<target name="compile" description="Compile Prudence code">
 		<mkdir dir="${tmp}/classes" />
@@ -219,7 +221,7 @@
 	<fetch-library-versions dist="${dist-kitchensink}" />
 </target>
 
-<target name="content-kitchensink" depends="javadoc-kitchensink" description="Fetch content">
+<target name="content-kitchensink" depends="javadoc-kitchensink, revision" description="Fetch content">
 	<echo>Using ${kitchensink-base} as base for Kitchen Sink distribution.</echo>
 	<fetch-common-content dist="${dist-kitchensink}" base="${kitchensink-base}" />
 	<!-- Fetch Prudence Test -->
@@ -330,7 +332,7 @@
 	<fetch-javadocs dist="${dist-javascript}" />
 </target>
 
-<target name="content-javascript" depends="javadoc-javascript" description="Fetch content">
+<target name="content-javascript" depends="javadoc-javascript, revision" description="Fetch content">
 	<fetch-common-content dist="${dist-javascript}" base="${javascript}" />
 	<!-- <fetch-syntaxhighlighter dist="${dist-javascript}" application="prudence-test" /> -->
 </target>
@@ -369,7 +371,7 @@
 	<fetch-javadocs dist="${dist-python}" />
 </target>
 
-<target name="content-python" depends="javadoc-python" description="Fetch content">
+<target name="content-python" depends="javadoc-python, revision" description="Fetch content">
 	<fetch-common-content dist="${dist-python}" base="${python}" />
 	<!-- <fetch-syntaxhighlighter dist="${dist-python}" application="prudence-test" />
 	<fetch-syntaxhighlighter dist="${dist-python}" application="stickstick" /> -->
@@ -407,7 +409,7 @@
 	<fetch-javadocs dist="${dist-clojure}" />
 </target>
 
-<target name="content-clojure" depends="javadoc-clojure" description="Fetch content">
+<target name="content-clojure" depends="javadoc-clojure, revision" description="Fetch content">
 	<fetch-common-content dist="${dist-clojure}" base="${clojure}" />
 	<!-- <fetch-syntaxhighlighter dist="${dist-clojure}" application="prudence-test" />
 	<fetch-syntaxhighlighter dist="${dist-clojure}" application="stickstick" /> -->

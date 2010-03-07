@@ -607,6 +607,15 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 */
 	public void includeDocument( String name ) throws IOException, DocumentInitializationException, DocumentRunException
 	{
+		if( resource.isTrailingSlashRequired() )
+		{
+			if( ( name != null ) && ( name.length() != 0 ) && !name.endsWith( "/" ) )
+				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+		}
+
+		if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
+			name = resource.getDefaultName();
+
 		DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
 		Document document = documentDescriptor.getDocument();
@@ -638,6 +647,15 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 */
 	public void include( String name ) throws IOException, DocumentInitializationException, DocumentRunException
 	{
+		if( resource.isTrailingSlashRequired() )
+		{
+			if( ( name != null ) && ( name.length() != 0 ) && !name.endsWith( "/" ) )
+				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+		}
+
+		if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
+			name = resource.getDefaultName();
+
 		DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
 		Document document = documentDescriptor.getDocument();
@@ -669,6 +687,13 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	public Object invoke( String entryPointName ) throws ResourceException
 	{
 		String name = resource.getRequest().getResourceRef().getRemainingPart( true, false );
+
+		if( resource.isTrailingSlashRequired() )
+		{
+			if( ( name != null ) && ( name.length() != 0 ) && !name.endsWith( "/" ) )
+				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+		}
+
 		if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
 			name = resource.getDefaultName();
 

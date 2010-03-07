@@ -72,7 +72,7 @@ public class PreheatTask implements Runnable
 
 	public void run()
 	{
-		String uri = "/" + applicationInternalName + "/" + resourceUri;
+		String uri = "/" + applicationInternalName + "/" + resourceUri + "/";
 		uri = uri.replace( "//", "/" ); // Remove double slashes
 		ClientResource clientResource = new ClientResource( context, LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, uri ) );
 		try

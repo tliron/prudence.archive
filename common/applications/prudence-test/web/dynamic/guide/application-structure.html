@@ -1,4 +1,4 @@
-<%velocity #set($document.cacheDuration=5000) #set($prefix = '../') %><%& '../fragments/header' %>
+<%velocity #set($document.cacheDuration=5000) #set($prefix = '../../') %><%& '../fragments/header' %>
 
 <h2>Application Structure</h2>
 
@@ -19,7 +19,7 @@ potentially produce a different result. Prudence has a powerful
 framework for embedding programming language code into files, and for
 supporting caching of results for performance, streaming of results, and
 support for textual formats beyond HTML, such as XML, RSS, JSON, etc.
-Later, we will <a href="generating-html">examine HTML generation in
+Later, we will <a href="../generating-html/">examine HTML generation in
 depth</a>.</p>
 
 <p>The names of the files and subdirectories under /web/dynamic/
@@ -39,7 +39,7 @@ files will be sent as "image/png". You can easily configure the basic
 mapping table.</p>
 
 <p>The static web subdirectory will likely just work for you as is.
-Later, we'll delve into <a href="static-web">a few of its
+Later, we'll delve into <a href="../static-web/">a few of its
 configuration features</a>.</p>
 
 <h3>/web/fragments/</h3>
@@ -61,7 +61,7 @@ representations in many different formats.</p>
 such as simple web browsers, /resources/ lets you handle "rich" clients,
 such as AJAX, Flash and other dynamic platforms.</p>
 
-<p>We'll delve into <a href="resources">resources</a> later.</p>
+<p>We'll delve into <a href="../resources/">resources</a> later.</p>
 
 <h3>/libraries/</h3>
 
@@ -74,7 +74,7 @@ but it's customary to put your code here. Code here can be used by
 <p>By default, URLs will attach first to /web/dynamic/, then to
 /web/static/, and finally to /resources/. Thus, identical URLs from
 prior sections will hide those from latter sections. You can easily
-change the order of attachment. Routing will be <a href="routing">covered
+change the order of attachment. Routing will be <a href="../routing/">covered
 in depth</a> later.</p>
 
 <h3>Application Setup</h3>
@@ -109,11 +109,11 @@ item resource, and have "id" automatically extracted from the URL.
 
 <p>This is also where you can attach your own custom (non-Prudence)
 resources to URLs. Actually, anything that's a "restlet" will do,
-because Prudence uses <a href="http://restlet.org">Restlet</a> for
+because Prudence uses <a href="http://restlet.org/">Restlet</a> for
 its resource routing. More on integrating custom restlets
-<a href="non-prudence">here</a>.</p>
+<a href="../non-prudence/">here</a>.</p>
 
-<p>More on <a href="routing">routing</a> later.</p>
+<p>More on <a href="../routing/">routing</a> later.</p>
 
 <h4>application</h4>
 
@@ -121,7 +121,7 @@ its resource routing. More on integrating custom restlets
 Prudence. 
 By default, Prudence creates a basic Restlet application,
 but you can override that creation in this file.
-More on this topic <a href="non-prudence">here</a>.</p>
+More on this topic <a href="../non-prudence/">here</a>.</p>
 
 <h4>default</h4>
 

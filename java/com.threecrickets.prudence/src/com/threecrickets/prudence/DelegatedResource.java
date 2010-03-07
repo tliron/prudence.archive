@@ -235,6 +235,10 @@ import com.threecrickets.scripturian.ScriptletController;
  * <code>com.threecrickets.prudence.DelegatedResource.documentSource:</code>
  * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
  * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.engineManager:</code>
+ * {@link ScriptEngineManager}, defaults to a new instance. See
+ * {@link #getEngineManager()}.</li>
+ * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForDelete:</code>
  * {@link String}, defaults to "handleDelete". See
  * {@link #getEntryPointNameForDelete()}.</li>
@@ -268,12 +272,11 @@ import com.threecrickets.scripturian.ScriptletController;
  * <code>com.threecrickets.prudence.DelegatedResource.scriptletController:</code>
  * {@link ScriptletController}. See {@link #getScriptletController()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.engineManager:</code>
- * {@link ScriptEngineManager}, defaults to a new instance. See
- * {@link #getEngineManager()}.</li>
- * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.sourceViewable:</code>
  * {@link Boolean}, defaults to false. See {@link #isSourceViewable()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.trailingSlashRequired:</code>
+ * {@link Boolean}, defaults to true. See {@link #isTrailingSlashRequired()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.writer:</code>
  * {@link Writer}, defaults to standard output. See {@link #getWriter()}.</li>
@@ -683,6 +686,29 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
+	 * Whether or not trailing slashes are required. Defaults to true.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.trailingSlashRequired</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return Whether to allow client caching
+	 */
+	public boolean isTrailingSlashRequired()
+	{
+		if( trailingSlashRequired == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			trailingSlashRequired = (Boolean) attributes.get( "com.threecrickets.prudence.DelegatedResource.trailingSlashRequired" );
+
+			if( trailingSlashRequired == null )
+				trailingSlashRequired = true;
+		}
+
+		return trailingSlashRequired;
+	}
+
+	/**
 	 * Whether or not compilation is attempted for script engines that support
 	 * it. Defaults to true.
 	 * <p>
@@ -1029,6 +1055,11 @@ public class DelegatedResource extends ServerResource
 	 * scripts.
 	 */
 	private volatile ScriptEngineManager engineManager;
+
+	/**
+	 * Whether or not trailing slashes are required for all requests.
+	 */
+	private volatile Boolean trailingSlashRequired;
 
 	/**
 	 * Whether or not compilation is attempted for script engines that support

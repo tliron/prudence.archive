@@ -189,15 +189,18 @@ import com.threecrickets.scripturian.exception.DocumentRunException;
  * <code>com.threecrickets.prudence.GeneratedTextResource.documentSource:</code>
  * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
  * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.engineManager:</code>
+ * {@link ScriptEngineManager}, defaults to a new instance. See
+ * {@link #getEngineManager()}.</li>
+ * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.sourceViewable:</code>
  * {@link Boolean}, defaults to false. See {@link #isSourceViewable()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.scriptletController:</code>
  * {@link ScriptletController}. See {@link #getScriptletController()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.engineManager:</code>
- * {@link ScriptEngineManager}, defaults to a new instance. See
- * {@link #getEngineManager()}.</li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.trailingSlashRequired:</code>
+ * {@link Boolean}, defaults to true. See {@link #isTrailingSlashRequired()}.</li>
  * </ul>
  * <p>
  * <i>"Restlet" is a registered trademark of <a
@@ -464,6 +467,29 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
+	 * Whether or not trailing slashes are required. Defaults to true.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.trailingSlashRequired</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return Whether to allow client caching
+	 */
+	public boolean isTrailingSlashRequired()
+	{
+		if( trailingSlashRequired == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			trailingSlashRequired = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.trailingSlashRequired" );
+
+			if( trailingSlashRequired == null )
+				trailingSlashRequired = true;
+		}
+
+		return trailingSlashRequired;
+	}
+
+	/**
 	 * Whether or not to send information to the client about cache expiration.
 	 * Defaults to true.
 	 * <p>
@@ -682,6 +708,11 @@ public class GeneratedTextResource extends ServerResource
 	private volatile ScriptletController scriptletController;
 
 	/**
+	 * Whether or not trailing slashes are required for all requests.
+	 */
+	private volatile Boolean trailingSlashRequired;
+
+	/**
 	 * Whether or not to send information to the client about cache expiration.
 	 */
 	private volatile Boolean allowClientCaching;
@@ -754,6 +785,13 @@ public class GeneratedTextResource extends ServerResource
 	{
 		Request request = getRequest();
 		String name = request.getResourceRef().getRemainingPart( true, false );
+
+		if( isTrailingSlashRequired() )
+		{
+			if( ( name != null ) && ( name.length() != 0 ) && !name.endsWith( "/" ) )
+				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+		}
+
 		if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
 			name = getDefaultName();
 

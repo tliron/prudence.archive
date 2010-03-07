@@ -16,7 +16,7 @@
 )
 
 ; Include the context library
-(.. prudence (include "../libraries/clojure/context"))
+(.. prudence (include "../libraries/clojure/context/"))
 
 ; Include the JSON library
 (add-classpath (.toURL (File. (str (.. prudence getSource getBasePath) "/../libraries/clojure"))))
