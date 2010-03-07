@@ -112,7 +112,7 @@ var dynamicWeb = new Finder(application.context, classLoader.loadClass('com.thre
 router.attachBase(fixURL(dynamicWebBaseURL), dynamicWeb);
 
 if(dynamicWebDefrost) {
-	var defrostTasks = DefrostTask.create(dynamicWebDocumentSource, scriptEngineManager, true);
+	var defrostTasks = DefrostTask.forDocumentSource(dynamicWebDocumentSource, scriptEngineManager, true);
 	for(var i in defrostTasks) {
 		tasks.push(defrostTasks[i]);
 	}
@@ -142,7 +142,7 @@ resources = new Finder(application.context, classLoader.loadClass('com.threecric
 router.attachBase(fixURL(resourcesBaseURL), resources);
 
 if(resourcesDefrost) {
-	var defrostTasks = DefrostTask.create(resourcesDocumentSource, scriptEngineManager, true);
+	var defrostTasks = DefrostTask.forDocumentSource(resourcesDocumentSource, scriptEngineManager, true);
 	for(var i in defrostTasks) {
 		tasks.push(defrostTasks[i]);
 	}
@@ -153,7 +153,7 @@ if(resourcesDefrost) {
 //
 
 if(dynamicWebPreheat) {
-	var preheatTasks = PreheatTask.create(component.context, applicationInternalName, dynamicWebDocumentSource);
+	var preheatTasks = PreheatTask.forDocumentSource(dynamicWebDocumentSource, component.context, applicationInternalName);
 	for(var i in preheatTasks) {
 		tasks.push(preheatTasks[i]);
 	}

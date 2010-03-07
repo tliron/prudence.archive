@@ -97,7 +97,7 @@
 (.attachBase router (fix-url dynamic-web-base-url) dynamic-web)
 
 (if dynamic-web-defrost
-	(doseq [defrost-task (DefrostTask/create dynamic-web-document-source, script-engine-manager, true)]
+	(doseq [defrost-task (DefrostTask/forDocumentSource dynamic-web-document-source, script-engine-manager, true)]
 		(def tasks (conj tasks defrost-task))))
 
 ;
@@ -124,7 +124,7 @@
 (.attachBase router (fix-url resources-base-url) resources)
 
 (if resources-defrost
-	(doseq [defrost-task (DefrostTask/create resources-document-source, script-engine-manager, true)]
+	(doseq [defrost-task (DefrostTask/forDocumentSource resources-document-source script-engine-manager true)]
 		(def tasks (conj tasks defrost-task))))
 
 ;
@@ -132,7 +132,7 @@
 ;
 
 (if dynamic-web-preheat
-	(doseq [preheat-task (PreheatTask/create (.getContext component) application-internal-name dynamic-web-document-source)]
+	(doseq [preheat-task (PreheatTask/forDocumentSource dynamic-web-document-source (.getContext component) application-internal-name)]
 		(def tasks (conj tasks preheat-task))))
 
 (doseq [preheat-resource preheat-resources]

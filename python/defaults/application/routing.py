@@ -94,7 +94,7 @@ dynamic_web = Finder(application.context, classLoader.loadClass('com.threecricke
 router.attachBase(fix_url(dynamic_web_base_url), dynamic_web)
 
 if dynamic_web_defrost:
-	for defrost_task in DefrostTask.create(dynamic_web_document_source, script_engine_manager, True):
+	for defrost_task in DefrostTask.forDocumentSource(dynamic_web_document_source, script_engine_manager, True):
 		tasks.append(defrost_task)
 
 #
@@ -121,7 +121,7 @@ resources = Finder(application.context, classLoader.loadClass('com.threecrickets
 router.attachBase(fix_url(resources_base_url), resources)
 
 if resources_defrost:
-	for defrost_task in DefrostTask.create(resources_document_source, script_engine_manager, True):
+	for defrost_task in DefrostTask.forDocumentSource(resources_document_source, script_engine_manager, True):
 		tasks.append(defrost_task)
 
 #
@@ -129,7 +129,7 @@ if resources_defrost:
 #
 
 if dynamic_web_preheat:
-	for preheat_task in PreheatTask.create(component.context, application_internal_name, dynamic_web_document_source):
+	for preheat_task in PreheatTask.forDocumentSource(dynamic_web_document_source, component.context, application_internal_name):
 		tasks.append(preheat_task)
 
 for preheat_resource in preheat_resources:

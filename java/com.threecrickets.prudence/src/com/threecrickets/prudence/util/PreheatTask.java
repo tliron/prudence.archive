@@ -20,12 +20,18 @@ import org.restlet.data.Status;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 
+import com.threecrickets.scripturian.DefrostTask;
 import com.threecrickets.scripturian.Document;
 import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentSource;
 
 /**
+ * A {@link Runnable} that does a GET request on a an internal URI, making sure
+ * that the resource is ready to use without the delay of compilation and
+ * initializing resources, such as connecting to databases, etc.
+ * 
  * @author Tal Liron
+ * @see DefrostTask
  */
 public class PreheatTask implements Runnable
 {
@@ -34,12 +40,18 @@ public class PreheatTask implements Runnable
 	//
 
 	/**
-	 * @param context
-	 * @param applicationInternalName
+	 * Creates a preheat task for each document descriptor in a document source.
+	 * URIs are assumed to simply be the document names.
+	 * 
 	 * @param documentSource
+	 *        The document source
+	 * @param context
+	 *        The context
+	 * @param applicationInternalName
+	 *        The internal application name
 	 * @return An array of tasks
 	 */
-	public static PreheatTask[] create( Context context, String applicationInternalName, DocumentSource<Document> documentSource )
+	public static PreheatTask[] forDocumentSource( DocumentSource<Document> documentSource, Context context, String applicationInternalName )
 	{
 		Collection<DocumentDescriptor<Document>> documentDescriptors = documentSource.getDocumentDescriptors();
 		PreheatTask[] preheatTasks = new PreheatTask[documentDescriptors.size()];
@@ -55,9 +67,14 @@ public class PreheatTask implements Runnable
 	//
 
 	/**
+	 * Construction.
+	 * 
 	 * @param context
+	 *        The context
 	 * @param applicationInternalName
+	 *        The internal application name
 	 * @param resourceUri
+	 *        The internal URI
 	 */
 	public PreheatTask( Context context, String applicationInternalName, String resourceUri )
 	{
@@ -117,9 +134,18 @@ public class PreheatTask implements Runnable
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * The context.
+	 */
 	private final Context context;
 
+	/**
+	 * The internal application name.
+	 */
 	private final String applicationInternalName;
 
+	/**
+	 * The internal URI.
+	 */
 	private final String resourceUri;
 }
