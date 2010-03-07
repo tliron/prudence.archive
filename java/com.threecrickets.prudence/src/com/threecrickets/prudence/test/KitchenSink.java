@@ -11,19 +11,31 @@
 
 package com.threecrickets.prudence.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import org.junit.BeforeClass;
-import org.junit.Test;
-import org.restlet.data.Status;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
 
 import com.threecrickets.scripturian.Scripturian;
 
-public class KitchenSink
+/**
+ * Results:
+ * 
+ * Rhino 8.2
+ * Quercus 43
+ * Jython 6.4
+ * Jepp 54.1
+ * JRuby 6.3
+ * Groovy 7.4
+ * Clojure 9.9
+ * Velocity 7.2
+ * 
+ * @author Tal Liron
+ */
+public class KitchenSink extends MultiTest
 {
+	public KitchenSink()
+	{
+		super( 40, 1 );
+	}
+
 	@BeforeClass
 	public static void first()
 	{
@@ -34,93 +46,64 @@ public class KitchenSink
 
 		try
 		{
-			// Argh. :(
-			Thread.sleep( 20000 );
+			// Defrost/preheat
+			Thread.sleep( 5000 );
 		}
 		catch( InterruptedException x )
 		{
 		}
 	}
 
-	@Test
-	public void prudenceAdmin()
+	@Override
+	public void test( int index )
 	{
-		testOK( "/" );
-
-		// /web/static/
-		testOK( "/style/soft-cricket.css" );
-	}
-
-	@Test
-	public void prudenceTest()
-	{
-		testOK( "/prudence-test/" );
-		testRedirect( "/prudence-test" );
-
-		// /web/static/
-		testOK( "/prudence-test/style/soft-cricket.css" );
-
-		// /web/dynamic/
-		testOK( "/prudence-test/test/rhino?id=hello" );
-		testOK( "/prudence-test/test/quercus?id=hello" );
-		testOK( "/prudence-test/test/jython?id=hello" );
-		testOK( "/prudence-test/test/jepp?id=hello" );
-		testOK( "/prudence-test/test/jruby?id=hello" );
-		testOK( "/prudence-test/test/groovy?id=hello" );
-		testOK( "/prudence-test/test/clojure?id=hello" );
-		testOK( "/prudence-test/test/velocity?id=hello" );
-
-		// /resources/
-		testOK( "/prudence-test/data/jython/" );
-		testOK( "/prudence-test/data/jruby/" );
-		testOK( "/prudence-test/data/groovy/" );
-		testOK( "/prudence-test/data/clojure/" );
-		testOK( "/prudence-test/data/rhino/" );
-	}
-
-	@Test
-	public void stickstick()
-	{
-		testOK( "/stickstick/" );
-		testRedirect( "/stickstick" );
-
-		// /web/static/
-		testOK( "/stickstick/style/soft-cricket.css" );
-
-		// /resources/
-		testOK( "/stickstick/data/" );
+		for( Runnable test : adminTests )
+			test.run();
+		for( Runnable test : prudenceTests )
+			test.run();
+		for( Runnable test : stickstickTests )
+			test.run();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
-	private void testOK( String uri )
+	private static Runnable[] adminTests = new Runnable[]
 	{
-		ClientResource resource = new ClientResource( "http://localhost:8080" + uri );
-		resource.setFollowingRedirects( false );
-		try
-		{
-			resource.get();
-			assertEquals( "Testing: \"" + uri + "\"", Status.SUCCESS_OK, resource.getStatus() );
-		}
-		catch( ResourceException x )
-		{
-			fail( "Testing: \"" + uri + "\": " + x.getMessage() );
-		}
-	}
+		new TestOK( "/" ),
+		// /web/static/
+		new TestOK( "/style/soft-cricket.css" )
+	};
 
-	private void testRedirect( String uri )
+	private static Runnable[] prudenceTests = new Runnable[]
 	{
-		ClientResource resource = new ClientResource( "http://localhost:8080" + uri );
-		resource.setFollowingRedirects( false );
-		try
-		{
-			resource.get();
-			assertEquals( "Testing redirection: \"" + uri + "\"", Status.REDIRECTION_PERMANENT, resource.getStatus() );
-		}
-		catch( ResourceException x )
-		{
-			fail( "Testing redirection: \"" + uri + "\": " + x.getMessage() );
-		}
-	}
+		new TestOK( "/prudence-test/" ),
+		new TestRedirected( "/prudence-test" ),
+		// /web/static/
+		new TestOK( "/prudence-test/style/soft-cricket.css" ),
+		// /web/dynamic/
+		new TestOK( "/prudence-test/test/rhino/?id=hello" ),
+		//new TestOK( "/prudence-test/test/quercus/?id=hello" ),
+		new TestOK( "/prudence-test/test/jython/?id=hello" ),
+		//new TestOK( "/prudence-test/test/jepp/?id=hello" ),
+		new TestOK( "/prudence-test/test/jruby/?id=hello" ),
+		new TestOK( "/prudence-test/test/groovy/?id=hello" ),
+		new TestOK( "/prudence-test/test/clojure/?id=hello" ),
+		new TestOK( "/prudence-test/test/velocity/?id=hello" ),
+		// /resources/
+		new TestOK( "/prudence-test/data/jython/" ),
+		new TestOK( "/prudence-test/data/jruby/" ),
+		new TestOK( "/prudence-test/data/groovy/" ),
+		new TestOK( "/prudence-test/data/clojure/" ),
+		new TestOK( "/prudence-test/data/rhino/" )
+	};
+
+	private static Runnable[] stickstickTests = new Runnable[]
+	{
+		new TestOK( "/stickstick/" ), new TestRedirected( "/stickstick" ),
+		// /web/static/
+		new TestOK( "/stickstick/style/soft-cricket.css" ),
+		// /resources/
+		new TestOK( "/stickstick/data/" )
+	};
 }

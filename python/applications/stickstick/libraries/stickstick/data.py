@@ -6,6 +6,7 @@ from datetime import datetime
 from time import time, mktime
 
 from sqlalchemy import create_engine
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import logging
@@ -148,11 +149,17 @@ def get_engine(fresh=False):
             # Make sure tables exist
             Base.metadata.create_all(engine)
 
+            # Make sure a few boards exist
             session = Session()
-            session.add(Board('Todo List'))
-            session.add(Board('Great Ideas'))
-            session.add(Board('Sandbox'))
-            session.flush()
+            try:
+                session.add(Board('Todo List'))
+                session.add(Board('Great Ideas'))
+                session.add(Board('Sandbox'))
+                session.flush()
+            except IntegrityError:
+                pass
+            finally:
+                session.close()
             
         return engine
     finally:
