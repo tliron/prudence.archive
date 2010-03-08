@@ -1,4 +1,4 @@
-sys.path.append(str(prudence.source.basePath) + '/../libraries/')
+sys.path.append('%s/../libraries/' % prudence.source.basePath)
 
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
