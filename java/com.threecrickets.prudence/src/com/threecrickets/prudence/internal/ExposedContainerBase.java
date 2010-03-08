@@ -14,7 +14,6 @@ package com.threecrickets.prudence.internal;
 import org.restlet.Application;
 import org.restlet.data.LocalReference;
 import org.restlet.data.MediaType;
-import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 
 /**
@@ -33,13 +32,9 @@ public abstract class ExposedContainerBase
 	 * @param mediaType
 	 * @return
 	 */
-	public Representation get( String resourceUri, String mediaType )
+	public ClientResource internal( String resourceUri, String mediaType )
 	{
-		ClientResource clientResource = new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_APPLICATION, resourceUri ) );
-		if( mediaType == null )
-			return clientResource.get();
-		else
-			return clientResource.get( getMediaType( mediaType ) );
+		return new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_APPLICATION, resourceUri ) );
 	}
 
 	/**
@@ -48,13 +43,9 @@ public abstract class ExposedContainerBase
 	 * @param mediaType
 	 * @return
 	 */
-	public Representation get( String applicationInternalName, String resourceUri, String mediaType )
+	public ClientResource internal( String applicationInternalName, String resourceUri, String mediaType )
 	{
-		ClientResource clientResource = new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, "/" + applicationInternalName + "/" + resourceUri ) );
-		if( mediaType == null )
-			return clientResource.get();
-		else
-			return clientResource.get( getMediaType( mediaType ) );
+		return new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, "/" + applicationInternalName + "/" + resourceUri ) );
 	}
 
 	/**
@@ -62,19 +53,16 @@ public abstract class ExposedContainerBase
 	 * @param mediaType
 	 * @return
 	 */
-	public Representation getExternal( String uri, String mediaType )
+	public ClientResource external( String uri, String mediaType )
 	{
-		ClientResource clientResource = new ClientResource( uri );
-		if( mediaType == null )
-			return clientResource.get();
-		else
-			return clientResource.get( getMediaType( mediaType ) );
+		return new ClientResource( uri );
 	}
 
-	// //////////////////////////////////////////////////////////////////////////
-	// Private
-
-	private static MediaType getMediaType( String name )
+	/**
+	 * @param name
+	 * @return
+	 */
+	public MediaType getMediaType( String name )
 	{
 		MediaType mediaType = MediaType.valueOf( name );
 		if( mediaType == null )

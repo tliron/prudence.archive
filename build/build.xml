@@ -198,6 +198,7 @@
 <target name="libraries-kitchensink" depends="jar-kitchensink" description="Fetch libraries">
 	<fetch-library dist="${dist-kitchensink}" library="clojure" />
 	<fetch-library dist="${dist-kitchensink}" library="grizzly" />
+	<fetch-library dist="${dist-kitchensink}" library="groboutils" />
 	<fetch-library dist="${dist-kitchensink}" library="groovy" />
 	<fetch-library dist="${dist-kitchensink}" library="h2" />
 	<fetch-library dist="${dist-kitchensink}" library="jackson" />

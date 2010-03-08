@@ -11,8 +11,7 @@
 
 package com.threecrickets.prudence.internal;
 
-import javax.script.ScriptContext;
-
+import com.threecrickets.scripturian.DocumentContext;
 import com.threecrickets.scripturian.ScriptletController;
 import com.threecrickets.scripturian.exception.DocumentRunException;
 
@@ -44,17 +43,17 @@ public class PrudenceScriptletController<C> implements ScriptletController
 	// ScriptletController
 	//
 
-	public void initialize( ScriptContext scriptContext ) throws DocumentRunException
+	public void initialize( DocumentContext documentContext ) throws DocumentRunException
 	{
-		scriptContext.setAttribute( name, container, ScriptContext.ENGINE_SCOPE );
+		documentContext.setVariable( name, container );
 		if( scriptletController != null )
-			scriptletController.initialize( scriptContext );
+			scriptletController.initialize( documentContext );
 	}
 
-	public void finalize( ScriptContext scriptContext )
+	public void finalize( DocumentContext documentContext )
 	{
 		if( scriptletController != null )
-			scriptletController.finalize( scriptContext );
+			scriptletController.finalize( documentContext );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
