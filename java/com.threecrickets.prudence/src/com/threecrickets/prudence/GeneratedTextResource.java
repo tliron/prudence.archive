@@ -826,6 +826,7 @@ public class GeneratedTextResource extends ServerResource
 			// Run document and represent its output
 			ExposedContainerForGeneratedTextResource container = new ExposedContainerForGeneratedTextResource( this, entity, variant, getCache() );
 			Representation representation = container.includeDocument( name );
+			//getResponse().getCacheDirectives().add( CacheDirective.maxAge( 10000 ) );
 
 			if( representation == null )
 				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
