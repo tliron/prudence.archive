@@ -1,6 +1,6 @@
-//
-// Prudence Application
-//
+#
+# Prudence Application
+#
 
 importClass(
 	com.threecrickets.prudence.util.PrudenceApplication);

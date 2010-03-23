@@ -1,5 +1,5 @@
-//
-// Prudence Instance
-//
+#
+# Prudence Instance
+#
 
-document.container.include('defaults/instance');
+@document.container.include 'defaults/instance'

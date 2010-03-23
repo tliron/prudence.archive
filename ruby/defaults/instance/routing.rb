@@ -1,16 +1,16 @@
-//
-// Prudence Routing
-//
+#
+# Prudence Routing
+#
 
 importClass(
 	java.io.File,
 	java.util.ArrayList);
 
-// Hosts
+# Hosts
 
 includeOrDefault('instance/hosts');
 
-// Applications
+# Applications
 
 var applications = new ArrayList();
 component.context.attributes.put('applications', applications);
@@ -25,10 +25,10 @@ for(var i in applicationDirs) {
 		var applicationDefaultURL = '/' + applicationDir.name + '/';
 		includeOrDefault(applicationBasePath, 'defaults/application');
 		applications.add(application);
-	}
-}
+	end
+end
 
 if(applications.length == 0) {
 	print('No applications found. Exiting.\n');
 	System.exit(0);
-}
+end

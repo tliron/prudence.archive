@@ -1,6 +1,6 @@
-//
-// Prudence Application Routing
-//
+#
+# Prudence Application Routing
+#
 
 importClass(
 	java.lang.ClassLoader,
@@ -18,36 +18,36 @@ importClass(
 
 var classLoader = ClassLoader.systemClassLoader;
 
-//
-// Utilities
-//
+#
+# Utilities
+#
 
-// Makes sure we have slashes where we expect them
+# Makes sure we have slashes where we expect them
 function fixURL(url) {
-	url = url.replace(/\/\//g, '/'); // no doubles
-	if(url.length > 0 && url[0] == '/') { // never at the beginning
+	url = url.replace(/\/\#g, '/'); # no doubles
+	if(url.length > 0 && url[0] == '/') { # never at the beginning
 		url = url.slice(1);
-	}
-	if(url.length > 0 && url[url.length -1] != '/') { // always at the end
+	end
+	if(url.length > 0 && url[url.length -1] != '/') { # always at the end
 		url += '/';
-	}
+	end
 	return url;
-}
+end
 
-//
-// Internal router
-//
+#
+# Internal router
+#
 
 component.internalRouter.attach('/' + applicationInternalName + '/', application).matchingMode = Template.MODE_STARTS_WITH;
 
-//
-// Hosts
-//
-// Note that the application's context will not be created until we attach the application to at least one
-// virtual host. See component/hosts.js for more information.
-//
+#
+# Hosts
+#
+# Note that the application's context will not be created until we attach the application to at least one
+# virtual host. See component/hosts.js for more information.
+#
 
-var addTrailingSlash = new Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT);
+var addTrailingSlash = new Redirector(application.context, '{riend/', Redirector.MODE_CLIENT_PERMANENT);
 
 print(application.name + ': ');
 for(var i in hosts) {
@@ -56,49 +56,49 @@ for(var i in hosts) {
 	var url = entry[1];
 	if(!url) {
 		url = applicationDefaultURL;
-	}
+	end
 	print('"' + url + '" on ' + host.name);
 	host.attach(url, application).matchingMode = Template.MODE_STARTS_WITH;
 	if(url != '/') {
 		if(url[url.length - 1] == '/') {
 			url = url.slice(0, -1);
-		}
+		end
 		host.attach(url, addTrailingSlash).matchingMode = Template.MODE_EQUALS;
-	}
+	end
 	if(i < hosts.length - 1) {
 		print(', ');
-	}
-}
+	end
+end
 print('.\n');
 
 var attributes = application.context.attributes;
 
-//
-// Inbound root
-//
+#
+# Inbound root
+#
 
 var router = new PrudenceRouter(application.context);
 router.routingMode = Router.MODE_BEST_MATCH;
 application.inboundRoot = router;
 
-//
-// Add trailing slashes
-//
+#
+# Add trailing slashes
+#
 
 for(var i in urlAddTrailingSlash) {
 	urlAddTrailingSlash[i] = fixURL(urlAddTrailingSlash[i]);
 	if(urlAddTrailingSlash[i].length > 0) {
 		if(urlAddTrailingSlash[i][urlAddTrailingSlash[i].length - 1] == '/') {
-			// Remove trailing slash for pattern
+			# Remove trailing slash for pattern
 			urlAddTrailingSlash[i] = urlAddTrailingSlash[i].slice(0, -1);
-		}
+		end
 		router.attach(urlAddTrailingSlash[i], addTrailingSlash);
-	}
-}
+	end
+end
 
-//
-// Dynamic web
-//
+#
+# Dynamic web
+#
 
 var scriptEngineManager = new ScriptEngineManager();
 var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks);
@@ -115,21 +115,21 @@ if(dynamicWebDefrost) {
 	var defrostTasks = DefrostTask.forDocumentSource(dynamicWebDocumentSource, scriptEngineManager, true);
 	for(var i in defrostTasks) {
 		tasks.push(defrostTasks[i]);
-	}
-}
+	end
+end
 
-//
-// Static web
-//
+#
+# Static web
+#
 
 var staticWeb = new Directory(router.context, File(applicationBasePath + staticWebBasePath).toURI().toString());
 staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
 staticWeb.negotiatingContent = true;
 router.attachBase(fixURL(staticWebBaseURL), staticWeb);
 
-//
-// Resources
-//
+#
+# Resources
+#
 
 var resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, resourcesMinimumTimeBetweenValidityChecks);
 attributes.put('com.threecrickets.prudence.DelegatedResource.engineManager', scriptEngineManager);
@@ -145,21 +145,21 @@ if(resourcesDefrost) {
 	var defrostTasks = DefrostTask.forDocumentSource(resourcesDocumentSource, scriptEngineManager, true);
 	for(var i in defrostTasks) {
 		tasks.push(defrostTasks[i]);
-	}
-}
+	end
+end
 
-//
-// Preheat
-//
+#
+# Preheat
+#
 
 if(dynamicWebPreheat) {
 	var preheatTasks = PreheatTask.forDocumentSource(dynamicWebDocumentSource, component.context, applicationInternalName);
 	for(var i in preheatTasks) {
 		tasks.push(preheatTasks[i]);
-	}
-}
+	end
+end
 
 for(var i in preheatResources) {
 	var preheatResource = preheatResources[i];
 	tasks.push(new PreheatTask(component.context, applicationInternalName, preheatResource));
-}
+end

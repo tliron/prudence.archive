@@ -23,6 +23,7 @@
 	<property name="dist-javascript" value="./javascript" />
 	<property name="dist-python" value="./python" />
 	<property name="dist-clojure" value="./clojure" />
+	<property name="dist-groovy" value="./groovy" />
 
 	<!-- Tasks -->
 
@@ -112,7 +113,7 @@
 
 	<!-- Basic -->
 
-	<target name="build" depends="kitchensink, standalone, javascript, python, clojure" description="Build all distributions" />
+	<target name="build" depends="kitchensink, standalone, javascript, python, clojure, groovy" description="Build all distributions" />
 
 	<target name="package" depends="package-kitchensink, package-standalone, package-javascript, package-python, package-clojure" description="Package all distributions" />
 
@@ -130,9 +131,9 @@
 	<!-- Essentials -->
 	
 	<target name="revision" unless="revision.max">
-		<svn svnkit="true" javahl="false">
+		<!--<svn svnkit="true" javahl="false">
 			<wcVersion path=".." />
-		</svn>
+		</svn>-->
 		<echo>Revision ${revision.max}.</echo>
 	</target>
 
@@ -414,6 +415,44 @@
 	<fetch-common-content dist="${dist-clojure}" base="${clojure}" />
 	<!-- <fetch-syntaxhighlighter dist="${dist-clojure}" application="prudence-test" />
 	<fetch-syntaxhighlighter dist="${dist-clojure}" application="stickstick" /> -->
+</target>
+	
+<!-- Groovy -->
+
+<target name="groovy" depends="libraries-groovy, content-groovy" description="Create distribution" />
+
+<target name="package-groovy" depends="groovy" description="Create distribution zip">
+	<package dist="${dist-groovy}" name="groovy" />
+</target>
+
+<target name="jar-groovy" depends="jar" description="Fetch Prudence jar">
+	<fetch-prudence-jar dist="${dist-groovy}" />
+</target>
+
+<target name="libraries-groovy" depends="jar-groovy" description="Fetch libraries">
+	<fetch-library dist="${dist-groovy}" library="grizzly" />
+	<fetch-library dist="${dist-groovy}" library="groovy" />
+	<fetch-library dist="${dist-groovy}" library="json" />
+	<fetch-library dist="${dist-groovy}" library="jsr223" />
+	<fetch-library dist="${dist-groovy}" library="jygments" />
+	<fetch-library dist="${dist-groovy}" library="log4j" />
+	<fetch-library dist="${dist-groovy}" library="mysqlconnector" />
+	<fetch-library dist="${dist-groovy}" library="pygments" />
+	<fetch-library dist="${dist-groovy}" library="restlet" />
+	<fetch-library dist="${dist-groovy}" library="scripturian" />
+	<fetch-library dist="${dist-groovy}" library="slf4j" />
+	<fetch-library dist="${dist-groovy}" library="velocity" />
+	<fetch-library-versions dist="${dist-groovy}" />
+</target>
+
+<target name="javadoc-groovy" depends="javadoc" description="Fetch Prudence API docs">
+	<fetch-javadocs dist="${dist-groovy}" />
+</target>
+
+<target name="content-groovy" depends="javadoc-groovy, revision" description="Fetch content">
+	<fetch-common-content dist="${dist-groovy}" base="${groovy}" />
+	<!-- <fetch-syntaxhighlighter dist="${dist-groovy}" application="prudence-test" />
+	<fetch-syntaxhighlighter dist="${dist-groovy}" application="stickstick" /> -->
 </target>
 
 </project>
