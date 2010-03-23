@@ -131,9 +131,9 @@
 	<!-- Essentials -->
 	
 	<target name="revision" unless="revision.max">
-		<!--<svn svnkit="true" javahl="false">
+		<svn svnkit="true" javahl="false">
 			<wcVersion path=".." />
-		</svn>-->
+		</svn>
 		<echo>Revision ${revision.max}.</echo>
 	</target>
 
