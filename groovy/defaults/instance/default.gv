@@ -55,8 +55,8 @@ component.context.attributes.put('prudence.flavor', prudenceFlavor)
 //
 
 // log4j: This is our actual logging engine
+import org.apache.log4j.PropertyConfigurator
 try {
-	importClass(org.apache.log4j.PropertyConfigurator)
 	PropertyConfigurator.configure('configuration/logging.conf')
 } catch(x) {}
 
@@ -64,8 +64,8 @@ try {
 LogManager.logManager.reset()
 
 // JULI: Bridge to SLF4J, which will use log4j as its engine 
+import org.slf4j.bridge.SLF4JBridgeHandler
 try {
-	importClass(org.slf4j.bridge.SLF4JBridgeHandler)
 	SLF4JBridgeHandler.install()
 } catch(x) {}
 
