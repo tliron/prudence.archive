@@ -33,7 +33,7 @@ prudenceRevision = '-%REVISION%'
 if(prudenceRevision.size() == 1) {
 	prudenceRevision = ''
 }
-prudenceFlavor = 'JavaScript'
+prudenceFlavor = 'Groovy'
 
 //
 // Welcome
