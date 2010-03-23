@@ -19,6 +19,9 @@ import org.restlet.routing.Redirector;
 
 /**
  * A {@link Redirector} that normalizes relative paths.
+ * <p>
+ * This may be unecessary in future versions of Restlet. See <a
+ * href="http://restlet.tigris.org/issues/show_bug.cgi?id=1056">issue 1056</a>.
  * 
  * @author Tal Liron
  */
