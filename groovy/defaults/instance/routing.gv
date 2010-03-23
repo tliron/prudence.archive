@@ -2,33 +2,30 @@
 // Prudence Routing
 //
 
-importClass(
-	java.io.File,
-	java.util.ArrayList);
+import java.io.File
 
 // Hosts
 
-includeOrDefault('instance/hosts');
+includeOrDefault('instance/hosts')
 
 // Applications
 
-var applications = new ArrayList();
-component.context.attributes.put('applications', applications);
-var applicationDirs = new File('applications').listFiles();
-for(var i in applicationDirs) {
-	var applicationDir = applicationDirs[i]; 
+applications = []
+component.context.attributes.put('applications', applications)
+applicationDirs = new File('applications').listFiles()
+for(applicationDir in applicationDirs) {
 	if(applicationDir.isDirectory()) {
-		var applicationName = applicationDir.name;
-		var applicationInternalName = applicationDir.name;
-		var applicationLoggerName = applicationDir.name;
-		var applicationBasePath = applicationDir.path;
-		var applicationDefaultURL = '/' + applicationDir.name + '/';
-		includeOrDefault(applicationBasePath, 'defaults/application');
-		applications.add(application);
+		applicationName = applicationDir.name
+		applicationInternalName = applicationDir.name
+		applicationLoggerName = applicationDir.name
+		applicationBasePath = applicationDir.path
+		applicationDefaultURL = '/' + applicationDir.name + '/'
+		includeOrDefault(applicationBasePath, 'defaults/application')
+		applications.add(application)
 	}
 }
 
-if(applications.length == 0) {
-	print('No applications found. Exiting.\n');
-	System.exit(0);
+if(applications.size() == 0) {
+	println('No applications found. Exiting.')
+	System.exit(0)
 }

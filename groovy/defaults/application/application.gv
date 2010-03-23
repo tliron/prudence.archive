@@ -2,7 +2,6 @@
 // Prudence Application
 //
 
-importClass(
-	com.threecrickets.prudence.util.PrudenceApplication);
+import com.threecrickets.prudence.util.PrudenceApplication
 
-var application = new PrudenceApplication();
+application = new PrudenceApplication()

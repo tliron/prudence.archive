@@ -2,54 +2,53 @@
 // Prudence Component
 //
 
-importClass(
-	java.lang.System,
-	java.lang.Runtime,
-	java.io.FileNotFoundException,
-	java.util.logging.LogManager,
-	java.util.concurrent.Executors,
-	org.restlet.Component,
-	com.threecrickets.prudence.util.DelegatedStatusService,
-	com.threecrickets.prudence.util.MessageTask);
+import java.lang.System
+import java.lang.Runtime
+import java.io.FileNotFoundException
+import java.util.logging.LogManager
+import java.util.concurrent.Executors
+import org.restlet.Component
+import com.threecrickets.prudence.util.DelegatedStatusService
+import com.threecrickets.prudence.util.MessageTask
 
-function includeOrDefault(name, def) {
+includeOrDefault = { name, deflt = null ->
 	try {
-		document.container.include(name);
-	} catch(e if e.javaException instanceof FileNotFoundException) {
-		if(!def) {
-			def = 'defaults/' + name;
+		document.container.include(name)
+	} catch(FileNotFoundException) {
+		if(!deflt) {
+			deflt = 'defaults/' + name
 		}
-		document.container.include(def);
+		document.container.include(deflt)
 	}
 }
 
-var tasks = [];
+tasks = []
 
 //
 // Version
 //
 
-var prudenceVersion = '1.0';
-var prudenceRevision = '-%REVISION%';
-if(prudenceRevision.length == 1) {
-	prudenceRevision = '';
+prudenceVersion = '1.0'
+prudenceRevision = '-%REVISION%'
+if(prudenceRevision.size() == 1) {
+	prudenceRevision = ''
 }
-var prudenceFlavor = 'JavaScript';
+prudenceFlavor = 'JavaScript'
 
 //
 // Welcome
 //
 
-print('Prudence ' + prudenceVersion + prudenceRevision + ' for ' + prudenceFlavor + '.\n');
+println('Prudence ' + prudenceVersion + prudenceRevision + ' for ' + prudenceFlavor + '.')
 
 //
 // Component
 //
 
-var component = new Component();
-component.context.attributes.put('prudence.version', prudenceVersion);
-component.context.attributes.put('prudence.revision', prudenceRevision);
-component.context.attributes.put('prudence.flavor', prudenceFlavor);
+component = new Component()
+component.context.attributes.put('prudence.version', prudenceVersion)
+component.context.attributes.put('prudence.revision', prudenceRevision)
+component.context.attributes.put('prudence.flavor', prudenceFlavor)
 
 //
 // Logging
@@ -57,74 +56,73 @@ component.context.attributes.put('prudence.flavor', prudenceFlavor);
 
 // log4j: This is our actual logging engine
 try {
-	importClass(org.apache.log4j.PropertyConfigurator);
-	PropertyConfigurator.configure('configuration/logging.conf');
+	importClass(org.apache.log4j.PropertyConfigurator)
+	PropertyConfigurator.configure('configuration/logging.conf')
 } catch(x) {}
 
 // JULI: Remove any pre-existing configuration
-LogManager.logManager.reset();
+LogManager.logManager.reset()
 
 // JULI: Bridge to SLF4J, which will use log4j as its engine 
 try {
-	importClass(org.slf4j.bridge.SLF4JBridgeHandler);
-	SLF4JBridgeHandler.install();
+	importClass(org.slf4j.bridge.SLF4JBridgeHandler)
+	SLF4JBridgeHandler.install()
 } catch(x) {}
 
 // Set Restlet to use SLF4J, which will use log4j as its engine
-System.setProperty('org.restlet.engine.loggerFacadeClass', 'org.restlet.ext.slf4j.Slf4jLoggerFacade');
+System.setProperty('org.restlet.engine.loggerFacadeClass', 'org.restlet.ext.slf4j.Slf4jLoggerFacade')
 
 // Velocity logging
-System.setProperty('com.sun.script.velocity.properties', 'configuration/velocity.conf');
+System.setProperty('com.sun.script.velocity.properties', 'configuration/velocity.conf')
 
 // Web requests
-component.logService.loggerName = 'web-requests';
+component.logService.loggerName = 'web-requests'
 
 //
 // StatusService
 //
 
-component.statusService = new DelegatedStatusService();
+component.statusService = new DelegatedStatusService()
 
 //
 // Executor
 //
 
-var executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors());
-component.context.attributes.put('prudence.executor', executor);
+executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors())
+component.context.attributes.put('prudence.executor', executor)
 
 //
 // Clients
 //
 
-includeOrDefault('instance/clients');
+includeOrDefault('instance/clients')
 
 //
 // Routing
 //
 
-includeOrDefault('instance/routing');
+includeOrDefault('instance/routing')
 
 //
 // Servers
 //
 
-includeOrDefault('instance/servers');
+includeOrDefault('instance/servers')
 
 //
 // Start
 //
 
-component.start();
+component.start()
 
 //
 // Tasks
 //
 
-if(tasks.length > 0) {
-	executor.submit(new MessageTask(component.context, 'Executing ' + tasks.length + ' tasks...'));
-	for(var i in tasks) {
-		var task = tasks[i];
-		executor.submit(task);
+if(tasks.size() > 0) {
+	executor.submit(new MessageTask(component.context, 'Executing ' + tasks.size() + ' tasks...'))
+	for(task in tasks) {
+		executor.submit(task)
 	}
-	executor.submit(new MessageTask(component.context, 'Finished tasks.'));
+	executor.submit(new MessageTask(component.context, 'Finished tasks.'))
 }
