@@ -60,5 +60,5 @@ for(server in component.servers) {
 		}
 		print(protocol)
 	}
-	print('.\n')
+	println('.')
 }

@@ -318,6 +318,7 @@
 
 <target name="libraries-javascript" depends="jar-javascript" description="Fetch libraries">
 	<fetch-library dist="${dist-javascript}" library="grizzly" />
+	<fetch-library dist="${dist-javascript}" library="h2" />
 	<fetch-library dist="${dist-javascript}" library="json" />
 	<fetch-library dist="${dist-javascript}" library="jsr223" />
 	<fetch-library dist="${dist-javascript}" library="jygments" />
@@ -353,6 +354,7 @@
 
 <target name="libraries-python" depends="jar-python" description="Fetch libraries">
 	<fetch-library dist="${dist-python}" library="grizzly" />
+	<fetch-library dist="${dist-python}" library="h2" />
 	<fetch-library dist="${dist-python}" library="jepp" />
 	<fetch-library dist="${dist-python}" library="json" />
 	<fetch-library dist="${dist-python}" library="jsr223" />
@@ -394,6 +396,7 @@
 <target name="libraries-clojure" depends="jar-clojure" description="Fetch libraries">
 	<fetch-library dist="${dist-clojure}" library="clojure" />
 	<fetch-library dist="${dist-clojure}" library="grizzly" />
+	<fetch-library dist="${dist-clojure}" library="h2" />
 	<fetch-library dist="${dist-clojure}" library="json" />
 	<fetch-library dist="${dist-clojure}" library="jsr223" />
 	<fetch-library dist="${dist-clojure}" library="jygments" />
@@ -432,6 +435,7 @@
 <target name="libraries-groovy" depends="jar-groovy" description="Fetch libraries">
 	<fetch-library dist="${dist-groovy}" library="grizzly" />
 	<fetch-library dist="${dist-groovy}" library="groovy" />
+	<fetch-library dist="${dist-groovy}" library="h2" />
 	<fetch-library dist="${dist-groovy}" library="json" />
 	<fetch-library dist="${dist-groovy}" library="jsr223" />
 	<fetch-library dist="${dist-groovy}" library="jygments" />

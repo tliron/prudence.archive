@@ -4,7 +4,7 @@ here=$(readlink -f "$(dirname "$0")")
 cd $here/..
 
 java=/usr/bin/java
-#java=/usr/libraries/jvm/java-1.5.0-sun/bin/java
+#java=/usr/lib/jvm/java-1.5.0-sun/bin/java
 
 main=com.threecrickets.scripturian.Scripturian
 
@@ -23,6 +23,7 @@ libraries/org.apache.log4j.jar:\
 libraries/org.apache.velocity.jar:\
 libraries/org.codehaus.jackson.jar:\
 libraries/org.codehaus.jackson.mapper.jar:\
+libraries/org.h2.jar:\
 libraries/org.json.jar:\
 libraries/org.restlet.ext.grizzly.jar:\
 libraries/org.restlet.ext.jackson.jar:\

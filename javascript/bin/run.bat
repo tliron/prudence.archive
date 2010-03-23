@@ -2,27 +2,28 @@
 set java=java
 set main=com.threecrickets.scripturian.Scripturian
 
-set jars=lib/com.mysql.jdbc.jar;^
-lib/com.sun.grizzly.jar;^
-lib/com.sun.phobos.script.javascript.jar;^
-lib/com.sun.script.velocity.jar;^
-lib/com.threecrickets.jygments.jar;^
-lib/com.threecrickets.prudence.jar;^
-lib/com.threecrickets.scripturian.jar;^
-lib/javax.script.jar;^
-lib/org.apache.log4j.jar;^
-lib/org.apache.velocity.jar;^
-lib/org.codehaus.jackson.jar:^
-lib/org.codehaus.jackson.mapper.jar:^
-lib/org.json.jar;^
-lib/org.mozilla.javascript.jar;^
-lib/org.restlet.ext.grizzly.jar;^
-lib/org.restlet.ext.jackson.jar:^
-lib/org.restlet.ext.json.jar;^
-lib/org.restlet.ext.slf4j.jar;^
-lib/org.restlet.jar;^
-lib/org.slf4j.bridge.jar;^
-lib/org.slf4j.impl.jar;^
-lib/org.slf4j.jar
+set jars=libraries/com.mysql.jdbc.jar;^
+libraries/com.sun.grizzly.jar;^
+libraries/com.sun.phobos.script.javascript.jar;^
+libraries/com.sun.script.velocity.jar;^
+libraries/com.threecrickets.jygments.jar;^
+libraries/com.threecrickets.prudence.jar;^
+libraries/com.threecrickets.scripturian.jar;^
+libraries/javax.script.jar;^
+libraries/org.apache.log4j.jar;^
+libraries/org.apache.velocity.jar;^
+libraries/org.codehaus.jackson.jar;^
+libraries/org.codehaus.jackson.mapper.jar;^
+libraries/org.h2.jar;^
+libraries/org.json.jar;^
+libraries/org.mozilla.javascript.jar;^
+libraries/org.restlet.ext.grizzly.jar;^
+libraries/org.restlet.ext.jackson.jar;^
+libraries/org.restlet.ext.json.jar;^
+libraries/org.restlet.ext.slf4j.jar;^
+libraries/org.restlet.jar;^
+libraries/org.slf4j.bridge.jar;^
+libraries/org.slf4j.impl.jar;^
+libraries/org.slf4j.jar
 
 %java% -cp %jars% %main% instance
