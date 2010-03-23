@@ -442,7 +442,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 			setMediaType( resource.getMetadataService().getMediaType( documentDescriptor.getTag() ) );
 		}
 
-		return run( document, name );
+		return run( document );
 	}
 
 	/**
@@ -473,7 +473,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 				document = existing;
 		}
 
-		return run( document, name );
+		return run( document );
 	}
 
 	/**
@@ -592,15 +592,15 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 * 
 	 * @param document
 	 *        The document
-	 * @param name
-	 *        The document's name
 	 * @return A representation
 	 * @throws IOException
 	 * @throws DocumentInitializationException
 	 * @throws DocumentRunException
 	 */
-	private Representation run( Document document, String name ) throws IOException, DocumentInitializationException, DocumentRunException
+	private Representation run( Document document ) throws IOException, DocumentInitializationException, DocumentRunException
 	{
+		String name = document.getName();
+
 		boolean isStreaming = isStreaming();
 		Writer writer = resource.getWriter();
 
