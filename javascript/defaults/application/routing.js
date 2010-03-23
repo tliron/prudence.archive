@@ -28,7 +28,7 @@ function fixURL(url) {
 	if(url.length > 0 && url[0] == '/') { // never at the beginning
 		url = url.slice(1);
 	}
-	if(url.length > 0 && url[url.length -1] != '/') { // always at the end
+	if(url.length > 0 && url[url.length - 1] != '/') { // always at the end
 		url += '/';
 	}
 	return url;
@@ -122,7 +122,7 @@ if(dynamicWebDefrost) {
 // Static web
 //
 
-var staticWeb = new Directory(router.context, File(applicationBasePath + staticWebBasePath).toURI().toString());
+var staticWeb = new Directory(router.context, new File(applicationBasePath + staticWebBasePath).toURI().toString());
 staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
 staticWeb.negotiatingContent = true;
 router.attachBase(fixURL(staticWebBaseURL), staticWeb);
