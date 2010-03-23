@@ -25,11 +25,20 @@ In fact, you can see Prudence as a RESTful, minimal alternative to developing we
 applications under JEE.</p>
 </div>
 
-<p>Try Prudence! Run /bin/run.sh. Prudence should list the installed demo applications.
-When it announces that it is listening on port 8080, it is ready to go.
-Open your web browser to http://localhost:8080/. You should see the Prudence Administration
-application, where you can access the demos.
+<p>Try Prudence! Run /bin/run.sh for Unix-like systems (Linux and OS X), or /bin/run.bat for Windows.
+Prudence should declare its version list the installed demo applications.
+When it announces that it is listening on port 8080, it's ready to go.
+Open your web browser to <a href="http://localhost:8080/">http://localhost:8080/</a>.
+You should see the Prudence Administration application, where you can access the demos.
 </p>
+
+<div class="note">
+<p>By the way: The /bin/run scripts are there for getting you quickly
+up and running, however it is strongly recommended that you run
+<a href="../daemon/">Prudence as a daemon</a> for production systems.
+</p>
+</div>
+
 
 <h3>2. Your First Application</h3>
 
@@ -41,6 +50,8 @@ logging, etc. We can change those later.
 
 <p>So, let's create /applications/wackywiki/</p>
 
+<p>If you restart Prudence, you'll see wackywiki listed in the admin application.
+There's nothing to see there quite yet, though.</p>
 
 
 <h3>3. A Static Web Page</h3>
@@ -59,19 +70,20 @@ with a default web page.</p>
 &lt;/html&gt;
 </pre>
 
-<p>Restart Prudence, and browse to http://localhost:8080/wackiwiki to see the page.
-Check the Prudence administration application at http://localhost:8080/ to make
-sure your new application is there.
+<p>Restart Prudence, and browse to <a href="http://localhost:8080/wackiwiki/">http://localhost:8080/wackiwiki/</a>
+to see the page.
 </p>
 
 
 
 <h3>4. A Dynamic Web Page</h3>
 
+<div class="note">
 <p>Important! While Prudence does dynamic web pages well, it really stands out
 from other web frameworks in its support for REST resources, which we'll see in
 the next section. We decided to start this tutorial with web pages, because the
 topic would likely be more familiar to most newcomers to Prudence.</p>
+</div>
 
 <p>Create /applications/wackywiki/web/dynamic/. Unlike /web/static/, files in this
 directory must be text files (HTML, XML, plain text, etc.) They are specially processed
@@ -102,19 +114,25 @@ seconds
 &lt;/html&gt;
 </pre>
 
+<p>Restart Prudence, and browse to <a href="http://localhost:8080/wackiwiki/">http://localhost:8080/wackiwiki/</a>
+to see the page.
+</p>
+
 <p>You'll notice the &lt;% and %&gt; are used to delimit scriptlets, and that we've
 added "python" to the opening delimiter of the first scriptlet. Subsequent scriptlets
 on the page will automatically use the language of the previous scriptlets, so we
 don't have to repeat "python".</p>
 
-<p>Note, too, that "print" works by adding output to the stream of text where the
+<p>Note, too, that Python's "print" works by adding output to the stream of text where the
 scriptlet is located.</p>
 
-<p>Final note: Though they are called "scriptlets," they are not "scripts," in the
-common meaning of interpreted code. All scriptlets are, in fact, compiled and run as
+<p>Final note: Though they are conventionally called "scriptlets," they are not "scripts"
+in the common meaning of interpreted code. All scriptlets are, in fact, compiled and run as
 JVM bytecode. That's fast.</p>
 
-<p>Let's make the code above more readable by using special "expression scriptlets."
+<h4>Expressions</h4>
+
+<p>Let's make our dynamic page more readable by using special "expression scriptlets."
 They're really just a shorthand for "print."
 
 <p>/web/dynamic/index.html:</p>
@@ -142,11 +160,13 @@ from dratetime import datetime
 ...
 </pre>
 
-<p>If you try to access http://localhost:8080/wackywiki, Prudence will show you a detailed debug page,
+<p>If you try to browse to the page, Prudence will show you a detailed debug page,
 from where you can also access the source code with the troublesome code line highlighted. Once you
-deploy your application, you can cancel this debug feature, and instead show your custom, user-friendly
-error pages. We'll get to that below.
+deploy your application, you can cancel this debug feature. Also, you can show your own, custom,
+user-friendly error pages. We'll get to that below.
 </p>
+
+<h4>Fragments</h4>
 
 <p>Prudence lets you include others documents in-place using a special scriptlet. This makes it very easy
 to reuse fragments of documents (which can include scriptlets) throughout your dynamic pages. Common reusbale
@@ -184,7 +204,7 @@ expression. For example, you can do Pythony things like string interpolation: &l
 allowing you to include different fragments according to changing circumstances.
 </p>
 
-<p>[Accessing the query matrix.]</p>
+<h4>Caching</h4>
 
 <p>Dynamically generating HTML and other text is very powerful. You may be wondering, however,
 how well this scales. Even if the Python code is compiled, it would still need to be run for
@@ -217,7 +237,7 @@ in its cache.
 </pre>
 
 <p>To test the above, go to our page and keep refreshing it in your web browser. You will see
-that the printed time will only be udpated once every 10 seconds.</p>
+that the printed time will only be updated once every 10 seconds.</p>
 
 <p>To verify that client-side caching works correctly, we recommend using the free Firefox
 browser with the <a href="http://getfirebug.com/">Firebug</a> add-on. In the Firebug network panel,
@@ -231,7 +251,7 @@ machines, and keep refreshing them. You'll see each client caching individually,
 server still returning a different page only after the 60 second cache duration has passed.
 </p>
 
-<p>Caching is very powerful, but obviously only useful for specific pages. For example, if it's
+<p>Caching is very powerful, but obviously not useful for all pages. For example, if it's
 important for a page to always show the up-to-date to the moment information, you might not be able
 to afford even a one second cache. It's useful, then, to know that Prudence's document.cacheDuration
 works at the level of the actual document, so that each included fragment can set its own cache
@@ -245,7 +265,18 @@ an included fragment has a cache duration of 1 second, it would only appear to u
 For example, under heavy load, you might want your application to cache for longer periods of
 time.</p>
 
-<p>Handling an HTML form.</p>
+<h4>HTML Forms</h4>
+
+<p>TODO</p>
+
+<p>Let's allow users to edit our wacky wicki.
+</p>
+
+<pre>
+form = prudence.resource.request.resourceRef.queryAsForm
+fresh = form.getFirstValue('fresh') == 'true'
+</pre>
+
 
 <p>/web/fragments/wiki.html:</p>
 <pre>
@@ -265,6 +296,35 @@ Wiki content is: &lt;%= wiki %&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </pre>
+
+<h4>More HTTP</h4>
+
+<p>Prudence does a lot of the HTTP work automatically, but you can manipulate the response yourself.
+For example, to redirect the client:
+</p>
+
+<pre>
+prudence.resource.response.locationRef = prudence.resource.request.resourceRef.baseRef
+prudence.statusCode = 303
+raise
+</pre>
+
+<div class="note">
+<p>Note the use of "raise": it's a handy trick to end processing of our page.
+Prudence recognizes that we explicitly changed the status code, so it doesn't consider this to be a
+real error.
+</p>
+</div>
+
+<p>You can use also prudence.statusCode to explicitly set an error, for example to send
+403 ("Forbidden") if the user is not logged in.
+</p>
+
+<p>Need more HTTP? Prudence supports HTTP cookies and HTTP authentication challenges.
+We won't get into that in this tutorial, though.
+</p>
+
+<h4>Templating</h4>
 
 <p>You might wonder what other options are available to you other than "python" for scriptlets.
 You can choose other languages -- Ruby, JavaScript, Clojure, PHP, etc. -- if you have them installed.
@@ -289,9 +349,6 @@ It is currently $clock o' clock, and $seconds seconds
 %&gt;
 </pre>
 
-<p>[Returning an error status code.]</p>
-
-<p>[URL rewriting and attributes.]</p>
 
 
 
@@ -305,15 +362,18 @@ HTML forms). Prudence lets you create resources that support one or more
 formats, all create/read/update/delete (CRUD) operations, and advanced caching.
 </p>
 
-<p>Resources are key to "AJAX" and other rich client
-applications. Additionally, resources can form a scalable backend conduit
-between servers. Depending on how you look at it, they are a kind of online database,
-or an API for your service.
+<p>A resource-oriented architecture is perfect for "AJAX" and other rich client platforms
+(Flash, Silverlight, etc.).
+Another use is for a scalable backend conduit between servers.
+Depending on how you look at it, resources are either an online database,
+an API for your service, or both.
 </p>
 
+<div class="note">
 <p>You might want to take a look at <a href="../rest">Making the Case for REST</a>
 for a better understanding of REST and what it can do for you.
 </p>
+</div>
 
 <p>Let's start with a resource that can be read for some plain text. Resources
 are put in the /resources/ subdirectory, and, like /web/dynamic/ and /web/static/,
@@ -331,11 +391,12 @@ def handleGet():
 <p>handleInit() always gets called first, before any of the other handler functions.
 </p>
 
-<p>Try browsing to http://localhost/wiki to see your resource.</p>
+<p>Try browsing to <a href="http://localhost:8080/wackywiki/wiki/">http://localhost:8080/wackywiki/wiki/</a>
+to see your resource.</p>
 
 <p>Plain text is good for us humans to read. But, we might want to support
 formats that are more useful for client applications, such as <a href="http://www.json.org/">JSON</a> for
-browser-based JavaScript.
+browser-based JavaScript or Flash's ActiveScript.
 </p>
 
 <p>Let's add support for JSON to our resource:</p>
@@ -374,7 +435,7 @@ def get_wiki():
 
 <p>/resources/wiki.py:</p>
 <pre>
-sys.path.append(str(prudence.source.basePath) + '/../libraries/')
+sys.path.append('%s/../libraries/' % prudence.source.basePath)
 from wiki import get_wiki
 
 def handleInit():
