@@ -125,6 +125,8 @@
 		<delete dir="${dist-javascript}" />
 		<delete dir="${dist-python}" />
 		<delete dir="${dist-clojure}" />
+		<delete dir="${dist-groovy}" />
+		<delete dir="${dist-ruby}" />
 	</target>
 
 	<target name="rebuild" depends="clean, build" description="Rebuild all distributions" />
