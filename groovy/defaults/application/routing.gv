@@ -43,7 +43,7 @@ component.internalRouter.attach('/' + applicationInternalName + '/', application
 // Hosts
 //
 // Note that the application's context will not be created until we attach the application to at least one
-// virtual host. See component/hosts.js for more information.
+// virtual host. See component/hosts.gv for more information.
 //
 
 addTrailingSlash = new Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)
@@ -101,7 +101,7 @@ for(url in urlAddTrailingSlash) {
 scriptEngineManager = new ScriptEngineManager()
 dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks)
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.engineManager', scriptEngineManager)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultEngineName', 'rhino-nonjdk')
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultEngineName', 'groovy')
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument)
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource)
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable)
@@ -131,7 +131,7 @@ router.attachBase(fixURL(staticWebBaseURL), staticWeb)
 
 resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, resourcesMinimumTimeBetweenValidityChecks)
 attributes.put('com.threecrickets.prudence.DelegatedResource.engineManager', scriptEngineManager)
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultEngineName', 'rhino-nonjdk')
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultEngineName', 'groovy')
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName)
 attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource)
 attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable)
