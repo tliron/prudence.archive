@@ -14,9 +14,8 @@
 # to virtual hosts. See hosts.js for more information.
 #
 
-importClass(
-	org.restlet.Server,
-	org.restlet.data.Protocol);
+import org.restlet.Server
+import org.restlet.data.Protocol
 
 #
 # Default HTTP server
@@ -24,14 +23,14 @@ importClass(
 # Binds to the machine's default IP address.
 #
 
-var defaultServer = new Server(Protocol.HTTP, 8080);
-defaultServer.name = 'default';
-component.servers.add(defaultServer);
+$default_server = Server.new(Protocol::HTTP, 8080)
+$default_server.name = 'default'
+$component.servers.add $default_server
 
 # Add support for the X-FORWARDED-FOR header used by proxies, such as Apache's
 # mod_proxy. This guarantees that request.clientInfo.upstreamAddress returns
 # the upstream address behind the proxy.
-defaultServer.context.parameters.add('useForwardedForHeader', 'true');
+$default_server.context.parameters.add 'useForwardedForHeader', 'true'
 
 #
 # HTTP server bound to a specific IP address
@@ -41,27 +40,27 @@ defaultServer.context.parameters.add('useForwardedForHeader', 'true');
 # that it's the interface open to the Internet at large.
 #
 
-#var worldServer = new Server(Protocol.HTTP, '192.168.1.2', 80);
-#worldServer.name = 'world';
-#component.servers.add(worldServer);
+#$world_server = Server.new(Protocol::HTTP, '192.168.1.2', 80)
+#$world_server.name = 'world'
+#$component.servers.add $world_server
 
 #
 # Welcome
 #
 
-for(var i = 0; i < component.servers.size(); i++) {
-	var server = component.servers.get(i);
-	if(server.address) {
-		print('Listening on ' + server.address + ' port ' + server.port + ' for ');
-	end else {
-		print('Listening on port ' + server.port + ' for ');
+for server in $component.servers
+	if server.address
+		print 'Listening on ' + server.address + ' port ' + server.port + ' for '
+	else
+		print 'Listening on port ' + server.port.to_s + ' for '
 	end
-	for(var j = 0; j < server.protocols.size(); j++) {
-		protocol = server.protocols.get(j);
-		if(j < server.protocols.size() - 1) {
-			print(', ');
+	j = 0
+	for protocol in server.protocols
+		if j < server.protocols.size - 1
+			print ', '
 		end
-		print(protocol);
+		print protocol
+		j += 1
 	end
-	print('.\n');
+	puts '.'
 end

@@ -8,12 +8,12 @@
 # These are for administrative purposes only.
 #
 
-#var applicationName = 'Prudence Application'; # Defaults to the application directory name
-var applicationDescription = 'This is a Prudence application.';
-var applicationAuthor = 'Anonymous';
-var applicationOwner = 'Public Domain';
-var applicationHomeURL = 'http:#threecrickets.com/prudence/';
-var applicationContactEmail = 'prudence@threecrickets.com';
+#$application_name = 'Prudence Application' # Defaults to the application directory name
+$application_description = 'This is a Prudence application.'
+$application_author = 'Anonymous'
+$application_owner = 'Public Domain'
+$application_home_url = 'http://threecrickets.com/prudence/'
+$application_contact_email = 'prudence@threecrickets.com'
 
 #
 # Debugging
@@ -21,7 +21,7 @@ var applicationContactEmail = 'prudence@threecrickets.com';
 
 # Set to true to show debug information on error.
 
-var showDebugOnError = false;
+$show_debug_on_error = false
 
 #
 # Logging
@@ -30,7 +30,7 @@ var showDebugOnError = false;
 # conf/logging.conf.
 #
 
-#var applicationLoggerName = 'prudence-application';
+#$application_logger_name = 'prudence-application'
 
 #
 # Hosts
@@ -41,7 +41,7 @@ var showDebugOnError = false;
 # application's directory name.
 #
 
-var hosts = [[component.defaultHost, null]];
+$hosts = [[$component.default_host, nil]]
 
 #
 # Resources
@@ -51,32 +51,32 @@ var hosts = [[component.defaultHost, null]];
 # is directly linked to the base URL.
 #
 
-var resourcesBaseURL = '/';
-var resourcesBasePath = '/resources/';
+$resources_base_url = '/'
+$resources_base_path = '/resources/'
 
 # If the URL points to a directory rather than a file, and that directory
 # contains a file with this name, then it will be used. This allows
 # you to use the directory structure to create nice URLs without relying
 # on filenames.
 
-var resourcesDefaultName = 'default';
+$resources_default_name = 'default'
 
 # Set this to true if you want to start to load and compile your
 # resources as soon as Prudence starts.
 
-var resourcesDefrost = true;
+$resources_defrost = true
 
 # This is so we can see the source code for scripts by adding ?source=true
 # to the URL. You probably wouldn't want this for most applications.
 
-var resourcesSourceViewable = true;
+$resources_source_viewable = true
 
 # This is the time (in milliseconds) allowed to pass until a script file
 # is tested to see if it was changed. During development, you'd want this
 # to be low, but during production, it should be high in order to avoid
 # unnecessary hits on the filesystem.
 
-var resourcesMinimumTimeBetweenValidityChecks = 1000;
+$resources_minimum_time_between_validity_checks = 1000
 
 #
 # Dynamic Web
@@ -85,37 +85,37 @@ var resourcesMinimumTimeBetweenValidityChecks = 1000;
 # Note that the generated result can be cached for better performance.
 #
 
-var dynamicWebBaseURL = '/';
-var dynamicWebBasePath = '/web/dynamic/';
+$dynamic_web_base_url = '/'
+$dynamic_web_base_path = '/web/dynamic/'
 
 # If the URL points to a directory rather than a file, and that directory
 # contains a file with this name, then it will be used. This allows
 # you to use the directory structure to create nice URLs that do not
 # contain filenames.
 
-var dynamicWebDefaultDocument = 'index';
+$dynamic_web_default_document = 'index'
 
 # Set this to true if you want to compile your scriptlets as soon as Prudence
 # starts.
 
-var dynamicWebDefrost = true;
+$dynamic_web_defrost = true
 
 # Set this to true if you want to load all your dynamic web documents as soon
 # as Prudence starts.
 
-var dynamicWebPreheat = true;
+$dynamic_web_preheat = true
 
 # This is so we can see the source code for scripts by adding ?source=true
 # to the URL. You probably wouldn't want this for most applications.
 
-var dynamicWebSourceViewable = true;
+$dynamic_web_source_viewable = true
 
 # This is the time (in milliseconds) allowed to pass until a script file
 # is tested to see if it was changed. During development, you'd want this
 # to be low, but during production, it should be high in order to avoid
 # unnecessary hits on the filesystem.
 
-var dynamicWebMinimumTimeBetweenValidityChecks = 1000;
+$dynamic_web_minimum_time_between_validity_checks = 1000
 
 #
 # Static Web
@@ -125,13 +125,13 @@ var dynamicWebMinimumTimeBetweenValidityChecks = 1000;
 # files efficiently to clients. 
 #
 
-var staticWebBaseURL = '/';
-var staticWebBasePath = '/web/static/';
+$static_web_base_url = '/'
+$static_web_base_path = '/web/static/'
 
 # If the URL points to a directory rather than a file, then this will allow
 # automatic creation of an HTML page with a directory listing.
 
-var staticWebDirectoryListingAllowed = true;
+$static_web_directory_listing_allowed = true
 
 #
 # Preheater
@@ -139,7 +139,7 @@ var staticWebDirectoryListingAllowed = true;
 # List resources here that you want heated up as soon as Prudence starts.
 #
 
-var preheatResources = [];
+$preheat_resources = []
 
 #
 # URL manipulation
@@ -148,7 +148,7 @@ var preheatResources = [];
 # The URLs in this array will automatically be redirected to have a trailing
 # slash added to them if it's missing.
 
-var urlAddTrailingSlash = [dynamicWebBaseURL, staticWebBaseURL];
+$url_add_trailing_slash = [$dynamic_web_base_url, $static_web_base_url]
 
 #
 # Runtime Attributes
@@ -156,4 +156,4 @@ var urlAddTrailingSlash = [dynamicWebBaseURL, staticWebBaseURL];
 # These will be available to your code via the application's context.
 #
 
-runtimeAttributes = {};
+$runtime_attributes = {}

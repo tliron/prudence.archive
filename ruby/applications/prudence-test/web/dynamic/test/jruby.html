@@ -18,7 +18,7 @@ form = @prudence.resource.request.resource_ref.query_as_form
 #
 
 if form.get_first_value('stream') == 'true'
-	if @prudence.stream()
+	if @prudence.stream
 		raise
 	end
 end
@@ -31,7 +31,7 @@ end
 
 require 'java'
 import java.lang.System
-print '<p>This page was dynamically generated at ', System.current_time_millis, '</p>'
+print '<p>This page was dynamically generated at ', System::current_time_millis, '</p>'
 
 #
 # Including a document

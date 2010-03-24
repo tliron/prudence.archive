@@ -2,59 +2,58 @@
 # Prudence Application
 #
 
-importClass(
-	org.restlet.data.Reference,
-	org.restlet.data.MediaType,
-	com.threecrickets.prudence.util.DelegatedStatusService);
+import org.restlet.data.Reference
+import org.restlet.data.MediaType
+import com.threecrickets.prudence.util.DelegatedStatusService
 
 #
 # Settings
 #
 
-includeOrDefault(applicationBasePath + '/settings', 'defaults/application/settings');
+include_or_default $application_base_path + '/settings', 'defaults/application/settings'
 
 #
 # Application
 #
 
-includeOrDefault(applicationBasePath + '/application', 'defaults/application/application');
+include_or_default $application_base_path + '/application', 'defaults/application/application'
 
-application.name = applicationName;
-application.description = applicationDescription;
-application.author = applicationAuthor;
-application.owner = applicationOwner;
+$application.name = $application_name
+$application.description = $application_description
+$application.author = $application_author
+$application.owner = $application_owner
 
 #
 # StatusService
 #
 
-application.statusService = new DelegatedStatusService();
-application.statusService.debugging = showDebugOnError;
-application.statusService.homeRef = new Reference(applicationHomeURL);
-application.statusService.contactEmail = applicationContactEmail;
+$application.status_service = DelegatedStatusService.new
+$application.status_service.debugging = $show_debug_on_error
+$application.status_service.home_ref = Reference.new $application_home_url
+$application.status_service.contact_email = $application_contact_email
 
 #
 # MetaData
 #
 
-application.metadataService.addExtension('php', MediaType.TEXT_HTML);
+$application.metadata_service.add_extension 'php', MediaType::TEXT_HTML
 
 #
 # Routing
 #
 
-includeOrDefault(applicationBasePath + '/routing', 'defaults/application/routing');
+include_or_default $application_base_path + '/routing', 'defaults/application/routing'
 
 #
 # Logging
 #
 
-application.context.setLogger(applicationLoggerName);
+$application.context.set_logger $application_logger_name
 
 #
 # Additional/Override Runtime Attributes
 #
 
-for(var key in runtimeAttributes) {
-	attributes.put(key, runtimeAttributes[key]);
+for key in $runtime_attributes.keys
+	$attributes[key] = $runtime_attributes[key]
 end

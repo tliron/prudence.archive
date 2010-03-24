@@ -24,6 +24,7 @@
 	<property name="dist-python" value="./python" />
 	<property name="dist-clojure" value="./clojure" />
 	<property name="dist-groovy" value="./groovy" />
+	<property name="dist-ruby" value="./ruby" />
 
 	<!-- Tasks -->
 
@@ -113,9 +114,9 @@
 
 	<!-- Basic -->
 
-	<target name="build" depends="kitchensink, standalone, javascript, python, clojure, groovy" description="Build all distributions" />
+	<target name="build" depends="kitchensink, standalone, javascript, python, clojure, groovy, ruby" description="Build all distributions" />
 
-	<target name="package" depends="package-kitchensink, package-standalone, package-javascript, package-python, package-clojure" description="Package all distributions" />
+	<target name="package" depends="package-kitchensink, package-standalone, package-javascript, package-python, package-clojure, package-groovy, package-ruby" description="Package all distributions" />
 
 	<target name="clean" description="Clean">
 		<delete dir="${tmp}" />
@@ -457,6 +458,45 @@
 	<fetch-common-content dist="${dist-groovy}" base="${groovy}" />
 	<!-- <fetch-syntaxhighlighter dist="${dist-groovy}" application="prudence-test" />
 	<fetch-syntaxhighlighter dist="${dist-groovy}" application="stickstick" /> -->
+</target>
+
+<!-- Ruby -->
+
+<target name="ruby" depends="libraries-ruby, content-ruby" description="Create distribution" />
+
+<target name="package-ruby" depends="ruby" description="Create distribution zip">
+	<package dist="${dist-ruby}" name="ruby" />
+</target>
+
+<target name="jar-ruby" depends="jar" description="Fetch Prudence jar">
+	<fetch-prudence-jar dist="${dist-ruby}" />
+</target>
+
+<target name="libraries-ruby" depends="jar-ruby" description="Fetch libraries">
+	<fetch-library dist="${dist-ruby}" library="grizzly" />
+	<fetch-library dist="${dist-ruby}" library="h2" />
+	<fetch-library dist="${dist-ruby}" library="jruby" />
+	<fetch-library dist="${dist-ruby}" library="json" />
+	<fetch-library dist="${dist-ruby}" library="jsr223" />
+	<fetch-library dist="${dist-ruby}" library="jygments" />
+	<fetch-library dist="${dist-ruby}" library="log4j" />
+	<fetch-library dist="${dist-ruby}" library="mysqlconnector" />
+	<fetch-library dist="${dist-ruby}" library="pygments" />
+	<fetch-library dist="${dist-ruby}" library="restlet" />
+	<fetch-library dist="${dist-ruby}" library="scripturian" />
+	<fetch-library dist="${dist-ruby}" library="slf4j" />
+	<fetch-library dist="${dist-ruby}" library="velocity" />
+	<fetch-library-versions dist="${dist-ruby}" />
+</target>
+
+<target name="javadoc-ruby" depends="javadoc" description="Fetch Prudence API docs">
+	<fetch-javadocs dist="${dist-ruby}" />
+</target>
+
+<target name="content-ruby" depends="javadoc-ruby, revision" description="Fetch content">
+	<fetch-common-content dist="${dist-ruby}" base="${ruby}" />
+	<!-- <fetch-syntaxhighlighter dist="${dist-ruby}" application="prudence-test" />
+	<fetch-syntaxhighlighter dist="${dist-ruby}" application="stickstick" /> -->
 </target>
 
 </project>

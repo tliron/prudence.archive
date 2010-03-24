@@ -2,97 +2,96 @@
 # Prudence Application Routing
 #
 
-importClass(
-	java.lang.ClassLoader,
-	java.io.File,
-	javax.script.ScriptEngineManager,
-	org.restlet.routing.Router,
-	org.restlet.routing.Redirector,
-	org.restlet.routing.Template,
-	org.restlet.resource.Finder,
-	org.restlet.resource.Directory,
-	com.threecrickets.scripturian.DefrostTask,
-	com.threecrickets.scripturian.file.DocumentFileSource,
-	com.threecrickets.prudence.util.PrudenceRouter,
-	com.threecrickets.prudence.util.PreheatTask);
+import java.lang.ClassLoader
+import javax.script.ScriptEngineManager
+import org.restlet.routing.Router
+import org.restlet.routing.Redirector
+import org.restlet.routing.Template
+import org.restlet.resource.Finder
+import org.restlet.resource.Directory
+import com.threecrickets.scripturian.DefrostTask
+import com.threecrickets.scripturian.file.DocumentFileSource
+import com.threecrickets.prudence.util.PrudenceRouter
+import com.threecrickets.prudence.util.PreheatTask
 
-var classLoader = ClassLoader.systemClassLoader;
+$class_loader = ClassLoader::system_class_loader
 
 #
 # Utilities
 #
 
 # Makes sure we have slashes where we expect them
-function fixURL(url) {
-	url = url.replace(/\/\#g, '/'); # no doubles
-	if(url.length > 0 && url[0] == '/') { # never at the beginning
-		url = url.slice(1);
+def fix_url url
+	url.gsub! '\/\/', '/' # no doubles
+	if url.length > 0 && url[0] == ?/ # never at the beginning
+		url = url.slice 1 .. -1
 	end
-	if(url.length > 0 && url[url.length -1] != '/') { # always at the end
-		url += '/';
+	if url.length > 0 && url[-1] != ?/ # always at the end
+		url += '/'
 	end
-	return url;
+	return url
 end
 
 #
 # Internal router
 #
 
-component.internalRouter.attach('/' + applicationInternalName + '/', application).matchingMode = Template.MODE_STARTS_WITH;
+$component.internal_router.attach('/' + $application_internal_name + '/', $application).matching_mode = Template::MODE_STARTS_WITH
 
 #
 # Hosts
 #
 # Note that the application's context will not be created until we attach the application to at least one
-# virtual host. See component/hosts.js for more information.
+# virtual host. See component/hosts.rb for more information.
 #
 
-var addTrailingSlash = new Redirector(application.context, '{riend/', Redirector.MODE_CLIENT_PERMANENT);
+$add_trailing_slash = Redirector.new($application.context, '{ri}/', Redirector::MODE_CLIENT_PERMANENT)
 
-print(application.name + ': ');
-for(var i in hosts) {
-	var entry = hosts[i];
-	var host = entry[0];
-	var url = entry[1];
-	if(!url) {
-		url = applicationDefaultURL;
+print $application.name + ': '
+i = 0
+for entry in $hosts
+	host = entry[0]
+	url = entry[1]
+	if url.nil?
+		url = $application_default_url
 	end
-	print('"' + url + '" on ' + host.name);
-	host.attach(url, application).matchingMode = Template.MODE_STARTS_WITH;
-	if(url != '/') {
-		if(url[url.length - 1] == '/') {
-			url = url.slice(0, -1);
+	print '"' + url + '" on ' + host.name
+	host.attach(url, $application).matching_mode = Template::MODE_STARTS_WITH
+	if url != '/'
+		if url[-1] == ?/
+			url = url.slice 0 .. -2
 		end
-		host.attach(url, addTrailingSlash).matchingMode = Template.MODE_EQUALS;
+		host.attach(url, $add_trailing_slash).matching_mode = Template::MODE_EQUALS
 	end
-	if(i < hosts.length - 1) {
-		print(', ');
+	if i < $hosts.length - 1
+		print ', '
 	end
+	i += 1
 end
-print('.\n');
+puts '.'
 
-var attributes = application.context.attributes;
+$attributes = $application.context.attributes
 
 #
 # Inbound root
 #
 
-var router = new PrudenceRouter(application.context);
-router.routingMode = Router.MODE_BEST_MATCH;
-application.inboundRoot = router;
+$router = PrudenceRouter.new $application.context
+$router.routing_mode = Router::MODE_BEST_MATCH
+$application.inbound_root = $router
 
 #
 # Add trailing slashes
 #
 
-for(var i in urlAddTrailingSlash) {
-	urlAddTrailingSlash[i] = fixURL(urlAddTrailingSlash[i]);
-	if(urlAddTrailingSlash[i].length > 0) {
-		if(urlAddTrailingSlash[i][urlAddTrailingSlash[i].length - 1] == '/') {
+for url in $url_add_trailing_slash
+	url = fix_url url
+	if url.length > 0
+		if url[-1] == ?/
 			# Remove trailing slash for pattern
-			urlAddTrailingSlash[i] = urlAddTrailingSlash[i].slice(0, -1);
+			url = url.slice 0 .. -2
 		end
-		router.attach(urlAddTrailingSlash[i], addTrailingSlash);
+		$router.attach url, $add_trailing_slash
 	end
 end
 
@@ -100,21 +99,21 @@ end
 # Dynamic web
 #
 
-var scriptEngineManager = new ScriptEngineManager();
-var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.engineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultEngineName', 'rhino-nonjdk');
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
+$script_engine_manager = ScriptEngineManager.new
+$dynamic_web_document_source = DocumentFileSource.new($application_base_path + $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_minimum_time_between_validity_checks)
+$attributes['com.threecrickets.prudence.GeneratedTextResource.engineManager'] = $script_engine_manager
+$attributes['com.threecrickets.prudence.GeneratedTextResource.defaultEngineName'] = 'ruby'
+$attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = $dynamic_web_default_document
+$attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source
+$attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = $dynamic_web_source_viewable
 
-var dynamicWeb = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'));
-router.attachBase(fixURL(dynamicWebBaseURL), dynamicWeb);
+$dynamic_web = Finder.new($application.context, $class_loader.load_class('com.threecrickets.prudence.GeneratedTextResource'))
+$router.attach_base fix_url($dynamic_web_base_url), $dynamic_web
 
-if(dynamicWebDefrost) {
-	var defrostTasks = DefrostTask.forDocumentSource(dynamicWebDocumentSource, scriptEngineManager, true);
-	for(var i in defrostTasks) {
-		tasks.push(defrostTasks[i]);
+if $dynamic_web_defrost
+	defrost_tasks = DefrostTask::for_document_source $dynamic_web_document_source, $script_engine_manager, true
+	for defrost_task in defrost_tasks
+		$tasks << defrost_task
 	end
 end
 
@@ -122,29 +121,29 @@ end
 # Static web
 #
 
-var staticWeb = new Directory(router.context, File(applicationBasePath + staticWebBasePath).toURI().toString());
-staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
-staticWeb.negotiatingContent = true;
-router.attachBase(fixURL(staticWebBaseURL), staticWeb);
+$static_web = Directory.new($router.context, java.io.File.new($application_base_path + $static_web_base_path).to_uri.to_string)
+$static_web.listing_allowed = $static_web_directory_listing_allowed
+$static_web.negotiating_content = true
+$router.attach_base fix_url($static_web_base_url), $static_web
 
 #
 # Resources
 #
 
-var resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, resourcesMinimumTimeBetweenValidityChecks);
-attributes.put('com.threecrickets.prudence.DelegatedResource.engineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultEngineName', 'rhino-nonjdk');
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName);
-attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource);
-attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable);
+$resources_document_source = DocumentFileSource.new($application_base_path + $resources_base_path, $resources_default_name, $resources_minimum_time_between_validity_checks)
+$attributes['com.threecrickets.prudence.DelegatedResource.engineManager'] = $script_engine_manager
+$attributes['com.threecrickets.prudence.DelegatedResource.defaultEngineName'] = 'ruby'
+$attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = $resources_default_name
+$attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = $resources_document_source
+$attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = $resources_source_viewable
 
-resources = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
-router.attachBase(fixURL(resourcesBaseURL), resources);
+$resources = Finder.new($application.context, $class_loader.load_class('com.threecrickets.prudence.DelegatedResource'))
+$router.attach_base fix_url($resources_base_url), $resources
 
-if(resourcesDefrost) {
-	var defrostTasks = DefrostTask.forDocumentSource(resourcesDocumentSource, scriptEngineManager, true);
-	for(var i in defrostTasks) {
-		tasks.push(defrostTasks[i]);
+if $resources_defrost
+	defrost_tasks = DefrostTask::for_document_source $resources_document_source, $script_engine_manager, true
+	for defrost_task in defrost_tasks
+		$tasks << defrost_task
 	end
 end
 
@@ -152,14 +151,13 @@ end
 # Preheat
 #
 
-if(dynamicWebPreheat) {
-	var preheatTasks = PreheatTask.forDocumentSource(dynamicWebDocumentSource, component.context, applicationInternalName);
-	for(var i in preheatTasks) {
-		tasks.push(preheatTasks[i]);
+if $dynamic_web_preheat
+	preheat_tasks = PreheatTask::for_document_source $dynamic_web_document_source, $component.context, $application_internal_name
+	for preheat_task in preheat_tasks
+		$tasks << preheat_task
 	end
 end
 
-for(var i in preheatResources) {
-	var preheatResource = preheatResources[i];
-	tasks.push(new PreheatTask(component.context, applicationInternalName, preheatResource));
+for preheat_resource in $preheat_resources
+	$tasks << PreheatTask.new($component.context, $application_internal_name, preheat_resource)
 end

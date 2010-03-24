@@ -40,8 +40,8 @@ def set_state value
 	@prudence.resource.context.attributes['jruby.state'] = value
 end
 
-@state = get_state()
-@state_lock = get_state_lock()
+@state = get_state
+@state_lock = get_state_lock
 
 # This method is called when the resource is initialized. We will use it to set
 # general characteristics for the resource.
@@ -53,8 +53,8 @@ def handleInit
 	# "Accept" attribute of their request header, specifying that any media type
 	# will do, in which case the first one we add will be used.
 
-    @prudence.add_media_type_by_name('application/json')
-    @prudence.add_media_type_by_name('text/plain')
+    @prudence.add_media_type_by_name 'application/json'
+    @prudence.add_media_type_by_name 'text/plain'
 	
 end
 
@@ -75,8 +75,8 @@ end
 def handleGet
 
 	r = nil
-	state_lock = get_state_lock()
-	state = get_state()
+	state_lock = get_state_lock
+	state = get_state
 
 	state_lock.read_lock.lock
 	begin
@@ -111,8 +111,8 @@ end
 def handlePost
 
 	update = JSONObject.new @prudence.entity.text
-	state_lock = get_state_lock()
-	state = get_state()
+	state_lock = get_state_lock
+	state = get_state
 	
 	# Update our state
 	state_lock.write_lock.lock
@@ -164,7 +164,7 @@ end
 
 def handleDelete
 
-	set_state({})
+	set_state {}
 
 	return nil
 	
