@@ -2,7 +2,7 @@
 ; Prudence Admin Settings
 ;
 
-(.. document getContainer (include "defaults/application/settings"))
+(.. executable getContainer (include "defaults/application/settings"))
 
 (def application-name "Prudence Test")
 (def application-description "Used to test that Prudence works for you, and useful as a skeleton for creating your own applications")

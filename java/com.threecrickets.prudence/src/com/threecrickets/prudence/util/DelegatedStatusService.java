@@ -34,7 +34,7 @@ import org.restlet.representation.StringRepresentation;
 import org.restlet.routing.Redirector;
 import org.restlet.service.StatusService;
 
-import com.threecrickets.scripturian.exception.DocumentRunException;
+import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.StackFrame;
 
 /**
@@ -234,9 +234,9 @@ public class DelegatedStatusService extends StatusService
 		html.append( escapeHtml( throwable.getMessage() ) );
 		html.append( "</h3>" );
 
-		if( throwable instanceof DocumentRunException )
+		if( throwable instanceof ExecutionException )
 		{
-			DocumentRunException documentRunException = (DocumentRunException) throwable;
+			ExecutionException documentRunException = (ExecutionException) throwable;
 			if( documentRunException != null )
 			{
 				html.append( "<h3>Prudence Stack Trace</h3>" );

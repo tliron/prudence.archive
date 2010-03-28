@@ -2,6 +2,6 @@
 ; Prudence Admin Application
 ;
 
-(.. document getContainer (include "defaults/application"))
+(.. executable getContainer (include "defaults/application"))
 
 (.put attributes "component" component)

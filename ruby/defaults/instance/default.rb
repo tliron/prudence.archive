@@ -14,12 +14,12 @@ import com.threecrickets.prudence.util.MessageTask
 
 def include_or_default(name, default=nil)
 	begin
-		@document.container.include name
+		@executable.container.include name
 	rescue FileNotFoundException
 		if !default
 			default = 'defaults/' + name
 		end
-		@document.container.include default
+		@executable.container.include default
 	end
 end
 

@@ -18,8 +18,6 @@ import java.io.Writer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.script.ScriptEngineManager;
-
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.data.CharacterSet;
@@ -36,17 +34,18 @@ import org.restlet.resource.ServerResource;
 import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.prudence.util.RepresentableString;
-import com.threecrickets.scripturian.Document;
+import com.threecrickets.scripturian.ExecutionController;
+import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentFormatter;
 import com.threecrickets.scripturian.DocumentSource;
-import com.threecrickets.scripturian.ScriptletController;
-import com.threecrickets.scripturian.exception.DocumentInitializationException;
-import com.threecrickets.scripturian.exception.DocumentRunException;
+import com.threecrickets.scripturian.LanguageManager;
+import com.threecrickets.scripturian.exception.ExecutableInitializationException;
+import com.threecrickets.scripturian.exception.ExecutionException;
 
 /**
- * A Restlet resource which runs a Scripturian {@link Document} for HTTP GET and
- * POST verbs and redirects its standard output to a
+ * A Restlet resource which runs a Scripturian {@link Executable} for HTTP GET
+ * and POST verbs and redirects its standard output to a
  * {@link StringRepresentation}.
  * <p>
  * Before using this resource, make sure to configure a valid source in the
@@ -59,10 +58,10 @@ import com.threecrickets.scripturian.exception.DocumentRunException;
  * into a buffer. This buffer is then cached, and <i>only then</i> sent to the
  * client. This is the default mode and recommended for most documents.
  * Scriptlets can control the duration of their individual cache by changing the
- * value of <code>document.cacheDuration</code> (see {@link Document}). Because
- * output is not sent to the client until after the script finished its run, it
- * is possible for scriptlets to determine output characteristics at any time by
- * changing the values of <code>prudence.mediaType</code>,
+ * value of <code>document.cacheDuration</code> (see {@link Executable}).
+ * Because output is not sent to the client until after the script finished its
+ * run, it is possible for scriptlets to determine output characteristics at any
+ * time by changing the values of <code>prudence.mediaType</code>,
  * <code>prudence.characterSet</code>, and <code>prudence.language</code> (see
  * below).</li>
  * <li>Streaming mode: Output is sent to the client <i>while</i> scriptlets run.
@@ -81,7 +80,7 @@ import com.threecrickets.scripturian.exception.DocumentRunException;
  * A special container environment is created for scriptlets, with some useful
  * services. It is available to scriptlets as a global variable named
  * <code>prudence</code>. For some other global variables available to
- * scriptlets, see {@link Document}.
+ * scriptlets, see {@link Executable}.
  * <p>
  * Operations:
  * <ul>
@@ -155,9 +154,9 @@ import com.threecrickets.scripturian.exception.DocumentRunException;
  * {@link Status#valueOf(int)}.</li>
  * </ul>
  * <p>
- * In addition to the above, a {@link ScriptletController} can be set to add
+ * In addition to the above, a {@link ExecutionController} can be set to add
  * your own global variables to scriptlets. See
- * {@link #getScriptletController()}.
+ * {@link #getExecutionController()}.
  * <p>
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
@@ -183,21 +182,21 @@ import com.threecrickets.scripturian.exception.DocumentRunException;
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultName:</code>
  * {@link String}, defaults to "index.page". See {@link #getDefaultName()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.defaultEngineName:</code>
- * {@link String}, defaults to "js". See {@link #getDefaultEngineName()}.</li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag:</code>
+ * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.documentSource:</code>
  * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.engineManager:</code>
- * {@link ScriptEngineManager}, defaults to a new instance. See
- * {@link #getEngineManager()}.</li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.languageManager:</code>
+ * {@link LanguageManager}, defaults to a new instance. See
+ * {@link #getLanguageManager()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.sourceViewable:</code>
  * {@link Boolean}, defaults to false. See {@link #isSourceViewable()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.scriptletController:</code>
- * {@link ScriptletController}. See {@link #getScriptletController()}.</li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.executionController:</code>
+ * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.trailingSlashRequired:</code>
  * {@link Boolean}, defaults to true. See {@link #isTrailingSlashRequired()}.</li>
@@ -207,7 +206,7 @@ import com.threecrickets.scripturian.exception.DocumentRunException;
  * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
  * @author Tal Liron
- * @see Document
+ * @see Executable
  * @see DelegatedResource
  */
 public class GeneratedTextResource extends ServerResource
@@ -217,7 +216,7 @@ public class GeneratedTextResource extends ServerResource
 	//
 
 	/**
-	 * The {@link Writer} used by the {@link Document}.
+	 * The {@link Writer} used by the {@link Executable}.
 	 * 
 	 * @return The writer
 	 * @see #setWriter(Writer)
@@ -371,74 +370,74 @@ public class GeneratedTextResource extends ServerResource
 	 * specify one. Defaults to "js".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultEngineName</code>
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The default script engine name
 	 */
-	public String getDefaultEngineName()
+	public String getDefaultLanguageTag()
 	{
-		if( defaultEngineName == null )
+		if( defaultLanguageTag == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			defaultEngineName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultEngineName" );
+			defaultLanguageTag = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag" );
 
-			if( defaultEngineName == null )
-				defaultEngineName = "js";
+			if( defaultLanguageTag == null )
+				defaultLanguageTag = "js";
 		}
 
-		return defaultEngineName;
+		return defaultLanguageTag;
 	}
 
 	/**
-	 * An optional {@link ScriptletController} to be used with the scriptlets.
+	 * An optional {@link ExecutionController} to be used with the scriptlets.
 	 * Useful for adding your own global variables to the scriptlets.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.scriptletController</code>
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.executionController</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The script context controller or null if none used
 	 */
-	public ScriptletController getScriptletController()
+	public ExecutionController getExecutionController()
 	{
-		if( scriptletController == null )
+		if( executionController == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			scriptletController = (ScriptletController) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.scriptletController" );
+			executionController = (ExecutionController) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.executionController" );
 		}
 
-		return scriptletController;
+		return executionController;
 	}
 
 	/**
-	 * The {@link ScriptEngineManager} used to create the script engines for the
+	 * The {@link LanguageManager} used to create the script engines for the
 	 * scripts. Uses a default instance, but can be set to something else.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.engineManager</code>
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.languageManager</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The script engine manager
 	 */
-	public ScriptEngineManager getEngineManager()
+	public LanguageManager getLanguageManager()
 	{
-		if( scriptEngineManager == null )
+		if( languageManager == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			scriptEngineManager = (ScriptEngineManager) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.engineManager" );
+			languageManager = (LanguageManager) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.languageManager" );
 
-			if( scriptEngineManager == null )
+			if( languageManager == null )
 			{
-				scriptEngineManager = new ScriptEngineManager();
+				languageManager = new LanguageManager();
 
-				ScriptEngineManager existing = (ScriptEngineManager) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.engineManager", scriptEngineManager );
+				LanguageManager existing = (LanguageManager) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.languageManager", languageManager );
 				if( existing != null )
-					scriptEngineManager = existing;
+					languageManager = existing;
 			}
 		}
 
-		return scriptEngineManager;
+		return languageManager;
 	}
 
 	/**
@@ -452,12 +451,12 @@ public class GeneratedTextResource extends ServerResource
 	 * @return The document source
 	 */
 	@SuppressWarnings("unchecked")
-	public DocumentSource<Document> getDocumentSource()
+	public DocumentSource<Executable> getDocumentSource()
 	{
 		if( documentSource == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			documentSource = (DocumentSource<Document>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentSource" );
+			documentSource = (DocumentSource<Executable>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentSource" );
 
 			if( documentSource == null )
 				throw new RuntimeException( "Attribute com.threecrickets.prudence.GeneratedTextResource.documentSource must be set in context to use GeneratedTextResource" );
@@ -574,21 +573,21 @@ public class GeneratedTextResource extends ServerResource
 	 * @see #isSourceViewable()
 	 */
 	@SuppressWarnings("unchecked")
-	public DocumentFormatter<Document> getDocumentFormatter()
+	public DocumentFormatter<Executable> getDocumentFormatter()
 	{
 		if( documentFormatter == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			documentFormatter = (DocumentFormatter<Document>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentFormatter" );
+			documentFormatter = (DocumentFormatter<Executable>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentFormatter" );
 
 			if( documentFormatter == null )
 			{
 				// documentFormatter = new SyntaxHighlighterDocumentFormatter();
 				// documentFormatter = new
 				// PygmentsDocumentFormatter<Document>();
-				documentFormatter = new JygmentsDocumentFormatter<Document>();
+				documentFormatter = new JygmentsDocumentFormatter<Executable>();
 
-				DocumentFormatter<Document> existing = (DocumentFormatter<Document>) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.documentFormatter", documentFormatter );
+				DocumentFormatter<Executable> existing = (DocumentFormatter<Executable>) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.documentFormatter", documentFormatter );
 				if( existing != null )
 					documentFormatter = existing;
 			}
@@ -675,15 +674,15 @@ public class GeneratedTextResource extends ServerResource
 	// Private
 
 	/**
-	 * The {@link ScriptEngineManager} used to create the script engines for the
+	 * The {@link LanguageManager} used to create the script engines for the
 	 * scripts.
 	 */
-	private volatile ScriptEngineManager scriptEngineManager;
+	private volatile LanguageManager languageManager;
 
 	/**
 	 * The {@link DocumentSource} used to fetch scripts.
 	 */
-	private volatile DocumentSource<Document> documentSource;
+	private volatile DocumentSource<Executable> documentSource;
 
 	/**
 	 * If the URL points to a directory rather than a file, and that directory
@@ -695,7 +694,7 @@ public class GeneratedTextResource extends ServerResource
 	 * The default script engine name to be used if the script doesn't specify
 	 * one.
 	 */
-	private volatile String defaultEngineName;
+	private volatile String defaultLanguageTag;
 
 	/**
 	 * The default character set to be used if the client does not specify it.
@@ -703,9 +702,9 @@ public class GeneratedTextResource extends ServerResource
 	private volatile CharacterSet defaultCharacterSet;
 
 	/**
-	 * An optional {@link ScriptletController} to be used with the scripts.
+	 * An optional {@link ExecutionController} to be used with the scripts.
 	 */
-	private volatile ScriptletController scriptletController;
+	private volatile ExecutionController executionController;
 
 	/**
 	 * Whether or not trailing slashes are required for all requests.
@@ -742,7 +741,7 @@ public class GeneratedTextResource extends ServerResource
 	private volatile Writer errorWriter = new StringWriter();
 
 	/**
-	 * The {@link Writer} used by the {@link Document}.
+	 * The {@link Writer} used by the {@link Executable}.
 	 */
 	private volatile Writer writer;
 
@@ -754,7 +753,7 @@ public class GeneratedTextResource extends ServerResource
 	/**
 	 * The document formatter.
 	 */
-	private volatile DocumentFormatter<Document> documentFormatter;
+	private volatile DocumentFormatter<Executable> documentFormatter;
 
 	/**
 	 * Constant.
@@ -814,8 +813,8 @@ public class GeneratedTextResource extends ServerResource
 						{
 						}
 					}
-					DocumentDescriptor<Document> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
-					DocumentFormatter<Document> documentFormatter = getDocumentFormatter();
+					DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
+					DocumentFormatter<Executable> documentFormatter = getDocumentFormatter();
 					if( documentFormatter != null )
 						return new StringRepresentation( documentFormatter.format( documentDescriptor, name, lineNumber ), MediaType.TEXT_HTML );
 					else
@@ -826,7 +825,8 @@ public class GeneratedTextResource extends ServerResource
 			// Run document and represent its output
 			ExposedContainerForGeneratedTextResource container = new ExposedContainerForGeneratedTextResource( this, entity, variant, getCache() );
 			Representation representation = container.includeDocument( name );
-			//getResponse().getCacheDirectives().add( CacheDirective.maxAge( 10000 ) );
+			// getResponse().getCacheDirectives().add( CacheDirective.maxAge(
+			// 10000 ) );
 
 			if( representation == null )
 				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
@@ -844,11 +844,11 @@ public class GeneratedTextResource extends ServerResource
 		{
 			throw new ResourceException( x );
 		}
-		catch( DocumentInitializationException x )
+		catch( ExecutableInitializationException x )
 		{
 			throw new ResourceException( x );
 		}
-		catch( DocumentRunException x )
+		catch( ExecutionException x )
 		{
 			if( getResponse().getStatus().isSuccess() )
 				// An unintended document exception

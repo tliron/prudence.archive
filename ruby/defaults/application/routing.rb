@@ -3,12 +3,12 @@
 #
 
 import java.lang.ClassLoader
-import javax.script.ScriptEngineManager
 import org.restlet.routing.Router
 import org.restlet.routing.Redirector
 import org.restlet.routing.Template
 import org.restlet.resource.Finder
 import org.restlet.resource.Directory
+import com.threecrickets.scripturian.LanguageManager
 import com.threecrickets.scripturian.DefrostTask
 import com.threecrickets.scripturian.file.DocumentFileSource
 import com.threecrickets.prudence.util.PrudenceRouter
@@ -99,10 +99,10 @@ end
 # Dynamic web
 #
 
-$script_engine_manager = ScriptEngineManager.new
+$language_manager = LanguageManager.new
 $dynamic_web_document_source = DocumentFileSource.new($application_base_path + $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_minimum_time_between_validity_checks)
-$attributes['com.threecrickets.prudence.GeneratedTextResource.engineManager'] = $script_engine_manager
-$attributes['com.threecrickets.prudence.GeneratedTextResource.defaultEngineName'] = 'ruby'
+$attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = $language_manager
+$attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'ruby'
 $attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = $dynamic_web_default_document
 $attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source
 $attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = $dynamic_web_source_viewable
@@ -111,7 +111,7 @@ $dynamic_web = Finder.new($application.context, $class_loader.load_class('com.th
 $router.attach_base fix_url($dynamic_web_base_url), $dynamic_web
 
 if $dynamic_web_defrost
-	defrost_tasks = DefrostTask::for_document_source $dynamic_web_document_source, $script_engine_manager, true
+	defrost_tasks = DefrostTask::for_document_source $dynamic_web_document_source, $language_manager, true
 	for defrost_task in defrost_tasks
 		$tasks << defrost_task
 	end
@@ -131,8 +131,8 @@ $router.attach_base fix_url($static_web_base_url), $static_web
 #
 
 $resources_document_source = DocumentFileSource.new($application_base_path + $resources_base_path, $resources_default_name, $resources_minimum_time_between_validity_checks)
-$attributes['com.threecrickets.prudence.DelegatedResource.engineManager'] = $script_engine_manager
-$attributes['com.threecrickets.prudence.DelegatedResource.defaultEngineName'] = 'ruby'
+$attributes['com.threecrickets.prudence.DelegatedResource.languageManager'] = $language_manager
+$attributes['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'ruby'
 $attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = $resources_default_name
 $attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = $resources_document_source
 $attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = $resources_source_viewable
@@ -141,7 +141,7 @@ $resources = Finder.new($application.context, $class_loader.load_class('com.thre
 $router.attach_base fix_url($resources_base_url), $resources
 
 if $resources_defrost
-	defrost_tasks = DefrostTask::for_document_source $resources_document_source, $script_engine_manager, true
+	defrost_tasks = DefrostTask::for_document_source $resources_document_source, $language_manager, true
 	for defrost_task in defrost_tasks
 		$tasks << defrost_task
 	end

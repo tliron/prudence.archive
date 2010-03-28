@@ -14,12 +14,12 @@ importClass(
 
 function includeOrDefault(name, def) {
 	try {
-		document.container.include(name);
+		executable.container.include(name);
 	} catch(e if e.javaException instanceof FileNotFoundException) {
 		if(!def) {
 			def = 'defaults/' + name;
 		}
-		document.container.include(def);
+		executable.container.include(def);
 	}
 }
 

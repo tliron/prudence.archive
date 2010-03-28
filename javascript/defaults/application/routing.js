@@ -5,12 +5,12 @@
 importClass(
 	java.lang.ClassLoader,
 	java.io.File,
-	javax.script.ScriptEngineManager,
 	org.restlet.routing.Router,
 	org.restlet.routing.Redirector,
 	org.restlet.routing.Template,
 	org.restlet.resource.Finder,
 	org.restlet.resource.Directory,
+	com.threecrickets.scripturian.LanguageManager,
 	com.threecrickets.scripturian.DefrostTask,
 	com.threecrickets.scripturian.file.DocumentFileSource,
 	com.threecrickets.prudence.util.PrudenceRouter,
@@ -100,10 +100,10 @@ for(var i in urlAddTrailingSlash) {
 // Dynamic web
 //
 
-var scriptEngineManager = new ScriptEngineManager();
+var languageManager = new LanguageManager();
 var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.engineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultEngineName', 'rhino-nonjdk');
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager);
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'rhino-nonjdk');
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
@@ -112,7 +112,7 @@ var dynamicWeb = new Finder(application.context, classLoader.loadClass('com.thre
 router.attachBase(fixURL(dynamicWebBaseURL), dynamicWeb);
 
 if(dynamicWebDefrost) {
-	var defrostTasks = DefrostTask.forDocumentSource(dynamicWebDocumentSource, scriptEngineManager, true);
+	var defrostTasks = DefrostTask.forDocumentSource(dynamicWebDocumentSource, languageManager, true);
 	for(var i in defrostTasks) {
 		tasks.push(defrostTasks[i]);
 	}
@@ -132,8 +132,8 @@ router.attachBase(fixURL(staticWebBaseURL), staticWeb);
 //
 
 var resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, resourcesMinimumTimeBetweenValidityChecks);
-attributes.put('com.threecrickets.prudence.DelegatedResource.engineManager', scriptEngineManager);
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultEngineName', 'rhino-nonjdk');
+attributes.put('com.threecrickets.prudence.DelegatedResource.languageManager', languageManager);
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultLanguageTag', 'rhino-nonjdk');
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName);
 attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource);
 attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable);
@@ -142,7 +142,7 @@ resources = new Finder(application.context, classLoader.loadClass('com.threecric
 router.attachBase(fixURL(resourcesBaseURL), resources);
 
 if(resourcesDefrost) {
-	var defrostTasks = DefrostTask.forDocumentSource(resourcesDocumentSource, scriptEngineManager, true);
+	var defrostTasks = DefrostTask.forDocumentSource(resourcesDocumentSource, languageManager, true);
 	for(var i in defrostTasks) {
 		tasks.push(defrostTasks[i]);
 	}

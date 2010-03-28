@@ -1,4 +1,4 @@
-<%velocity #set($document.cacheDuration=5000) %><%& '../fragments/header' %>
+<%velocity #set($executable.cacheDuration=5000) %><%& '../fragments/header' %>
 
 <script>
 function call(verb) {
@@ -85,20 +85,20 @@ function seeMainSource() {
 <p>
 	<i>Resource:</i>
 	<select id="resource">
-<% #if($document.engineManager.getEngineByName('jython')) %>
+<% #if($executable.context.manager.getAdapterByTag('jython')) %>
 		<option value="../data/jython/">Python</option>
 <% #end %>
 		<!-- <option value="../data/jepp/">Python (Jepp) [BROKEN]</option> -->
-<% #if($document.engineManager.getEngineByName('ruby')) %>
+<% #if($executable.context.manager.getAdapterByTag('ruby')) %>
 		<option value="../data/jruby/">Ruby</option>
 <% #end %>
-<% #if($document.engineManager.getEngineByName('groovy')) %>
+<% #if($executable.context.manager.getAdapterByTag('groovy')) %>
 		<option value="../data/groovy/">Groovy</option>
 <% #end %>
-<% #if($document.engineManager.getEngineByName('Clojure')) %>
+<% #if($executable.context.manager.getAdapterByTag('Clojure')) %>
 		<option value="../data/clojure/">Clojure</option>
 <% #end %>
-<% #if($document.engineManager.getEngineByName('javascript')) %>
+<% #if($executable.context.manager.getAdapterByTag('javascript')) %>
 		<option value="../data/rhino/">JavaScript</option>
 <% #end %>
 		<!-- <option value="../data/quercus/">PHP [BROKEN]</option> -->

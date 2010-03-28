@@ -23,7 +23,7 @@
 	#end
 #end
 
-#set($document.cacheDuration=5000)
+#set($executable.cacheDuration=5000)
 
 ##
 ## Calling Java
@@ -54,26 +54,26 @@ context.setAttribute('currentTimeMillis', String(java.lang.System.currentTimeMil
 ## An example of a macro
 ##
 
-#macro(printFactory $factory)
+#macro(printAdapter $adapter)
 	<p>
-	<i>Engine:</i> $factory.engineName version $factory.engineVersion <br />
-	<i>Language:</i> $factory.languageName version $factory.languageVersion <br />
-	<i>Names:</i> 
-	#set($size = $factory.names.size())
-	#foreach($name in $factory.names)
-		$name#if($velocityCount < $size),#end
+	<i>Adapter:</i> $adapter.attributes.get('name') version $adapter.attributes.get('version') <br />
+	<i>Language:</i> $adapter.attributes.get('language.name') version $adapter.attributes.get('language.version') <br />
+	<i>Tags:</i> 
+	#set($size = $adapter.attributes.get('tags').size())
+	#foreach($tag in $adapter.attributes.get('tags'))
+		$tag#if($velocityCount < $size),#end
 	#end
 #end
 
-<h3>Script engine used:</h3>
-#printFactory($document.engine.factory)
-<h3>Available script engines:</h3>
-#foreach($factory in $document.engineManager.engineFactories)
-	#printFactory($factory)
+<h3>Language used:</h3>
+#printAdapter($executable.context.adapter)
+<h3>Available languages:</h3>
+#foreach($adapter in $executable.context.manager.adapters)
+	#printAdapter($adapter)
 #end
 </td><td>
 <h3>The "id" attribute in the URL query is:</h3>
-<p>$form.getFirstValue('id')</p>
+<p>$!form.getFirstValue('id')</p>
 <h3>A few tests:</h3>
 <p>
 #foreach($i in [0..9])

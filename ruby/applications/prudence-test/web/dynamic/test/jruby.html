@@ -23,7 +23,7 @@ if form.get_first_value('stream') == 'true'
 	end
 end
 
-@document.cache_duration = 5000
+@executable.cache_duration = 5000
 
 #
 # Calling Java
@@ -49,17 +49,17 @@ print '<p>This page was dynamically generated at ', System::current_time_millis,
 # An example of a method
 #
 
-def print_factory factory
+def print_adapter adapter
 %>
 <p>
-	<i>Engine:</i> <%= factory.engine_name %> version <%= factory.engine_version %><br />
-	<i>Language:</i> <%= factory.language_name %> version <%= factory.language_version %><br />
-	<i>Names:</i> 
+	<i>Adapter:</i> <%= adapter.attributes['name'] %> version <%= adapter.attributes['version'] %><br />
+	<i>Language:</i> <%= adapter.attributes['language.name'] %> version <%= adapter.attributes['language.version'] %><br />
+	<i>Tags:</i> 
 <%
-	names = factory.names.to_array
-	for i in 0 .. names.length - 1
-		print names[i]
-		if i < names.length - 1
+	tags = adapter.attributes['tags'].to_array
+	for i in 0 .. tags.length - 1
+		print tags[i]
+		if i < tags.length - 1
 			print ', '
 		end
 	end
@@ -69,15 +69,15 @@ def print_factory factory
 end
 
 %>
-<h3>Script engine used:</h3>
+<h3>Language used:</h3>
 <%
-print_factory @document.engine.factory
+print_adapter @executable.context.adapter
 %>
-<h3>Available script engines:</h3>
+<h3>Available languages:</h3>
 <%
-factories = @document.engine_manager.engine_factories.to_array
-for factory in factories
-	print_factory factory
+adapters = @executable.context.manager.adapters.to_array
+for adapter in adapters
+	print_adapter adapter
 end
 %>
 </td><td>

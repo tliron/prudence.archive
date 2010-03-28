@@ -164,7 +164,7 @@ end
 
 def handleDelete
 
-	set_state {}
+	set_state({})
 
 	return nil
 	

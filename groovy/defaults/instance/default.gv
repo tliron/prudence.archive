@@ -13,12 +13,12 @@ import com.threecrickets.prudence.util.MessageTask
 
 includeOrDefault = { name, deflt = null ->
 	try {
-		document.container.include(name)
+		executable.container.include(name)
 	} catch(FileNotFoundException) {
 		if(!deflt) {
 			deflt = 'defaults/' + name
 		}
-		document.container.include(deflt)
+		executable.container.include(deflt)
 	}
 }
 

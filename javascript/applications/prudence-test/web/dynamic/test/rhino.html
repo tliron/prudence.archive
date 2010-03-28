@@ -23,7 +23,7 @@ if(form.getFirstValue('stream') == 'true') if(prudence.stream()) throw null;
 // Calling Java
 //
 
-document.cacheDuration = 5000;
+executable.cacheDuration = 5000;
 print('<p>This page was dynamically generated at ' + java.lang.System.currentTimeMillis() + '</p>');
 
 //
@@ -42,17 +42,17 @@ print('<p>This page was dynamically generated at ' + java.lang.System.currentTim
 // An example of a function
 //
 
-function printFactory(factory) {
+function printAdapter(adapter) {
 %>
 <p>
-	<i>Engine:</i> <%= factory.engineName %> version <%= factory.engineVersion %><br />
-	<i>Language:</i> <%= factory.languageName %> version <%= factory.languageVersion %><br />
-	<i>Names:</i> 
+	<i>Adapter:</i> <%= adapter.attributes.get('name') %> version <%= adapter.attributes.get('version') %><br />
+	<i>Language:</i> <%= adapter.attributes.get('language.name') %> version <%= adapter.attributes.get('language.version') %><br />
+	<i>Tags:</i> 
 <%
-	var names = factory.names.toArray();
-	for(var i = 0; i < names.length; i++) {
-		print(names[i]);
-		if(i < names.length - 1) {
+	var tags = adapter.attributes.get('tags').toArray();
+	for(var i = 0; i < tags.length; i++) {
+		print(tags[i]);
+		if(i < tags.length - 1) {
 			print(', ');
 		}
 	}
@@ -61,15 +61,15 @@ function printFactory(factory) {
 <%
 }
 %>
-<h3>Script engine used:</h3>
+<h3>Language used:</h3>
 <%
-printFactory(document.engine.factory);
+printAdapter(executable.context.adapter);
 %>
-<h3>Available script engines:</h3>
+<h3>Available languages:</h3>
 <%
-var factories = document.engineManager.engineFactories.toArray();
-for(var i = 0; i < factories.length; i++) {
-	printFactory(factories[i]);
+var adapters = executable.context.manager.adapters.toArray();
+for(var i = 0; i < adapters.length; i++) {
+	printAdapter(adapters[i]);
 }
 %>
 </td><td>

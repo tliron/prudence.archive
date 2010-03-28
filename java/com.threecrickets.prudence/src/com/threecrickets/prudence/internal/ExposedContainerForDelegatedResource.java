@@ -29,14 +29,14 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 
 import com.threecrickets.prudence.DelegatedResource;
-import com.threecrickets.scripturian.Document;
-import com.threecrickets.scripturian.DocumentContext;
+import com.threecrickets.scripturian.ExecutionController;
+import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentSource;
-import com.threecrickets.scripturian.ScriptletController;
-import com.threecrickets.scripturian.Scripturian;
-import com.threecrickets.scripturian.exception.DocumentInitializationException;
-import com.threecrickets.scripturian.exception.DocumentRunException;
+import com.threecrickets.scripturian.LanguageAdapter;
+import com.threecrickets.scripturian.exception.ExecutableInitializationException;
+import com.threecrickets.scripturian.exception.ExecutionException;
 
 /**
  * This is the <code>prudence</code> variable exposed to scriptlets.
@@ -97,7 +97,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 		if( characterSet == null )
 			characterSet = resource.getDefaultCharacterSet();
 
-		documentContext = new DocumentContext( resource.getEngineManager() );
+		executionContext = new ExecutionContext( resource.getLanguageManager() );
 	}
 
 	/**
@@ -516,7 +516,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 * 
 	 * @return The document source
 	 */
-	public DocumentSource<Document> getSource()
+	public DocumentSource<Executable> getSource()
 	{
 		return resource.getDocumentSource();
 	}
@@ -602,10 +602,10 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 * @param name
 	 *        The script name
 	 * @throws IOException
-	 * @throws DocumentInitializationException
-	 * @throws DocumentRunException
+	 * @throws ExecutableInitializationException
+	 * @throws ExecutionException
 	 */
-	public void includeDocument( String name ) throws IOException, DocumentInitializationException, DocumentRunException
+	public void includeDocument( String name ) throws IOException, ExecutableInitializationException, ExecutionException
 	{
 		if( resource.isTrailingSlashRequired() )
 		{
@@ -616,22 +616,22 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 		if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
 			name = resource.getDefaultName();
 
-		DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
-		Document document = documentDescriptor.getDocument();
+		Executable document = documentDescriptor.getDocument();
 		if( document == null )
 		{
 			String text = documentDescriptor.getText();
-			document = new Document( name, text, false, this.resource.getEngineManager(), resource.getDefaultEngineName(), resource.getDocumentSource(), resource.isAllowCompilation() );
+			document = new Executable( name, text, true, this.resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource.isAllowCompilation() );
 
-			Document existing = documentDescriptor.setDocumentIfAbsent( document );
+			Executable existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
 				document = existing;
 		}
 
-		PrudenceScriptletController<ExposedContainerForDelegatedResource> scriptletController = new PrudenceScriptletController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
-			.getScriptletController() );
-		document.run( false, false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, scriptletController );
+		PrudenceExecutionController<ExposedContainerForDelegatedResource> executionController = new PrudenceExecutionController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
+			.getExecutionController() );
+		document.execute( false, false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
 	}
 
 	/**
@@ -642,10 +642,10 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 * @param name
 	 *        The script name
 	 * @throws IOException
-	 * @throws DocumentInitializationException
-	 * @throws DocumentRunException
+	 * @throws ExecutableInitializationException
+	 * @throws ExecutionException
 	 */
-	public void include( String name ) throws IOException, DocumentInitializationException, DocumentRunException
+	public void include( String name ) throws IOException, ExecutableInitializationException, ExecutionException
 	{
 		if( resource.isTrailingSlashRequired() )
 		{
@@ -656,23 +656,23 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 		if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
 			name = resource.getDefaultName();
 
-		DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
-		Document document = documentDescriptor.getDocument();
+		Executable document = documentDescriptor.getDocument();
 		if( document == null )
 		{
-			String scriptEngineName = Scripturian.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), resource.getEngineManager() );
+			LanguageAdapter adapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
 			String text = documentDescriptor.getText();
-			document = new Document( name, text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
+			document = new Executable( name, text, false, resource.getLanguageManager(), (String) adapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource.getDocumentSource(), resource.isAllowCompilation() );
 
-			Document existing = documentDescriptor.setDocumentIfAbsent( document );
+			Executable existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
 				document = existing;
 		}
 
-		PrudenceScriptletController<ExposedContainerForDelegatedResource> scriptletController = new PrudenceScriptletController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
-			.getScriptletController() );
-		document.run( false, false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, scriptletController );
+		PrudenceExecutionController<ExposedContainerForDelegatedResource> executionController = new PrudenceExecutionController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
+			.getExecutionController() );
+		document.execute( false, false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
 	}
 
 	/**
@@ -682,7 +682,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 *        Name of entry point
 	 * @return Result of invocation
 	 * @throws ResourceException
-	 * @see {@link Document#invoke(String, Object, ScriptletController)}
+	 * @see {@link Executable#invoke(String, Object, ExecutionController)}
 	 */
 	public Object invoke( String entryPointName ) throws ResourceException
 	{
@@ -699,43 +699,41 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 
 		try
 		{
-			DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
-			PrudenceScriptletController<ExposedContainerForDelegatedResource> scriptletController = new PrudenceScriptletController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
-				.getScriptletController() );
+			DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
+			PrudenceExecutionController<ExposedContainerForDelegatedResource> executionController = new PrudenceExecutionController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
+				.getExecutionController() );
 
-			Document document = documentDescriptor.getDocument();
+			Executable document = documentDescriptor.getDocument();
 			if( document == null )
 			{
-				String scriptEngineName = Scripturian.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), resource.getEngineManager() );
+				LanguageAdapter adapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
 				String text = documentDescriptor.getText();
-				document = new Document( name, text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
-				Document existing = documentDescriptor.setDocumentIfAbsent( document );
+				document = new Executable( name, text, false, resource.getLanguageManager(), (String) adapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource.getDocumentSource(), resource
+					.isAllowCompilation() );
+				Executable existing = documentDescriptor.setDocumentIfAbsent( document );
 
 				if( existing != null )
 					document = existing;
 			}
 
 			// Must run document once and only once
-			document.run( true, false, resource.getWriter(), resource.getErrorWriter(), true, documentContext, this, scriptletController );
+			document.execute( true, false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
 
-			return document.invoke( entryPointName, this, scriptletController );
+			return document.invoke( entryPointName, this, executionController );
 		}
 		catch( FileNotFoundException x )
 		{
-			// TODO: restlet bug; not setting the status correctly for thrown
-			// exceptions with causes
-			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-			// throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
+			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
 		}
 		catch( IOException x )
 		{
 			throw new ResourceException( x );
 		}
-		catch( DocumentInitializationException x )
+		catch( ExecutableInitializationException x )
 		{
 			throw new ResourceException( x );
 		}
-		catch( DocumentRunException x )
+		catch( ExecutionException x )
 		{
 			throw new ResourceException( x );
 		}
@@ -813,5 +811,5 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	/**
 	 * The document context.
 	 */
-	private final DocumentContext documentContext;
+	private final ExecutionContext executionContext;
 }

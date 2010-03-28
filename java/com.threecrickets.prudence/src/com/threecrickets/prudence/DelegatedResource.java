@@ -18,8 +18,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.script.ScriptEngineManager;
-
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.data.CharacterSet;
@@ -38,15 +36,16 @@ import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.internal.ExposedContainerForDelegatedResource;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
-import com.threecrickets.scripturian.Document;
+import com.threecrickets.scripturian.ExecutionController;
+import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentFormatter;
 import com.threecrickets.scripturian.DocumentSource;
-import com.threecrickets.scripturian.ScriptletController;
+import com.threecrickets.scripturian.LanguageManager;
 
 /**
  * A Restlet resource which delegates functionality to a Scripturian
- * {@link Document} with well-defined entry points. The entry points must be
+ * {@link Executable} with well-defined entry points. The entry points must be
  * global functions, closures, or whatever other technique the language engine
  * uses to make entry points available to Java. They entry points are:
  * <ul>
@@ -124,7 +123,7 @@ import com.threecrickets.scripturian.ScriptletController;
  * A special container environment is created for scriptlets, with some useful
  * services. It is available to scriptlets as a global variable named
  * <code>prudence</code>. For some other global variables available to
- * scriptlets, see {@link Document}.
+ * scriptlets, see {@link Executable}.
  * <p>
  * Operations:
  * <ul>
@@ -207,9 +206,9 @@ import com.threecrickets.scripturian.ScriptletController;
  * string.</li>
  * </ul>
  * <p>
- * In addition to the above, a {@link ScriptletController} can be set to add
+ * In addition to the above, a {@link ExecutionController} can be set to add
  * your own global variables to each composite script. See
- * {@link #getScriptletController()}.
+ * {@link #getExecutionController()}.
  * <p>
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
@@ -226,8 +225,8 @@ import com.threecrickets.scripturian.ScriptletController;
  * <li><code>com.threecrickets.prudence.DelegatedResource.defaultName:</code>
  * {@link String}, defaults to "default.script". See {@link #getDefaultName()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.defaultEngineName:</code>
- * {@link String}, defaults to "js". See {@link #getDefaultEngineName()}.</li>
+ * <code>com.threecrickets.prudence.DelegatedResource.defaultLanguageTag:</code>
+ * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.documentFormatter:</code>
  * {@link DocumentFormatter}. See {@link #getDocumentFormatter()}.</li>
@@ -235,9 +234,9 @@ import com.threecrickets.scripturian.ScriptletController;
  * <code>com.threecrickets.prudence.DelegatedResource.documentSource:</code>
  * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.engineManager:</code>
- * {@link ScriptEngineManager}, defaults to a new instance. See
- * {@link #getEngineManager()}.</li>
+ * <code>com.threecrickets.prudence.DelegatedResource.languageManager:</code>
+ * {@link LanguageManager}, defaults to a new instance. See
+ * {@link #getLanguageManager()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForDelete:</code>
  * {@link String}, defaults to "handleDelete". See
@@ -269,8 +268,8 @@ import com.threecrickets.scripturian.ScriptletController;
  * <li><code>com.threecrickets.prudence.DelegatedResource.errorWriter:</code>
  * {@link Writer}, defaults to standard error. See {@link #getErrorWriter()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.scriptletController:</code>
- * {@link ScriptletController}. See {@link #getScriptletController()}.</li>
+ * <code>com.threecrickets.prudence.DelegatedResource.executionController:</code>
+ * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.sourceViewable:</code>
  * {@link Boolean}, defaults to false. See {@link #isSourceViewable()}.</li>
@@ -286,7 +285,7 @@ import com.threecrickets.scripturian.ScriptletController;
  * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
  * @author Tal Liron
- * @see Document
+ * @see Executable
  * @see GeneratedTextResource
  */
 public class DelegatedResource extends ServerResource
@@ -296,7 +295,7 @@ public class DelegatedResource extends ServerResource
 	//
 
 	/**
-	 * The {@link Writer} used by the {@link Document}. Defaults to standard
+	 * The {@link Writer} used by the {@link Executable}. Defaults to standard
 	 * output.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
@@ -422,23 +421,23 @@ public class DelegatedResource extends ServerResource
 	 * one. Defaults to "js".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.defaultEngineName</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.defaultLanguageTag</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The default script engine name
 	 */
-	public String getDefaultEngineName()
+	public String getDefaultLanguageTag()
 	{
-		if( defaultEngineName == null )
+		if( defaultLanguageTag == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			defaultEngineName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultEngineName" );
+			defaultLanguageTag = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultLanguageTag" );
 
-			if( defaultEngineName == null )
-				defaultEngineName = "js";
+			if( defaultLanguageTag == null )
+				defaultLanguageTag = "js";
 		}
 
-		return defaultEngineName;
+		return defaultLanguageTag;
 	}
 
 	/**
@@ -610,54 +609,54 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * An optional {@link ScriptletController} to be used with the document.
+	 * An optional {@link ExecutionController} to be used with the document.
 	 * Useful for adding your own global variables to the document.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.scriptletController</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.executionController</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The script context controller or null if none used
 	 */
-	public ScriptletController getScriptletController()
+	public ExecutionController getExecutionController()
 	{
-		if( scriptletController == null )
+		if( executionController == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			scriptletController = (ScriptletController) attributes.get( "com.threecrickets.prudence.DelegatedResource.scriptletController" );
+			executionController = (ExecutionController) attributes.get( "com.threecrickets.prudence.DelegatedResource.executionController" );
 		}
 
-		return scriptletController;
+		return executionController;
 	}
 
 	/**
-	 * The {@link ScriptEngineManager} used to create the script engines. Uses a
+	 * The {@link LanguageManager} used to create the script engines. Uses a
 	 * default instance, but can be set to something else.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.engineManager</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.languageManager</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The script engine manager
 	 */
-	public ScriptEngineManager getEngineManager()
+	public LanguageManager getLanguageManager()
 	{
-		if( engineManager == null )
+		if( languageManager == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			engineManager = (ScriptEngineManager) attributes.get( "com.threecrickets.prudence.DelegatedResource.engineManager" );
+			languageManager = (LanguageManager) attributes.get( "com.threecrickets.prudence.DelegatedResource.languageManager" );
 
-			if( engineManager == null )
+			if( languageManager == null )
 			{
-				engineManager = new ScriptEngineManager();
+				languageManager = new LanguageManager();
 
-				ScriptEngineManager existing = (ScriptEngineManager) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.engineManager", engineManager );
+				LanguageManager existing = (LanguageManager) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.languageManager", languageManager );
 				if( existing != null )
-					engineManager = existing;
+					languageManager = existing;
 			}
 		}
 
-		return engineManager;
+		return languageManager;
 	}
 
 	/**
@@ -671,12 +670,12 @@ public class DelegatedResource extends ServerResource
 	 * @return The document source
 	 */
 	@SuppressWarnings("unchecked")
-	public DocumentSource<Document> getDocumentSource()
+	public DocumentSource<Executable> getDocumentSource()
 	{
 		if( documentSource == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			documentSource = (DocumentSource<Document>) attributes.get( "com.threecrickets.prudence.DelegatedResource.documentSource" );
+			documentSource = (DocumentSource<Executable>) attributes.get( "com.threecrickets.prudence.DelegatedResource.documentSource" );
 
 			if( documentSource == null )
 				throw new RuntimeException( "Attribute com.threecrickets.prudence.DelegatedResource.documentSource must be set in context to use ScriptResource" );
@@ -769,21 +768,21 @@ public class DelegatedResource extends ServerResource
 	 * @see #isSourceViewable()
 	 */
 	@SuppressWarnings("unchecked")
-	public DocumentFormatter<Document> getDocumentFormatter()
+	public DocumentFormatter<Executable> getDocumentFormatter()
 	{
 		if( documentFormatter == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			documentFormatter = (DocumentFormatter<Document>) attributes.get( "com.threecrickets.prudence.DelegatedResource.documentFormatter" );
+			documentFormatter = (DocumentFormatter<Executable>) attributes.get( "com.threecrickets.prudence.DelegatedResource.documentFormatter" );
 
 			if( documentFormatter == null )
 			{
 				// documentFormatter = new SyntaxHighlighterDocumentFormatter();
 				// documentFormatter = new
 				// PygmentsDocumentFormatter<Document>();
-				documentFormatter = new JygmentsDocumentFormatter<Document>();
+				documentFormatter = new JygmentsDocumentFormatter<Executable>();
 
-				DocumentFormatter<Document> existing = (DocumentFormatter<Document>) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.documentFormatter", documentFormatter );
+				DocumentFormatter<Executable> existing = (DocumentFormatter<Executable>) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.documentFormatter", documentFormatter );
 				if( existing != null )
 					documentFormatter = existing;
 			}
@@ -871,8 +870,8 @@ public class DelegatedResource extends ServerResource
 				}
 				try
 				{
-					DocumentDescriptor<Document> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
-					DocumentFormatter<Document> documentFormatter = getDocumentFormatter();
+					DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
+					DocumentFormatter<Executable> documentFormatter = getDocumentFormatter();
 					if( documentFormatter != null )
 						return new StringRepresentation( documentFormatter.format( documentDescriptor, name, lineNumber ), MediaType.TEXT_HTML );
 					else
@@ -1051,10 +1050,10 @@ public class DelegatedResource extends ServerResource
 	// Private
 
 	/**
-	 * The {@link ScriptEngineManager} used to create the script engines for the
+	 * The {@link LanguageManager} used to create the script engines for the
 	 * scripts.
 	 */
-	private volatile ScriptEngineManager engineManager;
+	private volatile LanguageManager languageManager;
 
 	/**
 	 * Whether or not trailing slashes are required for all requests.
@@ -1070,7 +1069,7 @@ public class DelegatedResource extends ServerResource
 	/**
 	 * The {@link DocumentSource} used to fetch scripts.
 	 */
-	private volatile DocumentSource<Document> documentSource;
+	private volatile DocumentSource<Executable> documentSource;
 
 	/**
 	 * If the URL points to a directory rather than a file, and that directory
@@ -1082,7 +1081,7 @@ public class DelegatedResource extends ServerResource
 	 * The default script engine name to be used if the script doesn't specify
 	 * one.
 	 */
-	private volatile String defaultEngineName;
+	private volatile String defaultLanguageTag;
 
 	/**
 	 * The default character set to be used if the client does not specify it.
@@ -1090,9 +1089,9 @@ public class DelegatedResource extends ServerResource
 	private volatile CharacterSet defaultCharacterSet;
 
 	/**
-	 * An optional {@link ScriptletController} to be used with the scripts.
+	 * An optional {@link ExecutionController} to be used with the scripts.
 	 */
-	private volatile ScriptletController scriptletController;
+	private volatile ExecutionController executionController;
 
 	/**
 	 * The name of the <code>handleInit()</code> entry point in the script.
@@ -1136,7 +1135,7 @@ public class DelegatedResource extends ServerResource
 	private volatile Boolean sourceViewable;
 
 	/**
-	 * The {@link Writer} used by the {@link Document}.
+	 * The {@link Writer} used by the {@link Executable}.
 	 */
 	private volatile Writer writer = new OutputStreamWriter( System.out );
 
@@ -1153,7 +1152,7 @@ public class DelegatedResource extends ServerResource
 	/**
 	 * The document formatter.
 	 */
-	private volatile DocumentFormatter<Document> documentFormatter;
+	private volatile DocumentFormatter<Executable> documentFormatter;
 
 	/**
 	 * Constant.

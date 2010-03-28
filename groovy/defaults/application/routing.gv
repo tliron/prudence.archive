@@ -4,12 +4,12 @@
 
 import java.lang.ClassLoader
 import java.io.File
-import javax.script.ScriptEngineManager
 import org.restlet.routing.Router
 import org.restlet.routing.Redirector
 import org.restlet.routing.Template
 import org.restlet.resource.Finder
 import org.restlet.resource.Directory
+import com.threecrickets.scripturian.LanguageManager
 import com.threecrickets.scripturian.DefrostTask
 import com.threecrickets.scripturian.file.DocumentFileSource
 import com.threecrickets.prudence.util.PrudenceRouter
@@ -98,10 +98,10 @@ for(url in urlAddTrailingSlash) {
 // Dynamic web
 //
 
-scriptEngineManager = new ScriptEngineManager()
+languageManager = new LanguageManager()
 dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.engineManager', scriptEngineManager)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultEngineName', 'groovy')
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager)
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'groovy')
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument)
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource)
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable)
@@ -110,7 +110,7 @@ dynamicWeb = new Finder(application.context, classLoader.loadClass('com.threecri
 router.attachBase(fixURL(dynamicWebBaseURL), dynamicWeb)
 
 if(dynamicWebDefrost) {
-	defrostTasks = DefrostTask.forDocumentSource(dynamicWebDocumentSource, scriptEngineManager, true)
+	defrostTasks = DefrostTask.forDocumentSource(dynamicWebDocumentSource, languageManager, true)
 	for(defrostTask in defrostTasks) {
 		tasks.push(defrostTask)
 	}
@@ -130,8 +130,8 @@ router.attachBase(fixURL(staticWebBaseURL), staticWeb)
 //
 
 resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, resourcesMinimumTimeBetweenValidityChecks)
-attributes.put('com.threecrickets.prudence.DelegatedResource.engineManager', scriptEngineManager)
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultEngineName', 'groovy')
+attributes.put('com.threecrickets.prudence.DelegatedResource.languageManager', languageManager)
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultLanguageTag', 'groovy')
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName)
 attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource)
 attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable)
@@ -140,7 +140,7 @@ resources = new Finder(application.context, classLoader.loadClass('com.threecric
 router.attachBase(fixURL(resourcesBaseURL), resources)
 
 if(resourcesDefrost) {
-	defrostTasks = DefrostTask.forDocumentSource(resourcesDocumentSource, scriptEngineManager, true)
+	defrostTasks = DefrostTask.forDocumentSource(resourcesDocumentSource, languageManager, true)
 	for(defrostTask in defrostTasks) {
 		tasks.push(defrostTask)
 	}

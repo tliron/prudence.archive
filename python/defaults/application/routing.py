@@ -4,11 +4,10 @@
 
 from java.lang import ClassLoader
 from java.io import File
-from javax.script import ScriptEngineManager
 
 from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Finder, Directory
-from com.threecrickets.scripturian import DefrostTask
+from com.threecrickets.scripturian import LanguageManager, DefrostTask
 from com.threecrickets.scripturian.file import DocumentFileSource
 from com.threecrickets.prudence.util import PrudenceRouter, PreheatTask
 
@@ -82,10 +81,10 @@ for url in url_add_trailing_slash:
 # Dynamic web
 #
 
-script_engine_manager = ScriptEngineManager()
+language_manager = LanguageManager()
 dynamic_web_document_source = DocumentFileSource(application_base_path + dynamic_web_base_path, dynamic_web_default_document, dynamic_web_minimum_time_between_validity_checks)
-attributes['com.threecrickets.prudence.GeneratedTextResource.engineManager'] = script_engine_manager
-attributes['com.threecrickets.prudence.GeneratedTextResource.defaultEngineName'] = 'python'
+attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = language_manager
+attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'python'
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamic_web_default_document
 attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamic_web_document_source
 attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
@@ -94,7 +93,7 @@ dynamic_web = Finder(application.context, classLoader.loadClass('com.threecricke
 router.attachBase(fix_url(dynamic_web_base_url), dynamic_web)
 
 if dynamic_web_defrost:
-	for defrost_task in DefrostTask.forDocumentSource(dynamic_web_document_source, script_engine_manager, True):
+	for defrost_task in DefrostTask.forDocumentSource(dynamic_web_document_source, language_manager, True):
 		tasks.append(defrost_task)
 
 #
@@ -111,8 +110,8 @@ router.attachBase(fix_url(static_web_base_url), static_web)
 #
 
 resources_document_source = DocumentFileSource(application_base_path + resources_base_path, resources_default_name, resources_minimum_time_between_validity_checks)
-attributes['com.threecrickets.prudence.DelegatedResource.engineManager'] = script_engine_manager
-attributes['com.threecrickets.prudence.DelegatedResource.defaultEngineName'] = 'python'
+attributes['com.threecrickets.prudence.DelegatedResource.languageManager'] = language_manager
+attributes['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'python'
 attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resources_default_name
 attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = resources_document_source
 attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resources_source_viewable
@@ -121,7 +120,7 @@ resources = Finder(application.context, classLoader.loadClass('com.threecrickets
 router.attachBase(fix_url(resources_base_url), resources)
 
 if resources_defrost:
-	for defrost_task in DefrostTask.forDocumentSource(resources_document_source, script_engine_manager, True):
+	for defrost_task in DefrostTask.forDocumentSource(resources_document_source, language_manager, True):
 		tasks.append(defrost_task)
 
 #

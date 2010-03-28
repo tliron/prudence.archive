@@ -21,7 +21,7 @@ import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 
 import com.threecrickets.scripturian.DefrostTask;
-import com.threecrickets.scripturian.Document;
+import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentSource;
 
@@ -51,12 +51,12 @@ public class PreheatTask implements Runnable
 	 *        The internal application name
 	 * @return An array of tasks
 	 */
-	public static PreheatTask[] forDocumentSource( DocumentSource<Document> documentSource, Context context, String applicationInternalName )
+	public static PreheatTask[] forDocumentSource( DocumentSource<Executable> documentSource, Context context, String applicationInternalName )
 	{
-		Collection<DocumentDescriptor<Document>> documentDescriptors = documentSource.getDocumentDescriptors();
+		Collection<DocumentDescriptor<Executable>> documentDescriptors = documentSource.getDocumentDescriptors();
 		PreheatTask[] preheatTasks = new PreheatTask[documentDescriptors.size()];
 		int i = 0;
-		for( DocumentDescriptor<Document> documentDescriptor : documentDescriptors )
+		for( DocumentDescriptor<Executable> documentDescriptor : documentDescriptors )
 			preheatTasks[i++] = new PreheatTask( context, applicationInternalName, documentDescriptor.getDefaultName() );
 
 		return preheatTasks;

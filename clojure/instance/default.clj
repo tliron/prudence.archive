@@ -2,4 +2,4 @@
 ; Prudence Instance
 ;
 
-(.. document getContainer (include "defaults/instance"))
+(.. executable getContainer (include "defaults/instance"))

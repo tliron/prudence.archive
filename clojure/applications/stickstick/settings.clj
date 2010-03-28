@@ -2,7 +2,7 @@
 ; Prudence Admin Settings
 ;
 
-(.. document getContainer (include "defaults/application/settings"))
+(.. executable getContainer (include "defaults/application/settings"))
 
 (def application-name "Stickstick")
 (def application-description "Share online sticky notes")

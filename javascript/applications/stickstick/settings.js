@@ -2,7 +2,7 @@
 // Stickstick Settings
 //
 
-document.container.include('defaults/application/settings');
+executable.container.include('defaults/application/settings');
 
 applicationName = 'Stickstick';
 applicationDescription = 'Share online sticky notes';

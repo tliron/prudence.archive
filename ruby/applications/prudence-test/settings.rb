@@ -2,7 +2,7 @@
 # Prudence Test Settings
 #
 
-@document.container.include 'defaults/application/settings'
+@executable.container.include 'defaults/application/settings'
 
 $application_name = 'Prudence Test'
 $application_description = 'Used to test that Prudence works for you, and useful as a skeleton for creating your own applications'

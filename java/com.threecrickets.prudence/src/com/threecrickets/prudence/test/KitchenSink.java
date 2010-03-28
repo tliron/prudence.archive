@@ -16,16 +16,8 @@ import org.junit.BeforeClass;
 import com.threecrickets.scripturian.Scripturian;
 
 /**
- * Results:
- * 
- * Rhino 8.2
- * Quercus 43
- * Jython 6.4
- * Jepp 54.1
- * JRuby 6.3
- * Groovy 7.4
- * Clojure 9.9
- * Velocity 7.2
+ * Results: Rhino 8.2 Quercus 43 Jython 6.4 Jepp 54.1 JRuby 6.3 Groovy 7.4
+ * Clojure 9.9 Velocity 7.2
  * 
  * @author Tal Liron
  */
@@ -77,25 +69,20 @@ public class KitchenSink extends MultiTest
 
 	private static Runnable[] prudenceTests = new Runnable[]
 	{
-		new TestOK( "/prudence-test/" ),
-		new TestRedirected( "/prudence-test" ),
+		new TestOK( "/prudence-test/" ), new TestRedirected( "/prudence-test" ),
 		// /web/static/
 		new TestOK( "/prudence-test/style/soft-cricket.css" ),
 		// /web/dynamic/
 		new TestOK( "/prudence-test/test/rhino/?id=hello" ),
-		//new TestOK( "/prudence-test/test/quercus/?id=hello" ),
+		// new TestOK( "/prudence-test/test/quercus/?id=hello" ),
 		new TestOK( "/prudence-test/test/jython/?id=hello" ),
-		//new TestOK( "/prudence-test/test/jepp/?id=hello" ),
-		new TestOK( "/prudence-test/test/jruby/?id=hello" ),
-		new TestOK( "/prudence-test/test/groovy/?id=hello" ),
-		new TestOK( "/prudence-test/test/clojure/?id=hello" ),
-		new TestOK( "/prudence-test/test/velocity/?id=hello" ),
+		// new TestOK( "/prudence-test/test/jepp/?id=hello" ),
+		// new TestOK( "/prudence-test/test/jruby/?id=hello" ),
+		new TestOK( "/prudence-test/test/groovy/?id=hello" ), new TestOK( "/prudence-test/test/clojure/?id=hello" ), new TestOK( "/prudence-test/test/velocity/?id=hello" ),
 		// /resources/
 		new TestOK( "/prudence-test/data/jython/" ),
-		new TestOK( "/prudence-test/data/jruby/" ),
-		new TestOK( "/prudence-test/data/groovy/" ),
-		new TestOK( "/prudence-test/data/clojure/" ),
-		new TestOK( "/prudence-test/data/rhino/" )
+		// new TestOK( "/prudence-test/data/jruby/" ),
+		new TestOK( "/prudence-test/data/groovy/" ), new TestOK( "/prudence-test/data/clojure/" ), new TestOK( "/prudence-test/data/rhino/" )
 	};
 
 	private static Runnable[] stickstickTests = new Runnable[]

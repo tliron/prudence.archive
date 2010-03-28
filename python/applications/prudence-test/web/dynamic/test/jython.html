@@ -21,7 +21,7 @@ if form.getFirstValue('stream') == 'true':
 	if prudence.stream():
 		raise
 
-document.setCacheDuration(5000)
+executable.setCacheDuration(5000)
 
 #
 # Calling Java
@@ -51,28 +51,28 @@ sys.stdout.write('<p>This page was dynamically generated at %s</p>' % System.cur
 # An example of a method
 #
 
-def printFactory(factory):
+def print_adapter(adapter):
 	%><p>
-	<i>Engine:</i> <%= factory.engineName %> version <%= factory.engineVersion %><br />
-	<i>Language:</i> <%= factory.languageName %> version <%= factory.languageVersion %><br />
-	<i>Names:</i> <%
-	names = factory.names.toArray()
-	for i in range(len(names)):
-		sys.stdout.write(names[i])
-		if i < len(names) - 1:
+	<i>Adapter:</i> <%= adapter.attributes['name'] %> version <%= adapter.attributes['version'] %><br />
+	<i>Language:</i> <%= adapter.attributes['language.name'] %> version <%= adapter.attributes['language.version'] %><br />
+	<i>Tags:</i> <%
+	tags = adapter.attributes['tags'].toArray()
+	for i in range(len(tags)):
+		sys.stdout.write(tags[i])
+		if i < len(tags) - 1:
 			sys.stdout.write(', ')
 	%></p><%
 
 %>
-<h3>Script engine used:</h3>
+<h3>Language used:</h3>
 <%
-printFactory(document.engine.factory)
+print_adapter(executable.context.adapter)
 %>
-<h3>Available script engines:</h3>
+<h3>Available languages:</h3>
 <%
-factories = document.engineManager.engineFactories.toArray()
-for factory in factories:
-	printFactory(factory)
+adapters = executable.context.manager.adapters.toArray()
+for adapter in adapters:
+	print_adapter(adapter)
 %>
 </td><td>
 <h3>The "id" attribute in the URL query is:</h3>
@@ -82,7 +82,7 @@ for factory in factories:
 <%
 for i in range(10):
 	%>A multiple of three: <%
-	printTriple(i)
+	print_triple(i)
 	%><br /><%
 
 %>

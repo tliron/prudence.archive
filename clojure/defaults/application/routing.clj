@@ -5,12 +5,12 @@
 (import
 	'java.lang.ClassLoader
 	'java.io.File
-	'javax.script.ScriptEngineManager
 	'org.restlet.routing.Router
 	'org.restlet.routing.Redirector
 	'org.restlet.routing.Template
 	'org.restlet.resource.Finder
 	'org.restlet.resource.Directory
+	'com.threecrickets.scripturian.LanguageManager
 	'com.threecrickets.scripturian.DefrostTask
 	'com.threecrickets.scripturian.file.DocumentFileSource
 	'com.threecrickets.prudence.util.PrudenceRouter
@@ -85,10 +85,10 @@
 ; Dynamic web
 ;
 
-(def script-engine-manager (ScriptEngineManager.))
+(def language-manager (LanguageManager.))
 (def dynamic-web-document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document (.longValue dynamic-web-minimum-time-between-validity-checks)))
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.engineManager" script-engine-manager)
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultEngineName" "Clojure")
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.languageManager" language-manager)
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag" "clojure")
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.documentSource" dynamic-web-document-source)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" dynamic-web-source-viewable)
@@ -97,7 +97,7 @@
 (.attachBase router (fix-url dynamic-web-base-url) dynamic-web)
 
 (if dynamic-web-defrost
-	(doseq [defrost-task (DefrostTask/forDocumentSource dynamic-web-document-source, script-engine-manager, true)]
+	(doseq [defrost-task (DefrostTask/forDocumentSource dynamic-web-document-source, language-manager, true)]
 		(def tasks (conj tasks defrost-task))))
 
 ;
@@ -114,8 +114,8 @@
 ;
 
 (def resources-document-source (DocumentFileSource. (str application-base-path resources-base-path) resources-default-name (.longValue resources-minimum-time-between-validity-checks))) 
-(.put attributes "com.threecrickets.prudence.DelegatedResource.engineManager" script-engine-manager)
-(.put attributes "com.threecrickets.prudence.DelegatedResource.defaultEngineName" "Clojure")
+(.put attributes "com.threecrickets.prudence.DelegatedResource.languageManager" language-manager)
+(.put attributes "com.threecrickets.prudence.DelegatedResource.defaultLanguageTag" "clojure")
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultName" resources-default-name)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.documentSource" resources-document-source)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.sourceViewable" resources-source-viewable)
@@ -124,7 +124,7 @@
 (.attachBase router (fix-url resources-base-url) resources)
 
 (if resources-defrost
-	(doseq [defrost-task (DefrostTask/forDocumentSource resources-document-source script-engine-manager true)]
+	(doseq [defrost-task (DefrostTask/forDocumentSource resources-document-source language-manager true)]
 		(def tasks (conj tasks defrost-task))))
 
 ;

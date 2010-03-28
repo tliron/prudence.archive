@@ -19,11 +19,11 @@ import org.restlet.data.Language;
 import org.restlet.representation.WriterRepresentation;
 
 import com.threecrickets.prudence.GeneratedTextResource;
-import com.threecrickets.scripturian.Document;
-import com.threecrickets.scripturian.DocumentContext;
-import com.threecrickets.scripturian.ScriptletController;
-import com.threecrickets.scripturian.exception.DocumentInitializationException;
-import com.threecrickets.scripturian.exception.DocumentRunException;
+import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.ExecutionContext;
+import com.threecrickets.scripturian.ExecutionController;
+import com.threecrickets.scripturian.exception.ExecutableInitializationException;
+import com.threecrickets.scripturian.exception.ExecutionException;
 
 /**
  * Representation used in streaming mode of {@link GeneratedTextResource}.
@@ -44,17 +44,17 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	 *        The resource
 	 * @param container
 	 *        The container
-	 * @param documentContext
+	 * @param executionContext
 	 *        The document context
-	 * @param scriptletController
+	 * @param executionController
 	 *        The scriptlet controller
 	 * @param document
 	 *        The document instance
 	 * @param flushLines
 	 *        Whether to flush the writers after every line
 	 */
-	public GeneratedTextStreamingRepresentation( GeneratedTextResource resource, ExposedContainerForGeneratedTextResource container, DocumentContext documentContext, ScriptletController scriptletController,
-		Document document, boolean flushLines )
+	public GeneratedTextStreamingRepresentation( GeneratedTextResource resource, ExposedContainerForGeneratedTextResource container, ExecutionContext executionContext, ExecutionController executionController,
+		Executable document, boolean flushLines )
 	{
 		// Note that we are setting representation characteristics
 		// before we actually run the document
@@ -62,8 +62,8 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 
 		this.resource = resource;
 		this.container = container;
-		this.documentContext = documentContext;
-		this.scriptletController = scriptletController;
+		this.executionContext = executionContext;
+		this.executionController = executionController;
 		this.flushLines = flushLines;
 
 		setCharacterSet( container.getCharacterSet() );
@@ -89,15 +89,15 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		resource.setWriter( writer );
 		try
 		{
-			document.run( false, false, writer, resource.getErrorWriter(), flushLines, documentContext, container, scriptletController );
+			document.execute( false, false, writer, resource.getErrorWriter(), flushLines, executionContext, container, executionController );
 		}
-		catch( DocumentInitializationException x )
+		catch( ExecutableInitializationException x )
 		{
 			IOException iox = new IOException( "DocumentParseException" );
 			iox.initCause( x );
 			throw iox;
 		}
-		catch( DocumentRunException x )
+		catch( ExecutionException x )
 		{
 			IOException iox = new IOException( "DocumentRunException" );
 			iox.initCause( x );
@@ -127,17 +127,17 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	/**
 	 * The document instance.
 	 */
-	private final Document document;
+	private final Executable document;
 
 	/**
 	 * The scriptlet controller.
 	 */
-	private final ScriptletController scriptletController;
+	private final ExecutionController executionController;
 
 	/**
 	 * The document context.
 	 */
-	private final DocumentContext documentContext;
+	private final ExecutionContext executionContext;
 
 	/**
 	 * Whether to flush the writers after every line.

@@ -2,7 +2,7 @@
 
 (defn get-context-attribute [name get-default-value]
 	(let
-		[value (.. document getContainer getResource getContext getAttributes (get name))]
+		[value (.. executable getContainer getResource getContext getAttributes (get name))]
 		(if (nil? value)
 			(let
 				[value (get-default-value)]
@@ -11,7 +11,7 @@
 				; We'll make sure there is no duplication.
 		
 				(let
-					[existing (.. document getContainer getResource getContext getAttributes (putIfAbsent name value))]
+					[existing (.. executable getContainer getResource getContext getAttributes (putIfAbsent name value))]
 					(if (nil? existing)
 						value
 						existing

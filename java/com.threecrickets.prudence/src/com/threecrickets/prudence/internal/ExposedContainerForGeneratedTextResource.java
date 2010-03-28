@@ -28,13 +28,13 @@ import org.restlet.representation.Variant;
 
 import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.prudence.util.RepresentableString;
-import com.threecrickets.scripturian.Document;
-import com.threecrickets.scripturian.DocumentContext;
+import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentSource;
-import com.threecrickets.scripturian.Scripturian;
-import com.threecrickets.scripturian.exception.DocumentInitializationException;
-import com.threecrickets.scripturian.exception.DocumentRunException;
+import com.threecrickets.scripturian.LanguageAdapter;
+import com.threecrickets.scripturian.exception.ExecutableInitializationException;
+import com.threecrickets.scripturian.exception.ExecutionException;
 
 /**
  * This is the <code>prudence</code> variable exposed to scriptlets.
@@ -77,7 +77,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		if( characterSet == null )
 			characterSet = resource.getDefaultCharacterSet();
 
-		documentContext = new DocumentContext( resource.getEngineManager() );
+		executionContext = new ExecutionContext( resource.getLanguageManager() );
 	}
 
 	//
@@ -344,7 +344,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 * 
 	 * @return The document source
 	 */
-	public DocumentSource<Document> getSource()
+	public DocumentSource<Executable> getSource()
 	{
 		return resource.getDocumentSource();
 	}
@@ -418,20 +418,20 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 *        The script name
 	 * @return A representation of the script's output
 	 * @throws IOException
-	 * @throws DocumentInitializationException
-	 * @throws DocumentRunException
+	 * @throws ExecutableInitializationException
+	 * @throws ExecutionException
 	 */
-	public Representation includeDocument( String name ) throws IOException, DocumentInitializationException, DocumentRunException
+	public Representation includeDocument( String name ) throws IOException, ExecutableInitializationException, ExecutionException
 	{
-		DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
-		Document document = documentDescriptor.getDocument();
+		Executable document = documentDescriptor.getDocument();
 		if( document == null )
 		{
 			String text = documentDescriptor.getText();
-			document = new Document( name, text, false, resource.getEngineManager(), resource.getDefaultEngineName(), resource.getDocumentSource(), resource.isAllowCompilation() );
+			document = new Executable( name, text, true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource.isAllowCompilation() );
 
-			Document existing = documentDescriptor.setDocumentIfAbsent( document );
+			Executable existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
 				document = existing;
 		}
@@ -442,7 +442,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 			setMediaType( resource.getMetadataService().getMediaType( documentDescriptor.getTag() ) );
 		}
 
-		return run( document );
+		return execute( document );
 	}
 
 	/**
@@ -454,26 +454,26 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 *        The script name
 	 * @return A representation of the script's output
 	 * @throws IOException
-	 * @throws DocumentInitializationException
-	 * @throws DocumentRunException
+	 * @throws ExecutableInitializationException
+	 * @throws ExecutionException
 	 */
-	public Representation include( String name ) throws IOException, DocumentInitializationException, DocumentRunException
+	public Representation include( String name ) throws IOException, ExecutableInitializationException, ExecutionException
 	{
-		DocumentDescriptor<Document> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
 
-		Document document = documentDescriptor.getDocument();
+		Executable document = documentDescriptor.getDocument();
 		if( document == null )
 		{
-			String scriptEngineName = Scripturian.getScriptEngineNameByExtension( name, documentDescriptor.getTag(), resource.getEngineManager() );
+			LanguageAdapter adapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
 			String text = documentDescriptor.getText();
-			document = new Document( name, text, true, resource.getEngineManager(), scriptEngineName, resource.getDocumentSource(), resource.isAllowCompilation() );
+			document = new Executable( name, text, false, resource.getLanguageManager(), (String) adapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource.getDocumentSource(), resource.isAllowCompilation() );
 
-			Document existing = documentDescriptor.setDocumentIfAbsent( document );
+			Executable existing = documentDescriptor.setDocumentIfAbsent( document );
 			if( existing != null )
 				document = existing;
 		}
 
-		return run( document );
+		return execute( document );
 	}
 
 	/**
@@ -585,33 +585,33 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	/**
 	 * The document context.
 	 */
-	private final DocumentContext documentContext;
+	private final ExecutionContext executionContext;
 
 	/**
 	 * The actual running of the document.
 	 * 
-	 * @param document
+	 * @param executable
 	 *        The document
 	 * @return A representation
 	 * @throws IOException
-	 * @throws DocumentInitializationException
-	 * @throws DocumentRunException
+	 * @throws ExecutableInitializationException
+	 * @throws ExecutionException
 	 */
-	private Representation run( Document document ) throws IOException, DocumentInitializationException, DocumentRunException
+	private Representation execute( Executable executable ) throws IOException, ExecutableInitializationException, ExecutionException
 	{
-		String name = document.getName();
+		String name = executable.getName();
 
 		boolean isStreaming = isStreaming();
 		Writer writer = resource.getWriter();
 
 		// Special handling for trivial scripts
-		String trivial = document.getTrivial();
+		String trivial = executable.getAsPlainText();
 		if( trivial != null )
 		{
 			if( writer != null )
 				writer.write( trivial );
 
-			return new RepresentableString( trivial, getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? document.getExpiration() : 0 ).represent();
+			return new RepresentableString( trivial, getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? executable.getExpiration() : 0 ).represent();
 		}
 
 		int startPosition = 0;
@@ -636,9 +636,9 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		try
 		{
 			// Do not allow caching in streaming mode
-			PrudenceScriptletController<ExposedContainerForGeneratedTextResource> scriptletController = new PrudenceScriptletController<ExposedContainerForGeneratedTextResource>( this, resource.getContainerName(),
-				resource.getScriptletController() );
-			if( document.run( false, !isStreaming, writer, resource.getErrorWriter(), false, documentContext, this, scriptletController ) )
+			PrudenceExecutionController<ExposedContainerForGeneratedTextResource> executionController = new PrudenceExecutionController<ExposedContainerForGeneratedTextResource>( this, resource.getContainerName(),
+				resource.getExecutionController() );
+			if( executable.execute( false, !isStreaming, writer, resource.getErrorWriter(), false, executionContext, this, executionController ) )
 			{
 				// Did the script ask us to start streaming?
 				if( startStreaming )
@@ -646,7 +646,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 					startStreaming = false;
 
 					// Note that this will cause the script to run again!
-					return new GeneratedTextStreamingRepresentation( resource, this, documentContext, resource.getScriptletController(), document, flushLines );
+					return new GeneratedTextStreamingRepresentation( resource, this, executionContext, resource.getExecutionController(), executable, flushLines );
 				}
 
 				if( isStreaming )
@@ -659,7 +659,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 					writer.flush();
 
 					// Get the buffer from when we ran the script
-					RepresentableString string = new RepresentableString( buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? document.getExpiration()
+					RepresentableString string = new RepresentableString( buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? executable.getExpiration()
 						: 0 );
 
 					// Cache it
@@ -669,7 +669,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 					if( startPosition == 0 )
 						return string.represent();
 					else
-						return new RepresentableString( buffer.toString(), getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? document.getExpiration() : 0 ).represent();
+						return new RepresentableString( buffer.toString(), getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? executable.getExpiration() : 0 ).represent();
 				}
 			}
 			else
@@ -687,7 +687,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 					return null;
 			}
 		}
-		catch( DocumentRunException x )
+		catch( ExecutionException x )
 		{
 			// Did the script ask us to start streaming?
 			if( startStreaming )
@@ -695,7 +695,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 				startStreaming = false;
 
 				// Note that this will cause the script to run again!
-				return new GeneratedTextStreamingRepresentation( resource, this, documentContext, resource.getScriptletController(), document, flushLines );
+				return new GeneratedTextStreamingRepresentation( resource, this, executionContext, resource.getExecutionController(), executable, flushLines );
 
 				// Note that we will allow exceptions in scripts that ask us
 				// to start streaming! In fact, throwing an exception is a

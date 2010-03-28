@@ -2,7 +2,7 @@
 # Prudence Admin Settings
 #
 
-@document.container.include 'defaults/application/settings'
+@executable.container.include 'defaults/application/settings'
 
 $application_name = 'Prudence Admin'
 $application_description = 'Runtime management of Prudence'

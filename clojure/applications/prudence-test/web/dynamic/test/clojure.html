@@ -5,20 +5,20 @@
 </head>
 <body>
 <table width="100%"><tr valign="top"><td>
-<%Clojure
+<%clojure
 
 ;
 ; Accessing the request
 ;
 
-(def form (.. document getContainer getResource getRequest getResourceRef getQueryAsForm))
+(def form (.. executable getContainer getResource getRequest getResourceRef getQueryAsForm))
 
 ;
 ; Stream this script
 ;
 
 (if (= (.getFirstValue form "stream") "true") 
-	(if (.. document getContainer stream)
+	(if (.. executable getContainer stream)
 		(throw nil)
 	)
 )
@@ -27,7 +27,7 @@
 ; Calling Java
 ;
 
-(.setCacheDuration document 5000)
+(.setCacheDuration executable 5000)
 (print "<p>This page was dynamically generated at " (System/currentTimeMillis) "</p>")
 
 ;
@@ -35,7 +35,7 @@
 ;
 ; This is identical to:
 ;
-;   (.. document getContainer (includeDocument "path"))
+;   (.. executable getContainer (includeDocument "path"))
 ;
 
 %>
@@ -46,35 +46,35 @@
 ; An example of a function
 ;
 
-(defn print-factory [f]
-	(let [factory (bean f)]
+(defn print-adapter [adapter]
+	(let [attributes (.getAttributes adapter)]
 %>
 <p>
-	<i>Engine:</i> <%= (:engineName factory) %> version <%= (:engineVersion factory) %><br />
-	<i>Language:</i> <%= (:languageName factory) %> version <%= (:languageVersion factory) %><br />
-	<i>Names:</i> 
+	<i>Engine:</i> <%= (get attributes "name") %> version <%= (get attributes "version") %><br />
+	<i>Language:</i> <%= (get attributes "language.name") %> version <%= (get attributes "language.version") %><br />
+	<i>Tags:</i> 
 <%
-		(def names (:names factory))
-		(doseq [name (butlast names)]
-			(print name)
+		(def tags (get attributes "tags"))
+		(doseq [tag (butlast tags)]
+			(print tag)
 			(print ", ")
 		)
-		(print (last names))
+		(print (last tags))
 %>
 </p>
 <%
 	)
 )
 %>
-<h3>Script engine used:</h3>
+<h3>Language used:</h3>
 <%
-(print-factory (.. document getEngine getFactory))
+(print-adapter (.. executable getContext getAdapter))
 %>
-<h3>Available script engines:</h3>
+<h3>Available languages:</h3>
 <%
-(def factories (.. document getEngineManager getEngineFactories))
-(doseq [factory factories]
-	(print-factory factory)
+(def adapters (.. executable getContext getManager getAdapters))
+(doseq [adapter adapters]
+	(print-adapter adapter)
 )
 %>
 </td><td>

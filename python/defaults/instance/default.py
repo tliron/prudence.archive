@@ -12,11 +12,11 @@ from com.threecrickets.prudence.util import DelegatedStatusService, MessageTask
 
 def include_or_default(name, default=None):
 	try:
-		document.container.include(name)
+		executable.container.include(name)
 	except FileNotFoundException:
 		if default is None:
 			default = 'defaults/' + name 
-		document.container.include(default)
+		executable.container.include(default)
 
 tasks = []
 

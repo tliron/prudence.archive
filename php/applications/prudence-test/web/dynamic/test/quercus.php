@@ -19,7 +19,7 @@ $form = $prudence->resource->request->resourceRef->queryAsForm;
 
 if($form->getFirstValue('stream') == 'true') if($prudence->stream()) exit();
 
-$document->cacheDuration = 5000;
+$executable->cacheDuration = 5000;
 
 //
 // Calling Java
@@ -46,17 +46,17 @@ print '<p>This page was dynamically generated at ' . System::currentTimeMillis()
 // An example of a function
 //
 
-function printFactory($factory) {
+function printAdapter($adapter) {
 ?>
 <p>
-	<i>Engine:</i> <?= $factory->engineName ?> version <?= $factory->engineVersion ?><br />
-	<i>Language:</i> <?= $factory->languageName ?> version <?= $factory->languageVersion ?><br />
-	<i>Names:</i> 
+	<i>Adapter:</i> <?= $adapter->attributes->get('name') ?> version <?= $adapter->attributes->get('version') ?><br />
+	<i>Language:</i> <?= $adapter->attributes->get('language.name') ?> version <?= $adapter->attributes->get('language.version') ?><br />
+	<i>Tags:</i> 
 <?
-	$names = $factory->names->toArray();
-	for($i = 0; $i < count($names); $i++) {
-		print($names[$i]);
-		if($i < count($names) - 1) {
+	$tags = $adapter->attributes->get('tags')->toArray();
+	for($i = 0; $i < count($tags); $i++) {
+		print($tags[$i]);
+		if($i < count($tags) - 1) {
 			print ', ';
 		}
 	}
@@ -65,15 +65,15 @@ function printFactory($factory) {
 <?
 }
 ?>
-<h3>Script engine used:</h3>
+<h3>Language used:</h3>
 <?
-printFactory($document->engine->factory);
+printAdapter($executable->context->adapter);
 ?>
-<h3>Available script engines:</h3>
+<h3>Available languages:</h3>
 <?
-$factories = $document->engineManager->engineFactories->toArray();
-foreach($factories as $factory) {
-	printFactory($factory);
+$adapters = $executable->context->manager->adapters->toArray();
+foreach($adapters as $adapter) {
+	printAdapter($adapter);
 }
 ?>
 </td><td>

@@ -23,7 +23,7 @@ if(form.getFirstValue('stream') == 'true') {
 	}
 }
 
-document.cacheDuration = 5000
+executable.cacheDuration = 5000
 
 //
 // Calling Java
@@ -47,17 +47,17 @@ print '<p>This page was dynamically generated at ' + System.currentTimeMillis() 
 // An example of a closure
 //
 
-def printFactory = { factory ->
+def printAdapter = { adapter ->
 %>
 <p>
-	<i>Engine:</i> <%= factory.engineName %> version <%= factory.engineVersion %><br />
-	<i>Language:</i> <%= factory.languageName %> version <%= factory.languageVersion %><br />
-	<i>Names:</i> 
+	<i>Adapter:</i> <%= adapter.attributes['name'] %> version <%= adapter.attributes['version'] %><br />
+	<i>Language:</i> <%= adapter.attributes['language.name'] %> version <%= adapter.attributes['language.version'] %><br />
+	<i>Tags:</i> 
 <%
-	names = factory.names.toArray()
-	for(i in 0 .. names.length - 1) {
-		print names[i]
-		if(i < names.length - 1) {
+	def tags = adapter.attributes['tags'].toArray()
+	for(def i in 0 .. tags.length - 1) {
+		print tags[i]
+		if(i < tags.length - 1) {
 			print ', '
 		}
 	}
@@ -67,15 +67,15 @@ def printFactory = { factory ->
 }
 
 %>
-<h3>Script engine used:</h3>
+<h3>Language used:</h3>
 <%
-printFactory document.engine.factory
+printAdapter executable.context.adapter
 %>
-<h3>Available script engines:</h3>
+<h3>Available languages:</h3>
 <%
-def factories = document.engineManager.engineFactories.toArray()
-for(def factory in factories){
-	printFactory factory
+def adapters = executable.context.manager.adapters
+for(def adapter in adapters) {
+	printAdapter adapter
 }
 %>
 </td><td>
