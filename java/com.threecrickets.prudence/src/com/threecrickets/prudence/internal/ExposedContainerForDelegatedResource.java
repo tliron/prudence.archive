@@ -29,11 +29,11 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 
 import com.threecrickets.prudence.DelegatedResource;
-import com.threecrickets.scripturian.ExecutionController;
-import com.threecrickets.scripturian.Executable;
-import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentSource;
+import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.ExecutionContext;
+import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageAdapter;
 import com.threecrickets.scripturian.exception.ExecutableInitializationException;
 import com.threecrickets.scripturian.exception.ExecutionException;
@@ -512,7 +512,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	}
 
 	/**
-	 * The {@link DocumentSource} used to fetch documents.
+	 * The {@link DocumentSource} used to fetch executables.
 	 * 
 	 * @return The document source
 	 */
@@ -600,7 +600,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 * included JRuby examples for a discussion of various ways to do this.
 	 * 
 	 * @param name
-	 *        The script name
+	 *        The document name
 	 * @throws IOException
 	 * @throws ExecutableInitializationException
 	 * @throws ExecutionException
@@ -618,20 +618,20 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 
 		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocument( name );
 
-		Executable document = documentDescriptor.getDocument();
-		if( document == null )
+		Executable executable = documentDescriptor.getDocument();
+		if( executable == null )
 		{
-			String text = documentDescriptor.getSourceCode();
-			document = new Executable( name, text, true, this.resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource.isAllowCompilation() );
+			String sourceCode = documentDescriptor.getSourceCode();
+			executable = new Executable( name, sourceCode, true, this.resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource.isAllowCompilation() );
 
-			Executable existing = documentDescriptor.setDocumentIfAbsent( document );
+			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 			if( existing != null )
-				document = existing;
+				executable = existing;
 		}
 
 		PrudenceExecutionController<ExposedContainerForDelegatedResource> executionController = new PrudenceExecutionController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
 			.getExecutionController() );
-		document.execute( false, false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
+		executable.execute( false, false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
 	}
 
 	/**
@@ -640,7 +640,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 * name's extension.
 	 * 
 	 * @param name
-	 *        The script name
+	 *        The document name
 	 * @throws IOException
 	 * @throws ExecutableInitializationException
 	 * @throws ExecutionException
@@ -658,21 +658,22 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 
 		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocument( name );
 
-		Executable document = documentDescriptor.getDocument();
-		if( document == null )
+		Executable executable = documentDescriptor.getDocument();
+		if( executable == null )
 		{
-			LanguageAdapter adapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
-			String text = documentDescriptor.getSourceCode();
-			document = new Executable( name, text, false, resource.getLanguageManager(), (String) adapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource.getDocumentSource(), resource.isAllowCompilation() );
+			LanguageAdapter languageAdapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
+			String sourceCode = documentDescriptor.getSourceCode();
+			executable = new Executable( name, sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource.getDocumentSource(), resource
+				.isAllowCompilation() );
 
-			Executable existing = documentDescriptor.setDocumentIfAbsent( document );
+			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 			if( existing != null )
-				document = existing;
+				executable = existing;
 		}
 
 		PrudenceExecutionController<ExposedContainerForDelegatedResource> executionController = new PrudenceExecutionController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
 			.getExecutionController() );
-		document.execute( false, false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
+		executable.execute( false, false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
 	}
 
 	/**
@@ -703,23 +704,23 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 			PrudenceExecutionController<ExposedContainerForDelegatedResource> executionController = new PrudenceExecutionController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
 				.getExecutionController() );
 
-			Executable document = documentDescriptor.getDocument();
-			if( document == null )
+			Executable executable = documentDescriptor.getDocument();
+			if( executable == null )
 			{
-				LanguageAdapter adapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
-				String text = documentDescriptor.getSourceCode();
-				document = new Executable( name, text, false, resource.getLanguageManager(), (String) adapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource.getDocumentSource(), resource
+				LanguageAdapter languageAdapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
+				String sourceCode = documentDescriptor.getSourceCode();
+				executable = new Executable( name, sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource.getDocumentSource(), resource
 					.isAllowCompilation() );
-				Executable existing = documentDescriptor.setDocumentIfAbsent( document );
+				Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 
 				if( existing != null )
-					document = existing;
+					executable = existing;
 			}
 
-			// Must run document once and only once
-			document.execute( true, false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
+			// Must run executable once and only once
+			executable.execute( true, false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
 
-			return document.invoke( entryPointName, this, executionController );
+			return executable.invoke( entryPointName, this, executionController );
 		}
 		catch( FileNotFoundException x )
 		{
@@ -809,7 +810,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	private Tag tag;
 
 	/**
-	 * The document context.
+	 * The execution context.
 	 */
 	private final ExecutionContext executionContext;
 }

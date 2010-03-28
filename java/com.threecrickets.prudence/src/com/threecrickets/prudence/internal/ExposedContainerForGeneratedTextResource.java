@@ -28,10 +28,10 @@ import org.restlet.representation.Variant;
 
 import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.prudence.util.RepresentableString;
-import com.threecrickets.scripturian.Executable;
-import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentSource;
+import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.LanguageAdapter;
 import com.threecrickets.scripturian.exception.ExecutableInitializationException;
 import com.threecrickets.scripturian.exception.ExecutionException;
@@ -340,7 +340,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	}
 
 	/**
-	 * The {@link DocumentSource} used to fetch documents.
+	 * The {@link DocumentSource} used to fetch executables.
 	 * 
 	 * @return The document source
 	 */
@@ -425,15 +425,15 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	{
 		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocument( name );
 
-		Executable document = documentDescriptor.getDocument();
-		if( document == null )
+		Executable executable = documentDescriptor.getDocument();
+		if( executable == null )
 		{
-			String text = documentDescriptor.getSourceCode();
-			document = new Executable( name, text, true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource.isAllowCompilation() );
+			String sourceCode = documentDescriptor.getSourceCode();
+			executable = new Executable( name, sourceCode, true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource.isAllowCompilation() );
 
-			Executable existing = documentDescriptor.setDocumentIfAbsent( document );
+			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 			if( existing != null )
-				document = existing;
+				executable = existing;
 		}
 
 		if( getMediaType() == null )
@@ -442,7 +442,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 			setMediaType( resource.getMetadataService().getMediaType( documentDescriptor.getTag() ) );
 		}
 
-		return execute( document );
+		return execute( executable );
 	}
 
 	/**
@@ -461,19 +461,20 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	{
 		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocument( name );
 
-		Executable document = documentDescriptor.getDocument();
-		if( document == null )
+		Executable executable = documentDescriptor.getDocument();
+		if( executable == null )
 		{
-			LanguageAdapter adapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
-			String text = documentDescriptor.getSourceCode();
-			document = new Executable( name, text, false, resource.getLanguageManager(), (String) adapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource.getDocumentSource(), resource.isAllowCompilation() );
+			LanguageAdapter languageAdapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
+			String sourceCode = documentDescriptor.getSourceCode();
+			executable = new Executable( name, sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource.getDocumentSource(), resource
+				.isAllowCompilation() );
 
-			Executable existing = documentDescriptor.setDocumentIfAbsent( document );
+			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 			if( existing != null )
-				document = existing;
+				executable = existing;
 		}
 
-		return execute( document );
+		return execute( executable );
 	}
 
 	/**
@@ -583,15 +584,15 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	private StringBuffer buffer;
 
 	/**
-	 * The document context.
+	 * The execution context.
 	 */
 	private final ExecutionContext executionContext;
 
 	/**
-	 * The actual running of the document.
+	 * The actual execution of an executable.
 	 * 
 	 * @param executable
-	 *        The document
+	 *        The executable
 	 * @return A representation
 	 * @throws IOException
 	 * @throws ExecutableInitializationException
@@ -604,14 +605,14 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		boolean isStreaming = isStreaming();
 		Writer writer = resource.getWriter();
 
-		// Special handling for trivial scripts
-		String trivial = executable.getAsPureText();
-		if( trivial != null )
+		// Special handling for pure text scripts
+		String pureText = executable.getAsPureText();
+		if( pureText != null )
 		{
 			if( writer != null )
-				writer.write( trivial );
+				writer.write( pureText );
 
-			return new RepresentableString( trivial, getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? executable.getExpiration() : 0 ).represent();
+			return new RepresentableString( pureText, getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? executable.getExpiration() : 0 ).represent();
 		}
 
 		int startPosition = 0;
