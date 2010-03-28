@@ -106,8 +106,8 @@
 		<attribute name="dist" />
 		<attribute name="name" />
 		<sequential>
-			<zip destfile="@{dist}/prudence-@{name}.zip" level="9">
-				<fileset dir="@{dist}/content" excludes="lib/cachedir/, resources/jython/*.class" />
+			<zip destfile="prudence-@{name}-R${revision.max}.zip" level="9">
+				<fileset dir="@{dist}/content" excludes="logs/, h2/, lib/cachedir/" />
 			</zip>
 		</sequential>
 	</macrodef>
@@ -127,6 +127,9 @@
 		<delete dir="${dist-clojure}" />
 		<delete dir="${dist-groovy}" />
 		<delete dir="${dist-ruby}" />
+		<delete>
+			<fileset dir="." includes="*.zip" />
+		</delete>
 	</target>
 
 	<target name="rebuild" depends="clean, build" description="Rebuild all distributions" />
@@ -215,7 +218,6 @@
 	<fetch-library dist="${dist-kitchensink}" library="jython" />
 	<fetch-library dist="${dist-kitchensink}" library="log4j" />
 	<fetch-library dist="${dist-kitchensink}" library="mysqlconnector" />
-	<fetch-library dist="${dist-kitchensink}" library="pygments" />
 	<fetch-library dist="${dist-kitchensink}" library="quercus" />
 	<fetch-library dist="${dist-kitchensink}" library="restlet" />
 	<fetch-library dist="${dist-kitchensink}" library="rhino" />
@@ -365,7 +367,6 @@
 	<fetch-library dist="${dist-python}" library="jython" />
 	<fetch-library dist="${dist-python}" library="log4j" />
 	<fetch-library dist="${dist-python}" library="mysqlconnector" />
-	<fetch-library dist="${dist-python}" library="pygments" />
 	<fetch-library dist="${dist-python}" library="restlet" />
 	<fetch-library dist="${dist-python}" library="scripturian" />
 	<fetch-library dist="${dist-python}" library="slf4j" />
@@ -405,7 +406,6 @@
 	<fetch-library dist="${dist-clojure}" library="jygments" />
 	<fetch-library dist="${dist-clojure}" library="log4j" />
 	<fetch-library dist="${dist-clojure}" library="mysqlconnector" />
-	<fetch-library dist="${dist-clojure}" library="pygments" />
 	<fetch-library dist="${dist-clojure}" library="restlet" />
 	<fetch-library dist="${dist-clojure}" library="scripturian" />
 	<fetch-library dist="${dist-clojure}" library="slf4j" />
@@ -444,7 +444,6 @@
 	<fetch-library dist="${dist-groovy}" library="jygments" />
 	<fetch-library dist="${dist-groovy}" library="log4j" />
 	<fetch-library dist="${dist-groovy}" library="mysqlconnector" />
-	<fetch-library dist="${dist-groovy}" library="pygments" />
 	<fetch-library dist="${dist-groovy}" library="restlet" />
 	<fetch-library dist="${dist-groovy}" library="scripturian" />
 	<fetch-library dist="${dist-groovy}" library="slf4j" />
@@ -483,7 +482,6 @@
 	<fetch-library dist="${dist-ruby}" library="jygments" />
 	<fetch-library dist="${dist-ruby}" library="log4j" />
 	<fetch-library dist="${dist-ruby}" library="mysqlconnector" />
-	<fetch-library dist="${dist-ruby}" library="pygments" />
 	<fetch-library dist="${dist-ruby}" library="restlet" />
 	<fetch-library dist="${dist-ruby}" library="scripturian" />
 	<fetch-library dist="${dist-ruby}" library="slf4j" />
