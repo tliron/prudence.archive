@@ -89,6 +89,7 @@
 			</copy>
 			<chmod file="@{dist}/content/bin/run.sh" perm="ugo+rx" />
 			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%REVISION%" value="${revision.max}" />
+			<replace dir="@{dist}/content/applications/prudence-test/web/dynamic/" includes="download.html" token="%REVISION%" value="${revision.max}" />
 		</sequential>
 	</macrodef>
 

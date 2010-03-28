@@ -1,60 +1,52 @@
 <%velocity #set($executable.cacheDuration=5000) %><%& '../fragments/header' %>
 
-<div class="note" align="center">
-<p>Prudence is currently under heavy development. It's best to ignore these interim releases and use
-the latest <a href="http://prudence.tigris.org/source/browse/prudence/">development snapshot</a>.</p>
-</div> 
-
-<div class="hr"><hr /></div>
-
 <h2>Download</h2>
 
-<h3>Development Snapshot</h3>
-<p>
-Available via <a href="http://prudence.tigris.org/source/browse/prudence/">Subversion</a>.
+<div class="note" align="center">
+<p>Prudence is currently under heavy development. This page will be updated fairly frequently with new releases.
+Current release is for revision %REVISION%.
 </p>
+</div>
 
 <h3>Flavors</h3>
-<p>
-Pick your flavor, download, and you're ready to rumble. All flavors come with everything you need
-to get started, including documentation and a sample application.
+
+<p>Pick your flavor according to the language of your choice, download, and you're ready to rumble.
+All flavors come with everything you need to get started, including documentation and a sample application.
 </p>
 
-<!--
-<h4>Prudence for Python</h4>
-<p>
-Coming soon.
+<ul>
+	<li><a href="files/prudence-python-R%REVISION%.zip" onclick="javascript:pageTracker._trackPageview('files/prudence-python-R%REVISION%.zip');">Prudence for Python</a></li>
+	<li><a href="files/prudence-python-R%REVISION%.zip" onclick="javascript:pageTracker._trackPageview('files/prudence-python-R%REVISION%.zip');">Prudence for Ruby</a></li>
+	<li><a href="files/prudence-python-R%REVISION%.zip" onclick="javascript:pageTracker._trackPageview('files/prudence-python-R%REVISION%.zip');">Prudence for Clojure</a></li>
+	<li><a href="files/prudence-python-R%REVISION%.zip" onclick="javascript:pageTracker._trackPageview('files/prudence-python-R%REVISION%.zip');">Prudence for JavaScript</a></li>
+	<li><a href="files/prudence-python-R%REVISION%.zip" onclick="javascript:pageTracker._trackPageview('files/prudence-python-R%REVISION%.zip');">Prudence for Groovy</a></li>
+</ul>
+
+<h3>Kitchen Sink</h3>
+
+<p>The "kitchen sink" distribution includes all languages. It's a big download! By default, it
+uses the JavaScript flavor as its base. You can rebuild the "kitchen sink" distribution with another
+language as its base using the development snapshot (see below).
 </p>
 
-<h4>Prudence for Clojure</h4>
-<p>
-Coming soon.
+<ul>
+	<li><a href="files/prudence-kitchensink-R%REVISION%.zip" onclick="javascript:pageTracker._trackPageview('files/prudence-kitchensink-R%REVISION%.zip');">Prudence "Kitchen Sink"</a></li>
+</ul>
+
+<h3>Standalone</h3>
+
+<p>The "standalone" distribution contains only only Prudence source code and none of the dependencies.
+It's tiny. 
 </p>
 
-<h4>Prudence for JavaScript</h4>
+<ul>
+	<li><a href="files/prudence-standalone-R%REVISION%.zip" onclick="javascript:pageTracker._trackPageview('files/prudence-standalone-R%REVISION%.zip');">Prudence Standalone</a></li>
+</ul>
+
+<h3>Development Snapshot</h3>
+
 <p>
-Coming soon.
+Available via <a href="http://prudence.tigris.org/source/browse/prudence/" onclick="javascript:pageTracker._trackPageview('subversion/');>Subversion</a>.
 </p>
--->
-
-<h4>Everything (Including the Kitchen Sink)</h4>
-<p>
-This includes all flavors of Prudence, and also a live copy of the Prudence web site. It's a big download!
-The most recent release is available <a href="http://prudence.tigris.org/servlets/ProjectDocumentList?folderID=10663">here</a>.
-</p>
-<p>
-The "kitchen sink" flavor uses JavaScript as its base. You can rebuilt it to use the other flavors:
-Python and Clojure.
-</p>
-
-<h3>Other Distributions</h3>
-
-<h4>Minimal</h4>
-<p>
-This tiny download contains only source code and API documentation.
-The most recent release is available <a href="http://prudence.tigris.org/servlets/ProjectDocumentList?folderID=10663">here</a>.
-</p>
-
-
 
 <%& '../fragments/footer' %>
