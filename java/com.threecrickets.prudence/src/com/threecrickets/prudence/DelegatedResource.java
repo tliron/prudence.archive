@@ -870,12 +870,12 @@ public class DelegatedResource extends ServerResource
 				}
 				try
 				{
-					DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocumentDescriptor( name );
+					DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocument( name );
 					DocumentFormatter<Executable> documentFormatter = getDocumentFormatter();
 					if( documentFormatter != null )
 						return new StringRepresentation( documentFormatter.format( documentDescriptor, name, lineNumber ), MediaType.TEXT_HTML );
 					else
-						return new StringRepresentation( documentDescriptor.getText() );
+						return new StringRepresentation( documentDescriptor.getSourceCode() );
 				}
 				catch( IOException x )
 				{

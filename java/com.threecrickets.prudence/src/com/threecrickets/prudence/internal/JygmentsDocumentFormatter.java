@@ -79,7 +79,7 @@ public class JygmentsDocumentFormatter<D> implements DocumentFormatter<D>
 			language = "xslt";
 
 		if( language == null )
-			return documentDescriptor.getText();
+			return documentDescriptor.getSourceCode();
 
 		StringWriter r = new StringWriter();
 		Lexer lexer;
@@ -89,16 +89,16 @@ public class JygmentsDocumentFormatter<D> implements DocumentFormatter<D>
 			if( lexer == null )
 				lexer = Lexer.getByName( "" );
 			Formatter formatter = Formatter.getByName( "html" );
-			Jygments.highlight( documentDescriptor.getText(), lexer, formatter, r );
+			Jygments.highlight( documentDescriptor.getSourceCode(), lexer, formatter, r );
 			return r.toString();
 		}
 		catch( ResolutionException x )
 		{
-			return documentDescriptor.getText();
+			return documentDescriptor.getSourceCode();
 		}
 		catch( IOException x )
 		{
-			return documentDescriptor.getText();
+			return documentDescriptor.getSourceCode();
 		}
 	}
 

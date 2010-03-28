@@ -53,7 +53,7 @@ public class PreheatTask implements Runnable
 	 */
 	public static PreheatTask[] forDocumentSource( DocumentSource<Executable> documentSource, Context context, String applicationInternalName )
 	{
-		Collection<DocumentDescriptor<Executable>> documentDescriptors = documentSource.getDocumentDescriptors();
+		Collection<DocumentDescriptor<Executable>> documentDescriptors = documentSource.getDocuments();
 		PreheatTask[] preheatTasks = new PreheatTask[documentDescriptors.size()];
 		int i = 0;
 		for( DocumentDescriptor<Executable> documentDescriptor : documentDescriptors )

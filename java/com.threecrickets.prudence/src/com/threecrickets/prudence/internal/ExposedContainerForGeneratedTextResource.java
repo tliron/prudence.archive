@@ -423,12 +423,12 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 */
 	public Representation includeDocument( String name ) throws IOException, ExecutableInitializationException, ExecutionException
 	{
-		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocument( name );
 
 		Executable document = documentDescriptor.getDocument();
 		if( document == null )
 		{
-			String text = documentDescriptor.getText();
+			String text = documentDescriptor.getSourceCode();
 			document = new Executable( name, text, true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource.isAllowCompilation() );
 
 			Executable existing = documentDescriptor.setDocumentIfAbsent( document );
@@ -459,13 +459,13 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 */
 	public Representation include( String name ) throws IOException, ExecutableInitializationException, ExecutionException
 	{
-		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocumentDescriptor( name );
+		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocument( name );
 
 		Executable document = documentDescriptor.getDocument();
 		if( document == null )
 		{
 			LanguageAdapter adapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
-			String text = documentDescriptor.getText();
+			String text = documentDescriptor.getSourceCode();
 			document = new Executable( name, text, false, resource.getLanguageManager(), (String) adapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource.getDocumentSource(), resource.isAllowCompilation() );
 
 			Executable existing = documentDescriptor.setDocumentIfAbsent( document );
@@ -605,7 +605,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		Writer writer = resource.getWriter();
 
 		// Special handling for trivial scripts
-		String trivial = executable.getAsPlainText();
+		String trivial = executable.getAsPureText();
 		if( trivial != null )
 		{
 			if( writer != null )
