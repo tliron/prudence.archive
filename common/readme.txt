@@ -1,1 +1,6 @@
+Prudence is hosted at http://threecrickets.com/prudence/
+
+Complete source code and support forums are available there.
+
+See license.txt for licensing information.
    

@@ -20,7 +20,7 @@ rhino				1.7R2
 scripturian			1.0 (Revision 122)
 slf4j				1.5.8
 sqlalchemy			0.6 (Revision 6720 + H2 patch)
-succinct			1.0 alpha 1
+succinct			1.0 (Revision 19)
 svnant				1.3.0
 syntaxhighlighter	2.1.364
 velocity			1.6.2
