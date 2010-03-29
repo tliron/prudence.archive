@@ -44,43 +44,43 @@ import com.threecrickets.scripturian.exception.ExecutableInitializationException
 import com.threecrickets.scripturian.exception.ExecutionException;
 
 /**
- * A Restlet resource which runs a Scripturian {@link Executable} for HTTP GET
- * and POST verbs and redirects its standard output to a
- * {@link StringRepresentation}.
+ * A Restlet resource which executes a "text with scriptlets" Scripturian
+ * {@link Executable} document for HTTP GET and POST verbs and redirects its
+ * standard output to a {@link StringRepresentation}.
  * <p>
- * Before using this resource, make sure to configure a valid source in the
- * application's {@link Context}; see {@link #getDocumentSource()}. This source
- * is accessible from scriptlets, via <code>prudence.source</code>.
+ * Before using this resource, make sure to configure a valid document source in
+ * the application's {@link Context}; see {@link #getDocumentSource()}. This
+ * document source is exposed to scriptlets as <code>prudence.source</code>.
  * <p>
  * This resource supports two modes of output:
  * <ul>
- * <li>Caching mode: First, the entire document is run, with its output sent
- * into a buffer. This buffer is then cached, and <i>only then</i> sent to the
- * client. This is the default mode and recommended for most documents.
+ * <li>Caching mode: First, the entire document is executed, with its output
+ * sent into a buffer. This buffer is then cached, and <i>only then</i> sent to
+ * the client. This is the default mode and recommended for most documents.
  * Scriptlets can control the duration of their individual cache by changing the
- * value of <code>document.cacheDuration</code> (see {@link Executable}).
- * Because output is not sent to the client until after the script finished its
- * run, it is possible for scriptlets to determine output characteristics at any
- * time by changing the values of <code>prudence.mediaType</code>,
+ * value of <code>executable.cacheDuration</code> (see {@link Executable}).
+ * Because output is not sent to the client until after the executable finished
+ * its execution, it is possible for scriptlets to set output characteristics at
+ * any time by changing the values of <code>prudence.mediaType</code>,
  * <code>prudence.characterSet</code>, and <code>prudence.language</code> (see
  * below).</li>
- * <li>Streaming mode: Output is sent to the client <i>while</i> scriptlets run.
- * This is recommended for documents that need to output a very large amount of
- * text, which might take a long time, or that might otherwise encounter
- * slow-downs while running. In either case, you want the client to receive
- * ongoing output. The output of the document is not cached, and the value of
- * <code>document.cacheDuration</code> is reset to 0. To enter streaming mode,
- * call <code>prudence.stream()</code> (see below for details). Note that you
- * must determine output characteristics ( <code>prudence.mediaType</code>,
- * <code>prudence.characterSet</code>, and <code>prudence.language</code>)
- * <i>before</i> entering streaming mode. Trying to change them while running in
- * streaming mode will raise an exception.
+ * <li>Streaming mode: Output is sent to the client <i>while</i> the document is
+ * being executed. This is recommended for documents that need to output a very
+ * large amount of text, which might take a long time, or that might otherwise
+ * encounter slow-downs while running. In either case, you want the client to
+ * receive ongoing output. The output of the document is not cached, and the
+ * value of <code>executable.cacheDuration</code> is always reset to 0 in this
+ * mode. To enter streaming mode, call <code>prudence.stream()</code> (see below
+ * for details). Note that you must determine output characteristics (
+ * <code>prudence.mediaType</code>, <code>prudence.characterSet</code>, and
+ * <code>prudence.language</code>) <i>before</i> entering streaming mode. Trying
+ * to change them while running in streaming mode will raise an exception.
  * </ul>
  * <p>
- * A special container environment is created for scriptlets, with some useful
- * services. It is available to scriptlets as a global variable named
- * <code>prudence</code>. For some other global variables available to
- * scriptlets, see {@link Executable}.
+ * A special container environment is created for your scriptlets, with some
+ * useful services. It is exposed to scriptlets as a global variables named
+ * <code>prudence</code>. For some other global variables exposed to scriptlets,
+ * see {@link Executable}.
  * <p>
  * Operations:
  * <ul>
@@ -154,7 +154,7 @@ import com.threecrickets.scripturian.exception.ExecutionException;
  * {@link Status#valueOf(int)}.</li>
  * </ul>
  * <p>
- * In addition to the above, a {@link ExecutionController} can be set to add
+ * In addition to the above, a {@link ExecutionController} can be set to expose
  * your own global variables to scriptlets. See
  * {@link #getExecutionController()}.
  * <p>
@@ -179,11 +179,11 @@ import com.threecrickets.scripturian.exception.ExecutionException;
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
  * {@link #getDefaultCharacterSet()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.defaultName:</code>
- * {@link String}, defaults to "index.page". See {@link #getDefaultName()}.</li>
- * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag:</code>
  * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.defaultName:</code>
+ * {@link String}, defaults to "index.page". See {@link #getDefaultName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.documentSource:</code>
  * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>

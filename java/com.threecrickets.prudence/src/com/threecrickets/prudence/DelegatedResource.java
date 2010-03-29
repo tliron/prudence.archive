@@ -45,14 +45,14 @@ import com.threecrickets.scripturian.LanguageManager;
 
 /**
  * A Restlet resource which delegates functionality to a Scripturian
- * {@link Executable} with well-defined entry points. The entry points must be
+ * {@link Executable} by invoking defined entry points. The entry points must be
  * global functions, closures, or whatever other technique the language engine
  * uses to make entry points available to Java. They entry points are:
  * <ul>
- * <li><code>handleInit()</code>: This function is called when the resource is
- * initialized. We will use it set general characteristics for the resource.</li>
- * <li><code>handleGet()</code>: This function is called for the GET verb, which
- * is expected to behave as a logical "read" of the resource's state. The
+ * <li><code>handleInit()</code>: This entry point is called when the resource
+ * is initialized. We will use it set general characteristics for the resource.</li>
+ * <li><code>handleGet()</code>: This entry point is called for the GET verb,
+ * which is expected to behave as a logical "read" of the resource's state. The
  * expectation is that it return one representation, out of possibly many, of
  * the resource's state. Returned values can be of any explicit sub-class of
  * {@link Representation}. If you return an integer, it will be set as the
@@ -64,7 +64,7 @@ import com.threecrickets.scripturian.LanguageManager;
  * and <code>container.language</code>. Additionally, you can use
  * <code>container.variant</code> to interrogate the client's provided list of
  * supported languages and encoding.</li>
- * <li><code>handleGetInfo()</code>: This optional function is called, if you
+ * <li><code>handleGetInfo()</code>: This optional entry point is called, if you
  * defined it, instead of <code>handleGet()</code> during conditional
  * processing. Rather of returning a full-blown representation of your data, it
  * returns a lightweight {@link RepresentationInfo}, which usefully includes the
@@ -76,31 +76,31 @@ import com.threecrickets.scripturian.LanguageManager;
  * can be explicit sub-classes of {@link RepresentationInfo} (which includes
  * {@link Representation}), {@link Date}, for only specifying a modification
  * date, or {@link Tag}, for only specifying the tag.</li>
- * <li><code>handlePost()</code>: This function is called for the POST verb,
+ * <li><code>handlePost()</code>: This entry point is called for the POST verb,
  * which is expected to behave as a logical "update" of the resource's state.
  * The expectation is that <code>container.entity</code> represents an update to
  * the state, that will affect future calls to <code>handleGet()</code>. As
  * such, it may be possible to accept logically partial representations of the
  * state. You may optionally return a representation, in the same way as
- * <code>handleGet()</code>. Because many languages functions return the last
+ * <code>handleGet()</code>. Because many languages entry points return the last
  * statement's value by default, you must explicitly return a null if you do not
  * want to return a representation to the client.</li>
- * <li><code>handlePut()</code>: This function is called for the PUT verb, which
- * is expected to behave as a logical "create" of the resource's state. The
- * expectation is that container.entity represents an entirely new state, that
- * will affect future calls to <code>handleGet()</code>. Unlike
+ * <li><code>handlePut()</code>: This entry point is called for the PUT verb,
+ * which is expected to behave as a logical "create" of the resource's state.
+ * The expectation is that container.entity represents an entirely new state,
+ * that will affect future calls to <code>handleGet()</code>. Unlike
  * <code>handlePost()</code>, it is expected that the representation be
  * logically complete. You may optionally return a representation, in the same
- * way as <code>handleGet()</code>. Because JavaScript functions return the last
- * statement's value by default, you must explicitly return a null if you do not
- * want to return a representation to the client.</li>
- * <li><code>handleDelete()</code>: This function is called for the DELETE verb,
- * which is expected to behave as a logical "delete" of the resource's state.
- * The expectation is that subsequent calls to <code>handleGet()</code> will
- * fail. As such, it doesn't make sense to return a representation, and any
+ * way as <code>handleGet()</code>. Because JavaScript entry points return the
+ * last statement's value by default, you must explicitly return a null if you
+ * do not want to return a representation to the client.</li>
+ * <li><code>handleDelete()</code>: This entry point is called for the DELETE
+ * verb, which is expected to behave as a logical "delete" of the resource's
+ * state. The expectation is that subsequent calls to <code>handleGet()</code>
+ * will fail. As such, it doesn't make sense to return a representation, and any
  * returned value will ignored. Still, it's a good idea to return null to avoid
  * any passing of value.</li>
- * <li><code>handleOptions()</code>: This function is called for the OPTIONS
+ * <li><code>handleOptions()</code>: This entry point is called for the OPTIONS
  * verb. It is not widely used in HTTP.</li>
  * </ul>
  * <p>
@@ -111,19 +111,18 @@ import com.threecrickets.scripturian.LanguageManager;
  * {@link #getEntryPointNameForDelete()} and
  * {@link #getEntryPointNameForOptions()}.
  * <p>
- * Before using this resource, make sure to configure a valid source in the
- * application's {@link Context}; see {@link #getDocumentSource()}. This source
- * is accessible from the script itself, via <code>prudence.source</code>.
+ * Before using this resource, make sure to configure a valid document source in
+ * the application's {@link Context}; see {@link #getDocumentSource()}. This
+ * document source is exposed to the executable as <code>prudence.source</code>.
  * <p>
- * Note that the composite script's output is sent to the system's standard
- * output. Most likely, you will not want to output anything from the script.
- * However, this redirection is provided as a convenience, which may be useful
- * for certain debugging situations.
+ * Note that the executable's output is sent to the system's standard output.
+ * Most likely, you will not want to output anything from the executable.
+ * However, this redirection is provided as a debugging convenience.
  * <p>
- * A special container environment is created for scriptlets, with some useful
- * services. It is available to scriptlets as a global variable named
- * <code>prudence</code>. For some other global variables available to
- * scriptlets, see {@link Executable}.
+ * A special container environment is created for your executables, with some
+ * useful services. It is exposed to executables as a global variable named
+ * <code>prudence</code>. For some other global variables exposed to
+ * executables, see {@link Executable}.
  * <p>
  * Operations:
  * <ul>
@@ -206,8 +205,8 @@ import com.threecrickets.scripturian.LanguageManager;
  * string.</li>
  * </ul>
  * <p>
- * In addition to the above, a {@link ExecutionController} can be set to add
- * your own global variables to each composite script. See
+ * In addition to the above, a {@link ExecutionController} can be set to expose
+ * your own global variables to executables. See
  * {@link #getExecutionController()}.
  * <p>
  * Summary of settings configured via the application's {@link Context}:
@@ -222,11 +221,11 @@ import com.threecrickets.scripturian.LanguageManager;
  * <code>com.threecrickets.prudence.DelegatedResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
  * {@link #getDefaultCharacterSet()}.</li>
- * <li><code>com.threecrickets.prudence.DelegatedResource.defaultName:</code>
- * {@link String}, defaults to "default.script". See {@link #getDefaultName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.defaultLanguageTag:</code>
  * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
+ * <li><code>com.threecrickets.prudence.DelegatedResource.defaultName:</code>
+ * {@link String}, defaults to "default.script". See {@link #getDefaultName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.documentFormatter:</code>
  * {@link DocumentFormatter}. See {@link #getDocumentFormatter()}.</li>
