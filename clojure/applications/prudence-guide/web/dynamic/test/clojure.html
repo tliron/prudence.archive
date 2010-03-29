@@ -1,0 +1,99 @@
+<html>
+<head>
+	<title>Clojure Scriptlets Demo</title>
+	<link rel="stylesheet" type="text/css" href="../../style/soft-cricket.css" />
+</head>
+<body>
+<table width="100%"><tr valign="top"><td>
+<%clojure
+
+;
+; Accessing the request
+;
+
+(def form (.. executable getContainer getResource getRequest getResourceRef getQueryAsForm))
+
+;
+; Stream this script
+;
+
+(if (= (.getFirstValue form "stream") "true") 
+	(if (.. executable getContainer stream)
+		(throw nil)
+	)
+)
+
+;
+; Calling Java
+;
+
+(.setCacheDuration executable 5000)
+(print "<p>This page was dynamically generated at " (System/currentTimeMillis) "</p>")
+
+;
+; Including a document
+;
+; This is identical to:
+;
+;   (.. executable getContainer (includeDocument "path"))
+;
+
+%>
+<%& "../fragments/test/clojure" %>
+<%
+
+;
+; An example of a function
+;
+
+(defn print-adapter [adapter]
+	(let [attributes (.getAttributes adapter)]
+%>
+<p>
+	<i>Engine:</i> <%= (get attributes "name") %> version <%= (get attributes "version") %><br />
+	<i>Language:</i> <%= (get attributes "language.name") %> version <%= (get attributes "language.version") %><br />
+	<i>Tags:</i> 
+<%
+		(def tags (get attributes "tags"))
+		(doseq [tag (butlast tags)]
+			(print tag)
+			(print ", ")
+		)
+		(print (last tags))
+%>
+</p>
+<%
+	)
+)
+%>
+<h3>Language used:</h3>
+<%
+(print-adapter (.. executable getContext getAdapter))
+%>
+<h3>Available languages:</h3>
+<%
+(def adapters (.. executable getContext getManager getAdapters))
+(doseq [adapter adapters]
+	(print-adapter adapter)
+)
+%>
+</td><td>
+<h3>The "id" attribute in the URL query is:</h3>
+<p><%= (or (.getFirstValue form "id") "") %></p>
+<h3>A few tests:</h3>
+<p>
+<%
+(doseq [i (range 10)]
+%>
+A multiple of three: 
+<%
+	(print-triple i)
+%>
+<br />
+<%
+)
+%>
+</p>
+</td></tr></table>
+</body>
+<html>

@@ -59,7 +59,7 @@
 	<macrodef name="fetch-javadocs">
 		<attribute name="dist" />
 		<sequential>
-			<copy todir="@{dist}/content/applications/prudence-test/web/static/api">
+			<copy todir="@{dist}/content/applications/prudence-guide/web/static/api">
 				<fileset dir="${tmp}/api" />
 			</copy>
 		</sequential>
@@ -89,7 +89,7 @@
 			</copy>
 			<chmod file="@{dist}/content/bin/run.sh" perm="ugo+rx" />
 			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%REVISION%" value="${revision.max}" />
-			<replace dir="@{dist}/content/applications/prudence-test/web/dynamic/" includes="download.html" token="%REVISION%" value="${revision.max}" />
+			<replace dir="@{dist}/content/applications/prudence-guide/web/dynamic/" includes="download.html" token="%REVISION%" value="${revision.max}" />
 		</sequential>
 	</macrodef>
 
@@ -232,31 +232,31 @@
 <target name="content-kitchensink" depends="javadoc-kitchensink, revision" description="Fetch content">
 	<echo>Using ${kitchensink-base} as base for Kitchen Sink distribution.</echo>
 	<fetch-common-content dist="${dist-kitchensink}" base="${kitchensink-base}" />
-	<!-- Fetch Prudence Test -->
-	<copy todir="${dist-kitchensink}/content/applications/prudence-test/web">
-		<fileset dir="${python}/applications/prudence-test/web" />
-		<fileset dir="${ruby}/applications/prudence-test/web" />
-		<fileset dir="${groovy}/applications/prudence-test/web" />
-		<fileset dir="${clojure}/applications/prudence-test/web" />
-		<fileset dir="${javascript}/applications/prudence-test/web" />
-		<fileset dir="${php}/applications/prudence-test/web" />
-		<fileset dir="${velocity}/applications/prudence-test/web" />
+	<!-- Fetch Prudence Guide -->
+	<copy todir="${dist-kitchensink}/content/applications/prudence-guide/web">
+		<fileset dir="${python}/applications/prudence-guide/web" />
+		<fileset dir="${ruby}/applications/prudence-guide/web" />
+		<fileset dir="${groovy}/applications/prudence-guide/web" />
+		<fileset dir="${clojure}/applications/prudence-guide/web" />
+		<fileset dir="${javascript}/applications/prudence-guide/web" />
+		<fileset dir="${php}/applications/prudence-guide/web" />
+		<fileset dir="${velocity}/applications/prudence-guide/web" />
 	</copy>
-	<copy todir="${dist-kitchensink}/content/applications/prudence-test/resources">
-		<fileset dir="${python}/applications/prudence-test/resources" />
-		<fileset dir="${ruby}/applications/prudence-test/resources" />
-		<fileset dir="${groovy}/applications/prudence-test/resources" />
-		<fileset dir="${clojure}/applications/prudence-test/resources" />
-		<fileset dir="${javascript}/applications/prudence-test/resources" />
+	<copy todir="${dist-kitchensink}/content/applications/prudence-guide/resources">
+		<fileset dir="${python}/applications/prudence-guide/resources" />
+		<fileset dir="${ruby}/applications/prudence-guide/resources" />
+		<fileset dir="${groovy}/applications/prudence-guide/resources" />
+		<fileset dir="${clojure}/applications/prudence-guide/resources" />
+		<fileset dir="${javascript}/applications/prudence-guide/resources" />
 	</copy>
-	<copy todir="${dist-kitchensink}/content/applications/prudence-test/libraries">
-		<fileset dir="${python}/applications/prudence-test/libraries" />
-		<fileset dir="${ruby}/applications/prudence-test/libraries" />
-		<fileset dir="${groovy}/applications/prudence-test/libraries" />
-		<fileset dir="${clojure}/applications/prudence-test/libraries" />
-		<fileset dir="${javascript}/applications/prudence-test/libraries" />
+	<copy todir="${dist-kitchensink}/content/applications/prudence-guide/libraries">
+		<fileset dir="${python}/applications/prudence-guide/libraries" />
+		<fileset dir="${ruby}/applications/prudence-guide/libraries" />
+		<fileset dir="${groovy}/applications/prudence-guide/libraries" />
+		<fileset dir="${clojure}/applications/prudence-guide/libraries" />
+		<fileset dir="${javascript}/applications/prudence-guide/libraries" />
 	</copy>
-	<!-- <fetch-syntaxhighlighter dist="${dist-kitchensink}" application="prudence-test" /> -->
+	<!-- <fetch-syntaxhighlighter dist="${dist-kitchensink}" application="prudence-guide" /> -->
 	<!-- Fetch other applications -->
 	<copy todir="${dist-kitchensink}/content/applications/stickstick">
 		<fileset dir="${python}/applications/stickstick" excludes="*" />
@@ -343,7 +343,7 @@
 
 <target name="content-javascript" depends="javadoc-javascript, revision" description="Fetch content">
 	<fetch-common-content dist="${dist-javascript}" base="${javascript}" />
-	<!-- <fetch-syntaxhighlighter dist="${dist-javascript}" application="prudence-test" /> -->
+	<!-- <fetch-syntaxhighlighter dist="${dist-javascript}" application="prudence-guide" /> -->
 </target>
 
 <!-- Python -->
@@ -382,7 +382,7 @@
 
 <target name="content-python" depends="javadoc-python, revision" description="Fetch content">
 	<fetch-common-content dist="${dist-python}" base="${python}" />
-	<!-- <fetch-syntaxhighlighter dist="${dist-python}" application="prudence-test" />
+	<!-- <fetch-syntaxhighlighter dist="${dist-python}" application="prudence-guide" />
 	<fetch-syntaxhighlighter dist="${dist-python}" application="stickstick" /> -->
 </target>
 
@@ -420,7 +420,7 @@
 
 <target name="content-clojure" depends="javadoc-clojure, revision" description="Fetch content">
 	<fetch-common-content dist="${dist-clojure}" base="${clojure}" />
-	<!-- <fetch-syntaxhighlighter dist="${dist-clojure}" application="prudence-test" />
+	<!-- <fetch-syntaxhighlighter dist="${dist-clojure}" application="prudence-guide" />
 	<fetch-syntaxhighlighter dist="${dist-clojure}" application="stickstick" /> -->
 </target>
 	
@@ -458,7 +458,7 @@
 
 <target name="content-groovy" depends="javadoc-groovy, revision" description="Fetch content">
 	<fetch-common-content dist="${dist-groovy}" base="${groovy}" />
-	<!-- <fetch-syntaxhighlighter dist="${dist-groovy}" application="prudence-test" />
+	<!-- <fetch-syntaxhighlighter dist="${dist-groovy}" application="prudence-guide" />
 	<fetch-syntaxhighlighter dist="${dist-groovy}" application="stickstick" /> -->
 </target>
 
@@ -496,7 +496,7 @@
 
 <target name="content-ruby" depends="javadoc-ruby, revision" description="Fetch content">
 	<fetch-common-content dist="${dist-ruby}" base="${ruby}" />
-	<!-- <fetch-syntaxhighlighter dist="${dist-ruby}" application="prudence-test" />
+	<!-- <fetch-syntaxhighlighter dist="${dist-ruby}" application="prudence-guide" />
 	<fetch-syntaxhighlighter dist="${dist-ruby}" application="stickstick" /> -->
 </target>
 

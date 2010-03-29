@@ -1,11 +1,11 @@
 #
-# Prudence Test Settings
+# Prudence Guide Settings
 #
 
 executable.container.include('defaults/application/settings')
 
-application_name = 'Prudence Test'
-application_description = 'Used to test that Prudence works for you, and useful as a skeleton for creating your own applications'
+application_name = 'Prudence Guide'
+application_description = 'Prudence web site, documentation, and tests'
 application_author = 'Tal Liron'
 application_owner = 'Three Crickets'
 application_home_url = 'http://threecrickets.com/prudence/'
