@@ -8,7 +8,6 @@ import org.restlet.routing.Redirector
 import org.restlet.routing.Template
 import org.restlet.resource.Finder
 import org.restlet.resource.Directory
-import com.threecrickets.scripturian.LanguageManager
 import com.threecrickets.scripturian.DefrostTask
 import com.threecrickets.scripturian.file.DocumentFileSource
 import com.threecrickets.prudence.util.PrudenceRouter
@@ -99,7 +98,7 @@ end
 # Dynamic web
 #
 
-$language_manager = LanguageManager.new
+$language_manager = @executable.context.manager
 $dynamic_web_document_source = DocumentFileSource.new($application_base_path + $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_minimum_time_between_validity_checks)
 $attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = $language_manager
 $attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'ruby'

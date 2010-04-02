@@ -7,7 +7,7 @@ from java.io import File
 
 from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Finder, Directory
-from com.threecrickets.scripturian import LanguageManager, DefrostTask
+from com.threecrickets.scripturian import DefrostTask
 from com.threecrickets.scripturian.file import DocumentFileSource
 from com.threecrickets.prudence.util import PrudenceRouter, PreheatTask
 
@@ -81,7 +81,7 @@ for url in url_add_trailing_slash:
 # Dynamic web
 #
 
-language_manager = LanguageManager()
+language_manager = executable.context.manager
 dynamic_web_document_source = DocumentFileSource(application_base_path + dynamic_web_base_path, dynamic_web_default_document, dynamic_web_minimum_time_between_validity_checks)
 attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = language_manager
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'python'

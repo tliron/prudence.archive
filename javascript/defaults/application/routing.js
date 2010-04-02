@@ -10,7 +10,6 @@ importClass(
 	org.restlet.routing.Template,
 	org.restlet.resource.Finder,
 	org.restlet.resource.Directory,
-	com.threecrickets.scripturian.LanguageManager,
 	com.threecrickets.scripturian.DefrostTask,
 	com.threecrickets.scripturian.file.DocumentFileSource,
 	com.threecrickets.prudence.util.PrudenceRouter,
@@ -100,7 +99,7 @@ for(var i in urlAddTrailingSlash) {
 // Dynamic web
 //
 
-var languageManager = new LanguageManager();
+var languageManager = executable.context.manager;
 var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'rhino-nonjdk');

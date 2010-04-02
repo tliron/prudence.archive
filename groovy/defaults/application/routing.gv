@@ -9,7 +9,6 @@ import org.restlet.routing.Redirector
 import org.restlet.routing.Template
 import org.restlet.resource.Finder
 import org.restlet.resource.Directory
-import com.threecrickets.scripturian.LanguageManager
 import com.threecrickets.scripturian.DefrostTask
 import com.threecrickets.scripturian.file.DocumentFileSource
 import com.threecrickets.prudence.util.PrudenceRouter
@@ -98,7 +97,7 @@ for(url in urlAddTrailingSlash) {
 // Dynamic web
 //
 
-languageManager = new LanguageManager()
+languageManager = executable.context.manager
 dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks)
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager)
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'groovy')

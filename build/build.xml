@@ -146,7 +146,7 @@
 
 	<target name="compile" description="Compile Prudence code">
 		<mkdir dir="${tmp}/classes" />
-		<javac srcdir="${java-src}" destdir="${tmp}/classes" target="1.5" debug="${debug}">
+		<javac srcdir="${java-src}" destdir="${tmp}/classes" target="1.5" debug="${debug}" includeAntRuntime="false">
 			<classpath>
 				<fileset dir="${lib}/restlet/lib" />
 				<fileset dir="${lib}/scripturian/lib" />

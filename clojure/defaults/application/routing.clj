@@ -10,7 +10,6 @@
 	'org.restlet.routing.Template
 	'org.restlet.resource.Finder
 	'org.restlet.resource.Directory
-	'com.threecrickets.scripturian.LanguageManager
 	'com.threecrickets.scripturian.DefrostTask
 	'com.threecrickets.scripturian.file.DocumentFileSource
 	'com.threecrickets.prudence.util.PrudenceRouter
@@ -85,7 +84,7 @@
 ; Dynamic web
 ;
 
-(def language-manager (LanguageManager.))
+(def language-manager (.. executable getContext getManager))
 (def dynamic-web-document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document (.longValue dynamic-web-minimum-time-between-validity-checks)))
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.languageManager" language-manager)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag" "clojure")
