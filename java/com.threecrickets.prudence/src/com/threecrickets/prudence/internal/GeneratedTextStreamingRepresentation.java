@@ -89,25 +89,19 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		resource.setWriter( writer );
 		try
 		{
-			document.execute( false, false, writer, resource.getErrorWriter(), flushLines, executionContext, container, executionController );
+			document.execute( false, writer, resource.getErrorWriter(), flushLines, executionContext, container, executionController );
 		}
 		catch( ExecutableInitializationException x )
 		{
-			IOException iox = new IOException( "DocumentParseException" );
+			IOException iox = new IOException( "ExecutableInitializationException" );
 			iox.initCause( x );
 			throw iox;
 		}
 		catch( ExecutionException x )
 		{
-			IOException iox = new IOException( "DocumentRunException" );
+			IOException iox = new IOException( "ExecutionException" );
 			iox.initCause( x );
 			throw iox;
-		}
-		finally
-		{
-			// Scriptlets may have set its cacheDuration, so we must
-			// make sure to disable it!
-			document.setCacheDuration( 0 );
 		}
 	}
 

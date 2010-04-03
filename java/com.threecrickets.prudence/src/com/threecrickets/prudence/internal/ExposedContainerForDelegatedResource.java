@@ -622,7 +622,8 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 		if( executable == null )
 		{
 			String sourceCode = documentDescriptor.getSourceCode();
-			executable = new Executable( name, sourceCode, true, this.resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource.isAllowCompilation() );
+			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, true, this.resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource
+				.isAllowCompilation() );
 
 			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 			if( existing != null )
@@ -631,7 +632,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 
 		PrudenceExecutionController<ExposedContainerForDelegatedResource> executionController = new PrudenceExecutionController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
 			.getExecutionController() );
-		executable.execute( false, false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
+		executable.execute( false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
 	}
 
 	/**
@@ -663,8 +664,8 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 		{
 			LanguageAdapter languageAdapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
 			String sourceCode = documentDescriptor.getSourceCode();
-			executable = new Executable( name, sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource.getDocumentSource(), resource
-				.isAllowCompilation() );
+			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource
+				.getDocumentSource(), resource.isAllowCompilation() );
 
 			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 			if( existing != null )
@@ -673,7 +674,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 
 		PrudenceExecutionController<ExposedContainerForDelegatedResource> executionController = new PrudenceExecutionController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
 			.getExecutionController() );
-		executable.execute( false, false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
+		executable.execute( false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
 	}
 
 	/**
@@ -709,8 +710,8 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 			{
 				LanguageAdapter languageAdapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
 				String sourceCode = documentDescriptor.getSourceCode();
-				executable = new Executable( name, sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource.getDocumentSource(), resource
-					.isAllowCompilation() );
+				executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource
+					.getDocumentSource(), resource.isAllowCompilation() );
 				Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 
 				if( existing != null )
@@ -718,7 +719,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 			}
 
 			// Must run executable once and only once
-			executable.execute( true, false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
+			executable.execute( true, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
 
 			return executable.invoke( entryPointName, this, executionController );
 		}

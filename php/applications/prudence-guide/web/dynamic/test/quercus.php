@@ -19,7 +19,7 @@ $form = $prudence->resource->request->resourceRef->queryAsForm;
 
 if($form->getFirstValue('stream') == 'true') if($prudence->stream()) exit();
 
-$executable->cacheDuration = 5000;
+$prudence->cacheDuration = 5000;
 
 //
 // Calling Java

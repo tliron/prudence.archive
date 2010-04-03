@@ -15,7 +15,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Context;
@@ -31,9 +30,10 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
+import com.threecrickets.prudence.cache.Cache;
+import com.threecrickets.prudence.cache.InProcessCache;
 import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
-import com.threecrickets.prudence.util.RepresentableString;
 import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentFormatter;
 import com.threecrickets.scripturian.DocumentSource;
@@ -136,6 +136,11 @@ import com.threecrickets.scripturian.exception.ExecutionException;
  * </ul>
  * Modifiable attributes:
  * <ul>
+ * <li><code>prudence.cacheDuration</code>: Setting this to something greater
+ * than 0 enables caching of the executable's output for a maximum number of
+ * milliseconds. By default {@code cacheDuration} is 0.</li>
+ * <li><code>prudence.cacheKey</code>: A template for defining how the cache key
+ * will be generated. The default template is "{name}".</li>
  * <li><code>prudence.characterSet</code>: The {@link CharacterSet} that will be
  * used for the generated string. Defaults to what the client requested (in
  * <code>prudence.variant</code>), or to the value of
@@ -168,12 +173,15 @@ import com.threecrickets.scripturian.exception.ExecutionException;
  * {@link Boolean}, defaults to true. See {@link #isAllowCompilation()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.cache:</code>
- * {@link ConcurrentMap}, defaults to a new instance of
- * {@link ConcurrentHashMap}. See {@link #getCache()}.</li>
+ * {@link Cache}, defaults to a new instance of {@link InProcessCache}. See
+ * {@link #getCache()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.containerName</code>:
  * The name of the global variable with which to access the container. Defaults
  * to "prudence". See {@link #getContainerName()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey:</code>
+ * {@link String}, defaults to "{name}". See {@link #getDefaultCacheKey()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
@@ -285,9 +293,9 @@ public class GeneratedTextResource extends ServerResource
 
 	/**
 	 * Cache used for caching mode. Defaults to a new instance of
-	 * {@link ConcurrentHashMap}. It is stored in the application's
-	 * {@link Context} for persistence across requests and for sharing among
-	 * instances of {@link GeneratedTextResource}.
+	 * {@link InProcessCache}. It is stored in the application's {@link Context}
+	 * for persistence across requests and for sharing among instances of
+	 * {@link GeneratedTextResource}.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.cache</code> in
@@ -295,18 +303,17 @@ public class GeneratedTextResource extends ServerResource
 	 * 
 	 * @return The cache
 	 */
-	@SuppressWarnings("unchecked")
-	public ConcurrentMap<String, RepresentableString> getCache()
+	public Cache getCache()
 	{
 		if( cache == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			cache = (ConcurrentMap<String, RepresentableString>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.cache" );
+			cache = (Cache) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.cache" );
 			if( cache == null )
 			{
-				cache = new ConcurrentHashMap<String, RepresentableString>();
+				cache = new InProcessCache();
 
-				ConcurrentMap<String, RepresentableString> existing = (ConcurrentMap<String, RepresentableString>) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.cache", cache );
+				Cache existing = (Cache) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.cache", cache );
 				if( existing != null )
 					cache = existing;
 			}
@@ -366,14 +373,14 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
-	 * The default script engine name to be used if the first scriptlet doesn't
-	 * specify one. Defaults to "js".
+	 * The default language tag to use if the first scriptlet doesn't specify
+	 * one. Defaults to "js".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The default script engine name
+	 * @return The language tag
 	 */
 	public String getDefaultLanguageTag()
 	{
@@ -390,14 +397,37 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
+	 * The default cache key to use if the executable doesn't specify one.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The default cache key
+	 */
+	public String getDefaultCacheKey()
+	{
+		if( defaultCacheKey == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			defaultCacheKey = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey" );
+
+			if( defaultCacheKey == null )
+				defaultCacheKey = "{name}";
+		}
+
+		return defaultCacheKey;
+	}
+
+	/**
 	 * An optional {@link ExecutionController} to be used with the scriptlets.
-	 * Useful for adding your own global variables to the scriptlets.
+	 * Useful for exposing your own global variables to the scriptlets.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.executionController</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The script context controller or null if none used
+	 * @return The execution controller or null if none used
 	 */
 	public ExecutionController getExecutionController()
 	{
@@ -418,7 +448,7 @@ public class GeneratedTextResource extends ServerResource
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.languageManager</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The script engine manager
+	 * @return The language manager
 	 */
 	public LanguageManager getLanguageManager()
 	{
@@ -613,61 +643,61 @@ public class GeneratedTextResource extends ServerResource
 	@Override
 	public Representation get() throws ResourceException
 	{
-		return run( null, null );
+		return execute( null, null );
 	}
 
 	@Override
 	public Representation get( Variant variant ) throws ResourceException
 	{
-		return run( null, variant );
+		return execute( null, variant );
 	}
 
 	@Override
 	public Representation post( Representation entity ) throws ResourceException
 	{
-		return run( entity, null );
+		return execute( entity, null );
 	}
 
 	@Override
 	public Representation post( Representation entity, Variant variant ) throws ResourceException
 	{
-		return run( entity, variant );
+		return execute( entity, variant );
 	}
 
 	@Override
 	public Representation put( Representation entity ) throws ResourceException
 	{
-		return run( entity, null );
+		return execute( entity, null );
 	}
 
 	@Override
 	public Representation put( Representation entity, Variant variant ) throws ResourceException
 	{
-		return run( entity, variant );
+		return execute( entity, variant );
 	}
 
 	@Override
 	public Representation delete() throws ResourceException
 	{
-		return run( null, null );
+		return execute( null, null );
 	}
 
 	@Override
 	public Representation delete( Variant variant ) throws ResourceException
 	{
-		return run( null, variant );
+		return execute( null, variant );
 	}
 
 	@Override
 	public Representation options() throws ResourceException
 	{
-		return run( null, null );
+		return execute( null, null );
 	}
 
 	@Override
 	public Representation options( Variant variant ) throws ResourceException
 	{
-		return run( null, variant );
+		return execute( null, variant );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -691,10 +721,15 @@ public class GeneratedTextResource extends ServerResource
 	private volatile String defaultName;
 
 	/**
-	 * The default script engine name to be used if the script doesn't specify
+	 * The default language tag to be used if the executable doesn't specify
 	 * one.
 	 */
 	private volatile String defaultLanguageTag;
+
+	/**
+	 * The default cache key to use if the executable doesn't specify one.
+	 */
+	private volatile String defaultCacheKey;
 
 	/**
 	 * The default character set to be used if the client does not specify it.
@@ -731,7 +766,7 @@ public class GeneratedTextResource extends ServerResource
 	/**
 	 * Cache used for caching mode.
 	 */
-	private volatile ConcurrentMap<String, RepresentableString> cache;
+	private volatile Cache cache;
 
 	/**
 	 * Same as {@link #writer}, for standard error. (Nothing is currently done
@@ -780,7 +815,7 @@ public class GeneratedTextResource extends ServerResource
 	 * @return A representation
 	 * @throws ResourceException
 	 */
-	private Representation run( Representation entity, Variant variant ) throws ResourceException
+	private Representation execute( Representation entity, Variant variant ) throws ResourceException
 	{
 		Request request = getRequest();
 		String name = request.getResourceRef().getRemainingPart( true, false );
@@ -825,13 +860,15 @@ public class GeneratedTextResource extends ServerResource
 			// Run document and represent its output
 			ExposedContainerForGeneratedTextResource container = new ExposedContainerForGeneratedTextResource( this, entity, variant, getCache() );
 			Representation representation = container.includeDocument( name );
-			// getResponse().getCacheDirectives().add( CacheDirective.maxAge(
-			// 10000 ) );
 
 			if( representation == null )
 				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
 			else
+			{
+				if( !isAllowClientCaching() )
+					representation.setExpirationDate( null );
 				return representation;
+			}
 		}
 		catch( FileNotFoundException x )
 		{

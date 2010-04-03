@@ -15,7 +15,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
@@ -25,9 +24,12 @@ import org.restlet.data.Protocol;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
+import org.restlet.routing.Template;
+import org.restlet.routing.Variable;
 
 import com.threecrickets.prudence.GeneratedTextResource;
-import com.threecrickets.prudence.util.RepresentableString;
+import com.threecrickets.prudence.cache.Cache;
+import com.threecrickets.prudence.cache.CacheEntry;
 import com.threecrickets.scripturian.DocumentDescriptor;
 import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.Executable;
@@ -61,7 +63,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 * @param cache
 	 *        The cache (used for caching mode)
 	 */
-	public ExposedContainerForGeneratedTextResource( GeneratedTextResource resource, Representation entity, Variant variant, ConcurrentMap<String, RepresentableString> cache )
+	public ExposedContainerForGeneratedTextResource( GeneratedTextResource resource, Representation entity, Variant variant, Cache cache )
 	{
 		this.resource = resource;
 		this.entity = entity;
@@ -396,6 +398,45 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		return isInternal();
 	}
 
+	/**
+	 * @return The cache duration in milliseconds
+	 * @see #setCacheDuration(long)
+	 */
+	public long getCacheDuration()
+	{
+		Long cacheDuration = (Long) executable.getAttributes().get( CACHE_DURATION_ATTRIBUTE );
+		return cacheDuration == null ? 0 : cacheDuration;
+	}
+
+	/**
+	 * @param cacheDuration
+	 *        The cache duration in milliseconds
+	 * @see #getCacheDuration()
+	 */
+	public void setCacheDuration( long cacheDuration )
+	{
+		executable.getAttributes().put( CACHE_DURATION_ATTRIBUTE, cacheDuration );
+	}
+
+	/**
+	 * @return The cache key pattern
+	 * @see #setCacheKey(String)
+	 */
+	public String getCacheKey()
+	{
+		return (String) executable.getAttributes().get( CACHE_KEY_ATTRIBUTE );
+	}
+
+	/**
+	 * @param cacheKey
+	 *        The cache key pattern
+	 * @see #getCacheKey()
+	 */
+	public void setCacheKey( String cacheKey )
+	{
+		executable.getAttributes().put( CACHE_KEY_ATTRIBUTE, cacheKey );
+	}
+
 	//
 	// Operations
 	//
@@ -429,7 +470,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		if( executable == null )
 		{
 			String sourceCode = documentDescriptor.getSourceCode();
-			executable = new Executable( name, sourceCode, true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource.isAllowCompilation() );
+			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource
+				.isAllowCompilation() );
 
 			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 			if( existing != null )
@@ -466,8 +508,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		{
 			LanguageAdapter languageAdapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
 			String sourceCode = documentDescriptor.getSourceCode();
-			executable = new Executable( name, sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource.getDocumentSource(), resource
-				.isAllowCompilation() );
+			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource
+				.getDocumentSource(), resource.isAllowCompilation() );
 
 			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 			if( existing != null )
@@ -528,6 +570,12 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	private static final String CACHE_DURATION_ATTRIBUTE = "prudence.cacheDuration";
+
+	private static final String CACHE_KEY_ATTRIBUTE = "prudence.cacheKey";
+
+	private static final String NAME_VARIABLE = "name";
+
 	/**
 	 * The resource.
 	 */
@@ -551,7 +599,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	/**
 	 * Cache for caching mode.
 	 */
-	private final ConcurrentMap<String, RepresentableString> cache;
+	private final Cache cache;
 
 	/**
 	 * Whether to flush the writers after every line in streaming mode.
@@ -589,30 +637,64 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	private final ExecutionContext executionContext;
 
 	/**
+	 * The currently executing executable.
+	 */
+	private Executable executable;
+
+	/**
+	 * @return The cache key for the executable
+	 */
+	private String castCacheKey()
+	{
+		String cacheKey = getCacheKey();
+		if( cacheKey == null )
+			return null;
+		else
+		{
+			Template template = new Template( cacheKey );
+			template.getVariables().put( NAME_VARIABLE, new Variable( Variable.TYPE_ALL, executable.getName(), true, true ) );
+			return template.format( getResource().getRequest(), getResource().getResponse() );
+		}
+	}
+
+	/**
+	 * @return The cache expiration timestamp for the executable
+	 */
+	private long getExpiration()
+	{
+		long cacheDuration = getCacheDuration();
+		if( cacheDuration <= 0 )
+			return 0;
+		else
+			return executable.getLastExecutedTimestamp() + cacheDuration;
+	}
+
+	/**
 	 * The actual execution of an executable.
 	 * 
 	 * @param executable
 	 *        The executable
-	 * @return A representation
+	 * @return A representation, either generated by the executable or fetched
+	 *         from the cache
 	 * @throws IOException
 	 * @throws ExecutableInitializationException
 	 * @throws ExecutionException
 	 */
 	private Representation execute( Executable executable ) throws IOException, ExecutableInitializationException, ExecutionException
 	{
-		String name = executable.getName();
+		this.executable = executable;
 
 		boolean isStreaming = isStreaming();
 		Writer writer = resource.getWriter();
 
-		// Special handling for pure text scripts
+		// Special handling for pure text
 		String pureText = executable.getAsPureText();
 		if( pureText != null )
 		{
 			if( writer != null )
 				writer.write( pureText );
 
-			return new RepresentableString( pureText, getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? executable.getExpiration() : 0 ).represent();
+			return new CacheEntry( pureText, getMediaType(), getLanguage(), getCharacterSet(), getExpiration() ).represent();
 		}
 
 		int startPosition = 0;
@@ -632,60 +714,66 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 				writer.flush();
 				startPosition = buffer.length();
 			}
+
+			// Attempt to use cache
+			String cacheKey = castCacheKey();
+			if( cacheKey != null )
+			{
+				CacheEntry cacheEntry = cache.fetch( cacheKey );
+				if( cacheEntry != null )
+				{
+					if( writer != null )
+						writer.write( cacheEntry.getString() );
+
+					return cacheEntry.represent();
+				}
+			}
 		}
+
+		PrudenceExecutionController<ExposedContainerForGeneratedTextResource> executionController = new PrudenceExecutionController<ExposedContainerForGeneratedTextResource>( this, resource.getContainerName(), resource
+			.getExecutionController() );
+
+		setCacheDuration( 0 );
+		setCacheKey( resource.getDefaultCacheKey() );
 
 		try
 		{
-			// Do not allow caching in streaming mode
-			PrudenceExecutionController<ExposedContainerForGeneratedTextResource> executionController = new PrudenceExecutionController<ExposedContainerForGeneratedTextResource>( this, resource.getContainerName(),
-				resource.getExecutionController() );
-			if( executable.execute( false, !isStreaming, writer, resource.getErrorWriter(), false, executionContext, this, executionController ) )
+			executable.execute( false, writer, resource.getErrorWriter(), false, executionContext, this, executionController );
+			
+			// Executable might have changed!
+			this.executable = executable;
+
+			// Did the executable ask us to start streaming?
+			if( startStreaming )
 			{
-				// Did the script ask us to start streaming?
-				if( startStreaming )
-				{
-					startStreaming = false;
+				startStreaming = false;
 
-					// Note that this will cause the script to run again!
-					return new GeneratedTextStreamingRepresentation( resource, this, executionContext, resource.getExecutionController(), executable, flushLines );
-				}
+				// Note that this will cause the executable to execute again!
+				return new GeneratedTextStreamingRepresentation( resource, this, executionContext, resource.getExecutionController(), executable, flushLines );
+			}
 
-				if( isStreaming )
-				{
-					// Nothing to return in streaming mode
-					return null;
-				}
-				else
-				{
-					writer.flush();
-
-					// Get the buffer from when we ran the script
-					RepresentableString string = new RepresentableString( buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? executable.getExpiration()
-						: 0 );
-
-					// Cache it
-					cache.put( name, string );
-
-					// Return a representation of the entire buffer
-					if( startPosition == 0 )
-						return string.represent();
-					else
-						return new RepresentableString( buffer.toString(), getMediaType(), getLanguage(), getCharacterSet(), resource.isAllowClientCaching() ? executable.getExpiration() : 0 ).represent();
-				}
+			if( isStreaming )
+			{
+				// Nothing to return in streaming mode
+				return null;
 			}
 			else
 			{
-				// Attempt to use cache
-				RepresentableString string = cache.get( name );
-				if( string != null )
-				{
-					if( writer != null )
-						writer.write( string.getString() );
+				writer.flush();
 
-					return string.represent();
-				}
+				// Get the buffer from when we executed the executable
+				CacheEntry cacheEntry = new CacheEntry( buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet(), getExpiration() );
+
+				// Cache it if enabled
+				String cacheKey = castCacheKey();
+				if( ( cacheKey != null ) && cacheEntry.getExpirationDate() != null )
+					cache.store( cacheKey, cacheEntry );
+
+				// Return a representation of the entire buffer
+				if( startPosition == 0 )
+					return cacheEntry.represent();
 				else
-					return null;
+					return new CacheEntry( buffer.toString(), getMediaType(), getLanguage(), getCharacterSet(), getExpiration() ).represent();
 			}
 		}
 		catch( ExecutionException x )
@@ -698,9 +786,9 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 				// Note that this will cause the script to run again!
 				return new GeneratedTextStreamingRepresentation( resource, this, executionContext, resource.getExecutionController(), executable, flushLines );
 
-				// Note that we will allow exceptions in scripts that ask us
+				// Note that we will allow exceptions in executable that ask us
 				// to start streaming! In fact, throwing an exception is a
-				// good way for the script to signal that it's done and is
+				// good way for the executable to signal that it's done and is
 				// ready to start streaming.
 			}
 			else

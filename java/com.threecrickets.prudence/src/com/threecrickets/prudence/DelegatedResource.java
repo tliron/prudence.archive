@@ -608,14 +608,14 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * An optional {@link ExecutionController} to be used with the document.
-	 * Useful for adding your own global variables to the document.
+	 * An optional {@link ExecutionController} to be used with the executable.
+	 * Useful for exposing your own global variables to the executable.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedResource.executionController</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The script context controller or null if none used
+	 * @return The execution controller or null if none used
 	 */
 	public ExecutionController getExecutionController()
 	{

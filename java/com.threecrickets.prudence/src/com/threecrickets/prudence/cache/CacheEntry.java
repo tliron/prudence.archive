@@ -9,8 +9,9 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.util;
+package com.threecrickets.prudence.cache;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.restlet.data.CharacterSet;
@@ -19,12 +20,13 @@ import org.restlet.data.MediaType;
 import org.restlet.representation.StringRepresentation;
 
 /**
- * Creates {@link StringRepresentation} instances on the fly from stored
- * parameters.
+ * A cacheable set of parameters from which {@link StringRepresentation}
+ * instances can be created.
  * 
  * @author Tal Liron
+ * @see Cache
  */
-public class RepresentableString
+public class CacheEntry implements Serializable
 {
 	//
 	// Construction
@@ -44,7 +46,7 @@ public class RepresentableString
 	 * @param expirationDate
 	 *        The expiration date
 	 */
-	public RepresentableString( String string, MediaType mediaType, Language language, CharacterSet characterSet, Date expirationDate )
+	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, Date expirationDate )
 	{
 		this.string = string;
 		this.mediaType = mediaType;
@@ -67,7 +69,7 @@ public class RepresentableString
 	 * @param expiration
 	 *        Expiration timestamp or 0
 	 */
-	public RepresentableString( String string, MediaType mediaType, Language language, CharacterSet characterSet, long expiration )
+	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, long expiration )
 	{
 		this( string, mediaType, language, characterSet, expiration > 0 ? new Date( expiration ) : null );
 	}
@@ -77,13 +79,51 @@ public class RepresentableString
 	//
 
 	/**
-	 * The stored string.
-	 * 
 	 * @return The string
 	 */
 	public String getString()
 	{
 		return string;
+	}
+
+	/**
+	 * @return The media type
+	 */
+	public MediaType getMediaType()
+	{
+		return mediaType;
+	}
+
+	/**
+	 * @return The language
+	 */
+	public Language getLanguage()
+	{
+		return language;
+	}
+
+	/**
+	 * @return The character set
+	 */
+	public CharacterSet getCharacterSet()
+	{
+		return characterSet;
+	}
+
+	/**
+	 * @return The modification date
+	 */
+	public Date getModificationDate()
+	{
+		return modificationDate;
+	}
+
+	/**
+	 * @return The expiration date
+	 */
+	public Date getExpirationDate()
+	{
+		return expirationDate;
 	}
 
 	//
@@ -105,6 +145,11 @@ public class RepresentableString
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
+
+	/**
+	 * For the Serializable interface.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The stored string.
