@@ -14,12 +14,17 @@
 $form = $prudence->resource->request->resourceRef->queryAsForm;
 
 //
-// Stream this document
+// Stream this page
 //
 
 if($form->getFirstValue('stream') == 'true') if($prudence->stream()) exit();
 
+//
+// Cache this page
+//
+
 $prudence->cacheDuration = 5000;
+$prudence->cacheKey = '{name}?{rq}'; // Include query in cache key
 
 //
 // Calling Java

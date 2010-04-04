@@ -14,14 +14,19 @@
 form = prudence.resource.request.resourceRef.queryAsForm
 
 #
-# Stream this document
+# Stream this page
 #
 
 if form.getFirstValue('stream') == 'true':
 	if prudence.stream():
 		raise
 
+#
+# Cache this page
+#
+
 prudence.setCacheDuration(5000)
+prudence.setCacheKey('{name}?{rq}') # Include query in cache key
 
 #
 # Calling Java

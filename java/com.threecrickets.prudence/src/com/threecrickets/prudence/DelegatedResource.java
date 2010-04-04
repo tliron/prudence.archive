@@ -34,6 +34,8 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
+import com.threecrickets.prudence.cache.Cache;
+import com.threecrickets.prudence.cache.InProcessMemoryCache;
 import com.threecrickets.prudence.internal.ExposedContainerForDelegatedResource;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.scripturian.DocumentDescriptor;
@@ -170,6 +172,7 @@ import com.threecrickets.scripturian.LanguageManager;
  * </ul>
  * Modifiable attributes:
  * <ul>
+ * <li>
  * <li><code>prudence.characterSet</code>: The {@link CharacterSet} that will be
  * used if you return an arbitrary type for <code>handleGet()</code>,
  * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to what the
@@ -211,6 +214,9 @@ import com.threecrickets.scripturian.LanguageManager;
  * <p>
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
+ * <li>
+ * <code>com.threecrickets.prudence.cache:</code> {@link Cache}, defaults to
+ * a new instance of {@link InProcessMemoryCache}. See {@link #getCache()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.allowCompilation:</code>
  * {@link Boolean}, defaults to true. See {@link #isAllowCompilation()}.</li>
@@ -363,6 +369,38 @@ public class DelegatedResource extends ServerResource
 		}
 
 		return containerName;
+	}
+
+	/**
+	 * General-purpose cache. Defaults to a new instance of
+	 * {@link InProcessMemoryCache}. It is stored in the application's {@link Context}
+	 * for persistence across requests and for sharing among instances of
+	 * {@link DelegatedResource}.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.cache</code> in the application's
+	 * {@link Context}.
+	 * 
+	 * @return The cache
+	 * @see GeneratedTextResource#getCache()
+	 */
+	public Cache getCache()
+	{
+		if( cache == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			cache = (Cache) attributes.get( "com.threecrickets.prudence.cache" );
+			if( cache == null )
+			{
+				cache = new InProcessMemoryCache();
+
+				Cache existing = (Cache) attributes.putIfAbsent( "com.threecrickets.prudence.cache", cache );
+				if( existing != null )
+					cache = existing;
+			}
+		}
+
+		return cache;
 	}
 
 	/**
@@ -1132,6 +1170,11 @@ public class DelegatedResource extends ServerResource
 	 * <code>?source=true</code> to the URL.
 	 */
 	private volatile Boolean sourceViewable;
+
+	/**
+	 * General-purpose cache.
+	 */
+	private volatile Cache cache;
 
 	/**
 	 * The {@link Writer} used by the {@link Executable}.

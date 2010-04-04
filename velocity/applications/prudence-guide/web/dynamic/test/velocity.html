@@ -14,7 +14,7 @@
 #set($form = $prudence.resource.request.resourceRef.queryAsForm)
 
 ##
-## Stream this document
+## Stream this page
 ##
 
 #if($form.getFirstValue('stream') == 'true')
@@ -23,13 +23,18 @@
 	#end
 #end
 
-#set($prudence.cacheDuration=5000)
+##
+## Cache this page
+##
+
+#set($prudence.cacheDuration = 5000)
+#set($prudence.cacheKey = '{name}?{rq}') ## Include query in cache key
 
 ##
 ## Calling Java
 ##
 
-%><%rhino-nonjdk
+%><%js
 
 // Velocity is a templating language, not a full-blown scripting language. As such, it's missing some
 // features we need! In this case, we want to call a static method. So, we'll just use this JavaScript

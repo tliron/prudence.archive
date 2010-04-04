@@ -14,7 +14,7 @@
 (def form (.. executable getContainer getResource getRequest getResourceRef getQueryAsForm))
 
 ;
-; Stream this script
+; Stream this page
 ;
 
 (if (= (.getFirstValue form "stream") "true") 
@@ -24,10 +24,16 @@
 )
 
 ;
-; Calling Java
+; Cache this page
 ;
 
 (.setCacheDuration prudence 5000)
+(.setCacheKey prudence "{name}?{rq}") ; Include query in cache key
+
+;
+; Calling Java
+;
+
 (print "<p>This page was dynamically generated at " (System/currentTimeMillis) "</p>")
 
 ;

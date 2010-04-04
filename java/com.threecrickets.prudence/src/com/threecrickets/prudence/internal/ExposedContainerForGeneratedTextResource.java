@@ -15,6 +15,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
@@ -437,6 +440,24 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		executable.getAttributes().put( CACHE_KEY_ATTRIBUTE, cacheKey );
 	}
 
+	/**
+	 * @return The cache group keys
+	 */
+	@SuppressWarnings("unchecked")
+	public Set<String> getCacheGroups()
+	{
+		Set<String> cacheGroups = (Set<String>) executable.getAttributes().get( CACHE_GROUPS_ATTRIBUTE );
+		if( cacheGroups == null )
+		{
+			cacheGroups = new HashSet<String>();
+			Set<String> existing = (Set<String>) executable.getAttributes().putIfAbsent( CACHE_GROUPS_ATTRIBUTE, cacheGroups );
+			if( existing != null )
+				cacheGroups = existing;
+
+		}
+		return cacheGroups;
+	}
+
 	//
 	// Operations
 	//
@@ -573,6 +594,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	private static final String CACHE_DURATION_ATTRIBUTE = "prudence.cacheDuration";
 
 	private static final String CACHE_KEY_ATTRIBUTE = "prudence.cacheKey";
+
+	private static final String CACHE_GROUPS_ATTRIBUTE = "prudence.cacheGroups";
 
 	private static final String NAME_VARIABLE = "name";
 
@@ -735,11 +758,12 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 
 		setCacheDuration( 0 );
 		setCacheKey( resource.getDefaultCacheKey() );
+		getCacheGroups().clear();
 
 		try
 		{
 			executable.execute( false, writer, resource.getErrorWriter(), false, executionContext, this, executionController );
-			
+
 			// Executable might have changed!
 			this.executable = executable;
 
@@ -766,8 +790,9 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 
 				// Cache it if enabled
 				String cacheKey = castCacheKey();
+				Collection<String> cacheGroups = getCacheGroups();
 				if( ( cacheKey != null ) && cacheEntry.getExpirationDate() != null )
-					cache.store( cacheKey, cacheEntry );
+					cache.store( cacheKey, cacheGroups, cacheEntry );
 
 				// Return a representation of the entire buffer
 				if( startPosition == 0 )

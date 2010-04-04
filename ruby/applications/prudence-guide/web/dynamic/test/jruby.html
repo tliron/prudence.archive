@@ -14,7 +14,7 @@
 form = @prudence.resource.request.resource_ref.query_as_form
 
 #
-# Stream this document
+# Stream this page
 #
 
 if form.get_first_value('stream') == 'true'
@@ -23,7 +23,12 @@ if form.get_first_value('stream') == 'true'
 	end
 end
 
+#
+# Cache this page
+#
+
 @prudence.cache_duration = 5000
+@prudence.cache_key = '{name}?{rq}' # Include query in cache key
 
 #
 # Calling Java

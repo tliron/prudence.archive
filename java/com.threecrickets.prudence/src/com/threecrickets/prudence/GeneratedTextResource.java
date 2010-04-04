@@ -31,7 +31,7 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.cache.Cache;
-import com.threecrickets.prudence.cache.InProcessCache;
+import com.threecrickets.prudence.cache.InProcessMemoryCache;
 import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.scripturian.DocumentDescriptor;
@@ -139,6 +139,9 @@ import com.threecrickets.scripturian.exception.ExecutionException;
  * <li><code>prudence.cacheDuration</code>: Setting this to something greater
  * than 0 enables caching of the executable's output for a maximum number of
  * milliseconds. By default {@code cacheDuration} is 0.</li>
+ * <li><code>prudence.cacheGroups</code>: An options list of groups for our
+ * cache entry to be associated with. Cache groups make it easy to invalidate
+ * many entries in the cache at once. (See {@link Cache#invalidate(String)})</li>
  * <li><code>prudence.cacheKey</code>: A template for defining how the cache key
  * will be generated. The default template is "{name}".</li>
  * <li><code>prudence.characterSet</code>: The {@link CharacterSet} that will be
@@ -166,15 +169,14 @@ import com.threecrickets.scripturian.exception.ExecutionException;
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
  * <li>
+ * <code>com.threecrickets.prudence.cache:</code> {@link Cache}, defaults to
+ * a new instance of {@link InProcessMemoryCache}. See {@link #getCache()}.</li>
+ * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.allowClientCaching:</code>
  * {@link Boolean}, defaults to true. See {@link #isAllowClientCaching()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.allowCompilation:</code>
  * {@link Boolean}, defaults to true. See {@link #isAllowCompilation()}.</li>
- * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.cache:</code>
- * {@link Cache}, defaults to a new instance of {@link InProcessCache}. See
- * {@link #getCache()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.containerName</code>:
  * The name of the global variable with which to access the container. Defaults
@@ -293,27 +295,28 @@ public class GeneratedTextResource extends ServerResource
 
 	/**
 	 * Cache used for caching mode. Defaults to a new instance of
-	 * {@link InProcessCache}. It is stored in the application's {@link Context}
+	 * {@link InProcessMemoryCache}. It is stored in the application's {@link Context}
 	 * for persistence across requests and for sharing among instances of
 	 * {@link GeneratedTextResource}.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.cache</code> in
-	 * the application's {@link Context}.
+	 * <code>com.threecrickets.prudence.cache</code> in the application's
+	 * {@link Context}.
 	 * 
 	 * @return The cache
+	 * @see DelegatedResource#getCache()
 	 */
 	public Cache getCache()
 	{
 		if( cache == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			cache = (Cache) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.cache" );
+			cache = (Cache) attributes.get( "com.threecrickets.prudence.cache" );
 			if( cache == null )
 			{
-				cache = new InProcessCache();
+				cache = new InProcessMemoryCache();
 
-				Cache existing = (Cache) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.cache", cache );
+				Cache existing = (Cache) attributes.putIfAbsent( "com.threecrickets.prudence.cache", cache );
 				if( existing != null )
 					cache = existing;
 			}
