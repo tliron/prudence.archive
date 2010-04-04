@@ -1,0 +1,7 @@
+
+handleInit = {
+}
+
+handleGet = {
+	return '{}'
+}

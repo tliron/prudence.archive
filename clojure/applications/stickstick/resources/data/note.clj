@@ -1,0 +1,7 @@
+
+(defn handleInit []
+)
+
+(defn handleGet []
+	"{}"
+)

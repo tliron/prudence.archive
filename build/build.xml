@@ -258,9 +258,9 @@
 	</copy>
 	<!-- <fetch-syntaxhighlighter dist="${dist-kitchensink}" application="prudence-guide" /> -->
 	<!-- Fetch other applications -->
-	<copy todir="${dist-kitchensink}/content/applications/stickstick">
+	<!--<copy todir="${dist-kitchensink}/content/applications/stickstick">
 		<fileset dir="${python}/applications/stickstick" excludes="*" />
-	</copy>
+	</copy>-->
 	<!-- <fetch-syntaxhighlighter dist="${dist-kitchensink}" application="stickstick" /> -->
 </target>
 
