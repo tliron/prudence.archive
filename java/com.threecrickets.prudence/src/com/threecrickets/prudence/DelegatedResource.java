@@ -373,9 +373,9 @@ public class DelegatedResource extends ServerResource
 
 	/**
 	 * General-purpose cache. Defaults to a new instance of
-	 * {@link InProcessMemoryCache}. It is stored in the application's {@link Context}
-	 * for persistence across requests and for sharing among instances of
-	 * {@link DelegatedResource}.
+	 * {@link InProcessMemoryCache}. It is stored in the application's
+	 * {@link Context} for persistence across requests and for sharing among
+	 * instances of {@link DelegatedResource}.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.cache</code> in the application's
@@ -928,7 +928,7 @@ public class DelegatedResource extends ServerResource
 	/**
 	 * Delegates to the <code>handleGetInfo()</code> entry point in the script.
 	 * 
-	 * @return The optional result entity
+	 * @return The optional result info
 	 * @throws ResourceException
 	 * @see #getEntryPointNameForGetInfo()
 	 */
@@ -943,7 +943,7 @@ public class DelegatedResource extends ServerResource
 	 * 
 	 * @param variant
 	 *        The variant of the response entity
-	 * @return The optional result entity
+	 * @return The optional result info
 	 * @throws ResourceException
 	 * @see #getEntryPointNameForGetInfo()
 	 */
@@ -951,8 +951,18 @@ public class DelegatedResource extends ServerResource
 	public RepresentationInfo getInfo( Variant variant ) throws ResourceException
 	{
 		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), null, variant );
-		Object r = container.invoke( getEntryPointNameForGetInfo() );
-		return getRepresentationInfo( container, r );
+		try
+		{
+			Object r = container.invoke( getEntryPointNameForGetInfo() );
+			return getRepresentationInfo( container, r );
+		}
+		catch( ResourceException x )
+		{
+			if( x.getCause() instanceof NoSuchMethodException )
+				return get( variant );
+			else
+				throw x;
+		}
 	}
 
 	/**
