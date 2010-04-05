@@ -69,11 +69,12 @@ function getConnection(fresh) {
 	
 			var statement = connection.createStatement();
 			try {
-				statement.execute('CREATE TABLE board (id VARCHAR(50) PRIMARY KEY, timestamp TIMESTAMP)');
-				statement.execute('CREATE TABLE note (id INT AUTO_INCREMENT PRIMARY KEY, board VARCHAR(50), x INT, y INT, size INT, content TEXT, timestamp TIMESTAMP)');
+				statement.execute('CREATE TABLE IF NOT EXISTS board (id VARCHAR(50) PRIMARY KEY, timestamp TIMESTAMP)');
+				statement.execute('CREATE TABLE IF NOT EXISTS note (id INT AUTO_INCREMENT PRIMARY KEY, board VARCHAR(50), x INT, y INT, size INT, content TEXT, timestamp TIMESTAMP)');
+				statement.execute('CREATE INDEX IF NOT EXISTS note_board_idx ON note (board)');
 			}
 			catch(e if e.javaException instanceof SQLException) {
-				// Tables already exist
+				// Already exist
 			}
 			finally {
 				statement.close();
@@ -125,7 +126,7 @@ function getBoards(connection) {
 }
 
 function addBoard(board, connection) {
-	var statement = connection.prepareStatement('INSERT INTO board(id, timestamp) VALUES(?, ?)');
+	var statement = connection.prepareStatement('INSERT INTO board (id, timestamp) VALUES (?, ?)');
 	try {
 		statement.setString(1, board.id);
 		statement.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
@@ -227,7 +228,7 @@ function getNotes(connection) {
 
 function addNote(note, connection) {
 	note.timestamp = System.currentTimeMillis();
-	var statement = connection.prepareStatement('INSERT INTO note(board, x, y, size, content, timestamp) VALUES(?, ?, ?, ?, ?, ?)');
+	var statement = connection.prepareStatement('INSERT INTO note (board, x, y, size, content, timestamp) VALUES (?, ?, ?, ?, ?, ?)');
 	try {
 		statement.setString(1, note.board);
 		statement.setInt(2, note.x);
