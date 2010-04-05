@@ -2,14 +2,30 @@
 importClass(
 	java.lang.System,
 	java.lang.Class,
+	java.util.concurrent.locks.ReentrantLock,
 	java.sql.DriverManager,
 	java.sql.SQLException,
 	java.sql.Timestamp,
-	com.threecrickets.prudence.util.MiniConnectionPoolManager,
-	org.restlet.Application);
+	org.restlet.Application,
+	com.threecrickets.prudence.util.MiniConnectionPoolManager);
 
-function getUrl() {
-	var attributes = Application.current.context.attributes;
+var connectionPool;
+var connectionPoolLock = new ReentrantLock();
+
+function getDataSource(attributes) {
+	var dataSource;
+	if(attributes.get('stickstick.backend') == 'h2') {
+		dataSource = new org.h2.jdbcx.JdbcDataSource();
+	} else if(attributes.get('stickstick.backend') == 'mysql') {
+		dataSource = new com.mysql.jdbc.jdcb2.optional.MysqlDataSource();
+	}
+	dataSource.URL = getUrl(attributes);
+	dataSource.user = attributes.get('stickstick.username');
+	dataSource.password = attributes.get('stickstick.password');
+	return dataSource;
+}
+
+function getUrl(attributes) {
 	var url = 'jdbc:' + attributes.get('stickstick.backend') + ':';
 	if(attributes.get('stickstick.host') != '') {
 		if(attributes.get('stickstick.backend') == 'h2') {
@@ -20,73 +36,67 @@ function getUrl() {
 	if(attributes.get('stickstick.database') != '') {
 		url += attributes.get('stickstick.database');
 	}
-	/*if(attributes.get('stickstick.backend') == 'h2') {
-		url += ';AUTOCOMMIT=ON';
-	}*/
 	return url;
 }
-
-var pool;
 
 function getConnection(fresh) {
 	var attributes = Application.current.context.attributes;
 
-	if(pool == null || fresh) {
-		if(pool == null) {
-			if(attributes.get('stickstick.backend') == 'h2') {
-				dataSource = new org.h2.jdbcx.JdbcDataSource();
-			} else if(attributes.get('stickstick.backend') == 'mysql') {
-				dataSource = new com.mysql.jdbc.jdcb2.optional.MysqlDataSource();
+	connectionPoolLock.lock();
+	try {
+		if(connectionPool == null || fresh) {
+			if(connectionPool == null) {
+				connectionPool = new MiniConnectionPoolManager(getDataSource(attributes), 10);
 			}
-			dataSource.URL = getUrl();
-			dataSource.user = attributes.get('stickstick.username');
-			dataSource.password = attributes.get('stickstick.password');
 			
-			pool = new MiniConnectionPoolManager(dataSource, 10);
-		}
-
-		var connection = pool.connection;
-
-		if(fresh) {
+			// TODO: CREATE DATABASE IF NOT EXISTS
+	
+			var connection = connectionPool.connection;
+	
+			if(fresh) {
+				var statement = connection.createStatement();
+				try {
+					statement.execute('DROP TABLE board');
+					statement.execute('DROP TABLE note');
+				}
+				catch(e if e.javaException instanceof SQLException) {
+					// Tables already gone
+				}
+				finally {
+					statement.close();
+				}
+			}
+	
 			var statement = connection.createStatement();
 			try {
-				statement.execute('DROP TABLE board');
-				statement.execute('DROP TABLE note');
+				statement.execute('CREATE TABLE board (id VARCHAR(50) PRIMARY KEY, timestamp TIMESTAMP)');
+				statement.execute('CREATE TABLE note (id INT AUTO_INCREMENT PRIMARY KEY, board VARCHAR(50), x INT, y INT, size INT, content TEXT, timestamp TIMESTAMP)');
 			}
 			catch(e if e.javaException instanceof SQLException) {
-				// Tables already gone
+				// Tables already exist
 			}
 			finally {
 				statement.close();
 			}
-		}
-
-		var statement = connection.createStatement();
-		try {
-			statement.execute('CREATE TABLE board (id VARCHAR(50) PRIMARY KEY, timestamp TIMESTAMP)');
-			statement.execute('CREATE TABLE note (id INT AUTO_INCREMENT PRIMARY KEY, board VARCHAR(50), x INT, y INT, size INT, content TEXT, timestamp TIMESTAMP)');
-		}
-		catch(e if e.javaException instanceof SQLException) {
-			// Tables already exist
-		}
-		finally {
-			statement.close();
+			
+			try {
+				addBoard({id: 'Todo List'}, connection);
+				addBoard({id: 'Great Ideas'}, connection);
+				addBoard({id: 'Sandbox'}, connection);
+				//addNote({board: 'Todo', x: 100, y: 100, size: 0, content: 'Test!'}, connection);
+			}
+			catch(e if e.javaException instanceof SQLException) {
+				// Boards already exist
+			}
+	
+			connection.close();
 		}
 		
-		try {
-			addBoard({id: 'Todo List'}, connection);
-			addBoard({id: 'Great Ideas'}, connection);
-			addBoard({id: 'Sandbox'}, connection);
-			//addNote({board: 'Todo', x: 100, y: 100, size: 0, content: 'Test!'}, connection);
-		}
-		catch(e if e.javaException instanceof SQLException) {
-			// Boards already exist
-		}
-
-		connection.close();
+		return connectionPool.connection;
 	}
-	
-	return pool.connection;
+	finally {
+		connectionPoolLock.unlock();
+	}
 }
 
 function getBoards(connection) {
@@ -97,7 +107,10 @@ function getBoards(connection) {
 		var rs = statement.executeQuery('SELECT id, timestamp FROM board');
 		try {
 			while(rs.next()) {
-				boards.push({id: String(rs.getString(1)), timestamp: rs.getTimestamp(2).time});
+				boards.push({
+					id: String(rs.getString(1)),
+					timestamp: rs.getTimestamp(2).time
+				});
 			}
 		}
 		finally {
@@ -161,11 +174,16 @@ function getNote(id, connection) {
 		var rs = statement.executeQuery();
 		try {
 			if(rs.next()) {
-				return {id: id, board: String(rs.getString(1)), x: rs.getInt(2), y: rs.getInt(3), size: rs.getInt(4), content: String(rs.getString(5)), timestamp: rs.getTimestamp(6).time};
+				return {
+					id: id,
+					board: String(rs.getString(1)),
+					x: rs.getInt(2),
+					y: rs.getInt(3),
+					size: rs.getInt(4),
+					content: String(rs.getString(5)),
+					timestamp: rs.getTimestamp(6).time
+				};
 			}
-		}
-		catch(e if e.javaException instanceof SQLException) {
-			// Not found
 		}
 		finally {
 			rs.close();
@@ -186,7 +204,14 @@ function getNotes(connection) {
 		var rs = statement.executeQuery('SELECT id, board, x, y, size, content FROM note');
 		try {
 			while(rs.next()) {
-				notes.push({id: rs.getInt(1), board: String(rs.getString(2)), x: rs.getInt(3), y: rs.getInt(4), size: rs.getInt(5), content: String(rs.getString(6))});
+				notes.push({
+					id: rs.getInt(1),
+					board: String(rs.getString(2)),
+					x: rs.getInt(3),
+					y: rs.getInt(4),
+					size: rs.getInt(5),
+					content: String(rs.getString(6))
+				});
 			}
 		}
 		finally {
