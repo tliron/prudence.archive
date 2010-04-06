@@ -58,14 +58,14 @@ function handleGetInfo() {
     try {
         note = getNote(id, connection);
         if(note == null) {
-        	return 404;
+        	return null;
         }
     }
     finally {
     	connection.close();
     }
 
-    return datetime_to_milliseconds(note.timestamp)
+    return note.timestamp;
 }
 
 function handlePost() {

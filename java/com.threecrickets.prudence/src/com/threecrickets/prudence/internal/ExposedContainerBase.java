@@ -12,6 +12,7 @@
 package com.threecrickets.prudence.internal;
 
 import org.restlet.Application;
+import org.restlet.Request;
 import org.restlet.data.LocalReference;
 import org.restlet.data.MediaType;
 import org.restlet.resource.ClientResource;
@@ -56,6 +57,31 @@ public abstract class ExposedContainerBase
 	public ClientResource external( String uri, String mediaType )
 	{
 		return new ClientResource( uri );
+	}
+
+	/**
+	 * @return
+	 */
+	public String getPathToBase()
+	{
+		Request request = Request.getCurrent();
+		String relative = request.getResourceRef().getRelativeRef().toString();
+
+		// Remove redundant slashes
+		relative = relative.replace( "//", "/" );
+
+		// Count segments
+		int segments = 0;
+		for( int index = relative.indexOf( '/' ); index != -1; index = relative.indexOf( '/', index + 1 ) )
+			segments++;
+
+		// Build relative path
+		StringBuilder path = new StringBuilder();
+		for( int i = 0; i < segments; i++ )
+			path.append( "../" );
+
+		// System.out.println( relative + " - " + path );
+		return path.toString();
 	}
 
 	/**

@@ -1,7 +1,124 @@
 
+prudence.include('../libraries/stickstick/data/')
+prudence.include('../libraries/json2/')
+
+import java.lang.System
+
+merge = { key, a, b =>
+	if(typeof(a[key]) == 'undefined') {
+		return b[key]
+	}
+	else {
+		return a[key]
+	}
+}
+
+getId = {
+    try {
+        return Integer.valueOf(prudence.resource.request.attributes['id'])
+    }
+    catch(e) {
+    	return null
+    }
+
+    //def form = prudence.resource.request.resourceRef.queryAsForm
+    //return Integer.valueOf(form.getFirstValue('id'))
+}
+
 handleInit = {
+    prudence.addMediaTypeByName('text/plain')
+    prudence.addMediaTypeByName('application/json')
 }
 
 handleGet = {
-	return '{}'
+	def id = getId()
+	
+    def note
+    def connection = getConnection()
+    try {
+        note = getNote(id, connection)
+        if(note == null) {
+        	return 404
+        }
+    }
+    finally {
+    	connection.close()
+    }
+
+    prudence.modificationTimestamp = note.timestamp
+    delete note.timestamp
+    return JSON.stringify(note)
+}
+
+handleGetInfo = {
+	def id = getId()
+	
+    def note
+    def connection = getConnection()
+    try {
+        note = getNote(id, connection)
+        if(note == null) {
+        	return null
+        }
+    }
+    finally {
+    	connection.close()
+    }
+
+    return note.timestamp
+}
+
+handlePost = {
+	def id = getId()
+
+    // Note: You can only "consume" the entity once, so if we want it
+    // as text, and want to refer to it more than once, we should keep
+    // a reference to that text.
+    
+    def text = prudence.entity.text
+    def note = JSON.parse(String(text))
+
+    def connection = getConnection()
+    try {
+        def existing = getNote(id, connection)
+        if(existing == null) {
+        	return 404
+        }
+        note = {
+        	id: id,
+        	board: merge('board', note, existing),
+        	x: merge('x', note, existing),
+        	y: merge('y', note, existing),
+        	size: merge('size', note, existing),
+        	content: merge('content', note, existing)
+        }
+        updateNote(note, connection)
+        updateBoardTimestamp(note, connection)
+    }
+    finally {
+    	connection.close()
+    }
+
+    prudence.modificationTimestamp = note.timestamp
+    delete note.timestamp
+    return JSON.stringify(note)
+}
+
+handleDelete = {
+	def id = getId()
+
+    def connection = getConnection()
+    try {
+        def note = getNote(id, connection)
+        if(note == null) {
+        	return 404
+        }
+        deleteNote(note, connection)
+        updateBoardTimestamp(note, connection, System.currentTimeMillis())
+    }
+    finally {
+    	connection.close()
+    }
+
+    return null
 }
