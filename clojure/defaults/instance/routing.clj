@@ -6,7 +6,7 @@
 
 ; Hosts
 
-(include-or-default "instance/hosts")
+(include-or-default "instance/hosts/")
 
 ; Applications
 

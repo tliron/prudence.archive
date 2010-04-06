@@ -6,7 +6,7 @@ from java.io import File
 
 # Hosts
 
-include_or_default('instance/hosts')
+include_or_default('instance/hosts/')
 
 # Applications
 

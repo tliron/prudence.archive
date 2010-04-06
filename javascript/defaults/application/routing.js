@@ -72,6 +72,8 @@ print('.\n');
 
 var attributes = application.context.attributes;
 
+attributes.put('component', component);
+
 //
 // Inbound root
 //

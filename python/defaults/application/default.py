@@ -9,13 +9,13 @@ from com.threecrickets.prudence.util import DelegatedStatusService
 # Settings
 #
 
-include_or_default(application_base_path + '/settings', 'defaults/application/settings')
+include_or_default(application_base_path + '/settings/', 'defaults/application/settings/')
 
 #
 # Application
 #
 
-include_or_default(application_base_path + '/application', 'defaults/application/application')
+include_or_default(application_base_path + '/application/', 'defaults/application/application/')
 
 application.name = application_name
 application.description = application_description
@@ -41,7 +41,7 @@ application.metadataService.addExtension('php', MediaType.TEXT_HTML)
 # Routing
 #
 
-include_or_default(application_base_path + '/routing', 'defaults/application/routing')
+include_or_default(application_base_path + '/routing/', 'defaults/application/routing/')
 
 #
 # Logging

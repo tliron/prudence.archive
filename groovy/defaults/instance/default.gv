@@ -95,19 +95,19 @@ component.context.attributes.put('prudence.executor', executor)
 // Clients
 //
 
-includeOrDefault('instance/clients')
+includeOrDefault('instance/clients/')
 
 //
 // Routing
 //
 
-includeOrDefault('instance/routing')
+includeOrDefault('instance/routing/')
 
 //
 // Servers
 //
 
-includeOrDefault('instance/servers')
+includeOrDefault('instance/servers/')
 
 //
 // Start

@@ -8,7 +8,7 @@ importClass(
 
 // Hosts
 
-includeOrDefault('instance/hosts');
+includeOrDefault('instance/hosts/');
 
 // Applications
 

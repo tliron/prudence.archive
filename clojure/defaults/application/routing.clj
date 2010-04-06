@@ -62,6 +62,8 @@
 
 (def attributes (.. application getContext (getAttributes)))
 
+(.put attributes "component" component)
+
 ;
 ; Inbound root
 ;

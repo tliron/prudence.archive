@@ -70,6 +70,8 @@ println('.')
 
 attributes = application.context.attributes
 
+attributes.put('component', component)
+
 //
 // Inbound root
 //

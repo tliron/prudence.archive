@@ -2,7 +2,7 @@
 // Prudence Guide Settings
 //
 
-executable.container.include('defaults/application/settings');
+executable.container.include('defaults/application/settings/');
 
 applicationName = 'Prudence Guide';
 applicationDescription = 'Prudence web site, documentation, and tests';

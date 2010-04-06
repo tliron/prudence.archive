@@ -11,12 +11,12 @@
 ; Settings
 ;
 
-(include-or-default (str application-base-path "/settings") "defaults/application/settings")
+(include-or-default (str application-base-path "/settings/") "defaults/application/settings/")
 ;
 ; Application
 ;
 
-(include-or-default (str application-base-path "/application") "defaults/application/application")
+(include-or-default (str application-base-path "/application/") "defaults/application/application/")
 
 (.setName application application-name)
 (.setDescription application application-description)
@@ -42,7 +42,7 @@
 ; Routing
 ;
 
-(include-or-default (str application-base-path "/routing") "defaults/application/routing")
+(include-or-default (str application-base-path "/routing/") "defaults/application/routing/")
 
 ;
 ; Logging

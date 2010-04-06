@@ -2,4 +2,4 @@
 # Prudence Instance
 #
 
-@executable.container.include 'defaults/instance'
+@executable.container.include 'defaults/instance/'

@@ -71,6 +71,8 @@ puts '.'
 
 $attributes = $application.context.attributes
 
+$attributes['component'] = $component
+
 #
 # Inbound root
 #

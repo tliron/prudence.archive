@@ -2,7 +2,7 @@
 # Prudence Guide Settings
 #
 
-executable.container.include('defaults/application/settings')
+executable.container.include('defaults/application/settings/')
 
 application_name = 'Prudence Guide'
 application_description = 'Prudence web site, documentation, and tests'
@@ -15,4 +15,4 @@ hosts = {component.defaultHost: None, mysite_host: None}
 
 show_debug_on_error = True
 
-preheat_resources = ['/data/jython', '/data/jruby', '/data/groovy', '/data/clojure', '/data/rhino']
+preheat_resources = ['/data/jython/', '/data/jruby/', '/data/groovy/', '/data/clojure/', '/data/rhino/']

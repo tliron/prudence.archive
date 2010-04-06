@@ -95,19 +95,19 @@
 ; Clients
 ;
 
-(include-or-default "instance/clients")
+(include-or-default "instance/clients/")
 
 ;
 ; Routing
 ;
 
-(include-or-default "instance/routing")
+(include-or-default "instance/routing/")
 
 ;
 ; Servers
 ;
 
-(include-or-default "instance/servers")
+(include-or-default "instance/servers/")
 
 ;
 ; Start

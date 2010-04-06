@@ -6,7 +6,7 @@ import java.util.ArrayList
 
 # Hosts
 
-include_or_default 'instance/hosts'
+include_or_default 'instance/hosts/'
 
 # Applications
 
