@@ -2,7 +2,7 @@ clojure				1.0.0
 grizzly				1.9.18-k
 groboutils			5
 groovy				1.7.0
-h2					1.2.131
+h2					1.2.132
 jackson				1.3.0
 jepp				2.3
 jruby				1.5.0 (Revision 6586)
