@@ -1,6 +1,7 @@
 <%velocity
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-#set($language = $executable.context.adapter.attributes.get('language.name'))
+#set($component = $prudence.resource.context.attributes.get('component'))
+#set($flavor = $component.context.attributes.get('prudence.flavor'))
 <html>
 <head>
 	<title>Stickstick - Three Crickets</title>
@@ -24,8 +25,8 @@
 		</p>
 		<p>
 			<button id="refresh">Refresh</button>
-			<button id="new-small">Create Small</button>
-			<button id="new-large">Create Large</button>
+			<button id="new-small">Create Small Note</button>
+			<button id="new-large">Create Large Note</button>
 			Show Board:
 			<select id="board"></select>
 		</p>
@@ -36,7 +37,7 @@
 	</td></tr></table>
 	<div id="content" style="position: relative; width: 100%; height: 500px; border: 1px solid black;"></div>
 	<p>
-		Stickstick is a fun demo application written in $language on <a href="http://threecrickets.com/prudence/">Prudence</a>,
+		Stickstick is a fun demo application written in $flavor on <a href="http://threecrickets.com/prudence/">Prudence</a>,
 		with an <a href="http://www.h2database.com/">H2</a> database. It is meant to show
 		how easy it is to create powerful, scalable applications with Prudence.
 	</p>
@@ -46,3 +47,4 @@
 </div>
 </body>
 </html>
+%>
