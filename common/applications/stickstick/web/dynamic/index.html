@@ -1,10 +1,12 @@
+<%velocity
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+#set($language = $executable.context.adapter.attributes.get('language.name'))
 <html>
 <head>
 	<title>Stickstick - Three Crickets</title>
 	<link rel="stylesheet" type="text/css" href="style/soft-cricket.css" media="screen"/>
 	<link rel="stylesheet" type="text/css" href="style/stickynote.css" media="screen"/>
-	<link rel="stylesheet" type="text/css" href="style/jquery-ui-1.8rc3.custom.css" /> <!--  Swanky Purse -->
+	<link rel="stylesheet" type="text/css" href="style/jquery-ui-1.8rc3.custom.css" /> <!-- Swanky Purse -->
 	<link rel="shortcut icon" href="images/bullfinch.ico"/>
 	<script type="text/javascript" src="script/jquery-1.4.2.min.js"></script>		
 	<script type="text/javascript" src="script/jquery-ui-1.8rc3.custom.min.js"></script>
@@ -34,12 +36,12 @@
 	</td></tr></table>
 	<div id="content" style="position: relative; width: 100%; height: 500px; border: 1px solid black;"></div>
 	<p>
-		Stickstick is a fun demo application written in Python on <a href="http://threecrickets.com/prudence/">Prudence</a>,
-		with <a href="http://www.sqlalchemy.org/">SQLAlchemy</a> persisting the data to an <a href="http://www.h2database.com/">H2</a> database. It is meant to show
+		Stickstick is a fun demo application written in $language on <a href="http://threecrickets.com/prudence/">Prudence</a>,
+		with an <a href="http://www.h2database.com/">H2</a> database. It is meant to show
 		how easy it is to create powerful, scalable applications with Prudence.
 	</p>
 	<p>
-		Source code: <a href="notes?source=true">notes</a>, <a href="note?source=true">note</a>.
+		Source code: <a href="data/?source=true">/data/</a>, <a href="data/note/?source=true">/data/note/</a>.
 	</p>
 </div>
 </body>
