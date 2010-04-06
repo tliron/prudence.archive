@@ -138,7 +138,10 @@ function addBoard(board, connection) {
 }
 
 function updateBoardTimestamp(note, connection, timestamp) {
-	if(timestamp == null) {
+    // TODO: we are not guaranteeing atomicity here! In a highly concurrent environment,
+    // there is a chance that the board will not be set with the latest timestamp!
+
+    if(timestamp == null) {
 		timestamp = note.timestamp;
 	}
 
@@ -244,6 +247,9 @@ function addNote(note, connection) {
 }
 
 function updateNote(note, connection) {
+    // TODO: we are not guaranteeing atomicity here! In a highly concurrent environment,
+    // there is a chance that the board will not be set with the latest timestamp!
+
 	note.timestamp = System.currentTimeMillis();
 	var statement = connection.prepareStatement('UPDATE note SET board=?, x=?, y=?, size=?, content=?, timestamp=? WHERE id=?');
 	try {

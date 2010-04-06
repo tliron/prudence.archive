@@ -25,7 +25,6 @@ Session = sessionmaker()
 
 engine = None
 engine_lock = RLock()
-boards_lock = RLock()
 
 def datetime_to_milliseconds(dt):
     return long(mktime(dt.timetuple()) * 1000) if dt else 0
@@ -72,6 +71,8 @@ class Note(Base):
             self.size = note_dict['size']
         if 'content' in note_dict:
             self.content = note_dict['content']
+        # TODO: we are not guaranteeing atomicity here! In a highly concurrent environment,
+        # there is a chance that the note will not be set with the latest timestamp!
         self.timestamp = now()
 
     def to_dict(self):
@@ -103,8 +104,7 @@ class Board(Base):
 #
         
 def get_engine(fresh=False):
-    engine_lock.acquire()
-    try:
+    with engine_lock:
         global engine
         if engine is None or fresh:
             attributes = Application.getCurrent().context.attributes
@@ -162,8 +162,6 @@ def get_engine(fresh=False):
                 session.close()
             
         return engine
-    finally:
-        engine_lock.release()
 
 def get_connection(fresh=False):
     engine = get_engine(fresh)
@@ -183,13 +181,10 @@ def update_board_timestamp(session, note, timestamp=None):
         board = Board(note.board)
         session.add(board)
 
-    boards_lock.acquire()
-    try:
-        if timestamp > board.timestamp:
-            board.timestamp = timestamp
-    finally:
-        boards_lock.release()
-
+    if timestamp > board.timestamp:
+        # TODO: we are not guaranteeing atomicity here! In a highly concurrent environment,
+        # there is a chance that the board will not be set with the latest timestamp!
+        board.timestamp = timestamp
 
 #note = Note('fish', 200, 50)
 #session = get_session()
