@@ -34,12 +34,12 @@ import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.InProcessMemoryCache;
 import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
-import com.threecrickets.scripturian.DocumentDescriptor;
-import com.threecrickets.scripturian.DocumentFormatter;
-import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageManager;
+import com.threecrickets.scripturian.document.DocumentDescriptor;
+import com.threecrickets.scripturian.document.DocumentFormatter;
+import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.ExecutableInitializationException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 

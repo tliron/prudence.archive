@@ -20,10 +20,10 @@ import org.restlet.data.Status;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 
-import com.threecrickets.scripturian.DefrostTask;
-import com.threecrickets.scripturian.DocumentDescriptor;
-import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.document.DocumentDescriptor;
+import com.threecrickets.scripturian.document.DocumentSource;
+import com.threecrickets.scripturian.util.DefrostTask;
 
 /**
  * A {@link Runnable} that does a GET request on a an internal URI, making sure

@@ -7,7 +7,7 @@ from java.io import File
 
 from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Finder, Directory
-from com.threecrickets.scripturian import DefrostTask
+from com.threecrickets.scripturian.util import DefrostTask
 from com.threecrickets.scripturian.file import DocumentFileSource
 from com.threecrickets.prudence.util import PrudenceRouter, PreheatTask
 

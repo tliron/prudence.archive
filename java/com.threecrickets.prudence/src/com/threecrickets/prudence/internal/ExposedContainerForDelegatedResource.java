@@ -29,12 +29,12 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 
 import com.threecrickets.prudence.DelegatedResource;
-import com.threecrickets.scripturian.DocumentDescriptor;
-import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageAdapter;
+import com.threecrickets.scripturian.document.DocumentDescriptor;
+import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.ExecutableInitializationException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 

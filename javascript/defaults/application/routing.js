@@ -10,7 +10,7 @@ importClass(
 	org.restlet.routing.Template,
 	org.restlet.resource.Finder,
 	org.restlet.resource.Directory,
-	com.threecrickets.scripturian.DefrostTask,
+	com.threecrickets.scripturian.util.DefrostTask,
 	com.threecrickets.scripturian.file.DocumentFileSource,
 	com.threecrickets.prudence.util.PrudenceRouter,
 	com.threecrickets.prudence.util.PreheatTask);

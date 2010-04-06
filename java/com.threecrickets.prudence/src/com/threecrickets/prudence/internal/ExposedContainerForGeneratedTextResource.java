@@ -33,11 +33,11 @@ import org.restlet.routing.Variable;
 import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.CacheEntry;
-import com.threecrickets.scripturian.DocumentDescriptor;
-import com.threecrickets.scripturian.DocumentSource;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.LanguageAdapter;
+import com.threecrickets.scripturian.document.DocumentDescriptor;
+import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.ExecutableInitializationException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 
