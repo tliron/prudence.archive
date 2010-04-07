@@ -1,4 +1,4 @@
-<%velocity #set($prudence.cacheDuration = 5000) %><%& '../fragments/header/' %>
+<%velocity #set($prudence.cacheDuration = 300000) %><%& '../fragments/header/' %>
 
 <h2>Frequently Asked Questions</h2>
 
@@ -36,7 +36,7 @@ so that mistakes cannot happen. More addresses means more debuggability.
 First, recognize that there are two common uses for the term "scale." REST is often
 referred to as an inherently scalable architecture, but that has more to do with
 project management than technical performance. This difference is address in the
-<a href="rest">Making the Case for REST</a>.
+<a href="../rest/">Making the Case for REST</a>.
 </p>
 
 <p>From the perspective of the ability to respond to user requests, there are three
@@ -48,7 +48,7 @@ aspects to consider:
 Prudence comes with <a href="https://grizzly.dev.java.net/">Grizzly</a>,
 an HTTP server based on the JVM's non-blocking I/O API. Grizzly handles concurrent HTTP
 requests very well, and serves static files at scales comparable to popular HTTP servers.
-See the <a href="../guide/static-web/">tutorial</a> for more information.
+See the <a href="../guide/tutorial/">tutorial</a> for more information.
 </p>
 
 <h4>2. Generating HTML</h4>
@@ -63,9 +63,9 @@ used to control the duration of the document's individual cache.
 that need to output a very large amount of text, which might take a long time, or that might otherwise encounter slow-downs
 while running. In either case, you want the client to receive ongoing output. The output of the document is not cached.
 </p><p>
-Scriptlets can be used switch between modes according to changing circumstances. For example, to increase caching duration
+Scriptlets can switch between modes according to changing circumstances. For example, to increase caching duration
 during heavy loads, to decrease it during periods where data changes often, or to stream in the case of an expected large output.
-See the <a href="../guide/dynamic-web">tutorial</a> for more information.
+See the <a href="../guide/tutorial/">tutorial</a> for more information.
 </p>
 
 <h4>3. Running code</h4>
