@@ -17,7 +17,7 @@ function getDataSource(attributes) {
 	if(attributes.get('stickstick.backend') == 'h2') {
 		dataSource = new org.h2.jdbcx.JdbcDataSource();
 	} else if(attributes.get('stickstick.backend') == 'mysql') {
-		dataSource = new com.mysql.jdbc.jdcb2.optional.MysqlDataSource();
+		dataSource = new com.mysql.jdbc.jdbc2.optional.MysqlDataSource();
 	}
 	dataSource.URL = getUrl(attributes);
 	dataSource.user = attributes.get('stickstick.username');

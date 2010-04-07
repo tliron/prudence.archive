@@ -17,7 +17,7 @@ function handleGet() {
 
     var connection = getConnection(fresh);
     try {
-	    boards = getBoards(connection);
+	    var boards = getBoards(connection);
 	    if(boards != null) {
 		    for(var i in boards) {
 		    	var board = boards[i];

@@ -33,7 +33,7 @@ function getStateLock() {
 
 function getState() {
 	return getContextAttribute('rhino.state', function() {
-		return {'name': 'Coraline', 'media': 'Film', 'rating': 'A+', 'characters': ['Coraline', 'Wybie', 'Mom', 'Dad']};
+		return {name: 'Coraline', media: 'Film', rating: 'A+', characters: ['Coraline', 'Wybie', 'Mom', 'Dad']};
 	});
 }
 
