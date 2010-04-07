@@ -597,7 +597,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 
 	private static final String CACHE_GROUPS_ATTRIBUTE = "prudence.cacheGroups";
 
-	private static final String NAME_VARIABLE = "name";
+	private static final String NAME_VARIABLE = "n";
 
 	/**
 	 * The resource.
@@ -788,10 +788,10 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 				// Get the buffer from when we executed the executable
 				CacheEntry cacheEntry = new CacheEntry( buffer.substring( startPosition ), getMediaType(), getLanguage(), getCharacterSet(), getExpiration() );
 
-				// Cache it if enabled
+				// Cache if enabled
 				String cacheKey = castCacheKey();
 				Collection<String> cacheGroups = getCacheGroups();
-				if( ( cacheKey != null ) && cacheEntry.getExpirationDate() != null )
+				if( ( cacheKey != null ) && ( cacheEntry.getExpirationDate() != null ) )
 					cache.store( cacheKey, cacheGroups, cacheEntry );
 
 				// Return a representation of the entire buffer

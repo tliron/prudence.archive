@@ -143,7 +143,7 @@ import com.threecrickets.scripturian.exception.ExecutionException;
  * cache entry to be associated with. Cache groups make it easy to invalidate
  * many entries in the cache at once. (See {@link Cache#invalidate(String)})</li>
  * <li><code>prudence.cacheKey</code>: A template for defining how the cache key
- * will be generated. The default template is "{name}".</li>
+ * will be generated.</li>
  * <li><code>prudence.characterSet</code>: The {@link CharacterSet} that will be
  * used for the generated string. Defaults to what the client requested (in
  * <code>prudence.variant</code>), or to the value of
@@ -183,7 +183,7 @@ import com.threecrickets.scripturian.exception.ExecutionException;
  * to "prudence". See {@link #getContainerName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey:</code>
- * {@link String}, defaults to "{name}". See {@link #getDefaultCacheKey()}.</li>
+ * {@link String}, defaults to "{ri}". See {@link #getDefaultCacheKey()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
@@ -295,9 +295,9 @@ public class GeneratedTextResource extends ServerResource
 
 	/**
 	 * Cache used for caching mode. Defaults to a new instance of
-	 * {@link InProcessMemoryCache}. It is stored in the application's {@link Context}
-	 * for persistence across requests and for sharing among instances of
-	 * {@link GeneratedTextResource}.
+	 * {@link InProcessMemoryCache}. It is stored in the application's
+	 * {@link Context} for persistence across requests and for sharing among
+	 * instances of {@link GeneratedTextResource}.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.cache</code> in the application's
@@ -401,6 +401,7 @@ public class GeneratedTextResource extends ServerResource
 
 	/**
 	 * The default cache key to use if the executable doesn't specify one.
+	 * Defaults to "{ri}".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey</code>
@@ -416,7 +417,7 @@ public class GeneratedTextResource extends ServerResource
 			defaultCacheKey = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey" );
 
 			if( defaultCacheKey == null )
-				defaultCacheKey = "{name}";
+				defaultCacheKey = "{ri}";
 		}
 
 		return defaultCacheKey;
