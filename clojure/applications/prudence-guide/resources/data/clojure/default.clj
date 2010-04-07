@@ -12,8 +12,7 @@
 
 (import
 	'java.io.File
-	'org.restlet.ext.json.JsonRepresentation
-)
+	'org.restlet.ext.json.JsonRepresentation)
 
 ; Include the context library
 (.. prudence (include "../libraries/clojure/context/"))
@@ -37,13 +36,10 @@
 	;
 
 	(get-context-attribute "clojure.state"
-		#(identity {"name" "Coraline", "media" "Film", "rating" "A+", "characters" ["Coraline" "Wybie" "Mom" "Dad"]})
-	)
-)
+		#(identity {"name" "Coraline", "media" "Film", "rating" "A+", "characters" ["Coraline" "Wybie" "Mom" "Dad"]})))
 
 (defn set-state [value]
-	(.. prudence getResource getContext getAttributes (put "clojure.state" value))
-)
+	(.. prudence getResource getContext getAttributes (put "clojure.state" value)))
 
 ; This function is called when the resource is initialized. We will use it to set
 ; general characteristics for the resource.
@@ -55,8 +51,7 @@
 	; will do, in which case the first one we add will be used.
 
 	(.. prudence (addMediaTypeByName "text/plain"))
-	(.. prudence (addMediaTypeByName "application/json"))
-)
+	(.. prudence (addMediaTypeByName "application/json")))
 
 ; This function is called for the GET verb, which is expected to behave as a
 ; logical "read" of the resource's state.
@@ -80,10 +75,7 @@
 	
 		(if (= (.. prudence getMediaTypeName) "application/json")
 			(JsonRepresentation. (str r))
-			r
-		)
-	)
-)
+			r)))
 
 ; This function is called for the POST verb, which is expected to behave as a
 ; logical "update" of the resource's state.
@@ -100,10 +92,8 @@
 (defn handlePost []
 	(let [update (decode-from-str (.. prudence getEntity getText))
 		state (get-state)]
-		(set-state (merge state update))
-	)
-	(handleGet)
-)
+		(set-state (merge state update)))
+	(handleGet))
 
 ; This function is called for the PUT verb, which is expected to behave as a
 ; logical "create" of the resource's state.
@@ -119,10 +109,8 @@
 
 (defn handlePut []
 	(let [update (decode-from-str (.. prudence getEntity getText))]
-		(set-state update)
-	)
-	(handleGet)
-)
+		(set-state update))
+	(handleGet))
 
 ; This function is called for the DELETE verb, which is expected to behave as a
 ; logical "delete" of the resource's state.
@@ -134,5 +122,4 @@
 (defn handleDelete []
 	(set-state {})
 	
-	nil
-)
+	nil)

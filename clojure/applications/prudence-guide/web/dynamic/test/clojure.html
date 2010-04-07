@@ -19,9 +19,7 @@
 
 (if (= (.getFirstValue form "stream") "true") 
 	(if (.. executable getContainer stream)
-		(throw nil)
-	)
-)
+		(throw nil)))
 
 ;
 ; Cache this page
@@ -63,14 +61,12 @@
 		(def tags (get attributes "tags"))
 		(doseq [tag (butlast tags)]
 			(print tag)
-			(print ", ")
-		)
+			(print ", "))
 		(print (last tags))
 %>
 </p>
 <%
-	)
-)
+		))
 %>
 <h3>Language used:</h3>
 <%
@@ -97,7 +93,7 @@ A multiple of three:
 %>
 <br />
 <%
-)
+	)
 %>
 </p>
 </td></tr></table>
