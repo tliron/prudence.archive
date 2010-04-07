@@ -1,4 +1,4 @@
-<%velocity #set($prudence.cacheDuration = 300000) %><%&
+<%velocity #set($prudence.cacheDuration = 30000) %><%&
 '../fragments/header/' %>
 
 <h2>Under the Hood</h2>
@@ -28,19 +28,20 @@ but found it awkward to force servlets into a REST. Discovering
 <p>Restlet's super-powers are three:</p>
 
 <ol>
-	<li>Powerful URI routing and manipulation. Finally, an elegant
-	front-face to users and other service consumers, with support for
-	virtual hosting, rewriting, and other useful real-world features.</li>
-	
-	<li>Straightforward abstraction over HTTP and best-of-breed HTTP
+	<li>Straightforward abstraction of HTTP over best-of-breed HTTP
 	engines, such as <a href="https://grizzly.dev.java.net/">Grizzly</a>, <a href="http://jetty.codehaus.org/jetty/">Jetty</a> and
 	<a href="http://www.jboss.org/netty">Netty</a>.
 	Automatically gain the scalable advantages of non-blocking I/O and even asynchronous request
-	handling. Restlet handles conditional HTTP requests, content negotiation,
+	handling. Restlet handles conditional requests, content negotiation,
 	and other complicated HTTP work for you.
 	</li>
 
-	<li>Powerful data representation and consumption through a diverse
+	<li>Powerful URI routing and manipulation. Finally, an elegant
+	front-face to users and other service consumers, with support for
+	virtual hosting, rewriting, templating, and other useful real-world
+	features.</li>
+
+	<li>Easy data representation and consumption through a diverse
 	set of extensions using a variety of libraries. Expose your data using
 	any standard format, and even convert it on-the-fly.
 	Easily parse data from clients.
