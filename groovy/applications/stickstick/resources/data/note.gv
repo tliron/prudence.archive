@@ -1,11 +1,11 @@
 
 prudence.include('../libraries/stickstick/data/')
-prudence.include('../libraries/json2/')
 
 import java.lang.System
+import org.json.JSONObject
 
-merge = { key, a, b =>
-	if(typeof(a[key]) == 'undefined') {
+merge = { key, a, b ->
+	if(!a.containsKey(key)) {
 		return b[key]
 	}
 	else {
@@ -15,9 +15,9 @@ merge = { key, a, b =>
 
 getId = {
     try {
-        return Integer.valueOf(prudence.resource.request.attributes['id'])
+        return Integer.parseInt(prudence.resource.request.attributes.id)
     }
-    catch(e) {
+    catch(Exception) {
     	return null
     }
 
@@ -46,8 +46,8 @@ handleGet = {
     }
 
     prudence.modificationTimestamp = note.timestamp
-    delete note.timestamp
-    return JSON.stringify(note)
+    note.remove('timestamp')
+    return new JSONObject(note)
 }
 
 handleGetInfo = {
@@ -76,7 +76,11 @@ handlePost = {
     // a reference to that text.
     
     def text = prudence.entity.text
-    def note = JSON.parse(String(text))
+    def entity = new JSONObject(text)
+    def note = [:]
+	for(def key in entity.keys()) {
+		note[key] = entity.get(key)
+	}
 
     def connection = getConnection()
     try {
@@ -84,14 +88,14 @@ handlePost = {
         if(existing == null) {
         	return 404
         }
-        note = {
+        note = [
         	id: id,
         	board: merge('board', note, existing),
         	x: merge('x', note, existing),
         	y: merge('y', note, existing),
         	size: merge('size', note, existing),
         	content: merge('content', note, existing)
-        }
+        ]
         updateNote(note, connection)
         updateBoardTimestamp(note, connection)
     }
@@ -100,15 +104,15 @@ handlePost = {
     }
 
     prudence.modificationTimestamp = note.timestamp
-    delete note.timestamp
-    return JSON.stringify(note)
+    note.remove('timestamp')
+    return new JSONObject(note)
 }
 
 handleDelete = {
 	def id = getId()
 
     def connection = getConnection()
-    try {
+    try { 
         def note = getNote(id, connection)
         if(note == null) {
         	return 404

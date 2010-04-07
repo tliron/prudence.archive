@@ -1,6 +1,7 @@
 
 prudence.include('../libraries/stickstick/data/')
-prudence.include('../libraries/json2/')
+
+import org.json.JSONObject
 
 handleInit = {
     prudence.addMediaTypeByName('text/plain')
@@ -17,9 +18,9 @@ handleGet = {
 
     def connection = getConnection(fresh)
     try {
-	    boards = getBoards(connection)
+	    def boards = getBoards(connection)
 	    if(boards != null) {
-		    for(board in) {
+		    for(def board in boards) {
 		        boardList.push(board.id)
 		        def timestamp = board.timestamp
 		        if((maxTimestamp == null) || (timestamp > maxTimestamp)) {
@@ -40,7 +41,7 @@ handleGet = {
     if(maxTimestamp != null) {
         prudence.modificationTimestamp = maxTimestamp
     }
-    return JSON.stringify({boards: boardList, notes: notes})
+    return new JSONObject([boards: boardList, notes: notes])
 }
 
 handleGetInfo = {
@@ -59,7 +60,11 @@ handlePut = {
     // a reference to that text.
     
     def text = prudence.entity.text
-    def note = JSON.parse(String(text))
+    def entity = new JSONObject(text)
+    def note = [:]
+	for(def key in entity.keys()) {
+		note[key] = entity.get(key)
+	}
     
     def connection = getConnection()
     try {

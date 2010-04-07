@@ -31,7 +31,7 @@ getStateLock = {
 
 getState = {
 	return getContextAttribute('groovy.state', {
-		return ['name': 'Coraline', 'media': 'Film', 'rating': 'A+', 'characters': ['Coraline', 'Wybie', 'Mom', 'Dad']]
+		return [name: 'Coraline', media: 'Film', rating: 'A+', characters: ['Coraline', 'Wybie', 'Mom', 'Dad']]
 	})
 }
 

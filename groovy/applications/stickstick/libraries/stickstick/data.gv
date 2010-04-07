@@ -11,12 +11,12 @@ import com.threecrickets.prudence.util.MiniConnectionPoolManager
 def connectionPool
 def connectionPoolLock = new ReentrantLock()
 
-getDataSource = { attributes =>
+getDataSource = { attributes ->
 	def dataSource
 	if(attributes['stickstick.backend'] == 'h2') {
 		dataSource = new org.h2.jdbcx.JdbcDataSource()
 	} else if(attributes['stickstick.backend'] == 'mysql') {
-		dataSource = new com.mysql.jdbc.jdcb2.optional.MysqlDataSource()
+		dataSource = new com.mysql.jdbc.jdbc2.optional.MysqlDataSource()
 	}
 	dataSource.URL = getUrl(attributes)
 	dataSource.user = attributes['stickstick.username']
@@ -24,7 +24,7 @@ getDataSource = { attributes =>
 	return dataSource
 }
 
-getUrl = { attributes =>
+getUrl = { attributes ->
 	def url = 'jdbc:' + attributes['stickstick.backend'] + ':'
 	if(attributes['stickstick.host'] != '') {
 		if(attributes['stickstick.backend'] == 'h2') {
@@ -38,7 +38,7 @@ getUrl = { attributes =>
 	return url
 }
 
-getConnection = { fresh=null =>
+getConnection = { fresh=false ->
 	def attributes = Application.current.context.attributes
 
 	connectionPoolLock.lock()
@@ -58,7 +58,7 @@ getConnection = { fresh=null =>
 					statement.execute('DROP TABLE board')
 					statement.execute('DROP TABLE note')
 				}
-				catch(e if e.javaException instanceof SQLException) {
+				catch(SQLException) {
 					// Tables already gone
 				}
 				finally {
@@ -72,7 +72,7 @@ getConnection = { fresh=null =>
 				statement.execute('CREATE TABLE IF NOT EXISTS note (id INT AUTO_INCREMENT PRIMARY KEY, board VARCHAR(50), x INT, y INT, size INT, content TEXT, timestamp TIMESTAMP)')
 				statement.execute('CREATE INDEX IF NOT EXISTS note_board_idx ON note (board)')
 			}
-			catch(e if e.javaException instanceof SQLException) {
+			catch(SQLException) {
 				// Already exist
 			}
 			finally {
@@ -80,12 +80,11 @@ getConnection = { fresh=null =>
 			}
 			
 			try {
-				addBoard({id: 'Todo List'}, connection)
-				addBoard({id: 'Great Ideas'}, connection)
-				addBoard({id: 'Sandbox'}, connection)
-				//addNote({board: 'Todo', x: 100, y: 100, size: 0, content: 'Test!'}, connection)
+				addBoard([id: 'Todo List'], connection)
+				addBoard([id: 'Great Ideas'], connection)
+				addBoard([id: 'Sandbox'], connection)
 			}
-			catch(e if e.javaException instanceof SQLException) {
+			catch(SQLException) {
 				// Boards already exist
 			}
 	
@@ -99,7 +98,7 @@ getConnection = { fresh=null =>
 	}
 }
 
-getBoards = { connection =>
+getBoards = { connection ->
 	def boards = []
 
 	def statement = connection.createStatement()
@@ -107,10 +106,10 @@ getBoards = { connection =>
 		def rs = statement.executeQuery('SELECT id, timestamp FROM board')
 		try {
 			while(rs.next()) {
-				boards.push({
-					id: String(rs.getString(1)),
+				boards.push([
+					id: rs.getString(1),
 					timestamp: rs.getTimestamp(2).time
-				})
+				])
 			}
 		}
 		finally {
@@ -124,7 +123,7 @@ getBoards = { connection =>
 	return boards
 }
 
-addBoard = { board, connection =>
+addBoard = { board, connection ->
 	def statement = connection.prepareStatement('INSERT INTO board (id, timestamp) VALUES (?, ?)')
 	try {
 		statement.setString(1, board.id)
@@ -136,7 +135,7 @@ addBoard = { board, connection =>
 	}
 }
 
-updateBoardTimestamp = { note, connection, timestamp=null =>
+updateBoardTimestamp = { note, connection, timestamp=null ->
     // TODO: we are not guaranteeing atomicity here! In a highly concurrent environment,
     // there is a chance that the board will not be set with the latest timestamp!
 
@@ -155,7 +154,7 @@ updateBoardTimestamp = { note, connection, timestamp=null =>
 	}
 }
 
-getBoardMaxTimestamp { connection =>
+getBoardMaxTimestamp = { connection ->
 	def statement = connection.createStatement()
 	try {
 		def rs = statement.executeQuery('SELECT MAX(timestamp) FROM BOARD')
@@ -170,22 +169,22 @@ getBoardMaxTimestamp { connection =>
 	return null
 }
 
-getNote = { id, connection =>
+getNote = { id, connection ->
 	def statement = connection.prepareStatement('SELECT board, x, y, size, content, timestamp FROM note WHERE id=?')
 	try {
 		statement.setInt(1, id)
 		def rs = statement.executeQuery()
 		try {
 			if(rs.next()) {
-				return {
+				return [
 					id: id,
-					board: String(rs.getString(1)),
+					board: rs.getString(1),
 					x: rs.getInt(2),
 					y: rs.getInt(3),
 					size: rs.getInt(4),
-					content: String(rs.getString(5)),
+					content: rs.getString(5),
 					timestamp: rs.getTimestamp(6).time
-				}
+				]
 			}
 		}
 		finally {
@@ -199,7 +198,7 @@ getNote = { id, connection =>
 	return null
 }
 
-getNotes = { connection =>
+getNotes = { connection ->
 	def notes = []
 
 	def statement = connection.createStatement()
@@ -207,14 +206,14 @@ getNotes = { connection =>
 		def rs = statement.executeQuery('SELECT id, board, x, y, size, content FROM note')
 		try {
 			while(rs.next()) {
-				notes.push({
+				notes.add([
 					id: rs.getInt(1),
-					board: String(rs.getString(2)),
+					board: rs.getString(2),
 					x: rs.getInt(3),
 					y: rs.getInt(4),
 					size: rs.getInt(5),
-					content: String(rs.getString(6))
-				})
+					content: rs.getString(6)
+				])
 			}
 		}
 		finally {
@@ -228,7 +227,7 @@ getNotes = { connection =>
 	return notes
 }
 
-addNote = { note, connection =>
+addNote = { note, connection ->
 	note.timestamp = System.currentTimeMillis()
 	def statement = connection.prepareStatement('INSERT INTO note (board, x, y, size, content, timestamp) VALUES (?, ?, ?, ?, ?, ?)')
 	try {
@@ -245,7 +244,7 @@ addNote = { note, connection =>
 	}
 }
 
-updateNote = { note, connection =>
+updateNote = { note, connection ->
     // TODO: we are not guaranteeing atomicity here! In a highly concurrent environment,
     // there is a chance that the board will not be set with the latest timestamp!
 
@@ -266,7 +265,7 @@ updateNote = { note, connection =>
 	}
 }
 
-deleteNote = { note, connection =>
+deleteNote = { note, connection ->
 	statement = connection.prepareStatement('DELETE FROM note WHERE id=?')
 	try {
 		statement.setInt(1, note.id)
