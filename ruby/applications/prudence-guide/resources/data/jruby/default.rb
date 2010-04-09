@@ -17,7 +17,7 @@ import org.json.JSONObject
 
 # Include the context library
 
-require @prudence.source.base_path.to_s + '/../libraries/jruby/context.rb'
+require $prudence.source.base_path.to_s + '/../libraries/jruby/context.rb'
 
 # State
 #
@@ -37,7 +37,7 @@ def get_state
 end
 
 def set_state value
-	@prudence.resource.context.attributes['jruby.state'] = value
+	$prudence.resource.context.attributes['jruby.state'] = value
 end
 
 @state = get_state
@@ -53,8 +53,8 @@ def handleInit
 	# "Accept" attribute of their request header, specifying that any media type
 	# will do, in which case the first one we add will be used.
 
-    @prudence.add_media_type_by_name 'application/json'
-    @prudence.add_media_type_by_name 'text/plain'
+    $prudence.add_media_type_by_name 'application/json'
+    $prudence.add_media_type_by_name 'text/plain'
 	
 end
 
@@ -66,10 +66,10 @@ end
 # org.restlet.resource.Representation. Other types will be automatically converted to
 # string representation using the client's requested media type and character set.
 # These, and the language of the representation (defaulting to None), can be read and
-# changed via @prudence.media_type, @prudence.character_set, and
-# @prudence.language.
+# changed via $prudence.media_type, $prudence.character_set, and
+# $prudence.language.
 #
-# Additionally, you can use @prudence.variant to interrogate the client's provided
+# Additionally, you can use $prudence.variant to interrogate the client's provided
 # list of supported languages and encoding.
 
 def handleGet
@@ -88,7 +88,7 @@ def handleGet
 	# Return a representation appropriate for the requested media type
 	# of the possible options we created in handle_init()
 
-	if @prudence.media_type_name == 'application/json'
+	if $prudence.media_type_name == 'application/json'
 		return JsonRepresentation.new r
 	end
 
@@ -110,7 +110,7 @@ end
 
 def handlePost
 
-	update = JSONObject.new @prudence.entity.text
+	update = JSONObject.new $prudence.entity.text
 	state_lock = get_state_lock
 	state = get_state
 	
@@ -142,7 +142,7 @@ end
 
 def handlePut
 
-	update = JSONObject.new @prudence.entity.text
+	update = JSONObject.new $prudence.entity.text
 
 	state = {}	
 	for key in update.keys

@@ -2,7 +2,7 @@
 # Stickstick Settings
 #
 
-@executable.container.include 'defaults/application/settings/'
+$executable.container.include 'defaults/application/settings/'
 
 $application_name = 'Stickstick'
 $application_description = 'Share online sticky notes'
@@ -19,4 +19,4 @@ $runtime_attributes['stickstick.database'] = 'h2/stickstick'
 
 $show_debug_on_error = true
 
-$preheat_resources = ['data/']
+# $preheat_resources = ['data/']

@@ -11,14 +11,14 @@
 # Accessing the request
 #
 
-form = @prudence.resource.request.resource_ref.query_as_form
+form = $prudence.resource.request.resource_ref.query_as_form
 
 #
 # Stream this page
 #
 
 if form.get_first_value('stream') == 'true'
-	if @prudence.stream
+	if $prudence.stream
 		raise
 	end
 end
@@ -27,7 +27,7 @@ end
 # Cache this page
 #
 
-@prudence.cache_duration = 5000
+$prudence.cache_duration = 5000
 
 #
 # Calling Java
@@ -42,7 +42,7 @@ print '<p>This page was dynamically generated at ', System::current_time_millis,
 #
 # This is identical to:
 #
-#   @prudence.include_document 'path'
+#   $prudence.include_document 'path'
 #
 
 %>
@@ -75,11 +75,11 @@ end
 %>
 <h3>Language used:</h3>
 <%
-print_adapter @executable.context.adapter
+print_adapter $executable.context.adapter
 %>
 <h3>Available languages:</h3>
 <%
-adapters = @executable.context.manager.adapters.to_array
+adapters = $executable.context.manager.adapters.to_array
 for adapter in adapters
 	print_adapter adapter
 end

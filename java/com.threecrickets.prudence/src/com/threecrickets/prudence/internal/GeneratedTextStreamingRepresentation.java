@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
 
-import org.restlet.data.Language;
 import org.restlet.representation.WriterRepresentation;
 
 import com.threecrickets.prudence.GeneratedTextResource;
@@ -68,12 +67,7 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 
 		setCharacterSet( container.getCharacterSet() );
 		if( container.getLanguage() != null )
-		{
-			setLanguages( Arrays.asList( new Language[]
-			{
-				container.getLanguage()
-			} ) );
-		}
+			setLanguages( Arrays.asList( container.getLanguage() ) );
 
 		this.document = document;
 	}
