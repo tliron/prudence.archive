@@ -46,7 +46,7 @@ end
 # This method is called when the resource is initialized. We will use it to set
 # general characteristics for the resource.
 	
-def handleInit
+def handle_init
 
 	# The order in which we add the variants is their order of preference.
 	# Note that clients often include a wildcard (such as "*/*") in the
@@ -72,7 +72,7 @@ end
 # Additionally, you can use $prudence.variant to interrogate the client's provided
 # list of supported languages and encoding.
 
-def handleGet
+def handle_get
 
 	r = nil
 	state_lock = get_state_lock
@@ -103,12 +103,12 @@ end
 # that will affect future calls to handle_get(). As such, it may be possible
 # to accept logically partial representations of the state.
 #
-# You may optionally return a representation, in the same way as handleGet().
+# You may optionally return a representation, in the same way as handle_get().
 # Because Ruby methods return the last statement's value by default,
 # you must explicitly return a None if you do not want to return a representation
 # to the client.
 
-def handlePost
+def handle_post
 
 	update = JSONObject.new $prudence.entity.text
 	state_lock = get_state_lock
@@ -124,7 +124,7 @@ def handlePost
 		state_lock.write_lock.unlock
 	end
 	
-	return handleGet
+	return handle_get
 	
 end
 
@@ -132,15 +132,15 @@ end
 # logical "create" of the resource's state.
 #
 # The expectation is that prudence.entity represents an entirely new state,
-# that will affect future calls to handleGet(). Unlike handlePost(),
+# that will affect future calls to handle_get(). Unlike handle_post(),
 # it is expected that the representation be logically complete.
 #
-# You may optionally return a representation, in the same way as handleGet().
+# You may optionally return a representation, in the same way as handle_get().
 # Because Ruby methods return the last statement's value by default,
 # you must explicitly return a nil if you do not want to return a representation
 # to the client.
 
-def handlePut
+def handle_put
 
 	update = JSONObject.new $prudence.entity.text
 
@@ -151,18 +151,18 @@ def handlePut
 	
 	set_state state
 	
-	return handleGet
+	return handle_get
 	
 end
 
 # This method is called for the DELETE verb, which is expected to behave as a
 # logical "delete" of the resource's state.
 #
-# The expectation is that subsequent calls to handleGet() will fail. As such,
+# The expectation is that subsequent calls to handle_get() will fail. As such,
 # it doesn't make sense to return a representation, and any returned value will
 # ignored. Still, it's a good idea to return nil to avoid any passing of value.
 
-def handleDelete
+def handle_delete
 
 	set_state({})
 

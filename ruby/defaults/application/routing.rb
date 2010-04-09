@@ -21,9 +21,9 @@ $class_loader = ClassLoader::system_class_loader
 
 # Makes sure we have slashes where we expect them
 def fix_url url
-	url.gsub! '\/\/', '/' # no doubles
+	url = url.gsub /\/\//, '/' # no doubles
 	if url.length > 0 && url[0] == ?/ # never at the beginning
-		url = url.slice 1 .. -1
+		url = url[1..-1]
 	end
 	if url.length > 0 && url[-1] != ?/ # always at the end
 		url += '/'
@@ -58,7 +58,7 @@ for entry in $hosts
 	host.attach(url, $application).matching_mode = Template::MODE_STARTS_WITH
 	if url != '/'
 		if url[-1] == ?/
-			url = url.slice 0 .. -2
+			url = url[0..-2]
 		end
 		host.attach(url, $add_trailing_slash).matching_mode = Template::MODE_EQUALS
 	end
@@ -90,7 +90,7 @@ for url in $url_add_trailing_slash
 	if url.length > 0
 		if url[-1] == ?/
 			# Remove trailing slash for pattern
-			url = url.slice 0 .. -2
+			url = url[0..-2]
 		end
 		$router.attach url, $add_trailing_slash
 	end
