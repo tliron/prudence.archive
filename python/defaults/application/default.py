@@ -26,7 +26,7 @@ application.owner = application_owner
 # StatusService
 #
 
-application.statusService = DelegatedStatusService()
+application.statusService = DelegatedStatusService(show_source_code_url if show_debug_on_error else None)
 application.statusService.debugging = show_debug_on_error
 application.statusService.homeRef = Reference(application_home_url)
 application.statusService.contactEmail = application_contact_email

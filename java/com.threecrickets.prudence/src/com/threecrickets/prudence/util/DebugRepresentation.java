@@ -24,10 +24,12 @@ import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Parameter;
 import org.restlet.data.Product;
+import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.data.Warning;
 import org.restlet.representation.StringRepresentation;
 
+import com.threecrickets.prudence.SourceCodeResource;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 import com.threecrickets.scripturian.exception.PreparationException;
@@ -47,7 +49,7 @@ public class DebugRepresentation extends StringRepresentation
 	 * @param request
 	 * @param response
 	 */
-	public DebugRepresentation( Status status, Request request, Response response )
+	public DebugRepresentation( Status status, Request request, Response response, String sourceCodeUri )
 	{
 		super( null, MediaType.TEXT_HTML );
 
@@ -101,16 +103,25 @@ public class DebugRepresentation extends StringRepresentation
 			{
 				int lineNumber = stackFrame.getLineNumber();
 				appendName( html, "At" );
-				html.append( "<a href=\"" );
-				// TODO: can we reach the document in the stack?
-				appendSafe( html, request.getResourceRef() );
-				html.append( "?source=true" );
-				if( lineNumber >= 0 )
+				if( ( sourceCodeUri != null ) && sourceCodeUri.length() > 0 )
 				{
-					html.append( "&line=" );
-					html.append( lineNumber );
+					html.append( "<a href=\"" );
+					html.append( request.getRootRef() );
+					if( sourceCodeUri.startsWith( "/" ) )
+						html.append( sourceCodeUri.substring( 1 ) );
+					html.append( '?' );
+					html.append( SourceCodeResource.DOCUMENT );
+					html.append( '=' );
+					html.append( Reference.encode( stackFrame.getDocumentName() ) );
+					if( lineNumber >= 0 )
+					{
+						html.append( '&' );
+						html.append( SourceCodeResource.HIGHLIGHT );
+						html.append( '=' );
+						html.append( Reference.encode( String.valueOf( lineNumber ) ) );
+					}
+					html.append( "\">" );
 				}
-				html.append( "\">" );
 				appendSafe( html, stackFrame.getDocumentName() );
 				if( stackFrame.getLineNumber() >= 0 )
 				{
@@ -122,11 +133,11 @@ public class DebugRepresentation extends StringRepresentation
 					html.append( "," );
 					html.append( stackFrame.getColumnNumber() );
 				}
-				html.append( "</a>" );
+				if( ( sourceCodeUri != null ) && sourceCodeUri.length() > 0 )
+					html.append( "</a>" );
 				html.append( "<br />" );
 			}
 			html.append( "</div>" );
-
 		}
 
 		html.append( "<h3>References</h3>" );

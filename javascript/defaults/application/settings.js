@@ -23,6 +23,10 @@ var applicationContactEmail = 'prudence@threecrickets.com';
 
 var showDebugOnError = false;
 
+// The base URL for showing source code (only relevant when showDebugOnError is true). 
+
+showSourceCodeURL = '/sourcecode/';
+
 //
 // Logging
 //

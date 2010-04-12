@@ -23,6 +23,10 @@ $application_contact_email = 'prudence@threecrickets.com'
 
 $show_debug_on_error = false
 
+# The base URL for showing source code (only relevant when show_debug_on_error is true). 
+
+$show_source_code_url = '/sourcecode/'
+
 #
 # Logging
 #

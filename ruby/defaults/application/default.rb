@@ -27,7 +27,7 @@ $application.owner = $application_owner
 # StatusService
 #
 
-$application.status_service = DelegatedStatusService.new
+$application.status_service = DelegatedStatusService.new($show_debug_on_error ? $show_source_code_url : nil)
 $application.status_service.debugging = $show_debug_on_error
 $application.status_service.home_ref = Reference.new $application_home_url
 $application.status_service.contact_email = $application_contact_email

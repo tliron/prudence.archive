@@ -599,13 +599,13 @@ public class GeneratedTextResource extends ServerResource
 
 	/**
 	 * An optional {@link DocumentFormatter} to use for representing source
-	 * code.
+	 * code. Defaults to a {@link JygmentsDocumentFormatter}.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedtextResource.documentFormatter</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The source representer or null
+	 * @return The document formatter or null
 	 * @see #isSourceViewable()
 	 */
 	@SuppressWarnings("unchecked")
@@ -618,9 +618,6 @@ public class GeneratedTextResource extends ServerResource
 
 			if( documentFormatter == null )
 			{
-				// documentFormatter = new SyntaxHighlighterDocumentFormatter();
-				// documentFormatter = new
-				// PygmentsDocumentFormatter<Document>();
 				documentFormatter = new JygmentsDocumentFormatter<Executable>();
 
 				DocumentFormatter<Executable> existing = (DocumentFormatter<Executable>) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.documentFormatter", documentFormatter );
@@ -804,7 +801,7 @@ public class GeneratedTextResource extends ServerResource
 	/**
 	 * Constant.
 	 */
-	private static final String LINE = "line";
+	private static final String HIGHLIGHT = "highlight";
 
 	/**
 	 * Constant.
@@ -843,7 +840,7 @@ public class GeneratedTextResource extends ServerResource
 				if( TRUE.equals( query.getFirstValue( SOURCE ) ) )
 				{
 					int lineNumber = -1;
-					String line = query.getFirstValue( LINE );
+					String line = query.getFirstValue( HIGHLIGHT );
 					if( line != null )
 					{
 						try

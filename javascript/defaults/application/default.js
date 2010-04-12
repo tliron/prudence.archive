@@ -28,7 +28,7 @@ application.owner = applicationOwner;
 // StatusService
 //
 
-application.statusService = new DelegatedStatusService();
+application.statusService = new DelegatedStatusService(showDebugOnError ? showSourceCodeURL : null);
 application.statusService.debugging = showDebugOnError;
 application.statusService.homeRef = new Reference(applicationHomeURL);
 application.statusService.contactEmail = applicationContactEmail;

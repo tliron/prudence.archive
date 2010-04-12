@@ -23,6 +23,10 @@
 
 (def show-debug-on-error false)
 
+; The base URL for showing source code (only relevant when show-debug-on-error is true). 
+
+(def show-source-code-url "/sourcecode/")
+
 ;
 ; Logging
 ;

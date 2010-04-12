@@ -37,22 +37,16 @@ public class DelegatedStatusService extends StatusService
 	/**
 	 * Constructor.
 	 */
-	public DelegatedStatusService()
+	public DelegatedStatusService( String sourceCodeUri )
 	{
 		super();
 		setOverwriting( true );
+		this.sourceCodeUri = sourceCodeUri;
 	}
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param enabled
-	 *        True to enable the service
-	 */
-	public DelegatedStatusService( boolean enabled )
+	public DelegatedStatusService()
 	{
-		super( enabled );
-		setOverwriting( true );
+		this( null );
 	}
 
 	//
@@ -195,7 +189,7 @@ public class DelegatedStatusService extends StatusService
 			if( isDebugging() && ( status.getThrowable() != null ) )
 			{
 				response.getAttributes().put( "com.threecrickets.prudence.util.DelegatedStatusService.passThrough", true );
-				return new DebugRepresentation( status, request, response );
+				return new DebugRepresentation( status, request, response, sourceCodeUri );
 			}
 		}
 
@@ -209,6 +203,8 @@ public class DelegatedStatusService extends StatusService
 	 * Our map of status codes to error handlers.
 	 */
 	private final ConcurrentMap<Integer, Restlet> errorHandlers = new ConcurrentHashMap<Integer, Restlet>();
+
+	private final String sourceCodeUri;
 
 	/**
 	 * Whether we are debugging.

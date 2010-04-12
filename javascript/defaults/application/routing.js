@@ -150,6 +150,16 @@ if(resourcesDefrost) {
 }
 
 //
+// SourceCode
+//
+
+if(showDebugOnError) {
+	attributes.put('com.threecrickets.prudence.SourceCodeResource.documentSources', [dynamicWebDocumentSource, resourcesDocumentSource]);
+	var sourceCode = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.SourceCodeResource'));
+	router.attach(fixURL(showSourceCodeURL), sourceCode).matchingMode = Template.MODE_EQUALS;
+}
+
+//
 // Preheat
 //
 

@@ -132,6 +132,17 @@
 		(def tasks (conj tasks defrost-task))))
 
 ;
+; SourceCode
+;
+
+(if show-debug-on-error
+	(do
+		(.put attributes "com.threecrickets.prudence.SourceCodeResource.documentSources" [dynamic-web-document-source resources-document-source])
+		
+		(def source-code (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.SourceCodeResource")))
+		(.setMatchingMode (.attach router (fix-url show-source-code-url) source-code) Template/MODE_EQUALS)))
+
+;
 ; Preheat
 ;
 

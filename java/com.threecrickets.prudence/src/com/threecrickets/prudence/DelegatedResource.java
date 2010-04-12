@@ -750,8 +750,8 @@ public class DelegatedResource extends ServerResource
 	 * preparation as a separate operation. Defaults to true.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.prepare</code>
-	 * in the application's {@link Context}.
+	 * <code>com.threecrickets.prudence.DelegatedResource.prepare</code> in the
+	 * application's {@link Context}.
 	 * 
 	 * @return Whether to prepare executables
 	 */
@@ -796,7 +796,7 @@ public class DelegatedResource extends ServerResource
 
 	/**
 	 * An optional {@link DocumentFormatter} to use for representing source
-	 * code.
+	 * code. Defaults to a {@link JygmentsDocumentFormatter}.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedResource.documentFormatter</code>
@@ -815,9 +815,6 @@ public class DelegatedResource extends ServerResource
 
 			if( documentFormatter == null )
 			{
-				// documentFormatter = new SyntaxHighlighterDocumentFormatter();
-				// documentFormatter = new
-				// PygmentsDocumentFormatter<Document>();
 				documentFormatter = new JygmentsDocumentFormatter<Executable>();
 
 				DocumentFormatter<Executable> existing = (DocumentFormatter<Executable>) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.documentFormatter", documentFormatter );
@@ -895,7 +892,7 @@ public class DelegatedResource extends ServerResource
 				if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
 					name = getDefaultName();
 				int lineNumber = -1;
-				String line = query.getFirstValue( LINE );
+				String line = query.getFirstValue( HIGHLIGHT );
 				if( line != null )
 				{
 					try
@@ -1215,7 +1212,7 @@ public class DelegatedResource extends ServerResource
 	/**
 	 * Constant.
 	 */
-	private static final String LINE = "line";
+	private static final String HIGHLIGHT = "highlight";
 
 	/**
 	 * Constant.

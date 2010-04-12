@@ -149,6 +149,16 @@ if $resources_defrost
 end
 
 #
+# SourceCode
+#
+
+if $show_debug_on_error
+	$attributes['com.threecrickets.prudence.SourceCodeResource.documentSources'] = [dynamic_web_document_source, resources_document_source]
+	$source_code = Finder.new($application.context, $class_loader.load_class('com.threecrickets.prudence.SourceCodeResource'))
+	$router.attach(fix_url($show_source_code_url), $source_code).matching_mode = Template::MODE_EQUALS
+end
+
+#
 # Preheat
 #
 

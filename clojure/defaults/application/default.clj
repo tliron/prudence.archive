@@ -27,7 +27,7 @@
 ; StatusService
 ;
 
-(.setStatusService application (DelegatedStatusService.))
+(.setStatusService application (DelegatedStatusService. (if show-debug-on-error show-source-code-url nil)))
 (.. application getStatusService (setDebugging show-debug-on-error))
 (.. application getStatusService (setHomeRef (Reference. application-home-url)))
 (.. application getStatusService (setContactEmail application-contact-email))

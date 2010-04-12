@@ -11,7 +11,7 @@ from com.threecrickets.scripturian.util import DefrostTask
 from com.threecrickets.scripturian.file import DocumentFileSource
 from com.threecrickets.prudence.util import PrudenceRouter, PreheatTask
 
-classLoader = ClassLoader.getSystemClassLoader()
+class_loader = ClassLoader.getSystemClassLoader()
 
 #
 # Utilities
@@ -91,7 +91,7 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dyn
 attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamic_web_document_source
 attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
 
-dynamic_web = Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
+dynamic_web = Finder(application.context, class_loader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 router.attachBase(fix_url(dynamic_web_base_url), dynamic_web)
 
 if dynamic_web_defrost:
@@ -118,12 +118,21 @@ attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resourc
 attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = resources_document_source
 attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resources_source_viewable
 
-resources = Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
+resources = Finder(application.context, class_loader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 router.attachBase(fix_url(resources_base_url), resources)
 
 if resources_defrost:
 	for defrost_task in DefrostTask.forDocumentSource(resources_document_source, language_manager, True):
 		tasks.append(defrost_task)
+
+#
+# SourceCode
+#
+
+if show_debug_on_error:
+	attributes['com.threecrickets.prudence.SourceCodeResource.documentSources'] = [dynamic_web_document_source, resources_document_source]
+	source_code = Finder(application.context, class_loader.loadClass('com.threecrickets.prudence.SourceCodeResource'))
+	router.attach(fix_url(show_source_code_url), source_code).matchingMode = Template.MODE_EQUALS
 
 #
 # Preheat
