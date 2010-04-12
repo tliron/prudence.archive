@@ -39,3 +39,29 @@
 		    (finally
 		    	(if (not (nil? connection))
 		    		(.close connection)))))))
+
+(defn handle-get-info []
+		(let [connection (get-connection)]
+			(try
+    		(get-board-max-timestamp connection)
+		    (finally
+		    	(if (not (nil? connection))
+		    		(.close connection))))))
+
+(defn handle-put []
+    ; Note: You can only "consume" the entity once, so if we want it
+    ; as text, and want to refer to it more than once, we should keep
+    ; a reference to that text.
+    
+    (let [text (.. prudence getEntity (getText))
+    	note (decode-from-str text)]
+
+			(let [connection (get-connection)]
+				(try
+	    		(add-note note connection)
+	    		(update-board-timestamp note connection)
+			    (finally
+			    	(if (not (nil? connection))
+			    		(.close connection))))))
+			    		
+    (handle-get))
