@@ -5,6 +5,7 @@
 importClass(
 	java.lang.ClassLoader,
 	java.io.File,
+	java.util.ArrayList,
 	org.restlet.routing.Router,
 	org.restlet.routing.Redirector,
 	org.restlet.routing.Template,
@@ -154,7 +155,10 @@ if(resourcesDefrost) {
 //
 
 if(showDebugOnError) {
-	attributes.put('com.threecrickets.prudence.SourceCodeResource.documentSources', [dynamicWebDocumentSource, resourcesDocumentSource]);
+	var documentSources = new ArrayList();
+	documentSources.add(dynamicWebDocumentSource);
+	documentSources.add(resourcesDocumentSource);
+	attributes.put('com.threecrickets.prudence.SourceCodeResource.documentSources', documentSources);
 	var sourceCode = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.SourceCodeResource'));
 	router.attach(fixURL(showSourceCodeURL), sourceCode).matchingMode = Template.MODE_EQUALS;
 }
