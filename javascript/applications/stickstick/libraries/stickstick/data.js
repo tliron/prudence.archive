@@ -172,6 +172,10 @@ function getBoardMaxTimestamp(connection) {
 }
 
 function getNote(id, connection) {
+	if(!id) {
+		return null;
+	}
+	
 	var statement = connection.prepareStatement('SELECT board, x, y, size, content, timestamp FROM note WHERE id=?');
 	try {
 		statement.setInt(1, id);

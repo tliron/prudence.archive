@@ -159,6 +159,10 @@ def get_board_max_timestamp connection
 end
 
 def get_note id, connection
+	if !id
+		return nil
+	end
+
 	statement = connection.prepare_statement 'SELECT board, x, y, size, content, timestamp FROM note WHERE id=?'
 	begin
 		statement.set_int 1, id
