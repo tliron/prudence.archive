@@ -218,8 +218,8 @@ import com.threecrickets.scripturian.document.DocumentSource;
  * <code>com.threecrickets.prudence.cache:</code> {@link Cache}, defaults to
  * a new instance of {@link InProcessMemoryCache}. See {@link #getCache()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.allowCompilation:</code>
- * {@link Boolean}, defaults to true. See {@link #isAllowCompilation()}.</li>
+ * <code>com.threecrickets.prudence.DelegatedResource.prepare:</code>
+ * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
  * <li><code>com.threecrickets.prudence.DelegatedResource.containerName</code>:
  * The name of the global variable with which to access the container. Defaults
  * to "prudence". See {@link #getContainerName()}.</li>
@@ -341,7 +341,7 @@ public class DelegatedResource extends ServerResource
 			errorWriter = (Writer) attributes.get( "com.threecrickets.prudence.DelegatedResource.errorWriter" );
 
 			if( errorWriter == null )
-				errorWriter = new OutputStreamWriter( System.out );
+				errorWriter = new OutputStreamWriter( System.err );
 		}
 
 		return errorWriter;
@@ -745,27 +745,28 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * Whether or not compilation is attempted for script engines that support
-	 * it. Defaults to true.
+	 * Whether to prepare the executables. Preparation increases initialization
+	 * time and reduces execution time. Note that not all languages support
+	 * preparation as a separate operation. Defaults to true.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.allowCompilation</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.prepare</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return Whether to allow compilation
+	 * @return Whether to prepare executables
 	 */
-	public boolean isAllowCompilation()
+	public boolean isPrepare()
 	{
-		if( allowCompilation == null )
+		if( prepare == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			allowCompilation = (Boolean) attributes.get( "com.threecrickets.prudence.DelegatedResource.allowCompilation" );
+			prepare = (Boolean) attributes.get( "com.threecrickets.prudence.DelegatedResource.prepare" );
 
-			if( allowCompilation == null )
-				allowCompilation = true;
+			if( prepare == null )
+				prepare = true;
 		}
 
-		return allowCompilation;
+		return prepare;
 	}
 
 	/**
@@ -777,7 +778,7 @@ public class DelegatedResource extends ServerResource
 	 * <code>com.threecrickets.prudence.DelegatedResource.sourceViewable</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return Whether to allow viewing of document source code
+	 * @return Whether to allow viewing of source code
 	 */
 	public boolean isSourceViewable()
 	{
@@ -1111,7 +1112,7 @@ public class DelegatedResource extends ServerResource
 	 * Whether or not compilation is attempted for script engines that support
 	 * it.
 	 */
-	private volatile Boolean allowCompilation;
+	private volatile Boolean prepare;
 
 	/**
 	 * The {@link DocumentSource} used to fetch scripts.

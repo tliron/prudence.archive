@@ -44,7 +44,7 @@
 ; This function is called when the resource is initialized. We will use it to set
 ; general characteristics for the resource.
 
-(defn handleInit []
+(defn handle-init []
 	; The order in which we add the variants is their order of preference.
 	; Note that clients often include a wildcard (such as "*/*") in the
 	; "Accept" attribute of their request header, specifying that any media type
@@ -67,11 +67,11 @@
 ; Additionally, you can use prudence.variant to interrogate the client's provided
 ; list of supported languages and encoding.
 
-(defn handleGet []
+(defn handle-get []
 	(let [state (get-state), r (encode-to-str state)]
 
 		; Return a representation appropriate for the requested media type
-		; of the possible options we created in handleInit
+		; of the possible options we created in handle-init
 	
 		(if (= (.. prudence getMediaTypeName) "application/json")
 			(JsonRepresentation. (str r))
@@ -81,45 +81,45 @@
 ; logical "update" of the resource's state.
 ;
 ; The expectation is that prudence.entity represents an update to the state,
-; that will affect future calls to handleGet. As such, it may be possible
+; that will affect future calls to handle-get. As such, it may be possible
 ; to accept logically partial representations of the state.
 ;
-; You may optionally return a representation, in the same way as handleGet.
+; You may optionally return a representation, in the same way as handle-get.
 ; Because Clojure function return the last value by default,
 ; you must explicitly return a nil if you do not want to return a representation
 ; to the client.
 
-(defn handlePost []
+(defn handle-post []
 	(let [update (decode-from-str (.. prudence getEntity getText))
 		state (get-state)]
 		(set-state (merge state update)))
-	(handleGet))
+	(handle-get))
 
 ; This function is called for the PUT verb, which is expected to behave as a
 ; logical "create" of the resource's state.
 ;
 ; The expectation is that prudence.entity represents an entirely new state,
-; that will affect future calls to handleGet. Unlike handlePost,
+; that will affect future calls to handle-get. Unlike handle-post,
 ; it is expected that the representation be logically complete.
 ;
-; You may optionally return a representation, in the same way as handleGet.
+; You may optionally return a representation, in the same way as handle-get.
 ; Because JavaScript functions return the last statement's value by default,
 ; you must explicitly return a null if you do not want to return a representation
 ; to the client.
 
-(defn handlePut []
+(defn handle-put []
 	(let [update (decode-from-str (.. prudence getEntity getText))]
 		(set-state update))
-	(handleGet))
+	(handle-get))
 
 ; This function is called for the DELETE verb, which is expected to behave as a
 ; logical "delete" of the resource's state.
 ;
-; The expectation is that subsequent calls to handleGet will fail. As such,
+; The expectation is that subsequent calls to handle-get will fail. As such,
 ; it doesn't make sense to return a representation, and any returned value will
 ; ignored. Still, it's a good idea to return null to avoid any passing of value.
 
-(defn handleDelete []
+(defn handle-delete []
 	(set-state {})
 	
 	nil)

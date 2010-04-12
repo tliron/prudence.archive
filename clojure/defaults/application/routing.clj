@@ -45,16 +45,19 @@
 (def add-trailing-slash (Redirector. (.getContext application) "{ri}/" Redirector/MODE_CLIENT_PERMANENT))
 
 (defn add-to-hosts [entries]
-	(let [entry (first entries) rest (rest entries) host (.getKey entry) url (.getValue entry)]
+	(let [[entry & others] (seq entries)
+		host (.getKey entry)
+		url (.getValue entry)]
+		
 		(let [url (if (nil? url) application-default-url url)]
 			(print (str "\"" url "\"") "on" (.getName host))
 			(.setMatchingMode (.attach host url application) Template/MODE_STARTS_WITH)
 			(if (not= url "/")
 				(let [url (if (.endsWith url "/") (.substring url 0 (- (.length url) 1)) url)]
 					(.setMatchingMode (.attach host url add-trailing-slash) Template/MODE_EQUALS))))
-		(if (not (empty? rest)) (do
+		(if (not (empty? others)) (do
 			(print ", ")
-			(recur rest)))))
+			(recur others)))))
 
 (print (str (.getName application) ": "))
 (add-to-hosts (.entrySet hosts))

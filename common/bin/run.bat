@@ -16,14 +16,13 @@ libraries/com.threecrickets.scripturian.jar;^
 libraries/javax.script.jar;^
 libraries/javax.servlet.jar;^
 libraries/jep.jar;^
-libraries/jython.jar;^
-libraries/jython-engine.jar;^
 libraries/org.apache.log4j.jar;^
 libraries/org.apache.velocity.jar;^
 libraries/org.codehaus.groovy.jar;^
 libraries/org.jruby.jar;^
 libraries/org.json.jar;^
 libraries/org.mozilla.javascript.jar;^
+libraries/org.python.jar;^
 libraries/org.restlet.ext.grizzly.jar;^
 libraries/org.restlet.ext.json.jar;^
 libraries/org.restlet.ext.slf4j.jar;^
@@ -32,4 +31,10 @@ libraries/org.slf4j.bridge.jar;^
 libraries/org.slf4j.impl.jar;^
 libraries/org.slf4j.jar
 
-%java% -cp %jars% %main% component
+%java% ^
+-cp %jars% ^
+-Djava.library.path=/usr/local/lib ^
+-Dpython.home=libraries/python ^
+-Dpython.cachedir=../../data/code/python ^
+-Dpython.verbose=warning ^
+%main% instance

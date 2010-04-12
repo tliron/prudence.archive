@@ -16,7 +16,7 @@
 	{"stickstick.username" "root"}
 	{"stickstick.password" "root"}
 	{"stickstick.host" ""}
-	{"stickstick.database" "h2/stickstick"}))
+	{"stickstick.database" "data/h2/stickstick"}))
 
 (def show-debug-on-error true)
 

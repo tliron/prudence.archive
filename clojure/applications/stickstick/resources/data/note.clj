@@ -1,7 +1,7 @@
 
-(defn handleInit []
+(defn handle-init []
 )
 
-(defn handleGet []
+(defn handle-get []
 	"{}"
 )

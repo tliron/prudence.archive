@@ -21,7 +21,7 @@ import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
-import com.threecrickets.scripturian.exception.ExecutableInitializationException;
+import com.threecrickets.scripturian.exception.ParsingException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 
 /**
@@ -39,8 +39,6 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	/**
 	 * Constructor.
 	 * 
-	 * @param resource
-	 *        The resource
 	 * @param container
 	 *        The container
 	 * @param executionContext
@@ -49,21 +47,16 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	 *        The scriptlet controller
 	 * @param document
 	 *        The document instance
-	 * @param flushLines
-	 *        Whether to flush the writers after every line
 	 */
-	public GeneratedTextStreamingRepresentation( GeneratedTextResource resource, ExposedContainerForGeneratedTextResource container, ExecutionContext executionContext, ExecutionController executionController,
-		Executable document, boolean flushLines )
+	public GeneratedTextStreamingRepresentation( ExposedContainerForGeneratedTextResource container, ExecutionContext executionContext, ExecutionController executionController, Executable document )
 	{
 		// Note that we are setting representation characteristics
 		// before we actually run the document
 		super( container.getMediaType() );
 
-		this.resource = resource;
 		this.container = container;
 		this.executionContext = executionContext;
 		this.executionController = executionController;
-		this.flushLines = flushLines;
 
 		setCharacterSet( container.getCharacterSet() );
 		if( container.getLanguage() != null )
@@ -80,12 +73,12 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	public void write( Writer writer ) throws IOException
 	{
 		container.isStreaming = true;
-		resource.setWriter( writer );
+		executionContext.setWriter( writer );
 		try
 		{
-			document.execute( false, writer, resource.getErrorWriter(), flushLines, executionContext, container, executionController );
+			document.execute( false, executionContext, container, executionController );
 		}
-		catch( ExecutableInitializationException x )
+		catch( ParsingException x )
 		{
 			IOException iox = new IOException( "ExecutableInitializationException" );
 			iox.initCause( x );
@@ -103,11 +96,6 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	// Private
 
 	/**
-	 * The resource.
-	 */
-	private final GeneratedTextResource resource;
-
-	/**
 	 * The container.
 	 */
 	private final ExposedContainerForGeneratedTextResource container;
@@ -123,12 +111,7 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	private final ExecutionController executionController;
 
 	/**
-	 * The document context.
+	 * The execution context.
 	 */
 	private final ExecutionContext executionContext;
-
-	/**
-	 * Whether to flush the writers after every line.
-	 */
-	private final boolean flushLines;
 }

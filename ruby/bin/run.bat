@@ -25,4 +25,7 @@ libraries/org.slf4j.bridge.jar;^
 libraries/org.slf4j.impl.jar;^
 libraries/org.slf4j.jar
 
-%java% -cp %jars% %main% instance
+%java% ^
+-cp %jars% ^
+-Djruby.jit.codeCache=data/code ^
+%main% instance

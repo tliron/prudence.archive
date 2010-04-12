@@ -13,7 +13,7 @@ runtime_attributes.update({
     'stickstick.username': 'root',
     'stickstick.password': 'root',
     'stickstick.host': '',
-    'stickstick.database': 'h2/stickstick'
+    'stickstick.database': 'data/h2/stickstick'
     })
 
 show_debug_on_error = True

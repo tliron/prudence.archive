@@ -35,7 +35,7 @@ import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageAdapter;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentSource;
-import com.threecrickets.scripturian.exception.ExecutableInitializationException;
+import com.threecrickets.scripturian.exception.ParsingException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 
 /**
@@ -97,7 +97,6 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 		if( characterSet == null )
 			characterSet = resource.getDefaultCharacterSet();
 
-		executionContext = new ExecutionContext( resource.getLanguageManager() );
 	}
 
 	/**
@@ -602,10 +601,10 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 * @param name
 	 *        The document name
 	 * @throws IOException
-	 * @throws ExecutableInitializationException
+	 * @throws ParsingException
 	 * @throws ExecutionException
 	 */
-	public void includeDocument( String name ) throws IOException, ExecutableInitializationException, ExecutionException
+	public void includeDocument( String name ) throws IOException, ParsingException, ExecutionException
 	{
 		if( resource.isTrailingSlashRequired() )
 		{
@@ -623,7 +622,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 		{
 			String sourceCode = documentDescriptor.getSourceCode();
 			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, true, this.resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource
-				.isAllowCompilation() );
+				.isPrepare() );
 
 			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 			if( existing != null )
@@ -632,7 +631,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 
 		PrudenceExecutionController<ExposedContainerForDelegatedResource> executionController = new PrudenceExecutionController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
 			.getExecutionController() );
-		executable.execute( false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
+		executable.execute( false, executionContext, this, executionController );
 	}
 
 	/**
@@ -643,10 +642,10 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 * @param name
 	 *        The document name
 	 * @throws IOException
-	 * @throws ExecutableInitializationException
+	 * @throws ParsingException
 	 * @throws ExecutionException
 	 */
-	public void include( String name ) throws IOException, ExecutableInitializationException, ExecutionException
+	public void include( String name ) throws IOException, ParsingException, ExecutionException
 	{
 		if( resource.isTrailingSlashRequired() )
 		{
@@ -665,7 +664,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 			LanguageAdapter languageAdapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
 			String sourceCode = documentDescriptor.getSourceCode();
 			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource
-				.getDocumentSource(), resource.isAllowCompilation() );
+				.getDocumentSource(), resource.isPrepare() );
 
 			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 			if( existing != null )
@@ -674,7 +673,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 
 		PrudenceExecutionController<ExposedContainerForDelegatedResource> executionController = new PrudenceExecutionController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
 			.getExecutionController() );
-		executable.execute( false, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
+		executable.execute( false, executionContext, this, executionController );
 	}
 
 	/**
@@ -711,7 +710,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 				LanguageAdapter languageAdapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
 				String sourceCode = documentDescriptor.getSourceCode();
 				executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource
-					.getDocumentSource(), resource.isAllowCompilation() );
+					.getDocumentSource(), resource.isPrepare() );
 				Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 
 				if( existing != null )
@@ -719,8 +718,32 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 			}
 
 			// Must run executable once and only once
-			executable.execute( true, resource.getWriter(), resource.getErrorWriter(), true, executionContext, this, executionController );
+			executionContext = new ExecutionContext( resource.getLanguageManager(), resource.getWriter(), resource.getErrorWriter() );
+			try
+			{
+				if( !executable.execute( true, executionContext, this, executionController ) )
+					executionContext.release();
+			}
+			catch( ParsingException x )
+			{
+				executionContext.release();
+				executionContext = null;
+				throw new ResourceException( x );
+			}
+			catch( ExecutionException x )
+			{
+				executionContext.release();
+				executionContext = null;
+				throw new ResourceException( x );
+			}
+			catch( IOException x )
+			{
+				executionContext.release();
+				executionContext = null;
+				throw new ResourceException( x );
+			}
 
+			// Invoke!
 			return executable.invoke( entryPointName, this, executionController );
 		}
 		catch( FileNotFoundException x )
@@ -731,7 +754,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 		{
 			throw new ResourceException( x );
 		}
-		catch( ExecutableInitializationException x )
+		catch( ParsingException x )
 		{
 			throw new ResourceException( x );
 		}
@@ -813,5 +836,5 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	/**
 	 * The execution context.
 	 */
-	private final ExecutionContext executionContext;
+	private ExecutionContext executionContext;
 }

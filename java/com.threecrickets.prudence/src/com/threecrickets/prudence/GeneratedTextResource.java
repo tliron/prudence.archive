@@ -35,12 +35,13 @@ import com.threecrickets.prudence.cache.InProcessMemoryCache;
 import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
-import com.threecrickets.scripturian.exception.ExecutableInitializationException;
+import com.threecrickets.scripturian.exception.ParsingException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 
 /**
@@ -175,8 +176,8 @@ import com.threecrickets.scripturian.exception.ExecutionException;
  * <code>com.threecrickets.prudence.GeneratedTextResource.allowClientCaching:</code>
  * {@link Boolean}, defaults to true. See {@link #isAllowClientCaching()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.allowCompilation:</code>
- * {@link Boolean}, defaults to true. See {@link #isAllowCompilation()}.</li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.prepare:</code>
+ * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.containerName</code>:
  * The name of the global variable with which to access the container. Defaults
@@ -547,27 +548,28 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
-	 * Whether or not compilation is attempted for script engines that support
-	 * it. Defaults to true.
+	 * Whether to prepare the executables. Preparation increases initialization
+	 * time and reduces execution time. Note that not all languages support
+	 * preparation as a separate operation. Defaults to true.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.allowCompilation</code>
-	 * in the application's {@link Context}.
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.prepare</code> in
+	 * the application's {@link Context}.
 	 * 
-	 * @return Whether to allow compilation
+	 * @return Whether to prepare executables
 	 */
-	public boolean isAllowCompilation()
+	public boolean isPrepare()
 	{
-		if( allowCompilation == null )
+		if( prepare == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			allowCompilation = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.allowCompilation" );
+			prepare = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.prepare" );
 
-			if( allowCompilation == null )
-				allowCompilation = true;
+			if( prepare == null )
+				prepare = true;
 		}
 
-		return allowCompilation;
+		return prepare;
 	}
 
 	/**
@@ -579,7 +581,7 @@ public class GeneratedTextResource extends ServerResource
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.sourceViewable</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return Whether to allow viewing of document source code
+	 * @return Whether to allow viewing of source code
 	 */
 	public boolean isSourceViewable()
 	{
@@ -759,7 +761,7 @@ public class GeneratedTextResource extends ServerResource
 	 * Whether or not compilation is attempted for script engines that support
 	 * it.
 	 */
-	private volatile Boolean allowCompilation;
+	private volatile Boolean prepare;
 
 	/**
 	 * This is so we can see the source code for scripts by adding
@@ -852,6 +854,7 @@ public class GeneratedTextResource extends ServerResource
 						{
 						}
 					}
+
 					DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocument( name );
 					DocumentFormatter<Executable> documentFormatter = getDocumentFormatter();
 					if( documentFormatter != null )
@@ -861,17 +864,39 @@ public class GeneratedTextResource extends ServerResource
 				}
 			}
 
-			// Run document and represent its output
-			ExposedContainerForGeneratedTextResource container = new ExposedContainerForGeneratedTextResource( this, entity, variant, getCache() );
-			Representation representation = container.includeDocument( name );
-
-			if( representation == null )
-				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-			else
+			ExecutionContext executionContext = new ExecutionContext( getLanguageManager(), getWriter(), getErrorWriter() );
+			try
 			{
-				if( !isAllowClientCaching() )
-					representation.setExpirationDate( null );
-				return representation;
+				// Run document and represent its output
+				ExposedContainerForGeneratedTextResource container = new ExposedContainerForGeneratedTextResource( this, executionContext, entity, variant, getCache() );
+				Representation representation = container.includeDocument( name );
+
+				if( representation == null )
+					throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+				else
+				{
+					if( !isAllowClientCaching() )
+						representation.setExpirationDate( null );
+					return representation;
+				}
+			}
+			catch( ParsingException x )
+			{
+				throw new ResourceException( x );
+			}
+			catch( ExecutionException x )
+			{
+				if( getResponse().getStatus().isSuccess() )
+					// An unintended document exception
+					throw new ResourceException( x );
+				else
+					// This was an intended exception, so we will preserve the
+					// status code
+					return null;
+			}
+			finally
+			{
+				executionContext.release();
 			}
 		}
 		catch( FileNotFoundException x )
@@ -881,20 +906,6 @@ public class GeneratedTextResource extends ServerResource
 		catch( IOException x )
 		{
 			throw new ResourceException( x );
-		}
-		catch( ExecutableInitializationException x )
-		{
-			throw new ResourceException( x );
-		}
-		catch( ExecutionException x )
-		{
-			if( getResponse().getStatus().isSuccess() )
-				// An unintended document exception
-				throw new ResourceException( x );
-			else
-				// This was an intended exception, so we will preserve the
-				// status code
-				return null;
 		}
 	}
 }

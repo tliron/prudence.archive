@@ -38,7 +38,7 @@ import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.LanguageAdapter;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentSource;
-import com.threecrickets.scripturian.exception.ExecutableInitializationException;
+import com.threecrickets.scripturian.exception.ParsingException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 
 /**
@@ -59,6 +59,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 * 
 	 * @param resource
 	 *        The resource
+	 * @param executionContext
+	 *        The execution context
 	 * @param entity
 	 *        The entity
 	 * @param variant
@@ -66,7 +68,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 * @param cache
 	 *        The cache (used for caching mode)
 	 */
-	public ExposedContainerForGeneratedTextResource( GeneratedTextResource resource, Representation entity, Variant variant, Cache cache )
+	public ExposedContainerForGeneratedTextResource( GeneratedTextResource resource, ExecutionContext executionContext, Representation entity, Variant variant, Cache cache )
 	{
 		this.resource = resource;
 		this.entity = entity;
@@ -82,7 +84,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		if( characterSet == null )
 			characterSet = resource.getDefaultCharacterSet();
 
-		executionContext = new ExecutionContext( resource.getLanguageManager() );
+		this.executionContext = executionContext;
 	}
 
 	//
@@ -480,10 +482,10 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 *        The script name
 	 * @return A representation of the script's output
 	 * @throws IOException
-	 * @throws ExecutableInitializationException
+	 * @throws ParsingException
 	 * @throws ExecutionException
 	 */
-	public Representation includeDocument( String name ) throws IOException, ExecutableInitializationException, ExecutionException
+	public Representation includeDocument( String name ) throws IOException, ParsingException, ExecutionException
 	{
 		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocument( name );
 
@@ -491,8 +493,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		if( executable == null )
 		{
 			String sourceCode = documentDescriptor.getSourceCode();
-			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource
-				.isAllowCompilation() );
+			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource.isPrepare() );
 
 			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 			if( existing != null )
@@ -517,10 +518,10 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 *        The script name
 	 * @return A representation of the script's output
 	 * @throws IOException
-	 * @throws ExecutableInitializationException
+	 * @throws ParsingException
 	 * @throws ExecutionException
 	 */
-	public Representation include( String name ) throws IOException, ExecutableInitializationException, ExecutionException
+	public Representation include( String name ) throws IOException, ParsingException, ExecutionException
 	{
 		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocument( name );
 
@@ -530,7 +531,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 			LanguageAdapter languageAdapter = resource.getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
 			String sourceCode = documentDescriptor.getSourceCode();
 			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource
-				.getDocumentSource(), resource.isAllowCompilation() );
+				.getDocumentSource(), resource.isPrepare() );
 
 			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 			if( existing != null )
@@ -627,6 +628,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	/**
 	 * Whether to flush the writers after every line in streaming mode.
 	 */
+	@SuppressWarnings("unused")
 	private boolean flushLines;
 
 	/**
@@ -675,7 +677,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		else
 		{
 			Template template = new Template( cacheKey );
-			template.getVariables().put( NAME_VARIABLE, new Variable( Variable.TYPE_ALL, executable.getName(), true, true ) );
+			template.getVariables().put( NAME_VARIABLE, new Variable( Variable.TYPE_ALL, executable.getDocumentName(), true, true ) );
 			return template.format( getResource().getRequest(), getResource().getResponse() );
 		}
 	}
@@ -700,10 +702,10 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 * @return A representation, either generated by the executable or fetched
 	 *         from the cache
 	 * @throws IOException
-	 * @throws ExecutableInitializationException
+	 * @throws ParsingException
 	 * @throws ExecutionException
 	 */
-	private Representation execute( Executable executable ) throws IOException, ExecutableInitializationException, ExecutionException
+	private Representation execute( Executable executable ) throws IOException, ParsingException, ExecutionException
 	{
 		this.executable = executable;
 
@@ -762,7 +764,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 
 		try
 		{
-			executable.execute( false, writer, resource.getErrorWriter(), false, executionContext, this, executionController );
+			executionContext.setWriter( writer );
+			executable.execute( false, executionContext, this, executionController );
 
 			// Executable might have changed!
 			this.executable = executable;
@@ -773,7 +776,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 				startStreaming = false;
 
 				// Note that this will cause the executable to execute again!
-				return new GeneratedTextStreamingRepresentation( resource, this, executionContext, resource.getExecutionController(), executable, flushLines );
+				// TODO: flushLines!
+				return new GeneratedTextStreamingRepresentation( this, executionContext, resource.getExecutionController(), executable );
 			}
 
 			if( isStreaming )
@@ -809,7 +813,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 				startStreaming = false;
 
 				// Note that this will cause the script to run again!
-				return new GeneratedTextStreamingRepresentation( resource, this, executionContext, resource.getExecutionController(), executable, flushLines );
+				// TODO: flushLines!
+				return new GeneratedTextStreamingRepresentation( this, executionContext, resource.getExecutionController(), executable );
 
 				// Note that we will allow exceptions in executable that ask us
 				// to start streaming! In fact, throwing an exception is a
