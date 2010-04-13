@@ -3,8 +3,9 @@
 
 (import 'java.io.File)
 
-(add-classpath (.toURL (File. (str (.. prudence getSource getBasePath) "/../libraries/clojure"))))
-(use '[org.danlarkin.json :only (encode-to-str decode-from-str)])
+(use 'clojure.contrib.json.read)
+(use 'clojure.contrib.json.write)
+(use 'clojure.contrib.sql)
 
 (defn get-id []
 	(try
@@ -22,31 +23,23 @@
 (defn handle-get []
 	(let [id (get-id)]
 
-		(let [connection (get-connection)]
-			(try
-				(let [note (get-note id connection)]
-					(if (nil? note)
-						404
-						(do
-							(.setModificationTimestamp prudence (note :timestamp))
-							(let [note (dissoc note :timestamp)]
-								(encode-to-str note)))))
-		    (finally
-		    	(if (not (nil? connection))
-		    		(.close connection)))))))
+		(with-connection from-pool
+			(let [note (get-note id)]
+				(if (nil? note)
+					404
+					(do
+						(.setModificationTimestamp prudence (note :timestamp))
+						(let [note (dissoc note :timestamp)]
+							(json-str note))))))))
 
 (defn handle-get-info []
 	(let [id (get-id)]
 
-		(let [connection (get-connection)]
-			(try
-				(let [note (get-note id connection)]
-					(if (nil? note)
-						nil
-						(note :timestamp)))
-		    (finally
-		    	(if (not (nil? connection))
-		    		(.close connection)))))))
+		(with-connection from-pool
+			(let [note (get-note id)]
+				(if (nil? note)
+					nil
+					(note :timestamp))))))
 
 (defn handle-post []
 	(let [id (get-id)]
@@ -56,32 +49,24 @@
     ; a reference to that text.
     
     (let [text (.. prudence getEntity (getText))
-    	note (decode-from-str text)]
+    	note (read-json text)]
 
-			(let [connection (get-connection)]
-				(try
-					(let [existing (get-note id connection)]
-						(if (nil? existing)
-							404
-							(let [note (merge existing note)]
-								(update-note note connection)
-								(update-board-timestamp note connection))))
-			    (finally
-			    	(if (not (nil? connection))
-			    		(.close connection))))))))
+			(with-connection from-pool
+				(let [existing (get-note id)]
+					(if (nil? existing)
+						404
+						(let [note (merge existing note)]
+							(update-note note)
+							(update-board-timestamp note))))))))
 
 (defn handle-delete []
 	(let [id (get-id)]
 
-		(let [connection (get-connection)]
-			(try
-				(let [note (get-note id connection)]
-					(if (nil? note)
-						404
-						(do
-							(delete-note note connection)
-							(update-board-timestamp note connection)
-							nil)))
-		    (finally
-		    	(if (not (nil? connection))
-		    		(.close connection)))))))
+		(with-connection from-pool
+			(let [note (get-note id)]
+				(if (nil? note)
+					404
+					(do
+						(delete-note note)
+						(update-board-timestamp note)
+						nil))))))

@@ -120,7 +120,7 @@
 ; Tasks
 ;
 
-(if (not (empty? tasks))
+(if-not (empty? tasks)
 	(do
 		(.submit executor (MessageTask. (.getContext component) (str "Executing " (count tasks) " tasks...")))
 		(doseq [task tasks]

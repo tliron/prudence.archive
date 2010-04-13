@@ -49,16 +49,12 @@
 ; Welcome
 ;
 
-(defn print-comma [s]
-	(let [r (rest s)]
-		(print (.toString (first s)))
-		(if (not (empty? r)) (do
-			(print ", ")
-			(print-comma r)))))			  
+(defn print-comma-delimited [s]
+	(print (interpose ", " (map str s))))
 
 (doseq [server (.getServers component)]
-	(if (not (nil? (.getAddress server)))
+	(if-not (nil? (.getAddress server))
 		(print "Listening on" (.getAddress server) "port" (.getPort server) "for ")
 		(print "Listening on port" (.getPort server) "for "))
-	(print-comma (.getProtocols server))
+	(print-comma-delimited (.getProtocols server))
 	(println "."))
