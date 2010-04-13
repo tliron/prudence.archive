@@ -18,8 +18,8 @@
 (.. prudence (include "../libraries/clojure/context/"))
 
 ; Include the JSON library
-(add-classpath (.toURL (File. (str (.. prudence getSource getBasePath) "/../libraries/clojure"))))
-(use '[org.danlarkin.json :only (encode-to-str decode-from-str)])
+(use 'clojure.contrib.json.read)
+(use 'clojure.contrib.json.write)
 
 ; State
 ;
@@ -68,7 +68,7 @@
 ; list of supported languages and encoding.
 
 (defn handle-get []
-	(let [state (get-state), r (encode-to-str state)]
+	(let [state (get-state), r (json-str state)]
 
 		; Return a representation appropriate for the requested media type
 		; of the possible options we created in handle-init
@@ -90,7 +90,7 @@
 ; to the client.
 
 (defn handle-post []
-	(let [update (decode-from-str (.. prudence getEntity getText))
+	(let [update (read-json (.. prudence getEntity getText))
 		state (get-state)]
 		(set-state (merge state update)))
 	(handle-get))
@@ -108,7 +108,7 @@
 ; to the client.
 
 (defn handle-put []
-	(let [update (decode-from-str (.. prudence getEntity getText))]
+	(let [update (read-json (.. prudence getEntity getText))]
 		(set-state update))
 	(handle-get))
 

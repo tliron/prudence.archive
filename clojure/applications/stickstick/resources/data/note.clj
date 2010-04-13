@@ -1,8 +1,7 @@
 
 (.. prudence (include "../libraries/stickstick/data/"))
 
-(import
-	'java.io.File)
+(import 'java.io.File)
 
 (add-classpath (.toURL (File. (str (.. prudence getSource getBasePath) "/../libraries/clojure"))))
 (use '[org.danlarkin.json :only (encode-to-str decode-from-str)])
@@ -49,7 +48,7 @@
 		    	(if (not (nil? connection))
 		    		(.close connection)))))))
 
-(defn handle-post [
+(defn handle-post []
 	(let [id (get-id)]
 
     ; Note: You can only "consume" the entity once, so if we want it
