@@ -28,21 +28,21 @@ but found it awkward to force servlets into a REST. Discovering
 <p>Restlet's super-powers are three:</p>
 
 <ol>
-	<li>Straightforward abstraction of HTTP over best-of-breed
-	engines, such as <a href="https://grizzly.dev.java.net/">Grizzly</a>, <a href="http://jetty.codehaus.org/jetty/">Jetty</a> and
-	<a href="http://www.jboss.org/netty">Netty</a>.
+	<li>Clean abstraction of HTTP requests, responses and headers
+	over best-of-breed engines, such as <a href="https://grizzly.dev.java.net/">Grizzly</a>,
+	<a href="http://jetty.codehaus.org/jetty/">Jetty</a> and <a href="http://www.jboss.org/netty">Netty</a>.
 	Automatically gain the scalable advantages of non-blocking I/O and even asynchronous request
-	handling (will be better supported in Restlet 2.1).
+	handling (which will be even better supported in Restlet 2.1).
 	Restlet transparently handles conditional requests, content negotiation,
 	and other complicated HTTP labor.
 	</li>
 
 	<li>Powerful URI routing and manipulation. Finally, an elegant
-	front-face to users and other service consumers, with support for
+	URI front-face to users and other service consumers, with support for
 	virtual hosting, rewriting, templating, and other useful real-world
-	features.</li>
+	features. Truly the Swiss Army Knife of URIs!</li>
 
-	<li>Easy data representation and consumption through a diverse
+	<li>Straightforward data representation and consumption through a diverse
 	set of extensions using a variety of libraries. Expose your data using
 	any standard format, and even convert it on-the-fly.
 	Easily parse data from clients.
@@ -50,7 +50,7 @@ but found it awkward to force servlets into a REST. Discovering
 </ol>
 
 <p>Restlet is a great library, with a great ecosystem of extensions.
-We missed, though, having some of the advantages of having a servlet container:
+We missed, though, some of the advantages of having a servlet container:
 easy deployment and configuration, centralized logging, etc. We also missed
 having JSP at our fingertips to quickly push out dynamic HTML.
 </p>
