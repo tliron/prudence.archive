@@ -11,11 +11,10 @@
 (defn get-id []
 	(try
   	(Integer/parseInt (.. prudence getResource getRequest getAttributes (get "id")))
-  	(catch Exception _ nil))
+  	(catch Exception _ nil)))
 
 	;(let [form (.. prudence getResource getRequest getResourceRef getQueryAsForm)]
 	;	(Integer/parseInt (.getFirstValue form "id")))
-)
 
 (defn handle-init []
 	(.. prudence (addMediaTypeByName "text/plain"))

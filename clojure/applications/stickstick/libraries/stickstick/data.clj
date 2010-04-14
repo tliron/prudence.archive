@@ -46,7 +46,7 @@
 ; DB specs for getting clojure.contrib.sql to use our connection pool
 (defn connection-factory [params] (get-connection (params :fresh)))
 (def from-pool {:factory connection-factory :fresh false})
-(def from-pool-fresh {:factory connection-factory :fresh true})
+(def fresh-from-pool {:factory connection-factory :fresh true})
 
 (defn get-boards [] [{:id "Todo List" :timestamp 1234} {:id "Work" :timestamp 1235}])
 

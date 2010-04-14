@@ -26,7 +26,7 @@
 	(let [form (.. prudence getResource getRequest getResourceRef getQueryAsForm)
 		fresh (= (.getFirstValue form "fresh") "true")]
 		
-		(with-connection (if fresh from-pool-fresh from-pool)
+		(with-connection (if fresh fresh-from-pool from-pool)
 			(let [boards (get-boards)]
 				(if (empty? boards)
 					nil
