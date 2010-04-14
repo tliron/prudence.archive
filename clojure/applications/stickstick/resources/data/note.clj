@@ -1,11 +1,12 @@
 
 (.. prudence (include "../libraries/stickstick/data/"))
 
-(import 'java.io.File)
+(use
+	'clojure.contrib.json.read
+	'clojure.contrib.json.write
+	'clojure.contrib.sql)
 
-(use 'clojure.contrib.json.read)
-(use 'clojure.contrib.json.write)
-(use 'clojure.contrib.sql)
+(import 'java.io.File)
 
 (defn get-id []
 	(try

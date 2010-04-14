@@ -10,16 +10,17 @@
 ; your directory structure. See your settings.clj for more information.
 ;
 
-(import
-	'java.io.File
-	'org.restlet.ext.json.JsonRepresentation)
-
 ; Include the context library
 (.. prudence (include "../libraries/clojure/context/"))
 
 ; Include the JSON library
-(use 'clojure.contrib.json.read)
-(use 'clojure.contrib.json.write)
+(use
+	'clojure.contrib.json.read
+	'clojure.contrib.json.write)
+
+(import
+	'java.io.File
+	'org.restlet.ext.json.JsonRepresentation)
 
 ; State
 ;
