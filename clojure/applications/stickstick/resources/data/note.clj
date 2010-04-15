@@ -49,15 +49,21 @@
     ; a reference to that text.
     
     (let [text (.. prudence getEntity (getText))
-    	note (read-json text)]
+    	note (keyword-map (read-json text))]
 
+			;(println note)
 			(with-connection from-pool
 				(let [existing (get-note id)]
 					(if (nil? existing)
 						404
 						(let [note (merge existing note)]
-							(update-note note)
-							(update-board-timestamp note))))))))
+							;(println note)
+							(let [note (update-note note)]
+								;(println note)
+								(update-board-timestamp note)
+								(.setModificationTimestamp prudence (note :timestamp))
+								(let [note (dissoc note :timestamp)]
+									(json-str note))))))))))
 
 (defn handle-delete []
 	(let [id (get-id)]
@@ -68,5 +74,5 @@
 					404
 					(do
 						(delete-note note)
-						(update-board-timestamp note)
+						(update-board-timestamp note (System/currentTimeMillis))
 						nil))))))

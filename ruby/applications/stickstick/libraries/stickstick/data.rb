@@ -147,7 +147,7 @@ end
 def get_board_max_timestamp connection
 	statement = connection.create_statement
 	begin
-		rs = statement.execute_query 'SELECT MAX(timestamp) FROM BOARD'
+		rs = statement.execute_query 'SELECT MAX(timestamp) FROM board'
 		if rs.next
 			return rs.get_timestamp(1).time
 		end

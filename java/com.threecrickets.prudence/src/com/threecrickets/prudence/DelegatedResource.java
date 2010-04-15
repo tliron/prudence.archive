@@ -39,6 +39,7 @@ import com.threecrickets.prudence.cache.InProcessMemoryCache;
 import com.threecrickets.prudence.internal.ExposedContainerForDelegatedResource;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
@@ -851,7 +852,8 @@ public class DelegatedResource extends ServerResource
 				return;
 		}
 
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants() );
+		executionContext = new ExecutionContext( getLanguageManager(), getWriter(), getErrorWriter() );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), executionContext );
 		container.invoke( getEntryPointNameForInit() );
 	}
 
@@ -880,7 +882,7 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation get( Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant, executionContext );
 
 		if( isSourceViewable() )
 		{
@@ -948,7 +950,7 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public RepresentationInfo getInfo( Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), null, variant );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), null, variant, executionContext );
 		try
 		{
 			Object r = container.invoke( getEntryPointNameForGetInfo() );
@@ -992,7 +994,7 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation post( Representation entity, Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant, executionContext );
 		Object r = container.invoke( getEntryPointNameForPost() );
 		return getRepresentation( container, r );
 	}
@@ -1026,7 +1028,7 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation put( Representation entity, Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant, executionContext );
 		Object r = container.invoke( getEntryPointNameForPut() );
 		return getRepresentation( container, r );
 	}
@@ -1056,7 +1058,7 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation delete( Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant, executionContext );
 		container.invoke( getEntryPointNameForDelete() );
 		return null;
 	}
@@ -1086,9 +1088,21 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation options( Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant, executionContext );
 		Object r = container.invoke( getEntryPointNameForOptions() );
 		return getRepresentation( container, r );
+	}
+
+	/**
+	 * Releases the execution context if it was used.
+	 * 
+	 * @see org.restlet.resource.UniformResource#doRelease()
+	 */
+	@Override
+	public void doRelease()
+	{
+		if( executionContext != null )
+			executionContext.release();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -1205,6 +1219,11 @@ public class DelegatedResource extends ServerResource
 	private volatile DocumentFormatter<Executable> documentFormatter;
 
 	/**
+	 * The execution context.
+	 */
+	private ExecutionContext executionContext;
+
+	/**
 	 * Constant.
 	 */
 	private static final String SOURCE = "source";
@@ -1262,7 +1281,7 @@ public class DelegatedResource extends ServerResource
 	 *        An object
 	 * @return A representation info
 	 */
-	public RepresentationInfo getRepresentationInfo( ExposedContainerForDelegatedResource container, Object object )
+	private RepresentationInfo getRepresentationInfo( ExposedContainerForDelegatedResource container, Object object )
 	{
 		if( object == null )
 			return null;

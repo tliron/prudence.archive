@@ -58,10 +58,12 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 *        The resource
 	 * @param variants
 	 *        The variants of the resource
+	 * @param executionContext
+	 *        The execution context
 	 */
-	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants )
+	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants, ExecutionContext executionContext )
 	{
-		this( resource, variants, null, null );
+		this( resource, variants, null, null, executionContext );
 	}
 
 	/**
@@ -77,13 +79,16 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 *        The entity's representation
 	 * @param variant
 	 *        The request variant
+	 * @param executionContext
+	 *        The execution context
 	 */
-	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants, Representation entity, Variant variant )
+	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants, Representation entity, Variant variant, ExecutionContext executionContext )
 	{
 		this.resource = resource;
 		this.variants = variants;
 		this.entity = entity;
 		this.variant = variant;
+		this.executionContext = executionContext;
 
 		if( variant != null )
 		{
@@ -110,10 +115,12 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 *        The variants of the resource
 	 * @param variant
 	 *        The variant
+	 * @param executionContext
+	 *        The execution context
 	 */
-	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants, Variant variant )
+	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants, Variant variant, ExecutionContext executionContext )
 	{
-		this( resource, variants, null, variant );
+		this( resource, variants, null, variant, executionContext );
 	}
 
 	//
@@ -621,8 +628,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 		if( executable == null )
 		{
 			String sourceCode = documentDescriptor.getSourceCode();
-			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, true, this.resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource
-				.isPrepare() );
+			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, true, this.resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource.isPrepare() );
 
 			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
 			if( existing != null )
@@ -717,34 +723,26 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 					executable = existing;
 			}
 
-			// Must run executable once and only once
-			executionContext = new ExecutionContext( resource.getLanguageManager(), resource.getWriter(), resource.getErrorWriter() );
 			try
 			{
-				if( !executable.execute( true, executionContext, this, executionController ) )
-					executionContext.release();
+				// Must run executable once and only once for our context
+				executable.execute( true, executionContext, this, executionController );
 			}
 			catch( ParsingException x )
 			{
-				executionContext.release();
-				executionContext = null;
 				throw new ResourceException( x );
 			}
 			catch( ExecutionException x )
 			{
-				executionContext.release();
-				executionContext = null;
 				throw new ResourceException( x );
 			}
 			catch( IOException x )
 			{
-				executionContext.release();
-				executionContext = null;
 				throw new ResourceException( x );
 			}
 
 			// Invoke!
-			return executable.invoke( entryPointName, this, executionController );
+			return executable.invoke( entryPointName, executionContext, this, executionController );
 		}
 		catch( FileNotFoundException x )
 		{
@@ -836,5 +834,5 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	/**
 	 * The execution context.
 	 */
-	private ExecutionContext executionContext;
+	private final ExecutionContext executionContext;
 }
