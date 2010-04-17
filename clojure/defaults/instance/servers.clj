@@ -50,7 +50,7 @@
 ;
 
 (defn print-comma-delimited [s]
-	(print (interpose ", " (map str s))))
+	(print (apply str (interpose ", " (map str s)))))
 
 (doseq [server (.getServers component)]
 	(if-not (nil? (.getAddress server))
