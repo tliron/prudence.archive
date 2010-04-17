@@ -4,20 +4,36 @@ function clear() {
 }
 
 function getBoard() {
-	return $('#board').val();
+	return $('input[name=board]:checked').val();
 }
 
-function updateBoards(boards) {
-	var board = $('#board');
-	var selected = board.val();
-	board.empty();
-	for(var i in boards) {
-		if(boards[i] == selected) {
-			board.append('<option value="' + boards[i] + '" selected>' + boards[i] + '</option>');
-		} else {
-			board.append('<option value="' + boards[i] + '">' + boards[i] + '</option>');
+function getBoardCount(id, data) {
+	var count = 0;
+	for(var i in data.notes) {
+		if(data.notes[i].board == id) {
+			count++;
 		}
 	}
+	return count;
+}
+
+function updateBoards(data) {
+	var selected = getBoard();
+	if(!selected) {
+		selected = data.boards[0];
+	}
+	var boardsDiv = $('#boards');
+	boardsDiv.empty();
+	for(var i in data.boards) {
+		var board = data.boards[i];
+		var count = getBoardCount(board, data);
+		var label = board;
+		if(count) {
+			label += ' (' + count + ')';
+		}
+		boardsDiv.append('<input type="radio" name="board" value="' + board + '"' + (board == selected ? ' checked' : '') +'>' + label + '</input>');
+	}
+	$('input[name=board]').change(showBoard);
 }
 
 function showBoard() {
@@ -49,7 +65,7 @@ function show(data) {
 		.data('stickstick.board', data.notes[i].board).
 		hide();
 	}
-	updateBoards(data.boards);
+	updateBoards(data);
 	showBoard();
 }
 
@@ -159,8 +175,6 @@ $(function() {
 	});
 
 	$('#refresh').click(refresh);
-	
-	$('#board').change(showBoard);
 	
 	forceRefresh();
 });
