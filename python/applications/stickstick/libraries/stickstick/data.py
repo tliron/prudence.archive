@@ -104,7 +104,8 @@ class Board(Base):
 #
         
 def get_engine(fresh=False):
-    with engine_lock:
+    engine_lock.acquire()
+    try:
         global engine
         if engine is None or fresh:
             attributes = Application.getCurrent().context.attributes
@@ -162,6 +163,8 @@ def get_engine(fresh=False):
                 session.close()
             
         return engine
+    finally:
+        engine_lock.release()
 
 def get_connection(fresh=False):
     engine = get_engine(fresh)
