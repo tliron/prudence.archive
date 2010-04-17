@@ -23,33 +23,33 @@ prudence.include('../libraries/groovy/context/')
 // These make sure that our state is properly stored in the context,
 // so that we always use the same state, even if this script is recompiled.
 
-getStateLock = {
-	return getContextAttribute('groovy.stateLock', {
+getStateLock = { resource ->
+	return getContextAttribute(resource, 'groovy.stateLock', {
 		return new ReentrantReadWriteLock()
 	})
 }
 
-getState = {
-	return getContextAttribute('groovy.state', {
+getState = { resource ->
+	return getContextAttribute(resource, 'groovy.state', {
 		return [name: 'Coraline', media: 'Film', rating: 'A+', characters: ['Coraline', 'Wybie', 'Mom', 'Dad']]
 	})
 }
 
-setState = { value ->
-	prudence.resource.context.attributes['groovy.state'] = value 
+setState = { resource, value ->
+	resource.resource.context.attributes['groovy.state'] = value 
 }
 
 // This closure is called when the resource is initialized. We will use it to set
 // general characteristics for the resource.
 
-handleInit = {
+handleInit = { resource ->
 	// The order in which we add the variants is their order of preference.
 	// Note that clients often include a wildcard (such as "*/*") in the
 	// "Accept" attribute of their request header, specifying that any media type
 	// will do, in which case the first one we add will be used.
 
-    prudence.addMediaTypeByName('application/json')
-    prudence.addMediaTypeByName('text/plain')
+    resource.addMediaTypeByName('application/json')
+    resource.addMediaTypeByName('text/plain')
 }
 
 // This closure is called for the GET verb, which is expected to behave as a
@@ -60,16 +60,16 @@ handleInit = {
 // org.restlet.resource.Representation. Other types will be automatically converted to
 // string representation using the client's requested media type and character set.
 // These, and the language of the representation (defaulting to null), can be read and
-// changed via prudence.mediaType, prudence.characterSet, and
-// prudence.language.
+// changed via resource.mediaType, resource.characterSet, and
+// resource.language.
 //
-// Additionally, you can use prudence.variant to interrogate the client's provided
+// Additionally, you can use resource.variant to interrogate the client's provided
 // list of supported languages and encoding.
 
-handleGet = {
+handleGet = { resource ->
 	def r
-	def stateLock = getStateLock()
-	def state = getState()
+	def stateLock = getStateLock(resource)
+	def state = getState(resource)
 	
 	stateLock.readLock().lock()
 	try {
@@ -82,7 +82,7 @@ handleGet = {
 	// Return a representation appropriate for the requested media type
 	// of the possible options we created in handleInit()
 
-	if(prudence.mediaTypeName == 'application/json')
+	if(resource.mediaTypeName == 'application/json')
 		r = new JsonRepresentation(r)
 
 	return r
@@ -91,7 +91,7 @@ handleGet = {
 // This closure is called for the POST verb, which is expected to behave as a
 // logical "update" of the resource's state.
 //
-// The expectation is that prudence.entity represents an update to the state,
+// The expectation is that resource.entity represents an update to the state,
 // that will affect future calls to handleGet(). As such, it may be possible
 // to accept logically partial representations of the state.
 //
@@ -100,13 +100,13 @@ handleGet = {
 // you must explicitly return a null if you do not want to return a representation
 // to the client.
 
-handlePost = {
+handlePost = { resource ->
 	// Note that we are using the JSON library to parse the entity. While
 	// a simple eval() would also work, the JSONObject constructor is much safer.
 	
-	def update = new JSONObject(prudence.entity.text)
-	def stateLock = getStateLock()
-	def state = getState()
+	def update = new JSONObject(resource.entity.text)
+	def stateLock = getStateLock(resource)
+	def state = getState(resource)
 	
 	// Update our state
 	stateLock.writeLock().lock()
@@ -119,13 +119,13 @@ handlePost = {
 		stateLock.writeLock().unlock()
 	}
 	
-	return handleGet()
+	return handleGet(resource)
 }
 
 // This closure is called for the PUT verb, which is expected to behave as a
 // logical "create" of the resource's state.
 //
-// The expectation is that prudence.entity represents an entirely new state,
+// The expectation is that resource.entity represents an entirely new state,
 // that will affect future calls to handleGet(). Unlike handlePost(),
 // it is expected that the representation be logically complete.
 //
@@ -134,19 +134,19 @@ handlePost = {
 // you must explicitly return a null if you do not want to return a representation
 // to the client.
 
-handlePut = {
+handlePut = { resource ->
 	// See comment in handlePost()
 
-	def entity = new JSONObject(prudence.entity.text)
+	def entity = new JSONObject(resource.entity.text)
 
 	def state = [:]
 	for(def key in entity.keys()) {
 		state[key] = entity.get(key)
 	}
 	
-	setState(state)
+	setState(resource, state)
 	
-	return handleGet()
+	return handleGet(resource)
 }
 
 // This closure is called for the DELETE verb, which is expected to behave as a
@@ -156,9 +156,9 @@ handlePut = {
 // it doesn't make sense to return a representation, and any returned value will
 // ignored. Still, it's a good idea to return null to avoid any passing of value.
 
-handleDelete = {
+handleDelete = { resource ->
 
-	setState([:])
+	setState(resource, [:])
 
 	return null
 }

@@ -13,25 +13,25 @@ merge = { key, a, b ->
 	}
 }
 
-getId = {
+getId = { resource ->
     try {
-        return Integer.parseInt(prudence.resource.request.attributes.id)
+        return Integer.parseInt(resource.resource.request.attributes.id)
     }
     catch(Exception) {
     	return null
     }
 
-    //def form = prudence.resource.request.resourceRef.queryAsForm
+    //def form = resource.resource.request.resourceRef.queryAsForm
     //return Integer.valueOf(form.getFirstValue('id'))
 }
 
-handleInit = {
-    prudence.addMediaTypeByName('text/plain')
-    prudence.addMediaTypeByName('application/json')
+handleInit = { resource ->
+    resource.addMediaTypeByName('text/plain')
+    resource.addMediaTypeByName('application/json')
 }
 
-handleGet = {
-	def id = getId()
+handleGet = { resource ->
+	def id = getId(resource)
 	
     def note
     def connection = getConnection()
@@ -45,13 +45,13 @@ handleGet = {
     	connection.close()
     }
 
-    prudence.modificationTimestamp = note.timestamp
+    resource.modificationTimestamp = note.timestamp
     note.remove('timestamp')
     return new JSONObject(note)
 }
 
-handleGetInfo = {
-	def id = getId()
+handleGetInfo = { resource ->
+	def id = getId(resource)
 	
     def note
     def connection = getConnection()
@@ -68,14 +68,14 @@ handleGetInfo = {
     return note.timestamp
 }
 
-handlePost = {
-	def id = getId()
+handlePost = { resource ->
+	def id = getId(resource)
 
     // Note: You can only "consume" the entity once, so if we want it
     // as text, and want to refer to it more than once, we should keep
     // a reference to that text.
     
-    def text = prudence.entity.text
+    def text = resource.entity.text
     def entity = new JSONObject(text)
     def note = [:]
 	for(def key in entity.keys()) {
@@ -103,13 +103,13 @@ handlePost = {
     	connection.close()
     }
 
-    prudence.modificationTimestamp = note.timestamp
+    resource.modificationTimestamp = note.timestamp
     note.remove('timestamp')
     return new JSONObject(note)
 }
 
-handleDelete = {
-	def id = getId()
+handleDelete = { resource ->
+	def id = getId(resource)
 
     def connection = getConnection()
     try { 

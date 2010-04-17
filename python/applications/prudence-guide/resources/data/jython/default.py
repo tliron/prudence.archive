@@ -29,31 +29,30 @@ import minjson as json
 # These make sure that our state is properly stored in the context,
 # so that we always use the same state, even if this script is recompiled.
 
-def getStateLock():
+def getStateLock(resource):
 	def createDefault():
 		return ReentrantReadWriteLock()
-	return getContextAttribute('jython.stateLock', createDefault)
+	return getContextAttribute(resource, 'jython.stateLock', createDefault)
 
-def getState():
+def getState(resource):
 	def createDefault():
 		return {'name': 'Coraline', 'media': 'Film', 'rating': 'A+', 'characters': ['Coraline', 'Wybie', 'Mom', 'Dad']}
-	return getContextAttribute('jython.state', createDefault)
+	return getContextAttribute(resource, 'jython.state', createDefault)
 
-def setState(value):
-	global document
-	prudence.resource.context.attributes['jython.state'] = value
+def setState(resource, value):
+	resource.resource.context.attributes['jython.state'] = value
 
 # This function is called when the resource is initialized. We will use it to set
 # general characteristics for the resource.
 
-def handleInit():
+def handleInit(resource):
 	# The order in which we add the variants is their order of preference.
 	# Note that clients often include a wildcard (such as "*/*") in the
 	# "Accept" attribute of their request header, specifying that any media type
 	# will do, in which case the first one we add will be used.
 
-    prudence.addMediaTypeByName('application/json')
-    prudence.addMediaTypeByName('text/plain')
+    resource.addMediaTypeByName('application/json')
+    resource.addMediaTypeByName('text/plain')
 
 # This function is called for the GET verb, which is expected to behave as a
 # logical "read" of the resource's state.
@@ -63,16 +62,16 @@ def handleInit():
 # org.restlet.resource.Representation. Other types will be automatically converted to
 # string representation using the client's requested media type and character set.
 # These, and the language of the representation (defaulting to None), can be read and
-# changed via prudence.mediaType, prudence.characterSet, and
-# prudence.language.
+# changed via resource.mediaType, resource.characterSet, and
+# resource.language.
 #
-# Additionally, you can use prudence.variant to interrogate the client's provided
+# Additionally, you can use resource.variant to interrogate the client's provided
 # list of supported languages and encoding.
 
-def handleGet():
+def handleGet(resource):
 	r = None
-	stateLock = getStateLock()
-	state = getState()
+	stateLock = getStateLock(resource)
+	state = getState(resource)
 
 	stateLock.readLock().lock()
 	try:
@@ -83,7 +82,7 @@ def handleGet():
 	# Return a representation appropriate for the requested media type
 	# of the possible options we created in handleInit()
 
-	if prudence.mediaTypeName == 'application/json':
+	if resource.mediaTypeName == 'application/json':
 		r = JsonRepresentation(r)
 		
 	return r
@@ -91,7 +90,7 @@ def handleGet():
 # This function is called for the POST verb, which is expected to behave as a
 # logical "update" of the resource's state.
 #
-# The expectation is that prudence.entity represents an update to the state,
+# The expectation is that resource.entity represents an update to the state,
 # that will affect future calls to handleGet(). As such, it may be possible
 # to accept logically partial representations of the state.
 #
@@ -100,13 +99,13 @@ def handleGet():
 # you must explicitly return a None if you do not want to return a representation
 # to the client.
 
-def handlePost():
+def handlePost(resource):
 	# Note that we are using the minjson library to parse the entity. While
 	# a simple eval() would also work, minjson.read() is much safer.
 
-	update = json.read(prudence.entity.text)
-	stateLock = getStateLock()
-	state = getState()
+	update = json.read(resource.entity.text)
+	stateLock = getStateLock(resource)
+	state = getState(resource)
 
 	# Update our state
 	stateLock.writeLock().lock()
@@ -116,12 +115,12 @@ def handlePost():
 	finally:
 		stateLock.writeLock().unlock()
 
-	return handleGet()
+	return handleGet(resource)
 
 # This function is called for the PUT verb, which is expected to behave as a
 # logical "create" of the resource's state.
 #
-# The expectation is that prudence.entity represents an entirely new state,
+# The expectation is that resource.entity represents an entirely new state,
 # that will affect future calls to handleGet(). Unlike handlePost(),
 # it is expected that the representation be logically complete.
 #
@@ -130,13 +129,13 @@ def handlePost():
 # you must explicitly return a None if you do not want to return a representation
 # to the client.
 
-def handlePut():
+def handlePut(resource):
 	# See comment in handlePost()
 
-	update = json.read(prudence.entity.text)
-	setState(update)
+	update = json.read(resource.entity.text)
+	setState(resource, update)
 
-	return handleGet()
+	return handleGet(resource)
 
 # This function is called for the DELETE verb, which is expected to behave as a
 # logical "delete" of the resource's state.
@@ -145,7 +144,7 @@ def handlePut():
 # it doesn't make sense to return a representation, and any returned value will
 # ignored. Still, it's a good idea to return None to avoid any passing of value.
 
-def handleDelete():
-	setState({})
+def handleDelete(resource):
+	setState(resource, {})
 
 	return None

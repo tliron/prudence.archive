@@ -1,14 +1,14 @@
 // Helper to access the context attributes
 
-getContextAttribute = { name, getDefaultValue ->
-	def value = prudence.resource.context.attributes[name]
+getContextAttribute = { resource, name, getDefaultValue ->
+	def value = resource.resource.context.attributes[name]
 	if(value == null) {
 		value = getDefaultValue()
 
 		// Note: another thread might have changed our value in the meantime.
 		// We'll make sure there is no duplication.
 
-		def existing = prudence.resource.context.attributes.putIfAbsent(name, value)
+		def existing = resource.resource.context.attributes.putIfAbsent(name, value)
 		if(existing != null) {
 			value = existing
 		}

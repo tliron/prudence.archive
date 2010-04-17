@@ -13,25 +13,25 @@ function merge(key, a, b) {
 	}
 }
 
-function getId() {
+function getId(resource) {
     try {
-        return parseInt(prudence.resource.request.attributes.get('id'));
+        return parseInt(resource.resource.request.attributes.get('id'));
     }
     catch(e) {
     	return null;
     }
 
-    //var form = prudence.resource.request.resourceRef.queryAsForm;
+    //var form = resource.resource.request.resourceRef.queryAsForm;
     //return parseInt(form.getFirstValue('id'));
 }
 
-function handleInit() {
-    prudence.addMediaTypeByName('text/plain');
-    prudence.addMediaTypeByName('application/json');
+function handleInit(resource) {
+    resource.addMediaTypeByName('text/plain');
+    resource.addMediaTypeByName('application/json');
 }
 
-function handleGet() {
-	var id = getId();
+function handleGet(resource) {
+	var id = getId(resource);
 	
     var note;
     var connection = getConnection();
@@ -45,13 +45,13 @@ function handleGet() {
     	connection.close();
     }
 
-    prudence.modificationTimestamp = note.timestamp;
+    resource.modificationTimestamp = note.timestamp;
     delete note.timestamp;
     return JSON.stringify(note);
 }
 
-function handleGetInfo() {
-	var id = getId();
+function handleGetInfo(resource) {
+	var id = getId(resource);
 	
     var note;
     var connection = getConnection();
@@ -68,14 +68,14 @@ function handleGetInfo() {
     return note.timestamp;
 }
 
-function handlePost() {
-	var id = getId();
+function handlePost(resource) {
+	var id = getId(resource);
 
     // Note: You can only "consume" the entity once, so if we want it
     // as text, and want to refer to it more than once, we should keep
     // a reference to that text.
     
-    var text = prudence.entity.text;
+    var text = resource.entity.text;
     var note = JSON.parse(String(text));
 
     var connection = getConnection();
@@ -99,13 +99,13 @@ function handlePost() {
     	connection.close();
     }
 
-    prudence.modificationTimestamp = note.timestamp;
+    resource.modificationTimestamp = note.timestamp;
     delete note.timestamp;
     return JSON.stringify(note);
 }
 
-function handleDelete() {
-	var id = getId();
+function handleDelete(resource) {
+	var id = getId(resource);
 
     var connection = getConnection();
     try {

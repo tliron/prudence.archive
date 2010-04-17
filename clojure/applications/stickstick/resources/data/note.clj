@@ -8,32 +8,32 @@
 
 (import 'java.io.File)
 
-(defn get-id []
+(defn get-id [resource]
 	(try
-  	(Integer/parseInt (.. prudence getResource getRequest getAttributes (get "id")))
+  	(Integer/parseInt (.. resource getResource getRequest getAttributes (get "id")))
   	(catch Exception _ nil)))
 
-	;(let [form (.. prudence getResource getRequest getResourceRef getQueryAsForm)]
+	;(let [form (.. resource getResource getRequest getResourceRef getQueryAsForm)]
 	;	(Integer/parseInt (.getFirstValue form "id")))
 
-(defn handle-init []
-	(.. prudence (addMediaTypeByName "text/plain"))
-	(.. prudence (addMediaTypeByName "application/json")))
+(defn handle-init [resource]
+	(.. resource (addMediaTypeByName "text/plain"))
+	(.. resource (addMediaTypeByName "application/json")))
 
-(defn handle-get []
-	(let [id (get-id)]
+(defn handle-get [resource]
+	(let [id (get-id resource)]
 
 		(with-connection from-pool
 			(let [note (get-note id)]
 				(if (nil? note)
 					404
 					(do
-						(.setModificationTimestamp prudence (note :timestamp))
+						(.setModificationTimestamp resource (note :timestamp))
 						(let [note (dissoc note :timestamp)]
 							(json-str note))))))))
 
-(defn handle-get-info []
-	(let [id (get-id)]
+(defn handle-get-info [resource]
+	(let [id (get-id resource)]
 
 		(with-connection from-pool
 			(let [note (get-note id)]
@@ -41,14 +41,14 @@
 					nil
 					(note :timestamp))))))
 
-(defn handle-post []
-	(let [id (get-id)]
+(defn handle-post [resource]
+	(let [id (get-id resource)]
 
     ; Note: You can only "consume" the entity once, so if we want it
     ; as text, and want to refer to it more than once, we should keep
     ; a reference to that text.
     
-    (let [text (.. prudence getEntity (getText))
+    (let [text (.. resource getEntity (getText))
     	note (keyword-map (read-json text))]
 
 			;(println note)
@@ -61,12 +61,12 @@
 							(let [note (update-note note)]
 								;(println note)
 								(update-board-timestamp note)
-								(.setModificationTimestamp prudence (note :timestamp))
+								(.setModificationTimestamp resource (note :timestamp))
 								(let [note (dissoc note :timestamp)]
 									(json-str note))))))))))
 
-(defn handle-delete []
-	(let [id (get-id)]
+(defn handle-delete [resource]
+	(let [id (get-id resource)]
 
 		(with-connection from-pool
 			(let [note (get-note id)]

@@ -765,7 +765,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		try
 		{
 			executionContext.setWriter( writer );
-			executable.execute( false, executionContext, this, executionController );
+			executable.execute( executionContext, this, executionController );
 
 			// Executable might have changed!
 			this.executable = executable;

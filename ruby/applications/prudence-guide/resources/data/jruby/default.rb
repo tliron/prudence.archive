@@ -24,37 +24,34 @@ require $prudence.source.base_path.to_s + '/../libraries/jruby/context.rb'
 # These make sure that our state is properly stored in the context,
 # so that we always use the same state, even if this script is recompiled.
 
-def get_state_lock
-	return get_context_attribute('jruby.stateLock') do
+def get_state_lock resource
+	return get_context_attribute(resource, 'jruby.stateLock') do
 		ReentrantReadWriteLock.new
 	end
 end
 
-def get_state
-	return get_context_attribute('jruby.state') do
+def get_state resource
+	return get_context_attribute(resource, 'jruby.state') do
 		{'name' => 'Coraline', 'media' => 'Film', 'rating' => 'A+', 'characters' => ['Coraline', 'Wybie', 'Mom', 'Dad']}
 	end
 end
 
-def set_state value
-	$prudence.resource.context.attributes['jruby.state'] = value
+def set_state resource, value
+	resource.resource.context.attributes['jruby.state'] = value
 end
-
-@state = get_state
-@state_lock = get_state_lock
 
 # This method is called when the resource is initialized. We will use it to set
 # general characteristics for the resource.
 	
-def handle_init
+def handle_init resource
 
 	# The order in which we add the variants is their order of preference.
 	# Note that clients often include a wildcard (such as "*/*") in the
 	# "Accept" attribute of their request header, specifying that any media type
 	# will do, in which case the first one we add will be used.
 
-    $prudence.add_media_type_by_name 'application/json'
-    $prudence.add_media_type_by_name 'text/plain'
+    resource.add_media_type_by_name 'application/json'
+    resource.add_media_type_by_name 'text/plain'
 	
 end
 
@@ -66,17 +63,17 @@ end
 # org.restlet.resource.Representation. Other types will be automatically converted to
 # string representation using the client's requested media type and character set.
 # These, and the language of the representation (defaulting to None), can be read and
-# changed via $prudence.media_type, $prudence.character_set, and
-# $prudence.language.
+# changed via resource.media_type, resource.character_set, and
+# resource.language.
 #
-# Additionally, you can use $prudence.variant to interrogate the client's provided
+# Additionally, you can use resource.variant to interrogate the client's provided
 # list of supported languages and encoding.
 
-def handle_get
+def handle_get resource
 
 	r = nil
-	state_lock = get_state_lock
-	state = get_state
+	state_lock = get_state_lock resource
+	state = get_state resource
 
 	state_lock.read_lock.lock
 	begin
@@ -88,7 +85,7 @@ def handle_get
 	# Return a representation appropriate for the requested media type
 	# of the possible options we created in handle_init()
 
-	if $prudence.media_type_name == 'application/json'
+	if resource.media_type_name == 'application/json'
 		return JsonRepresentation.new r
 	end
 
@@ -99,7 +96,7 @@ end
 # This method is called for the POST verb, which is expected to behave as a
 # logical "update" of the resource's state.
 #
-# The expectation is that prudence.entity represents an update to the state,
+# The expectation is that resource.entity represents an update to the state,
 # that will affect future calls to handle_get(). As such, it may be possible
 # to accept logically partial representations of the state.
 #
@@ -108,11 +105,11 @@ end
 # you must explicitly return a None if you do not want to return a representation
 # to the client.
 
-def handle_post
+def handle_post resource
 
-	update = JSONObject.new $prudence.entity.text
-	state_lock = get_state_lock
-	state = get_state
+	update = JSONObject.new resource.entity.text
+	state_lock = get_state_lock resource
+	state = get_state resource
 	
 	# Update our state
 	state_lock.write_lock.lock
@@ -124,14 +121,14 @@ def handle_post
 		state_lock.write_lock.unlock
 	end
 	
-	return handle_get
+	return handle_get resource
 	
 end
 
 # This method is called for the PUT verb, which is expected to behave as a
 # logical "create" of the resource's state.
 #
-# The expectation is that prudence.entity represents an entirely new state,
+# The expectation is that resource.entity represents an entirely new state,
 # that will affect future calls to handle_get(). Unlike handle_post(),
 # it is expected that the representation be logically complete.
 #
@@ -140,18 +137,18 @@ end
 # you must explicitly return a nil if you do not want to return a representation
 # to the client.
 
-def handle_put
+def handle_put resource
 
-	update = JSONObject.new $prudence.entity.text
+	update = JSONObject.new resource.entity.text
 
 	state = {}	
 	for key in update.keys
 		state[key] = update.get key
 	end
 	
-	set_state state
+	set_state resource, state
 	
-	return handle_get
+	return handle_get resource
 	
 end
 
@@ -162,9 +159,9 @@ end
 # it doesn't make sense to return a representation, and any returned value will
 # ignored. Still, it's a good idea to return nil to avoid any passing of value.
 
-def handle_delete
+def handle_delete resource
 
-	set_state({})
+	set_state(resource, {})
 
 	return nil
 	

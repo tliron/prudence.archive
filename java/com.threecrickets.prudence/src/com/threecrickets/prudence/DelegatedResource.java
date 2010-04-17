@@ -852,8 +852,7 @@ public class DelegatedResource extends ServerResource
 				return;
 		}
 
-		executionContext = new ExecutionContext( getLanguageManager(), getWriter(), getErrorWriter() );
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), executionContext );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants() );
 		container.invoke( getEntryPointNameForInit() );
 	}
 
@@ -882,7 +881,7 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation get( Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant, executionContext );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
 
 		if( isSourceViewable() )
 		{
@@ -950,7 +949,7 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public RepresentationInfo getInfo( Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), null, variant, executionContext );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), null, variant );
 		try
 		{
 			Object r = container.invoke( getEntryPointNameForGetInfo() );
@@ -994,7 +993,7 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation post( Representation entity, Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant, executionContext );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
 		Object r = container.invoke( getEntryPointNameForPost() );
 		return getRepresentation( container, r );
 	}
@@ -1028,7 +1027,7 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation put( Representation entity, Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant, executionContext );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
 		Object r = container.invoke( getEntryPointNameForPut() );
 		return getRepresentation( container, r );
 	}
@@ -1058,7 +1057,7 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation delete( Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant, executionContext );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
 		container.invoke( getEntryPointNameForDelete() );
 		return null;
 	}
@@ -1088,7 +1087,7 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation options( Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant, executionContext );
+		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
 		Object r = container.invoke( getEntryPointNameForOptions() );
 		return getRepresentation( container, r );
 	}

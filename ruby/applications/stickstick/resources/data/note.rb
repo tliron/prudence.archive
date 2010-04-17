@@ -13,24 +13,24 @@ def merge key, a, b
 	end
 end
 
-def get_id
+def get_id resource
     begin
-        return Integer($prudence.resource.request.attributes['id'])
+        return Integer(resource.resource.request.attributes['id'])
     except
     	return nil
     end
 
-    #form = $prudence.resource.request.resource_ref.query_as_form
+    #form = resource.resource.request.resource_ref.query_as_form
     #return Integer(form.get_first_value('id'))
 end
 
-def handle_init
-    $prudence.add_media_type_by_name 'text/plain'
-    $prudence.add_media_type_by_name 'application/json'
+def handle_init resource
+    resource.add_media_type_by_name 'text/plain'
+    resource.add_media_type_by_name 'application/json'
 end
 
-def handle_get
-	id = get_id
+def handle_get resource
+	id = get_id resource
 	
     note = nil
     connection = get_connection
@@ -43,13 +43,13 @@ def handle_get
     	connection.close
     end
 
-    $prudence.modification_timestamp = note['timestamp']
+    resource.modification_timestamp = note['timestamp']
     note.delete 'timestamp'
     return JSONObject.new note
 end
 
-def handle_get_info
-	id = get_id
+def handle_get_info resource
+	id = get_id resource
 	
     note = nil
     connection = get_connection
@@ -65,14 +65,14 @@ def handle_get_info
     return java.lang.Long.new note['timestamp']
 end
 
-def handle_post
-	id = get_id
+def handle_post resource
+	id = get_id resource
 
     # Note: You can only "consume" the entity once, so if we want it
     # as text, and want to refer to it more than once, we should keep
     # a reference to that text.
     
-    text = $prudence.entity.text
+    text = resource.entity.text
     entity = JSONObject.new text
     note = {}
 	for key in entity.keys
@@ -99,13 +99,13 @@ def handle_post
     	connection.close
     end
 
-    $prudence.modification_timestamp = note['timestamp']
+    resource.modification_timestamp = note['timestamp']
     note.delete 'timestamp'
     return JSONObject.new note
 end
 
-def handle_delete
-	id = get_id
+def handle_delete resource
+	id = get_id resource
 
     connection = get_connection
     begin 

@@ -5,12 +5,12 @@ from sqlalchemy.sql import func
 import minjson as json
 from stickstick.data import *
 
-def handleInit():
-    prudence.addMediaTypeByName('text/plain')
-    prudence.addMediaTypeByName('application/json')
+def handleInit(resource):
+    resource.addMediaTypeByName('text/plain')
+    resource.addMediaTypeByName('application/json')
 
-def handleGet():
-    form = prudence.resource.request.resourceRef.queryAsForm
+def handleGet(resource):
+    form = resource.resource.request.resourceRef.queryAsForm
     fresh = form.getFirstValue('fresh') == 'true'
 
     max_timestamp = None
@@ -36,10 +36,10 @@ def handleGet():
         pass
 
     if max_timestamp is not None:
-        prudence.modificationTimestamp = datetime_to_milliseconds(max_timestamp)
+        resource.modificationTimestamp = datetime_to_milliseconds(max_timestamp)
     return json.write({'boards': board_list, 'notes': note_list})
 
-def handleGetInfo():
+def handleGetInfo(resource):
     session = get_session()
     try:
         max_timestamp = session.query(func.max(Board.timestamp)).scalar()
@@ -47,12 +47,12 @@ def handleGetInfo():
         session.close()
     return datetime_to_milliseconds(max_timestamp)
 
-def handlePut():
+def handlePut(resource):
     # Note: You can only "consume" the entity once, so if we want it
     # as text, and want to refer to it more than once, we should keep
     # a reference to that text.
     
-    text = prudence.entity.text
+    text = resource.entity.text
     note_dict = json.read(text)
     note = Note.create_from_dict(note_dict)
     
@@ -64,4 +64,4 @@ def handlePut():
     finally:
         session.close()
     
-    return handleGet()
+    return handleGet(resource)

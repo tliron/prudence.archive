@@ -35,8 +35,8 @@ import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageAdapter;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentSource;
-import com.threecrickets.scripturian.exception.ParsingException;
 import com.threecrickets.scripturian.exception.ExecutionException;
+import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
  * This is the <code>prudence</code> variable exposed to scriptlets.
@@ -58,12 +58,10 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 *        The resource
 	 * @param variants
 	 *        The variants of the resource
-	 * @param executionContext
-	 *        The execution context
 	 */
-	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants, ExecutionContext executionContext )
+	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants )
 	{
-		this( resource, variants, null, null, executionContext );
+		this( resource, variants, null, null );
 	}
 
 	/**
@@ -79,16 +77,13 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 *        The entity's representation
 	 * @param variant
 	 *        The request variant
-	 * @param executionContext
-	 *        The execution context
 	 */
-	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants, Representation entity, Variant variant, ExecutionContext executionContext )
+	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants, Representation entity, Variant variant )
 	{
 		this.resource = resource;
 		this.variants = variants;
 		this.entity = entity;
 		this.variant = variant;
-		this.executionContext = executionContext;
 
 		if( variant != null )
 		{
@@ -115,12 +110,10 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 *        The variants of the resource
 	 * @param variant
 	 *        The variant
-	 * @param executionContext
-	 *        The execution context
 	 */
-	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants, Variant variant, ExecutionContext executionContext )
+	public ExposedContainerForDelegatedResource( DelegatedResource resource, List<Variant> variants, Variant variant )
 	{
-		this( resource, variants, null, variant, executionContext );
+		this( resource, variants, null, variant );
 	}
 
 	//
@@ -592,55 +585,6 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	}
 
 	/**
-	 * This powerful method allows scriptlets to execute other documents in
-	 * place, and is useful for creating large, maintainable applications based
-	 * on documents. Included documents can act as a library or toolkit and can
-	 * even be shared among many applications. The included document does not
-	 * have to be in the same programming language or use the same engine as the
-	 * calling scriptlet. However, if they do use the same engine, then methods,
-	 * functions, modules, etc., could be shared.
-	 * <p>
-	 * It is important to note that how this works varies a lot per engine. For
-	 * example, in JRuby, every scriptlet is run in its own scope, so that
-	 * sharing would have to be done explicitly in the global scope. See the
-	 * included JRuby examples for a discussion of various ways to do this.
-	 * 
-	 * @param name
-	 *        The document name
-	 * @throws IOException
-	 * @throws ParsingException
-	 * @throws ExecutionException
-	 */
-	public void includeDocument( String name ) throws IOException, ParsingException, ExecutionException
-	{
-		if( resource.isTrailingSlashRequired() )
-		{
-			if( ( name != null ) && ( name.length() != 0 ) && !name.endsWith( "/" ) )
-				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-		}
-
-		if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
-			name = resource.getDefaultName();
-
-		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocument( name );
-
-		Executable executable = documentDescriptor.getDocument();
-		if( executable == null )
-		{
-			String sourceCode = documentDescriptor.getSourceCode();
-			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, true, this.resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.getDocumentSource(), resource.isPrepare() );
-
-			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
-			if( existing != null )
-				executable = existing;
-		}
-
-		PrudenceExecutionController<ExposedContainerForDelegatedResource> executionController = new PrudenceExecutionController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
-			.getExecutionController() );
-		executable.execute( false, executionContext, this, executionController );
-	}
-
-	/**
 	 * As {@link #includeDocument(String)}, except that the document is parsed
 	 * as a single, non-delimited script with the engine name derived from
 	 * name's extension.
@@ -677,9 +621,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 				executable = existing;
 		}
 
-		PrudenceExecutionController<ExposedContainerForDelegatedResource> executionController = new PrudenceExecutionController<ExposedContainerForDelegatedResource>( this, resource.getContainerName(), resource
-			.getExecutionController() );
-		executable.execute( false, executionContext, this, executionController );
+		executable.execute();
 	}
 
 	/**
@@ -723,26 +665,34 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 					executable = existing;
 			}
 
-			try
+			ExecutionContext executionContext = executable.getExecutionContextForInvocations();
+			if( executionContext == null )
 			{
-				// Must run executable once and only once for our context
-				executable.execute( true, executionContext, this, executionController );
-			}
-			catch( ParsingException x )
-			{
-				throw new ResourceException( x );
-			}
-			catch( ExecutionException x )
-			{
-				throw new ResourceException( x );
-			}
-			catch( IOException x )
-			{
-				throw new ResourceException( x );
+				executionContext = new ExecutionContext( resource.getLanguageManager(), resource.getWriter(), resource.getErrorWriter() );
+				try
+				{
+					if( !executable.prepareForInvocation( executionContext, this, executionController ) )
+						executionContext.release();
+				}
+				catch( ParsingException x )
+				{
+					executionContext.release();
+					throw new ResourceException( x );
+				}
+				catch( ExecutionException x )
+				{
+					executionContext.release();
+					throw new ResourceException( x );
+				}
+				catch( IOException x )
+				{
+					executionContext.release();
+					throw new ResourceException( x );
+				}
 			}
 
 			// Invoke!
-			return executable.invoke( entryPointName, executionContext, this, executionController );
+			return executable.invoke( entryPointName, this );
 		}
 		catch( FileNotFoundException x )
 		{
@@ -830,9 +780,4 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase
 	 * <code>handlePut()</code>.
 	 */
 	private Tag tag;
-
-	/**
-	 * The execution context.
-	 */
-	private final ExecutionContext executionContext;
 }

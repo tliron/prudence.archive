@@ -76,7 +76,7 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		executionContext.setWriter( writer );
 		try
 		{
-			document.execute( false, executionContext, container, executionController );
+			document.execute( executionContext, container, executionController );
 		}
 		catch( ParsingException x )
 		{
