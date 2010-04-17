@@ -129,22 +129,8 @@ import com.threecrickets.scripturian.document.DocumentSource;
  * <p>
  * Operations:
  * <ul>
- * <li><code>prudence.includeDocument(name)</code>: This powerful method allows
- * scriptlets to execute other documents in place, and is useful for creating
- * large, maintainable applications based on documents. Included documents can
- * act as a library or toolkit and can even be shared among many applications.
- * The included document does not have to be in the same programming language or
- * use the same engine as the calling scriptlet. However, if they do use the
- * same engine, then methods, functions, modules, etc., could be shared.
- * <p>
- * It is important to note that how this works varies a lot per engine. For
- * example, in JRuby, every scriptlet is run in its own scope, so that sharing
- * would have to be done explicitly in the global scope. See the included JRuby
- * examples for a discussion of various ways to do this.
- * </li>
- * <li><code>prudence.include(name)</code>: as above, except that the document
- * is parsed as a single, non-delimited script with the engine name derived from
- * name's extension.</li>
+ * <li><code>prudence.include(name)</code>: Let's you use other source code in
+ * place.</li>
  * </ul>
  * Read-only attributes:
  * <ul>
