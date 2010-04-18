@@ -158,7 +158,8 @@ public class DelegatedStatusService extends StatusService
 	{
 		if( isEnabled() )
 		{
-			if( response.getAttributes().containsKey( "com.threecrickets.prudence.util.DelegatedStatusService.passThrough" ) )
+			if( request.getAttributes().containsKey( "com.threecrickets.prudence.util.DelegatedStatusService.passThrough" ) )
+				// Pass through
 				return response.getEntity();
 
 			Restlet errorHandler = errorHandlers.get( status.getCode() );
@@ -182,13 +183,13 @@ public class DelegatedStatusService extends StatusService
 				representation.setModificationDate( null );
 				representation.setTag( null );
 
-				response.getAttributes().put( "com.threecrickets.prudence.util.DelegatedStatusService.passThrough", true );
+				request.getAttributes().put( "com.threecrickets.prudence.util.DelegatedStatusService.passThrough", true );
 				return representation;
 			}
 
 			if( isDebugging() && ( status.getThrowable() != null ) )
 			{
-				response.getAttributes().put( "com.threecrickets.prudence.util.DelegatedStatusService.passThrough", true );
+				request.getAttributes().put( "com.threecrickets.prudence.util.DelegatedStatusService.passThrough", true );
 				return new DebugRepresentation( status, request, response, sourceCodeUri );
 			}
 		}

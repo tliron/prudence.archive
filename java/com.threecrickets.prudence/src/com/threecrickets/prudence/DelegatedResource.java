@@ -1078,18 +1078,6 @@ public class DelegatedResource extends ServerResource
 		return getRepresentation( r, exposedConversation );
 	}
 
-	/**
-	 * Releases the execution context if it was used.
-	 * 
-	 * @see org.restlet.resource.UniformResource#doRelease()
-	 */
-	@Override
-	public void doRelease()
-	{
-		if( executionContext != null )
-			executionContext.release();
-	}
-
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
@@ -1202,11 +1190,6 @@ public class DelegatedResource extends ServerResource
 	 * The document formatter.
 	 */
 	private volatile DocumentFormatter<Executable> documentFormatter;
-
-	/**
-	 * The execution context.
-	 */
-	private ExecutionContext executionContext;
 
 	/**
 	 * Constant.
