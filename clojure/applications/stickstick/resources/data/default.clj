@@ -8,9 +8,9 @@
 
 (import 'java.io.File)
 
-(defn handle-init [resource]
-	(.. resource (addMediaTypeByName "text/plain"))
-	(.. resource (addMediaTypeByName "application/json")))
+(defn handle-init [conversation]
+	(.. conversation (addMediaTypeByName "text/plain"))
+	(.. conversation (addMediaTypeByName "application/json")))
 
 ; Returns [ids, max-timestamp]
 (defn get-board-list [boards]
@@ -25,8 +25,8 @@
 				 		nil
 				 		(max (board :timestamp) others-max-timestamp))]))))
 
-(defn handle-get [resource]
-	(let [form (.. resource getResource getRequest getResourceRef getQueryAsForm)
+(defn handle-get [conversation]
+	(let [form (.. conversation getResource getRequest getResourceRef getQueryAsForm)
 		fresh (.equals "true" (.getFirstValue form "fresh"))]
 		;(println form)
 		;(println fresh)
@@ -40,19 +40,19 @@
 						notes (get-notes)]
 						;(println (str max-timestamp))
 				    (if-not (nil? max-timestamp)
-				    	(.setModificationTimestamp resource max-timestamp))
+				    	(.setModificationTimestamp conversation max-timestamp))
 				    (json-str {:boards board-list :notes notes})))))))
 
-(defn handle-get-info [resource]
+(defn handle-get-info [conversation]
 	(with-connection from-pool
   	(get-board-max-timestamp)))
 
-(defn handle-put [resource]
+(defn handle-put [conversation]
   ; Note: You can only "consume" the entity once, so if we want it
   ; as text, and want to refer to it more than once, we should keep
   ; a reference to that text.
 
-  (let [text (.. resource getEntity (getText))
+  (let [text (.. conversation getEntity (getText))
   	note (keyword-map (read-json text))]
 		;(println note)
 		(with-connection from-pool
@@ -60,4 +60,4 @@
 				;(println note)
     		(update-board-timestamp note))))
 		    		
-  (handle-get resource))
+  (handle-get conversation))

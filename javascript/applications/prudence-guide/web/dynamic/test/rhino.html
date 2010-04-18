@@ -11,13 +11,13 @@
 // Accessing the request
 //
 
-var form = prudence.resource.request.resourceRef.queryAsForm;
+var form = conversation.resource.request.resourceRef.queryAsForm;
 
 //
 // Stream this page
 //
 
-if(form.getFirstValue('stream') == 'true') if(prudence.stream()) throw null;
+if(form.getFirstValue('stream') == 'true') if(conversation.stream()) throw null;
 
 //
 // Cache this page 

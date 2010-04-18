@@ -13,25 +13,25 @@ merge = { key, a, b ->
 	}
 }
 
-getId = { resource ->
+getId = { conversation ->
     try {
-        return Integer.parseInt(resource.resource.request.attributes.id)
+        return Integer.parseInt(conversation.resource.request.attributes.id)
     }
     catch(Exception) {
     	return null
     }
 
-    //def form = resource.resource.request.resourceRef.queryAsForm
+    //def form = conversation.resource.request.resourceRef.queryAsForm
     //return Integer.valueOf(form.getFirstValue('id'))
 }
 
-handleInit = { resource ->
-    resource.addMediaTypeByName('text/plain')
-    resource.addMediaTypeByName('application/json')
+handleInit = { conversation ->
+    conversation.addMediaTypeByName('text/plain')
+    conversation.addMediaTypeByName('application/json')
 }
 
-handleGet = { resource ->
-	def id = getId(resource)
+handleGet = { conversation ->
+	def id = getId(conversation)
 	
     def note
     def connection = getConnection()
@@ -45,13 +45,13 @@ handleGet = { resource ->
     	connection.close()
     }
 
-    resource.modificationTimestamp = note.timestamp
+    conversation.modificationTimestamp = note.timestamp
     note.remove('timestamp')
     return new JSONObject(note)
 }
 
-handleGetInfo = { resource ->
-	def id = getId(resource)
+handleGetInfo = { conversation ->
+	def id = getId(conversation)
 	
     def note
     def connection = getConnection()
@@ -68,14 +68,14 @@ handleGetInfo = { resource ->
     return note.timestamp
 }
 
-handlePost = { resource ->
-	def id = getId(resource)
+handlePost = { conversation ->
+	def id = getId(conversation)
 
     // Note: You can only "consume" the entity once, so if we want it
     // as text, and want to refer to it more than once, we should keep
     // a reference to that text.
     
-    def text = resource.entity.text
+    def text = conversation.entity.text
     def entity = new JSONObject(text)
     def note = [:]
 	for(def key in entity.keys()) {
@@ -103,13 +103,13 @@ handlePost = { resource ->
     	connection.close()
     }
 
-    resource.modificationTimestamp = note.timestamp
+    conversation.modificationTimestamp = note.timestamp
     note.remove('timestamp')
     return new JSONObject(note)
 }
 
-handleDelete = { resource ->
-	def id = getId(resource)
+handleDelete = { conversation ->
+	def id = getId(conversation)
 
     def connection = getConnection()
     try { 

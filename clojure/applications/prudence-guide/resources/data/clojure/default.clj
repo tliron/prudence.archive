@@ -27,7 +27,7 @@
 ; These make sure that our state is properly stored in the context,
 ; so that we always use the same state, even if this script is recompiled.
 
-(defn get-state [resource]
+(defn get-state [conversation]
 	;
 	; Important! Clojure maps are not regular old Java maps. They are *persistent*, meaning that on the
 	; the one hand they are immutable, and on the other hand they maintain performance behavior when
@@ -36,23 +36,23 @@
 	; prone) to deal with state. Viva Clojure!
 	;
 
-	(get-context-attribute resource "clojure.state"
+	(get-context-attribute conversation "clojure.state"
 		#(identity {"name" "Coraline", "media" "Film", "rating" "A+", "characters" ["Coraline" "Wybie" "Mom" "Dad"]})))
 
-(defn set-state [resource value]
-	(.. resource getResource getContext getAttributes (put "clojure.state" value)))
+(defn set-state [conversation value]
+	(.. conversation getResource getContext getAttributes (put "clojure.state" value)))
 
 ; This function is called when the resource is initialized. We will use it to set
 ; general characteristics for the resource.
 
-(defn handle-init [resource]
+(defn handle-init [conversation]
 	; The order in which we add the variants is their order of preference.
 	; Note that clients often include a wildcard (such as "*/*") in the
 	; "Accept" attribute of their request header, specifying that any media type
 	; will do, in which case the first one we add will be used.
 
-	(.. resource (addMediaTypeByName "text/plain"))
-	(.. resource (addMediaTypeByName "application/json")))
+	(.. conversation (addMediaTypeByName "text/plain"))
+	(.. conversation (addMediaTypeByName "application/json")))
 
 ; This function is called for the GET verb, which is expected to behave as a
 ; logical "read" of the resource's state.
@@ -62,26 +62,26 @@
 ; org.restlet.resource.Representation. Other types will be automatically converted to
 ; string representation using the client's requested media type and character set.
 ; These, and the language of the representation (defaulting to nil), can be read and
-; changed via resource.mediaType, resource.characterSet, and
-; resource.language.
+; changed via conversation.mediaType, conversation.characterSet, and
+; conversation.language.
 ;
-; Additionally, you can use resource.variant to interrogate the client's provided
+; Additionally, you can use conversation.variant to interrogate the client's provided
 ; list of supported languages and encoding.
 
-(defn handle-get [resource]
-	(let [state (get-state resource), r (json-str state)]
+(defn handle-get [conversation]
+	(let [state (get-state conversation), r (json-str state)]
 
 		; Return a representation appropriate for the requested media type
 		; of the possible options we created in handle-init
 	
-		(if (= (.. resource getMediaTypeName) "application/json")
+		(if (= (.. conversation getMediaTypeName) "application/json")
 			(JsonRepresentation. (str r))
 			r)))
 
 ; This function is called for the POST verb, which is expected to behave as a
 ; logical "update" of the resource's state.
 ;
-; The expectation is that resource.entity represents an update to the state,
+; The expectation is that conversation.entity represents an update to the state,
 ; that will affect future calls to handle-get. As such, it may be possible
 ; to accept logically partial representations of the state.
 ;
@@ -90,16 +90,16 @@
 ; you must explicitly return a nil if you do not want to return a representation
 ; to the client.
 
-(defn handle-post [resource]
-	(let [update (read-json (.. resource getEntity getText))
-		state (get-state resource)]
-		(set-state resource (merge state update)))
-	(handle-get resource))
+(defn handle-post [conversation]
+	(let [update (read-json (.. conversation getEntity getText))
+		state (get-state conversation)]
+		(set-state conversation (merge state update)))
+	(handle-get conversation))
 
 ; This function is called for the PUT verb, which is expected to behave as a
 ; logical "create" of the resource's state.
 ;
-; The expectation is that resource.entity represents an entirely new state,
+; The expectation is that conversation.entity represents an entirely new state,
 ; that will affect future calls to handle-get. Unlike handle-post,
 ; it is expected that the representation be logically complete.
 ;
@@ -108,10 +108,10 @@
 ; you must explicitly return a null if you do not want to return a representation
 ; to the client.
 
-(defn handle-put [resource]
-	(let [update (read-json (.. resource getEntity getText))]
-		(set-state resource update))
-	(handle-get resource))
+(defn handle-put [conversation]
+	(let [update (read-json (.. conversation getEntity getText))]
+		(set-state conversation update))
+	(handle-get conversation))
 
 ; This function is called for the DELETE verb, which is expected to behave as a
 ; logical "delete" of the resource's state.
@@ -120,7 +120,7 @@
 ; it doesn't make sense to return a representation, and any returned value will
 ; ignored. Still, it's a good idea to return null to avoid any passing of value.
 
-(defn handle-delete [resource]
-	(set-state resource {})
+(defn handle-delete [conversation]
+	(set-state conversation {})
 	
 	nil)

@@ -11,14 +11,14 @@
 # Accessing the request
 #
 
-form = $prudence.resource.request.resource_ref.query_as_form
+form = $conversation.resource.request.resource_ref.query_as_form
 
 #
 # Stream this page
 #
 
 if form.get_first_value('stream') == 'true'
-	if $prudence.stream
+	if $conversation.stream
 		raise
 	end
 end

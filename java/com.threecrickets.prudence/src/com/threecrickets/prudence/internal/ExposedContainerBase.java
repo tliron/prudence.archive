@@ -11,22 +11,51 @@
 
 package com.threecrickets.prudence.internal;
 
+import java.io.IOException;
+
 import org.restlet.Application;
 import org.restlet.Request;
 import org.restlet.data.LocalReference;
 import org.restlet.data.MediaType;
+import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+import org.restlet.resource.ServerResource;
+
+import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.document.DocumentSource;
+import com.threecrickets.scripturian.exception.ExecutionException;
+import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
  * Resource access utility methods for Prudence.
  * 
  * @author Tal Liron
  */
-public abstract class ExposedContainerBase
+public abstract class ExposedContainerBase<R extends ServerResource>
 {
+	//
+	// Construction
+	//
+
+	public ExposedContainerBase( R resource, DocumentSource<Executable> documentSource )
+	{
+		this.resource = resource;
+		this.documentSource = documentSource;
+	}
+
 	//
 	// Attributes
 	//
+
+	/**
+	 * The {@link DocumentSource} used to fetch executables.
+	 * 
+	 * @return The document source
+	 */
+	public DocumentSource<Executable> getSource()
+	{
+		return documentSource;
+	}
 
 	/**
 	 * @param resourceUri
@@ -95,4 +124,30 @@ public abstract class ExposedContainerBase
 			mediaType = Application.getCurrent().getMetadataService().getMediaType( name );
 		return mediaType;
 	}
+
+	//
+	// Operations
+	//
+
+	public abstract Representation include( String documentName ) throws IOException, ParsingException, ExecutionException;
+
+	/**
+	 * Throws a runtime exception.
+	 * 
+	 * @return
+	 */
+	public boolean kaboom()
+	{
+		throw new RuntimeException( "Kaboom!" );
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Protected
+
+	protected final R resource;
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	private final DocumentSource<Executable> documentSource;
 }

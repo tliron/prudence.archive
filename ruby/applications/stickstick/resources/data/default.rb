@@ -4,13 +4,13 @@ import org.json.JSONObject
 
 require $prudence.source.base_path.to_s + '/../libraries/stickstick/data.rb'
 
-def handle_init resource
-    resource.add_media_type_by_name 'text/plain'
-    resource.add_media_type_by_name 'application/json'
+def handle_init conversation
+    conversation.add_media_type_by_name 'text/plain'
+    conversation.add_media_type_by_name 'application/json'
 end
 
-def handle_get resource
-    form = resource.resource.request.resource_ref.query_as_form
+def handle_get conversation
+    form = conversation.resource.request.resource_ref.query_as_form
     fresh = form.get_first_value('fresh') == 'true'
     
     max_timestamp = nil
@@ -38,12 +38,12 @@ def handle_get resource
     end
 
     if !max_timestamp.nil?
-        resource.modification_timestamp = max_timestamp
+        conversation.modification_timestamp = max_timestamp
     end
     return JSONObject.new({'boards' => board_list, 'notes' => notes})
 end
 
-def handle_get_info resource
+def handle_get_info conversation
     connection = get_connection
     begin
     	return java.lang.Long.new get_board_max_timestamp(connection)
@@ -52,12 +52,12 @@ def handle_get_info resource
     end
 end
 
-def handle_put resource
+def handle_put conversation
     # Note: You can only "consume" the entity once, so if we want it
     # as text, and want to refer to it more than once, we should keep
     # a reference to that text.
     
-    text = resource.entity.text
+    text = conversation.entity.text
     entity = JSONObject.new(text)
     note = {}
 	for key in entity.keys
@@ -72,5 +72,5 @@ def handle_put resource
     	connection.close
     end
     
-    return handle_get resource
+    return handle_get conversation
 end

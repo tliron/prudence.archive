@@ -3,13 +3,13 @@ prudence.include('../libraries/stickstick/data/')
 
 import org.json.JSONObject
 
-handleInit = { resource ->
-    resource.addMediaTypeByName('text/plain')
-    resource.addMediaTypeByName('application/json')
+handleInit = { conversation ->
+    conversation.addMediaTypeByName('text/plain')
+    conversation.addMediaTypeByName('application/json')
 }
 
-handleGet = { resource ->
-    def form = resource.resource.request.resourceRef.queryAsForm
+handleGet = { conversation ->
+    def form = conversation.resource.request.resourceRef.queryAsForm
     def fresh = form.getFirstValue('fresh') == 'true'
     
     def maxTimestamp
@@ -39,12 +39,12 @@ handleGet = { resource ->
     }
 
     if(maxTimestamp != null) {
-        resource.modificationTimestamp = maxTimestamp
+        conversation.modificationTimestamp = maxTimestamp
     }
     return new JSONObject([boards: boardList, notes: notes])
 }
 
-handleGetInfo = { resource ->
+handleGetInfo = { conversation ->
     def connection = getConnection()
     try {
     	return getBoardMaxTimestamp(connection)
@@ -54,12 +54,12 @@ handleGetInfo = { resource ->
     }
 }
 
-handlePut = { resource ->
+handlePut = { conversation ->
     // Note: You can only "consume" the entity once, so if we want it
     // as text, and want to refer to it more than once, we should keep
     // a reference to that text.
     
-    def text = resource.entity.text
+    def text = conversation.entity.text
     def entity = new JSONObject(text)
     def note = [:]
 	for(def key in entity.keys()) {
@@ -75,5 +75,5 @@ handlePut = { resource ->
     	connection.close()
     }
     
-    return handleGet(resource)
+    return handleGet(conversation)
 }

@@ -11,14 +11,14 @@
 ; Accessing the request
 ;
 
-(def form (.. executable getContainer getResource getRequest getResourceRef getQueryAsForm))
+(def form (.. conversation getResource getRequest getResourceRef getQueryAsForm))
 
 ;
 ; Stream this page
 ;
 
 (if (= (.getFirstValue form "stream") "true") 
-	(if (.. executable getContainer stream)
+	(if (.stream conversation)
 		(throw nil)))
 
 ;
@@ -38,7 +38,7 @@
 ;
 ; This is identical to:
 ;
-;   (.. executable getContainer (includeDocument "path"))
+;   (.includeDocument prudence "path")
 ;
 
 %>

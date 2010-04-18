@@ -13,24 +13,24 @@ def merge key, a, b
 	end
 end
 
-def get_id resource
+def get_id conversation
     begin
-        return Integer(resource.resource.request.attributes['id'])
+        return Integer(conversation.resource.request.attributes['id'])
     except
     	return nil
     end
 
-    #form = resource.resource.request.resource_ref.query_as_form
+    #form = conversation.resource.request.resource_ref.query_as_form
     #return Integer(form.get_first_value('id'))
 end
 
-def handle_init resource
-    resource.add_media_type_by_name 'text/plain'
-    resource.add_media_type_by_name 'application/json'
+def handle_init conversation
+    conversation.add_media_type_by_name 'text/plain'
+    conversation.add_media_type_by_name 'application/json'
 end
 
-def handle_get resource
-	id = get_id resource
+def handle_get conversation
+	id = get_id conversation
 	
     note = nil
     connection = get_connection
@@ -43,13 +43,13 @@ def handle_get resource
     	connection.close
     end
 
-    resource.modification_timestamp = note['timestamp']
+    conversation.modification_timestamp = note['timestamp']
     note.delete 'timestamp'
     return JSONObject.new note
 end
 
-def handle_get_info resource
-	id = get_id resource
+def handle_get_info conversation
+	id = get_id conversation
 	
     note = nil
     connection = get_connection
@@ -65,14 +65,14 @@ def handle_get_info resource
     return java.lang.Long.new note['timestamp']
 end
 
-def handle_post resource
-	id = get_id resource
+def handle_post conversation
+	id = get_id conversation
 
     # Note: You can only "consume" the entity once, so if we want it
     # as text, and want to refer to it more than once, we should keep
     # a reference to that text.
     
-    text = resource.entity.text
+    text = conversation.entity.text
     entity = JSONObject.new text
     note = {}
 	for key in entity.keys
@@ -99,13 +99,13 @@ def handle_post resource
     	connection.close
     end
 
-    resource.modification_timestamp = note['timestamp']
+    conversation.modification_timestamp = note['timestamp']
     note.delete 'timestamp'
     return JSONObject.new note
 end
 
-def handle_delete resource
-	id = get_id resource
+def handle_delete conversation
+	id = get_id conversation
 
     connection = get_connection
     begin 

@@ -11,15 +11,15 @@
 ## Accessing the request
 ##
 
-#set($form = $prudence.resource.request.resourceRef.queryAsForm)
+#set($form = $conversation.resource.request.resourceRef.queryAsForm)
 
 ##
 ## Stream this page
 ##
 
 #if($form.getFirstValue('stream') == 'true')
-	#if($prudence.stream())
-		#stop
+	#if($conversation.stream())
+		$prudence.kaboom()
 	#end
 #end
 

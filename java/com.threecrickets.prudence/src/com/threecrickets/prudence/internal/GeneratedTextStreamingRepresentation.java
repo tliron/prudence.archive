@@ -21,16 +21,16 @@ import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
-import com.threecrickets.scripturian.exception.ParsingException;
 import com.threecrickets.scripturian.exception.ExecutionException;
+import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
  * Representation used in streaming mode of {@link GeneratedTextResource}.
  * 
  * @author Tal Liron
- * @ScriptedTextResource
+ * @see GeneratedTextResource
  */
-class GeneratedTextStreamingRepresentation extends WriterRepresentation
+public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 {
 	//
 	// Construction
@@ -39,30 +39,34 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	/**
 	 * Constructor.
 	 * 
-	 * @param container
-	 *        The container
+	 * @param exposedConversation
+	 *        The exposed container
+	 * @param exposedConversation
+	 *        The exposed conversation
 	 * @param executionContext
-	 *        The document context
+	 *        The execution context (note that we are owning it and will release
+	 *        it when done)
 	 * @param executionController
-	 *        The scriptlet controller
-	 * @param document
-	 *        The document instance
+	 *        The execution controller
+	 * @param executable
+	 *        The executable
 	 */
-	public GeneratedTextStreamingRepresentation( ExposedContainerForGeneratedTextResource container, ExecutionContext executionContext, ExecutionController executionController, Executable document )
+	public GeneratedTextStreamingRepresentation( ExposedContainerForGeneratedTextResource exposedContainer, ExposedConversationForGeneratedTextResource exposedConversation, ExecutionContext executionContext,
+		ExecutionController executionController, Executable executable )
 	{
 		// Note that we are setting representation characteristics
-		// before we actually run the document
-		super( container.getMediaType() );
+		// before we actually execute the executable
+		super( exposedConversation.getMediaType() );
 
-		this.container = container;
+		this.exposedContainer = exposedContainer;
+		this.exposedConversation = exposedConversation;
 		this.executionContext = executionContext;
 		this.executionController = executionController;
+		this.executable = executable;
 
-		setCharacterSet( container.getCharacterSet() );
-		if( container.getLanguage() != null )
-			setLanguages( Arrays.asList( container.getLanguage() ) );
-
-		this.document = document;
+		setCharacterSet( exposedConversation.getCharacterSet() );
+		if( exposedConversation.getLanguage() != null )
+			setLanguages( Arrays.asList( exposedConversation.getLanguage() ) );
 	}
 
 	//
@@ -72,15 +76,16 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	@Override
 	public void write( Writer writer ) throws IOException
 	{
-		container.isStreaming = true;
+		exposedConversation.isStreaming = true;
+		exposedConversation.getResource().setWriter( writer );
 		executionContext.setWriter( writer );
 		try
 		{
-			document.execute( executionContext, container, executionController );
+			executable.execute( executionContext, exposedContainer, executionController );
 		}
 		catch( ParsingException x )
 		{
-			IOException iox = new IOException( "ExecutableInitializationException" );
+			IOException iox = new IOException( "ParsingException" );
 			iox.initCause( x );
 			throw iox;
 		}
@@ -92,21 +97,33 @@ class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		}
 	}
 
+	@Override
+	public void release()
+	{
+		executionContext.release();
+		super.release();
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
 	/**
-	 * The container.
+	 * The exposed container.
 	 */
-	private final ExposedContainerForGeneratedTextResource container;
+	private final ExposedContainerForGeneratedTextResource exposedContainer;
 
 	/**
-	 * The document instance.
+	 * The exposed conversation.
 	 */
-	private final Executable document;
+	private final ExposedConversationForGeneratedTextResource exposedConversation;
 
 	/**
-	 * The scriptlet controller.
+	 * The executable.
+	 */
+	private final Executable executable;
+
+	/**
+	 * The execution controller.
 	 */
 	private final ExecutionController executionController;
 

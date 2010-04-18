@@ -11,14 +11,14 @@
 // Accessing the request
 //
 
-def form = prudence.resource.request.resourceRef.queryAsForm
+def form = conversation.resource.request.resourceRef.queryAsForm
 
 //
 // Stream this page
 //
 
 if(form.getFirstValue('stream') == 'true') {
-	if(prudence.stream()) {
+	if(conversation.stream()) {
 		throw new Exception()
 	}
 }

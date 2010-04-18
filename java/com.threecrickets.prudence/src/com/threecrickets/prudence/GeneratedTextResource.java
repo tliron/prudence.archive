@@ -33,6 +33,7 @@ import org.restlet.resource.ServerResource;
 import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.InProcessMemoryCache;
 import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
+import com.threecrickets.prudence.internal.GeneratedTextStreamingRepresentation;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
@@ -41,8 +42,8 @@ import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
-import com.threecrickets.scripturian.exception.ParsingException;
 import com.threecrickets.scripturian.exception.ExecutionException;
+import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
  * A Restlet resource which executes a "text with scriptlets" Scripturian
@@ -101,38 +102,38 @@ import com.threecrickets.scripturian.exception.ExecutionException;
  * <li><code>prudence.include(name)</code>:except that the document is parsed as
  * a single, non-delimited script with the engine name derived from name's
  * extension.</li>
- * <li><code>prudence.stream()</code>: If you are in caching mode, calling this
- * method will return true and cause the document to run again, where this next
- * run will be in streaming mode. Whatever output the document created in the
- * current run is discarded, and all further exceptions are ignored. For this
- * reason, it's probably best to call <code>prudence.stream()</code> as early as
- * possible in the document, and then to quit the document as soon as possible
- * if it returns true. For example, your document can start by testing whether
- * it will have a lot of output, and if so, set output characteristics, call
- * <code>prudence.stream()</code>, and quit. If you are already in streaming
- * mode, calling this method has no effect and returns false. Note that a good
- * way to quit the script is to throw an exception, because it will end the
- * script and otherwise be ignored. By default, writers will be automatically
- * flushed after every line in streaming mode. If you want to disable this
- * behavior, use <code>prudence.stream(flushLines)</code> .</li>
- * <li><code>prudence.stream(flushLines)</code>: This version of the above adds
- * a boolean argument to let you control whether to flush the writer after every
- * line in streaming mode. By default line-by-line flushing is enabled.</li>
+ * <li><code>conversation.stream()</code>: If you are in caching mode, calling
+ * this method will return true and cause the document to run again, where this
+ * next run will be in streaming mode. Whatever output the document created in
+ * the current run is discarded, and all further exceptions are ignored. For
+ * this reason, it's probably best to call <code>conversation.stream()</code> as
+ * early as possible in the document, and then to quit the document as soon as
+ * possible if it returns true. For example, your document can start by testing
+ * whether it will have a lot of output, and if so, set output characteristics,
+ * call <code>conversation.stream()</code>, and quit. If you are already in
+ * streaming mode, calling this method has no effect and returns false. Note
+ * that a good way to quit the script is to throw an exception, because it will
+ * end the script and otherwise be ignored. By default, writers will be
+ * automatically flushed after every line in streaming mode. If you want to
+ * disable this behavior, use <code>conversation.stream(flushLines)</code> .</li>
+ * <li><code>conversation.stream(flushLines)</code>: This version of the above
+ * adds a boolean argument to let you control whether to flush the writer after
+ * every line in streaming mode. By default line-by-line flushing is enabled.</li>
  * </ul>
  * Read-only attributes:
  * <ul>
- * <li><code>prudence.entity</code>: The entity of this request. Available only
- * for post and put.</li>
- * <li><code>prudence.isInternal</code>: This boolean is true if the request was
- * received via the RIAP protocol.</li>
- * <li><code>prudence.isStreaming</code>: This boolean is true when the writer
- * is in streaming mode (see above).</li>
- * <li><code>prudence.resource</code>: The instance of this resource. Acts as a
- * "this" reference for scriptlets. You can use it to access the request and
- * response.</li>
+ * <li><code>conversation.entity</code>: The entity of this request. Available
+ * only for post and put.</li>
+ * <li><code>conversation.isInternal</code>: This boolean is true if the request
+ * was received via the RIAP protocol.</li>
+ * <li><code>conversation.isStreaming</code>: This boolean is true when the
+ * writer is in streaming mode (see above).</li>
+ * <li><code>conversation.resource</code>: The instance of this resource. Acts
+ * as a "this" reference for scriptlets. You can use it to access the request
+ * and response.</li>
  * <li><code>prudence.source</code>: The source used for the script; see
  * {@link #getDocumentSource()}.</li>
- * <li><code>prudence.variant</code>: The {@link Variant} of this request.
+ * <li><code>conversation.variant</code>: The {@link Variant} of this request.
  * Useful for interrogating the client's preferences.</li>
  * </ul>
  * Modifiable attributes:
@@ -145,20 +146,20 @@ import com.threecrickets.scripturian.exception.ExecutionException;
  * many entries in the cache at once. (See {@link Cache#invalidate(String)})</li>
  * <li><code>prudence.cacheKey</code>: A template for defining how the cache key
  * will be generated.</li>
- * <li><code>prudence.characterSet</code>: The {@link CharacterSet} that will be
- * used for the generated string. Defaults to what the client requested (in
- * <code>prudence.variant</code>), or to the value of
+ * <li><code>conversation.characterSet</code>: The {@link CharacterSet} that
+ * will be used for the generated string. Defaults to what the client requested
+ * (in <code>prudence.variant</code>), or to the value of
  * {@link #getDefaultCharacterSet()} if the client did not specify it. If not in
  * streaming mode, your scriptlets can change this to something else.</li>
  * <li><code>prudence.language</code>: The {@link Language} that will be used
  * for the generated string. Defaults to null. If not in streaming mode, your
  * scriptlets can change this to something else.</li>
- * <li><code>prudence.mediaType</code>: The {@link MediaType} that will be used
- * for the generated string. Defaults to what the client requested (in
+ * <li><code>conversation.mediaType</code>: The {@link MediaType} that will be
+ * used for the generated string. Defaults to what the client requested (in
  * <code>prudence.variant</code>). If not in streaming mode, your scriptlets can
  * change this to something else.</li>
- * <li><code>prudence.statusCode</code>: A convenient way to set the response
- * status code. This is equivalent to setting
+ * <li><code>conversation.statusCode</code>: A convenient way to set the
+ * response status code. This is equivalent to setting
  * <code>prudence.resource.response.status</code> using
  * {@link Status#valueOf(int)}.</li>
  * </ul>
@@ -295,6 +296,30 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
+	 * The name of the global variable with which to access the conversation.
+	 * Defaults to "conversation".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.conversationName</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The conversation name
+	 */
+	public String getConversationName()
+	{
+		if( conversationName == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			conversationName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.conversationName" );
+
+			if( conversationName == null )
+				conversationName = "conversation";
+		}
+
+		return conversationName;
+	}
+
+	/**
 	 * Cache used for caching mode. Defaults to a new instance of
 	 * {@link InProcessMemoryCache}. It is stored in the application's
 	 * {@link Context} for persistence across requests and for sharing among
@@ -303,6 +328,8 @@ public class GeneratedTextResource extends ServerResource
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.cache</code> in the application's
 	 * {@link Context}.
+	 * <p>
+	 * Note that this instance is shared with {@link DelegatedResource}.
 	 * 
 	 * @return The cache
 	 * @see DelegatedResource#getCache()
@@ -707,6 +734,21 @@ public class GeneratedTextResource extends ServerResource
 	// Private
 
 	/**
+	 * Constant.
+	 */
+	private static final String SOURCE = "source";
+
+	/**
+	 * Constant.
+	 */
+	private static final String HIGHLIGHT = "highlight";
+
+	/**
+	 * Constant.
+	 */
+	private static final String TRUE = "true";
+
+	/**
 	 * The {@link LanguageManager} used to create the script engines for the
 	 * scripts.
 	 */
@@ -789,24 +831,14 @@ public class GeneratedTextResource extends ServerResource
 	private volatile String containerName;
 
 	/**
+	 * The name of the global variable with which to access the conversation.
+	 */
+	private volatile String conversationName;
+
+	/**
 	 * The document formatter.
 	 */
 	private volatile DocumentFormatter<Executable> documentFormatter;
-
-	/**
-	 * Constant.
-	 */
-	private static final String SOURCE = "source";
-
-	/**
-	 * Constant.
-	 */
-	private static final String HIGHLIGHT = "highlight";
-
-	/**
-	 * Constant.
-	 */
-	private static final String TRUE = "true";
 
 	/**
 	 * Does the actual handling of requests.
@@ -862,18 +894,22 @@ public class GeneratedTextResource extends ServerResource
 			}
 
 			ExecutionContext executionContext = new ExecutionContext( getLanguageManager(), getWriter(), getErrorWriter() );
+			ExposedContainerForGeneratedTextResource exposedContainer = new ExposedContainerForGeneratedTextResource( this, executionContext, entity, variant );
+			Representation representation = null;
 			try
 			{
-				// Run document and represent its output
-				ExposedContainerForGeneratedTextResource container = new ExposedContainerForGeneratedTextResource( this, executionContext, entity, variant, getCache() );
-				Representation representation = container.includeDocument( name );
+				// Execute and represent output
+				representation = exposedContainer.includeDocument( name );
 
 				if( representation == null )
 					throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
 				else
 				{
 					if( !isAllowClientCaching() )
+					{
 						representation.setExpirationDate( null );
+						// TODO: cache control
+					}
 					return representation;
 				}
 			}
@@ -893,7 +929,9 @@ public class GeneratedTextResource extends ServerResource
 			}
 			finally
 			{
-				executionContext.release();
+				// Release only if we own the execution context
+				if( !( representation instanceof GeneratedTextStreamingRepresentation ) )
+					executionContext.release();
 			}
 		}
 		catch( FileNotFoundException x )

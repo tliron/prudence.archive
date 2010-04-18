@@ -25,33 +25,33 @@ prudence.include('../libraries/rhino/json2/');
 // These make sure that our state is properly stored in the context,
 // so that we always use the same state, even if this script is recompiled.
 
-function getStateLock(resource) {
-	return getContextAttribute(resource, 'rhino.stateLock', function() {
+function getStateLock(conversation) {
+	return getContextAttribute(conversation, 'rhino.stateLock', function() {
 		return new ReentrantReadWriteLock();
 	});
 }
 
-function getState(resource) {
-	return getContextAttribute(resource, 'rhino.state', function() {
+function getState(conversation) {
+	return getContextAttribute(conversation, 'rhino.state', function() {
 		return {name: 'Coraline', media: 'Film', rating: 'A+', characters: ['Coraline', 'Wybie', 'Mom', 'Dad']};
 	});
 }
 
-function setState(resource, value) {
-	resource.resource.context.attributes.put('rhino.state', value); 
+function setState(conversation, value) {
+	conversation.resource.context.attributes.put('rhino.state', value); 
 }
 
 // This function is called when the resource is initialized. We will use it to set
 // general characteristics for the resource.
 
-function handleInit(resource) {
+function handleInit(conversation) {
 	// The order in which we add the variants is their order of preference.
 	// Note that clients often include a wildcard (such as "*/*") in the
 	// "Accept" attribute of their request header, specifying that any media type
 	// will do, in which case the first one we add will be used.
 	
-    resource.addMediaTypeByName('application/json');
-    resource.addMediaTypeByName('text/plain');
+    conversation.addMediaTypeByName('application/json');
+    conversation.addMediaTypeByName('text/plain');
 }
 
 // This function is called for the GET verb, which is expected to behave as a
@@ -62,16 +62,16 @@ function handleInit(resource) {
 // org.restlet.resource.Representation. Other types will be automatically converted to
 // string representation using the client's requested media type and character set.
 // These, and the language of the representation (defaulting to null), can be read and
-// changed via resource.mediaType, resource.characterSet, and
-// resource.language.
+// changed via conversation.mediaType, conversation.characterSet, and
+// conversation.language.
 //
-// Additionally, you can use resource.variant to interrogate the client's provided
+// Additionally, you can use conversation.variant to interrogate the client's provided
 // list of supported languages and encoding.
 
-function handleGet(resource) {
+function handleGet(conversation) {
 	var r;
-	var stateLock = getStateLock(resource);
-	var state = getState(resource);
+	var stateLock = getStateLock(conversation);
+	var state = getState(conversation);
 	
 	stateLock.readLock().lock();
 	try {
@@ -84,7 +84,7 @@ function handleGet(resource) {
 	// Return a representation appropriate for the requested media type
 	// of the possible options we created in handleInit()
 
-	if(resource.mediaTypeName == 'application/json') {
+	if(conversation.mediaTypeName == 'application/json') {
 		r = new JsonRepresentation(r);
 	}
 	
@@ -94,7 +94,7 @@ function handleGet(resource) {
 // This function is called for the POST verb, which is expected to behave as a
 // logical "update" of the resource's state.
 //
-// The expectation is that resource.entity represents an update to the state,
+// The expectation is that conversation.entity represents an update to the state,
 // that will affect future calls to handleGet(). As such, it may be possible
 // to accept logically partial representations of the state.
 //
@@ -103,7 +103,7 @@ function handleGet(resource) {
 // you must explicitly return a null if you do not want to return a representation
 // to the client.
 
-function handlePost(resource) {
+function handlePost(conversation) {
 	// Note that we are using the JSON library to parse the entity. While
 	// a simple eval() would also work, JSON.parse() is much safer.
 	// Note, too, that we are using String() to translate the Java string
@@ -111,9 +111,9 @@ function handlePost(resource) {
 	// in this case the JSON library specifically expects a JavaScript string
 	// object.
 	
-	var update = JSON.parse(String(resource.entity.text));
-	var stateLock = getStateLock(resource);
-	var state = getState(resource);
+	var update = JSON.parse(String(conversation.entity.text));
+	var stateLock = getStateLock(conversation);
+	var state = getState(conversation);
 	
 	stateLock.writeLock().lock();
 	try {
@@ -125,13 +125,13 @@ function handlePost(resource) {
 		stateLock.writeLock().unlock();
 	}
 	
-	return handleGet(resource);
+	return handleGet(conversation);
 }
 
 // This function is called for the PUT verb, which is expected to behave as a
 // logical "create" of the resource's state.
 //
-// The expectation is that resource.entity represents an entirely new state,
+// The expectation is that conversation.entity represents an entirely new state,
 // that will affect future calls to handleGet(). Unlike handlePost(),
 // it is expected that the representation be logically complete.
 //
@@ -140,13 +140,13 @@ function handlePost(resource) {
 // you must explicitly return a null if you do not want to return a representation
 // to the client.
 
-function handlePut(resource) {
+function handlePut(conversation) {
 	// See comment in handlePost()
 
-	var update = JSON.parse(String(resource.entity.text));
-	setState(resource, update);
+	var update = JSON.parse(String(conversation.entity.text));
+	setState(conversation, update);
 	
-	return handleGet(resource);
+	return handleGet(conversation);
 }
 
 // This function is called for the DELETE verb, which is expected to behave as a
@@ -156,9 +156,9 @@ function handlePut(resource) {
 // it doesn't make sense to return a representation, and any returned value will
 // ignored. Still, it's a good idea to return null to avoid any passing of value.
 
-function handleDelete(resource) {
+function handleDelete(conversation) {
 
-	setState(resource, {});
+	setState(conversation, {});
 	
 	return null;
 }

@@ -2,13 +2,13 @@
 prudence.include('../libraries/stickstick/data/');
 prudence.include('../libraries/json2/');
 
-function handleInit(resource) {
-    resource.addMediaTypeByName('text/plain');
-    resource.addMediaTypeByName('application/json');
+function handleInit(conversation) {
+    conversation.addMediaTypeByName('text/plain');
+    conversation.addMediaTypeByName('application/json');
 }
 
-function handleGet(resource) {
-    var form = resource.resource.request.resourceRef.queryAsForm;
+function handleGet(conversation) {
+    var form = conversation.resource.request.resourceRef.queryAsForm;
     var fresh = form.getFirstValue('fresh') == 'true';
     
     var maxTimestamp;
@@ -39,12 +39,12 @@ function handleGet(resource) {
     }
 
     if(maxTimestamp != null) {
-        resource.modificationTimestamp = maxTimestamp;
+        conversation.modificationTimestamp = maxTimestamp;
     }
     return JSON.stringify({boards: boardList, notes: notes});
 }
 
-function handleGetInfo(resource) {
+function handleGetInfo(conversation) {
     var connection = getConnection();
     try {
     	return getBoardMaxTimestamp(connection);
@@ -54,12 +54,12 @@ function handleGetInfo(resource) {
     }
 }
 
-function handlePut(resource) {
+function handlePut(conversation) {
     // Note: You can only "consume" the entity once, so if we want it
     // as text, and want to refer to it more than once, we should keep
     // a reference to that text.
     
-    var text = resource.entity.text;
+    var text = conversation.entity.text;
     var note = JSON.parse(String(text));
     
     var connection = getConnection();
@@ -71,5 +71,5 @@ function handlePut(resource) {
     	connection.close();
     }
     
-    return handleGet(resource);
+    return handleGet(conversation);
 }

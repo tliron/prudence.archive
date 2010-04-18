@@ -11,11 +11,11 @@
 
 package com.threecrickets.prudence;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Context;
@@ -24,7 +24,6 @@ import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
-import org.restlet.data.Method;
 import org.restlet.data.Status;
 import org.restlet.data.Tag;
 import org.restlet.representation.Representation;
@@ -37,14 +36,18 @@ import org.restlet.resource.ServerResource;
 import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.InProcessMemoryCache;
 import com.threecrickets.prudence.internal.ExposedContainerForDelegatedResource;
+import com.threecrickets.prudence.internal.ExposedConversationForDelegatedResource;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
+import com.threecrickets.scripturian.LanguageAdapter;
 import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
+import com.threecrickets.scripturian.exception.ExecutionException;
+import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
  * A Restlet resource which delegates functionality to a Scripturian
@@ -134,28 +137,21 @@ import com.threecrickets.scripturian.document.DocumentSource;
  * </ul>
  * Read-only attributes:
  * <ul>
- * <li><code>prudence.entity</code>: The {@link Representation} of an entity
+ * <li><code>conversation.entity</code>: The {@link Representation} of an entity
  * provided with this request. Available only in <code>handlePost()</code> and
  * <code>handlePut()</code>.
- * <li><code>prudence.isInternal</code>: This boolean is true if the request was
- * received via the RIAP protocol.</li>
- * <li><code>prudence.resource</code>: The instance of this resource. Acts as a
- * "this" reference for scriptlets. For example, during a call to
+ * <li><code>conversation.isInternal</code>: This boolean is true if the request
+ * was received via the RIAP protocol.</li>
+ * <li><code>conversation.resource</code>: The instance of this resource. Acts
+ * as a "this" reference for scriptlets. For example, during a call to
  * <code>handleInit()</code>, this can be used to change the characteristics of
  * the resource. Otherwise, you can use it to access the request and response.</li>
  * <li><code>prudence.source</code>: The source used for the document; see
  * {@link #getDocumentSource()}.</li>
- * <li><code>prudence.variant</code>: The {@link Variant} of this request.
+ * <li><code>conversation.variant</code>: The {@link Variant} of this request.
  * Useful for interrogating the client's preferences. This is available only in
  * <code>handleGet()</code>, <code>handlePost()</code> and
  * <code>handlePut()</code>.</li>
- * <li><code>prudence.variants</code>: A map of possible variants or media types
- * supported by this resource. You should initialize this during a call to
- * <code>handleInit()</code>. Values for the map can be {@link MediaType}
- * constants, explicit {@link Variant} instances (in which case these variants
- * will be returned immediately for their media type without calling the entry
- * point), or a {@link List} containing both media types and variants. Use map
- * key {@link Method#ALL} to indicate support for all methods.</li>
  * </ul>
  * Modifiable attributes:
  * <ul>
@@ -210,6 +206,10 @@ import com.threecrickets.scripturian.document.DocumentSource;
  * <li><code>com.threecrickets.prudence.DelegatedResource.containerName</code>:
  * The name of the global variable with which to access the container. Defaults
  * to "prudence". See {@link #getContainerName()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.conversationName</code>:
+ * The name of the global variable with which to access the conversation.
+ * Defaults to "conversation". See {@link #getContainerName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
@@ -367,6 +367,8 @@ public class DelegatedResource extends ServerResource
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.cache</code> in the application's
 	 * {@link Context}.
+	 * <p>
+	 * Note that this instance is shared with {@link GeneratedTextResource}.
 	 * 
 	 * @return The cache
 	 * @see GeneratedTextResource#getCache()
@@ -838,8 +840,8 @@ public class DelegatedResource extends ServerResource
 				return;
 		}
 
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants() );
-		container.invoke( getEntryPointNameForInit() );
+		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, null, getDefaultCharacterSet() );
+		invoke( getEntryPointNameForInit(), exposedConversation );
 	}
 
 	/**
@@ -867,8 +869,6 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation get( Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
-
 		if( isSourceViewable() )
 		{
 			Request request = getRequest();
@@ -906,8 +906,9 @@ public class DelegatedResource extends ServerResource
 			}
 		}
 
-		Object r = container.invoke( getEntryPointNameForGet() );
-		return getRepresentation( container, r );
+		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, variant, getDefaultCharacterSet() );
+		Object r = invoke( getEntryPointNameForGet(), exposedConversation );
+		return getRepresentation( r, exposedConversation );
 	}
 
 	/**
@@ -935,11 +936,11 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public RepresentationInfo getInfo( Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), null, variant );
+		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, variant, getDefaultCharacterSet() );
 		try
 		{
-			Object r = container.invoke( getEntryPointNameForGetInfo() );
-			return getRepresentationInfo( container, r );
+			Object r = invoke( getEntryPointNameForGetInfo(), exposedConversation );
+			return getRepresentationInfo( r, exposedConversation );
 		}
 		catch( ResourceException x )
 		{
@@ -979,9 +980,9 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation post( Representation entity, Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
-		Object r = container.invoke( getEntryPointNameForPost() );
-		return getRepresentation( container, r );
+		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, entity, variant, getDefaultCharacterSet() );
+		Object r = invoke( getEntryPointNameForPost(), exposedConversation );
+		return getRepresentation( r, exposedConversation );
 	}
 
 	/**
@@ -1013,9 +1014,9 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation put( Representation entity, Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), entity, variant );
-		Object r = container.invoke( getEntryPointNameForPut() );
-		return getRepresentation( container, r );
+		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, entity, variant, getDefaultCharacterSet() );
+		Object r = invoke( getEntryPointNameForPut(), exposedConversation );
+		return getRepresentation( r, exposedConversation );
 	}
 
 	/**
@@ -1043,8 +1044,8 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation delete( Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
-		container.invoke( getEntryPointNameForDelete() );
+		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, variant, getDefaultCharacterSet() );
+		invoke( getEntryPointNameForDelete(), exposedConversation );
 		return null;
 	}
 
@@ -1073,9 +1074,9 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation options( Variant variant ) throws ResourceException
 	{
-		ExposedContainerForDelegatedResource container = new ExposedContainerForDelegatedResource( this, getVariants(), variant );
-		Object r = container.invoke( getEntryPointNameForOptions() );
-		return getRepresentation( container, r );
+		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, variant, getDefaultCharacterSet() );
+		Object r = invoke( getEntryPointNameForOptions(), exposedConversation );
+		return getRepresentation( r, exposedConversation );
 	}
 
 	/**
@@ -1228,13 +1229,13 @@ public class DelegatedResource extends ServerResource
 	 * already a representation, creates a new representation based on the
 	 * container's attributes.
 	 * 
-	 * @param container
-	 *        The container
 	 * @param object
 	 *        An object
+	 * @param exposedConversation
+	 *        The exposed conversation
 	 * @return A representation
 	 */
-	private Representation getRepresentation( ExposedContainerForDelegatedResource container, Object object )
+	private Representation getRepresentation( Object object, ExposedConversationForDelegatedResource exposedConversation )
 	{
 		if( object == null )
 			return null;
@@ -1247,10 +1248,11 @@ public class DelegatedResource extends ServerResource
 		}
 		else
 		{
-			Representation representation = new StringRepresentation( object.toString(), container.getMediaType(), container.getLanguage(), container.getCharacterSet() );
-			representation.setTag( container.getTag() );
-			representation.setExpirationDate( container.getExpirationDate() );
-			representation.setModificationDate( container.getModificationDate() );
+			Representation representation = new StringRepresentation( object.toString(), exposedConversation.getMediaType(), exposedConversation.getLanguage(), exposedConversation.getCharacterSet() );
+			representation.setTag( exposedConversation.getTag() );
+			representation.setExpirationDate( exposedConversation.getExpirationDate() );
+			representation.setModificationDate( exposedConversation.getModificationDate() );
+			// TODO: cache control?
 			return representation;
 		}
 	}
@@ -1260,27 +1262,120 @@ public class DelegatedResource extends ServerResource
 	 * already a representation info, creates a new representation info based on
 	 * the container's attributes.
 	 * 
-	 * @param container
-	 *        The container
 	 * @param object
 	 *        An object
+	 * @param exposedConversation
+	 *        The exposed conversation
 	 * @return A representation info
 	 */
-	private RepresentationInfo getRepresentationInfo( ExposedContainerForDelegatedResource container, Object object )
+	private RepresentationInfo getRepresentationInfo( Object object, ExposedConversationForDelegatedResource exposedConversation )
 	{
 		if( object == null )
 			return null;
 		else if( object instanceof RepresentationInfo )
 			return (RepresentationInfo) object;
 		else if( object instanceof Date )
-			return new RepresentationInfo( container.getMediaType(), (Date) object );
+			return new RepresentationInfo( exposedConversation.getMediaType(), (Date) object );
 		else if( object instanceof Number )
-			return new RepresentationInfo( container.getMediaType(), new Date( ( (Number) object ).longValue() ) );
+			return new RepresentationInfo( exposedConversation.getMediaType(), new Date( ( (Number) object ).longValue() ) );
 		else if( object instanceof Tag )
-			return new RepresentationInfo( container.getMediaType(), (Tag) object );
+			return new RepresentationInfo( exposedConversation.getMediaType(), (Tag) object );
 		else if( object instanceof String )
-			return new RepresentationInfo( container.getMediaType(), Tag.parse( (String) object ) );
+			return new RepresentationInfo( exposedConversation.getMediaType(), Tag.parse( (String) object ) );
 		else
 			throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "cannot convert " + object.getClass().toString() + " to a RepresentationInfo" );
+	}
+
+	/**
+	 * Invokes an entry point in the document.
+	 * 
+	 * @param entryPointName
+	 *        Name of entry point
+	 * @param exposedConversation
+	 *        The exposed conversation
+	 * @return Result of invocation
+	 * @throws ResourceException
+	 * @see {@link Executable#invoke(String, Object...)}
+	 */
+	private Object invoke( String entryPointName, ExposedConversationForDelegatedResource exposedConversation ) throws ResourceException
+	{
+		String name = getRequest().getResourceRef().getRemainingPart( true, false );
+
+		if( isTrailingSlashRequired() )
+		{
+			if( ( name != null ) && ( name.length() != 0 ) && !name.endsWith( "/" ) )
+				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+		}
+
+		if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
+			name = getDefaultName();
+
+		try
+		{
+			DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocument( name );
+
+			Executable executable = documentDescriptor.getDocument();
+			if( executable == null )
+			{
+				LanguageAdapter languageAdapter = getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
+				String sourceCode = documentDescriptor.getSourceCode();
+				executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, false, getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ),
+					getDocumentSource(), isPrepare() );
+				Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
+
+				if( existing != null )
+					executable = existing;
+			}
+
+			ExecutionContext executionContext = executable.getExecutionContextForInvocations();
+			if( executionContext == null )
+			{
+				executionContext = new ExecutionContext( getLanguageManager(), getWriter(), getErrorWriter() );
+				executionContext.getExposedVariables().put( getContainerName(), new ExposedContainerForDelegatedResource( this ) );
+				try
+				{
+					if( !executable.prepareForInvocation( executionContext, this, getExecutionController() ) )
+						executionContext.release();
+				}
+				catch( ParsingException x )
+				{
+					executionContext.release();
+					throw new ResourceException( x );
+				}
+				catch( ExecutionException x )
+				{
+					executionContext.release();
+					throw new ResourceException( x );
+				}
+				catch( IOException x )
+				{
+					executionContext.release();
+					throw new ResourceException( x );
+				}
+			}
+
+			// Invoke!
+			return executable.invoke( entryPointName, exposedConversation );
+		}
+		catch( FileNotFoundException x )
+		{
+			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
+		}
+		catch( IOException x )
+		{
+			throw new ResourceException( x );
+		}
+		catch( ParsingException x )
+		{
+			throw new ResourceException( x );
+		}
+		catch( ExecutionException x )
+		{
+			throw new ResourceException( x );
+		}
+		catch( NoSuchMethodException x )
+		{
+			throw new ResourceException( x );
+		}
 	}
 }

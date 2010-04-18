@@ -11,13 +11,13 @@
 // Accessing the request
 //
 
-$form = $prudence->resource->request->resourceRef->queryAsForm;
+$form = $conversation->resource->request->resourceRef->queryAsForm;
 
 //
 // Stream this page
 //
 
-if($form->getFirstValue('stream') == 'true') if($prudence->stream()) exit();
+if($form->getFirstValue('stream') == 'true') if($conversation->stream()) exit();
 
 //
 // Cache this page

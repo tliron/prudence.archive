@@ -1,12 +1,12 @@
 <%velocity
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-#set($component = $prudence.resource.context.attributes.get('component'))
+#set($component = $conversation.resource.context.attributes.get('component'))
 #set($applications = $component.context.attributes.get('applications'))
 #set($version = $component.context.attributes.get('prudence.version'))
 #set($revision = $component.context.attributes.get('prudence.revision'))
 #set($flavor = $component.context.attributes.get('prudence.flavor'))
 
-#set($form = $prudence.resource.request.resourceRef.queryAsForm)
+#set($form = $conversation.resource.request.resourceRef.queryAsForm)
 #set($action = $form.getFirstValue('action'))
 #set($item = $form.getFirstValue('item'))
 #set($index = $form.getFirstValue('index'))
@@ -29,8 +29,8 @@
 			$item.start()
 		#end
 
-		#set($prudence.resource.response.locationRef=$prudence.resource.request.resourceRef.baseRef)
-		#set($prudence.statusCode = 303)
+		#set($conversation.resource.response.locationRef=$prudence.resource.request.resourceRef.baseRef)
+		#set($conversation.statusCode = 303)
 		#stop
 	#end
 #end
