@@ -19,8 +19,6 @@ import org.restlet.resource.ResourceException;
 
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.scripturian.Executable;
-import com.threecrickets.scripturian.LanguageAdapter;
-import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
@@ -76,21 +74,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase<D
 		if( ( documentName == null ) || ( documentName.length() == 0 ) || ( documentName.equals( "/" ) ) )
 			documentName = resource.getDefaultName();
 
-		DocumentDescriptor<Executable> documentDescriptor = resource.getDocumentSource().getDocument( documentName );
-
-		Executable executable = documentDescriptor.getDocument();
-		if( executable == null )
-		{
-			LanguageAdapter languageAdapter = resource.getLanguageManager().getAdapterByExtension( documentName, documentDescriptor.getTag() );
-			String sourceCode = documentDescriptor.getSourceCode();
-			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), resource
-				.getDocumentSource(), resource.isPrepare() );
-
-			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
-			if( existing != null )
-				executable = existing;
-		}
-
+		Executable executable = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.isPrepare() ).getDocument();
 		executable.execute();
 
 		return null;

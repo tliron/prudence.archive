@@ -41,7 +41,6 @@ import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
-import com.threecrickets.scripturian.LanguageAdapter;
 import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFormatter;
@@ -1312,20 +1311,8 @@ public class DelegatedResource extends ServerResource
 
 		try
 		{
-			DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocument( name );
-
+			DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( name, getDocumentSource(), false, getLanguageManager(), isPrepare() );
 			Executable executable = documentDescriptor.getDocument();
-			if( executable == null )
-			{
-				LanguageAdapter languageAdapter = getLanguageManager().getAdapterByExtension( name, documentDescriptor.getTag() );
-				String sourceCode = documentDescriptor.getSourceCode();
-				executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, false, getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ),
-					getDocumentSource(), isPrepare() );
-				Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
-
-				if( existing != null )
-					executable = existing;
-			}
 
 			ExecutionContext executionContext = executable.getExecutionContextForInvocations();
 			if( executionContext == null )

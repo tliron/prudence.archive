@@ -28,7 +28,6 @@ import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.prudence.cache.CacheEntry;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
-import com.threecrickets.scripturian.LanguageAdapter;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
@@ -151,18 +150,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 */
 	public Representation includeDocument( String documentName ) throws IOException, ParsingException, ExecutionException
 	{
-		DocumentDescriptor<Executable> documentDescriptor = getSource().getDocument( documentName );
-
-		Executable executable = documentDescriptor.getDocument();
-		if( executable == null )
-		{
-			String sourceCode = documentDescriptor.getSourceCode();
-			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), getSource(), resource.isPrepare() );
-
-			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
-			if( existing != null )
-				executable = existing;
-		}
+		DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), true, resource.getLanguageManager(), resource.isPrepare() );
+		executable = documentDescriptor.getDocument();
 
 		if( exposedConversation.getMediaType() == null )
 		{
@@ -188,20 +177,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	@Override
 	public Representation include( String documentName ) throws IOException, ParsingException, ExecutionException
 	{
-		DocumentDescriptor<Executable> documentDescriptor = getSource().getDocument( documentName );
-
-		Executable executable = documentDescriptor.getDocument();
-		if( executable == null )
-		{
-			LanguageAdapter languageAdapter = resource.getLanguageManager().getAdapterByExtension( documentName, documentDescriptor.getTag() );
-			String sourceCode = documentDescriptor.getSourceCode();
-			executable = new Executable( documentDescriptor.getDefaultName(), sourceCode, false, resource.getLanguageManager(), (String) languageAdapter.getAttributes().get( LanguageAdapter.DEFAULT_TAG ), getSource(),
-				resource.isPrepare() );
-
-			Executable existing = documentDescriptor.setDocumentIfAbsent( executable );
-			if( existing != null )
-				executable = existing;
-		}
+		DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.isPrepare() );
+		executable = documentDescriptor.getDocument();
 
 		return execute( executable );
 	}
