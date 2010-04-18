@@ -156,7 +156,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		if( exposedConversation.getMediaType() == null )
 		{
 			// Set initial media type according to the document's tag
-			exposedConversation.setMediaType( resource.getMetadataService().getMediaType( documentDescriptor.getTag() ) );
+			exposedConversation.setMediaTypeExtension( documentDescriptor.getTag() );
 		}
 
 		return execute( executable );
@@ -362,12 +362,12 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		}
 		catch( ExecutionException x )
 		{
-			// Did the script ask us to start streaming?
+			// Did the executable ask us to start streaming?
 			if( exposedConversation.startStreaming )
 			{
 				exposedConversation.startStreaming = false;
 
-				// Note that this will cause the script to run again!
+				// Note that this will cause the executable to run again!
 				// TODO: flushLines!
 				return new GeneratedTextStreamingRepresentation( this, exposedConversation, executionContext, resource.getExecutionController(), executable );
 
