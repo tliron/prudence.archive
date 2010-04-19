@@ -15,10 +15,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Date;
 import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Context;
 import org.restlet.Request;
+import org.restlet.data.CacheDirective;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
 import org.restlet.data.Language;
@@ -174,8 +176,9 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * <code>com.threecrickets.prudence.cache:</code> {@link Cache}, defaults to
  * a new instance of {@link InProcessMemoryCache}. See {@link #getCache()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.allowClientCaching:</code>
- * {@link Boolean}, defaults to true. See {@link #isAllowClientCaching()}.</li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.clientCachingMode:</code>
+ * {@link Integer}, defaults to {@link #CLIENT_CACHING_MODE_CONDITIONAL}. See
+ * {@link #getClientCachingMode()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.prepare:</code>
  * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
@@ -223,6 +226,16 @@ import com.threecrickets.scripturian.exception.ParsingException;
  */
 public class GeneratedTextResource extends ServerResource
 {
+	//
+	// Constants
+	//
+
+	public static final int CLIENT_CACHING_MODE_DISABLED = 0;
+
+	public static final int CLIENT_CACHING_MODE_CONDITIONAL = 1;
+
+	public static final int CLIENT_CACHING_MODE_OFFLINE = 2;
+
 	//
 	// Attributes
 	//
@@ -552,26 +565,26 @@ public class GeneratedTextResource extends ServerResource
 
 	/**
 	 * Whether or not to send information to the client about cache expiration.
-	 * Defaults to true.
+	 * Defaults to {@link #CLIENT_CACHING_MODE_CONDITIONAL}.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.allowClientCaching</code>
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.clientCachingMode</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return Whether to allow client caching
+	 * @return The client caching mode
 	 */
-	public boolean isAllowClientCaching()
+	public int getClientCachingMode()
 	{
-		if( allowClientCaching == null )
+		if( clientCachingMode == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			allowClientCaching = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.allowClientCaching" );
+			clientCachingMode = (Integer) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.clientCachingMode" );
 
-			if( allowClientCaching == null )
-				allowClientCaching = true;
+			if( clientCachingMode == null )
+				clientCachingMode = CLIENT_CACHING_MODE_CONDITIONAL;
 		}
 
-		return allowClientCaching;
+		return clientCachingMode;
 	}
 
 	/**
@@ -794,7 +807,7 @@ public class GeneratedTextResource extends ServerResource
 	/**
 	 * Whether or not to send information to the client about cache expiration.
 	 */
-	private volatile Boolean allowClientCaching;
+	private volatile Integer clientCachingMode;
 
 	/**
 	 * Whether or not compilation is attempted for script engines that support
@@ -905,11 +918,37 @@ public class GeneratedTextResource extends ServerResource
 					throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
 				else
 				{
-					if( !isAllowClientCaching() )
+					switch( getClientCachingMode() )
 					{
-						representation.setExpirationDate( null );
-						// TODO: cache control
+						case CLIENT_CACHING_MODE_DISABLED:
+						{
+							representation.setModificationDate( null );
+							representation.setExpirationDate( null );
+							representation.setTag( null );
+							getResponse().getCacheDirectives().clear();
+							getResponse().getCacheDirectives().add( CacheDirective.noCache() );
+							break;
+						}
+
+						case CLIENT_CACHING_MODE_CONDITIONAL:
+							break;
+
+						case CLIENT_CACHING_MODE_OFFLINE:
+						{
+							Date expirationDate = representation.getExpirationDate();
+							if( expirationDate != null )
+							{
+								long maxAge = ( expirationDate.getTime() - System.currentTimeMillis() );
+								if( maxAge > 0 )
+								{
+									getResponse().getCacheDirectives().clear();
+									getResponse().getCacheDirectives().add( CacheDirective.maxAge( (int) maxAge / 1000 ) );
+								}
+							}
+							break;
+						}
 					}
+
 					return representation;
 				}
 			}
@@ -920,7 +959,7 @@ public class GeneratedTextResource extends ServerResource
 			catch( ExecutionException x )
 			{
 				if( getResponse().getStatus().isSuccess() )
-					// An unintended document exception
+					// An unintended exception
 					throw new ResourceException( x );
 				else
 					// This was an intended exception, so we will preserve the
@@ -929,7 +968,7 @@ public class GeneratedTextResource extends ServerResource
 			}
 			finally
 			{
-				// Release only if we own the execution context
+				// Release only if we own the execution context!
 				if( !( representation instanceof GeneratedTextStreamingRepresentation ) )
 					executionContext.release();
 			}

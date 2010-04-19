@@ -1234,7 +1234,6 @@ public class DelegatedResource extends ServerResource
 			representation.setTag( exposedConversation.getTag() );
 			representation.setExpirationDate( exposedConversation.getExpirationDate() );
 			representation.setModificationDate( exposedConversation.getModificationDate() );
-			// TODO: cache control?
 			return representation;
 		}
 	}

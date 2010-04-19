@@ -12,7 +12,9 @@
 package com.threecrickets.prudence.internal;
 
 import java.util.Date;
+import java.util.Iterator;
 
+import org.restlet.data.CacheDirective;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.LocalReference;
@@ -20,6 +22,7 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Protocol;
 import org.restlet.data.Status;
 import org.restlet.data.Tag;
+import org.restlet.engine.http.header.HeaderConstants;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ServerResource;
@@ -372,6 +375,39 @@ public class ExposedConversationBase<R extends ServerResource>
 	public void setHttpTag( String tag )
 	{
 		this.tag = tag != null ? Tag.parse( tag ) : null;
+	}
+
+	/**
+	 * The "max-age" cache control header.
+	 * 
+	 * @return The max age in seconds,+ or -1 if not set
+	 * @see #setMaxAge(int)
+	 */
+	public int getMaxAge()
+	{
+		for( CacheDirective cacheDirective : resource.getResponse().getCacheDirectives() )
+			if( cacheDirective.getName().equals( HeaderConstants.CACHE_MAX_AGE ) )
+				return Integer.parseInt( cacheDirective.getValue() );
+
+		return -1;
+	}
+
+	/**
+	 * @param maxAge
+	 *        The max age in seconds, or -1 to explicitly set a "no-cache" cache
+	 *        control header
+	 * @see #getMaxAge()
+	 */
+	public void setMaxAge( int maxAge )
+	{
+		for( Iterator<CacheDirective> i = resource.getResponse().getCacheDirectives().iterator(); i.hasNext(); )
+			if( i.next().getName().equals( HeaderConstants.CACHE_MAX_AGE ) )
+				i.remove();
+
+		if( maxAge != -1 )
+			resource.getResponse().getCacheDirectives().add( CacheDirective.maxAge( maxAge ) );
+		else
+			resource.getResponse().getCacheDirectives().add( CacheDirective.noCache() );
 	}
 
 	/**

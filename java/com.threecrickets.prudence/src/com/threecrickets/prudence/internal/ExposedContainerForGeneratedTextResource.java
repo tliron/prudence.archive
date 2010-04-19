@@ -223,7 +223,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	/**
 	 * @return The cache key for the executable
 	 */
-	private String castCacheKey()
+	private String castCacheKeyPattern()
 	{
 		String cacheKey = getCacheKey();
 		if( cacheKey == null )
@@ -265,10 +265,11 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 
 		Writer writer = resource.getWriter();
 
-		// Special handling for pure text
+		// Optimized handling for pure text
 		String pureText = executable.getAsPureText();
 		if( pureText != null )
 		{
+			// We want to write this, too, for includes
 			if( writer != null )
 				writer.write( pureText );
 
@@ -296,7 +297,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 			}
 
 			// Attempt to use cache
-			String cacheKey = castCacheKey();
+			String cacheKey = castCacheKeyPattern();
 			if( cacheKey != null )
 			{
 				CacheEntry cacheEntry = resource.getCache().fetch( cacheKey );
@@ -349,7 +350,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 				CacheEntry cacheEntry = new CacheEntry( buffer.substring( startPosition ), exposedConversation.getMediaType(), exposedConversation.getLanguage(), exposedConversation.getCharacterSet(), getExpiration() );
 
 				// Cache if enabled
-				String cacheKey = castCacheKey();
+				String cacheKey = castCacheKeyPattern();
 				Collection<String> cacheGroups = getCacheGroups();
 				if( ( cacheKey != null ) && ( cacheEntry.getExpirationDate() != null ) )
 					resource.getCache().store( cacheKey, cacheGroups, cacheEntry );
