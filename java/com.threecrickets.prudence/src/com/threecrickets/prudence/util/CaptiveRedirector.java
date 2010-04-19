@@ -25,8 +25,28 @@ import org.restlet.routing.Redirector;
  * 
  * @author Tal Liron
  */
-public class NormalizingRedirector extends Redirector
+public class CaptiveRedirector extends Redirector
 {
+	//
+	// Constants
+	//
+
+	public static final String CAPTIVE_REFERENCE = "com.threecrickets.prudence.util.CaptiveRedirector.captiveReference";
+
+	//
+	// Static attributes
+	//
+
+	public static Reference getCaptiveReference( Request request )
+	{
+		return (Reference) request.getAttributes().get( CAPTIVE_REFERENCE );
+	}
+
+	public static void setCaptiveReference( Request request, Reference captiveReference )
+	{
+		request.getAttributes().put( CAPTIVE_REFERENCE, captiveReference );
+	}
+
 	//
 	// Construction
 	//
@@ -35,7 +55,7 @@ public class NormalizingRedirector extends Redirector
 	 * @param context
 	 * @param targetTemplate
 	 */
-	public NormalizingRedirector( Context context, String targetTemplate )
+	public CaptiveRedirector( Context context, String targetTemplate )
 	{
 		super( context, targetTemplate );
 	}
@@ -45,22 +65,19 @@ public class NormalizingRedirector extends Redirector
 	 * @param targetPattern
 	 * @param mode
 	 */
-	public NormalizingRedirector( Context context, String targetPattern, int mode )
+	public CaptiveRedirector( Context context, String targetPattern, int mode )
 	{
 		super( context, targetPattern, mode );
 	}
-
-	// //////////////////////////////////////////////////////////////////////////
-	// Protected
 
 	//
 	// Redirector
 	//
 
 	@Override
-	protected Reference getTargetRef( Request request, Response response )
+	public void handle( Request request, Response response )
 	{
-		Reference reference = super.getTargetRef( request, response );
-		return reference.getTargetRef();
+		setCaptiveReference( request, request.getResourceRef() );
+		super.handle( request, response );
 	}
 }

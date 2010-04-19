@@ -17,10 +17,12 @@ import org.restlet.Application;
 import org.restlet.Request;
 import org.restlet.data.LocalReference;
 import org.restlet.data.MediaType;
+import org.restlet.data.Reference;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ServerResource;
 
+import com.threecrickets.prudence.util.CaptiveRedirector;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.ExecutionException;
@@ -94,7 +96,11 @@ public abstract class ExposedContainerBase<R extends ServerResource>
 	public String getPathToBase()
 	{
 		Request request = Request.getCurrent();
-		String relative = request.getResourceRef().getRelativeRef().toString();
+		Reference reference = CaptiveRedirector.getCaptiveReference( request );
+		if( reference == null )
+			reference = request.getResourceRef();
+
+		String relative = reference.getRelativeRef().toString();
 
 		// Remove redundant slashes
 		relative = relative.replace( "//", "/" );

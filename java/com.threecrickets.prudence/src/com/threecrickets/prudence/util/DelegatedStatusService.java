@@ -105,17 +105,6 @@ public class DelegatedStatusService extends StatusService
 		errorHandlers.put( statusCode, errorHandler );
 	}
 
-	/*
-	 * Redirects an error status to a URI. You can use template variables in the
-	 * URI. <p> This is handled via a {@link Redirector} with mode {@link
-	 * Redirector#MODE_CLIENT_SEE_OTHER}.
-	 * @param statusCode The status code
-	 * @param uriTemplate The URI template
-	 * @param context The context public void redirect( int statusCode, String
-	 * uriTemplate, Context context ) { setHandler( statusCode, new Redirector(
-	 * context, uriTemplate, Redirector.MODE_CLIENT_SEE_OTHER ) ); }
-	 */
-
 	/**
 	 * Captures (internally redirects) an error status to a URI within an
 	 * application. You can use template variables in the URI.
@@ -135,7 +124,7 @@ public class DelegatedStatusService extends StatusService
 	public void capture( int statusCode, String application, String internalUriTemplate, Context context )
 	{
 		String targetUriTemplate = "riap://component/" + application + "/" + internalUriTemplate;
-		setHandler( statusCode, new Redirector( context, targetUriTemplate, Redirector.MODE_SERVER_OUTBOUND ) );
+		setHandler( statusCode, new CaptiveRedirector( context, targetUriTemplate, Redirector.MODE_SERVER_OUTBOUND ) );
 	}
 
 	/**
