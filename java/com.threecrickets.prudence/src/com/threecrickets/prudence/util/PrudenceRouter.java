@@ -41,7 +41,7 @@ public class PrudenceRouter extends FallbackRouter
 	 */
 	public PrudenceRouter( Context context )
 	{
-		super( context );
+		super( context, 5000 );
 	}
 
 	/**
@@ -55,6 +55,8 @@ public class PrudenceRouter extends FallbackRouter
 	public PrudenceRouter( Context context, int cacheDuration )
 	{
 		super( context, cacheDuration );
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
 		setName( "PrudenceRouter" );
 		setDescription( "A FallbackRouter with shortcut methods for common routing tasks" );
 	}

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Context;
@@ -925,8 +926,9 @@ public class GeneratedTextResource extends ServerResource
 							representation.setModificationDate( null );
 							representation.setExpirationDate( null );
 							representation.setTag( null );
-							getResponse().getCacheDirectives().clear();
-							getResponse().getCacheDirectives().add( CacheDirective.noCache() );
+							List<CacheDirective> cacheDirectives = getResponse().getCacheDirectives();
+							cacheDirectives.clear();
+							cacheDirectives.add( CacheDirective.noCache() );
 							break;
 						}
 
@@ -941,8 +943,9 @@ public class GeneratedTextResource extends ServerResource
 								long maxAge = ( expirationDate.getTime() - System.currentTimeMillis() );
 								if( maxAge > 0 )
 								{
-									getResponse().getCacheDirectives().clear();
-									getResponse().getCacheDirectives().add( CacheDirective.maxAge( (int) maxAge / 1000 ) );
+									List<CacheDirective> cacheDirectives = getResponse().getCacheDirectives();
+									cacheDirectives.clear();
+									cacheDirectives.add( CacheDirective.maxAge( (int) maxAge / 1000 ) );
 								}
 							}
 							break;
