@@ -74,7 +74,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase<D
 		if( ( documentName == null ) || ( documentName.length() == 0 ) || ( documentName.equals( "/" ) ) )
 			documentName = resource.getDefaultName();
 
-		Executable executable = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.isPrepare() ).getDocument();
+		Executable executable = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() ).getDocument();
 		executable.execute();
 
 		return null;

@@ -150,7 +150,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 */
 	public Representation includeDocument( String documentName ) throws IOException, ParsingException, ExecutionException
 	{
-		DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), true, resource.getLanguageManager(), resource.isPrepare() );
+		DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
 		executable = documentDescriptor.getDocument();
 
 		if( exposedConversation.getMediaType() == null )
@@ -177,7 +177,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	@Override
 	public Representation include( String documentName ) throws IOException, ParsingException, ExecutionException
 	{
-		DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.isPrepare() );
+		DocumentDescriptor<Executable> documentDescriptor = Executable
+			.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
 		executable = documentDescriptor.getDocument();
 
 		return execute( executable );

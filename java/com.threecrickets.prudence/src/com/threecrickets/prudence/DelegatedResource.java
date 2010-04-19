@@ -1294,7 +1294,7 @@ public class DelegatedResource extends ServerResource
 
 		try
 		{
-			DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( name, getDocumentSource(), false, getLanguageManager(), isPrepare() );
+			DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( name, getDocumentSource(), false, getLanguageManager(), getDefaultLanguageTag(), isPrepare() );
 			Executable executable = documentDescriptor.getDocument();
 
 			ExecutionContext executionContext = executable.getExecutionContextForInvocations();
