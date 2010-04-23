@@ -27,13 +27,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
-
-import org.apache.log4j.Logger;
 
 /**
  * A simple standalone JDBC connection pool manager.
@@ -375,7 +374,7 @@ public class MiniConnectionPoolManager
 
 	private void log( String msg )
 	{
-		Logger.getLogger( getClass() ).error( msg );
+		Logger.getLogger( getClass().getName() ).severe( msg );
 	}
 
 	private synchronized void recycleConnection( PooledConnection pconn )
