@@ -17,7 +17,7 @@ libraries/com.sun.phobos.script.javascript.jar:\
 libraries/com.caucho.quercus.jar:\
 libraries/com.caucho.resin.util.jar:\
 libraries/com.sun.script.velocity.jar:\
-libraries/com.threecrickets.jygments.jar;\
+libraries/com.threecrickets.jygments.jar:\
 libraries/com.threecrickets.prudence.jar:\
 libraries/com.threecrickets.scripturian.jar:\
 libraries/javax.script.jar:\

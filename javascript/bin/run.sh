@@ -13,7 +13,7 @@ libraries/com.mysql.jdbc.jar:\
 libraries/com.sun.grizzly.jar:\
 libraries/com.sun.phobos.script.javascript.jar:\
 libraries/com.sun.script.velocity.jar:\
-libraries/com.threecrickets.jygments.jar;\
+libraries/com.threecrickets.jygments.jar:\
 libraries/com.threecrickets.prudence.jar:\
 libraries/com.threecrickets.scripturian.jar:\
 libraries/javax.script.jar:\

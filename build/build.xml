@@ -82,10 +82,14 @@
 	<macrodef name="fetch-common-content">
 		<attribute name="dist" />
 		<attribute name="base" />
+		<attribute name="bin-base" />
 		<sequential>
 			<copy todir="@{dist}/content">
-				<fileset dir="${common}" excludes="log/, bin/" />
-				<fileset dir="@{base}" />
+				<fileset dir="${common}" excludes="bin/" />
+				<fileset dir="@{base}" excludes="bin/" />
+			</copy>
+			<copy todir="@{dist}/content/bin">
+				<fileset dir="@{bin-base}/bin" />
 			</copy>
 			<chmod file="@{dist}/content/bin/run.sh" perm="ugo+rx" />
 			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%REVISION%" value="${revision.max}" />
@@ -231,7 +235,7 @@
 
 <target name="content-kitchensink" depends="javadoc-kitchensink, revision" description="Fetch content">
 	<echo>Using ${kitchensink-base} as base for Kitchen Sink distribution.</echo>
-	<fetch-common-content dist="${dist-kitchensink}" base="${kitchensink-base}" />
+	<fetch-common-content dist="${dist-kitchensink}" base="${kitchensink-base}" bin-base="${common}" />
 	<!-- Fetch Prudence Guide -->
 	<copy todir="${dist-kitchensink}/content/applications/prudence-guide/web">
 		<fileset dir="${python}/applications/prudence-guide/web" />
@@ -342,7 +346,7 @@
 </target>
 
 <target name="content-javascript" depends="javadoc-javascript, revision" description="Fetch content">
-	<fetch-common-content dist="${dist-javascript}" base="${javascript}" />
+	<fetch-common-content dist="${dist-javascript}" base="${javascript}" bin-base="${javascript}" />
 	<!-- <fetch-syntaxhighlighter dist="${dist-javascript}" application="prudence-guide" /> -->
 </target>
 
@@ -381,7 +385,7 @@
 </target>
 
 <target name="content-python" depends="javadoc-python, revision" description="Fetch content">
-	<fetch-common-content dist="${dist-python}" base="${python}" />
+	<fetch-common-content dist="${dist-python}" base="${python}" bin-base="${python}" />
 	<!-- <fetch-syntaxhighlighter dist="${dist-python}" application="prudence-guide" />
 	<fetch-syntaxhighlighter dist="${dist-python}" application="stickstick" /> -->
 </target>
@@ -419,7 +423,7 @@
 </target>
 
 <target name="content-clojure" depends="javadoc-clojure, revision" description="Fetch content">
-	<fetch-common-content dist="${dist-clojure}" base="${clojure}" />
+	<fetch-common-content dist="${dist-clojure}" base="${clojure}" bin-base="${clojure}" />
 	<!-- <fetch-syntaxhighlighter dist="${dist-clojure}" application="prudence-guide" />
 	<fetch-syntaxhighlighter dist="${dist-clojure}" application="stickstick" /> -->
 </target>
@@ -457,7 +461,7 @@
 </target>
 
 <target name="content-groovy" depends="javadoc-groovy, revision" description="Fetch content">
-	<fetch-common-content dist="${dist-groovy}" base="${groovy}" />
+	<fetch-common-content dist="${dist-groovy}" base="${groovy}" bin-base="${groovy}" />
 	<!-- <fetch-syntaxhighlighter dist="${dist-groovy}" application="prudence-guide" />
 	<fetch-syntaxhighlighter dist="${dist-groovy}" application="stickstick" /> -->
 </target>
@@ -495,7 +499,7 @@
 </target>
 
 <target name="content-ruby" depends="javadoc-ruby, revision" description="Fetch content">
-	<fetch-common-content dist="${dist-ruby}" base="${ruby}" />
+	<fetch-common-content dist="${dist-ruby}" base="${ruby}" bin-base="${ruby}" />
 	<!-- <fetch-syntaxhighlighter dist="${dist-ruby}" application="prudence-guide" />
 	<fetch-syntaxhighlighter dist="${dist-ruby}" application="stickstick" /> -->
 </target>
