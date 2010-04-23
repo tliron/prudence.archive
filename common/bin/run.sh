@@ -26,6 +26,7 @@ libraries/jep.jar:\
 libraries/org.apache.log4j.jar:\
 libraries/org.apache.velocity.jar:\
 libraries/org.codehaus.groovy.jar:\
+libraries/org.h2.jar:\
 libraries/org.jruby.jar:\
 libraries/org.json.jar:\
 libraries/org.mozilla.javascript.jar:\
