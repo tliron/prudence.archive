@@ -112,7 +112,7 @@ $dynamic_web = Finder.new($application.context, $class_loader.load_class('com.th
 $router.attach_base fix_url($dynamic_web_base_url), $dynamic_web
 
 if $dynamic_web_defrost
-	defrost_tasks = DefrostTask::for_document_source $dynamic_web_document_source, $language_manager, true
+	defrost_tasks = DefrostTask::for_document_source $dynamic_web_document_source, $language_manager, true, true
 	for defrost_task in defrost_tasks
 		$tasks << defrost_task
 	end
@@ -142,7 +142,7 @@ $resources = Finder.new($application.context, $class_loader.load_class('com.thre
 $router.attach_base fix_url($resources_base_url), $resources
 
 if $resources_defrost
-	defrost_tasks = DefrostTask::for_document_source $resources_document_source, $language_manager, true
+	defrost_tasks = DefrostTask::for_document_source $resources_document_source, $language_manager, false, true
 	for defrost_task in defrost_tasks
 		$tasks << defrost_task
 	end

@@ -111,7 +111,7 @@ dynamicWeb = new Finder(application.context, classLoader.loadClass('com.threecri
 router.attachBase(fixURL(dynamicWebBaseURL), dynamicWeb)
 
 if(dynamicWebDefrost) {
-	defrostTasks = DefrostTask.forDocumentSource(dynamicWebDocumentSource, languageManager, true)
+	defrostTasks = DefrostTask.forDocumentSource(dynamicWebDocumentSource, languageManager, true, true)
 	for(defrostTask in defrostTasks) {
 		tasks.push(defrostTask)
 	}
@@ -141,7 +141,7 @@ resources = new Finder(application.context, classLoader.loadClass('com.threecric
 router.attachBase(fixURL(resourcesBaseURL), resources)
 
 if(resourcesDefrost) {
-	defrostTasks = DefrostTask.forDocumentSource(resourcesDocumentSource, languageManager, true)
+	defrostTasks = DefrostTask.forDocumentSource(resourcesDocumentSource, languageManager, false, true)
 	for(defrostTask in defrostTasks) {
 		tasks.push(defrostTask)
 	}
