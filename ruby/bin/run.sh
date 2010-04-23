@@ -34,5 +34,5 @@ libraries/org.slf4j.jar
 
 "$java" \
 -cp "$jars" \
--Djruby.jit.codeCache=data/code \
+-Djruby.jit.codeCache=cache \
 $main instance

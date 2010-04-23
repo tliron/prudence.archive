@@ -39,6 +39,6 @@ libraries/org.slf4j.jar
 -cp "$jars" \
 -Djava.library.path=/usr/local/lib \
 -Dpython.home=libraries/python \
--Dpython.cachedir=../../data/code/python \
+-Dpython.cachedir=../../cache/python \
 -Dpython.verbose=warning \
 $main instance
