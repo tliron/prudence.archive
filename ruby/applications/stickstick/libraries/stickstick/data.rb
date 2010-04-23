@@ -8,8 +8,9 @@ import java.sql.Timestamp
 import org.restlet.Application
 import com.threecrickets.prudence.util.MiniConnectionPoolManager
 
-$connection_pool = nil
-$connection_pool_lock = ReentrantLock.new
+require $prudence.source.base_path.to_s + '/../libraries/stickstick/shared.rb'
+
+$connection_pool_lock = get_shared 'connection_pool_lock', ReentrantLock.new
 
 def get_data_source attributes
 	data_source = nil
@@ -42,15 +43,16 @@ def get_connection fresh=false
 	attributes = Application.current.context.attributes
 
 	$connection_pool_lock.lock
+	connection_pool = get_shared 'connection_pool'
 	begin
-		if $connection_pool.nil? || fresh
-			if $connection_pool.nil?
-				$connection_pool = MiniConnectionPoolManager.new(get_data_source(attributes), 10)
+		if connection_pool.nil? || fresh
+			if connection_pool.nil?
+				connection_pool = set_shared 'connection_pool', MiniConnectionPoolManager.new(get_data_source(attributes), 10)
 			end
 			
 			# TODO: CREATE DATABASE IF NOT EXISTS
 	
-			connection = $connection_pool.connection
+			connection = connection_pool.connection
 	
 			if fresh
 				statement = connection.create_statement
@@ -86,7 +88,7 @@ def get_connection fresh=false
 			connection.close
 		end
 		
-		return $connection_pool.connection
+		return connection_pool.connection
 	ensure
 		$connection_pool_lock.unlock
 	end
