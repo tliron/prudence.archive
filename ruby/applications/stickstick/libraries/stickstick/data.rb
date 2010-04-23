@@ -10,7 +10,7 @@ import com.threecrickets.prudence.util.MiniConnectionPoolManager
 
 $connection_pool_lock = $prudence.get_global 'connection_pool_lock'
 if $connection_pool_lock.nil?
-	$connection_pool_lock = $prudence.get_global ReentrantLock.new
+	$connection_pool_lock = $prudence.get_global 'connection_pool_lock', ReentrantLock.new
 end
 
 def get_data_source attributes

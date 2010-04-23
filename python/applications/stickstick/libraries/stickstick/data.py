@@ -23,8 +23,9 @@ logging.getLogger('sqlalchemy.orm.sync').setLevel(logging.DEBUG)
 Base = declarative_base()
 Session = sessionmaker()
 
-engine = None
-engine_lock = RLock()
+engine_lock = prudence.getGlobal('engine_lock')
+if engine_lock is None:
+    engine_lock = prudence.getGlobal('engine_lock', RLock())
 
 def datetime_to_milliseconds(dt):
     return long(mktime(dt.timetuple()) * 1000) if dt else 0
@@ -105,8 +106,8 @@ class Board(Base):
         
 def get_engine(fresh=False):
     engine_lock.acquire()
+    engine = prudence.get_global('engine')
     try:
-        global engine
         if engine is None or fresh:
             attributes = Application.getCurrent().context.attributes
 
@@ -125,14 +126,16 @@ def get_engine(fresh=False):
                 connection.close()
 
             # Connect to database
-            engine = create_engine('%s://%s:%s@%s/%s' % (
-                attributes['stickstick.backend'],
-                attributes['stickstick.username'],
-                attributes['stickstick.password'],
-                attributes['stickstick.host'],
-                attributes['stickstick.database']),
-                convert_unicode=True,
-                pool_recycle=3600)
+            if engine is None:
+                new_engine = create_engine('%s://%s:%s@%s/%s' % (
+                    attributes['stickstick.backend'],
+                    attributes['stickstick.username'],
+                    attributes['stickstick.password'],
+                    attributes['stickstick.host'],
+                    attributes['stickstick.database']),
+                    convert_unicode=True,
+                    pool_recycle=3600)
+                engine = prudence.get_global('engine', new_engine)
             Session.configure(bind=engine)
 
             #connection = engine.connect()

@@ -8,8 +8,10 @@ import java.sql.Timestamp
 import org.restlet.Application
 import com.threecrickets.prudence.util.MiniConnectionPoolManager
 
-def connectionPool
-def connectionPoolLock = new ReentrantLock()
+def connectionPoolLock = prudence.getGlobal('connectionPoolLock')
+if(connectionPoolLock == null) {
+	connectionPoolLock = prudence.getGlobal('connectionPoolLock', new ReentrantLock())
+}
 
 getDataSource = { attributes ->
 	def dataSource
@@ -42,10 +44,11 @@ getConnection = { fresh=false ->
 	def attributes = Application.current.context.attributes
 
 	connectionPoolLock.lock()
+	connectionPool = prudence.getGlobal('connectionPool')
 	try {
 		if(connectionPool == null || fresh) {
 			if(connectionPool == null) {
-				connectionPool = new MiniConnectionPoolManager(getDataSource(attributes), 10)
+				connectionPool = prudence.getGlobal('connectionPool', new MiniConnectionPoolManager(getDataSource(attributes), 10))
 			}
 			
 			// TODO: CREATE DATABASE IF NOT EXISTS

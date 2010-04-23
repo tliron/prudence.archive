@@ -160,6 +160,16 @@ public abstract class ExposedContainerBase<R extends ServerResource>
 	}
 
 	/**
+	 * A map of all values global to the current applications.
+	 * 
+	 * @return The globals
+	 */
+	public ConcurrentMap<String, Object> getGlobals()
+	{
+		return Application.getCurrent().getContext().getAttributes();
+	}
+
+	/**
 	 * Gets a value global to the current application.
 	 * 
 	 * @param name
