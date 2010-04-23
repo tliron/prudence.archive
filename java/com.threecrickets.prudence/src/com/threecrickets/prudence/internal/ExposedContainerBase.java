@@ -12,6 +12,7 @@
 package com.threecrickets.prudence.internal;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Application;
 import org.restlet.Request;
@@ -39,6 +40,14 @@ public abstract class ExposedContainerBase<R extends ServerResource>
 	// Construction
 	//
 
+	/**
+	 * Construction.
+	 * 
+	 * @param resource
+	 *        The resource
+	 * @param documentSource
+	 *        The document source
+	 */
 	public ExposedContainerBase( R resource, DocumentSource<Executable> documentSource )
 	{
 		this.resource = resource;
@@ -60,9 +69,13 @@ public abstract class ExposedContainerBase<R extends ServerResource>
 	}
 
 	/**
+	 * Access a resource internal to the current application.
+	 * 
 	 * @param resourceUri
+	 *        The URI
 	 * @param mediaType
-	 * @return
+	 *        The default media type of requests
+	 * @return The client proxy
 	 */
 	public ClientResource internal( String resourceUri, String mediaType )
 	{
@@ -70,10 +83,15 @@ public abstract class ExposedContainerBase<R extends ServerResource>
 	}
 
 	/**
+	 * Access a resource internal to the current Prudence instance.
+	 * 
 	 * @param applicationInternalName
+	 *        The application internal name
 	 * @param resourceUri
+	 *        The URI
 	 * @param mediaType
-	 * @return
+	 *        The default media type of requests
+	 * @return The client proxy
 	 */
 	public ClientResource internal( String applicationInternalName, String resourceUri, String mediaType )
 	{
@@ -81,9 +99,13 @@ public abstract class ExposedContainerBase<R extends ServerResource>
 	}
 
 	/**
+	 * Access any resource.
+	 * 
 	 * @param uri
+	 *        The URI
 	 * @param mediaType
-	 * @return
+	 *        The default media type of requests
+	 * @return The client proxy
 	 */
 	public ClientResource external( String uri, String mediaType )
 	{
@@ -91,7 +113,10 @@ public abstract class ExposedContainerBase<R extends ServerResource>
 	}
 
 	/**
-	 * @return
+	 * The relative path that would reach the base URI of the application if
+	 * appended to the current resource URI.
+	 * 
+	 * @return The relative path
 	 */
 	public String getPathToBase()
 	{
@@ -120,8 +145,11 @@ public abstract class ExposedContainerBase<R extends ServerResource>
 	}
 
 	/**
+	 * Get a media type by its MIME type name.
+	 * 
 	 * @param name
-	 * @return
+	 *        The MIME type name
+	 * @return The media type
 	 */
 	public MediaType getMediaType( String name )
 	{
@@ -131,16 +159,74 @@ public abstract class ExposedContainerBase<R extends ServerResource>
 		return mediaType;
 	}
 
+	/**
+	 * Gets a value global to the current application.
+	 * 
+	 * @param name
+	 *        The name of the global
+	 * @return The global's current value
+	 */
+	public Object getGlobal( String name )
+	{
+		return getGlobal( name, null );
+	}
+
+	/**
+	 * Gets a value global to the current application, atomically setting it to
+	 * a default value if it doesn't exist.
+	 * 
+	 * @param name
+	 *        The name of the global
+	 * @param defaultValue
+	 *        The default value
+	 * @return The global's current value
+	 */
+	public Object getGlobal( String name, Object defaultValue )
+	{
+		ConcurrentMap<String, Object> attributes = Application.getCurrent().getContext().getAttributes();
+		Object value = attributes.get( name );
+		if( ( value == null ) && ( defaultValue != null ) )
+		{
+			value = defaultValue;
+			Object existing = attributes.putIfAbsent( name, value );
+			if( existing != null )
+				value = existing;
+		}
+		return value;
+	}
+
+	/**
+	 * Sets the value global to the current application.
+	 * 
+	 * @param name
+	 *        The name of the global
+	 * @param value
+	 *        The global's new value
+	 * @return The global's previous value
+	 */
+	public Object setGlobal( String name, Object value )
+	{
+		ConcurrentMap<String, Object> attributes = Application.getCurrent().getContext().getAttributes();
+		return attributes.put( name, value );
+	}
+
 	//
 	// Operations
 	//
 
+	/**
+	 * @param documentName
+	 * @return
+	 * @throws IOException
+	 * @throws ParsingException
+	 * @throws ExecutionException
+	 */
 	public abstract Representation include( String documentName ) throws IOException, ParsingException, ExecutionException;
 
 	/**
 	 * Throws a runtime exception.
 	 * 
-	 * @return
+	 * @return Always throws an exception, so nothing is ever returned
 	 */
 	public boolean kaboom()
 	{
@@ -150,10 +236,16 @@ public abstract class ExposedContainerBase<R extends ServerResource>
 	// //////////////////////////////////////////////////////////////////////////
 	// Protected
 
+	/**
+	 * The resource.
+	 */
 	protected final R resource;
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * The document source.
+	 */
 	private final DocumentSource<Executable> documentSource;
 }
