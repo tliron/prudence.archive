@@ -3,7 +3,8 @@ sys.path.append('%s/../libraries/' % prudence.source.basePath)
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
 import minjson as json
-from stickstick.data import *
+
+prudence.include('../libraries/stickstick/data/')
 
 def handleInit(conversation):
     conversation.addMediaTypeByName('text/plain')

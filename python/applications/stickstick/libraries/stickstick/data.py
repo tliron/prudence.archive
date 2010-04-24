@@ -106,7 +106,7 @@ class Board(Base):
         
 def get_engine(fresh=False):
     engine_lock.acquire()
-    engine = prudence.get_global('engine')
+    engine = prudence.getGlobal('engine')
     try:
         if engine is None or fresh:
             attributes = Application.getCurrent().context.attributes
@@ -135,7 +135,7 @@ def get_engine(fresh=False):
                     attributes['stickstick.database']),
                     convert_unicode=True,
                     pool_recycle=3600)
-                engine = prudence.get_global('engine', new_engine)
+                engine = prudence.getGlobal('engine', new_engine)
             Session.configure(bind=engine)
 
             #connection = engine.connect()
