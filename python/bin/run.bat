@@ -28,7 +28,7 @@ libraries/org.slf4j.jar
 
 %java% ^
 -cp %jars% ^
+-Dscripturian.cache=cache ^
 -Dpython.home=libraries/python ^
--Dpython.cachedir=../../cache/python ^
 -Dpython.verbose=warning ^
 %main% instance

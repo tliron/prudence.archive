@@ -10,6 +10,8 @@
 # your directory structure. See your settings.py for more information.
 #
 
+import sys
+
 from java.util.concurrent.locks import ReentrantReadWriteLock
 from org.restlet.ext.json import JsonRepresentation
 

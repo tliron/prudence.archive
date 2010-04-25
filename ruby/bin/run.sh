@@ -34,5 +34,5 @@ libraries/org.slf4j.jar
 
 "$java" \
 -cp "$jars" \
--Djruby.jit.codeCache=cache \
+-Dscripturian.cache=cache \
 $main instance

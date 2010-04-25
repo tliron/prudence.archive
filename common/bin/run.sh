@@ -43,8 +43,8 @@ libraries/org.slf4j.jar
 
 "$java" \
 -cp "$jars" \
--Djava.library.path=/usr/local/lib \
+-Dscripturian.cache=cache \
 -Dpython.home=libraries/python \
--Dpython.cachedir=../../cache/python \
 -Dpython.verbose=warning \
+-Djava.library.path=/usr/local/lib \
 $main instance

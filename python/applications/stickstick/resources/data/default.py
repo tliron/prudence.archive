@@ -1,3 +1,4 @@
+import sys
 sys.path.append('%s/../libraries/' % prudence.source.basePath)
 
 from sqlalchemy.orm.exc import NoResultFound
