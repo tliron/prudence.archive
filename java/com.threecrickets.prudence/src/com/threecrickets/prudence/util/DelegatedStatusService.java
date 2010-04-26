@@ -27,15 +27,29 @@ import org.restlet.service.StatusService;
  * Allows delegating the handling of errors to specified restlets.
  * 
  * @author Tal Liron
+ * @see DebugRepresentation
  */
 public class DelegatedStatusService extends StatusService
 {
+	//
+	// Constants
+	//
+
+	/**
+	 * A request attribute to signify to upstream instances that the status has
+	 * already been handled.
+	 */
+	public static final String PASSTHROUGH_ATTRIBUTE = "com.threecrickets.prudence.util.DelegatedStatusService.passThrough";
+
 	//
 	// Construction
 	//
 
 	/**
-	 * Constructor.
+	 * Construction.
+	 * 
+	 * @param sourceCodeUri
+	 *        The source code URI or null
 	 */
 	public DelegatedStatusService( String sourceCodeUri )
 	{
@@ -44,6 +58,9 @@ public class DelegatedStatusService extends StatusService
 		this.sourceCodeUri = sourceCodeUri;
 	}
 
+	/**
+	 * 
+	 */
 	public DelegatedStatusService()
 	{
 		this( null );
@@ -109,7 +126,7 @@ public class DelegatedStatusService extends StatusService
 	 * Captures (internally redirects) an error status to a URI within an
 	 * application. You can use template variables in the URI.
 	 * <p>
-	 * F This is handled via a {@link Redirector} with mode
+	 * This is handled via a {@link CaptiveRedirector} with mode
 	 * {@link Redirector#MODE_SERVER_OUTBOUND}.
 	 * 
 	 * @param statusCode
@@ -124,7 +141,30 @@ public class DelegatedStatusService extends StatusService
 	public void capture( int statusCode, String application, String internalUriTemplate, Context context )
 	{
 		String targetUriTemplate = "riap://component/" + application + "/" + internalUriTemplate;
-		setHandler( statusCode, new CaptiveRedirector( context, targetUriTemplate, Redirector.MODE_SERVER_OUTBOUND ) );
+		setHandler( statusCode, new CaptiveRedirector( context, targetUriTemplate, false ) );
+	}
+
+	/**
+	 * Captures (internally redirects) an error status to a URI within an
+	 * application, with the resource reference's base URI being set the host
+	 * root. You can use template variables in the URI.
+	 * <p>
+	 * This is handled via a {@link CaptiveRedirector} with mode
+	 * {@link Redirector#MODE_SERVER_OUTBOUND}.
+	 * 
+	 * @param statusCode
+	 *        The status code
+	 * @param application
+	 *        The internal application name
+	 * @param internalUriTemplate
+	 *        The internal URI template to which we will redirect
+	 * @param context
+	 *        The context
+	 */
+	public void captureRoot( int statusCode, String application, String internalUriTemplate, Context context )
+	{
+		String targetUriTemplate = "riap://component/" + application + "/" + internalUriTemplate;
+		setHandler( statusCode, new CaptiveRedirector( context, targetUriTemplate, true ) );
 	}
 
 	/**
@@ -147,7 +187,7 @@ public class DelegatedStatusService extends StatusService
 	{
 		if( isEnabled() )
 		{
-			if( request.getAttributes().containsKey( "com.threecrickets.prudence.util.DelegatedStatusService.passThrough" ) )
+			if( request.getAttributes().containsKey( PASSTHROUGH_ATTRIBUTE ) )
 				// Pass through
 				return response.getEntity();
 
@@ -172,13 +212,13 @@ public class DelegatedStatusService extends StatusService
 				representation.setModificationDate( null );
 				representation.setTag( null );
 
-				request.getAttributes().put( "com.threecrickets.prudence.util.DelegatedStatusService.passThrough", true );
+				request.getAttributes().put( PASSTHROUGH_ATTRIBUTE, true );
 				return representation;
 			}
 
 			if( isDebugging() && ( status.getThrowable() != null ) )
 			{
-				request.getAttributes().put( "com.threecrickets.prudence.util.DelegatedStatusService.passThrough", true );
+				request.getAttributes().put( PASSTHROUGH_ATTRIBUTE, true );
 				return new DebugRepresentation( status, request, response, sourceCodeUri );
 			}
 		}
@@ -194,6 +234,9 @@ public class DelegatedStatusService extends StatusService
 	 */
 	private final ConcurrentMap<Integer, Restlet> errorHandlers = new ConcurrentHashMap<Integer, Restlet>();
 
+	/**
+	 * The source code URIor null.
+	 */
 	private final String sourceCodeUri;
 
 	/**

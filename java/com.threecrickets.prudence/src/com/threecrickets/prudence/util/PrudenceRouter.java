@@ -170,7 +170,7 @@ public class PrudenceRouter extends FallbackRouter
 	public Route capture( String uriTemplate, String internalUriTemplate )
 	{
 		String targetUriTemplate = "riap://application/" + internalUriTemplate + "?{rq}";
-		Route route = attach( uriTemplate, new CaptiveRedirector( getContext(), targetUriTemplate, Redirector.MODE_SERVER_OUTBOUND ) );
+		Route route = attach( uriTemplate, new CaptiveRedirector( getContext(), targetUriTemplate, false ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}
@@ -198,7 +198,7 @@ public class PrudenceRouter extends FallbackRouter
 	public Route captureOther( String uriTemplate, String application, String internalUriTemplate )
 	{
 		String targetUriTemplate = "riap://component/" + application + "/" + internalUriTemplate + "?{rq}";
-		Route route = attach( uriTemplate, new CaptiveRedirector( getContext(), targetUriTemplate, Redirector.MODE_SERVER_OUTBOUND ) );
+		Route route = attach( uriTemplate, new CaptiveRedirector( getContext(), targetUriTemplate, false ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}

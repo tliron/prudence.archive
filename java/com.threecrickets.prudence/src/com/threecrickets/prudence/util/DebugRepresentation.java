@@ -36,7 +36,11 @@ import com.threecrickets.scripturian.exception.PreparationException;
 import com.threecrickets.scripturian.exception.StackFrame;
 
 /**
+ * An HTML representation of lots of Prudence and Restlet state useful for
+ * debugging.
+ * 
  * @author Tal Liron
+ * @see DelegatedStatusService
  */
 public class DebugRepresentation extends StringRepresentation
 {
@@ -45,9 +49,14 @@ public class DebugRepresentation extends StringRepresentation
 	//
 
 	/**
+	 * Construction.
+	 * 
 	 * @param status
+	 *        The status
 	 * @param request
+	 *        The request
 	 * @param response
+	 *        The response
 	 */
 	public DebugRepresentation( Status status, Request request, Response response, String sourceCodeUri )
 	{
@@ -382,12 +391,28 @@ public class DebugRepresentation extends StringRepresentation
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * Escapes HTML.
+	 * 
+	 * @param html
+	 *        The HTML builder
+	 * @param string
+	 *        Value to append
+	 */
 	private static void appendSafe( StringBuilder html, Object string )
 	{
 		if( string != null )
 			html.append( string.toString().replace( "<", "&lt;" ).replace( ">", "&gt;" ) );
 	}
 
+	/**
+	 * A span with CSS class "name".
+	 * 
+	 * @param html
+	 *        The HTML builder
+	 * @param string
+	 *        Value to append
+	 */
 	private static void appendName( StringBuilder html, Object string )
 	{
 		html.append( "<span class=\"name\">" );
@@ -395,6 +420,14 @@ public class DebugRepresentation extends StringRepresentation
 		html.append( ":</span> " );
 	}
 
+	/**
+	 * A span with CSS class "value".
+	 * 
+	 * @param html
+	 *        The HTML builder
+	 * @param strings
+	 *        Values to append
+	 */
 	private static void appendValue( StringBuilder html, Object... strings )
 	{
 		html.append( "<span class=\"value\">" );

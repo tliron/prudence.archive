@@ -18,10 +18,7 @@ import org.restlet.data.Reference;
 import org.restlet.routing.Redirector;
 
 /**
- * A {@link Redirector} that normalizes relative paths.
- * <p>
- * This may be unecessary in future versions of Restlet. See <a
- * href="http://restlet.tigris.org/issues/show_bug.cgi?id=1056">issue 1056</a>.
+ * A {@link Redirector} that keeps track of the captured reference.
  * 
  * @author Tal Liron
  */
@@ -31,17 +28,40 @@ public class CaptiveRedirector extends Redirector
 	// Constants
 	//
 
+	/**
+	 * Request attribute of the captive {@link Reference}.
+	 * 
+	 * @see #getCaptiveReference(Request)
+	 * @see #setCaptiveReference(Request, Reference)
+	 */
 	public static final String CAPTIVE_REFERENCE = "com.threecrickets.prudence.util.CaptiveRedirector.captiveReference";
 
 	//
 	// Static attributes
 	//
 
+	/**
+	 * The captive reference.
+	 * 
+	 * @param request
+	 *        The request
+	 * @return The captured reference
+	 * @see #setCaptiveReference(Request, Reference)
+	 */
 	public static Reference getCaptiveReference( Request request )
 	{
 		return (Reference) request.getAttributes().get( CAPTIVE_REFERENCE );
 	}
 
+	/**
+	 * The captive reference.
+	 * 
+	 * @param request
+	 *        The request
+	 * @param captiveReference
+	 *        The captive reference
+	 * @see #getCaptiveReference(Request)
+	 */
 	public static void setCaptiveReference( Request request, Reference captiveReference )
 	{
 		request.getAttributes().put( CAPTIVE_REFERENCE, captiveReference );
@@ -52,22 +72,40 @@ public class CaptiveRedirector extends Redirector
 	//
 
 	/**
+	 * Construction for {@link Redirector#MODE_SERVER_OUTBOUND}.
+	 * 
 	 * @param context
+	 *        The context
 	 * @param targetTemplate
+	 *        The target template
+	 * @param root
+	 *        Whether to set the base reference to the root URI
 	 */
-	public CaptiveRedirector( Context context, String targetTemplate )
+	public CaptiveRedirector( Context context, String targetTemplate, boolean root )
 	{
-		super( context, targetTemplate );
+		this( context, targetTemplate, root, MODE_SERVER_OUTBOUND );
 	}
 
 	/**
+	 * Construction.
+	 * 
 	 * @param context
-	 * @param targetPattern
+	 *        The context
+	 * @param targetTemplate
+	 *        The target template
 	 * @param mode
+	 *        The redirection mode
+	 * @param root
+	 *        Whether to set the base reference to the root URI
 	 */
-	public CaptiveRedirector( Context context, String targetPattern, int mode )
+	public CaptiveRedirector( Context context, String targetPattern, boolean root, int mode )
 	{
 		super( context, targetPattern, mode );
+		this.root = root;
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "CaptiveRedirector" );
+		setDescription( "Redirector that keeps track of the captive reference" );
 	}
 
 	//
@@ -77,7 +115,10 @@ public class CaptiveRedirector extends Redirector
 	@Override
 	public void handle( Request request, Response response )
 	{
-		setCaptiveReference( request, request.getResourceRef() );
+		Reference captiveReference = root ? new Reference( request.getHostRef(), request.getResourceRef() ) : new Reference( request.getResourceRef() );
+		setCaptiveReference( request, captiveReference );
 		super.handle( request, response );
 	}
+
+	private final boolean root;
 }

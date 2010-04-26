@@ -150,7 +150,15 @@ public class CacheControlFilter extends Filter
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * Max age per media type.
+	 */
 	private final Map<MediaType, Integer> maxAgeForMediaType = new HashMap<MediaType, Integer>();
 
+	/**
+	 * Max age to use if not specified for the media type.
+	 * 
+	 * @see #maxAgeForMediaType
+	 */
 	private int defaultMaxAge = -1;
 }
