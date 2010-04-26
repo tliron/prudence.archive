@@ -1,6 +1,6 @@
 # Helper to access the context attributes
 
-def getContextAttribute(conversation, name, get_default_value):
+def get_context_attribute(conversation, name, get_default_value):
 	value = conversation.resource.context.attributes[name]
 	if value == None:
 		value = get_default_value()

@@ -7,11 +7,11 @@ import minjson as json
 
 prudence.include('../libraries/stickstick/data/')
 
-def handleInit(conversation):
+def handle_init(conversation):
     conversation.addMediaTypeByName('text/plain')
     conversation.addMediaTypeByName('application/json')
 
-def handleGet(conversation):
+def handle_get(conversation):
     form = conversation.resource.request.resourceRef.queryAsForm
     fresh = form.getFirstValue('fresh') == 'true'
 
@@ -41,7 +41,7 @@ def handleGet(conversation):
         conversation.modificationTimestamp = datetime_to_milliseconds(max_timestamp)
     return json.write({'boards': board_list, 'notes': note_list})
 
-def handleGetInfo(conversation):
+def handle_get_info(conversation):
     session = get_session()
     try:
         max_timestamp = session.query(func.max(Board.timestamp)).scalar()
@@ -49,7 +49,7 @@ def handleGetInfo(conversation):
         session.close()
     return datetime_to_milliseconds(max_timestamp)
 
-def handlePut(conversation):
+def handle_put(conversation):
     # Note: You can only "consume" the entity once, so if we want it
     # as text, and want to refer to it more than once, we should keep
     # a reference to that text.
@@ -66,4 +66,4 @@ def handlePut(conversation):
     finally:
         session.close()
     
-    return handleGet(conversation)
+    return handle_get(conversation)

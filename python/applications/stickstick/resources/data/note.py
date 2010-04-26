@@ -2,8 +2,9 @@ import sys
 sys.path.append('%s/../libraries/' % prudence.source.basePath)
 
 from sqlalchemy.orm.exc import NoResultFound
-from stickstick.data import *
 import minjson as json
+
+prudence.include('../libraries/stickstick/data/')
 
 def get_id(conversation):
     try:
@@ -15,11 +16,11 @@ def get_id(conversation):
     #form = conversation.resource.request.resourceRef.queryAsForm
     #return int(form.getFirstValue('id'))
 
-def handleInit(conversation):
+def handle_init(conversation):
     conversation.addMediaTypeByName('text/plain')
     conversation.addMediaTypeByName('application/json')
 
-def handleGet(conversation):
+def handle_get(conversation):
     id = get_id(conversation)
 
     session = get_session()
@@ -33,7 +34,7 @@ def handleGet(conversation):
     conversation.modificationTimestamp = datetime_to_milliseconds(note.timestamp)
     return json.write(note.to_dict())
 
-def handleGetInfo(conversation):
+def handle_get_info(conversation):
     id = get_id(conversation)
 
     session = get_session()
@@ -46,7 +47,7 @@ def handleGetInfo(conversation):
 
     return datetime_to_milliseconds(note.timestamp)
 
-def handlePost(conversation):
+def handle_post(conversation):
     id = get_id(conversation)
 
     # Note: You can only "consume" the entity once, so if we want it
@@ -70,7 +71,7 @@ def handlePost(conversation):
     conversation.modificationTimestamp = datetime_to_milliseconds(note.timestamp)
     return json.write(note.to_dict())
 
-def handleDelete(conversation):
+def handle_delete(conversation):
     id = get_id(conversation)
 
     session = get_session()

@@ -136,13 +136,14 @@ def get_engine(fresh=False):
                     convert_unicode=True,
                     pool_recycle=3600)
                 engine = prudence.getGlobal('engine', new_engine)
+
             Session.configure(bind=engine)
 
             #connection = engine.connect()
             #connection.execute('SET AUTOCOMMIT ON')
             #connection.close()
             
-            if not attributes['stickstick.host'] and fresh:
+            if attributes['stickstick.host'] is None and fresh:
                 if attributes['stickstick.backend'] == 'h2':
                     connection = engine.connect()
                     connection.execute('DROP ALL OBJECTS')
@@ -164,6 +165,8 @@ def get_engine(fresh=False):
                 pass
             finally:
                 session.close()
+        else:
+            Session.configure(bind=engine)
             
         return engine
     finally:

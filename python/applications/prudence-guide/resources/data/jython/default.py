@@ -31,23 +31,23 @@ import minjson as json
 # These make sure that our state is properly stored in the context,
 # so that we always use the same state, even if this script is recompiled.
 
-def getStateLock(conversation):
-	def createDefault():
+def get_state_lock(conversation):
+	def create_default():
 		return ReentrantReadWriteLock()
-	return getContextAttribute(conversation, 'jython.stateLock', createDefault)
+	return get_context_attribute(conversation, 'jython.stateLock', create_default)
 
-def getState(conversation):
-	def createDefault():
+def get_state(conversation):
+	def create_default():
 		return {'name': 'Coraline', 'media': 'Film', 'rating': 'A+', 'characters': ['Coraline', 'Wybie', 'Mom', 'Dad']}
-	return getContextAttribute(conversation, 'jython.state', createDefault)
+	return get_context_attribute(conversation, 'jython.state', create_default)
 
-def setState(conversation, value):
+def set_state(conversation, value):
 	conversation.resource.context.attributes['jython.state'] = value
 
 # This function is called when the resource is initialized. We will use it to set
 # general characteristics for the resource.
 
-def handleInit(conversation):
+def handle_init(conversation):
 	# The order in which we add the variants is their order of preference.
 	# Note that clients often include a wildcard (such as "*/*") in the
 	# "Accept" attribute of their request header, specifying that any media type
@@ -70,19 +70,19 @@ def handleInit(conversation):
 # Additionally, you can use conversation.variant to interrogate the client's provided
 # list of supported languages and encoding.
 
-def handleGet(conversation):
+def handle_get(conversation):
 	r = None
-	stateLock = getStateLock(conversation)
-	state = getState(conversation)
+	state_lock = get_state_lock(conversation)
+	state = get_state(conversation)
 
-	stateLock.readLock().lock()
+	state_lock.readLock().lock()
 	try:
 		r = json.write(state)
 	finally:
-		stateLock.readLock().unlock()
+		state_lock.readLock().unlock()
 	
 	# Return a representation appropriate for the requested media type
-	# of the possible options we created in handleInit()
+	# of the possible options we created in handle_init()
 
 	if conversation.mediaTypeName == 'application/json':
 		r = JsonRepresentation(r)
@@ -93,60 +93,60 @@ def handleGet(conversation):
 # logical "update" of the resource's state.
 #
 # The expectation is that conversation.entity represents an update to the state,
-# that will affect future calls to handleGet(). As such, it may be possible
+# that will affect future calls to handle_get(). As such, it may be possible
 # to accept logically partial representations of the state.
 #
-# You may optionally return a representation, in the same way as handleGet().
+# You may optionally return a representation, in the same way as handle_get().
 # Because Python functions return the last statement's value by default,
 # you must explicitly return a None if you do not want to return a representation
 # to the client.
 
-def handlePost(conversation):
+def handle_post(conversation):
 	# Note that we are using the minjson library to parse the entity. While
 	# a simple eval() would also work, minjson.read() is much safer.
 
 	update = json.read(conversation.entity.text)
-	stateLock = getStateLock(conversation)
-	state = getState(conversation)
+	state_lock = get_state_lock(conversation)
+	state = get_state(conversation)
 
 	# Update our state
-	stateLock.writeLock().lock()
+	state_lock.writeLock().lock()
 	try:
 		for key in update:
 			state[key] = update[key]
 	finally:
-		stateLock.writeLock().unlock()
+		state_lock.writeLock().unlock()
 
-	return handleGet(conversation)
+	return handle_get(conversation)
 
 # This function is called for the PUT verb, which is expected to behave as a
 # logical "create" of the resource's state.
 #
 # The expectation is that conversation.entity represents an entirely new state,
-# that will affect future calls to handleGet(). Unlike handlePost(),
+# that will affect future calls to handle_get(). Unlike handle_post(),
 # it is expected that the representation be logically complete.
 #
-# You may optionally return a representation, in the same way as handleGet().
+# You may optionally return a representation, in the same way as handle_get().
 # Because Python functions return the last statement's value by default,
 # you must explicitly return a None if you do not want to return a representation
 # to the client.
 
-def handlePut(conversation):
-	# See comment in handlePost()
+def handle_put(conversation):
+	# See comment in handle_post()
 
 	update = json.read(conversation.entity.text)
-	setState(conversation, update)
+	set_state(conversation, update)
 
-	return handleGet(conversation)
+	return handle_get(conversation)
 
 # This function is called for the DELETE verb, which is expected to behave as a
 # logical "delete" of the resource's state.
 #
-# The expectation is that subsequent calls to handleGet() will fail. As such,
+# The expectation is that subsequent calls to handle_get() will fail. As such,
 # it doesn't make sense to return a representation, and any returned value will
 # ignored. Still, it's a good idea to return None to avoid any passing of value.
 
-def handleDelete(conversation):
-	setState(conversation, {})
+def handle_delete(conversation):
+	set_state(conversation, {})
 
 	return None
