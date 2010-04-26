@@ -105,7 +105,7 @@ for(var i in urlAddTrailingSlash) {
 var languageManager = executable.context.manager;
 var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'rhino-nonjdk');
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'javascript');
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
@@ -135,7 +135,7 @@ router.attachBase(fixURL(staticWebBaseURL), staticWeb);
 
 var resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, resourcesMinimumTimeBetweenValidityChecks);
 attributes.put('com.threecrickets.prudence.DelegatedResource.languageManager', languageManager);
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultLanguageTag', 'rhino-nonjdk');
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultLanguageTag', 'javascript');
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName);
 attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource);
 attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable);
