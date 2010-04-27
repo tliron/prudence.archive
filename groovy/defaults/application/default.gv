@@ -18,25 +18,25 @@ includeOrDefault(applicationBasePath + '/settings/', 'defaults/application/setti
 
 includeOrDefault(applicationBasePath + '/application/', 'defaults/application/application/')
 
-application.name = applicationName
-application.description = applicationDescription
-application.author = applicationAuthor
-application.owner = applicationOwner
+prudenceApplication.name = applicationName
+prudenceApplication.description = applicationDescription
+prudenceApplication.author = applicationAuthor
+prudenceApplication.owner = applicationOwner
 
 //
 // StatusService
 //
 
-application.statusService = new DelegatedStatusService(showDebugOnError ? showSourceCodeURL : null)
-application.statusService.debugging = showDebugOnError
-application.statusService.homeRef = new Reference(applicationHomeURL)
-application.statusService.contactEmail = applicationContactEmail
+prudenceApplication.statusService = new DelegatedStatusService(showDebugOnError ? showSourceCodeURL : null)
+prudenceApplication.statusService.debugging = showDebugOnError
+prudenceApplication.statusService.homeRef = new Reference(applicationHomeURL)
+prudenceApplication.statusService.contactEmail = applicationContactEmail
 
 //
 // MetaData
 //
 
-application.metadataService.addExtension('php', MediaType.TEXT_HTML)
+prudenceApplication.metadataService.addExtension('php', MediaType.TEXT_HTML)
 
 //
 // Routing
@@ -48,7 +48,7 @@ includeOrDefault(applicationBasePath + '/routing/', 'defaults/application/routin
 // Logging
 //
 
-application.context.setLogger(applicationLoggerName)
+prudenceApplication.context.setLogger(applicationLoggerName)
 
 //
 // Additional/Override Runtime Attributes

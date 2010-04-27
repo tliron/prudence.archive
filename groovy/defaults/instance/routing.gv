@@ -21,7 +21,7 @@ for(applicationDir in applicationDirs) {
 		applicationBasePath = applicationDir.path
 		applicationDefaultURL = '/' + applicationDir.name + '/'
 		includeOrDefault(applicationBasePath, 'defaults/application')
-		applications.add(application)
+		applications.add(prudenceApplication)
 	}
 }
 
