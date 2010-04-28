@@ -14,10 +14,10 @@ jygments			1.0 (Revision 21)
 log4j				1.2.15
 mysqlconnector		5.1.8
 pygments			1.1.1
-quercus				4.0.1
+quercus				4.0.3
 restlet/JSE			2.0 (Revision 6545)
 rhino				1.7R2
-scripturian			1.0 (Revision 161)
+scripturian			1.0 (Revision 164)
 slf4j				1.5.8
 sqlalchemy			0.6 (Revision 6720 + H2 patch)
 succinct			1.0 (Revision 20)

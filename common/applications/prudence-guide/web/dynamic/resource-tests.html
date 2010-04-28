@@ -101,7 +101,9 @@ function seeMainSource() {
 <% #if($executable.context.manager.getAdapterByTag('javascript')) %>
 			<option value="../data/rhino/">JavaScript</option>
 <% #end %>
-			<!-- <option value="../data/quercus/">PHP [BROKEN]</option> -->
+<% #if($executable.context.manager.getAdapterByTag('quercus')) %>
+			<option value="../data/quercus/">PHP</option>
+<% #end %>
 		</select>
 		<input type="button" onclick="seeMainSource()" value="Source" />
 	</p>
