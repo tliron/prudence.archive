@@ -840,7 +840,7 @@ public class DelegatedResource extends ServerResource
 		}
 
 		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, null, getDefaultCharacterSet() );
-		invoke( getEntryPointNameForInit(), exposedConversation );
+		enter( getEntryPointNameForInit(), exposedConversation );
 	}
 
 	/**
@@ -906,7 +906,7 @@ public class DelegatedResource extends ServerResource
 		}
 
 		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, variant, getDefaultCharacterSet() );
-		Object r = invoke( getEntryPointNameForGet(), exposedConversation );
+		Object r = enter( getEntryPointNameForGet(), exposedConversation );
 		return getRepresentation( r, exposedConversation );
 	}
 
@@ -938,7 +938,7 @@ public class DelegatedResource extends ServerResource
 		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, variant, getDefaultCharacterSet() );
 		try
 		{
-			Object r = invoke( getEntryPointNameForGetInfo(), exposedConversation );
+			Object r = enter( getEntryPointNameForGetInfo(), exposedConversation );
 			return getRepresentationInfo( r, exposedConversation );
 		}
 		catch( ResourceException x )
@@ -980,7 +980,7 @@ public class DelegatedResource extends ServerResource
 	public Representation post( Representation entity, Variant variant ) throws ResourceException
 	{
 		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, entity, variant, getDefaultCharacterSet() );
-		Object r = invoke( getEntryPointNameForPost(), exposedConversation );
+		Object r = enter( getEntryPointNameForPost(), exposedConversation );
 		return getRepresentation( r, exposedConversation );
 	}
 
@@ -1014,7 +1014,7 @@ public class DelegatedResource extends ServerResource
 	public Representation put( Representation entity, Variant variant ) throws ResourceException
 	{
 		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, entity, variant, getDefaultCharacterSet() );
-		Object r = invoke( getEntryPointNameForPut(), exposedConversation );
+		Object r = enter( getEntryPointNameForPut(), exposedConversation );
 		return getRepresentation( r, exposedConversation );
 	}
 
@@ -1044,7 +1044,7 @@ public class DelegatedResource extends ServerResource
 	public Representation delete( Variant variant ) throws ResourceException
 	{
 		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, variant, getDefaultCharacterSet() );
-		invoke( getEntryPointNameForDelete(), exposedConversation );
+		enter( getEntryPointNameForDelete(), exposedConversation );
 		return null;
 	}
 
@@ -1074,7 +1074,7 @@ public class DelegatedResource extends ServerResource
 	public Representation options( Variant variant ) throws ResourceException
 	{
 		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, variant, getDefaultCharacterSet() );
-		Object r = invoke( getEntryPointNameForOptions(), exposedConversation );
+		Object r = enter( getEntryPointNameForOptions(), exposedConversation );
 		return getRepresentation( r, exposedConversation );
 	}
 
@@ -1268,7 +1268,7 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * Invokes an entry point in the document.
+	 * Enters the document.
 	 * 
 	 * @param entryPointName
 	 *        Name of entry point
@@ -1278,7 +1278,7 @@ public class DelegatedResource extends ServerResource
 	 * @throws ResourceException
 	 * @see {@link Executable#invoke(String, Object...)}
 	 */
-	private Object invoke( String entryPointName, ExposedConversationForDelegatedResource exposedConversation ) throws ResourceException
+	private Object enter( String entryPointName, ExposedConversationForDelegatedResource exposedConversation ) throws ResourceException
 	{
 		String name = getRequest().getResourceRef().getRemainingPart( true, false );
 
@@ -1296,14 +1296,13 @@ public class DelegatedResource extends ServerResource
 			DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( name, getDocumentSource(), false, getLanguageManager(), getDefaultLanguageTag(), isPrepare() );
 			Executable executable = documentDescriptor.getDocument();
 
-			ExecutionContext executionContext = executable.getExecutionContextForInvocations();
-			if( executionContext == null )
+			if( executable.getEnterableExecutionContext() == null )
 			{
-				executionContext = new ExecutionContext( getLanguageManager(), getWriter(), getErrorWriter() );
+				ExecutionContext executionContext = new ExecutionContext( getLanguageManager(), getWriter(), getErrorWriter() );
 				executionContext.getExposedVariables().put( getContainerName(), new ExposedContainerForDelegatedResource( this ) );
 				try
 				{
-					if( !executable.prepareForInvocation( executionContext, this, getExecutionController() ) )
+					if( !executable.makeEnterable( executionContext, this, getExecutionController() ) )
 						executionContext.release();
 				}
 				catch( ParsingException x )
@@ -1323,8 +1322,8 @@ public class DelegatedResource extends ServerResource
 				}
 			}
 
-			// Invoke!
-			return executable.invoke( entryPointName, exposedConversation );
+			// Enter!
+			return executable.enter( entryPointName, exposedConversation );
 		}
 		catch( FileNotFoundException x )
 		{

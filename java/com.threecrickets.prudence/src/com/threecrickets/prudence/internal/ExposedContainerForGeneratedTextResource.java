@@ -266,7 +266,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		Writer writer = resource.getWriter();
 
 		// Optimized handling for pure text
-		String pureText = executable.getAsPureText();
+		String pureText = executable.getAsPureLiteral();
 		if( pureText != null )
 		{
 			// We want to write this, too, for includes

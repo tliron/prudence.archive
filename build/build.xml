@@ -119,9 +119,9 @@
 
 	<!-- Basic -->
 
-	<target name="build" depends="kitchensink, standalone, javascript, python, clojure, groovy, ruby" description="Build all distributions" />
+	<target name="build" depends="kitchensink, standalone, javascript, python, clojure, groovy, ruby, php" description="Build all distributions" />
 
-	<target name="package" depends="package-kitchensink, package-standalone, package-javascript, package-python, package-clojure, package-groovy, package-ruby" description="Package all distributions" />
+	<target name="package" depends="package-kitchensink, package-standalone, package-javascript, package-python, package-clojure, package-groovy, package-ruby, package-php" description="Package all distributions" />
 
 	<target name="clean" description="Clean">
 		<delete dir="${tmp}" />
@@ -132,6 +132,7 @@
 		<delete dir="${dist-clojure}" />
 		<delete dir="${dist-groovy}" />
 		<delete dir="${dist-ruby}" />
+		<delete dir="${dist-php}" />
 		<delete>
 			<fileset dir="." includes="*.zip" />
 		</delete>
@@ -223,7 +224,7 @@
 	<fetch-library dist="${dist-kitchensink}" library="jython" />
 	<fetch-library dist="${dist-kitchensink}" library="log4j" />
 	<fetch-library dist="${dist-kitchensink}" library="mysqlconnector" />
-	<fetch-library dist="${dist-kitchensink}" library="quercus" />
+	<!-- GPL: <fetch-library dist="${dist-kitchensink}" library="quercus" /> -->
 	<fetch-library dist="${dist-kitchensink}" library="restlet" />
 	<fetch-library dist="${dist-kitchensink}" library="rhino" />
 	<fetch-library dist="${dist-kitchensink}" library="scripturian" />
@@ -503,6 +504,44 @@
 	<fetch-common-content dist="${dist-ruby}" base="${ruby}" bin-base="${ruby}" />
 	<!-- <fetch-syntaxhighlighter dist="${dist-ruby}" application="prudence-guide" />
 	<fetch-syntaxhighlighter dist="${dist-ruby}" application="stickstick" /> -->
+</target>
+
+<!-- PHP -->
+
+<target name="php" depends="libraries-php, content-php" description="Create distribution" />
+
+<target name="package-php" depends="php" description="Create distribution zip">
+	<package dist="${dist-php}" name="php" />
+</target>
+
+<target name="jar-php" depends="jar" description="Fetch Prudence jar">
+	<fetch-prudence-jar dist="${dist-php}" />
+</target>
+
+<target name="libraries-php" depends="jar-php" description="Fetch libraries">
+	<fetch-library dist="${dist-php}" library="grizzly" />
+	<fetch-library dist="${dist-php}" library="h2" />
+	<fetch-library dist="${dist-php}" library="json" />
+	<fetch-library dist="${dist-php}" library="jsr223" />
+	<fetch-library dist="${dist-php}" library="jygments" />
+	<fetch-library dist="${dist-php}" library="log4j" />
+	<fetch-library dist="${dist-php}" library="mysqlconnector" />
+	<!-- GPL: <fetch-library dist="${dist-php}" library="quercus" /> -->
+	<fetch-library dist="${dist-php}" library="restlet" />
+	<fetch-library dist="${dist-php}" library="scripturian" />
+	<fetch-library dist="${dist-php}" library="slf4j" />
+	<fetch-library dist="${dist-php}" library="velocity" />
+	<fetch-library-versions dist="${dist-php}" />
+</target>
+
+<target name="javadoc-php" depends="javadoc" description="Fetch Prudence API docs">
+	<fetch-javadocs dist="${dist-php}" />
+</target>
+
+<target name="content-php" depends="javadoc-php, revision" description="Fetch content">
+	<fetch-common-content dist="${dist-php}" base="${php}" bin-base="${php}" />
+	<!-- <fetch-syntaxhighlighter dist="${dist-php}" application="prudence-guide" />
+	<fetch-syntaxhighlighter dist="${dist-php}" application="stickstick" /> -->
 </target>
 
 </project>
