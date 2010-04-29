@@ -25,6 +25,7 @@
 	<property name="dist-clojure" value="./clojure" />
 	<property name="dist-groovy" value="./groovy" />
 	<property name="dist-ruby" value="./ruby" />
+	<property name="dist-php" value="./php" />
 
 	<!-- Tasks -->
 
