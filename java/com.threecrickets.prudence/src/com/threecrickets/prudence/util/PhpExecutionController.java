@@ -38,10 +38,6 @@ import com.threecrickets.scripturian.exception.ExecutionException;
 public class PhpExecutionController implements ExecutionController
 {
 	//
-	// Construction
-	//
-
-	//
 	// ExecutionController
 	//
 
