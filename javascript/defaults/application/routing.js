@@ -44,7 +44,7 @@ component.internalRouter.attach('/' + applicationInternalName + '/', application
 // Hosts
 //
 // Note that the application's context will not be created until we attach the application to at least one
-// virtual host. See component/hosts.js for more information.
+// virtual host. See defaults/instance/hosts.js for more information.
 //
 
 var addTrailingSlash = new Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT);

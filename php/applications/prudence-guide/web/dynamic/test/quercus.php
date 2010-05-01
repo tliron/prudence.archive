@@ -51,7 +51,7 @@ print '<p>This page was dynamically generated at ' . System::currentTimeMillis()
 // An example of a function
 //
 
-function printAdapter($adapter) {
+function print_adapter($adapter) {
 ?>
 <p>
 	<i>Adapter:</i> <?= $adapter->attributes->get('name') ?> version <?= $adapter->attributes->get('version') ?><br />
@@ -72,13 +72,13 @@ function printAdapter($adapter) {
 ?>
 <h3>Language used:</h3>
 <?
-printAdapter($executable->context->adapter);
+print_adapter($executable->context->adapter);
 ?>
 <h3>Available languages:</h3>
 <?
 $adapters = $executable->context->manager->adapters->toArray();
 foreach($adapters as $adapter) {
-	printAdapter($adapter);
+	print_adapter($adapter);
 }
 ?>
 </td><td>
@@ -91,7 +91,7 @@ for($i = 0; $i < 10; $i++) {
 ?>
 A multiple of three: 
 <?
-	printTriple($i);
+	print_triple($i);
 ?>
 <br />
 <?

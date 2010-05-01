@@ -1268,7 +1268,7 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * Enters the document.
+	 * Enters the executable.
 	 * 
 	 * @param entryPointName
 	 *        Name of entry point
@@ -1323,7 +1323,8 @@ public class DelegatedResource extends ServerResource
 			}
 
 			// Enter!
-			return executable.enter( entryPointName, exposedConversation );
+			Object r = executable.enter( entryPointName, exposedConversation );
+			return r;
 		}
 		catch( FileNotFoundException x )
 		{
@@ -1344,6 +1345,17 @@ public class DelegatedResource extends ServerResource
 		catch( NoSuchMethodException x )
 		{
 			throw new ResourceException( x );
+		}
+		finally
+		{
+			try
+			{
+				getWriter().flush();
+				getErrorWriter().flush();
+			}
+			catch( IOException x )
+			{
+			}
 		}
 	}
 }

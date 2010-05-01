@@ -42,7 +42,7 @@ component.internalRouter.attach('/' + applicationInternalName + '/', prudenceApp
 // Hosts
 //
 // Note that the application's context will not be created until we attach the application to at least one
-// virtual host. See component/hosts.gv for more information.
+// virtual host. See defaults/instance/hosts.gv for more information.
 //
 
 addTrailingSlash = new Redirector(prudenceApplication.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)

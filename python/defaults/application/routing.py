@@ -38,7 +38,7 @@ component.internalRouter.attach('/%s/' % application_internal_name, application)
 # Hosts
 #
 # Note that the application's context will not be created until we attach the application to at least one
-# virtual host. See component/hosts.py for more information.
+# virtual host. See defaults/instance/hosts.py for more information.
 #
 
 add_trailing_slash = Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)

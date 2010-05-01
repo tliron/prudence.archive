@@ -41,7 +41,7 @@ $component.internal_router.attach('/' + $application_internal_name + '/', $appli
 # Hosts
 #
 # Note that the application's context will not be created until we attach the application to at least one
-# virtual host. See component/hosts.rb for more information.
+# virtual host. See defaults/instance/hosts.rb for more information.
 #
 
 $add_trailing_slash = Redirector.new($application.context, '{ri}/', Redirector::MODE_CLIENT_PERMANENT)

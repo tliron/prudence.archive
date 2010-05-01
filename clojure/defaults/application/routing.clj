@@ -39,7 +39,7 @@
 ; Hosts
 ;
 ; Note that the application's context will not be created until we attach the application to at least one
-; virtual host. See component/hosts.clj for more information.
+; virtual host. See defaults/instance/hosts.clj for more information.
 ;
 
 (def add-trailing-slash (Redirector. (.getContext application) "{ri}/" Redirector/MODE_CLIENT_PERMANENT))

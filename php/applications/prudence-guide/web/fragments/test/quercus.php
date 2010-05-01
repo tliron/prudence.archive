@@ -19,7 +19,7 @@
 // or load it from a network location. This is currently impossible with Quercus. 
 //
 
-function printTriple($value) {
+function print_triple($value) {
 	print $value*3;
 }
 

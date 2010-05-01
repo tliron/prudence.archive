@@ -345,6 +345,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 			else
 			{
 				writer.flush();
+				executionContext.getErrorWriter().flush();
 
 				// Get the buffer from when we executed the executable
 				CacheEntry cacheEntry = new CacheEntry( buffer.substring( startPosition ), exposedConversation.getMediaType(), exposedConversation.getLanguage(), exposedConversation.getCharacterSet(), getExpiration() );
@@ -380,6 +381,11 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 			}
 			else
 				throw x;
+		}
+		finally
+		{
+			writer.flush();
+			executionContext.getErrorWriter().flush();
 		}
 	}
 }

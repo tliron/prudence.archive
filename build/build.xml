@@ -262,6 +262,7 @@
 		<fileset dir="${groovy}/applications/prudence-guide/libraries" />
 		<fileset dir="${clojure}/applications/prudence-guide/libraries" />
 		<fileset dir="${javascript}/applications/prudence-guide/libraries" />
+		<fileset dir="${php}/applications/prudence-guide/libraries" />
 	</copy>
 	<!-- <fetch-syntaxhighlighter dist="${dist-kitchensink}" application="prudence-guide" /> -->
 	<!-- Fetch other applications -->
