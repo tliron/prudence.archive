@@ -32,22 +32,35 @@ public class NormalizingRedirector extends Redirector
 	//
 
 	/**
+	 * Construction for {@link Redirector#MODE_SERVER_OUTBOUND}.
+	 * 
 	 * @param context
+	 *        The context
 	 * @param targetTemplate
+	 *        The target template
 	 */
 	public NormalizingRedirector( Context context, String targetTemplate )
 	{
-		super( context, targetTemplate );
+		this( context, targetTemplate, MODE_SERVER_OUTBOUND );
 	}
 
 	/**
+	 * Construction.
+	 * 
 	 * @param context
+	 *        The context
 	 * @param targetPattern
+	 *        The target template
 	 * @param mode
+	 *        The redirection mode
 	 */
 	public NormalizingRedirector( Context context, String targetPattern, int mode )
 	{
 		super( context, targetPattern, mode );
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "NormalizingRedirector" );
+		setDescription( "Redirector that normalizes relative paths" );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

@@ -83,7 +83,7 @@ foreach($adapters as $adapter) {
 ?>
 </td><td>
 <h3>The "id" attribute in the URL query is:</h3>
-<p><?= $form->getFirstValue('id') ?></p>
+<p><?= $_GET['id'] ?></p>
 <h3>A few tests:</h3>
 <p>
 <?

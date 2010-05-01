@@ -159,6 +159,8 @@
 				<fileset dir="${lib}/jygments/lib" />
 				<fileset dir="${lib}/junit/lib" />
 				<fileset dir="${lib}/groboutils/lib" />
+				<fileset dir="${lib}/commons-fileupload/lib" />
+				<fileset dir="${lib}/servlet/lib" />
 			</classpath>
 		</javac>
 	</target>
@@ -180,6 +182,7 @@
 			<link href="http://java.sun.com/javase/6/docs/api/" />
 			<link href="http://threecrickets.com/scripturian/api/" />
 			<link href="http://www.restlet.org/documentation/2.0/jse/api/" />
+			<link href="http://commons.apache.org/fileupload/apidocs/" />
 			<classpath>
 				<fileset dir="${lib}/restlet/lib" />
 				<fileset dir="${lib}/jsr223/lib" />
@@ -211,6 +214,7 @@
 
 <target name="libraries-kitchensink" depends="jar-kitchensink" description="Fetch libraries">
 	<fetch-library dist="${dist-kitchensink}" library="clojure" />
+	<fetch-library dist="${dist-kitchensink}" library="commons-fileupload" />
 	<fetch-library dist="${dist-kitchensink}" library="grizzly" />
 	<fetch-library dist="${dist-kitchensink}" library="groboutils" />
 	<fetch-library dist="${dist-kitchensink}" library="groovy" />
@@ -229,6 +233,7 @@
 	<fetch-library dist="${dist-kitchensink}" library="restlet" />
 	<fetch-library dist="${dist-kitchensink}" library="rhino" />
 	<fetch-library dist="${dist-kitchensink}" library="scripturian" />
+	<fetch-library dist="${dist-kitchensink}" library="servlet" />
 	<fetch-library dist="${dist-kitchensink}" library="slf4j" />
 	<fetch-library dist="${dist-kitchensink}" library="sqlalchemy" />
 	<fetch-library dist="${dist-kitchensink}" library="velocity" />
@@ -331,6 +336,7 @@
 </target>
 
 <target name="libraries-javascript" depends="jar-javascript" description="Fetch libraries">
+	<fetch-library dist="${dist-javascript}" library="commons-fileupload" />
 	<fetch-library dist="${dist-javascript}" library="grizzly" />
 	<fetch-library dist="${dist-javascript}" library="h2" />
 	<fetch-library dist="${dist-javascript}" library="json" />
@@ -340,6 +346,7 @@
 	<fetch-library dist="${dist-javascript}" library="restlet" />
 	<fetch-library dist="${dist-javascript}" library="rhino" />
 	<fetch-library dist="${dist-javascript}" library="scripturian" />
+	<fetch-library dist="${dist-javascript}" library="servlet" />
 	<fetch-library dist="${dist-javascript}" library="slf4j" />
 	<fetch-library dist="${dist-javascript}" library="velocity" />
 	<fetch-library-versions dist="${dist-javascript}" />
@@ -367,6 +374,7 @@
 </target>
 
 <target name="libraries-python" depends="jar-python" description="Fetch libraries">
+	<fetch-library dist="${dist-python}" library="commons-fileupload" />
 	<fetch-library dist="${dist-python}" library="grizzly" />
 	<fetch-library dist="${dist-python}" library="h2" />
 	<fetch-library dist="${dist-python}" library="jepp" />
@@ -378,6 +386,7 @@
 	<fetch-library dist="${dist-python}" library="mysqlconnector" />
 	<fetch-library dist="${dist-python}" library="restlet" />
 	<fetch-library dist="${dist-python}" library="scripturian" />
+	<fetch-library dist="${dist-python}" library="servlet" />
 	<fetch-library dist="${dist-python}" library="slf4j" />
 	<fetch-library dist="${dist-python}" library="sqlalchemy" />
 	<fetch-library dist="${dist-python}" library="velocity" />
@@ -408,6 +417,7 @@
 
 <target name="libraries-clojure" depends="jar-clojure" description="Fetch libraries">
 	<fetch-library dist="${dist-clojure}" library="clojure" />
+	<fetch-library dist="${dist-clojure}" library="commons-fileupload" />
 	<fetch-library dist="${dist-clojure}" library="grizzly" />
 	<fetch-library dist="${dist-clojure}" library="h2" />
 	<fetch-library dist="${dist-clojure}" library="json" />
@@ -417,6 +427,7 @@
 	<fetch-library dist="${dist-clojure}" library="mysqlconnector" />
 	<fetch-library dist="${dist-clojure}" library="restlet" />
 	<fetch-library dist="${dist-clojure}" library="scripturian" />
+	<fetch-library dist="${dist-clojure}" library="servlet" />
 	<fetch-library dist="${dist-clojure}" library="slf4j" />
 	<fetch-library dist="${dist-clojure}" library="velocity" />
 	<fetch-library-versions dist="${dist-clojure}" />
@@ -445,6 +456,7 @@
 </target>
 
 <target name="libraries-groovy" depends="jar-groovy" description="Fetch libraries">
+	<fetch-library dist="${dist-groovy}" library="commons-fileupload" />
 	<fetch-library dist="${dist-groovy}" library="grizzly" />
 	<fetch-library dist="${dist-groovy}" library="groovy" />
 	<fetch-library dist="${dist-groovy}" library="h2" />
@@ -455,6 +467,7 @@
 	<fetch-library dist="${dist-groovy}" library="mysqlconnector" />
 	<fetch-library dist="${dist-groovy}" library="restlet" />
 	<fetch-library dist="${dist-groovy}" library="scripturian" />
+	<fetch-library dist="${dist-groovy}" library="servlet" />
 	<fetch-library dist="${dist-groovy}" library="slf4j" />
 	<fetch-library dist="${dist-groovy}" library="velocity" />
 	<fetch-library-versions dist="${dist-groovy}" />
@@ -483,6 +496,7 @@
 </target>
 
 <target name="libraries-ruby" depends="jar-ruby" description="Fetch libraries">
+	<fetch-library dist="${dist-ruby}" library="commons-fileupload" />
 	<fetch-library dist="${dist-ruby}" library="grizzly" />
 	<fetch-library dist="${dist-ruby}" library="h2" />
 	<fetch-library dist="${dist-ruby}" library="jruby" />
@@ -493,6 +507,7 @@
 	<fetch-library dist="${dist-ruby}" library="mysqlconnector" />
 	<fetch-library dist="${dist-ruby}" library="restlet" />
 	<fetch-library dist="${dist-ruby}" library="scripturian" />
+	<fetch-library dist="${dist-ruby}" library="servlet" />
 	<fetch-library dist="${dist-ruby}" library="slf4j" />
 	<fetch-library dist="${dist-ruby}" library="velocity" />
 	<fetch-library-versions dist="${dist-ruby}" />
@@ -521,6 +536,7 @@
 </target>
 
 <target name="libraries-php" depends="jar-php" description="Fetch libraries">
+	<fetch-library dist="${dist-php}" library="commons-fileupload" />
 	<fetch-library dist="${dist-php}" library="grizzly" />
 	<fetch-library dist="${dist-php}" library="h2" />
 	<fetch-library dist="${dist-php}" library="json" />
@@ -531,6 +547,7 @@
 	<!-- GPL: <fetch-library dist="${dist-php}" library="quercus" /> -->
 	<fetch-library dist="${dist-php}" library="restlet" />
 	<fetch-library dist="${dist-php}" library="scripturian" />
+	<fetch-library dist="${dist-php}" library="servlet" />
 	<fetch-library dist="${dist-php}" library="slf4j" />
 	<fetch-library dist="${dist-php}" library="velocity" />
 	<fetch-library-versions dist="${dist-php}" />

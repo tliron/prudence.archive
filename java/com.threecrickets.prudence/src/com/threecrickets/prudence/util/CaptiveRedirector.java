@@ -120,5 +120,11 @@ public class CaptiveRedirector extends Redirector
 		super.handle( request, response );
 	}
 
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	/**
+	 * Whether to set the base reference to the root URI.
+	 */
 	private final boolean root;
 }

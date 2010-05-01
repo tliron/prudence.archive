@@ -15,6 +15,7 @@ import com.threecrickets.scripturian.util.DefrostTask;
 import com.threecrickets.scripturian.file.DocumentFileSource;
 import com.threecrickets.prudence.util.PrudenceRouter;
 import com.threecrickets.prudence.util.PreheatTask;
+import com.threecrickets.prudence.util.PhpExecutionController;
 
 global $component, $tasks, $application, $attributes;
 global $application_internal_name, $application_logger_name, $application_base_path, $application_default_url;
@@ -124,6 +125,7 @@ $attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag
 $attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = $dynamic_web_default_document;
 $attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source;
 $attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = $dynamic_web_source_viewable;
+$attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController(); // Adds PHP predefined variables
 
 $dynamic_web = new Finder($application->context, $classLoader->loadClass('com.threecrickets.prudence.GeneratedTextResource'));
 $router->attachBase(fix_url($dynamic_web_base_url), $dynamic_web);

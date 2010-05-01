@@ -1,4 +1,5 @@
 clojure				1.1.0
+commons-fileupload	1.2.1
 grizzly				1.9.18-k
 groboutils			5
 groovy				1.7.2
@@ -17,7 +18,8 @@ pygments			1.1.1
 quercus				4.0.3
 restlet/JSE			2.0 (Revision 6545)
 rhino				1.7R2
-scripturian			1.0 (Revision 171)
+servlet/tomcat		6.0.26
+scripturian			1.0 (Revision 172)
 slf4j				1.5.8
 sqlalchemy			0.6 (Revision 6720 + H2 patch)
 succinct			1.0 (Revision 20)

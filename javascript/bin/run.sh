@@ -17,6 +17,8 @@ libraries/com.threecrickets.jygments.jar:\
 libraries/com.threecrickets.prudence.jar:\
 libraries/com.threecrickets.scripturian.jar:\
 libraries/javax.script.jar:\
+libraries/javax.servlet.jar:\
+libraries/org.apache.commons.fileupload.jar:\
 libraries/org.apache.log4j.jar:\
 libraries/org.apache.velocity.jar:\
 libraries/org.codehaus.jackson.jar:\
@@ -24,6 +26,7 @@ libraries/org.codehaus.jackson.mapper.jar:\
 libraries/org.h2.jar:^
 libraries/org.json.jar:\
 libraries/org.mozilla.javascript.jar:\
+libraries/org.restlet.ext.fileupload.jar:\
 libraries/org.restlet.ext.grizzly.jar:\
 libraries/org.restlet.ext.jackson.jar:\
 libraries/org.restlet.ext.json.jar:\
