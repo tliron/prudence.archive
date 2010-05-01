@@ -3,22 +3,22 @@
 // Prudence Guide Settings
 //
 
-global $component, $hosts, $defaultHost, $mysiteHost;
-global $applicationName, $applicationDescription, $applicationAuthor, $applicationHomeURL, $applicationContactEmail;
-global $showDebugOnError, $preheatResources;
+global $component, $hosts, $mysite_host;
+global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
+global $show_debug_on_error, $preheat_resources;
 
 $executable->container->include('defaults/application/settings/');
 
-$applicationName = 'Prudence Guide';
-$applicationDescription = 'Prudence web site, documentation, and tests';
-$applicationAuthor = 'Tal Liron';
-$applicationOwner = 'Three Crickets';
-$applicationHomeURL = 'http://threecrickets.com/prudence/';
-$applicationContactEmail = 'prudence@threecrickets.com';
+$application_name = 'Prudence Guide';
+$application_description = 'Prudence web site, documentation, and tests';
+$application_author = 'Tal Liron';
+$application_owner = 'Three Crickets';
+$application_home_url = 'http://threecrickets.com/prudence/';
+$application_contact_email = 'prudence@threecrickets.com';
 
-$hosts = array(array($component->defaultHost, NULL), array($mysiteHost, NULL));
+$hosts = array(array($component->defaultHost, NULL), array($mysite_host, NULL));
 
-$showDebugOnError = true;
+$show_debug_on_error = true;
 
-$preheatResources = array('/data/jython/', '/data/jruby/', '/data/groovy/', '/data/clojure/', '/data/rhino/');
+$preheat_resources = array('/data/jython/', '/data/jruby/', '/data/groovy/', '/data/clojure/', '/data/rhino/');
 ?>

@@ -29,14 +29,14 @@ import org.restlet.data.Protocol;
 // Note: Quercus will not let us access
 // Protocol::FILE or Protocol::HTTP directly.
 
-$defaultServer = new Server(Protocol::valueOf('HTTP'), 8080);
-$defaultServer->name = 'default';
-$component->servers->add($defaultServer);
+$default_server = new Server(Protocol::valueOf('HTTP'), 8080);
+$default_server->name = 'default';
+$component->servers->add($default_server);
 
 // Add support for the X-FORWARDED-FOR header used by proxies, such as Apache's
 // mod_proxy. This guarantees that request.clientInfo.upstreamAddress returns
 // the upstream address behind the proxy.
-$defaultServer->context->parameters->add('useForwardedForHeader', 'true');
+$default_server->context->parameters->add('useForwardedForHeader', 'true');
 
 //
 // HTTP server bound to a specific IP address
@@ -46,9 +46,9 @@ $defaultServer->context->parameters->add('useForwardedForHeader', 'true');
 // that it's the interface open to the Internet at large.
 //
 
-//$worldServer = new Server(Protocol.HTTP, '192.168.1.2', 80);
-//worldServer.name = 'world';
-//component.servers.add(worldServer);
+//$world_server = new Server(Protocol::valueOf('HTTP'), '192.168.1.2', 80);
+//$world_server.name = 'world';
+//$component->servers->add($world_server);
 
 //
 // Welcome

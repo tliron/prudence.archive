@@ -3,9 +3,9 @@
 // Stickstick Routing
 //
 
-global $router, $resourcesBaseURL;
+global $router, $resources_base_url;
 
 $executable->container->include('defaults/application/routing/');
 
-$router->capture(fixURL($resourcesBaseURL . '/data/note/{id}/'), '/data/note/');
+$router->capture(fix_url($resources_base_url . '/data/note/{id}/'), '/data/note/');
 ?>

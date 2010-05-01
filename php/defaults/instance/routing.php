@@ -3,28 +3,28 @@
 // Prudence Routing
 //
 
-global $component, $applicationName, $applicationInternalName, $applicationLoggerName, $applicationBasePath, $applicationDefaultURL, $application;
+global $component, $application_name, $application_internal_name, $application_logger_name, $application_base_path, $application_default_url, $application;
 
 import java.io.File;
 import java.util.ArrayList;
 
 // Hosts
 
-includeOrDefault('instance/hosts/');
+include_or_default('instance/hosts/');
 
 // Applications
 
 $applications = new ArrayList();
-$component->context->attributes->put('applications', $applications);
-$applicationDirs = new File('applications')->listFiles();
-foreach($applicationDirs as $applicationDir) {
-	if($applicationDir->directory) {
-		$applicationName = $applicationDir->name;
-		$applicationInternalName = $applicationDir->name;
-		$applicationLoggerName = $applicationDir->name;
-		$applicationBasePath = $applicationDir->path;
-		$applicationDefaultURL = '/' . $applicationDir->name . '/';
-		includeOrDefault($applicationBasePath, 'defaults/application');
+$component->context->attributes['applications'] = $applications;
+$application_dirs = new File('applications')->listFiles();
+foreach($application_dirs as $application_dir) {
+	if($application_dir->directory) {
+		$application_name = $application_dir->name;
+		$application_internal_name = $application_dir->name;
+		$application_logger_name = $application_dir->name;
+		$application_base_path = $application_dir->path;
+		$application_default_url = '/' . $application_dir->name . '/';
+		include_or_default($application_base_path, 'defaults/application');
 		$applications->add($application);
 	}
 }

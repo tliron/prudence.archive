@@ -17,17 +17,16 @@ import com.threecrickets.prudence.util.PrudenceRouter;
 import com.threecrickets.prudence.util.PreheatTask;
 
 global $component, $tasks, $application, $attributes;
-global $applicationInternalName, $applicationLoggerName, $applicationBasePath, $applicationDefaultURL;
-global $applicationName, $applicationDescription, $applicationAuthor, $applicationHomeURL, $applicationContactEmail;
-global $showDebugOnError, $showSourceCodeURL;
-global $applicationLoggerName;
+global $application_internal_name, $application_logger_name, $application_base_path, $application_default_url;
+global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
+global $show_debug_on_error, $show_source_code_url;
 global $hosts;
-global $resourcesBaseURL, $resourcesBasePath, $resourcesDefaultName, $resourcesDefrost, $resourcesSourceViewable, $resourcesMinimumTimeBetweenValidityChecks;
-global $dynamicWebBaseURL, $dynamicWebBasePath, $dynamicWebDefaultDocument, $dynamicWebDefrost, $dynamicWebPreheat, $dynamicWebSourceViewable, $dynamicWebMinimumTimeBetweenValidityChecks;
-global $staticWebBaseURL, $staticWebBasePath, $staticWebDirectoryListingAllowed;
-global $preheatResources;
-global $urlAddTrailingSlash;
-global $runtimeAttributes;
+global $resources_base_url, $resources_base_path, $resources_default_name, $resources_defrost, $resources_source_viewable, $resources_minimum_time_between_validity_checks;
+global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_source_viewable, $dynamic_web_minimum_time_between_validity_checks;
+global $static_web_base_url, $static_web_base_path, $static_web_directory_listing_allowed;
+global $preheat_resources;
+global $url_add_trailing_slash;
+global $runtime_attributes;
 
 $classLoader = ClassLoader::getSystemClassLoader();
 
@@ -36,8 +35,8 @@ $classLoader = ClassLoader::getSystemClassLoader();
 //
 
 // Makes sure we have slashes where we expect them
-if(!function_exists('fixURL')) {
-	function fixURL($url) {
+if(!function_exists('fix_url')) {
+	function fix_url($url) {
 		$url = str_replace('//', '/', $url); // no doubles
 		if(strlen($url) > 0 && $url[0] == '/') { // never at the beginning
 			$url = substr($url, 1);
@@ -53,7 +52,7 @@ if(!function_exists('fixURL')) {
 // Internal router
 //
 
-$component->internalRouter->attach('/' . $applicationInternalName . '/', $application)->matchingMode = Template::MODE_STARTS_WITH;
+$component->internalRouter->attach('/' . $application_internal_name . '/', $application)->matchingMode = Template::MODE_STARTS_WITH;
 
 //
 // Hosts
@@ -62,7 +61,7 @@ $component->internalRouter->attach('/' . $applicationInternalName . '/', $applic
 // virtual host. See defaults/instance/hosts.php for more information.
 //
 
-$addTrailingSlash = new Redirector($application->context, '{ri}/', Redirector::MODE_CLIENT_PERMANENT);
+$add_trailing_slash = new Redirector($application->context, '{ri}/', Redirector::MODE_CLIENT_PERMANENT);
 
 print $application->name . ': '
 $i = 0;
@@ -70,7 +69,7 @@ foreach($hosts as $entry) {
 	$host = $entry[0];
 	$url = $entry[1];
 	if(is_null($url)) {
-		$url = $applicationDefaultURL;
+		$url = $application_default_url;
 	}
 	print '"' . $url . '" on ' . $host->name;
 	$host->attach($url, $application)->matchingMode = Template::MODE_STARTS_WITH;
@@ -78,7 +77,7 @@ foreach($hosts as $entry) {
 		if($url[strlen($url) - 1] == '/') {
 			$url = substr($url, 0, -1);
 		}
-		$host->attach($url, $addTrailingSlash)->matchingMode = Template::MODE_EQUALS;
+		$host->attach($url, $add_trailing_slash)->matchingMode = Template::MODE_EQUALS;
 	}
 	if($i < count($hosts) - 1) {
 		print ', ';
@@ -89,7 +88,7 @@ print ".\n";
 
 $attributes = $application->context->attributes;
 
-$attributes->put('component', $component);
+$attributes['component'] = $component;
 
 //
 // Inbound root
@@ -103,8 +102,8 @@ $application->inboundRoot = $router;
 // Add trailing slashes
 //
 
-foreach($urlAddTrailingSlash as $url) {
-	$url = fixURL($url);
+foreach($url_add_trailing_slash as $url) {
+	$url = fix_url($url);
 	if(strlen($url) > 0) {
 		if($url[strlen($url) - 1] == '/') {
 			// Remove trailing slash for pattern
@@ -118,21 +117,21 @@ foreach($urlAddTrailingSlash as $url) {
 // Dynamic web
 //
 
-$languageManager = $executable->context->manager;
-$dynamicWebDocumentSource = new DocumentFileSource($applicationBasePath . $dynamicWebBasePath, $dynamicWebDefaultDocument, $dynamicWebMinimumTimeBetweenValidityChecks);
-$attributes->put('com.threecrickets.prudence.GeneratedTextResource.languageManager', $languageManager);
-$attributes->put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'php');
-$attributes->put('com.threecrickets.prudence.GeneratedTextResource.defaultName', $dynamicWebDefaultDocument);
-$attributes->put('com.threecrickets.prudence.GeneratedTextResource.documentSource',$dynamicWebDocumentSource);
-$attributes->put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', $dynamicWebSourceViewable);
+$language_manager = $executable->context->manager;
+$dynamic_web_document_source = new DocumentFileSource($application_base_path . $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_minimum_time_between_validity_checks);
+$attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = $language_manager;
+$attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'php';
+$attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = $dynamic_web_default_document;
+$attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source;
+$attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = $dynamic_web_source_viewable;
 
-$dynamicWeb = new Finder($application->context, $classLoader->loadClass('com.threecrickets.prudence.GeneratedTextResource'));
-$router->attachBase(fixURL($dynamicWebBaseURL), $dynamicWeb);
+$dynamic_web = new Finder($application->context, $classLoader->loadClass('com.threecrickets.prudence.GeneratedTextResource'));
+$router->attachBase(fix_url($dynamic_web_base_url), $dynamic_web);
 
-if($dynamicWebDefrost) {
-	$defrostTasks = DefrostTask::forDocumentSource($dynamicWebDocumentSource, $languageManager, true, true);
-	foreach($defrostTasks as $defrostTask) {
-		$tasks[] = $defrostTask;
+if($dynamic_web_defrost) {
+	$defrost_tasks = DefrostTask::forDocumentSource($dynamic_web_document_source, $language_manager, true, true);
+	foreach($defrost_tasks as $defrost_task) {
+		$tasks[] = $defrost_task;
 	}
 }
 
@@ -140,29 +139,29 @@ if($dynamicWebDefrost) {
 // Static web
 //
 
-$staticWeb = new Directory($router->context, new File($applicationBasePath . $staticWebBasePath)->toURI()->toString());
-$staticWeb->listingAllowed = $staticWebDirectoryListingAllowed;
-$staticWeb->negotiatingContent = true;
-$router->attachBase(fixURL($staticWebBaseURL), $staticWeb);
+$static_web = new Directory($router->context, new File($application_base_path . $static_web_base_path)->toURI()->toString());
+$static_web->listingAllowed = $static_web_directory_listing_allowed;
+$static_web->negotiatingContent = true;
+$router->attachBase(fix_url($static_web_base_url), $static_web);
 
 //
 // Resources
 //
 
-$resourcesDocumentSource = new DocumentFileSource($applicationBasePath . $resourcesBasePath, $resourcesDefaultName, $resourcesMinimumTimeBetweenValidityChecks);
-$attributes->put('com.threecrickets.prudence.DelegatedResource.languageManager', $languageManager);
-$attributes->put('com.threecrickets.prudence.DelegatedResource.defaultLanguageTag', 'php');
-$attributes->put('com.threecrickets.prudence.DelegatedResource.defaultName', $resourcesDefaultName);
-$attributes->put('com.threecrickets.prudence.DelegatedResource.documentSource', $resourcesDocumentSource);
-$attributes->put('com.threecrickets.prudence.DelegatedResource.sourceViewable', $resourcesSourceViewable);
+$resources_document_source = new DocumentFileSource($application_base_path . $resources_base_path, $resources_default_name, $resources_minimum_time_between_validity_checks);
+$attributes['com.threecrickets.prudence.DelegatedResource.languageManager'] = $language_manager;
+$attributes['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'php';
+$attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = $resources_default_name;
+$attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = $resources_document_source;
+$attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = $resources_source_viewable;
 
 $resources = new Finder($application->context, $classLoader->loadClass('com.threecrickets.prudence.DelegatedResource'));
-$router->attachBase(fixURL($resourcesBaseURL), $resources);
+$router->attachBase(fix_url($resources_base_url), $resources);
 
-if($resourcesDefrost) {
-	$defrostTasks = DefrostTask::forDocumentSource($resourcesDocumentSource, $languageManager, false, true);
-	foreach($defrostTasks as $defrostTask) {
-		$tasks[] = $defrostTask;
+if($resources_defrost) {
+	$defrost_tasks = DefrostTask::forDocumentSource($resources_document_source, $language_manager, false, true);
+	foreach($defrost_tasks as $defrost_task) {
+		$tasks[] = $defrost_task;
 	}
 }
 
@@ -170,27 +169,27 @@ if($resourcesDefrost) {
 // SourceCode
 //
 
-if(showDebugOnError) {
-	$documentSources = new ArrayList();
-	$documentSources->add($dynamicWebDocumentSource);
-	$documentSources->add($resourcesDocumentSource);
-	$attributes->put('com.threecrickets.prudence.SourceCodeResource.documentSources', $documentSources);
-	$sourceCode = new Finder($application->context, $classLoader->loadClass('com.threecrickets.prudence.SourceCodeResource'));
-	$router->attach(fixURL($showSourceCodeURL), $sourceCode)->matchingMode = Template::MODE_EQUALS;
+if($show_debug_on_error) {
+	$document_sources = new ArrayList();
+	$document_sources->add($dynamic_web_document_source);
+	$document_sources->add($resources_document_source);
+	$attributes['com.threecrickets.prudence.SourceCodeResource.documentSources'] = $document_sources;
+	$source_code = new Finder($application->context, $classLoader->loadClass('com.threecrickets.prudence.SourceCodeResource'));
+	$router->attach(fix_url($show_source_code_url), $source_code)->matchingMode = Template::MODE_EQUALS;
 }
 
 //
 // Preheat
 //
 
-if($dynamicWebPreheat) {
-	$preheatTasks = PreheatTask::forDocumentSource($dynamicWebDocumentSource, $component->context, $applicationInternalName);
-	foreach($preheatTasks as $preheatTask) {
-		$tasks[] = $preheatTask;
+if($dynamic_web_preheat) {
+	$preheat_tasks = PreheatTask::forDocumentSource($dynamic_web_document_source, $component->context, $application_internal_name);
+	foreach($preheat_tasks as $preheat_task) {
+		$tasks[] = $preheat_task;
 	}
 }
 
-foreach($preheatResources as $preheatResource) {
-	$tasks[] = new PreheatTask($component->context, $applicationInternalName, $preheatResource);
+foreach($preheat_resources as $preheat_resource) {
+	$tasks[] = new PreheatTask($component->context, $application_internal_name, $preheat_resource);
 }
 ?>

@@ -3,26 +3,25 @@
 // Stickstick Settings
 //
 
-global $component, $hosts, $defaultHost, $mysiteHost;
-global $applicationName, $applicationDescription, $applicationAuthor, $applicationHomeURL, $applicationContactEmail;
-global $runtimeAttributes, $showDebugOnError, $preheatResources;
+global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
+global $runtime_attributes, $show_debug_on_error, $preheat_resources;
 
 $executable->container->include('defaults/application/settings/');
 
-$applicationName = 'Stickstick';
-$applicationDescription = 'Share online sticky notes';
-$applicationAuthor = 'Tal Liron';
-$applicationOwner = 'Three Crickets';
-$applicationHomeURL = 'http://threecrickets.com/prudence/stickstick/';
-$applicationContactEmail = 'prudence@threecrickets.com';
+$application_name = 'Stickstick';
+$application_description = 'Share online sticky notes';
+$application_author = 'Tal Liron';
+$application_owner = 'Three Crickets';
+$application_home_url = 'http://threecrickets.com/prudence/stickstick/';
+$application_contact_email = 'prudence@threecrickets.com';
 
-$runtimeAttributes['stickstick.backend'] = 'h2';
-$runtimeAttributes['stickstick.username'] = 'root';
-$runtimeAttributes['stickstick.password'] = 'root';
-$runtimeAttributes['stickstick.host'] = '';
-$runtimeAttributes['stickstick.database'] = 'data/h2/stickstick';
+$runtime_attributes['stickstick.backend'] = 'h2';
+$runtime_attributes['stickstick.username'] = 'root';
+$runtime_attributes['stickstick.password'] = 'root';
+$runtime_attributes['stickstick.host'] = '';
+$runtime_attributes['stickstick.database'] = 'data/h2/stickstick';
 
-$showDebugOnError = true;
+$show_debug_on_error = true;
 
-$preheatResources = array('data/');
+$preheat_resources = array('data/');
 ?>

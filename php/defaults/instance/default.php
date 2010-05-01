@@ -14,7 +14,7 @@ import org.restlet.Component;
 import com.threecrickets.prudence.util.DelegatedStatusService;
 import com.threecrickets.prudence.util.MessageTask;
 
-function includeOrDefault($name, $def=NULL) {
+function include_or_default($name, $def=NULL) {
 	global $executable;
 	try {
 		$executable->container->include($name);
@@ -32,27 +32,27 @@ $tasks = array();
 // Version
 //
 
-$prudenceVersion = '1.0';
-$prudenceRevision = '-%REVISION%';
-if(strlen($prudenceRevision) == 1) {
-	$prudenceRevision = '';
+$prudence_version = '1.0';
+$prudence_revision = '-%REVISION%';
+if(strlen($prudence_revision) == 1) {
+	$prudence_revision = '';
 }
-$prudenceFlavor = 'PHP';
+$prudence_flavor = 'PHP';
 
 //
 // Welcome
 //
 
-print 'Prudence ' . $prudenceVersion . $prudenceRevision . ' for ' . $prudenceFlavor . ".\n";
+print 'Prudence ' . $prudence_version . $prudence_revision . ' for ' . $prudence_flavor . ".\n";
 
 //
 // Component
 //
 
 $component = new Component();
-$component->context->attributes->put('prudence.version', prudenceVersion);
-$component->context->attributes->put('prudence.revision', prudenceRevision);
-$component->context->attributes->put('prudence.flavor', prudenceFlavor);
+$component->context->attributes['prudence.version'] = $prudence_version;
+$component->context->attributes['prudence.revision'] = $prudence_revision;
+$component->context->attributes['prudence.flavor'] = $prudence_flavor;
 
 //
 // Logging
@@ -93,25 +93,25 @@ $component->statusService = new DelegatedStatusService();
 //
 
 $executor = Executors::newFixedThreadPool(Runtime::getRuntime()->availableProcessors());
-$component->context->attributes->put('prudence.executor', $executor);
+$component->context->attributes['prudence.executor'] = $executor;
 
 //
 // Clients
 //
 
-includeOrDefault('instance/clients/');
+include_or_default('instance/clients/');
 
 //
 // Routing
 //
 
-includeOrDefault('instance/routing/');
+include_or_default('instance/routing/');
 
 //
 // Servers
 //
 
-includeOrDefault('instance/servers/');
+include_or_default('instance/servers/');
 
 //
 // Start

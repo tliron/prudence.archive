@@ -3,17 +3,17 @@
 // Prudence Admin Settings
 //
 
-global $component, $hosts, $defaultHost, $mysiteHost;
-global $applicationName, $applicationDescription, $applicationAuthor, $applicationHomeURL, $applicationContactEmail;
+global $component, $hosts, $mysite_host;
+global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 
 $executable->container->include('defaults/application/settings/');
 
-$applicationName = 'Prudence Admin';
-$applicationDescription = 'Runtime management of Prudence';
-$applicationAuthor = 'Tal Liron';
-$applicationOwner = 'Three Crickets';
-$applicationHomeURL = 'http://threecrickets.com/prudence/';
-$applicationContactEmail = 'prudence@threecrickets.com';
+$application_name = 'Prudence Admin';
+$application_description = 'Runtime management of Prudence';
+$application_author = 'Tal Liron';
+$application_owner = 'Three Crickets';
+$application_home_url = 'http://threecrickets.com/prudence/';
+$application_contact_email = 'prudence@threecrickets.com';
 
-$hosts = array(array($component->defaultHost, '/'), array($mysiteHost, '/'));
+$hosts = array(array($component->defaultHost, '/'), array($mysite_host, '/'));
 ?>

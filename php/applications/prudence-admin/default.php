@@ -7,5 +7,5 @@ global $component, $attributes;
 
 $executable->container->include('defaults/application/');
 
-$attributes->put('component', $component);
+$attributes['component'] = $component;
 ?>

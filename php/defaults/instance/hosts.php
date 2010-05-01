@@ -10,7 +10,7 @@
 // See servers.js for more information.
 //
 
-global $component, $hosts, $allHost, $mysiteHost;
+global $component, $hosts, $all_host, $mysite_host;
 
 import org.restlet.routing.VirtualHost;
 
@@ -20,10 +20,10 @@ import org.restlet.routing.VirtualHost;
 // Our "all" host will accept all incoming requests.
 //
 
-$allHost = new VirtualHost($component->context);
-$allHost->name = 'all hosts';
+$all_host = new VirtualHost($component->context);
+$all_host->name = 'all hosts';
 
-$component->hosts->add($allHost);
+$component->hosts->add($all_host);
 
 //
 // mysite.org
@@ -32,13 +32,13 @@ $component->hosts->add($allHost);
 // a specific set of domains.
 //
 
-$mysiteHost = new VirtualHost($component->context);
-$mysiteHost->name = 'mysite.org';
-$mysiteHost->hostScheme = 'http';
-$mysiteHost->hostDomain = 'mysite.org|www.mysite.org';
-$mysiteHost->hostPort = '80';
+$mysite_host = new VirtualHost($component->context);
+$mysite_host->name = 'mysite.org';
+$mysite_host->hostScheme = 'http';
+$mysite_host->hostDomain = 'mysite.org|www.mysite.org';
+$mysite_host->hostPort = '80';
 
-$component->hosts->add($mysiteHost);
+$component->hosts->add($mysite_host);
 
 //
 // Default Host
@@ -48,5 +48,5 @@ $component->hosts->add($mysiteHost);
 // routing.js.
 //
 
-$component->defaultHost = $allHost;
+$component->defaultHost = $all_host;
 ?>
