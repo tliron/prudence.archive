@@ -185,6 +185,24 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
+	// Protected
+
+	/**
+	 * The exposed conversation.
+	 */
+	protected final ExposedConversationForGeneratedTextResource exposedConversation;
+
+	/**
+	 * The execution context.
+	 */
+	protected final ExecutionContext executionContext;
+
+	/**
+	 * The currently executing executable.
+	 */
+	protected Executable executable;
+
+	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
 	private static final String NAME_VARIABLE = "n";
@@ -196,29 +214,9 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	private static final String CACHE_GROUPS_ATTRIBUTE = "prudence.cacheGroups";
 
 	/**
-	 * The exposed conversation.
-	 */
-	private final ExposedConversationForGeneratedTextResource exposedConversation;
-
-	/**
-	 * This boolean is true when the writer is in streaming mode.
-	 */
-	protected boolean isStreaming;
-
-	/**
 	 * Buffer used for caching mode.
 	 */
 	private StringBuffer buffer;
-
-	/**
-	 * The execution context.
-	 */
-	private final ExecutionContext executionContext;
-
-	/**
-	 * The currently executing executable.
-	 */
-	private Executable executable;
 
 	/**
 	 * @return The cache key for the executable
@@ -334,10 +332,10 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 
 				// Note that this will cause the executable to execute again!
 				// TODO: flushLines!
-				return new GeneratedTextStreamingRepresentation( this, exposedConversation, executionContext, resource.getExecutionController(), executable );
+				return new GeneratedTextStreamingRepresentation( this );
 			}
 
-			if( isStreaming )
+			if( exposedConversation.isStreaming )
 			{
 				// Nothing to return in streaming mode
 				return null;
@@ -372,7 +370,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 
 				// Note that this will cause the executable to run again!
 				// TODO: flushLines!
-				return new GeneratedTextStreamingRepresentation( this, exposedConversation, executionContext, resource.getExecutionController(), executable );
+				return new GeneratedTextStreamingRepresentation( this );
 
 				// Note that we will allow exceptions in executable that ask us
 				// to start streaming! In fact, throwing an exception is a

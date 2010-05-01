@@ -18,9 +18,7 @@ import java.util.Arrays;
 import org.restlet.representation.WriterRepresentation;
 
 import com.threecrickets.prudence.GeneratedTextResource;
-import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
-import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
@@ -37,36 +35,32 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	//
 
 	/**
-	 * Constructor.
+	 * Construction.
 	 * 
 	 * @param exposedConversation
-	 *        The exposed container
-	 * @param exposedConversation
-	 *        The exposed conversation
-	 * @param executionContext
-	 *        The execution context (note that we are owning it and will release
-	 *        it when done)
-	 * @param executionController
-	 *        The execution controller
-	 * @param executable
-	 *        The executable
+	 *        The exposed container to clone
 	 */
-	public GeneratedTextStreamingRepresentation( ExposedContainerForGeneratedTextResource exposedContainer, ExposedConversationForGeneratedTextResource exposedConversation, ExecutionContext executionContext,
-		ExecutionController executionController, Executable executable )
+	public GeneratedTextStreamingRepresentation( ExposedContainerForGeneratedTextResource exposedContainer )
 	{
 		// Note that we are setting representation characteristics
 		// before we actually execute the executable
-		super( exposedConversation.getMediaType() );
+		super( exposedContainer.exposedConversation.getMediaType() );
 
-		this.exposedContainer = exposedContainer;
-		this.exposedConversation = exposedConversation;
-		this.executionContext = executionContext;
-		this.executionController = executionController;
-		this.executable = executable;
+		// Clone execution context
+		ExecutionContext executionContext = new ExecutionContext( exposedContainer.executionContext.getManager(), exposedContainer.executionContext.getWriter(), exposedContainer.executionContext.getErrorWriter() );
 
-		setCharacterSet( exposedConversation.getCharacterSet() );
-		if( exposedConversation.getLanguage() != null )
-			setLanguages( Arrays.asList( exposedConversation.getLanguage() ) );
+		// Clone container
+		this.exposedContainer = new ExposedContainerForGeneratedTextResource( exposedContainer.resource, executionContext, exposedContainer.exposedConversation.getEntity(), exposedContainer.exposedConversation
+			.getVariant() );
+		this.exposedContainer.executable = exposedContainer.executable;
+
+		// Initialize execution context
+		executionContext.getExposedVariables().put( this.exposedContainer.resource.getContainerName(), this.exposedContainer );
+		executionContext.getExposedVariables().put( this.exposedContainer.resource.getConversationName(), this.exposedContainer.exposedConversation );
+
+		setCharacterSet( this.exposedContainer.exposedConversation.getCharacterSet() );
+		if( this.exposedContainer.exposedConversation.getLanguage() != null )
+			setLanguages( Arrays.asList( this.exposedContainer.exposedConversation.getLanguage() ) );
 	}
 
 	//
@@ -76,12 +70,12 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	@Override
 	public void write( Writer writer ) throws IOException
 	{
-		exposedConversation.isStreaming = true;
-		exposedConversation.getResource().setWriter( writer );
-		executionContext.setWriter( writer );
+		exposedContainer.exposedConversation.isStreaming = true;
+		exposedContainer.exposedConversation.getResource().setWriter( writer );
+		exposedContainer.executionContext.setWriter( writer );
 		try
 		{
-			executable.execute( executionContext, exposedContainer, executionController );
+			exposedContainer.executable.execute( exposedContainer.executionContext, exposedContainer, exposedContainer.resource.getExecutionController() );
 		}
 		catch( ParsingException x )
 		{
@@ -95,12 +89,16 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 			iox.initCause( x );
 			throw iox;
 		}
+		finally
+		{
+			exposedContainer.executionContext.getErrorWriter().flush();
+		}
 	}
 
 	@Override
 	public void release()
 	{
-		executionContext.release();
+		exposedContainer.executionContext.release();
 		super.release();
 	}
 
@@ -111,24 +109,4 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	 * The exposed container.
 	 */
 	private final ExposedContainerForGeneratedTextResource exposedContainer;
-
-	/**
-	 * The exposed conversation.
-	 */
-	private final ExposedConversationForGeneratedTextResource exposedConversation;
-
-	/**
-	 * The executable.
-	 */
-	private final Executable executable;
-
-	/**
-	 * The execution controller.
-	 */
-	private final ExecutionController executionController;
-
-	/**
-	 * The execution context.
-	 */
-	private final ExecutionContext executionContext;
 }

@@ -18,8 +18,7 @@ $applications = new ArrayList();
 $component->context->attributes->put('applications', $applications);
 $applicationDirs = new File('applications')->listFiles();
 foreach($applicationDirs as $applicationDir) {
-	print $applicationDir->name . "\n";
-	/*if($applicationDir->directory) {
+	if($applicationDir->directory) {
 		$applicationName = $applicationDir->name;
 		$applicationInternalName = $applicationDir->name;
 		$applicationLoggerName = $applicationDir->name;
@@ -27,12 +26,13 @@ foreach($applicationDirs as $applicationDir) {
 		$applicationDefaultURL = '/' . $applicationDir->name . '/';
 		includeOrDefault($applicationBasePath, 'defaults/application');
 		$applications->add($application);
-	}*/
-	flush();
+	}
 }
 
 if($applications->empty) {
 	print "No applications found. Exiting.\n";
-	exit;
+	flush();
+	$executable->context->writer->flush();
+	System::exit(0);
 }
 ?>

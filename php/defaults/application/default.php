@@ -3,7 +3,7 @@
 // Prudence Application
 //
 
-global $application, $applicationBasePath;
+global $application, $applicationBasePath, $attributes;
 global $applicationName, $applicationDescription, $applicationAuthor, $applicationHomeURL, $applicationContactEmail;
 global $showDebugOnError, $showSourceCodeURL;
 global $applicationLoggerName;
@@ -62,6 +62,6 @@ $application->context->setLogger($applicationLoggerName);
 //
 
 foreach($runtimeAttributes as $key => $value) {
-	$attributes.put($key, $value);
+	$attributes->put($key, $value);
 }
 ?>

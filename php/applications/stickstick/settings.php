@@ -24,5 +24,5 @@ $runtimeAttributes['stickstick.database'] = 'data/h2/stickstick';
 
 $showDebugOnError = true;
 
-$preheatResources = ['data/'];
+$preheatResources = array('data/');
 ?>

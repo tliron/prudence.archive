@@ -20,5 +20,5 @@ $hosts = array(array($component->defaultHost, NULL), array($mysiteHost, NULL));
 
 $showDebugOnError = true;
 
-$preheatResources = ['/data/jython/', '/data/jruby/', '/data/groovy/', '/data/clojure/', '/data/rhino/'];
+$preheatResources = array('/data/jython/', '/data/jruby/', '/data/groovy/', '/data/clojure/', '/data/rhino/');
 ?>

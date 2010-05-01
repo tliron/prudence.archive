@@ -17,7 +17,7 @@ $form = $conversation->resource->request->resourceRef->queryAsForm;
 // Stream this page
 //
 
-if($form->getFirstValue('stream') == 'true') if($conversation->stream()) exit();
+if($form->getFirstValue('stream') == 'true') if($conversation->stream()) exit;
 
 //
 // Cache this page

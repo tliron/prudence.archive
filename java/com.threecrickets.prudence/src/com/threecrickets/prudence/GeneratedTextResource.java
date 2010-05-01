@@ -36,7 +36,6 @@ import org.restlet.resource.ServerResource;
 import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.InProcessMemoryCache;
 import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
-import com.threecrickets.prudence.internal.GeneratedTextStreamingRepresentation;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
@@ -923,6 +922,7 @@ public class GeneratedTextResource extends ServerResource
 					{
 						case CLIENT_CACHING_MODE_DISABLED:
 						{
+							// Remove all caching headers
 							representation.setModificationDate( null );
 							representation.setExpirationDate( null );
 							representation.setTag( null );
@@ -933,10 +933,13 @@ public class GeneratedTextResource extends ServerResource
 						}
 
 						case CLIENT_CACHING_MODE_CONDITIONAL:
+							// Leave conditional headers intact
 							break;
 
 						case CLIENT_CACHING_MODE_OFFLINE:
 						{
+							// Add offline caching headers based on conditional
+							// headers
 							Date expirationDate = representation.getExpirationDate();
 							if( expirationDate != null )
 							{
@@ -972,8 +975,8 @@ public class GeneratedTextResource extends ServerResource
 			finally
 			{
 				// Release only if we own the execution context!
-				if( !( representation instanceof GeneratedTextStreamingRepresentation ) )
-					executionContext.release();
+				//if( !( representation instanceof GeneratedTextStreamingRepresentation ) )
+				executionContext.release();
 			}
 		}
 		catch( FileNotFoundException x )
