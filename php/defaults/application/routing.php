@@ -132,7 +132,7 @@ $router->attachBase(fixURL($dynamicWebBaseURL), $dynamicWeb);
 if($dynamicWebDefrost) {
 	$defrostTasks = DefrostTask::forDocumentSource($dynamicWebDocumentSource, $languageManager, true, true);
 	foreach($defrostTasks as $defrostTask) {
-		array_push($tasks, $defrostTask);
+		$tasks[] = $defrostTask;
 	}
 }
 
@@ -162,7 +162,7 @@ $router->attachBase(fixURL($resourcesBaseURL), $resources);
 if($resourcesDefrost) {
 	$defrostTasks = DefrostTask::forDocumentSource($resourcesDocumentSource, $languageManager, false, true);
 	foreach($defrostTasks as $defrostTask) {
-		array_push($tasks, $defrostTask);
+		$tasks[] = $defrostTask;
 	}
 }
 
@@ -186,11 +186,11 @@ if(showDebugOnError) {
 if($dynamicWebPreheat) {
 	$preheatTasks = PreheatTask::forDocumentSource($dynamicWebDocumentSource, $component->context, $applicationInternalName);
 	foreach($preheatTasks as $preheatTask) {
-		array_push($tasks, $preheatTask);
+		$tasks[] = $preheatTask;
 	}
 }
 
 foreach($preheatResources as $preheatResource) {
-	array_push($tasks, new PreheatTask($component->context, $applicationInternalName, $preheatResource));
+	$tasks[] = new PreheatTask($component->context, $applicationInternalName, $preheatResource);
 }
 ?>
