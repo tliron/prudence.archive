@@ -8,7 +8,7 @@
 // applications. 
 //
 // The exact URL of this resource depends on its its filename and/or its location in
-// your directory structure. See your settings.js for more information.
+// your directory structure. See your settings.php for more information.
 //
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
