@@ -124,7 +124,6 @@ function handle_post($conversation) {
 	$state_lock->writeLock()->lock();
 	try {
 		foreach($update as $key => $value) {
-			print $key.'='.$value."\n";
 			$state[$key] = $value;
 		}
 	}
