@@ -1208,8 +1208,8 @@ public class DelegatedResource extends ServerResource
 
 	/**
 	 * Returns a representation based on the object. If the object is not
-	 * already a representation, creates a new representation based on the
-	 * container's attributes.
+	 * already a representation, creates a new string representation based on
+	 * the container's attributes.
 	 * 
 	 * @param object
 	 *        An object
@@ -1223,9 +1223,10 @@ public class DelegatedResource extends ServerResource
 			return null;
 		else if( object instanceof Representation )
 			return (Representation) object;
-		else if( object instanceof Integer )
+		else if( object instanceof Number )
 		{
-			getResponse().setStatus( Status.valueOf( (Integer) object ) );
+			// Returning a number means setting the status
+			getResponse().setStatus( Status.valueOf( ( (Number) object ).intValue() ) );
 			return null;
 		}
 		else

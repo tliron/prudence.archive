@@ -37,7 +37,7 @@ def handle_get conversation
     begin
         note = get_note id, connection
         if note.nil?
-        	return java.lang.Integer.new 404
+        	return 404
         end
     ensure
     	connection.close
@@ -111,7 +111,7 @@ def handle_delete conversation
     begin 
         note = get_note id, connection
         if note.nil?
-        	return java.lang.Integer.new 404
+        	return 404
         end
         delete_note note, connection
         update_board_timestamp note, connection, System.current_time_millis
