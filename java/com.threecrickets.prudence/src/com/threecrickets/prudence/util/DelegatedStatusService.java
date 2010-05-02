@@ -161,7 +161,7 @@ public class DelegatedStatusService extends StatusService
 	 * @param context
 	 *        The context
 	 */
-	public void captureRoot( int statusCode, String application, String internalUriTemplate, Context context )
+	public void captureHostRoot( int statusCode, String application, String internalUriTemplate, Context context )
 	{
 		String targetUriTemplate = "riap://component/" + application + "/" + internalUriTemplate;
 		setHandler( statusCode, new CaptiveRedirector( context, targetUriTemplate, true ) );

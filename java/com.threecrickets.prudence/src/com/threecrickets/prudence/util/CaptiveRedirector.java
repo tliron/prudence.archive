@@ -78,12 +78,12 @@ public class CaptiveRedirector extends Redirector
 	 *        The context
 	 * @param targetTemplate
 	 *        The target template
-	 * @param root
-	 *        Whether to set the base reference to the root URI
+	 * @param hostRoot
+	 *        Whether to set the base reference to the host root URI
 	 */
-	public CaptiveRedirector( Context context, String targetTemplate, boolean root )
+	public CaptiveRedirector( Context context, String targetTemplate, boolean hostRoot )
 	{
-		this( context, targetTemplate, root, MODE_SERVER_OUTBOUND );
+		this( context, targetTemplate, hostRoot, MODE_SERVER_OUTBOUND );
 	}
 
 	/**
@@ -95,13 +95,13 @@ public class CaptiveRedirector extends Redirector
 	 *        The target template
 	 * @param mode
 	 *        The redirection mode
-	 * @param root
-	 *        Whether to set the base reference to the root URI
+	 * @param hostRoot
+	 *        Whether to set the base reference to the host root URI
 	 */
-	public CaptiveRedirector( Context context, String targetPattern, boolean root, int mode )
+	public CaptiveRedirector( Context context, String targetPattern, boolean hostRoot, int mode )
 	{
 		super( context, targetPattern, mode );
-		this.root = root;
+		this.hostRoot = hostRoot;
 		setOwner( "Prudence" );
 		setAuthor( "Tal Liron" );
 		setName( "CaptiveRedirector" );
@@ -115,7 +115,7 @@ public class CaptiveRedirector extends Redirector
 	@Override
 	public void handle( Request request, Response response )
 	{
-		Reference captiveReference = root ? new Reference( request.getHostRef(), request.getResourceRef() ) : new Reference( request.getResourceRef() );
+		Reference captiveReference = hostRoot ? new Reference( request.getHostRef(), request.getResourceRef() ) : new Reference( request.getRootRef(), request.getResourceRef() );
 		setCaptiveReference( request, captiveReference );
 		super.handle( request, response );
 	}
@@ -124,7 +124,7 @@ public class CaptiveRedirector extends Redirector
 	// Private
 
 	/**
-	 * Whether to set the base reference to the root URI.
+	 * Whether to set the base reference to the host root URI.
 	 */
-	private final boolean root;
+	private final boolean hostRoot;
 }
