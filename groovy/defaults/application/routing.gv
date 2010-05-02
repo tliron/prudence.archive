@@ -13,6 +13,7 @@ import com.threecrickets.scripturian.util.DefrostTask
 import com.threecrickets.scripturian.file.DocumentFileSource
 import com.threecrickets.prudence.util.PrudenceRouter
 import com.threecrickets.prudence.util.PreheatTask
+import com.threecrickets.prudence.util.PhpExecutionController
 
 classLoader = ClassLoader.systemClassLoader
 
@@ -70,7 +71,7 @@ println('.')
 
 attributes = prudenceApplication.context.attributes
 
-attributes.put('component', component)
+attributes['component'] = component
 
 //
 // Inbound root
@@ -101,11 +102,12 @@ for(url in urlAddTrailingSlash) {
 
 languageManager = executable.context.manager
 dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'groovy')
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable)
+attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = languageManager
+attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'groovy'
+attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamicWebDefaultDocument
+attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamicWebDocumentSource
+attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamicWebSourceViewable
+attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController() // Adds PHP predefined variables
 
 dynamicWeb = new Finder(prudenceApplication.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 router.attachBase(fixURL(dynamicWebBaseURL), dynamicWeb)
@@ -131,11 +133,11 @@ router.attachBase(fixURL(staticWebBaseURL), staticWeb)
 //
 
 resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, resourcesMinimumTimeBetweenValidityChecks)
-attributes.put('com.threecrickets.prudence.DelegatedResource.languageManager', languageManager)
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultLanguageTag', 'groovy')
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName)
-attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource)
-attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable)
+attributes['com.threecrickets.prudence.DelegatedResource.languageManager'] = languageManager
+attributes['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'groovy'
+attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resourcesDefaultName
+attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = resourcesDocumentSource
+attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resourcesSourceViewable
 
 resources = new Finder(prudenceApplication.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 router.attachBase(fixURL(resourcesBaseURL), resources)
@@ -152,7 +154,7 @@ if(resourcesDefrost) {
 //
 
 if(showDebugOnError) {
-	attributes.put('com.threecrickets.prudence.SourceCodeResource.documentSources', [dynamicWebDocumentSource, resourcesDocumentSource])
+	attributes['com.threecrickets.prudence.SourceCodeResource.documentSources'] = [dynamicWebDocumentSource, resourcesDocumentSource]
 	sourceCode = new Finder(prudenceApplication.context, classLoader.loadClass('com.threecrickets.prudence.SourceCodeResource'))
 	router.attach(fixURL(showSourceCodeURL), sourceCode).matchingMode = Template.MODE_EQUALS
 }

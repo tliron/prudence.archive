@@ -11,7 +11,7 @@ from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Finder, Directory
 from com.threecrickets.scripturian.util import DefrostTask
 from com.threecrickets.scripturian.file import DocumentFileSource
-from com.threecrickets.prudence.util import PrudenceRouter, PreheatTask
+from com.threecrickets.prudence.util import PrudenceRouter, PreheatTask, PhpExecutionController
 
 class_loader = ClassLoader.getSystemClassLoader()
 
@@ -92,6 +92,7 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamic_web_default_document
 attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamic_web_document_source
 attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
+attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController() # Adds PHP predefined variables
 
 dynamic_web = Finder(application.context, class_loader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 router.attachBase(fix_url(dynamic_web_base_url), dynamic_web)

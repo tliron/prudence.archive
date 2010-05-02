@@ -11,7 +11,7 @@ includeOrDefault('instance/hosts/')
 // Applications
 
 applications = []
-component.context.attributes.put('applications', applications)
+component.context.attributes['applications'] = applications
 applicationDirs = new File('applications').listFiles()
 for(applicationDir in applicationDirs) {
 	if(applicationDir.isDirectory()) {

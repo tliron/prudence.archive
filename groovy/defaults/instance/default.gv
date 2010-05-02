@@ -46,9 +46,9 @@ println('Prudence ' + prudenceVersion + prudenceRevision + ' for ' + prudenceFla
 //
 
 component = new Component()
-component.context.attributes.put('prudence.version', prudenceVersion)
-component.context.attributes.put('prudence.revision', prudenceRevision)
-component.context.attributes.put('prudence.flavor', prudenceFlavor)
+component.context.attributes['prudence.version'] = prudenceVersion
+component.context.attributes['prudence.revision'] = prudenceRevision
+component.context.attributes['prudence.flavor'] = prudenceFlavor
 
 //
 // Logging
@@ -89,7 +89,7 @@ component.statusService = new DelegatedStatusService()
 //
 
 executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors())
-component.context.attributes.put('prudence.executor', executor)
+component.context.attributes['prudence.executor'] = executor
 
 //
 // Clients

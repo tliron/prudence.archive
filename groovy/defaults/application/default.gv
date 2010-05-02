@@ -55,5 +55,5 @@ prudenceApplication.context.setLogger(applicationLoggerName)
 //
 
 runtimeAttributes.each() { key, value ->
-	attributes.put(key, value)
+	attributes[key] = value
 }

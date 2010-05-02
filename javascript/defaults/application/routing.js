@@ -14,7 +14,8 @@ importClass(
 	com.threecrickets.scripturian.util.DefrostTask,
 	com.threecrickets.scripturian.file.DocumentFileSource,
 	com.threecrickets.prudence.util.PrudenceRouter,
-	com.threecrickets.prudence.util.PreheatTask);
+	com.threecrickets.prudence.util.PreheatTask,
+	com.threecrickets.prudence.util.PhpExecutionController);
 
 var classLoader = ClassLoader.systemClassLoader;
 
@@ -109,6 +110,7 @@ attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguage
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.executionController', new PhpExecutionController()); // Adds PHP predefined variables
 
 var dynamicWeb = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'));
 router.attachBase(fixURL(dynamicWebBaseURL), dynamicWeb);

@@ -13,7 +13,8 @@
 	'com.threecrickets.scripturian.util.DefrostTask
 	'com.threecrickets.scripturian.file.DocumentFileSource
 	'com.threecrickets.prudence.util.PrudenceRouter
-	'com.threecrickets.prudence.util.PreheatTask)
+	'com.threecrickets.prudence.util.PreheatTask
+	'com.threecrickets.prudence.util.PhpExecutionController)
 
 (def classLoader (ClassLoader/getSystemClassLoader))
 
@@ -97,6 +98,7 @@
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.documentSource" dynamic-web-document-source)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" dynamic-web-source-viewable)
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.executionController" (PhpExecutionController.)) ; Adds PHP predefined variables
 
 (def dynamic-web (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.GeneratedTextResource")))
 (.attachBase router (fix-url dynamic-web-base-url) dynamic-web)
