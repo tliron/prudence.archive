@@ -202,13 +202,10 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.prepare:</code>
  * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
- * <li><code>com.threecrickets.prudence.DelegatedResource.containerName</code>:
- * The name of the global variable with which to access the container. Defaults
- * to "prudence". See {@link #getContainerName()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.conversationName</code>:
- * The name of the global variable with which to access the conversation.
- * Defaults to "conversation". See {@link #getContainerName()}.</li>
+ * <code>com.threecrickets.prudence.DelegatedResource.exposedContainerName</code>
+ * : The name of the global variable with which to access the container.
+ * Defaults to "prudence". See {@link #getExposedContainerName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
@@ -338,23 +335,23 @@ public class DelegatedResource extends ServerResource
 	 * Defaults to "prudence".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.containerName</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.exposedContainerName</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The container name
 	 */
-	public String getContainerName()
+	public String getExposedContainerName()
 	{
-		if( containerName == null )
+		if( exposedContainerName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			containerName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.containerName" );
+			exposedContainerName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.exposedContainerName" );
 
-			if( containerName == null )
-				containerName = "prudence";
+			if( exposedContainerName == null )
+				exposedContainerName = "prudence";
 		}
 
-		return containerName;
+		return exposedContainerName;
 	}
 
 	/**
@@ -1184,7 +1181,7 @@ public class DelegatedResource extends ServerResource
 	/**
 	 * The name of the global variable with which to access the container.
 	 */
-	private volatile String containerName;
+	private volatile String exposedContainerName;
 
 	/**
 	 * The document formatter.
@@ -1300,7 +1297,7 @@ public class DelegatedResource extends ServerResource
 			if( executable.getEnterableExecutionContext() == null )
 			{
 				ExecutionContext executionContext = new ExecutionContext( getWriter(), getErrorWriter() );
-				executionContext.getExposedVariables().put( getContainerName(), new ExposedContainerForDelegatedResource( this ) );
+				executionContext.getExposedVariables().put( getExposedContainerName(), new ExposedContainerForDelegatedResource( this ) );
 				try
 				{
 					if( !executable.makeEnterable( executionContext, this, getExecutionController() ) )

@@ -181,9 +181,9 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * <code>com.threecrickets.prudence.GeneratedTextResource.prepare:</code>
  * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.containerName</code>:
- * The name of the global variable with which to access the container. Defaults
- * to "prudence". See {@link #getContainerName()}.</li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.exposedContainerName</code>
+ * : The name of the global variable with which to access the container.
+ * Defaults to "prudence". See {@link #getExposedContainerName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey:</code>
  * {@link String}, defaults to "{ri}". See {@link #getDefaultCacheKey()}.</li>
@@ -243,23 +243,23 @@ public class GeneratedTextResource extends ServerResource
 	 * Defaults to "prudence".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.containerName</code>
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.exposedContainerName</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The container name
 	 */
-	public String getContainerName()
+	public String getExposedContainerName()
 	{
-		if( containerName == null )
+		if( exposedContainerName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			containerName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.containerName" );
+			exposedContainerName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.exposedContainerName" );
 
-			if( containerName == null )
-				containerName = "prudence";
+			if( exposedContainerName == null )
+				exposedContainerName = "prudence";
 		}
 
-		return containerName;
+		return exposedContainerName;
 	}
 
 	/**
@@ -267,23 +267,23 @@ public class GeneratedTextResource extends ServerResource
 	 * Defaults to "conversation".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.conversationName</code>
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.exposedConversationName</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The conversation name
 	 */
-	public String getConversationName()
+	public String getExposedConversationName()
 	{
-		if( conversationName == null )
+		if( exposedConversationName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			conversationName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.conversationName" );
+			exposedConversationName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.exposedConversationName" );
 
-			if( conversationName == null )
-				conversationName = "conversation";
+			if( exposedConversationName == null )
+				exposedConversationName = "conversation";
 		}
 
-		return conversationName;
+		return exposedConversationName;
 	}
 
 	/**
@@ -783,12 +783,12 @@ public class GeneratedTextResource extends ServerResource
 	/**
 	 * The name of the global variable with which to access the container.
 	 */
-	private volatile String containerName;
+	private volatile String exposedContainerName;
 
 	/**
 	 * The name of the global variable with which to access the conversation.
 	 */
-	private volatile String conversationName;
+	private volatile String exposedConversationName;
 
 	/**
 	 * The document formatter.

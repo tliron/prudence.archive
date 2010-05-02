@@ -56,8 +56,8 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		this.exposedContainer.exposedConversation.isStreaming = true;
 
 		// Initialize execution context
-		executionContext.getExposedVariables().put( this.exposedContainer.resource.getContainerName(), this.exposedContainer );
-		executionContext.getExposedVariables().put( this.exposedContainer.resource.getConversationName(), this.exposedContainer.exposedConversation );
+		executionContext.getExposedVariables().put( this.exposedContainer.resource.getExposedContainerName(), this.exposedContainer );
+		executionContext.getExposedVariables().put( this.exposedContainer.resource.getExposedConversationName(), this.exposedContainer.exposedConversation );
 
 		setCharacterSet( this.exposedContainer.exposedConversation.getCharacterSet() );
 		if( this.exposedContainer.exposedConversation.getLanguage() != null )
