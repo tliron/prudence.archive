@@ -11,55 +11,47 @@
 
 		<h3>Python (Succulent!)</h3>
 		<p>
-			<a href="http://www.python.org/">Python</a> is a powerful language, far richer in features than PHP and JavaScript,
-			and can compete well with PHP for the quality and maturity of its libraries.
+			<a href="http://www.python.org/">Python</a> is a powerful object-oriented language, far richer in features than
+			JavaScript and PHP, with many high-quality core and 3rd party libraries.
+			Python has already proven itself as a web programming language with many excellent platforms.
 		</p>
 		<p>
-			It does, however, present a unique challenge in a scriptlet environment, due to its reliance on indentation. However, because HTML is loose with
+			Python presents a unique challenge in a scriptlet environment, due to its reliance on indentation. However, because HTML is loose with
 			whitespace, it's possible to force the whole file to adhere to Python's scheme. In fact, as many Python enthusiasts would argue, forcing your code
 			to adhere to Python's indentation requirements can go a long way towards making it more readable and manageable.
 		</p>
-		<p class="note">
-			<i>Note:</i> The Python flavor of Prudence can use either the Jython or Jepp engines,
-			but Jython is recommended, because Prudence's use of Jepp is currently limited.
-			At this time, you cannot create REST resources in Python/Jepp,
-			though you can embed Python/Jepp scriptlets into text.
-			(This is true for Jepp version 2.3.) 
+		<p>
+			In the included example application we show how to use <a href="http://www.sqlalchemy.org/">SQLAlchemy</a> as a data backend for Prudence.
 		</p>
 		
 		<h3>Ruby (Delectable!)</h3>
 		<p>
-			<a href="http://www.ruby-lang.org/">Ruby</a> is a relatively new language that can do most of what Python can do and more.
-			Unlike Python, it has a very loose and forgiving syntax, which is perfect for scriptlets. It can work with many styles of code,
-			and as such it would be relatively easy to transition to Ruby from any of the other languages supported by Prudence.
+			<a href="http://www.ruby-lang.org/">Ruby</a> can do most of what Python can do and more. A true chameleon,
+			it can adapt to many styles of code and programming. If something can be possible, Ruby allows it and supports it.
+			Unlike Python, it has a very loose and forgiving syntax, which is perfect for scriptlets.
 		</p>
 		<p>
-			Ruby has some excellent libraries, and may be very productive for developing large applications.
+			Ruby's <a href="http://rubyonrails.org/">Rails</a> platform has revolutionized web programming by offering elegant,
+			powerful alternatives to working directly with HTTP. We hope Ruby web programmers will find in Prudence a
+			refreshing alternative to Rails: elegantly embracing HTTP, instead of avoiding it.
 		</p>
 		
-		<h3>Groovy (Luscious!)</h3>
-		<p>
-			In some ways, <a href="http://groovy.codehaus.org/">Groovy</a> is the best of this bunch. It has all the flexibility of Ruby, but is designed from the
-			ground up to integrate strongly into Java. That means that any Java library is also a Groovy library. (This is true to various extents for the other
-			programming languages here, but Groovy does it best.) Additionally, Groovy is enjoying a huge growth in specialized adaptations and Groovy-specific
-			libraries.
-		</p>
-		<p>
-			If you know your project will require heavy interaction with Java libraries, Groovy is a terrific -- and fun -- choice.
-		</p>
-
-	</td>
-	<td width="50%">
-
 		<h3>Clojure (Scrumptious!)</h3>
 		<p>
-			Prudence's only functional flavor is a dialect of Lisp designed from the ground up for heavy concurrency. If you are serious about scaling,
+			Prudence's only functional flavor is a Lisp designed from the ground up for high concurrency. If you're serious about scaling,
 			<a href="http://clojure.org/">Clojure</a> is the way to go. Though new, Clojure is based on one of the oldest programming languages around,
-			and enjoys a rich history of elegant solutions for tough programming challenges.
+			and enjoys a rich tradition of elegant solutions for tough programming challenges.
+		</p>
+		<p>
+			Clojure embraces the JVM, but also has a growing collection of nifty "contrib" libraries -- all included in Prudence.
+			In the included example application, we show how to use Clojure's SQL library to access a data backend the Clojure way.
 		</p>
 		<p>
 			Three Crickets &hearts; Clojure.
 		</p>
+
+	</td>
+	<td width="50%">
 
 		<h3>JavaScript (Savory!)</h3>
 		<p>
@@ -68,28 +60,45 @@
 			and other client platforms. Web developers are already proficient in JavaScript, and can quickly be brought on board to a server-side
 			project. JavaScript lets you to write server-side and client-side code in the same language, and have both sides share code.
 			Couple it with <a href="http://www.json.org/">JSON</a>, and you're on solid ground for rapid development.
+			Of all the web programming languages, it's the one most widely deployed and with the most secure future.
+		</p>
 		</p>
 		<p>
-			Though not as feature-rich as Python or Ruby, JavaScript is still
-			very powerful, and can support object-orientation, namespaces and other paradigms. Many libraries exist to help you with this.
+			JavaScript is an under-appreciated language. Though not as feature-rich as Python or Ruby, it's still very powerful. Its straightforward closure/prototype
+			mechanisms allow it to support object-orientation, namespaces and other paradigms.
+ 			It's also been the target of much un-deserved angst due to the fickleness of in-browser development. Working with the DOM, cross-browser HTML rendering
+ 			quirks -- none of these are the faults of the language itself, and none of these are relevant to server-side development with Prudence.
+		</p>
+		<p>
+			JavaScript does not have its own core libraries, making it the most minimal Prudence flavor. But this isn't necessarily a deficiency:
+			instead, it uses the excellent JVM core.
 		</p>
 		
 		<h3>PHP (Ambrosial!)</h3>
 		<p>
-			<a href="http://www.php.net/">PHP</a> is, of course, ubiquitous. It's a simple language with the most mature libraries of any web programming language, and programmers are available with years
-			of experience. It's also designed from the ground up as a programming language for the web.
+			<a href="http://www.php.net/">PHP</a> is, of course, ubiquitous. It's a simple language with the most mature libraries of any web programming language,
+			and programmers are available with years of experience. It's also designed from the ground up as a programming language for the web.
+		</p>
+		<p>
+			Prudence allows a smooth transition from traditional PHP HTML generation to REST resources. It supports PHP "superglobals" such
+			as $_GET, $_POST, $_COOKIE and $_FILE (but not $_SESSION) to make you feel right at home. It also adds many new features to conventional HTML generation:
+			fine-grained caching, high-performance templating languages, and more.
 		</p>
 		<p class="note">
-			<i>Note:</i> The PHP flavor of Prudence is currently limited.
-			At this time, you cannot create REST resources in PHP,
-			though you can embed PHP scriptlets into text.
-			(This is true for Quercus version 3.2.1.) 
+			<i>Note:</i> Prudence PHP was built around the open source edition of <a href="http://quercus.caucho.com/">Quercus</a>, which does not
+			feature JVM bytecode compilation, available in the non-free professional edition. Nevertheless, we found it an excellent performer! 
 		</p>
-		<p>		
-			Also, some of PHP's benefits and libraries will not be immediately usable under Prudence. PHP's built-in web features, such as $_SESSION and $_COOKIE,
-			won't work. You'll need to use the Prudence versions instead, and some libraries may expect PHP's built-in features.
-			(It may be possible to write a transition library -- any volunteers?)
-		</p> 
+
+		<h3>Groovy (Luscious!)</h3>
+		<p>
+			In some ways, <a href="http://groovy.codehaus.org/">Groovy</a> is the best of this bunch. It has all the flexibility of Ruby, but is
+			designed from the ground up to enhance and extend Java. Java programmers would immediately feel at home, while gaining access to
+			far less restrictive programming paradigms. Groovy makes Java... groovy.
+		</p>
+		<p>
+			If you know your project will require a lot of interaction with Java libraries, Groovy is a terrific -- and fun! -- choice.
+			(Note that other Prudence flavors also offer JVM interaction, but Groovy does it best.)
+		</p>
 
 	</td>
 </tr></table>

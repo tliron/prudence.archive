@@ -72,7 +72,7 @@ executable.context.exposedVariables.put('currentTimeMillis', String(java.lang.Sy
 <h3>Language used:</h3>
 #printAdapter($executable.context.adapter)
 <h3>Available languages:</h3>
-#foreach($adapter in $executable.context.manager.adapters)
+#foreach($adapter in $executable.manager.adapters)
 	#printAdapter($adapter)
 #end
 </td><td>

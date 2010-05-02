@@ -37,7 +37,7 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	/**
 	 * Construction.
 	 * 
-	 * @param exposedConversation
+	 * @param exposedContainer
 	 *        The exposed container to clone
 	 */
 	public GeneratedTextStreamingRepresentation( ExposedContainerForGeneratedTextResource exposedContainer )
@@ -47,12 +47,13 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		super( exposedContainer.exposedConversation.getMediaType() );
 
 		// Clone execution context
-		ExecutionContext executionContext = new ExecutionContext( exposedContainer.executionContext.getManager(), exposedContainer.executionContext.getWriter(), exposedContainer.executionContext.getErrorWriter() );
+		ExecutionContext executionContext = new ExecutionContext();
 
 		// Clone container
 		this.exposedContainer = new ExposedContainerForGeneratedTextResource( exposedContainer.resource, executionContext, exposedContainer.exposedConversation.getEntity(), exposedContainer.exposedConversation
 			.getVariant() );
 		this.exposedContainer.executable = exposedContainer.executable;
+		this.exposedContainer.exposedConversation.isStreaming = true;
 
 		// Initialize execution context
 		executionContext.getExposedVariables().put( this.exposedContainer.resource.getContainerName(), this.exposedContainer );
@@ -70,8 +71,7 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	@Override
 	public void write( Writer writer ) throws IOException
 	{
-		exposedContainer.exposedConversation.isStreaming = true;
-		exposedContainer.exposedConversation.getResource().setWriter( writer, null );
+		exposedContainer.writer = writer;
 		exposedContainer.executionContext.setWriter( writer );
 		try
 		{
@@ -91,7 +91,7 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		}
 		finally
 		{
-			exposedContainer.executionContext.getErrorWriter().flush();
+			exposedContainer.executionContext.getErrorWriterOrDefault().flush();
 		}
 	}
 

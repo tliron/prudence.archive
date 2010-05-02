@@ -103,7 +103,7 @@ for(var i in urlAddTrailingSlash) {
 // Dynamic web
 //
 
-var languageManager = executable.context.manager;
+var languageManager = executable.manager;
 var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'javascript');

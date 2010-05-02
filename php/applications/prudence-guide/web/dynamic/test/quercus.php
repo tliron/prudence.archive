@@ -76,7 +76,7 @@ print_adapter($executable->context->adapter);
 ?>
 <h3>Available languages:</h3>
 <?
-$adapters = $executable->context->manager->adapters->toArray();
+$adapters = $executable->manager->adapters->toArray();
 foreach($adapters as $adapter) {
 	print_adapter($adapter);
 }

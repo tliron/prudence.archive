@@ -73,7 +73,7 @@
 %>
 <h3>Available languages:</h3>
 <%
-(def adapters (.. executable getContext getManager getAdapters))
+(def adapters (.. executable getManager getAdapters))
 (doseq [adapter adapters]
 	(print-adapter adapter))
 %>

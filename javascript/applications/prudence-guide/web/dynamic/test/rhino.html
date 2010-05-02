@@ -72,7 +72,7 @@ printAdapter(executable.context.adapter);
 %>
 <h3>Available languages:</h3>
 <%
-var adapters = executable.context.manager.adapters.toArray();
+var adapters = executable.manager.adapters.toArray();
 for(var i = 0; i < adapters.length; i++) {
 	printAdapter(adapters[i]);
 }

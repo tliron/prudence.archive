@@ -83,23 +83,23 @@ function seeMainSource() {
 	<h3>Resource</h3>
 	<p>
 		<select id="resource">
-<% #if($executable.context.manager.getAdapterByTag('jython')) %>
+<% #if($executable.manager.getAdapterByTag('jython')) %>
 			<option value="../data/jython/">Python</option>
 <% #end %>
 			<!-- <option value="../data/jepp/">Python (Jepp) [BROKEN]</option> -->
-<% #if($executable.context.manager.getAdapterByTag('ruby')) %>
+<% #if($executable.manager.getAdapterByTag('ruby')) %>
 			<option value="../data/jruby/">Ruby</option>
 <% #end %>
-<% #if($executable.context.manager.getAdapterByTag('groovy')) %>
+<% #if($executable.manager.getAdapterByTag('groovy')) %>
 			<option value="../data/groovy/">Groovy</option>
 <% #end %>
-<% #if($executable.context.manager.getAdapterByTag('clojure')) %>
+<% #if($executable.manager.getAdapterByTag('clojure')) %>
 			<option value="../data/clojure/">Clojure</option>
 <% #end %>
-<% #if($executable.context.manager.getAdapterByTag('javascript')) %>
+<% #if($executable.manager.getAdapterByTag('javascript')) %>
 			<option value="../data/rhino/">JavaScript</option>
 <% #end %>
-<% #if($executable.context.manager.getAdapterByTag('quercus')) %>
+<% #if($executable.manager.getAdapterByTag('quercus')) %>
 			<option value="../data/quercus/">PHP</option>
 <% #end %>
 		</select>

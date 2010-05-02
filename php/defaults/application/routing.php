@@ -118,7 +118,7 @@ foreach($url_add_trailing_slash as $url) {
 // Dynamic web
 //
 
-$language_manager = $executable->context->manager;
+$language_manager = $executable->manager;
 $dynamic_web_document_source = new DocumentFileSource($application_base_path . $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_minimum_time_between_validity_checks);
 $attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = $language_manager;
 $attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'php';

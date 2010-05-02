@@ -202,6 +202,16 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 */
 	protected Executable executable;
 
+	/**
+	 * The {@link Writer} used by the {@link Executable}.
+	 */
+	protected Writer writer;
+
+	/**
+	 * Buffer used for caching mode.
+	 */
+	protected StringBuffer writerBuffer;
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
@@ -256,9 +266,6 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	{
 		this.executable = executable;
 
-		Writer writer = resource.getWriter();
-		StringBuffer writerBuffer = resource.getWriterBuffer();
-
 		// Optimized handling for pure text
 		String pureText = executable.getAsPureLiteral();
 		if( pureText != null )
@@ -280,10 +287,6 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 				StringWriter stringWriter = new StringWriter();
 				writerBuffer = stringWriter.getBuffer();
 				writer = new BufferedWriter( stringWriter );
-
-				// Make sure that included executables use the same
-				// writer/buffer
-				resource.setWriter( writer, writerBuffer );
 			}
 			else
 			{
@@ -298,6 +301,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 				CacheEntry cacheEntry = resource.getCache().fetch( cacheKey );
 				if( cacheEntry != null )
 				{
+					// We want to write this, too, for includes
 					if( writer != null )
 						writer.write( cacheEntry.getString() );
 
@@ -380,7 +384,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		finally
 		{
 			writer.flush();
-			executionContext.getErrorWriter().flush();
+			executionContext.getErrorWriterOrDefault().flush();
 		}
 	}
 }

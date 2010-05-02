@@ -100,7 +100,7 @@ for(url in urlAddTrailingSlash) {
 // Dynamic web
 //
 
-languageManager = executable.context.manager
+languageManager = executable.manager
 dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks)
 attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = languageManager
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'groovy'

@@ -13,7 +13,7 @@ how many times you refresh the page. See the <a href="faq">FAQ</a> for an explan
 <table width="100%"><tr valign="top"><td>
 <h3>JavaScript</h3>
 <p>
-<% #if($executable.context.manager.getAdapterByTag('javascript')) %>
+<% #if($executable.manager.getAdapterByTag('javascript')) %>
 <a href="../test/rhino/?id=hello">caching mode</a><br />
 <a href="../test/rhino/?id=hello&stream=true">streaming mode</a><br />
 <a href="../test/rhino/?source=true">source</a>
@@ -24,7 +24,7 @@ n/a
 </td><td>
 <h3>PHP</h3>
 <p>
-<% #if($executable.context.manager.getAdapterByTag('php')) %>
+<% #if($executable.manager.getAdapterByTag('php')) %>
 <a href="../test/quercus/?id=hello">caching mode</a><br />
 <a href="../test/quercus/?id=hello&stream=true">streaming mode</a><br />
 <a href="../test/quercus/?source=true">source</a>
@@ -35,7 +35,7 @@ n/a
 </td></tr><tr valign="top"><td>
 <h3>Python (Jython)</h3>
 <p>
-<% #if($executable.context.manager.getAdapterByTag('jython')) %>
+<% #if($executable.manager.getAdapterByTag('jython')) %>
 <a href="../test/jython/?id=hello">caching mode</a><br />
 <a href="../test/jython/?id=hello&stream=true">streaming mode</a><br />
 <a href="../test/jython/?source=true">source</a>
@@ -46,7 +46,7 @@ n/a
 </td><td>
 <h3>Python (Jepp)</h3>
 <p>
-<% #if($executable.context.manager.getAdapterByTag('jep')) %>
+<% #if($executable.manager.getAdapterByTag('jep')) %>
 <a href="../test/jepp/?id=hello">caching mode</a><br />
 <a href="../test/jepp/?id=hello&stream=true">streaming mode</a><br />
 <a href="../test/jepp/?source=true">source</a>
@@ -57,7 +57,7 @@ n/a
 </td></tr valign="top"><tr><td>
 <h3>Ruby</h3>
 <p>
-<% #if($executable.context.manager.getAdapterByTag('ruby')) %>
+<% #if($executable.manager.getAdapterByTag('ruby')) %>
 <a href="../test/jruby/?id=hello">caching mode</a><br />
 <a href="../test/jruby/?id=hello&stream=true">streaming mode</a><br />
 <a href="../test/jruby/?source=true">source</a>
@@ -68,7 +68,7 @@ n/a
 </td><td>
 <h3>Groovy</h3>
 <p>
-<% #if($executable.context.manager.getAdapterByTag('groovy')) %>
+<% #if($executable.manager.getAdapterByTag('groovy')) %>
 <a href="../test/groovy/?id=hello">caching mode</a><br />
 <a href="../test/groovy/?id=hello&stream=true">streaming mode</a><br />
 <a href="../test/groovy/?source=true">source</a>
@@ -79,7 +79,7 @@ n/a
 </td></tr><tr valign="top"><td>
 <h3>Clojure</h3>
 <p>
-<% #if($executable.context.manager.getAdapterByTag('clojure')) %>
+<% #if($executable.manager.getAdapterByTag('clojure')) %>
 <a href="../test/clojure/?id=hello">caching mode</a><br />
 <a href="../test/clojure/?id=hello&stream=true">streaming mode</a><br />
 <a href="../test/clojure/?source=true">source</a>
@@ -90,7 +90,7 @@ n/a
 </td><td>
 <h3>Velocity</h3>
 <p>
-<% #if($executable.context.manager.getAdapterByTag('velocity')) %>
+<% #if($executable.manager.getAdapterByTag('velocity')) %>
 <a href="../test/velocity/?id=hello">caching mode</a><br />
 <a href="../test/velocity/?id=hello&stream=true">streaming mode</a><br />
 <a href="../test/velocity/?source=true">source</a>

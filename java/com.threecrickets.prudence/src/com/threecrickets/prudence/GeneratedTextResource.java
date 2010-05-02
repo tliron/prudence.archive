@@ -13,8 +13,6 @@ package com.threecrickets.prudence;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
@@ -239,63 +237,6 @@ public class GeneratedTextResource extends ServerResource
 	//
 	// Attributes
 	//
-
-	/**
-	 * The {@link Writer} used by the {@link Executable}.
-	 * 
-	 * @return The writer
-	 * @see #setWriter(Writer)
-	 */
-	public Writer getWriter()
-	{
-		return writer;
-	}
-
-	/**
-	 * Buffer used for caching mode.
-	 * 
-	 * @return The writer buffer
-	 */
-	public StringBuffer getWriterBuffer()
-	{
-		return writerBuffer;
-	}
-
-	/**
-	 * @param writer
-	 *        The writer
-	 * @param writerBuffer
-	 *        The writer buffer or null
-	 * @see #getWriter()
-	 */
-	public void setWriter( Writer writer, StringBuffer writerBuffer )
-	{
-		this.writer = writer;
-		this.writerBuffer = writerBuffer;
-	}
-
-	/**
-	 * Same as {@link #getWriter()}, for standard error. (Nothing is currently
-	 * done with the contents of this, but this may change in future
-	 * implementations.)
-	 * 
-	 * @return The error writer
-	 * @see #setErrorWriter(Writer)
-	 */
-	public Writer getErrorWriter()
-	{
-		return errorWriter;
-	}
-
-	/**
-	 * @param errorWriter
-	 *        The error writer
-	 * @see #getErrorWriter()
-	 */
-	public void setErrorWriter( Writer errorWriter )
-	{
-		this.errorWriter = errorWriter;
-	}
 
 	/**
 	 * The name of the global variable with which to access the container.
@@ -840,23 +781,6 @@ public class GeneratedTextResource extends ServerResource
 	private volatile Cache cache;
 
 	/**
-	 * Same as {@link #writer}, for standard error. (Nothing is currently done
-	 * with the contents of this, but this may change in future
-	 * implementations.)
-	 */
-	private volatile Writer errorWriter = new StringWriter();
-
-	/**
-	 * The {@link Writer} used by the {@link Executable}.
-	 */
-	private volatile Writer writer;
-
-	/**
-	 * Buffer used for caching mode.
-	 */
-	private volatile StringBuffer writerBuffer;
-
-	/**
 	 * The name of the global variable with which to access the container.
 	 */
 	private volatile String containerName;
@@ -924,7 +848,7 @@ public class GeneratedTextResource extends ServerResource
 				}
 			}
 
-			ExecutionContext executionContext = new ExecutionContext( getLanguageManager(), getWriter(), getErrorWriter() );
+			ExecutionContext executionContext = new ExecutionContext();
 			ExposedContainerForGeneratedTextResource exposedContainer = new ExposedContainerForGeneratedTextResource( this, executionContext, entity, variant );
 			Representation representation = null;
 			try
@@ -992,9 +916,6 @@ public class GeneratedTextResource extends ServerResource
 			}
 			finally
 			{
-				// Release only if we own the execution context!
-				// if( !( representation instanceof
-				// GeneratedTextStreamingRepresentation ) )
 				executionContext.release();
 			}
 		}

@@ -1299,7 +1299,7 @@ public class DelegatedResource extends ServerResource
 
 			if( executable.getEnterableExecutionContext() == null )
 			{
-				ExecutionContext executionContext = new ExecutionContext( getLanguageManager(), getWriter(), getErrorWriter() );
+				ExecutionContext executionContext = new ExecutionContext( getWriter(), getErrorWriter() );
 				executionContext.getExposedVariables().put( getContainerName(), new ExposedContainerForDelegatedResource( this ) );
 				try
 				{
