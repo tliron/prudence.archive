@@ -71,7 +71,7 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	public void write( Writer writer ) throws IOException
 	{
 		exposedContainer.exposedConversation.isStreaming = true;
-		exposedContainer.exposedConversation.getResource().setWriter( writer );
+		exposedContainer.exposedConversation.getResource().setWriter( writer, null );
 		exposedContainer.executionContext.setWriter( writer );
 		try
 		{

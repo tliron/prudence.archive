@@ -252,13 +252,26 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
+	 * Buffer used for caching mode.
+	 * 
+	 * @return The writer buffer
+	 */
+	public StringBuffer getWriterBuffer()
+	{
+		return writerBuffer;
+	}
+
+	/**
 	 * @param writer
 	 *        The writer
+	 * @param writerBuffer
+	 *        The writer buffer or null
 	 * @see #getWriter()
 	 */
-	public void setWriter( Writer writer )
+	public void setWriter( Writer writer, StringBuffer writerBuffer )
 	{
 		this.writer = writer;
+		this.writerBuffer = writerBuffer;
 	}
 
 	/**
@@ -839,6 +852,11 @@ public class GeneratedTextResource extends ServerResource
 	private volatile Writer writer;
 
 	/**
+	 * Buffer used for caching mode.
+	 */
+	private volatile StringBuffer writerBuffer;
+
+	/**
 	 * The name of the global variable with which to access the container.
 	 */
 	private volatile String containerName;
@@ -975,7 +993,8 @@ public class GeneratedTextResource extends ServerResource
 			finally
 			{
 				// Release only if we own the execution context!
-				//if( !( representation instanceof GeneratedTextStreamingRepresentation ) )
+				// if( !( representation instanceof
+				// GeneratedTextStreamingRepresentation ) )
 				executionContext.release();
 			}
 		}

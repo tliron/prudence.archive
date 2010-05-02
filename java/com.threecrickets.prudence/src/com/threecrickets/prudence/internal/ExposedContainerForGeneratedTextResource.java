@@ -214,11 +214,6 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	private static final String CACHE_GROUPS_ATTRIBUTE = "prudence.cacheGroups";
 
 	/**
-	 * Buffer used for caching mode.
-	 */
-	private StringBuffer buffer;
-
-	/**
 	 * @return The cache key for the executable
 	 */
 	private String castCacheKeyPattern()
@@ -262,6 +257,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		this.executable = executable;
 
 		Writer writer = resource.getWriter();
+		StringBuffer writerBuffer = resource.getWriterBuffer();
 
 		// Optimized handling for pure text
 		String pureText = executable.getAsPureLiteral();
@@ -282,16 +278,17 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 			if( writer == null )
 			{
 				StringWriter stringWriter = new StringWriter();
-				buffer = stringWriter.getBuffer();
+				writerBuffer = stringWriter.getBuffer();
 				writer = new BufferedWriter( stringWriter );
 
-				// Make sure that included executables use the same writer
-				resource.setWriter( writer );
+				// Make sure that included executables use the same
+				// writer/buffer
+				resource.setWriter( writer, writerBuffer );
 			}
 			else
 			{
 				writer.flush();
-				startPosition = buffer.length();
+				startPosition = writerBuffer.length();
 			}
 
 			// Attempt to use cache
@@ -343,10 +340,10 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 			else
 			{
 				writer.flush();
-				executionContext.getErrorWriter().flush();
 
 				// Get the buffer from when we executed the executable
-				CacheEntry cacheEntry = new CacheEntry( buffer.substring( startPosition ), exposedConversation.getMediaType(), exposedConversation.getLanguage(), exposedConversation.getCharacterSet(), getExpiration() );
+				CacheEntry cacheEntry = new CacheEntry( writerBuffer.substring( startPosition ), exposedConversation.getMediaType(), exposedConversation.getLanguage(), exposedConversation.getCharacterSet(),
+					getExpiration() );
 
 				// Cache if enabled
 				String cacheKey = castCacheKeyPattern();
@@ -358,7 +355,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 				if( startPosition == 0 )
 					return cacheEntry.represent();
 				else
-					return new CacheEntry( buffer.toString(), exposedConversation.getMediaType(), exposedConversation.getLanguage(), exposedConversation.getCharacterSet(), getExpiration() ).represent();
+					return new CacheEntry( writerBuffer.toString(), exposedConversation.getMediaType(), exposedConversation.getLanguage(), exposedConversation.getCharacterSet(), getExpiration() ).represent();
 			}
 		}
 		catch( ExecutionException x )
