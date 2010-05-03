@@ -24,7 +24,6 @@ if($form->getFirstValue('stream') == 'true') if($conversation->stream()) exit;
 //
 
 $prudence->cacheDuration = 5000;
-$prudence->cacheKey = '{name}?{rq}'; // Include query in cache key
 
 //
 // Calling Java
@@ -36,15 +35,13 @@ print '<p>This page was dynamically generated at ' . System::currentTimeMillis()
 //
 // Including a document
 //
-// (see comments in fragments/quercus.html)
-//
 // This is identical to:
 //
-//   include $basePath . '/path';
+//   $prudence->include('path');
 //
 
 ?>
-<?& '../fragments/test/quercus.php' ?>
+<?& '../fragments/test/quercus/' ?>
 <?
 
 //
@@ -54,11 +51,11 @@ print '<p>This page was dynamically generated at ' . System::currentTimeMillis()
 function print_adapter($adapter) {
 ?>
 <p>
-	<i>Adapter:</i> <?= $adapter->attributes->get('name') ?> version <?= $adapter->attributes->get('version') ?><br />
-	<i>Language:</i> <?= $adapter->attributes->get('language.name') ?> version <?= $adapter->attributes->get('language.version') ?><br />
+	<i>Adapter:</i> <?= $adapter->attributes['name'] ?> version <?= $adapter->attributes['version'] ?><br />
+	<i>Language:</i> <?= $adapter->attributes['language.name'] ?> version <?= $adapter->attributes['language.version'] ?><br />
 	<i>Tags:</i> 
 <?
-	$tags = $adapter->attributes->get('tags')->toArray();
+	$tags = $adapter->attributes['tags']->toArray();
 	for($i = 0; $i < count($tags); $i++) {
 		print($tags[$i]);
 		if($i < count($tags) - 1) {

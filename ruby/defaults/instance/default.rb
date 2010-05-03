@@ -12,7 +12,7 @@ import org.restlet.Component
 import com.threecrickets.prudence.util.DelegatedStatusService
 import com.threecrickets.prudence.util.MessageTask
 
-def include_or_default(name, default=nil)
+def execute_or_default(name, default=nil)
 	begin
 		$executable.container.include name
 	rescue FileNotFoundException
@@ -98,19 +98,19 @@ $component.context.attributes['prudence.executor'] = $executor
 # Clients
 #
 
-include_or_default 'instance/clients/'
+execute_or_default 'instance/clients/'
 
 #
 # Routing
 #
 
-include_or_default 'instance/routing/'
+execute_or_default 'instance/routing/'
 
 #
 # Servers
 #
 
-include_or_default 'instance/servers/'
+execute_or_default 'instance/servers/'
 
 #
 # Start

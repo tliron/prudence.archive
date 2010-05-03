@@ -10,13 +10,13 @@ from java.util.concurrent import Executors
 from org.restlet import Component
 from com.threecrickets.prudence.util import DelegatedStatusService, MessageTask
 
-def include_or_default(name, default=None):
+def execute_or_default(name, default=None):
 	try:
-		executable.container.include(name)
+		executable.container.execute(name)
 	except FileNotFoundException:
 		if default is None:
 			default = 'defaults/' + name 
-		executable.container.include(default)
+		executable.container.execute(default)
 
 tasks = []
 
@@ -92,19 +92,19 @@ component.context.attributes['prudence.executor'] = executor
 # Clients
 #
 
-include_or_default('instance/clients/')
+execute_or_default('instance/clients/')
 
 #
 # Routing
 #
 
-include_or_default('instance/routing/')
+execute_or_default('instance/routing/')
 
 #
 # Servers
 #
 
-include_or_default('instance/servers/')
+execute_or_default('instance/servers/')
 
 #
 # Start

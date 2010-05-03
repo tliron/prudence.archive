@@ -1,4 +1,4 @@
-<%velocity #set($document.cacheDuration=5000) %><%& '../fragments/header' %>
+<%velocity #set($document.cacheDuration=5000) %><%& '../fragments/header/' %>
 
 <h2>Tutorial</h2>
 
@@ -135,4 +135,4 @@ YAJSW
 service.conf
 controller.log
 
-<%& '../fragments/footer' %>
+<%& '../fragments/footer/' %>

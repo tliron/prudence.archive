@@ -16,7 +16,7 @@ import org.json.JSONObject
 
 // Include the context library
 
-prudence.include('../libraries/groovy/context/')
+prudence.execute('../libraries/groovy/context/')
 
 // State
 //

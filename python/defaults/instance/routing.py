@@ -6,7 +6,7 @@ from java.io import File
 
 # Hosts
 
-include_or_default('instance/hosts/')
+execute_or_default('instance/hosts/')
 
 # Applications
 
@@ -19,7 +19,7 @@ for application_dir in application_dirs:
         application_logger_name = application_dir.name
         application_base_path = application_dir.path
         application_default_url = '/' + application_dir.name + '/'
-        include_or_default(application_base_path, 'defaults/application')
+        execute_or_default(application_base_path, 'defaults/application')
         applications.append(application)
 
 if len(applications) == 0:

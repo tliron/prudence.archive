@@ -1,5 +1,5 @@
 
-executable.container.include('defaults/application/settings/')
+executable.container.execute('defaults/application/settings/')
 
 application_name = 'Stickstick'
 application_description = 'Share online sticky notes'

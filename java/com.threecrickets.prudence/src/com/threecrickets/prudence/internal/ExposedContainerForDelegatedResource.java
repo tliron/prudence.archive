@@ -13,12 +13,11 @@ package com.threecrickets.prudence.internal;
 
 import java.io.IOException;
 
-import org.restlet.data.Status;
 import org.restlet.representation.Representation;
-import org.restlet.resource.ResourceException;
 
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
@@ -52,9 +51,8 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase<D
 	//
 
 	/**
-	 * As {@link #includeDocument(String)}, except that the document is parsed
-	 * as a single, non-delimited script with the engine name derived from
-	 * name's extension.
+	 * Executes a source code document. The language of the source code will be
+	 * determined by the document tag, which is usually the filename extension.
 	 * 
 	 * @param documentName
 	 *        The document name
@@ -63,18 +61,13 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase<D
 	 * @throws ExecutionException
 	 */
 	@Override
-	public Representation include( String documentName ) throws IOException, ParsingException, ExecutionException
+	public Representation execute( String documentName ) throws IOException, ParsingException, ExecutionException
 	{
-		if( resource.isTrailingSlashRequired() )
-		{
-			if( ( documentName != null ) && ( documentName.length() != 0 ) && !documentName.endsWith( "/" ) )
-				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-		}
+		documentName = resource.validateDocumentName( documentName );
 
-		if( ( documentName == null ) || ( documentName.length() == 0 ) || ( documentName.equals( "/" ) ) )
-			documentName = resource.getDefaultName();
-
-		Executable executable = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() ).getDocument();
+		DocumentDescriptor<Executable> documentDescriptor = Executable
+			.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
+		Executable executable = documentDescriptor.getDocument();
 		executable.execute();
 
 		return null;

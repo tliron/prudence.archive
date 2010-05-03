@@ -6,7 +6,7 @@
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $runtime_attributes, $show_debug_on_error, $preheat_resources;
 
-$executable->container->include('defaults/application/settings/');
+$executable->container->execute('defaults/application/settings/');
 
 $application_name = 'Stickstick';
 $application_description = 'Share online sticky notes';

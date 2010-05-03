@@ -4,7 +4,7 @@ sys.path.append('%s/../libraries/' % prudence.source.basePath)
 from sqlalchemy.orm.exc import NoResultFound
 import minjson as json
 
-prudence.include('../libraries/stickstick/data/')
+prudence.execute('../libraries/stickstick/data/')
 
 def get_id(conversation):
     try:

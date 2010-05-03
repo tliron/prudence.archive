@@ -10,13 +10,13 @@ import com.threecrickets.prudence.util.DelegatedStatusService
 // Settings
 //
 
-includeOrDefault(applicationBasePath + '/settings/', 'defaults/application/settings/')
+executeOrDefault(applicationBasePath + '/settings/', 'defaults/application/settings/')
 
 //
 // Application
 //
 
-includeOrDefault(applicationBasePath + '/application/', 'defaults/application/application/')
+executeOrDefault(applicationBasePath + '/application/', 'defaults/application/application/')
 
 prudenceApplication.name = applicationName
 prudenceApplication.description = applicationDescription
@@ -42,7 +42,7 @@ prudenceApplication.metadataService.addExtension('php', MediaType.TEXT_HTML)
 // Routing
 //
 
-includeOrDefault(applicationBasePath + '/routing/', 'defaults/application/routing/')
+executeOrDefault(applicationBasePath + '/routing/', 'defaults/application/routing/')
 
 //
 // Logging

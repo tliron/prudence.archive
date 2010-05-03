@@ -8,7 +8,7 @@ importClass(
 
 // Hosts
 
-includeOrDefault('instance/hosts/');
+executeOrDefault('instance/hosts/');
 
 // Applications
 
@@ -23,7 +23,7 @@ for(var i in applicationDirs) {
 		var applicationLoggerName = applicationDir.name;
 		var applicationBasePath = applicationDir.path;
 		var applicationDefaultURL = '/' + applicationDir.name + '/';
-		includeOrDefault(applicationBasePath, 'defaults/application');
+		executeOrDefault(applicationBasePath, 'defaults/application');
 		applications.add(application);
 	}
 }

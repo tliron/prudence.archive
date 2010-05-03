@@ -2,7 +2,7 @@
 ; Prudence Guide Settings
 ;
 
-(.. executable getContainer (include "defaults/application/settings/"))
+(.. executable getContainer (execute "defaults/application/settings/"))
 
 (def application-name "Prudence Guide")
 (def application-description "Prudence web site, documentation, and tests")

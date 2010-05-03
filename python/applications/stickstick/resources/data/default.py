@@ -5,7 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
 import minjson as json
 
-prudence.include('../libraries/stickstick/data/')
+prudence.execute('../libraries/stickstick/data/')
 
 def handle_init(conversation):
     conversation.addMediaTypeByName('text/plain')

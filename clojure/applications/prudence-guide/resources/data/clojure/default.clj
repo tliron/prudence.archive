@@ -11,7 +11,7 @@
 ;
 
 ; Include the context library
-(.. prudence (include "../libraries/clojure/context/"))
+(.. prudence (execute "../libraries/clojure/context/"))
 
 ; Include the JSON library
 (use

@@ -7,7 +7,7 @@ global $component, $hosts, $mysite_host;
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $show_debug_on_error, $preheat_resources;
 
-$executable->container->include('defaults/application/settings/');
+$executable->container->execute('defaults/application/settings/');
 
 $application_name = 'Prudence Guide';
 $application_description = 'Prudence web site, documentation, and tests';

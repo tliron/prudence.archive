@@ -6,7 +6,7 @@
 
 ; Hosts
 
-(include-or-default "instance/hosts/")
+(execute-or-default "instance/hosts/")
 
 ; Applications
 
@@ -21,7 +21,7 @@
 	(def application-base-path (.getPath application-dir))
 	(def application-default-url (str "/" (.getName application-dir) "/"))
 	(def application nil) ; otherwise the below would create it in a different namespace
-  (include-or-default application-base-path "defaults/application")
+  (execute-or-default application-base-path "defaults/application")
   (def applications (conj applications application)))
 
 (if (empty? applications) (do

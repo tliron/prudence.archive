@@ -14,15 +14,15 @@ import org.restlet.Component;
 import com.threecrickets.prudence.util.DelegatedStatusService;
 import com.threecrickets.prudence.util.MessageTask;
 
-function include_or_default($name, $def=NULL) {
+function execute_or_default($name, $def=NULL) {
 	global $executable;
 	try {
-		$executable->container->include($name);
+		$executable->container->execute($name);
 	} catch(Exception $x) {
 		if(is_null($def)) {
 			$def = 'defaults/' . $name;
 		}
-		$executable->container->include($def);
+		$executable->container->execute($def);
 	}
 }
 
@@ -99,19 +99,19 @@ $component->context->attributes['prudence.executor'] = $executor;
 // Clients
 //
 
-include_or_default('instance/clients/');
+execute_or_default('instance/clients/');
 
 //
 // Routing
 //
 
-include_or_default('instance/routing/');
+execute_or_default('instance/routing/');
 
 //
 // Servers
 //
 
-include_or_default('instance/servers/');
+execute_or_default('instance/servers/');
 
 //
 // Start

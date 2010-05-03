@@ -2,6 +2,6 @@
 # Prudence Admin Application
 #
 
-executable.container.include('defaults/application/')
+executable.container.execute('defaults/application/')
 
 attributes['component'] = component

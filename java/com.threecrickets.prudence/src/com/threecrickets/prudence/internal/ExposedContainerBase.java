@@ -231,7 +231,7 @@ public abstract class ExposedContainerBase<R extends ServerResource>
 	 * @throws ParsingException
 	 * @throws ExecutionException
 	 */
-	public abstract Representation include( String documentName ) throws IOException, ParsingException, ExecutionException;
+	public abstract Representation execute( String documentName ) throws IOException, ParsingException, ExecutionException;
 
 	/**
 	 * Throws a runtime exception.

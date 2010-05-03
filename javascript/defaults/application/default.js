@@ -11,13 +11,13 @@ importClass(
 // Settings
 //
 
-includeOrDefault(applicationBasePath + '/settings/', 'defaults/application/settings/');
+executeOrDefault(applicationBasePath + '/settings/', 'defaults/application/settings/');
 
 //
 // Application
 //
 
-includeOrDefault(applicationBasePath + '/application/', 'defaults/application/application/');
+executeOrDefault(applicationBasePath + '/application/', 'defaults/application/application/');
 
 application.name = applicationName;
 application.description = applicationDescription;
@@ -43,7 +43,7 @@ application.metadataService.addExtension('php', MediaType.TEXT_HTML);
 // Routing
 //
 
-includeOrDefault(applicationBasePath + '/routing/', 'defaults/application/routing/');
+executeOrDefault(applicationBasePath + '/routing/', 'defaults/application/routing/');
 
 //
 // Logging

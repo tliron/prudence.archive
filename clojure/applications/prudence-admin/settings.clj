@@ -2,7 +2,7 @@
 ; Prudence Admin Settings
 ;
 
-(.. executable getContainer (include "defaults/application/settings/"))
+(.. executable getContainer (execute "defaults/application/settings/"))
 
 (def application-name "Prudence Admin")
 (def application-description "Runtime management of Prudence")

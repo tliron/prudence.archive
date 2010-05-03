@@ -11,17 +11,17 @@
 	'com.threecrickets.prudence.util.DelegatedStatusService
 	'com.threecrickets.prudence.util.MessageTask)
 
-(defn include-or-default
+(defn execute-or-default
 	([name default]
 		(try
-			(.. executable getContainer (include name))
+			(.. executable getContainer (execute name))
 			(catch FileNotFoundException _
 				(.. executable getContainer (include
 					(if (nil? default)
 						(str "defaults/" name)
 						default))))))
 	([name]
-		(include-or-default name nil)))
+		(execute-or-default name nil)))
 
 (def tasks [])
 
@@ -95,19 +95,19 @@
 ; Clients
 ;
 
-(include-or-default "instance/clients/")
+(execute-or-default "instance/clients/")
 
 ;
 ; Routing
 ;
 
-(include-or-default "instance/routing/")
+(execute-or-default "instance/routing/")
 
 ;
 ; Servers
 ;
 
-(include-or-default "instance/servers/")
+(execute-or-default "instance/servers/")
 
 ;
 ; Start

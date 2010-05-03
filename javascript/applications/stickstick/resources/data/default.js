@@ -1,6 +1,6 @@
 
-prudence.include('../libraries/stickstick/data/');
-prudence.include('../libraries/json2/');
+prudence.execute('../libraries/stickstick/data/');
+prudence.execute('../libraries/json2/');
 
 function handleInit(conversation) {
     conversation.addMediaTypeByName('text/plain');

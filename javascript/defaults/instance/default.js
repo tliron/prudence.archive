@@ -12,14 +12,14 @@ importClass(
 	com.threecrickets.prudence.util.DelegatedStatusService,
 	com.threecrickets.prudence.util.MessageTask);
 
-function includeOrDefault(name, def) {
+function executeOrDefault(name, def) {
 	try {
-		executable.container.include(name);
+		executable.container.execute(name);
 	} catch(e if e.javaException instanceof FileNotFoundException) {
 		if(!def) {
 			def = 'defaults/' + name;
 		}
-		executable.container.include(def);
+		executable.container.execute(def);
 	}
 }
 
@@ -96,19 +96,19 @@ component.context.attributes.put('prudence.executor', executor);
 // Clients
 //
 
-includeOrDefault('instance/clients/');
+executeOrDefault('instance/clients/');
 
 //
 // Routing
 //
 
-includeOrDefault('instance/routing/');
+executeOrDefault('instance/routing/');
 
 //
 // Servers
 //
 
-includeOrDefault('instance/servers/');
+executeOrDefault('instance/servers/');
 
 //
 // Start

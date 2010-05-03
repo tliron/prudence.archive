@@ -2,4 +2,4 @@
 ; Prudence Instance
 ;
 
-(.. executable getContainer (include "defaults/instance/"))
+(.. executable getContainer (execute "defaults/instance/"))

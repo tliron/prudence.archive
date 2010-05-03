@@ -812,6 +812,36 @@ public class DelegatedResource extends ServerResource
 	}
 
 	//
+	// Operations
+	//
+
+	/**
+	 * Throws an exception if the document name is not valid. Uses
+	 * {@link #getDefaultName()} if no name is given, and respect
+	 * {@link #isTrailingSlashRequired()}.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @return The valid document name
+	 * @throws ResourceException
+	 */
+	public String validateDocumentName( String documentName ) throws ResourceException
+	{
+		if( isTrailingSlashRequired() )
+			if( ( documentName != null ) && ( documentName.length() != 0 ) && !documentName.endsWith( "/" ) )
+				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+
+		if( ( documentName == null ) || ( documentName.length() == 0 ) || ( documentName.equals( "/" ) ) )
+		{
+			documentName = getDefaultName();
+			if( isTrailingSlashRequired() && !documentName.endsWith( "/" ) )
+				documentName += "/";
+		}
+
+		return documentName;
+	}
+
+	//
 	// ServerResource
 	//
 
@@ -871,9 +901,8 @@ public class DelegatedResource extends ServerResource
 			Form query = request.getResourceRef().getQueryAsForm();
 			if( TRUE.equals( query.getFirstValue( SOURCE ) ) )
 			{
-				String name = request.getResourceRef().getRemainingPart( true, false );
-				if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
-					name = getDefaultName();
+				String documentName = request.getResourceRef().getRemainingPart( true, false );
+				documentName = validateDocumentName( documentName );
 				int lineNumber = -1;
 				String line = query.getFirstValue( HIGHLIGHT );
 				if( line != null )
@@ -888,10 +917,10 @@ public class DelegatedResource extends ServerResource
 				}
 				try
 				{
-					DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocument( name );
+					DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocument( documentName );
 					DocumentFormatter<Executable> documentFormatter = getDocumentFormatter();
 					if( documentFormatter != null )
-						return new StringRepresentation( documentFormatter.format( documentDescriptor, name, lineNumber ), MediaType.TEXT_HTML );
+						return new StringRepresentation( documentFormatter.format( documentDescriptor, documentName, lineNumber ), MediaType.TEXT_HTML );
 					else
 						return new StringRepresentation( documentDescriptor.getSourceCode() );
 				}
@@ -1278,20 +1307,12 @@ public class DelegatedResource extends ServerResource
 	 */
 	private Object enter( String entryPointName, ExposedConversationForDelegatedResource exposedConversation ) throws ResourceException
 	{
-		String name = getRequest().getResourceRef().getRemainingPart( true, false );
-
-		if( isTrailingSlashRequired() )
-		{
-			if( ( name != null ) && ( name.length() != 0 ) && !name.endsWith( "/" ) )
-				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-		}
-
-		if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
-			name = getDefaultName();
+		String documentName = getRequest().getResourceRef().getRemainingPart( true, false );
+		documentName = validateDocumentName( documentName );
 
 		try
 		{
-			DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( name, getDocumentSource(), false, getLanguageManager(), getDefaultLanguageTag(), isPrepare() );
+			DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, getDocumentSource(), false, getLanguageManager(), getDefaultLanguageTag(), isPrepare() );
 			Executable executable = documentDescriptor.getDocument();
 
 			if( executable.getEnterableExecutionContext() == null )

@@ -40,7 +40,7 @@ routing. Example:
 
 <pre>
 // Prudence defaults
-prudence.include('defaults/application/routing');
+prudence.execute('defaults/application/routing');
 
 // MyOrg resources
 router.attach('data/item/{id}', classLoader.loadClass('org.myorg.ItemResource'));

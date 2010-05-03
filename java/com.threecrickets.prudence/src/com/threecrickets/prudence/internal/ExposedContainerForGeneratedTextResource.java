@@ -128,28 +128,21 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	//
 
 	/**
-	 * This powerful method allows scriptlets to execute other documents in
-	 * place, and is useful for creating large, maintainable applications based
-	 * on documents. Included documents can act as a library or toolkit and can
-	 * even be shared among many applications. The included document does not
-	 * have to be in the same programming language or use the same engine as the
-	 * calling scriptlet. However, if they do use the same engine, then methods,
-	 * functions, modules, etc., could be shared.
-	 * <p>
-	 * It is important to note that how this works varies a lot per engine. For
-	 * example, in JRuby, every scriptlet is run in its own scope, so that
-	 * sharing would have to be done explicitly in the global scope. See the
-	 * included JRuby examples for a discussion of various ways to do this.
+	 * Includes a text document into the current location. The document may be a
+	 * "text-with-scriptlets" executable, in which case its output could be
+	 * dynamically generated.
 	 * 
 	 * @param documentName
 	 *        The document name
-	 * @return A representation of the executable's output
+	 * @return A representation of the document's output
 	 * @throws IOException
 	 * @throws ParsingException
 	 * @throws ExecutionException
 	 */
-	public Representation includeDocument( String documentName ) throws IOException, ParsingException, ExecutionException
+	public Representation include( String documentName ) throws IOException, ParsingException, ExecutionException
 	{
+		documentName = resource.validateDocumentName( documentName );
+
 		DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
 		executable = documentDescriptor.getDocument();
 
@@ -161,20 +154,20 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	}
 
 	/**
-	 * As {@link #includeDocument(String)}, except that the document is parsed
-	 * as a single, non-delimited script with the engine name derived from
-	 * name's extension.
+	 * Executes a source code document. The language of the source code will be
+	 * determined by the document tag, which is usually the filename extension.
 	 * 
 	 * @param documentName
 	 *        The document name
-	 * @return A representation of the executable's output
 	 * @throws IOException
 	 * @throws ParsingException
 	 * @throws ExecutionException
 	 */
 	@Override
-	public Representation include( String documentName ) throws IOException, ParsingException, ExecutionException
+	public Representation execute( String documentName ) throws IOException, ParsingException, ExecutionException
 	{
+		documentName = resource.validateDocumentName( documentName );
+
 		DocumentDescriptor<Executable> documentDescriptor = Executable
 			.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
 		executable = documentDescriptor.getDocument();

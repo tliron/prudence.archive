@@ -10,13 +10,13 @@ import com.threecrickets.prudence.util.DelegatedStatusService
 # Settings
 #
 
-include_or_default $application_base_path + '/settings/', 'defaults/application/settings/'
+execute_or_default $application_base_path + '/settings/', 'defaults/application/settings/'
 
 #
 # Application
 #
 
-include_or_default $application_base_path + '/application/', 'defaults/application/application/'
+execute_or_default $application_base_path + '/application/', 'defaults/application/application/'
 
 $application.name = $application_name
 $application.description = $application_description
@@ -42,7 +42,7 @@ $application.metadata_service.add_extension 'php', MediaType::TEXT_HTML
 # Routing
 #
 
-include_or_default $application_base_path + '/routing/', 'defaults/application/routing/'
+execute_or_default $application_base_path + '/routing/', 'defaults/application/routing/'
 
 #
 # Logging

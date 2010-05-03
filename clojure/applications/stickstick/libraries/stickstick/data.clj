@@ -1,5 +1,5 @@
 
-(.. prudence (include "../libraries/stickstick/shared/"))
+(.. prudence (execute "../libraries/stickstick/shared/"))
 
 (use 'clojure.contrib.sql)
 

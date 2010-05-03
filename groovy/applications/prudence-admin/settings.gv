@@ -2,7 +2,7 @@
 // Prudence Admin Settings
 //
 
-executable.container.include('defaults/application/settings/')
+executable.container.execute('defaults/application/settings/')
 
 applicationName = 'Prudence Admin'
 applicationDescription = 'Runtime management of Prudence'

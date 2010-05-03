@@ -624,6 +624,36 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	//
+	// Operations
+	//
+
+	/**
+	 * Throws an exception if the document name is not valid. Uses
+	 * {@link #getDefaultName()} if no name is given, and respect
+	 * {@link #isTrailingSlashRequired()}.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @return The valid document name
+	 * @throws ResourceException
+	 */
+	public String validateDocumentName( String documentName ) throws ResourceException
+	{
+		if( isTrailingSlashRequired() )
+			if( ( documentName != null ) && ( documentName.length() != 0 ) && !documentName.endsWith( "/" ) )
+				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+
+		if( ( documentName == null ) || ( documentName.length() == 0 ) || ( documentName.equals( "/" ) ) )
+		{
+			documentName = getDefaultName();
+			if( isTrailingSlashRequired() && !documentName.endsWith( "/" ) )
+				documentName += "/";
+		}
+
+		return documentName;
+	}
+
+	//
 	// ServerResource
 	//
 
@@ -808,16 +838,8 @@ public class GeneratedTextResource extends ServerResource
 	private Representation execute( Representation entity, Variant variant ) throws ResourceException
 	{
 		Request request = getRequest();
-		String name = request.getResourceRef().getRemainingPart( true, false );
-
-		if( isTrailingSlashRequired() )
-		{
-			if( ( name != null ) && ( name.length() != 0 ) && !name.endsWith( "/" ) )
-				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-		}
-
-		if( ( name == null ) || ( name.length() == 0 ) || ( name.equals( "/" ) ) )
-			name = getDefaultName();
+		String documentName = request.getResourceRef().getRemainingPart( true, false );
+		documentName = validateDocumentName( documentName );
 
 		try
 		{
@@ -839,10 +861,10 @@ public class GeneratedTextResource extends ServerResource
 						}
 					}
 
-					DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocument( name );
+					DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocument( documentName );
 					DocumentFormatter<Executable> documentFormatter = getDocumentFormatter();
 					if( documentFormatter != null )
-						return new StringRepresentation( documentFormatter.format( documentDescriptor, name, lineNumber ), MediaType.TEXT_HTML );
+						return new StringRepresentation( documentFormatter.format( documentDescriptor, documentName, lineNumber ), MediaType.TEXT_HTML );
 					else
 						return new StringRepresentation( documentDescriptor.getSourceCode() );
 				}
@@ -854,7 +876,7 @@ public class GeneratedTextResource extends ServerResource
 			try
 			{
 				// Execute and represent output
-				representation = exposedContainer.includeDocument( name );
+				representation = exposedContainer.include( documentName );
 
 				if( representation == null )
 					throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );

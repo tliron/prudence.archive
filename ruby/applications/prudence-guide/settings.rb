@@ -2,7 +2,7 @@
 # Prudence Guide Settings
 #
 
-$executable.container.include 'defaults/application/settings/'
+$executable.container.execute 'defaults/application/settings/'
 
 $application_name = 'Prudence Guide'
 $application_description = 'Prudence web site, documentation, and tests'

@@ -11,14 +11,14 @@ import org.restlet.Component
 import com.threecrickets.prudence.util.DelegatedStatusService
 import com.threecrickets.prudence.util.MessageTask
 
-includeOrDefault = { name, deflt = null ->
+executeOrDefault = { name, deflt = null ->
 	try {
-		executable.container.include(name)
+		executable.container.execute(name)
 	} catch(FileNotFoundException) {
 		if(!deflt) {
 			deflt = 'defaults/' + name
 		}
-		executable.container.include(deflt)
+		executable.container.execute(deflt)
 	}
 }
 
@@ -95,19 +95,19 @@ component.context.attributes['prudence.executor'] = executor
 // Clients
 //
 
-includeOrDefault('instance/clients/')
+executeOrDefault('instance/clients/')
 
 //
 // Routing
 //
 
-includeOrDefault('instance/routing/')
+executeOrDefault('instance/routing/')
 
 //
 // Servers
 //
 
-includeOrDefault('instance/servers/')
+executeOrDefault('instance/servers/')
 
 //
 // Start

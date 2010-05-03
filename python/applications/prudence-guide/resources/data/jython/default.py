@@ -17,7 +17,7 @@ from org.restlet.ext.json import JsonRepresentation
 
 # Include the context library
 
-prudence.include('../libraries/jython/context/')
+prudence.execute('../libraries/jython/context/')
 
 # Include the minjson library
 # (Note that we made a small change to minjson in order to accommodate Jython.

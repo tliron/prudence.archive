@@ -1,5 +1,5 @@
 <?php
-$prudence->include('../libraries/stickstick/data/');
+$prudence->execute('../libraries/stickstick/data/');
 
 import java.lang.System;
 
