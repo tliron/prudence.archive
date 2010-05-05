@@ -12,3 +12,5 @@
 (def application-contact-email "prudence@threecrickets.com")
 
 (def hosts {(.getDefaultHost component) "/" mysite-host "/"})
+
+(def show-debug-on-error true)

@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * An in-process (heap) memory cache.
  * <p>
  * Note that this implementation does not check for overall heap consumption or
- * free system memory. Make sure you set the maximum size appropriately for your
+ * free system memory. Make sure you set the maximum size appropriate for your
  * system!
  * 
  * @author Tal Liron
@@ -86,32 +86,6 @@ public class InProcessMemoryCache implements Cache
 	public void setMaxSize( long maxSize )
 	{
 		this.maxSize = maxSize;
-	}
-
-	//
-	// Operations
-	//
-
-	/**
-	 * Removes expired cache entries.
-	 */
-	public void prune()
-	{
-		Date now = new Date();
-		for( Map.Entry<String, CacheEntry> entry : cache.entrySet() )
-		{
-			if( now.after( entry.getValue().getExpirationDate() ) )
-			{
-				CacheEntry removed = cache.remove( entry.getKey() );
-				if( removed != null )
-				{
-					if( debug )
-						System.out.println( "Pruned " + entry.getKey() );
-
-					size.addAndGet( -removed.getString().length() );
-				}
-			}
-		}
 	}
 
 	//
@@ -206,16 +180,50 @@ public class InProcessMemoryCache implements Cache
 		}
 	}
 
+	public void prune()
+	{
+		Date now = new Date();
+		for( Map.Entry<String, CacheEntry> entry : cache.entrySet() )
+		{
+			if( now.after( entry.getValue().getExpirationDate() ) )
+			{
+				CacheEntry removed = cache.remove( entry.getKey() );
+				if( removed != null )
+				{
+					if( debug )
+						System.out.println( "Pruned " + entry.getKey() );
+
+					size.addAndGet( -removed.getString().length() );
+				}
+			}
+		}
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * The cached entries.
+	 */
 	private final ConcurrentMap<String, CacheEntry> cache = new ConcurrentHashMap<String, CacheEntry>();
 
+	/**
+	 * The groups, for invalidation.
+	 */
 	private final ConcurrentMap<String, Set<String>> groups = new ConcurrentHashMap<String, Set<String>>();
 
+	/**
+	 * The current cache size.
+	 */
 	private final AtomicLong size = new AtomicLong();
 
+	/**
+	 * The current max cache size.
+	 */
 	private volatile long maxSize;
 
+	/**
+	 * Whether to print debug messages to standard out.
+	 */
 	private boolean debug = false;
 }

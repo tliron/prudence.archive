@@ -59,4 +59,9 @@ public interface Cache
 	 * @param groupKey
 	 */
 	public void invalidate( String groupKey );
+
+	/**
+	 * Removes expired cache entries.
+	 */
+	public void prune();
 }

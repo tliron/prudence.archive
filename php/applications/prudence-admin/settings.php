@@ -16,4 +16,6 @@ $application_home_url = 'http://threecrickets.com/prudence/';
 $application_contact_email = 'prudence@threecrickets.com';
 
 $hosts = array(array($component->defaultHost, '/'), array($mysite_host, '/'));
+
+$show_debug_on_error = TRUE;
 ?>
