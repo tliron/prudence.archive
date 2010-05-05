@@ -236,6 +236,7 @@
 	<fetch-library dist="${dist-kitchensink}" library="servlet" />
 	<fetch-library dist="${dist-kitchensink}" library="slf4j" />
 	<fetch-library dist="${dist-kitchensink}" library="sqlalchemy" />
+	<fetch-library dist="${dist-kitchensink}" library="succinct" />
 	<fetch-library dist="${dist-kitchensink}" library="velocity" />
 	<fetch-library-versions dist="${dist-kitchensink}" />
 </target>
@@ -340,7 +341,6 @@
 	<fetch-library dist="${dist-javascript}" library="grizzly" />
 	<fetch-library dist="${dist-javascript}" library="h2" />
 	<fetch-library dist="${dist-javascript}" library="json" />
-	<fetch-library dist="${dist-javascript}" library="jsr223" />
 	<fetch-library dist="${dist-javascript}" library="jygments" />
 	<fetch-library dist="${dist-javascript}" library="log4j" />
 	<fetch-library dist="${dist-javascript}" library="restlet" />
@@ -348,6 +348,7 @@
 	<fetch-library dist="${dist-javascript}" library="scripturian" />
 	<fetch-library dist="${dist-javascript}" library="servlet" />
 	<fetch-library dist="${dist-javascript}" library="slf4j" />
+	<fetch-library dist="${dist-javascript}" library="succinct" />
 	<fetch-library dist="${dist-javascript}" library="velocity" />
 	<fetch-library-versions dist="${dist-javascript}" />
 </target>
@@ -389,6 +390,7 @@
 	<fetch-library dist="${dist-python}" library="servlet" />
 	<fetch-library dist="${dist-python}" library="slf4j" />
 	<fetch-library dist="${dist-python}" library="sqlalchemy" />
+	<fetch-library dist="${dist-python}" library="succinct" />
 	<fetch-library dist="${dist-python}" library="velocity" />
 	<fetch-library-versions dist="${dist-python}" />
 </target>
@@ -421,7 +423,6 @@
 	<fetch-library dist="${dist-clojure}" library="grizzly" />
 	<fetch-library dist="${dist-clojure}" library="h2" />
 	<fetch-library dist="${dist-clojure}" library="json" />
-	<fetch-library dist="${dist-clojure}" library="jsr223" />
 	<fetch-library dist="${dist-clojure}" library="jygments" />
 	<fetch-library dist="${dist-clojure}" library="log4j" />
 	<fetch-library dist="${dist-clojure}" library="mysqlconnector" />
@@ -429,6 +430,7 @@
 	<fetch-library dist="${dist-clojure}" library="scripturian" />
 	<fetch-library dist="${dist-clojure}" library="servlet" />
 	<fetch-library dist="${dist-clojure}" library="slf4j" />
+	<fetch-library dist="${dist-clojure}" library="succinct" />
 	<fetch-library dist="${dist-clojure}" library="velocity" />
 	<fetch-library-versions dist="${dist-clojure}" />
 </target>
@@ -461,7 +463,6 @@
 	<fetch-library dist="${dist-groovy}" library="groovy" />
 	<fetch-library dist="${dist-groovy}" library="h2" />
 	<fetch-library dist="${dist-groovy}" library="json" />
-	<fetch-library dist="${dist-groovy}" library="jsr223" />
 	<fetch-library dist="${dist-groovy}" library="jygments" />
 	<fetch-library dist="${dist-groovy}" library="log4j" />
 	<fetch-library dist="${dist-groovy}" library="mysqlconnector" />
@@ -469,6 +470,7 @@
 	<fetch-library dist="${dist-groovy}" library="scripturian" />
 	<fetch-library dist="${dist-groovy}" library="servlet" />
 	<fetch-library dist="${dist-groovy}" library="slf4j" />
+	<fetch-library dist="${dist-groovy}" library="succinct" />
 	<fetch-library dist="${dist-groovy}" library="velocity" />
 	<fetch-library-versions dist="${dist-groovy}" />
 </target>
@@ -501,7 +503,6 @@
 	<fetch-library dist="${dist-ruby}" library="h2" />
 	<fetch-library dist="${dist-ruby}" library="jruby" />
 	<fetch-library dist="${dist-ruby}" library="json" />
-	<fetch-library dist="${dist-ruby}" library="jsr223" />
 	<fetch-library dist="${dist-ruby}" library="jygments" />
 	<fetch-library dist="${dist-ruby}" library="log4j" />
 	<fetch-library dist="${dist-ruby}" library="mysqlconnector" />
@@ -509,6 +510,7 @@
 	<fetch-library dist="${dist-ruby}" library="scripturian" />
 	<fetch-library dist="${dist-ruby}" library="servlet" />
 	<fetch-library dist="${dist-ruby}" library="slf4j" />
+	<fetch-library dist="${dist-ruby}" library="succinct" />
 	<fetch-library dist="${dist-ruby}" library="velocity" />
 	<fetch-library-versions dist="${dist-ruby}" />
 </target>
@@ -540,7 +542,6 @@
 	<fetch-library dist="${dist-php}" library="grizzly" />
 	<fetch-library dist="${dist-php}" library="h2" />
 	<fetch-library dist="${dist-php}" library="json" />
-	<fetch-library dist="${dist-php}" library="jsr223" />
 	<fetch-library dist="${dist-php}" library="jygments" />
 	<fetch-library dist="${dist-php}" library="log4j" />
 	<fetch-library dist="${dist-php}" library="mysqlconnector" />
@@ -549,6 +550,7 @@
 	<fetch-library dist="${dist-php}" library="scripturian" />
 	<fetch-library dist="${dist-php}" library="servlet" />
 	<fetch-library dist="${dist-php}" library="slf4j" />
+	<fetch-library dist="${dist-php}" library="succinct" />
 	<fetch-library dist="${dist-php}" library="velocity" />
 	<fetch-library-versions dist="${dist-php}" />
 </target>

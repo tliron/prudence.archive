@@ -5,11 +5,10 @@ set main=com.threecrickets.scripturian.Scripturian
 set jars=libraries/com.caucho.quercus.jar;^
 libraries/com.mysql.jdbc.jar;^
 libraries/com.sun.grizzly.jar;^
-libraries/com.sun.script.velocity.jar;^
 libraries/com.threecrickets.jygments.jar;^
 libraries/com.threecrickets.prudence.jar;^
 libraries/com.threecrickets.scripturian.jar;^
-libraries/javax.script.jar;^
+libraries/com.threecrickets.succinct.jar;^
 libraries/javax.servlet.jar;^
 libraries/org.apache.commons.fileupload.jar;^
 libraries/org.apache.log4j.jar;^
