@@ -319,6 +319,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 
 				// Note that this will cause the executable to execute again!
 				// TODO: flushLines!
+				resource.setAutoCommitting( false );
 				return new GeneratedTextStreamingRepresentation( this );
 			}
 
@@ -357,6 +358,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 
 				// Note that this will cause the executable to run again!
 				// TODO: flushLines!
+				resource.setAutoCommitting( false );
 				return new GeneratedTextStreamingRepresentation( this );
 
 				// Note that we will allow exceptions in executable that ask us

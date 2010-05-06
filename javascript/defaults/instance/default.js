@@ -9,8 +9,7 @@ importClass(
 	java.util.logging.LogManager,
 	java.util.concurrent.Executors,
 	org.restlet.Component,
-	com.threecrickets.prudence.util.DelegatedStatusService,
-	com.threecrickets.prudence.util.MessageTask);
+	com.threecrickets.prudence.util.DelegatedStatusService);
 
 function executeOrDefault(name, def) {
 	try {
@@ -121,10 +120,16 @@ component.start();
 //
 
 if(tasks.length > 0) {
-	executor.submit(new MessageTask(component.context, 'Executing ' + tasks.length + ' tasks...'));
+	var futures = [];
+	var startTime = System.currentTimeMillis();
+	print('Executing ' + tasks.length + ' tasks...\n');
 	for(var i in tasks) {
 		var task = tasks[i];
-		executor.submit(task);
+		futures.push(executor.submit(task));
 	}
-	executor.submit(new MessageTask(component.context, 'Finished tasks.'));
+	for(var i in futures) {
+		var future = futures[i];
+		future.get();
+	}
+	print('Finished tasks in ' + ((System.currentTimeMillis() - startTime) / 1000) + ' seconds.\n');
 }

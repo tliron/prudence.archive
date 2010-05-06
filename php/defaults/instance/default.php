@@ -12,7 +12,6 @@ import java.util.logging.LogManager;
 import java.util.concurrent.Executors;
 import org.restlet.Component;
 import com.threecrickets.prudence.util.DelegatedStatusService;
-import com.threecrickets.prudence.util.MessageTask;
 
 function execute_or_default($name, $def=NULL) {
 	global $executable;
@@ -124,10 +123,15 @@ $component->start();
 //
 
 if(count($tasks) > 0) {
-	$executor->submit(new MessageTask($component->context, 'Executing ' . count($tasks) . ' tasks...'));
+	$futures = array();
+	$start_time = System::currentTimeMillis();
+	print 'Executing ' . count($tasks) . " tasks...\n";
 	foreach($tasks as $task) {
-		$executor->submit($task);
+		$futures[] = $executor->submit($task);
 	}
-	$executor->submit(new MessageTask($component->context, 'Finished tasks.'));
+	foreach($futures as $future) {
+		$future->get();
+	}
+	print 'Finished tasks in ' . ((System::currentTimeMillis() - $start_time) / 1000) . " seconds.\n";
 }
 ?>

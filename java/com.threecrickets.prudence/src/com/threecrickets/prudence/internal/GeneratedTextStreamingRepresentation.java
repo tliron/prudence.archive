@@ -92,6 +92,7 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		finally
 		{
 			exposedContainer.executionContext.getErrorWriterOrDefault().flush();
+			exposedContainer.resource.commit();
 		}
 	}
 
@@ -100,6 +101,8 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	{
 		exposedContainer.executionContext.release();
 		super.release();
+		if( !exposedContainer.resource.isCommitted() )
+			exposedContainer.resource.getResponse().abort();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

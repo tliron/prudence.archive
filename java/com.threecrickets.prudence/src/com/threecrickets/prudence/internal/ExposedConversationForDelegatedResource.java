@@ -26,6 +26,18 @@ public class ExposedConversationForDelegatedResource extends ExposedConversation
 	// Construction
 	//
 
+	/**
+	 * Construction.
+	 * 
+	 * @param resource
+	 *        The resource
+	 * @param entity
+	 *        The entity or null
+	 * @param variant
+	 *        The variant or null
+	 * @param defaultCharacterSet
+	 *        The character set to use if unspecified by variant
+	 */
 	public ExposedConversationForDelegatedResource( DelegatedResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
 	{
 		super( resource, entity, variant, defaultCharacterSet );

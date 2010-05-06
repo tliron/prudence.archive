@@ -39,10 +39,16 @@ public class ExposedConversationBase<R extends ServerResource>
 	//
 
 	/**
+	 * Construction.
+	 * 
 	 * @param resource
+	 *        The resource
 	 * @param entity
+	 *        The entity or null
 	 * @param variant
+	 *        The variant or null
 	 * @param defaultCharacterSet
+	 *        The character set to use if unspecified by variant
 	 */
 	public ExposedConversationBase( R resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
 	{

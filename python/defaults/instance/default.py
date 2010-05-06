@@ -8,7 +8,7 @@ from java.util.logging import LogManager
 from java.util.concurrent import Executors
 
 from org.restlet import Component
-from com.threecrickets.prudence.util import DelegatedStatusService, MessageTask
+from com.threecrickets.prudence.util import DelegatedStatusService
 
 def execute_or_default(name, default=None):
 	try:
@@ -118,7 +118,11 @@ component.start()
 #
 
 if len(tasks) > 0:
-	executor.submit(MessageTask(component.context, 'Executing %s tasks...' % len(tasks)))
+	futures = []
+	start_time = System.currentTimeMillis()
+	print 'Executing %s tasks...' % len(tasks)
 	for task in tasks:
-	    executor.submit(task)
-	executor.submit(MessageTask(component.context, 'Finished tasks.'))
+	    futures.append(executor.submit(task))
+	for future in futures:
+		future.get()
+	print 'Finished tasks in %s seconds.' % ((System.currentTimeMillis() - start_time) / 1000.0)

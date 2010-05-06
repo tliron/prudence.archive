@@ -8,18 +8,18 @@
 	'java.util.logging.LogManager
 	'java.util.concurrent.Executors
 	'org.restlet.Component
-	'com.threecrickets.prudence.util.DelegatedStatusService
-	'com.threecrickets.prudence.util.MessageTask)
+	'com.threecrickets.prudence.util.DelegatedStatusService)
 
 (defn execute-or-default
 	([name default]
 		(try
 			(.. executable getContainer (execute name))
 			(catch FileNotFoundException _
-				(.. executable getContainer (include
-					(if (nil? default)
-						(str "defaults/" name)
-						default))))))
+				(.. executable getContainer
+					(execute
+						(if (nil? default)
+							(str "defaults/" name)
+							default))))))
 	([name]
 		(execute-or-default name nil)))
 
@@ -121,8 +121,8 @@
 ;
 
 (if-not (empty? tasks)
-	(do
-		(.submit executor (MessageTask. (.getContext component) (str "Executing " (count tasks) " tasks...")))
-		(doseq [task tasks]
-			(.submit executor task))
-		(.submit executor (MessageTask. (.getContext component) "Finished tasks."))))
+	(let [start-time (System/currentTimeMillis)]
+		(println "Executing" (count tasks) "tasks...")
+		(let [futures (for [task tasks] (.submit executor task))]
+			(dorun (for [future futures] (.get future)))
+			(println "Finished tasks in" (/ (- (System/currentTimeMillis) start-time) 1000.0) "seconds."))))

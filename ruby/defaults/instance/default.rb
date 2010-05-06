@@ -10,16 +10,15 @@ import java.util.logging.LogManager
 import java.util.concurrent.Executors
 import org.restlet.Component
 import com.threecrickets.prudence.util.DelegatedStatusService
-import com.threecrickets.prudence.util.MessageTask
 
 def execute_or_default(name, default=nil)
 	begin
-		$executable.container.include name
+		$executable.container.execute name
 	rescue FileNotFoundException
 		if !default
 			default = 'defaults/' + name
 		end
-		$executable.container.include default
+		$executable.container.execute default
 	end
 end
 
@@ -123,9 +122,14 @@ $component.start
 #
 
 if $tasks.length > 0
-	$executor.submit MessageTask.new($component.context, 'Executing ' + $tasks.length.to_s + ' tasks...')
+	futures = []
+	start_time = System.current_time_millis
+	print 'Executing ', $tasks.length, ' tasks...'
 	for task in $tasks
-		$executor.submit task
+		futures << $executor.submit(task)
 	end
-	$executor.submit MessageTask.new($component.context, 'Finished tasks.')
+	for future in futures
+		future.get
+	end
+	print 'Finished tasks in ', (System.current_time_millis - start_time) / 1000.0, ' seconds.'
 end

@@ -9,7 +9,6 @@ import java.util.logging.LogManager
 import java.util.concurrent.Executors
 import org.restlet.Component
 import com.threecrickets.prudence.util.DelegatedStatusService
-import com.threecrickets.prudence.util.MessageTask
 
 executeOrDefault = { name, deflt = null ->
 	try {
@@ -120,9 +119,14 @@ component.start()
 //
 
 if(tasks.size() > 0) {
-	executor.submit(new MessageTask(component.context, 'Executing ' + tasks.size() + ' tasks...'))
+	futures = []
+	startTime = System.currentTimeMillis()
+	println('Executing ' + tasks.size() + ' tasks...')
 	for(task in tasks) {
-		executor.submit(task)
+		futures.add(executor.submit(task))
 	}
-	executor.submit(new MessageTask(component.context, 'Finished tasks.'))
+	for(future in futures) {
+		future.get()
+	}
+	print('Finished tasks in ' + ((System.currentTimeMillis() - startTime) / 1000) + ' seconds.\n')
 }
