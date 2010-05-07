@@ -45,16 +45,6 @@ executable.context.exposedVariables.put('currentTimeMillis', String(java.lang.Sy
 <p>This page was dynamically generated at $currentTimeMillis</p>
 
 ##
-## Including a document
-##
-## This is identical to:
-##
-##   $prudence.include('path')
-##
-
-%><%& "../fragments/test/velocity/" %><%
-
-##
 ## An example of a macro
 ##
 
@@ -80,6 +70,16 @@ executable.context.exposedVariables.put('currentTimeMillis', String(java.lang.Sy
 <p>$!form.getFirstValue('id')</p>
 <h3>A few tests:</h3>
 <p>
+##
+## Including a document
+##
+## This is identical to:
+##
+##   $prudence.include('path')
+##
+
+%><%& "test/velocity-triple/" %><%
+
 #foreach($i in [0..9])
 	A multiple of three:
 	#printTriple($i)

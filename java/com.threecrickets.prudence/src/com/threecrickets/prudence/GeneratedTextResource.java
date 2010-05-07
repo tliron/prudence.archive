@@ -11,6 +11,7 @@
 
 package com.threecrickets.prudence;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
@@ -44,6 +45,8 @@ import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
+import com.threecrickets.scripturian.file.DocumentFileSource;
+import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * A Restlet resource which executes a "text with scriptlets" Scripturian
@@ -440,8 +443,8 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
-	 * The {@link LanguageManager} used to create the script engines for the
-	 * scripts. Uses a default instance, but can be set to something else.
+	 * The {@link LanguageManager} used to create the language adapters. Uses a
+	 * default instance, but can be set to something else.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.languageManager</code>
@@ -492,6 +495,117 @@ public class GeneratedTextResource extends ServerResource
 		}
 
 		return documentSource;
+	}
+
+	/**
+	 * Executables might use this directory for including fragments. If the
+	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
+	 * will default to the {@link DocumentFileSource#getBasePath()} plus
+	 * "../fragments/".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.fragmentDirectory</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The fragment directory or null
+	 */
+	public File getFragmentDirectory()
+	{
+		if( fragmentDirectory == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			fragmentDirectory = (File) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.fragmentDirectory" );
+
+			if( fragmentDirectory == null )
+			{
+				DocumentSource<Executable> documentSource = getDocumentSource();
+				if( documentSource instanceof DocumentFileSource<?> )
+				{
+					fragmentDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../fragments/" );
+
+					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.fragmentDirectory", fragmentDirectory );
+					if( existing != null )
+						fragmentDirectory = existing;
+				}
+			}
+		}
+
+		return fragmentDirectory;
+	}
+
+	/**
+	 * If the {@link #getDocumentSource()} is a {@link DocumentFileSource}, then
+	 * this is the fragment directory relative to the
+	 * {@link DocumentFileSource#getBasePath()}. Otherwise, it's null.
+	 * 
+	 * @return The relative fragment directory or null
+	 */
+	public File getFragmentDirectoryRelative()
+	{
+		DocumentSource<Executable> documentSource = getDocumentSource();
+		if( documentSource instanceof DocumentFileSource<?> )
+		{
+			File fragmentDirectory = getFragmentDirectory();
+			if( fragmentDirectory != null )
+				return ScripturianUtil.getRelativeFile( fragmentDirectory, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
+		}
+		return null;
+	}
+
+	/**
+	 * Executables might use this directory for importing libraries. If the
+	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
+	 * will default to the {@link DocumentFileSource#getBasePath()} plus
+	 * "../libraries/".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.libraryDirectory</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The library directory or null
+	 * @see ExecutionContext#getLibraryLocations()
+	 */
+	public File getLibraryDirectory()
+	{
+		if( libraryDirectory == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			libraryDirectory = (File) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.libraryDirectory" );
+
+			if( libraryDirectory == null )
+			{
+				DocumentSource<Executable> documentSource = getDocumentSource();
+				if( documentSource instanceof DocumentFileSource<?> )
+				{
+					libraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../libraries/" );
+
+					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.libraryDirectory", libraryDirectory );
+					if( existing != null )
+						libraryDirectory = existing;
+				}
+			}
+		}
+
+		return libraryDirectory;
+	}
+
+	/**
+	 * If the {@link #getDocumentSource()} is a {@link DocumentFileSource}, then
+	 * this is the library directory relative to the
+	 * {@link DocumentFileSource#getBasePath()}. Otherwise, it's null.
+	 * 
+	 * @return The relative library directory or null
+	 */
+	public File getLibraryDirectoryRelative()
+	{
+		DocumentSource<Executable> documentSource = getDocumentSource();
+		if( documentSource instanceof DocumentFileSource<?> )
+		{
+			File libraryDirectory = getLibraryDirectory();
+			if( libraryDirectory != null )
+				return ScripturianUtil.getRelativeFile( libraryDirectory, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
+		}
+		return null;
 	}
 
 	/**
@@ -746,8 +860,7 @@ public class GeneratedTextResource extends ServerResource
 	private static final String TRUE = "true";
 
 	/**
-	 * The {@link LanguageManager} used to create the script engines for the
-	 * scripts.
+	 * The {@link LanguageManager} used to create the language adapters.
 	 */
 	private volatile LanguageManager languageManager;
 
@@ -755,6 +868,16 @@ public class GeneratedTextResource extends ServerResource
 	 * The {@link DocumentSource} used to fetch scripts.
 	 */
 	private volatile DocumentSource<Executable> documentSource;
+
+	/**
+	 * Executables might use this directory for including fragments.
+	 */
+	private volatile File fragmentDirectory;
+
+	/**
+	 * Executables might use this directory for importing libraries.
+	 */
+	private volatile File libraryDirectory;
 
 	/**
 	 * If the URL points to a directory rather than a file, and that directory
@@ -794,8 +917,7 @@ public class GeneratedTextResource extends ServerResource
 	private volatile Integer clientCachingMode;
 
 	/**
-	 * Whether or not compilation is attempted for script engines that support
-	 * it.
+	 * Whether to prepare executables.
 	 */
 	private volatile Boolean prepare;
 
@@ -871,6 +993,9 @@ public class GeneratedTextResource extends ServerResource
 			}
 
 			ExecutionContext executionContext = new ExecutionContext();
+			File libraryDirectory = getLibraryDirectory();
+			if( libraryDirectory != null )
+				executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
 			ExposedContainerForGeneratedTextResource exposedContainer = new ExposedContainerForGeneratedTextResource( this, executionContext, entity, variant );
 			Representation representation = null;
 			try

@@ -11,13 +11,14 @@
 
 package com.threecrickets.prudence.internal;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.restlet.representation.Representation;
 
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.scripturian.Executable;
-import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
@@ -65,9 +66,22 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase<D
 	{
 		documentName = resource.validateDocumentName( documentName );
 
-		DocumentDescriptor<Executable> documentDescriptor = Executable
-			.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
-		Executable executable = documentDescriptor.getDocument();
+		Executable executable;
+		try
+		{
+			executable = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() ).getDocument();
+		}
+		catch( FileNotFoundException x )
+		{
+			// Try the library directory
+			File libraryDirectory = resource.getLibraryDirectoryRelative();
+			if( libraryDirectory != null )
+				executable = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
+					resource.isPrepare() ).getDocument();
+			else
+				throw x;
+		}
+
 		executable.execute();
 
 		return null;

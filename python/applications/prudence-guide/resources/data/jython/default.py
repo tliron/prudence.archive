@@ -23,8 +23,7 @@ prudence.execute('../libraries/jython/context/')
 # (Note that we made a small change to minjson in order to accommodate Jython.
 # See line 334 there.)
 
-sys.path.append(str(prudence.source.basePath) + '/../libraries/jython/')
-import minjson as json
+import jython.minjson as json
 
 # State
 #

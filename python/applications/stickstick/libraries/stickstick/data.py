@@ -1,14 +1,15 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 from threading import RLock
 from org.restlet import Application
-from datetime import datetime
-from time import time, mktime
 
 from sqlalchemy import create_engine
-from sqlalchemy.exc import IntegrityError
+from datetime import datetime
+from time import time, mktime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+
 import logging
 
 # SQLAlchemy logging
@@ -22,10 +23,7 @@ logging.getLogger('sqlalchemy.orm.sync').setLevel(logging.DEBUG)
 
 Base = declarative_base()
 Session = sessionmaker()
-
-engine_lock = prudence.getGlobal('engine_lock')
-if engine_lock is None:
-    engine_lock = prudence.getGlobal('engine_lock', RLock())
+engine = None
 
 def datetime_to_milliseconds(dt):
     return long(mktime(dt.timetuple()) * 1000) if dt else 0
@@ -103,81 +101,89 @@ class Board(Base):
 #
 # Helpers
 #
+
+def get_engine(prudence, fresh=False):
+    global engine
+    #engine_lock = prudence.getGlobal('engine_lock')
+    #if engine_lock is None:
+    #    engine_lock = prudence.getGlobal('engine_lock', RLock())
+    #engine_lock.acquire()
+    #engine = prudence.getGlobal('engine')
+    #try:
+    if engine is None or fresh:
+        attributes = Application.getCurrent().context.attributes
+
+        # Make sure database exists
+        if attributes['stickstick.host']:
+            root_engine = create_engine('%s://%s:%s@%s/' % (
+                attributes['stickstick.backend'],
+                attributes['stickstick.username'],
+                attributes['stickstick.password'],
+                attributes['stickstick.host']),
+                convert_unicode=True)
+            connection = root_engine.connect()
+            if fresh:
+                connection.execute('DROP DATABASE %s' % attributes['stickstick.database'])
+            connection.execute('CREATE DATABASE IF NOT EXISTS %s' % attributes['stickstick.database'])
+            connection.close()
+
+        # Connect to database
+        if engine is None:
+            print 'new engine!!!!'
+            new_engine = create_engine('%s://%s:%s@%s/%s' % (
+                attributes['stickstick.backend'],
+                attributes['stickstick.username'],
+                attributes['stickstick.password'],
+                attributes['stickstick.host'],
+                attributes['stickstick.database']),
+                convert_unicode=True,
+                pool_recycle=3600)
+            #engine = prudence.getGlobal('engine', new_engine)
+            engine = new_engine
+
+        Base.metadata.bind = engine
+        Session.configure(bind=engine)
+
+        #connection = engine.connect()
+        #connection.execute('SET AUTOCOMMIT ON')
+        #connection.close()
         
-def get_engine(fresh=False):
-    engine_lock.acquire()
-    engine = prudence.getGlobal('engine')
-    try:
-        if engine is None or fresh:
-            attributes = Application.getCurrent().context.attributes
-
-            # Make sure database exists
-            if attributes['stickstick.host']:
-                root_engine = create_engine('%s://%s:%s@%s/' % (
-                    attributes['stickstick.backend'],
-                    attributes['stickstick.username'],
-                    attributes['stickstick.password'],
-                    attributes['stickstick.host']),
-                    convert_unicode=True)
-                connection = root_engine.connect()
-                if fresh:
-                    connection.execute('DROP DATABASE %s' % attributes['stickstick.database'])
-                connection.execute('CREATE DATABASE IF NOT EXISTS %s' % attributes['stickstick.database'])
+        if attributes['stickstick.host'] is None and fresh:
+            if attributes['stickstick.backend'] == 'h2':
+                connection = engine.connect()
+                connection.execute('DROP ALL OBJECTS')
                 connection.close()
+            else:
+                Base.metadata.drop_all(engine)
+                
+        # Make sure tables exist
+        Base.metadata.create_all(engine)
 
-            # Connect to database
-            if engine is None:
-                new_engine = create_engine('%s://%s:%s@%s/%s' % (
-                    attributes['stickstick.backend'],
-                    attributes['stickstick.username'],
-                    attributes['stickstick.password'],
-                    attributes['stickstick.host'],
-                    attributes['stickstick.database']),
-                    convert_unicode=True,
-                    pool_recycle=3600)
-                engine = prudence.getGlobal('engine', new_engine)
+        # Make sure a few boards exist
+        session = Session()
+        try:
+            session.add(Board('Todo List'))
+            session.add(Board('Great Ideas'))
+            session.add(Board('Sandbox'))
+            session.flush()
+        except IntegrityError:
+            pass
+        finally:
+            session.close()
+    else:
+        Base.metadata.bind = engine
+        Session.configure(bind=engine)
+        
+    return engine
+    #finally:
+    #    engine_lock.release()
 
-            Session.configure(bind=engine)
-
-            #connection = engine.connect()
-            #connection.execute('SET AUTOCOMMIT ON')
-            #connection.close()
-            
-            if attributes['stickstick.host'] is None and fresh:
-                if attributes['stickstick.backend'] == 'h2':
-                    connection = engine.connect()
-                    connection.execute('DROP ALL OBJECTS')
-                    connection.close()
-                else:
-                    Base.metadata.drop_all(engine)
-                    
-            # Make sure tables exist
-            Base.metadata.create_all(engine)
-
-            # Make sure a few boards exist
-            session = Session()
-            try:
-                session.add(Board('Todo List'))
-                session.add(Board('Great Ideas'))
-                session.add(Board('Sandbox'))
-                session.flush()
-            except IntegrityError:
-                pass
-            finally:
-                session.close()
-        else:
-            Session.configure(bind=engine)
-            
-        return engine
-    finally:
-        engine_lock.release()
-
-def get_connection(fresh=False):
-    engine = get_engine(fresh)
+def get_connection(prudence, fresh=False):
+    engine = get_engine(prudence, fresh)
     return engine.connect()
 
-def get_session(fresh=False):
-    get_engine(fresh)
+def get_session(prudence, fresh=False):
+    engine = get_engine(prudence, fresh)
     return Session()
 
 def update_board_timestamp(session, note, timestamp=None):

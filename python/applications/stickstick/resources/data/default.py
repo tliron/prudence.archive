@@ -1,11 +1,12 @@
-import sys
-sys.path.append('%s/../libraries/' % prudence.source.basePath)
-
 from sqlalchemy.orm.exc import NoResultFound
+from stickstick.data import Board, Note
+
 from sqlalchemy.sql import func
+from stickstick.data import get_session, update_board_timestamp, datetime_to_milliseconds
+
 import minjson as json
 
-prudence.execute('../libraries/stickstick/data/')
+#prudence.execute('../libraries/stickstick/data/')
 
 def handle_init(conversation):
     conversation.addMediaTypeByName('text/plain')
@@ -17,7 +18,7 @@ def handle_get(conversation):
 
     max_timestamp = None
     board_list = []
-    session = get_session(fresh)
+    session = get_session(prudence, fresh)
     try:
         boards = session.query(Board).all()
         for board in boards:
@@ -42,7 +43,7 @@ def handle_get(conversation):
     return json.write({'boards': board_list, 'notes': note_list})
 
 def handle_get_info(conversation):
-    session = get_session()
+    session = get_session(prudence)
     try:
         max_timestamp = session.query(func.max(Board.timestamp)).scalar()
     finally:
@@ -58,7 +59,7 @@ def handle_put(conversation):
     note_dict = json.read(text)
     note = Note.create_from_dict(note_dict)
     
-    session = get_session()
+    session = get_session(prudence)
     try:
         session.add(note)
         update_board_timestamp(session, note)

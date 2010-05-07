@@ -1,5 +1,5 @@
 
-prudence.execute('../libraries/stickstick/data/')
+prudence.execute('stickstick/data/')
 
 import java.lang.System
 import org.json.JSONObject

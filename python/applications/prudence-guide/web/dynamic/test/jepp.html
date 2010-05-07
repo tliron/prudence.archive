@@ -40,18 +40,6 @@ sys.stdout.write('<p>This page was dynamically generated at %s</p>' % System.cur
 # in this example.)
 
 #
-# Including a document
-#
-# This is identical to:
-#
-#   prudence.include('path')
-#
-
-%>
-<%& '../fragments/test/jepp/' %>
-<%
-
-#
 # An example of a method
 #
 
@@ -84,6 +72,19 @@ for adapter in adapters:
 <h3>A few tests:</h3>
 <p>
 <%
+
+#
+# Including a document
+#
+# This is identical to:
+#
+#   prudence.include('path')
+#
+
+%>
+<%& 'test/jepp-triple/' %>
+<%
+
 for i in range(10):
 	%>A multiple of three: <%
 	print_triple(i)

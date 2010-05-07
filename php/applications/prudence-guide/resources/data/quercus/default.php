@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.restlet.ext.json.JsonRepresentation;
 
 // Include the context library
-$prudence->execute('../libraries/quercus/context/');
+require 'quercus/context.php';
 
 // State
 //

@@ -11,6 +11,7 @@
 
 package com.threecrickets.prudence.internal;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
@@ -58,6 +59,9 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		// Initialize execution context
 		executionContext.getExposedVariables().put( this.exposedContainer.resource.getExposedContainerName(), this.exposedContainer );
 		executionContext.getExposedVariables().put( this.exposedContainer.resource.getExposedConversationName(), this.exposedContainer.exposedConversation );
+		File libraryDirectory = this.exposedContainer.resource.getLibraryDirectory();
+		if( libraryDirectory != null )
+			executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
 
 		setCharacterSet( this.exposedContainer.exposedConversation.getCharacterSet() );
 		if( this.exposedContainer.exposedConversation.getLanguage() != null )

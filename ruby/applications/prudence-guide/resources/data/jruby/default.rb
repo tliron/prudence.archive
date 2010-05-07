@@ -17,7 +17,7 @@ import org.json.JSONObject
 
 # Include the context library
 
-require $prudence.source.base_path.to_s + '/../libraries/jruby/context.rb'
+require 'jruby/context.rb'
 
 # State
 #

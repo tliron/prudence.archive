@@ -262,7 +262,7 @@ public class DebugRepresentation extends StringRepresentation
 			boolean has = false;
 			for( CacheDirective cacheDirective : request.getCacheDirectives() )
 			{
-				if( cacheDirective.getValue().length() > 0 )
+				if( ( cacheDirective.getValue() != null ) && ( cacheDirective.getValue().length() > 0 ) )
 				{
 					has = true;
 					break;
@@ -274,7 +274,7 @@ public class DebugRepresentation extends StringRepresentation
 				html.append( "<div id=\"cache-directives\">" );
 				for( CacheDirective cacheDirective : request.getCacheDirectives() )
 				{
-					if( cacheDirective.getValue().length() > 0 )
+					if( ( cacheDirective.getValue() != null ) && ( cacheDirective.getValue().length() > 0 ) )
 					{
 						appendName( html, cacheDirective.getName() );
 						appendValue( html, cacheDirective.getValue() );

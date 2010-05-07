@@ -1,5 +1,5 @@
 <?php
-$prudence->execute('../libraries/stickstick/data/');
+require 'stickstick/data.php';
 
 function handle_init($conversation) {
     $conversation->addMediaTypeByName('text/plain');

@@ -33,18 +33,6 @@ import java.lang.System;
 print '<p>This page was dynamically generated at ' . System::currentTimeMillis() . '</p>';
 
 //
-// Including a document
-//
-// This is identical to:
-//
-//   $prudence->include('path');
-//
-
-?>
-<?& '../fragments/test/quercus/' ?>
-<?
-
-//
 // An example of a function
 //
 
@@ -84,6 +72,19 @@ foreach($adapters as $adapter) {
 <h3>A few tests:</h3>
 <p>
 <?
+
+//
+// Including a document
+//
+// This is identical to:
+//
+//   $prudence->include('path');
+//
+
+?>
+<?& 'test/quercus-triple/' ?>
+<?
+
 for($i = 0; $i < 10; $i++) {
 ?>
 A multiple of three: 

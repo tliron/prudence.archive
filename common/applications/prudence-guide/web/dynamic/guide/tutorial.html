@@ -439,7 +439,6 @@ def get_wiki():
 
 <p>/resources/wiki.py:</p>
 <pre>
-sys.path.append('%s/../libraries/' % prudence.source.basePath)
 from wiki import get_wiki
 
 def handleInit():
@@ -517,7 +516,6 @@ def set_wiki(content):
 
 <p>/resources/wiki.py:</p>
 <pre>
-sys.path.append(str(prudence.source.basePath) + '/../libraries/')
 from wiki import get_wiki, set_wiki, to_milliseconds
 
 def handleInit():
@@ -547,7 +545,6 @@ modification date (or ETag) before actually fetching the resource.
 
 <p>/resources/wiki.py:</p>
 <pre>
-sys.path.append(str(prudence.source.basePath) + '/../libraries/')
 from wiki import get_wiki, set_wiki, to_milliseconds
 
 def handleInit():

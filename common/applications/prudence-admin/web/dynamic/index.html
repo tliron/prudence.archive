@@ -63,6 +63,16 @@
 				</p>
 				<p>
 					This Prudence is $version$revision for $flavor.
+%>
+<%succinct
+
+TESTY TEST ${=version}
+
+%>
+<%&succinct test/ %>
+<%velocity
+					
+			
 				</p>
 				<p>
 					<a href="http://threecrickets.com/prudence/" class="neutral"><img src="$!{prefix}images/bullfinch-small.png" border="0"></a>

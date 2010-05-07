@@ -32,18 +32,6 @@ prudence.cacheDuration = 5000;
 print('<p>This page was dynamically generated at ' + java.lang.System.currentTimeMillis() + '</p>');
 
 //
-// Including a document
-//
-// This is identical to:
-//
-//   prudence.include('path');
-//
-
-%>
-<%& '../fragments/test/rhino/' %>
-<%
-
-//
 // An example of a function
 //
 
@@ -83,6 +71,19 @@ for(var i = 0; i < adapters.length; i++) {
 <h3>A few tests:</h3>
 <p>
 <%
+
+//
+// Including a document
+//
+// This is identical to:
+//
+//   prudence.include('path');
+//
+
+%>
+<%& 'test/rhino-triple/' %>
+<%
+
 for(var i = 0; i < 10; i++) {
 %>
 A multiple of three:

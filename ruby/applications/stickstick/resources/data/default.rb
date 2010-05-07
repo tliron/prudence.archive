@@ -2,7 +2,7 @@
 require 'java'
 import org.json.JSONObject
 
-require $prudence.source.base_path.to_s + '/../libraries/stickstick/data.rb'
+require 'stickstick/data.rb'
 
 def handle_init conversation
     conversation.add_media_type_by_name 'text/plain'

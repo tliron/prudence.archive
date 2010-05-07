@@ -3,7 +3,7 @@ require 'java'
 import java.lang.System
 import org.json.JSONObject
 
-require $prudence.source.base_path.to_s + '/../libraries/stickstick/data.rb'
+require 'stickstick/data.rb'
 
 def merge key, a, b
 	if !a.has_key?(key)

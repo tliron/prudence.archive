@@ -11,6 +11,7 @@
 
 package com.threecrickets.prudence;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -47,6 +48,8 @@ import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
+import com.threecrickets.scripturian.file.DocumentFileSource;
+import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * A Restlet resource which delegates functionality to a Scripturian
@@ -439,14 +442,14 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * The default script engine name to be used if the script doesn't specify
+	 * The default language tag name to be used if the script doesn't specify
 	 * one. Defaults to "js".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedResource.defaultLanguageTag</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The default script engine name
+	 * @return The default language tag
 	 */
 	public String getDefaultLanguageTag()
 	{
@@ -652,14 +655,14 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * The {@link LanguageManager} used to create the script engines. Uses a
+	 * The {@link LanguageManager} used to create the language adapters. Uses a
 	 * default instance, but can be set to something else.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedResource.languageManager</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The script engine manager
+	 * @return The language manager
 	 */
 	public LanguageManager getLanguageManager()
 	{
@@ -704,6 +707,61 @@ public class DelegatedResource extends ServerResource
 		}
 
 		return documentSource;
+	}
+
+	/**
+	 * Executables might use this directory for importing libraries. If the
+	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
+	 * will default to the {@link DocumentFileSource#getBasePath()} plus
+	 * "../libraries/".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedResource.libraryDirectory</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The library directory or null
+	 * @see ExecutionContext#getLibraryLocations()
+	 */
+	public File getLibraryDirectory()
+	{
+		if( libraryDirectory == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			libraryDirectory = (File) attributes.get( "com.threecrickets.prudence.DelegatedResource.libraryDirectory" );
+
+			if( libraryDirectory == null )
+			{
+				if( documentSource instanceof DocumentFileSource<?> )
+				{
+					libraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../libraries/" );
+
+					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.libraryDirectory", libraryDirectory );
+					if( existing != null )
+						libraryDirectory = existing;
+				}
+			}
+		}
+
+		return libraryDirectory;
+	}
+
+	/**
+	 * If the {@link #getDocumentSource()} is a {@link DocumentFileSource}, then
+	 * this is the library directory relative to the
+	 * {@link DocumentFileSource#getBasePath()}. Otherwise, it's null.
+	 * 
+	 * @return The relative library directory or null
+	 */
+	public File getLibraryDirectoryRelative()
+	{
+		DocumentSource<Executable> documentSource = getDocumentSource();
+		if( documentSource instanceof DocumentFileSource<?> )
+		{
+			File libraryDirectory = getLibraryDirectory();
+			if( libraryDirectory != null )
+				return ScripturianUtil.getRelativeFile( libraryDirectory, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
+		}
+		return null;
 	}
 
 	/**
@@ -1108,8 +1166,7 @@ public class DelegatedResource extends ServerResource
 	// Private
 
 	/**
-	 * The {@link LanguageManager} used to create the script engines for the
-	 * scripts.
+	 * The {@link LanguageManager} used to create the language adapters.
 	 */
 	private volatile LanguageManager languageManager;
 
@@ -1119,15 +1176,19 @@ public class DelegatedResource extends ServerResource
 	private volatile Boolean trailingSlashRequired;
 
 	/**
-	 * Whether or not compilation is attempted for script engines that support
-	 * it.
+	 * Whether to prepare executables.
 	 */
 	private volatile Boolean prepare;
 
 	/**
-	 * The {@link DocumentSource} used to fetch scripts.
+	 * The {@link DocumentSource} used to fetch executables.
 	 */
 	private volatile DocumentSource<Executable> documentSource;
+
+	/**
+	 * Executables might use directory this for importing libraries.
+	 */
+	private volatile File libraryDirectory;
 
 	/**
 	 * If the URL points to a directory rather than a file, and that directory
@@ -1136,7 +1197,7 @@ public class DelegatedResource extends ServerResource
 	private volatile String defaultName;
 
 	/**
-	 * The default script engine name to be used if the script doesn't specify
+	 * The default language tag to be used if the executable doesn't specify
 	 * one.
 	 */
 	private volatile String defaultLanguageTag;
@@ -1318,6 +1379,9 @@ public class DelegatedResource extends ServerResource
 			if( executable.getEnterableExecutionContext() == null )
 			{
 				ExecutionContext executionContext = new ExecutionContext( getWriter(), getErrorWriter() );
+				File libraryDirectory = getLibraryDirectory();
+				if( libraryDirectory != null )
+					executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
 				executionContext.getExposedVariables().put( getExposedContainerName(), new ExposedContainerForDelegatedResource( this ) );
 				try
 				{

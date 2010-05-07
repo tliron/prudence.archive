@@ -36,18 +36,6 @@ prudence.cacheDuration = 5000
 print '<p>This page was dynamically generated at ' + System.currentTimeMillis() + '</p>'
 
 //
-// Including a document
-//
-// This is identical to:
-//
-//   prudence.include 'path'
-//
-
-%>
-<%& '../fragments/test/groovy/' %>
-<%
-
-//
 // An example of a closure
 //
 
@@ -88,6 +76,19 @@ for(def adapter in adapters) {
 <h3>A few tests:</h3>
 <p>
 <%
+
+//
+// Including a document
+//
+// This is identical to:
+//
+//   prudence.include 'path'
+//
+
+%>
+<%& 'test/groovy-triple/' %>
+<%
+
 for(def i in 0 .. 9){
 %>
 A multiple of three: 

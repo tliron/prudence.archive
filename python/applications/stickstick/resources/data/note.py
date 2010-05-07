@@ -1,10 +1,9 @@
-import sys
-sys.path.append('%s/../libraries/' % prudence.source.basePath)
-
 from sqlalchemy.orm.exc import NoResultFound
-import minjson as json
+from stickstick.data import Note
 
-prudence.execute('../libraries/stickstick/data/')
+from stickstick.data import get_session, update_board_timestamp, datetime_to_milliseconds
+
+import minjson as json
 
 def get_id(conversation):
     try:
@@ -23,7 +22,7 @@ def handle_init(conversation):
 def handle_get(conversation):
     id = get_id(conversation)
 
-    session = get_session()
+    session = get_session(prudence)
     try:
         note = session.query(Note).filter_by(id=id).one()
     except NoResultFound:
@@ -34,10 +33,10 @@ def handle_get(conversation):
     conversation.modificationTimestamp = datetime_to_milliseconds(note.timestamp)
     return json.write(note.to_dict())
 
-def handle_get_info(conversation):
+def handle_get_info2(conversation):
     id = get_id(conversation)
 
-    session = get_session()
+    session = get_session(prudence)
     try:
         note = session.query(Note).filter_by(id=id).one()
     except NoResultFound:
@@ -57,7 +56,7 @@ def handle_post(conversation):
     text = conversation.entity.text
     note_dict = json.read(text)
 
-    session = get_session()
+    session = get_session(prudence)
     try:
         note = session.query(Note).filter_by(id=id).one()
         note.update(note_dict)
@@ -74,7 +73,7 @@ def handle_post(conversation):
 def handle_delete(conversation):
     id = get_id(conversation)
 
-    session = get_session()
+    session = get_session(prudence)
     try:
         note = session.query(Note).filter_by(id=id).one()
         session.delete(note)

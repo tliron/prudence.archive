@@ -12,6 +12,8 @@
 package com.threecrickets.prudence.internal;
 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -143,13 +145,27 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	{
 		documentName = resource.validateDocumentName( documentName );
 
-		DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
-		executable = documentDescriptor.getDocument();
+		DocumentDescriptor<Executable> documentDescriptor;
+		try
+		{
+			documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
+		}
+		catch( FileNotFoundException x )
+		{
+			// Try the fragment directory
+			File fragmentDirectory = resource.getFragmentDirectoryRelative();
+			if( fragmentDirectory != null )
+				documentDescriptor = Executable.createOnce( fragmentDirectory.getPath() + "/" + documentName, resource.getDocumentSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource
+					.isPrepare() );
+			else
+				throw x;
+		}
 
 		if( exposedConversation.getMediaType() == null )
 			// Set initial media type according to the document's tag
 			exposedConversation.setMediaTypeExtension( documentDescriptor.getTag() );
 
+		executable = documentDescriptor.getDocument();
 		return execute();
 	}
 
@@ -168,9 +184,20 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	{
 		documentName = resource.validateDocumentName( documentName );
 
-		DocumentDescriptor<Executable> documentDescriptor = Executable
-			.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
-		executable = documentDescriptor.getDocument();
+		try
+		{
+			executable = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() ).getDocument();
+		}
+		catch( FileNotFoundException x )
+		{
+			File libraryDirectory = resource.getLibraryDirectoryRelative();
+			if( libraryDirectory != null )
+				// Try the library directory
+				executable = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
+					resource.isPrepare() ).getDocument();
+			else
+				throw x;
+		}
 
 		return execute();
 	}
