@@ -1,5 +1,7 @@
 ; Helper to access the context attributes
 
+(ns clojure.context)
+
 (defn get-context-attribute [conversation name get-default-value]
 	(let [value (.. conversation getResource getContext getAttributes (get name))]
 		(if (nil? value)

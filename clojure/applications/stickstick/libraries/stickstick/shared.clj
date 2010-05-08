@@ -4,7 +4,7 @@
 ; Note the important of using defonce for all vars!
 ;
 
-(ns stickstick)
+(ns stickstick.shared)
 
 (import 'java.util.concurrent.locks.ReentrantLock)
 

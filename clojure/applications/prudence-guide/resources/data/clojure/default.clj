@@ -10,13 +10,11 @@
 ; your directory structure. See your settings.clj for more information.
 ;
 
-; Include the context library
-(.. prudence (execute "clojure/context/"))
-
-; Include the JSON library
+; Use the JSON libraries and our context library
 (use
 	'clojure.contrib.json.read
-	'clojure.contrib.json.write)
+	'clojure.contrib.json.write
+	'clojure.context)
 
 (import
 	'java.io.File

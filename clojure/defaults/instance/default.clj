@@ -38,15 +38,6 @@
 (println (str "Prudence " prudence-version prudence-revision " for " prudence-flavor "."))
 
 ;
-; Component
-;
-
-(def component (Component.))
-(.. component getContext getAttributes (put "prudence.version" prudence-version))
-(.. component getContext getAttributes (put "prudence.revision" prudence-revision))
-(.. component getContext getAttributes (put "prudence.flavor" prudence-flavor))
-
-;
 ; Logging
 ;
 

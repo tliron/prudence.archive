@@ -1,7 +1,11 @@
 
-(.. prudence (execute "../libraries/stickstick/shared/"))
+;(.. prudence (execute "../libraries/stickstick.shared/shared/"))
 
-(use 'clojure.contrib.sql)
+(ns stickstick.data)
+
+(use
+	'clojure.contrib.sql
+	'stickstick.shared)
 
 (import
 	'org.restlet.Application
@@ -29,11 +33,11 @@
 (declare add-note)
 
 (defn get-connection [fresh]
-	(.lock stickstick/connection-pool-lock)
+	(.lock stickstick.shared/connection-pool-lock)
 	(try
-		(when (or (nil? @stickstick/connection-pool) fresh)
-			(if (nil? @stickstick/connection-pool)
-				(compare-and-set! stickstick/connection-pool nil (create-connection-pool)))
+		(when (or (nil? @stickstick.shared/connection-pool) fresh)
+			(if (nil? @stickstick.shared/connection-pool)
+				(compare-and-set! stickstick.shared/connection-pool nil (create-connection-pool)))
 			(with-connection from-pool
 				(do
 					(if fresh
@@ -53,9 +57,9 @@
 						(add-note {:board "Sandbox" :x 50 :y 50 :size 1 :content "Clojure Rocks!"})
 						;(catch Exception x (throw x))))))
 						(catch Exception _)))))
-		(.getConnection @stickstick/connection-pool)
+		(.getConnection @stickstick.shared/connection-pool)
 		(finally
-			(.unlock stickstick/connection-pool-lock))))
+			(.unlock stickstick.shared/connection-pool-lock))))
 
 ; DB specs for getting clojure.contrib.sql to use our connection pool
 (defn connection-factory [params] (get-connection (params :fresh)))

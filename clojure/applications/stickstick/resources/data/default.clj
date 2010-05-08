@@ -1,10 +1,9 @@
 
-(.. prudence (execute "../libraries/stickstick/data/"))
-
 (use
 	'clojure.contrib.json.read
 	'clojure.contrib.json.write
-	'clojure.contrib.sql)
+	'clojure.contrib.sql
+	'stickstick.data)
 
 (import 'java.io.File)
 
