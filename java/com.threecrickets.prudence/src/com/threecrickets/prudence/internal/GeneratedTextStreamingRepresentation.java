@@ -53,7 +53,7 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		// Clone container
 		this.exposedContainer = new ExposedContainerForGeneratedTextResource( exposedContainer.resource, executionContext, exposedContainer.exposedConversation.getEntity(), exposedContainer.exposedConversation
 			.getVariant() );
-		this.exposedContainer.executable = exposedContainer.executable;
+		this.exposedContainer.currentExecutable = exposedContainer.currentExecutable;
 		this.exposedContainer.exposedConversation.isStreaming = true;
 
 		// Initialize execution context
@@ -79,7 +79,7 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		exposedContainer.executionContext.setWriter( writer );
 		try
 		{
-			exposedContainer.executable.execute( exposedContainer.executionContext, exposedContainer, exposedContainer.resource.getExecutionController() );
+			exposedContainer.currentExecutable.execute( exposedContainer.executionContext, exposedContainer, exposedContainer.resource.getExecutionController() );
 		}
 		catch( ParsingException x )
 		{
