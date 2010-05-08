@@ -19,7 +19,7 @@ $runtime_attributes['stickstick.backend'] = 'h2';
 $runtime_attributes['stickstick.username'] = 'root';
 $runtime_attributes['stickstick.password'] = 'root';
 $runtime_attributes['stickstick.host'] = '';
-$runtime_attributes['stickstick.database'] = 'data/h2/stickstick';
+$runtime_attributes['stickstick.database'] = 'data/stickstick/stickstick';
 
 $show_debug_on_error = true;
 

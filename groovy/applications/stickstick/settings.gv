@@ -15,7 +15,7 @@ runtimeAttributes['stickstick.backend'] = 'h2'
 runtimeAttributes['stickstick.username'] = 'root'
 runtimeAttributes['stickstick.password'] = 'root'
 runtimeAttributes['stickstick.host'] = ''
-runtimeAttributes['stickstick.database'] = 'data/h2/stickstick'
+runtimeAttributes['stickstick.database'] = 'data/stickstick/stickstick'
 
 showDebugOnError = true
 
