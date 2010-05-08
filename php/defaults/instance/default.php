@@ -3,7 +3,7 @@
 // Prudence Component
 //
 
-global $tasks;
+global $tasks, $component, $prudence_version, $prudence_revision, $prudence_flavor;
 
 import java.lang.System;
 import java.io.FileNotFoundException;
