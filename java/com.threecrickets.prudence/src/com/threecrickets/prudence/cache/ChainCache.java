@@ -88,6 +88,8 @@ public class ChainCache implements Cache
 
 	public void prune()
 	{
+		for( Cache cache : caches )
+			cache.prune();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

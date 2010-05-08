@@ -30,14 +30,13 @@ import org.restlet.data.MediaType;
 import com.threecrickets.prudence.util.MiniConnectionPoolManager;
 
 /**
- * Common implementation base for SQL-backed caches. Automatically uses a
- * {@link MiniConnectionPoolManager} for data sources that support the
- * {@link ConnectionPoolDataSource} interface.
+ * A SQL-backed cache. Automatically uses a {@link MiniConnectionPoolManager}
+ * for data sources that support the {@link ConnectionPoolDataSource} interface.
  * 
  * @author Tal Liron
  * @param <D>
  */
-public abstract class SqlCacheBase<D extends DataSource> implements Cache
+public class SqlCache<D extends DataSource> implements Cache
 {
 	//
 	// Construction
@@ -49,7 +48,7 @@ public abstract class SqlCacheBase<D extends DataSource> implements Cache
 	 * @param dataSource
 	 *        The data source
 	 */
-	public SqlCacheBase( D dataSource )
+	public SqlCache( D dataSource )
 	{
 		this( dataSource, 1000 );
 	}
@@ -62,7 +61,7 @@ public abstract class SqlCacheBase<D extends DataSource> implements Cache
 	 * @param maxSize
 	 *        The max entry count
 	 */
-	public SqlCacheBase( D dataSource, int maxSize )
+	public SqlCache( D dataSource, int maxSize )
 	{
 		this.dataSource = dataSource;
 		this.maxSize = maxSize;
@@ -311,7 +310,7 @@ public abstract class SqlCacheBase<D extends DataSource> implements Cache
 				if( group.isEmpty() )
 					return;
 
-				String sql = "DELETE FROM " + groupTableName + " WHERE group_key IN (";
+				String sql = "DELETE FROM " + entryTableName + " WHERE key IN (";
 				for( int i = group.size(); i > 0; i-- )
 					sql += "?,";
 				sql = sql.substring( 0, sql.length() - 1 ) + ")";
