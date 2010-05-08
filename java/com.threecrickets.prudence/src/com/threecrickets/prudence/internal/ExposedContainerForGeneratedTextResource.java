@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.restlet.data.Reference;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.routing.Template;
@@ -29,6 +30,7 @@ import org.restlet.routing.Variable;
 import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.CacheEntry;
+import com.threecrickets.prudence.util.CaptiveRedirector;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
@@ -253,8 +255,22 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		else
 		{
 			Template template = new Template( cacheKey );
+
+			// Our additional template variable: {n}
 			template.getVariables().put( NAME_VARIABLE, new Variable( Variable.TYPE_ALL, currentExecutable.getDocumentName(), true, true ) );
-			return template.format( resource.getRequest(), resource.getResponse() );
+
+			// Use captive reference as the resource reference
+			Reference captiveReference = CaptiveRedirector.getCaptiveReference( resource.getRequest() );
+			Reference resourceReference = resource.getRequest().getResourceRef();
+			if( captiveReference != null )
+				resource.getRequest().setResourceRef( captiveReference );
+
+			String cast = template.format( resource.getRequest(), resource.getResponse() );
+
+			if( captiveReference != null )
+				resource.getRequest().setResourceRef( resourceReference );
+
+			return cast;
 		}
 	}
 
