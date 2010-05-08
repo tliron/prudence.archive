@@ -132,7 +132,7 @@ $dynamic_web = new Finder($application->context, $classLoader->loadClass('com.th
 $router->attachBase(fix_url($dynamic_web_base_url), $dynamic_web);
 
 if($dynamic_web_defrost) {
-	$defrost_tasks = DefrostTask::forDocumentSource($dynamic_web_document_source, $language_manager, true, true);
+	$defrost_tasks = DefrostTask::forDocumentSource($dynamic_web_document_source, $language_manager, 'php', true, true);
 	foreach($defrost_tasks as $defrost_task) {
 		$tasks[] = $defrost_task;
 	}
@@ -162,7 +162,7 @@ $resources = new Finder($application->context, $classLoader->loadClass('com.thre
 $router->attachBase(fix_url($resources_base_url), $resources);
 
 if($resources_defrost) {
-	$defrost_tasks = DefrostTask::forDocumentSource($resources_document_source, $language_manager, false, true);
+	$defrost_tasks = DefrostTask::forDocumentSource($resources_document_source, $language_manager, 'php', false, true);
 	foreach($defrost_tasks as $defrost_task) {
 		$tasks[] = $defrost_task;
 	}

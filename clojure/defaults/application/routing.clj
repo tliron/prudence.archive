@@ -105,7 +105,7 @@
 (.attachBase router (fix-url dynamic-web-base-url) dynamic-web)
 
 (if dynamic-web-defrost
-	(doseq [defrost-task (DefrostTask/forDocumentSource dynamic-web-document-source language-manager true true)]
+	(doseq [defrost-task (DefrostTask/forDocumentSource dynamic-web-document-source language-manager "clojure" true true)]
 		(def tasks (conj tasks defrost-task))))
 
 ;
@@ -132,7 +132,7 @@
 (.attachBase router (fix-url resources-base-url) resources)
 
 (if resources-defrost
-	(doseq [defrost-task (DefrostTask/forDocumentSource resources-document-source language-manager false true)]
+	(doseq [defrost-task (DefrostTask/forDocumentSource resources-document-source language-manager "clojure" false true)]
 		(def tasks (conj tasks defrost-task))))
 
 ;

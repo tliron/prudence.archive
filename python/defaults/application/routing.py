@@ -99,7 +99,7 @@ dynamic_web = Finder(application.context, class_loader.loadClass('com.threecrick
 router.attachBase(fix_url(dynamic_web_base_url), dynamic_web)
 
 if dynamic_web_defrost:
-	for defrost_task in DefrostTask.forDocumentSource(dynamic_web_document_source, language_manager, True, True):
+	for defrost_task in DefrostTask.forDocumentSource(dynamic_web_document_source, language_manager, 'python', True, True):
 		tasks.append(defrost_task)
 
 #
@@ -126,7 +126,7 @@ resources = Finder(application.context, class_loader.loadClass('com.threecricket
 router.attachBase(fix_url(resources_base_url), resources)
 
 if resources_defrost:
-	for defrost_task in DefrostTask.forDocumentSource(resources_document_source, language_manager, False, True):
+	for defrost_task in DefrostTask.forDocumentSource(resources_document_source, language_manager, 'python', False, True):
 		tasks.append(defrost_task)
 
 #
