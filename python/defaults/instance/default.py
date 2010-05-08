@@ -2,13 +2,9 @@
 # Prudence Component
 #
 
-from java.lang import System, Runtime
+from java.lang import System
 from java.io import FileNotFoundException
 from java.util.logging import LogManager
-from java.util.concurrent import Executors
-
-from org.restlet import Component
-from com.threecrickets.prudence.util import DelegatedStatusService
 
 def execute_or_default(name, default=None):
 	try:
@@ -37,15 +33,6 @@ prudence_flavor = 'Python'
 print 'Prudence %s%s for %s.' % (prudence_version, prudence_revision, prudence_flavor)
 
 #
-# Component
-#
-
-component = Component()
-component.context.attributes['prudence.version'] = prudence_version
-component.context.attributes['prudence.revision'] = prudence_revision
-component.context.attributes['prudence.flavor'] = prudence_flavor
-
-#
 # Logging
 #
 
@@ -72,21 +59,11 @@ System.setProperty('org.restlet.engine.loggerFacadeClass', 'org.restlet.ext.slf4
 # Velocity logging
 System.setProperty('com.sun.script.velocity.properties', 'configuration/velocity.conf')
 
-# Web requests
-component.logService.loggerName = 'web-requests'
-
 #
-# StatusService
+# Component
 #
 
-component.statusService = DelegatedStatusService()
-
-#
-# Executor
-#
-
-executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
-component.context.attributes['prudence.executor'] = executor
+execute_or_default('instance/component/')
 
 #
 # Clients

@@ -35,7 +35,6 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.cache.Cache;
-import com.threecrickets.prudence.cache.InProcessMemoryCache;
 import com.threecrickets.prudence.internal.ExposedContainerForDelegatedResource;
 import com.threecrickets.prudence.internal.ExposedConversationForDelegatedResource;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
@@ -200,8 +199,8 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
  * <li>
- * <code>com.threecrickets.prudence.cache:</code> {@link Cache}, defaults to
- * a new instance of {@link InProcessMemoryCache}. See {@link #getCache()}.</li>
+ * <code>com.threecrickets.prudence.cache:</code> {@link Cache}. See
+ * {@link #getCache()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.prepare:</code>
  * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
@@ -358,10 +357,9 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * General-purpose cache. Defaults to a new instance of
-	 * {@link InProcessMemoryCache}. It is stored in the application's
-	 * {@link Context} for persistence across requests and for sharing among
-	 * instances of {@link DelegatedResource}.
+	 * General-purpose cache. It is stored in the application's {@link Context}
+	 * for persistence across requests and for sharing among instances of
+	 * {@link DelegatedResource}.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.cache</code> in the application's
@@ -369,8 +367,8 @@ public class DelegatedResource extends ServerResource
 	 * <p>
 	 * Note that this instance is shared with {@link GeneratedTextResource}.
 	 * 
-	 * @return The cache
-	 * @see GeneratedTextResource#getCache()
+	 * @return The cache or null
+	 * @see DelegatedResource#getCache()
 	 */
 	public Cache getCache()
 	{
@@ -378,14 +376,6 @@ public class DelegatedResource extends ServerResource
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
 			cache = (Cache) attributes.get( "com.threecrickets.prudence.cache" );
-			if( cache == null )
-			{
-				cache = new InProcessMemoryCache();
-
-				Cache existing = (Cache) attributes.putIfAbsent( "com.threecrickets.prudence.cache", cache );
-				if( existing != null )
-					cache = existing;
-			}
 		}
 
 		return cache;

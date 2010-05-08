@@ -1,0 +1,44 @@
+//
+// Prudence Component
+//
+
+import java.lang.Runtime
+import java.util.concurrent.Executors
+import org.restlet.Component
+import com.threecrickets.prudence.util.DelegatedStatusService
+import com.threecrickets.prudence.cache.InProcessMemoryCache
+
+//
+// Component
+//
+
+component = new Component()
+
+component.context.attributes['prudence.version'] = prudenceVersion
+component.context.attributes['prudence.revision'] = prudenceRevision
+component.context.attributes['prudence.flavor'] = prudenceFlavor
+
+//
+// Logging
+//
+
+component.logService.loggerName = 'web-requests'
+
+//
+// StatusService
+//
+
+component.statusService = new DelegatedStatusService()
+
+//
+// Executor
+//
+
+executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors())
+component.context.attributes['prudence.executor'] = executor
+
+//
+// Cache
+//
+
+component.context.attributes['com.threecrickets.prudence.cache'] = new InProcessMemoryCache()

@@ -27,6 +27,7 @@ import org.restlet.routing.Template;
 import org.restlet.routing.Variable;
 
 import com.threecrickets.prudence.GeneratedTextResource;
+import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.CacheEntry;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
@@ -312,14 +313,18 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 			String cacheKey = castCacheKeyPattern();
 			if( cacheKey != null )
 			{
-				CacheEntry cacheEntry = resource.getCache().fetch( cacheKey );
-				if( cacheEntry != null )
+				Cache cache = resource.getCache();
+				if( cache != null )
 				{
-					// We want to write this, too, for includes
-					if( writer != null )
-						writer.write( cacheEntry.getString() );
+					CacheEntry cacheEntry = cache.fetch( cacheKey );
+					if( cacheEntry != null )
+					{
+						// We want to write this, too, for includes
+						if( writer != null )
+							writer.write( cacheEntry.getString() );
 
-					return cacheEntry.represent();
+						return cacheEntry.represent();
+					}
 				}
 			}
 		}
@@ -367,7 +372,11 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 				String cacheKey = castCacheKeyPattern();
 				Collection<String> cacheGroups = getCacheGroups();
 				if( ( cacheKey != null ) && ( cacheEntry.getExpirationDate() != null ) )
-					resource.getCache().store( cacheKey, cacheGroups, cacheEntry );
+				{
+					Cache cache = resource.getCache();
+					if( cache != null )
+						cache.store( cacheKey, cacheGroups, cacheEntry );
+				}
 
 				// Return a representation of the entire buffer
 				if( startPosition == 0 )

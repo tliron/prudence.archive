@@ -154,12 +154,13 @@
 		<mkdir dir="${tmp}/classes" />
 		<javac srcdir="${java-src}" destdir="${tmp}/classes" target="1.5" debug="${debug}" includeAntRuntime="false">
 			<classpath>
+				<fileset dir="${lib}/commons-fileupload/lib" />
+				<fileset dir="${lib}/groboutils/lib" />
+				<fileset dir="${lib}/h2/lib" />
+				<fileset dir="${lib}/junit/lib" />
+				<fileset dir="${lib}/jygments/lib" />
 				<fileset dir="${lib}/restlet/lib" />
 				<fileset dir="${lib}/scripturian/lib" />
-				<fileset dir="${lib}/jygments/lib" />
-				<fileset dir="${lib}/junit/lib" />
-				<fileset dir="${lib}/groboutils/lib" />
-				<fileset dir="${lib}/commons-fileupload/lib" />
 				<fileset dir="${lib}/servlet/lib" />
 			</classpath>
 		</javac>

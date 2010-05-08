@@ -106,6 +106,11 @@ public class InProcessMemoryCache implements Cache
 
 		if( size.get() > maxSize )
 		{
+			// Note: We are only attempting pruning once. However, under heavy
+			// concurrency it might be possible that a subsequent attempt to
+			// prune would succeed in making room for us. Is it worth retrying?
+			// This issue should be given more thought. TODO.
+
 			prune();
 
 			if( size.get() > maxSize )
@@ -225,5 +230,5 @@ public class InProcessMemoryCache implements Cache
 	/**
 	 * Whether to print debug messages to standard out.
 	 */
-	private boolean debug = false;
+	private volatile boolean debug = false;
 }

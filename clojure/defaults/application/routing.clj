@@ -68,6 +68,7 @@
 (def attributes (.. application getContext (getAttributes)))
 
 (.put attributes "component" component)
+(.put attributes "com.threecrickets.prudence.cache" (.. component getContext getAttributes (get "com.threecrickets.prudence.cache")))
 
 ;
 ; Inbound root

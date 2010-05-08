@@ -4,12 +4,8 @@
 
 require 'java'
 import java.lang.System
-import java.lang.Runtime
 import java.io.FileNotFoundException
 import java.util.logging.LogManager
-import java.util.concurrent.Executors
-import org.restlet.Component
-import com.threecrickets.prudence.util.DelegatedStatusService
 
 def execute_or_default(name, default=nil)
 	begin
@@ -42,15 +38,6 @@ $prudence_flavor = 'Ruby'
 puts 'Prudence ' + $prudence_version + $prudence_revision + ' for ' + $prudence_flavor + '.'
 
 #
-# Component
-#
-
-$component = Component.new
-$component.context.attributes['prudence.version'] = $prudence_version
-$component.context.attributes['prudence.revision'] = $prudence_revision
-$component.context.attributes['prudence.flavor'] = $prudence_flavor
-
-#
 # Logging
 #
 
@@ -77,21 +64,11 @@ System::set_property 'org.restlet.engine.loggerFacadeClass', 'org.restlet.ext.sl
 # Velocity logging
 System::set_property 'com.sun.script.velocity.properties', 'configuration/velocity.conf'
 
-# Web requests
-$component.log_service.logger_name = 'web-requests'
-
 #
-# StatusService
+# Component
 #
 
-$component.status_service = DelegatedStatusService.new
-
-#
-# Executor
-#
-
-$executor = Executors.new_fixed_thread_pool Runtime::runtime.available_processors
-$component.context.attributes['prudence.executor'] = $executor
+execute_or_default 'instance/component/'
 
 #
 # Clients

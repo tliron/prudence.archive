@@ -4,12 +4,8 @@
 
 importClass(
 	java.lang.System,
-	java.lang.Runtime,
 	java.io.FileNotFoundException,
-	java.util.logging.LogManager,
-	java.util.concurrent.Executors,
-	org.restlet.Component,
-	com.threecrickets.prudence.util.DelegatedStatusService);
+	java.util.logging.LogManager);
 
 function executeOrDefault(name, def) {
 	try {
@@ -42,15 +38,6 @@ var prudenceFlavor = 'JavaScript';
 print('Prudence ' + prudenceVersion + prudenceRevision + ' for ' + prudenceFlavor + '.\n');
 
 //
-// Component
-//
-
-var component = new Component();
-component.context.attributes.put('prudence.version', prudenceVersion);
-component.context.attributes.put('prudence.revision', prudenceRevision);
-component.context.attributes.put('prudence.flavor', prudenceFlavor);
-
-//
 // Logging
 //
 
@@ -75,21 +62,11 @@ System.setProperty('org.restlet.engine.loggerFacadeClass', 'org.restlet.ext.slf4
 // Velocity logging
 System.setProperty('com.sun.script.velocity.properties', 'configuration/velocity.conf');
 
-// Web requests
-component.logService.loggerName = 'web-requests';
-
 //
-// StatusService
+// Component
 //
 
-component.statusService = new DelegatedStatusService();
-
-//
-// Executor
-//
-
-var executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors());
-component.context.attributes.put('prudence.executor', executor);
+executeOrDefault('instance/component/');
 
 //
 // Clients

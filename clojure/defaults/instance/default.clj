@@ -3,12 +3,8 @@
 ;
 
 (import
-	'java.lang.System
 	'java.io.FileNotFoundException
-	'java.util.logging.LogManager
-	'java.util.concurrent.Executors
-	'org.restlet.Component
-	'com.threecrickets.prudence.util.DelegatedStatusService)
+	'java.util.logging.LogManager)
 
 (defn execute-or-default
 	([name default]
@@ -75,21 +71,11 @@
 ; Velocity logging
 (System/setProperty "com.sun.script.velocity.properties" "configuration/velocity.conf")
 
-; Web requests
-(.. component getLogService (setLoggerName "web-requests"))
-
 ;
-; StatusService
+; Component
 ;
 
-(.. component (setStatusService (DelegatedStatusService.)))
-
-;
-; Executor
-;
-
-(def executor (Executors/newFixedThreadPool (.. Runtime getRuntime (availableProcessors))))
-(.. component getContext getAttributes (put "prudence.executor" executor))
+(execute-or-default "instance/component/")
 
 ;
 ; Clients

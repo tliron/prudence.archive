@@ -6,12 +6,8 @@
 global $tasks;
 
 import java.lang.System;
-import java.lang.Runtime;
 import java.io.FileNotFoundException;
 import java.util.logging.LogManager;
-import java.util.concurrent.Executors;
-import org.restlet.Component;
-import com.threecrickets.prudence.util.DelegatedStatusService;
 
 function execute_or_default($name, $def=NULL) {
 	global $executable;
@@ -45,15 +41,6 @@ $prudence_flavor = 'PHP';
 print 'Prudence ' . $prudence_version . $prudence_revision . ' for ' . $prudence_flavor . ".\n";
 
 //
-// Component
-//
-
-$component = new Component();
-$component->context->attributes['prudence.version'] = $prudence_version;
-$component->context->attributes['prudence.revision'] = $prudence_revision;
-$component->context->attributes['prudence.flavor'] = $prudence_flavor;
-
-//
 // Logging
 //
 
@@ -78,21 +65,11 @@ System::setProperty('org.restlet.engine.loggerFacadeClass', 'org.restlet.ext.slf
 // Velocity logging
 System::setProperty('com.sun.script.velocity.properties', 'configuration/velocity.conf');
 
-// Web requests
-$component->logService->loggerName = 'web-requests';
-
 //
-// StatusService
+// Component
 //
 
-$component->statusService = new DelegatedStatusService();
-
-//
-// Executor
-//
-
-$executor = Executors::newFixedThreadPool(Runtime::getRuntime()->availableProcessors());
-$component->context->attributes['prudence.executor'] = $executor;
+execute_or_default('instance/component/');
 
 //
 // Clients

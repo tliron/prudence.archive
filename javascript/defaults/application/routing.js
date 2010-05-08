@@ -75,6 +75,7 @@ print('.\n');
 var attributes = application.context.attributes;
 
 attributes.put('component', component);
+attributes.put('com.threecrickets.prudence.cache', component.context.attributes.get('com.threecrickets.prudence.cache'));
 
 //
 // Inbound root

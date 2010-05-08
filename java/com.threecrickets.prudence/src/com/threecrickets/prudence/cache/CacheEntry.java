@@ -20,8 +20,8 @@ import org.restlet.data.MediaType;
 import org.restlet.representation.StringRepresentation;
 
 /**
- * A cacheable set of parameters from which {@link StringRepresentation}
- * instances can be created.
+ * A serializable, cacheable set of parameters from which
+ * {@link StringRepresentation} instances can be created.
  * 
  * @author Tal Liron
  * @see Cache
