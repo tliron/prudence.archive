@@ -75,7 +75,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 */
 	public long getCacheDuration()
 	{
-		Long cacheDuration = (Long) executable.getAttributes().get( CACHE_DURATION_ATTRIBUTE );
+		Long cacheDuration = (Long) currentExecutable.getAttributes().get( CACHE_DURATION_ATTRIBUTE );
 		return cacheDuration == null ? 0 : cacheDuration;
 	}
 
@@ -86,7 +86,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 */
 	public void setCacheDuration( long cacheDuration )
 	{
-		executable.getAttributes().put( CACHE_DURATION_ATTRIBUTE, cacheDuration );
+		currentExecutable.getAttributes().put( CACHE_DURATION_ATTRIBUTE, cacheDuration );
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 */
 	public String getCacheKey()
 	{
-		return (String) executable.getAttributes().get( CACHE_KEY_ATTRIBUTE );
+		return (String) currentExecutable.getAttributes().get( CACHE_KEY_ATTRIBUTE );
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 */
 	public void setCacheKey( String cacheKey )
 	{
-		executable.getAttributes().put( CACHE_KEY_ATTRIBUTE, cacheKey );
+		currentExecutable.getAttributes().put( CACHE_KEY_ATTRIBUTE, cacheKey );
 	}
 
 	/**
@@ -114,11 +114,11 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	@SuppressWarnings("unchecked")
 	public Set<String> getCacheGroups()
 	{
-		Set<String> cacheGroups = (Set<String>) executable.getAttributes().get( CACHE_GROUPS_ATTRIBUTE );
+		Set<String> cacheGroups = (Set<String>) currentExecutable.getAttributes().get( CACHE_GROUPS_ATTRIBUTE );
 		if( cacheGroups == null )
 		{
 			cacheGroups = new HashSet<String>();
-			Set<String> existing = (Set<String>) executable.getAttributes().putIfAbsent( CACHE_GROUPS_ATTRIBUTE, cacheGroups );
+			Set<String> existing = (Set<String>) currentExecutable.getAttributes().putIfAbsent( CACHE_GROUPS_ATTRIBUTE, cacheGroups );
 			if( existing != null )
 				cacheGroups = existing;
 
@@ -166,8 +166,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 			// Set initial media type according to the document's tag
 			exposedConversation.setMediaTypeExtension( documentDescriptor.getTag() );
 
-		executable = documentDescriptor.getDocument();
-		return execute();
+		return execute( documentDescriptor.getDocument() );
 	}
 
 	/**
@@ -185,6 +184,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	{
 		documentName = resource.validateDocumentName( documentName );
 
+		Executable executable;
 		try
 		{
 			executable = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() ).getDocument();
@@ -200,7 +200,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 				throw x;
 		}
 
-		return execute();
+		return execute( executable );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -219,7 +219,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	/**
 	 * The currently executing executable.
 	 */
-	protected Executable executable;
+	protected Executable currentExecutable;
 
 	/**
 	 * The {@link Writer} used by the {@link Executable}.
@@ -253,7 +253,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		else
 		{
 			Template template = new Template( cacheKey );
-			template.getVariables().put( NAME_VARIABLE, new Variable( Variable.TYPE_ALL, executable.getDocumentName(), true, true ) );
+			template.getVariables().put( NAME_VARIABLE, new Variable( Variable.TYPE_ALL, currentExecutable.getDocumentName(), true, true ) );
 			return template.format( resource.getRequest(), resource.getResponse() );
 		}
 	}
@@ -267,7 +267,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		if( cacheDuration <= 0 )
 			return 0;
 		else
-			return executable.getLastExecutedTimestamp() + cacheDuration;
+			return currentExecutable.getLastExecutedTimestamp() + cacheDuration;
 	}
 
 	/**
@@ -279,10 +279,13 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 * @throws ParsingException
 	 * @throws ExecutionException
 	 */
-	private Representation execute() throws IOException, ParsingException, ExecutionException
+	private Representation execute( Executable executable ) throws IOException, ParsingException, ExecutionException
 	{
+		Executable previousExecutable = currentExecutable;
+		currentExecutable = executable;
+
 		// Optimized handling for pure text
-		String pureText = executable.getAsPureLiteral();
+		String pureText = currentExecutable.getAsPureLiteral();
 		if( pureText != null )
 		{
 			// We want to write this, too, for includes
@@ -340,9 +343,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 			executionContext.getExposedVariables().put( resource.getExposedConversationName(), exposedConversation );
 
 			// Execute!
-			Executable currentExecutable = executable;
 			executable.execute( executionContext, this, resource.getExecutionController() );
-			executable = currentExecutable;
+			currentExecutable = executable;
 
 			// Did the executable ask us to start streaming?
 			if( exposedConversation.startStreaming )
@@ -409,6 +411,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		{
 			writer.flush();
 			executionContext.getErrorWriterOrDefault().flush();
+
+			currentExecutable = previousExecutable;
 		}
 	}
 }
