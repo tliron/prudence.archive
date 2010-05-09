@@ -20,9 +20,9 @@
 	(def application-logger-name (.getName application-dir))
 	(def application-base-path (.getPath application-dir))
 	(def application-default-url (str "/" (.getName application-dir) "/"))
-	(def application nil) ; otherwise the below would create it in a different namespace
-  (execute-or-default application-base-path "defaults/application")
-  (def applications (conj applications application)))
+	(def application-instance nil) ; otherwise the below would create it in a different namespace
+  (execute-or-default application-base-path "defaults/application/")
+  (def applications (conj applications application-instance)))
 
 (if (empty? applications) (do
  		(print "No applications found. Exiting.")

@@ -19,8 +19,8 @@ for application_dir in application_dirs:
         application_logger_name = application_dir.name
         application_base_path = application_dir.path
         application_default_url = '/' + application_dir.name + '/'
-        execute_or_default(application_base_path, 'defaults/application')
-        applications.append(application)
+        execute_or_default(application_base_path, 'defaults/application/')
+        applications.append(application_instance)
 
 if len(applications) == 0:
     print 'No applications found. Exiting.'

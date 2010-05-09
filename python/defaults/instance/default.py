@@ -8,11 +8,11 @@ from java.util.logging import LogManager
 
 def execute_or_default(name, default=None):
 	try:
-		executable.container.execute(name)
+		document.execute(name)
 	except FileNotFoundException:
 		if default is None:
 			default = 'defaults/' + name 
-		executable.container.execute(default)
+		document.execute(default)
 
 tasks = []
 

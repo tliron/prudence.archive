@@ -15,7 +15,7 @@ import org.restlet.ext.json.JsonRepresentation
 import org.json.JSONObject
 
 // Include the context library
-prudence.execute('groovy/context/')
+document.execute('groovy/context/')
 
 // State
 //

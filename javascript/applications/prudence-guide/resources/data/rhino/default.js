@@ -15,10 +15,10 @@ importClass(
 	org.restlet.ext.json.JsonRepresentation);
 
 // Include the context library
-prudence.execute('rhino/context/');
+document.execute('rhino/context/');
 
 // Include the JSON library
-prudence.execute('rhino/json2/');
+document.execute('rhino/json2/');
 
 // State
 //

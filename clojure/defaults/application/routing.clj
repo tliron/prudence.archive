@@ -34,16 +34,16 @@
 ; Internal router
 ;
 
-(.setMatchingMode (.. component getInternalRouter (attach (str "/" application-internal-name "/") application)) Template/MODE_STARTS_WITH)
+(.setMatchingMode (.. component getInternalRouter (attach (str "/" application-internal-name "/") application-instance)) Template/MODE_STARTS_WITH)
 
 ;
 ; Hosts
 ;
-; Note that the application's context will not be created until we attach the application to at least one
+; Note that the application's context will not be created until we attach the application-instance to at least one
 ; virtual host. See defaults/instance/hosts.clj for more information.
 ;
 
-(def add-trailing-slash (Redirector. (.getContext application) "{ri}/" Redirector/MODE_CLIENT_PERMANENT))
+(def add-trailing-slash (Redirector. (.getContext application-instance) "{ri}/" Redirector/MODE_CLIENT_PERMANENT))
 
 (defn add-to-hosts [entries]
 	(let [[entry & others] (seq entries)
@@ -52,7 +52,7 @@
 		
 		(let [url (if (nil? url) application-default-url url)]
 			(print (str "\"" url "\"") "on" (.getName host))
-			(.setMatchingMode (.attach host url application) Template/MODE_STARTS_WITH)
+			(.setMatchingMode (.attach host url application-instance) Template/MODE_STARTS_WITH)
 			(if-not (= url "/")
 				(let [url (if (.endsWith url "/") (.substring url 0 (- (.length url) 1)) url)]
 					(.setMatchingMode (.attach host url add-trailing-slash) Template/MODE_EQUALS))))
@@ -61,11 +61,11 @@
 				(print ", ")
 				(recur others)))))
 
-(print (str (.getName application) ": "))
+(print (str (.getName application-instance) ": "))
 (add-to-hosts (.entrySet hosts))
 (println ".")
 
-(def attributes (.. application getContext (getAttributes)))
+(def attributes (.. application-instance getContext (getAttributes)))
 
 (.put attributes "component" component)
 (.put attributes "com.threecrickets.prudence.cache" (.. component getContext getAttributes (get "com.threecrickets.prudence.cache")))
@@ -74,9 +74,9 @@
 ; Inbound root
 ;
 
-(def router (PrudenceRouter. (.getContext application)))
+(def router (PrudenceRouter. (.getContext application-instance)))
 (.setRoutingMode router Router/MODE_BEST_MATCH)
-(.setInboundRoot application router)
+(.setInboundRoot application-instance router)
 
 ;
 ; Add trailing slashes
@@ -101,7 +101,7 @@
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" dynamic-web-source-viewable)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.executionController" (PhpExecutionController.)) ; Adds PHP predefined variables
 
-(def dynamic-web (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.GeneratedTextResource")))
+(def dynamic-web (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.GeneratedTextResource")))
 (.attachBase router (fix-url dynamic-web-base-url) dynamic-web)
 
 (if dynamic-web-defrost
@@ -112,7 +112,7 @@
 ; Static web
 ;
 
-(def static-web (Directory. (.getContext application) (.. (File. (str application-base-path static-web-base-path)) toURI (toString))))
+(def static-web (Directory. (.getContext application-instance) (.. (File. (str application-base-path static-web-base-path)) toURI (toString))))
 (.setListingAllowed static-web static-web-directory-listing-allowed)
 (.setNegotiateContent static-web true)
 (.attachBase router (fix-url static-web-base-url) static-web)
@@ -128,7 +128,7 @@
 (.put attributes "com.threecrickets.prudence.DelegatedResource.documentSource" resources-document-source)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.sourceViewable" resources-source-viewable)
 
-(def resources (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
+(def resources (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
 (.attachBase router (fix-url resources-base-url) resources)
 
 (if resources-defrost
@@ -143,7 +143,7 @@
 	(do
 		(.put attributes "com.threecrickets.prudence.SourceCodeResource.documentSources" [dynamic-web-document-source resources-document-source])
 		
-		(def source-code (Finder. (.getContext application) (.loadClass classLoader "com.threecrickets.prudence.SourceCodeResource")))
+		(def source-code (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.SourceCodeResource")))
 		(.setMatchingMode (.attach router (fix-url show-source-code-url) source-code) Template/MODE_EQUALS)))
 
 ;

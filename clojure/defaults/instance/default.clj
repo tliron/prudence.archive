@@ -11,11 +11,10 @@
 		(try
 			(.. executable getContainer (execute name))
 			(catch FileNotFoundException _
-				(.. executable getContainer
-					(execute
-						(if (nil? default)
-							(str "defaults/" name)
-							default))))))
+				(.execute document
+					(if (nil? default)
+						(str "defaults/" name)
+						default)))))
 	([name]
 		(execute-or-default name nil)))
 

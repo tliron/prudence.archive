@@ -28,7 +28,7 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * @author Tal Liron
  * @see DelegatedResource
  */
-public class ExposedContainerForDelegatedResource extends ExposedContainerBase<DelegatedResource>
+public class ExposedDocumentForDelegatedResource extends ExposedDocumentBase<DelegatedResource>
 {
 	//
 	// Construction
@@ -42,7 +42,7 @@ public class ExposedContainerForDelegatedResource extends ExposedContainerBase<D
 	 * @param resource
 	 *        The resource
 	 */
-	public ExposedContainerForDelegatedResource( DelegatedResource resource )
+	public ExposedDocumentForDelegatedResource( DelegatedResource resource )
 	{
 		super( resource, resource.getDocumentSource() );
 	}

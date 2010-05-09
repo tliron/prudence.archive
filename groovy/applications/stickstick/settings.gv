@@ -2,7 +2,7 @@
 // Stickstick Settings
 //
 
-executable.container.execute('defaults/application/settings/')
+document.execute('defaults/application/settings/')
 
 applicationName = 'Stickstick'
 applicationDescription = 'Share online sticky notes'

@@ -8,9 +8,9 @@ import java.sql.Timestamp
 import org.restlet.Application
 import com.threecrickets.prudence.util.MiniConnectionPoolManager
 
-$connection_pool_lock = $prudence.get_global 'connection_pool_lock'
+$connection_pool_lock = $application.get_global 'connection_pool_lock'
 if $connection_pool_lock.nil?
-	$connection_pool_lock = $prudence.get_global 'connection_pool_lock', ReentrantLock.new
+	$connection_pool_lock = $application.get_global 'connection_pool_lock', ReentrantLock.new
 end
 
 def get_data_source attributes
@@ -44,11 +44,11 @@ def get_connection fresh=false
 	attributes = Application.current.context.attributes
 
 	$connection_pool_lock.lock
-	connection_pool = $prudence.get_global 'connection_pool'
+	connection_pool = $application.get_global 'connection_pool'
 	begin
 		if connection_pool.nil? || fresh
 			if connection_pool.nil?
-				connection_pool = $prudence.get_global 'connection_pool', MiniConnectionPoolManager.new(get_data_source(attributes), 10)
+				connection_pool = $application.get_global 'connection_pool', MiniConnectionPoolManager.new(get_data_source(attributes), 10)
 			end
 			
 			# TODO: CREATE DATABASE IF NOT EXISTS

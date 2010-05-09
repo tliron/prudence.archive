@@ -1,5 +1,5 @@
 
-prudence.execute('stickstick/data/')
+document.execute('stickstick/data/')
 
 import org.json.JSONObject
 

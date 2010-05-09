@@ -4,4 +4,4 @@
 
 import com.threecrickets.prudence.util.PrudenceApplication
 
-prudenceApplication = new PrudenceApplication()
+applicationInstance = new PrudenceApplication()

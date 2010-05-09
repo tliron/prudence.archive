@@ -19,7 +19,7 @@
 
 #if($form.getFirstValue('stream') == 'true')
 	#if($conversation.stream())
-		$prudence.kaboom()
+		$conversation.kaboom()
 	#end
 #end
 
@@ -27,7 +27,7 @@
 ## Cache this page
 ##
 
-#set($prudence.cacheDuration = 5000)
+#set($document.cacheDuration = 5000)
 
 ##
 ## Calling Java
@@ -75,7 +75,7 @@ executable.context.exposedVariables.put('currentTimeMillis', String(java.lang.Sy
 ##
 ## This is identical to:
 ##
-##   $prudence.include('path')
+##   $document.include('path')
 ##
 
 %><%& "test/velocity-triple/" %><%

@@ -22,7 +22,7 @@ def handle_init(conversation):
 def handle_get(conversation):
     id = get_id(conversation)
 
-    session = get_session(prudence)
+    session = get_session(application)
     try:
         note = session.query(Note).filter_by(id=id).one()
     except NoResultFound:
@@ -36,7 +36,7 @@ def handle_get(conversation):
 def handle_get_info2(conversation):
     id = get_id(conversation)
 
-    session = get_session(prudence)
+    session = get_session(application)
     try:
         note = session.query(Note).filter_by(id=id).one()
     except NoResultFound:
@@ -56,7 +56,7 @@ def handle_post(conversation):
     text = conversation.entity.text
     note_dict = json.read(text)
 
-    session = get_session(prudence)
+    session = get_session(application)
     try:
         note = session.query(Note).filter_by(id=id).one()
         note.update(note_dict)
@@ -73,7 +73,7 @@ def handle_post(conversation):
 def handle_delete(conversation):
     id = get_id(conversation)
 
-    session = get_session(prudence)
+    session = get_session(application)
     try:
         note = session.query(Note).filter_by(id=id).one()
         session.delete(note)

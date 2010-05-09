@@ -37,7 +37,7 @@ fixURL = { url ->
 // Internal router
 //
 
-component.internalRouter.attach('/' + applicationInternalName + '/', prudenceApplication).matchingMode = Template.MODE_STARTS_WITH
+component.internalRouter.attach('/' + applicationInternalName + '/', applicationInstance).matchingMode = Template.MODE_STARTS_WITH
 
 //
 // Hosts
@@ -46,9 +46,9 @@ component.internalRouter.attach('/' + applicationInternalName + '/', prudenceApp
 // virtual host. See defaults/instance/hosts.gv for more information.
 //
 
-addTrailingSlash = new Redirector(prudenceApplication.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)
+addTrailingSlash = new Redirector(applicationInstance.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)
 
-print(prudenceApplication.name + ': ')
+print(applicationInstance.name + ': ')
 hosts.eachWithIndex() { entry, i ->
 	host = entry[0]
 	url = entry[1]
@@ -56,7 +56,7 @@ hosts.eachWithIndex() { entry, i ->
 		url = applicationDefaultURL
 	}
 	print('"' + url + '" on ' + host.name)
-	host.attach(url, prudenceApplication).matchingMode = Template.MODE_STARTS_WITH
+	host.attach(url, applicationInstance).matchingMode = Template.MODE_STARTS_WITH
 	if(url != '/') {
 		if(url[url.size() - 1] == '/') {
 			url = url.substring(0, url.size() - 1)
@@ -69,7 +69,7 @@ hosts.eachWithIndex() { entry, i ->
 }
 println('.')
 
-attributes = prudenceApplication.context.attributes
+attributes = applicationInstance.context.attributes
 
 attributes['component'] = component
 attributes['com.threecrickets.prudence.cache'] = component.context.attributes['com.threecrickets.prudence.cache']
@@ -78,9 +78,9 @@ attributes['com.threecrickets.prudence.cache'] = component.context.attributes['c
 // Inbound root
 //
 
-router = new PrudenceRouter(prudenceApplication.context)
+router = new PrudenceRouter(applicationInstance.context)
 router.routingMode = Router.MODE_BEST_MATCH
-prudenceApplication.inboundRoot = router
+applicationInstance.inboundRoot = router
 
 //
 // Add trailing slashes
@@ -110,7 +110,7 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = 
 attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamicWebSourceViewable
 attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController() // Adds PHP predefined variables
 
-dynamicWeb = new Finder(prudenceApplication.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
+dynamicWeb = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 router.attachBase(fixURL(dynamicWebBaseURL), dynamicWeb)
 
 if(dynamicWebDefrost) {
@@ -140,7 +140,7 @@ attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resourc
 attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = resourcesDocumentSource
 attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resourcesSourceViewable
 
-resources = new Finder(prudenceApplication.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
+resources = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 router.attachBase(fixURL(resourcesBaseURL), resources)
 
 if(resourcesDefrost) {
@@ -156,7 +156,7 @@ if(resourcesDefrost) {
 
 if(showDebugOnError) {
 	attributes['com.threecrickets.prudence.SourceCodeResource.documentSources'] = [dynamicWebDocumentSource, resourcesDocumentSource]
-	sourceCode = new Finder(prudenceApplication.context, classLoader.loadClass('com.threecrickets.prudence.SourceCodeResource'))
+	sourceCode = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.SourceCodeResource'))
 	router.attach(fixURL(showSourceCodeURL), sourceCode).matchingMode = Template.MODE_EQUALS
 }
 

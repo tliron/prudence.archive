@@ -3,7 +3,7 @@
 // Prudence Routing
 //
 
-global $component, $application_name, $application_internal_name, $application_logger_name, $application_base_path, $application_default_url, $application;
+global $component, $application_name, $application_internal_name, $application_logger_name, $application_base_path, $application_default_url, $application_instance;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ foreach($application_dirs as $application_dir) {
 		$application_base_path = $application_dir->path;
 		$application_default_url = '/' . $application_dir->name . '/';
 		execute_or_default($application_base_path, 'defaults/application');
-		$applications->add($application);
+		$applications->add($application_instance);
 	}
 }
 

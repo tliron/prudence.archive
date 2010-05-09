@@ -7,9 +7,9 @@ import java.sql.Timestamp;
 import org.restlet.Application;
 import com.threecrickets.prudence.util.MiniConnectionPoolManager;
 
-$connection_pool_lock = $prudence->getGlobal('connection_pool_lock');
+$connection_pool_lock = $application->getGlobal('connection_pool_lock');
 if(is_null($connection_pool_lock)) {
-	$connection_pool_lock = $prudence->getGlobal('connection_pool_lock', new ReentrantLock());
+	$connection_pool_lock = $application->getGlobal('connection_pool_lock', new ReentrantLock());
 }
 
 function get_data_source($attributes) {
@@ -41,16 +41,16 @@ function get_url($attributes) {
 }
 
 function get_connection($fresh=false) {
-	global $connection_pool_lock, $prudence;
+	global $connection_pool_lock, $application;
 	
 	$attributes = Application::getCurrent()->context->attributes;
 
 	$connection_pool_lock->lock();
-	$connection_pool = $prudence->getGlobal('connection_pool');
+	$connection_pool = $application->getGlobal('connection_pool');
 	try {
 		if(is_null($connection_pool) || $fresh) {
 			if(is_null($connection_pool)) {
-				$connection_pool = $prudence->getGlobal('connection_pool', new MiniConnectionPoolManager(get_data_source($attributes), 10));
+				$connection_pool = $application->getGlobal('connection_pool', new MiniConnectionPoolManager(get_data_source($attributes), 10));
 			}
 			
 			// TODO: CREATE DATABASE IF NOT EXISTS

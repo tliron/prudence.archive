@@ -39,7 +39,7 @@ function fixURL(url) {
 // Internal router
 //
 
-component.internalRouter.attach('/' + applicationInternalName + '/', application).matchingMode = Template.MODE_STARTS_WITH;
+component.internalRouter.attach('/' + applicationInternalName + '/', applicationInstance).matchingMode = Template.MODE_STARTS_WITH;
 
 //
 // Hosts
@@ -48,9 +48,9 @@ component.internalRouter.attach('/' + applicationInternalName + '/', application
 // virtual host. See defaults/instance/hosts.js for more information.
 //
 
-var addTrailingSlash = new Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT);
+var addTrailingSlash = new Redirector(applicationInstance.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT);
 
-print(application.name + ': ');
+print(applicationInstance.name + ': ');
 for(var i in hosts) {
 	var entry = hosts[i];
 	var host = entry[0];
@@ -59,7 +59,7 @@ for(var i in hosts) {
 		url = applicationDefaultURL;
 	}
 	print('"' + url + '" on ' + host.name);
-	host.attach(url, application).matchingMode = Template.MODE_STARTS_WITH;
+	host.attach(url, applicationInstance).matchingMode = Template.MODE_STARTS_WITH;
 	if(url != '/') {
 		if(url[url.length - 1] == '/') {
 			url = url.slice(0, -1);
@@ -72,7 +72,7 @@ for(var i in hosts) {
 }
 print('.\n');
 
-var attributes = application.context.attributes;
+var attributes = applicationInstance.context.attributes;
 
 attributes.put('component', component);
 attributes.put('com.threecrickets.prudence.cache', component.context.attributes.get('com.threecrickets.prudence.cache'));
@@ -81,9 +81,9 @@ attributes.put('com.threecrickets.prudence.cache', component.context.attributes.
 // Inbound root
 //
 
-var router = new PrudenceRouter(application.context);
+var router = new PrudenceRouter(applicationInstance.context);
 router.routingMode = Router.MODE_BEST_MATCH;
-application.inboundRoot = router;
+applicationInstance.inboundRoot = router;
 
 //
 // Add trailing slashes
@@ -113,7 +113,7 @@ attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource'
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.executionController', new PhpExecutionController()); // Adds PHP predefined variables
 
-var dynamicWeb = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'));
+var dynamicWeb = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'));
 router.attachBase(fixURL(dynamicWebBaseURL), dynamicWeb);
 
 if(dynamicWebDefrost) {
@@ -143,7 +143,7 @@ attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resou
 attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource);
 attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable);
 
-resources = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
+resources = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
 router.attachBase(fixURL(resourcesBaseURL), resources);
 
 if(resourcesDefrost) {
@@ -162,7 +162,7 @@ if(showDebugOnError) {
 	documentSources.add(dynamicWebDocumentSource);
 	documentSources.add(resourcesDocumentSource);
 	attributes.put('com.threecrickets.prudence.SourceCodeResource.documentSources', documentSources);
-	var sourceCode = new Finder(application.context, classLoader.loadClass('com.threecrickets.prudence.SourceCodeResource'));
+	var sourceCode = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.SourceCodeResource'));
 	router.attach(fixURL(showSourceCodeURL), sourceCode).matchingMode = Template.MODE_EQUALS;
 }
 

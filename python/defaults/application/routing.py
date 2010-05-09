@@ -32,7 +32,7 @@ def fix_url(url):
 # Internal router
 #
 
-component.internalRouter.attach('/%s/' % application_internal_name, application).matchingMode = Template.MODE_STARTS_WITH
+component.internalRouter.attach('/%s/' % application_internal_name, application_instance).matchingMode = Template.MODE_STARTS_WITH
 
 #
 # Hosts
@@ -41,15 +41,15 @@ component.internalRouter.attach('/%s/' % application_internal_name, application)
 # virtual host. See defaults/instance/hosts.py for more information.
 #
 
-add_trailing_slash = Redirector(application.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)
+add_trailing_slash = Redirector(application_instance.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)
 
-sys.stdout.write('%s: ' % application.name)
+sys.stdout.write('%s: ' % application_instance.name)
 for i in range(len(hosts)):
 	host, url = hosts.items()[i]
 	if url is None:
 		url = application_default_url
 	sys.stdout.write('"%s" on %s' % (url, host.name))
-	host.attach(url, application).matchingMode = Template.MODE_STARTS_WITH
+	host.attach(url, application_instance).matchingMode = Template.MODE_STARTS_WITH
 	if url != '/':
 		if url[-1] == '/':
 			url = url[:-1]
@@ -58,7 +58,7 @@ for i in range(len(hosts)):
 		sys.stdout.write(', ')
 print '.'
 
-attributes = application.context.attributes
+attributes = application_instance.context.attributes
 
 attributes['component'] = component
 attributes['com.threecrickets.prudence.cache'] = component.context.attributes['com.threecrickets.prudence.cache']
@@ -67,9 +67,9 @@ attributes['com.threecrickets.prudence.cache'] = component.context.attributes['c
 # Inbound root
 #
 
-router = PrudenceRouter(application.context)
+router = PrudenceRouter(application_instance.context)
 router.routingMode = Router.MODE_BEST_MATCH
-application.inboundRoot = router
+application_instance.inboundRoot = router
 
 #
 # Add trailing slashes
@@ -95,7 +95,7 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = 
 attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
 attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController() # Adds PHP predefined variables
 
-dynamic_web = Finder(application.context, class_loader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
+dynamic_web = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 router.attachBase(fix_url(dynamic_web_base_url), dynamic_web)
 
 if dynamic_web_defrost:
@@ -106,7 +106,7 @@ if dynamic_web_defrost:
 # Static web
 #
 
-static_web = Directory(application.context, File(application_base_path + static_web_base_path).toURI().toString())
+static_web = Directory(application_instance.context, File(application_base_path + static_web_base_path).toURI().toString())
 static_web.listingAllowed = static_web_directory_listing_allowed
 static_web.negotiateContent = True
 router.attachBase(fix_url(static_web_base_url), static_web)
@@ -122,7 +122,7 @@ attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resourc
 attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = resources_document_source
 attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resources_source_viewable
 
-resources = Finder(application.context, class_loader.loadClass('com.threecrickets.prudence.DelegatedResource'))
+resources = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 router.attachBase(fix_url(resources_base_url), resources)
 
 if resources_defrost:
@@ -135,7 +135,7 @@ if resources_defrost:
 
 if show_debug_on_error:
 	attributes['com.threecrickets.prudence.SourceCodeResource.documentSources'] = [dynamic_web_document_source, resources_document_source]
-	source_code = Finder(application.context, class_loader.loadClass('com.threecrickets.prudence.SourceCodeResource'))
+	source_code = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.SourceCodeResource'))
 	router.attach(fix_url(show_source_code_url), source_code).matchingMode = Template.MODE_EQUALS
 
 #

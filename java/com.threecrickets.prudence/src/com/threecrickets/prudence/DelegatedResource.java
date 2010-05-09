@@ -35,8 +35,9 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.cache.Cache;
-import com.threecrickets.prudence.internal.ExposedContainerForDelegatedResource;
+import com.threecrickets.prudence.internal.ExposedApplication;
 import com.threecrickets.prudence.internal.ExposedConversationForDelegatedResource;
+import com.threecrickets.prudence.internal.ExposedDocumentForDelegatedResource;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
@@ -207,7 +208,7 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.exposedContainerName</code>
  * : The name of the global variable with which to access the container.
- * Defaults to "prudence". See {@link #getExposedContainerName()}.</li>
+ * Defaults to "prudence". See {@link #getExposedDocumentName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
@@ -334,26 +335,50 @@ public class DelegatedResource extends ServerResource
 
 	/**
 	 * The name of the global variable with which to access the container.
-	 * Defaults to "prudence".
+	 * Defaults to "document".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedResource.exposedContainerName</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The container name
+	 * @return The document name
 	 */
-	public String getExposedContainerName()
+	public String getExposedDocumentName()
 	{
-		if( exposedContainerName == null )
+		if( exposedDocumentName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			exposedContainerName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.exposedContainerName" );
+			exposedDocumentName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.exposedDocumentName" );
 
-			if( exposedContainerName == null )
-				exposedContainerName = "prudence";
+			if( exposedDocumentName == null )
+				exposedDocumentName = "document";
 		}
 
-		return exposedContainerName;
+		return exposedDocumentName;
+	}
+
+	/**
+	 * The name of the global variable with which to access the application.
+	 * Defaults to "application".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedResource.exposedApplicationName</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The application name
+	 */
+	public String getExposedApplicationName()
+	{
+		if( exposedApplicationName == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			exposedApplicationName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.exposedApplicationName" );
+
+			if( exposedApplicationName == null )
+				exposedApplicationName = "application";
+		}
+
+		return exposedApplicationName;
 	}
 
 	/**
@@ -1259,9 +1284,14 @@ public class DelegatedResource extends ServerResource
 	private volatile Writer errorWriter = new OutputStreamWriter( System.err );
 
 	/**
-	 * The name of the global variable with which to access the container.
+	 * The name of the global variable with which to access the document.
 	 */
-	private volatile String exposedContainerName;
+	private volatile String exposedDocumentName;
+
+	/**
+	 * The name of the global variable with which to access the application.
+	 */
+	private volatile String exposedApplicationName;
 
 	/**
 	 * The document formatter.
@@ -1369,10 +1399,14 @@ public class DelegatedResource extends ServerResource
 			if( executable.getEnterableExecutionContext() == null )
 			{
 				ExecutionContext executionContext = new ExecutionContext( getWriter(), getErrorWriter() );
+
 				File libraryDirectory = getLibraryDirectory();
 				if( libraryDirectory != null )
 					executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
-				executionContext.getExposedVariables().put( getExposedContainerName(), new ExposedContainerForDelegatedResource( this ) );
+
+				executionContext.getExposedVariables().put( getExposedDocumentName(), new ExposedDocumentForDelegatedResource( this ) );
+				executionContext.getExposedVariables().put( getExposedApplicationName(), new ExposedApplication() );
+
 				try
 				{
 					if( !executable.makeEnterable( executionContext, this, getExecutionController() ) )

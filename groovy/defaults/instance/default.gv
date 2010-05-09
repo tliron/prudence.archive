@@ -8,12 +8,12 @@ import java.util.logging.LogManager
 
 executeOrDefault = { name, deflt = null ->
 	try {
-		executable.container.execute(name)
+		document.execute(name)
 	} catch(FileNotFoundException) {
 		if(!deflt) {
 			deflt = 'defaults/' + name
 		}
-		executable.container.execute(deflt)
+		document.execute(deflt)
 	}
 }
 

@@ -9,9 +9,9 @@ importClass(
 	org.restlet.Application,
 	com.threecrickets.prudence.util.MiniConnectionPoolManager);
 
-var connectionPoolLock = prudence.getGlobal('connectionPoolLock');
+var connectionPoolLock = application.getGlobal('connectionPoolLock');
 if(connectionPoolLock == null) {
-	connectionPoolLock = prudence.getGlobal('connectionPoolLock', new ReentrantLock());
+	connectionPoolLock = application.getGlobal('connectionPoolLock', new ReentrantLock());
 }
 
 function getDataSource(attributes) {
@@ -45,11 +45,11 @@ function getConnection(fresh) {
 	var attributes = Application.current.context.attributes;
 
 	connectionPoolLock.lock();
-	connectionPool = prudence.getGlobal('connectionPool');
+	connectionPool = application.getGlobal('connectionPool');
 	try {
 		if(connectionPool == null || fresh) {
 			if(connectionPool == null) {
-				connectionPool = prudence.getGlobal('connectionPool', new MiniConnectionPoolManager(getDataSource(attributes), 10));
+				connectionPool = application.getGlobal('connectionPool', new MiniConnectionPoolManager(getDataSource(attributes), 10));
 			}
 			
 			// TODO: CREATE DATABASE IF NOT EXISTS

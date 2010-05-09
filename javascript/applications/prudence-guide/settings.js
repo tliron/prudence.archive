@@ -2,7 +2,7 @@
 // Prudence Guide Settings
 //
 
-executable.container.execute('defaults/application/settings/');
+document.execute('defaults/application/settings/');
 
 applicationName = 'Prudence Guide';
 applicationDescription = 'Prudence web site, documentation, and tests';

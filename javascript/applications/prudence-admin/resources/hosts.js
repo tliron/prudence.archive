@@ -3,7 +3,7 @@ importClass(
 	org.restlet.representation.Variant);
 
 //Include the JSON library
-prudence.execute('../libraries/json2');
+document.execute('../libraries/json2');
 
 function handleInit() {
 	prudence.variants.add(new Variant(MediaType.TEXT_PLAIN));

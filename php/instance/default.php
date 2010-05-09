@@ -3,5 +3,5 @@
 // Prudence Instance
 //
 
-$executable->container->execute('defaults/instance/');
+$document->execute('defaults/instance/');
 ?>

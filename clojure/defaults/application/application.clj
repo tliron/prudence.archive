@@ -4,4 +4,4 @@
 
 (import 'org.restlet.Application)
 
-(def application (Application.))
+(def application-instance (Application.))

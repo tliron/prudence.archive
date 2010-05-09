@@ -17,7 +17,7 @@ import com.threecrickets.prudence.util.PrudenceRouter;
 import com.threecrickets.prudence.util.PreheatTask;
 import com.threecrickets.prudence.util.PhpExecutionController;
 
-global $component, $tasks, $application, $attributes;
+global $executable, $component, $tasks, $application_instance, $attributes;
 global $application_internal_name, $application_logger_name, $application_base_path, $application_default_url;
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $show_debug_on_error, $show_source_code_url;
@@ -29,7 +29,7 @@ global $preheat_resources;
 global $url_add_trailing_slash;
 global $runtime_attributes;
 
-$classLoader = ClassLoader::getSystemClassLoader();
+$class_loader = ClassLoader::getSystemClassLoader();
 
 //
 // Utilities
@@ -53,7 +53,7 @@ if(!function_exists('fix_url')) {
 // Internal router
 //
 
-$component->internalRouter->attach('/' . $application_internal_name . '/', $application)->matchingMode = Template::MODE_STARTS_WITH;
+$component->internalRouter->attach('/' . $application_internal_name . '/', $application_instance)->matchingMode = Template::MODE_STARTS_WITH;
 
 //
 // Hosts
@@ -62,9 +62,9 @@ $component->internalRouter->attach('/' . $application_internal_name . '/', $appl
 // virtual host. See defaults/instance/hosts.php for more information.
 //
 
-$add_trailing_slash = new Redirector($application->context, '{ri}/', Redirector::MODE_CLIENT_PERMANENT);
+$add_trailing_slash = new Redirector($application_instance->context, '{ri}/', Redirector::MODE_CLIENT_PERMANENT);
 
-print $application->name . ': '
+print $application_instance->name . ': '
 $i = 0;
 foreach($hosts as $entry) {
 	$host = $entry[0];
@@ -73,7 +73,7 @@ foreach($hosts as $entry) {
 		$url = $application_default_url;
 	}
 	print '"' . $url . '" on ' . $host->name;
-	$host->attach($url, $application)->matchingMode = Template::MODE_STARTS_WITH;
+	$host->attach($url, $application_instance)->matchingMode = Template::MODE_STARTS_WITH;
 	if($url != '/') {
 		if($url[strlen($url) - 1] == '/') {
 			$url = substr($url, 0, -1);
@@ -87,7 +87,7 @@ foreach($hosts as $entry) {
 }
 print ".\n";
 
-$attributes = $application->context->attributes;
+$attributes = $application_instance->context->attributes;
 
 $attributes['component'] = $component;
 $attributes['com.threecrickets.prudence.cache'] = $component->context->attributes['com.threecrickets.prudence.cache'];
@@ -96,9 +96,9 @@ $attributes['com.threecrickets.prudence.cache'] = $component->context->attribute
 // Inbound root
 //
 
-$router = new PrudenceRouter($application->context);
+$router = new PrudenceRouter($application_instance->context);
 $router->routingMode = Router::MODE_BEST_MATCH;
-$application->inboundRoot = $router;
+$application_instance->inboundRoot = $router;
 
 //
 // Add trailing slashes
@@ -128,7 +128,7 @@ $attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] =
 $attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = $dynamic_web_source_viewable;
 $attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController(); // Adds PHP predefined variables
 
-$dynamic_web = new Finder($application->context, $classLoader->loadClass('com.threecrickets.prudence.GeneratedTextResource'));
+$dynamic_web = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.GeneratedTextResource'));
 $router->attachBase(fix_url($dynamic_web_base_url), $dynamic_web);
 
 if($dynamic_web_defrost) {
@@ -158,7 +158,7 @@ $attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = $resou
 $attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = $resources_document_source;
 $attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = $resources_source_viewable;
 
-$resources = new Finder($application->context, $classLoader->loadClass('com.threecrickets.prudence.DelegatedResource'));
+$resources = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.DelegatedResource'));
 $router->attachBase(fix_url($resources_base_url), $resources);
 
 if($resources_defrost) {
@@ -177,7 +177,7 @@ if($show_debug_on_error) {
 	$document_sources->add($dynamic_web_document_source);
 	$document_sources->add($resources_document_source);
 	$attributes['com.threecrickets.prudence.SourceCodeResource.documentSources'] = $document_sources;
-	$source_code = new Finder($application->context, $classLoader->loadClass('com.threecrickets.prudence.SourceCodeResource'));
+	$source_code = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.SourceCodeResource'));
 	$router->attach(fix_url($show_source_code_url), $source_code)->matchingMode = Template::MODE_EQUALS;
 }
 

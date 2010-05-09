@@ -102,13 +102,13 @@ class Board(Base):
 # Helpers
 #
 
-def get_engine(prudence, fresh=False):
+def get_engine(application, fresh=False):
     global engine
-    #engine_lock = prudence.getGlobal('engine_lock')
+    #engine_lock = application.getGlobal('engine_lock')
     #if engine_lock is None:
-    #    engine_lock = prudence.getGlobal('engine_lock', RLock())
+    #    engine_lock = application.getGlobal('engine_lock', RLock())
     #engine_lock.acquire()
-    #engine = prudence.getGlobal('engine')
+    #engine = application.getGlobal('engine')
     #try:
     if engine is None or fresh:
         attributes = Application.getCurrent().context.attributes
@@ -129,7 +129,7 @@ def get_engine(prudence, fresh=False):
 
         # Connect to database
         if engine is None:
-            print 'new engine!!!!'
+            #print 'new engine!!!!'
             new_engine = create_engine('%s://%s:%s@%s/%s' % (
                 attributes['stickstick.backend'],
                 attributes['stickstick.username'],
@@ -138,7 +138,7 @@ def get_engine(prudence, fresh=False):
                 attributes['stickstick.database']),
                 convert_unicode=True,
                 pool_recycle=3600)
-            #engine = prudence.getGlobal('engine', new_engine)
+            #engine = application.getGlobal('engine', new_engine)
             engine = new_engine
 
         Base.metadata.bind = engine
@@ -178,12 +178,12 @@ def get_engine(prudence, fresh=False):
     #finally:
     #    engine_lock.release()
 
-def get_connection(prudence, fresh=False):
-    engine = get_engine(prudence, fresh)
+def get_connection(application, fresh=False):
+    engine = get_engine(application, fresh)
     return engine.connect()
 
-def get_session(prudence, fresh=False):
-    engine = get_engine(prudence, fresh)
+def get_session(application, fresh=False):
+    engine = get_engine(application, fresh)
     return Session()
 
 def update_board_timestamp(session, note, timestamp=None):

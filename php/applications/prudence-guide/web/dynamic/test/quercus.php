@@ -23,7 +23,7 @@ if($form->getFirstValue('stream') == 'true') if($conversation->stream()) exit;
 // Cache this page
 //
 
-$prudence->cacheDuration = 5000;
+$document->cacheDuration = 5000;
 
 //
 // Calling Java
@@ -78,7 +78,7 @@ foreach($adapters as $adapter) {
 //
 // This is identical to:
 //
-//   $prudence->include('path');
+//   $document->include('path');
 //
 
 ?>

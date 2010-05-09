@@ -9,12 +9,12 @@ importClass(
 
 function executeOrDefault(name, def) {
 	try {
-		executable.container.execute(name);
+		document.execute(name);
 	} catch(e if e.javaException instanceof FileNotFoundException) {
 		if(!def) {
 			def = 'defaults/' + name;
 		}
-		executable.container.execute(def);
+		document.execute(def);
 	}
 }
 

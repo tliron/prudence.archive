@@ -23,7 +23,7 @@ if(form.getFirstValue('stream') == 'true') if(conversation.stream()) throw null;
 // Cache this page 
 //
 
-prudence.cacheDuration = 5000;
+document.cacheDuration = 5000;
 
 //
 // Calling Java
@@ -77,7 +77,7 @@ for(var i = 0; i < adapters.length; i++) {
 //
 // This is identical to:
 //
-//   prudence.include('path');
+//   document.include('path');
 //
 
 %>

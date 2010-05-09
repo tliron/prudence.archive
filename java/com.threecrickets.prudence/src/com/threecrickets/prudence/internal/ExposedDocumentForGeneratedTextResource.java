@@ -42,7 +42,7 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * 
  * @author Tal Liron
  */
-public class ExposedContainerForGeneratedTextResource extends ExposedContainerBase<GeneratedTextResource>
+public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase<GeneratedTextResource>
 {
 	//
 	// Construction
@@ -60,7 +60,7 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 * @param exposedConversation
 	 *        The exposed conversation
 	 */
-	public ExposedContainerForGeneratedTextResource( GeneratedTextResource resource, ExecutionContext executionContext, Representation entity, Variant variant )
+	public ExposedDocumentForGeneratedTextResource( GeneratedTextResource resource, ExecutionContext executionContext, Representation entity, Variant variant )
 	{
 		super( resource, resource.getDocumentSource() );
 		this.executionContext = executionContext;
@@ -126,6 +126,16 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 
 		}
 		return cacheGroups;
+	}
+
+	/**
+	 * The cache.
+	 * 
+	 * @return The cache
+	 */
+	public Cache getCache()
+	{
+		return resource.getCache();
 	}
 
 	//
@@ -212,6 +222,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 	 * The exposed conversation.
 	 */
 	protected final ExposedConversationForGeneratedTextResource exposedConversation;
+
+	protected final ExposedApplication exposedApplication = new ExposedApplication();
 
 	/**
 	 * The execution context.
@@ -355,7 +367,8 @@ public class ExposedContainerForGeneratedTextResource extends ExposedContainerBa
 		try
 		{
 			executionContext.setWriter( writer );
-			executionContext.getExposedVariables().put( resource.getExposedContainerName(), this );
+			executionContext.getExposedVariables().put( resource.getExposedDocumentName(), this );
+			executionContext.getExposedVariables().put( resource.getExposedApplicationName(), exposedApplication );
 			executionContext.getExposedVariables().put( resource.getExposedConversationName(), exposedConversation );
 
 			// Execute!

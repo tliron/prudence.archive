@@ -38,34 +38,34 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	/**
 	 * Construction.
 	 * 
-	 * @param exposedContainer
-	 *        The exposed container to clone
+	 * @param exposedDocument
+	 *        The exposed document to clone
 	 */
-	public GeneratedTextStreamingRepresentation( ExposedContainerForGeneratedTextResource exposedContainer )
+	public GeneratedTextStreamingRepresentation( ExposedDocumentForGeneratedTextResource exposedDocument )
 	{
 		// Note that we are setting representation characteristics
 		// before we actually execute the executable
-		super( exposedContainer.exposedConversation.getMediaType() );
+		super( exposedDocument.exposedConversation.getMediaType() );
 
 		// Clone execution context
 		ExecutionContext executionContext = new ExecutionContext();
 
 		// Clone container
-		this.exposedContainer = new ExposedContainerForGeneratedTextResource( exposedContainer.resource, executionContext, exposedContainer.exposedConversation.getEntity(), exposedContainer.exposedConversation
-			.getVariant() );
-		this.exposedContainer.currentExecutable = exposedContainer.currentExecutable;
-		this.exposedContainer.exposedConversation.isStreaming = true;
+		this.exposedDocument = new ExposedDocumentForGeneratedTextResource( exposedDocument.resource, executionContext, exposedDocument.exposedConversation.getEntity(), exposedDocument.exposedConversation.getVariant() );
+		this.exposedDocument.currentExecutable = exposedDocument.currentExecutable;
+		this.exposedDocument.exposedConversation.isStreaming = true;
 
 		// Initialize execution context
-		executionContext.getExposedVariables().put( this.exposedContainer.resource.getExposedContainerName(), this.exposedContainer );
-		executionContext.getExposedVariables().put( this.exposedContainer.resource.getExposedConversationName(), this.exposedContainer.exposedConversation );
-		File libraryDirectory = this.exposedContainer.resource.getLibraryDirectory();
+		executionContext.getExposedVariables().put( this.exposedDocument.resource.getExposedDocumentName(), this.exposedDocument );
+		executionContext.getExposedVariables().put( this.exposedDocument.resource.getExposedApplicationName(), this.exposedDocument.exposedApplication );
+		executionContext.getExposedVariables().put( this.exposedDocument.resource.getExposedConversationName(), this.exposedDocument.exposedConversation );
+		File libraryDirectory = this.exposedDocument.resource.getLibraryDirectory();
 		if( libraryDirectory != null )
 			executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
 
-		setCharacterSet( this.exposedContainer.exposedConversation.getCharacterSet() );
-		if( this.exposedContainer.exposedConversation.getLanguage() != null )
-			setLanguages( Arrays.asList( this.exposedContainer.exposedConversation.getLanguage() ) );
+		setCharacterSet( this.exposedDocument.exposedConversation.getCharacterSet() );
+		if( this.exposedDocument.exposedConversation.getLanguage() != null )
+			setLanguages( Arrays.asList( this.exposedDocument.exposedConversation.getLanguage() ) );
 	}
 
 	//
@@ -75,11 +75,11 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	@Override
 	public void write( Writer writer ) throws IOException
 	{
-		exposedContainer.writer = writer;
-		exposedContainer.executionContext.setWriter( writer );
+		exposedDocument.writer = writer;
+		exposedDocument.executionContext.setWriter( writer );
 		try
 		{
-			exposedContainer.currentExecutable.execute( exposedContainer.executionContext, exposedContainer, exposedContainer.resource.getExecutionController() );
+			exposedDocument.currentExecutable.execute( exposedDocument.executionContext, exposedDocument, exposedDocument.resource.getExecutionController() );
 		}
 		catch( ParsingException x )
 		{
@@ -95,18 +95,18 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		}
 		finally
 		{
-			exposedContainer.executionContext.getErrorWriterOrDefault().flush();
-			exposedContainer.resource.commit();
+			exposedDocument.executionContext.getErrorWriterOrDefault().flush();
+			exposedDocument.resource.commit();
 		}
 	}
 
 	@Override
 	public void release()
 	{
-		exposedContainer.executionContext.release();
+		exposedDocument.executionContext.release();
 		super.release();
-		if( !exposedContainer.resource.isCommitted() )
-			exposedContainer.resource.getResponse().abort();
+		if( !exposedDocument.resource.isCommitted() )
+			exposedDocument.resource.getResponse().abort();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -115,5 +115,5 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	/**
 	 * The exposed container.
 	 */
-	private final ExposedContainerForGeneratedTextResource exposedContainer;
+	private final ExposedDocumentForGeneratedTextResource exposedDocument;
 }

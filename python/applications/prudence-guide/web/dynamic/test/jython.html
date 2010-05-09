@@ -25,7 +25,7 @@ if form.getFirstValue('stream') == 'true':
 # Cache this page
 #
 
-prudence.setCacheDuration(5000)
+document.cacheDuration = 5000
 
 #
 # Calling Java
@@ -79,7 +79,7 @@ for adapter in adapters:
 #
 # This is identical to:
 #
-#   prudence.include('path')
+#   document.include('path')
 #
 
 %>

@@ -4,4 +4,4 @@
 
 from com.threecrickets.prudence.util import PrudenceApplication
 
-application = PrudenceApplication()
+application_instance = PrudenceApplication()

@@ -9,12 +9,12 @@ import java.util.logging.LogManager
 
 def execute_or_default(name, default=nil)
 	begin
-		$executable.container.execute name
+		$document.execute name
 	rescue FileNotFoundException
 		if !default
 			default = 'defaults/' + name
 		end
-		$executable.container.execute default
+		$document.execute default
 	end
 end
 

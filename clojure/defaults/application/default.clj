@@ -18,25 +18,25 @@
 
 (execute-or-default (str application-base-path "/application/") "defaults/application/application/")
 
-(.setName application application-name)
-(.setDescription application application-description)
-(.setAuthor application application-author)
-(.setOwner application application-owner)
+(.setName application-instance application-name)
+(.setDescription application-instance application-description)
+(.setAuthor application-instance application-author)
+(.setOwner application-instance application-owner)
 
 ;
 ; StatusService
 ;
 
-(.setStatusService application (DelegatedStatusService. (if show-debug-on-error show-source-code-url nil)))
-(.. application getStatusService (setDebugging show-debug-on-error))
-(.. application getStatusService (setHomeRef (Reference. application-home-url)))
-(.. application getStatusService (setContactEmail application-contact-email))
+(.setStatusService application-instance (DelegatedStatusService. (if show-debug-on-error show-source-code-url nil)))
+(.. application-instance getStatusService (setDebugging show-debug-on-error))
+(.. application-instance getStatusService (setHomeRef (Reference. application-home-url)))
+(.. application-instance getStatusService (setContactEmail application-contact-email))
 
 ;
 ; MetaData
 ;
 
-(.. application getMetadataService (addExtension "php" MediaType/TEXT_HTML))
+(.. application-instance getMetadataService (addExtension "php" MediaType/TEXT_HTML))
 
 ;
 ; Routing
@@ -48,7 +48,7 @@
 ; Logging
 ;
 
-(.. application getContext (setLogger application-logger-name))
+(.. application-instance getContext (setLogger application-logger-name))
 
 ;
 ; Additional/Override Runtime Attributes

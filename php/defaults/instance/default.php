@@ -10,14 +10,14 @@ import java.io.FileNotFoundException;
 import java.util.logging.LogManager;
 
 function execute_or_default($name, $def=NULL) {
-	global $executable;
+	global $document;
 	try {
-		$executable->container->execute($name);
+		$document->execute($name);
 	} catch(Exception $x) {
 		if(is_null($def)) {
 			$def = 'defaults/' . $name;
 		}
-		$executable->container->execute($def);
+		$document->execute($def);
 	}
 }
 

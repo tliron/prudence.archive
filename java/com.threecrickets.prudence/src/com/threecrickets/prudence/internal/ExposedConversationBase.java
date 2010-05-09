@@ -14,12 +14,14 @@ package com.threecrickets.prudence.internal;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.restlet.Request;
 import org.restlet.data.CacheDirective;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.LocalReference;
 import org.restlet.data.MediaType;
 import org.restlet.data.Protocol;
+import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.data.Tag;
 import org.restlet.engine.http.header.HeaderConstants;
@@ -28,6 +30,7 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.DelegatedResource;
+import com.threecrickets.prudence.util.CaptiveRedirector;
 
 /**
  * @author Tal Liron
@@ -501,6 +504,38 @@ public class ExposedConversationBase<R extends ServerResource>
 		return isInternal();
 	}
 
+	/**
+	 * The relative path that would reach the base URI of the application if
+	 * appended to the current resource URI.
+	 * 
+	 * @return The relative path
+	 */
+	public String getPathToBase()
+	{
+		Request request = resource.getRequest();
+		Reference reference = CaptiveRedirector.getCaptiveReference( request );
+		if( reference == null )
+			reference = request.getResourceRef();
+
+		String relative = reference.getRelativeRef().toString();
+
+		// Remove redundant slashes
+		relative = relative.replace( "//", "/" );
+
+		// Count segments
+		int segments = 0;
+		for( int index = relative.indexOf( '/' ); index != -1; index = relative.indexOf( '/', index + 1 ) )
+			segments++;
+
+		// Build relative path
+		StringBuilder path = new StringBuilder();
+		for( int i = 0; i < segments; i++ )
+			path.append( "../" );
+
+		// System.out.println( relative + " - " + path );
+		return path.toString();
+	}
+
 	//
 	// Operations
 	//
@@ -539,6 +574,16 @@ public class ExposedConversationBase<R extends ServerResource>
 	public void addMediaTypeByExtension( String mediaTypeExtension )
 	{
 		resource.getVariants().add( new Variant( resource.getApplication().getMetadataService().getMediaType( mediaTypeExtension ) ) );
+	}
+
+	/**
+	 * Throws a runtime exception.
+	 * 
+	 * @return Always throws an exception, so nothing is ever returned
+	 */
+	public boolean kaboom()
+	{
+		throw new RuntimeException( "Kaboom!" );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

@@ -2,7 +2,7 @@
 # Prudence Guide Settings
 #
 
-executable.container.execute('defaults/application/settings/')
+document.execute('defaults/application/settings/')
 
 application_name = 'Prudence Guide'
 application_description = 'Prudence web site, documentation, and tests'

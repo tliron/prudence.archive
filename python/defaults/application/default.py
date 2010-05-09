@@ -17,25 +17,25 @@ execute_or_default(application_base_path + '/settings/', 'defaults/application/s
 
 execute_or_default(application_base_path + '/application/', 'defaults/application/application/')
 
-application.name = application_name
-application.description = application_description
-application.author = application_author
-application.owner = application_owner
+application_instance.name = application_name
+application_instance.description = application_description
+application_instance.author = application_author
+application_instance.owner = application_owner
 
 #
 # StatusService
 #
 
-application.statusService = DelegatedStatusService(show_source_code_url if show_debug_on_error else None)
-application.statusService.debugging = show_debug_on_error
-application.statusService.homeRef = Reference(application_home_url)
-application.statusService.contactEmail = application_contact_email
+application_instance.statusService = DelegatedStatusService(show_source_code_url if show_debug_on_error else None)
+application_instance.statusService.debugging = show_debug_on_error
+application_instance.statusService.homeRef = Reference(application_home_url)
+application_instance.statusService.contactEmail = application_contact_email
 
 #
 # MetaData
 #
 
-application.metadataService.addExtension('php', MediaType.TEXT_HTML)
+application_instance.metadataService.addExtension('php', MediaType.TEXT_HTML)
 
 #
 # Routing
@@ -47,7 +47,7 @@ execute_or_default(application_base_path + '/routing/', 'defaults/application/ro
 # Logging
 #
 
-application.context.setLogger(application_logger_name)
+application_instance.context.setLogger(application_logger_name)
 
 #
 # Additional/Override Runtime Attributes

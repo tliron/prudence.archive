@@ -20,8 +20,8 @@ for(applicationDir in applicationDirs) {
 		applicationLoggerName = applicationDir.name
 		applicationBasePath = applicationDir.path
 		applicationDefaultURL = '/' + applicationDir.name + '/'
-		executeOrDefault(applicationBasePath, 'defaults/application')
-		applications.add(prudenceApplication)
+		executeOrDefault(applicationBasePath, 'defaults/application/')
+		applications.add(applicationInstance)
 	}
 }
 

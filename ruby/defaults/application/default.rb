@@ -18,25 +18,25 @@ execute_or_default $application_base_path + '/settings/', 'defaults/application/
 
 execute_or_default $application_base_path + '/application/', 'defaults/application/application/'
 
-$application.name = $application_name
-$application.description = $application_description
-$application.author = $application_author
-$application.owner = $application_owner
+$application_instance.name = $application_name
+$application_instance.description = $application_description
+$application_instance.author = $application_author
+$application_instance.owner = $application_owner
 
 #
 # StatusService
 #
 
-$application.status_service = DelegatedStatusService.new($show_debug_on_error ? $show_source_code_url : nil)
-$application.status_service.debugging = $show_debug_on_error
-$application.status_service.home_ref = Reference.new $application_home_url
-$application.status_service.contact_email = $application_contact_email
+$application_instance.status_service = DelegatedStatusService.new($show_debug_on_error ? $show_source_code_url : nil)
+$application_instance.status_service.debugging = $show_debug_on_error
+$application_instance.status_service.home_ref = Reference.new $application_home_url
+$application_instance.status_service.contact_email = $application_contact_email
 
 #
 # MetaData
 #
 
-$application.metadata_service.add_extension 'php', MediaType::TEXT_HTML
+$application_instance.metadata_service.add_extension 'php', MediaType::TEXT_HTML
 
 #
 # Routing
@@ -48,7 +48,7 @@ execute_or_default $application_base_path + '/routing/', 'defaults/application/r
 # Logging
 #
 
-$application.context.set_logger $application_logger_name
+$application_instance.context.set_logger $application_logger_name
 
 #
 # Additional/Override Runtime Attributes

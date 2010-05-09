@@ -33,7 +33,7 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.cache.Cache;
-import com.threecrickets.prudence.internal.ExposedContainerForGeneratedTextResource;
+import com.threecrickets.prudence.internal.ExposedDocumentForGeneratedTextResource;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
@@ -185,7 +185,7 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.exposedContainerName</code>
  * : The name of the global variable with which to access the container.
- * Defaults to "prudence". See {@link #getExposedContainerName()}.</li>
+ * Defaults to "prudence". See {@link #getExposedDocumentName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey:</code>
  * {@link String}, defaults to "{ri}". See {@link #getDefaultCacheKey()}.</li>
@@ -241,27 +241,51 @@ public class GeneratedTextResource extends ServerResource
 	//
 
 	/**
-	 * The name of the global variable with which to access the container.
-	 * Defaults to "prudence".
+	 * The name of the global variable with which to access the document.
+	 * Defaults to "document".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.exposedContainerName</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The container name
+	 * @return The document name
 	 */
-	public String getExposedContainerName()
+	public String getExposedDocumentName()
 	{
-		if( exposedContainerName == null )
+		if( exposedDocumentName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			exposedContainerName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.exposedContainerName" );
+			exposedDocumentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.exposedDocumentName" );
 
-			if( exposedContainerName == null )
-				exposedContainerName = "prudence";
+			if( exposedDocumentName == null )
+				exposedDocumentName = "document";
 		}
 
-		return exposedContainerName;
+		return exposedDocumentName;
+	}
+
+	/**
+	 * The name of the global variable with which to access the application.
+	 * Defaults to "application".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.exposedApplicationName</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The application name
+	 */
+	public String getExposedApplicationName()
+	{
+		if( exposedApplicationName == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			exposedApplicationName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.exposedApplicationName" );
+
+			if( exposedApplicationName == null )
+				exposedApplicationName = "application";
+		}
+
+		return exposedApplicationName;
 	}
 
 	/**
@@ -923,9 +947,14 @@ public class GeneratedTextResource extends ServerResource
 	private volatile Cache cache;
 
 	/**
-	 * The name of the global variable with which to access the container.
+	 * The name of the global variable with which to access the document.
 	 */
-	private volatile String exposedContainerName;
+	private volatile String exposedDocumentName;
+
+	/**
+	 * The name of the global variable with which to access the application.
+	 */
+	private volatile String exposedApplicationName;
 
 	/**
 	 * The name of the global variable with which to access the conversation.
@@ -986,7 +1015,7 @@ public class GeneratedTextResource extends ServerResource
 			File libraryDirectory = getLibraryDirectory();
 			if( libraryDirectory != null )
 				executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
-			ExposedContainerForGeneratedTextResource exposedContainer = new ExposedContainerForGeneratedTextResource( this, executionContext, entity, variant );
+			ExposedDocumentForGeneratedTextResource exposedContainer = new ExposedDocumentForGeneratedTextResource( this, executionContext, entity, variant );
 			Representation representation = null;
 			try
 			{

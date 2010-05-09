@@ -23,8 +23,8 @@ for(var i in applicationDirs) {
 		var applicationLoggerName = applicationDir.name;
 		var applicationBasePath = applicationDir.path;
 		var applicationDefaultURL = '/' + applicationDir.name + '/';
-		executeOrDefault(applicationBasePath, 'defaults/application');
-		applications.add(application);
+		executeOrDefault(applicationBasePath, 'defaults/application/');
+		applications.add(applicationInstance);
 	}
 }
 

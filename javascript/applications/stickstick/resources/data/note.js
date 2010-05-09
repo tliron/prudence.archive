@@ -1,6 +1,6 @@
 
-prudence.execute('../libraries/stickstick/data/');
-prudence.execute('../libraries/json2/');
+document.execute('../libraries/stickstick/data/');
+document.execute('../libraries/json2/');
 
 importClass(java.lang.System);
 
