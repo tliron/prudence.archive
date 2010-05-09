@@ -570,7 +570,7 @@ public class GeneratedTextResource extends ServerResource
 	 * Executables might use this directory for importing libraries. If the
 	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
 	 * will default to the {@link DocumentFileSource#getBasePath()} plus
-	 * "../libraries/".
+	 * "../../libraries/".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.libraryDirectory</code>
@@ -591,7 +591,7 @@ public class GeneratedTextResource extends ServerResource
 				DocumentSource<Executable> documentSource = getDocumentSource();
 				if( documentSource instanceof DocumentFileSource<?> )
 				{
-					libraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../libraries/" );
+					libraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../libraries/" );
 
 					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.libraryDirectory", libraryDirectory );
 					if( existing != null )
