@@ -178,15 +178,18 @@ public class PhpExecutionController implements ExecutionController
 		@Override
 		protected void initialize()
 		{
-			try
+			if( request.getMethod().equals( Method.POST ) && request.isEntityAvailable() )
 			{
-				RestletFileUpload fileUpload = new RestletFileUpload();
-				for( FileItem fileItem : fileUpload.parseRequest( request ) )
-					map.put( fileItem.getFieldName(), Collections.unmodifiableMap( createFileItemMap( fileItem ) ) );
-			}
-			catch( FileUploadException x )
-			{
-				x.printStackTrace();
+				try
+				{
+					RestletFileUpload fileUpload = new RestletFileUpload();
+					for( FileItem fileItem : fileUpload.parseRequest( request ) )
+						map.put( fileItem.getFieldName(), Collections.unmodifiableMap( createFileItemMap( fileItem ) ) );
+				}
+				catch( FileUploadException x )
+				{
+					x.printStackTrace();
+				}
 			}
 		}
 
