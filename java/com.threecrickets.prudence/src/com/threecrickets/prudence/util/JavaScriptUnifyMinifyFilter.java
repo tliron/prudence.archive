@@ -100,10 +100,27 @@ public class JavaScriptUnifyMinifyFilter extends Filter
 		String path = reference.getRemainingPart( true, false );
 		try
 		{
+			boolean validate = false;
+			boolean minify = false;
 			if( path.endsWith( JavaScriptUnifyMinify.ALL ) )
-				JavaScriptUnifyMinify.unify( new File( scriptsDirectory, path ).getParentFile(), false );
+				validate = true;
 			else if( path.endsWith( JavaScriptUnifyMinify.ALL_MIN ) )
-				JavaScriptUnifyMinify.unify( new File( scriptsDirectory, path ).getParentFile(), true );
+			{
+				validate = true;
+				minify = true;
+			}
+
+			if( validate )
+			{
+				long now = System.currentTimeMillis();
+				long lastValidityCheck = this.lastValidityCheck.get();
+				if( lastValidityCheck == 0 || ( now - lastValidityCheck > minimumTimeBetweenValidityChecks.get() ) )
+				{
+					this.lastValidityCheck.set( now );
+
+					JavaScriptUnifyMinify.unify( new File( scriptsDirectory, path ).getParentFile(), minify );
+				}
+			}
 		}
 		catch( IOException x )
 		{
@@ -126,4 +143,9 @@ public class JavaScriptUnifyMinifyFilter extends Filter
 	 * See {@link #getMinimumTimeBetweenValidityChecks()}
 	 */
 	private final AtomicLong minimumTimeBetweenValidityChecks = new AtomicLong();
+
+	/**
+	 * See {@link #getMinimumTimeBetweenValidityChecks()}
+	 */
+	private final AtomicLong lastValidityCheck = new AtomicLong();
 }
