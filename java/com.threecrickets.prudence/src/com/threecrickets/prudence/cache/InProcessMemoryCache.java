@@ -204,6 +204,14 @@ public class InProcessMemoryCache implements Cache
 		}
 	}
 
+	public void reset()
+	{
+		// This is not atomic, but does it matter?
+
+		cache.clear();
+		groups.clear();
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 

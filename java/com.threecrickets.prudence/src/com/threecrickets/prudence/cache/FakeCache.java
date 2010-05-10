@@ -41,4 +41,8 @@ public class FakeCache implements Cache
 	public void prune()
 	{
 	}
+
+	public void reset()
+	{
+	}
 }

@@ -92,6 +92,12 @@ public class ChainCache implements Cache
 			cache.prune();
 	}
 
+	public void reset()
+	{
+		for( Cache cache : caches )
+			cache.reset();
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 

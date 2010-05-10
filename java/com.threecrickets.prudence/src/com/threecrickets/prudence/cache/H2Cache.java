@@ -25,14 +25,15 @@ public class H2Cache extends SqlCache<JdbcDataSource>
 	//
 
 	/**
-	 * Construction with a max entry count of 1000 entries.
+	 * Construction with a max entry count of 1000 entries and 10 connections in
+	 * the pool.
 	 * 
 	 * @param path
 	 *        The H2 database path
 	 */
 	public H2Cache( String path )
 	{
-		this( path, 1000 );
+		this( path, 1000, 10 );
 	}
 
 	/**
@@ -42,14 +43,16 @@ public class H2Cache extends SqlCache<JdbcDataSource>
 	 *        The H2 database path
 	 * @param maxSize
 	 *        The max entry count
+	 * @param poolSize
+	 *        The number of connections in the pool
 	 */
-	public H2Cache( String path, int maxSize )
+	public H2Cache( String path, int maxSize, int poolSize )
 	{
-		super( new JdbcDataSource() );
+		super( new JdbcDataSource(), maxSize, poolSize );
 
 		getDataSource().setURL( "jdbc:h2:" + path );
 
 		validateTables( false );
-		//debug=true;
+		// debug=true;
 	}
 }

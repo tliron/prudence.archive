@@ -19,6 +19,11 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
@@ -32,6 +37,16 @@ import com.threecrickets.prudence.util.MiniConnectionPoolManager;
 /**
  * A SQL-backed cache. Automatically uses a {@link MiniConnectionPoolManager}
  * for data sources that support the {@link ConnectionPoolDataSource} interface.
+ * <p>
+ * This instance maintains a pool of read/write locks to guarantee automicity of
+ * storing, fetching and invalidating. It does not use SQL transactions. This
+ * allows you disable transaction features in your database for better
+ * performance. However, it also means that you should not have more than one
+ * instance of this working on the same set of keys.
+ * <p>
+ * Also note that {@link #prune()} does not clean up unused locks. Since most
+ * applications reuse cache keys anyway, this seems like an insignificant
+ * "memory leak" cost in order to vastly improve pruning performance.
  * 
  * @author Tal Liron
  * @param <D>
@@ -43,14 +58,15 @@ public class SqlCache<D extends DataSource> implements Cache
 	//
 
 	/**
-	 * Construction with a max entry count of 1000 entries.
+	 * Construction with a max entry count of 1000 entries and 10 connections in
+	 * the pool.
 	 * 
 	 * @param dataSource
 	 *        The data source
 	 */
 	public SqlCache( D dataSource )
 	{
-		this( dataSource, 1000 );
+		this( dataSource, 1000, 10 );
 	}
 
 	/**
@@ -60,14 +76,16 @@ public class SqlCache<D extends DataSource> implements Cache
 	 *        The data source
 	 * @param maxSize
 	 *        The max entry count
+	 * @param poolSize
+	 *        The number of connections in the pool
 	 */
-	public SqlCache( D dataSource, int maxSize )
+	public SqlCache( D dataSource, int maxSize, int poolSize )
 	{
 		this.dataSource = dataSource;
 		this.maxSize = maxSize;
 
 		if( dataSource instanceof ConnectionPoolDataSource )
-			connectionPool = new MiniConnectionPoolManager( (ConnectionPoolDataSource) dataSource, 10 );
+			connectionPool = new MiniConnectionPoolManager( (ConnectionPoolDataSource) dataSource, poolSize );
 		else
 			connectionPool = null;
 	}
@@ -165,6 +183,8 @@ public class SqlCache<D extends DataSource> implements Cache
 		if( debug )
 			System.out.println( "Store: " + key + " " + groupKeys );
 
+		Lock lock = getLock( key ).writeLock();
+		lock.lock();
 		try
 		{
 			Connection connection = getConnection();
@@ -286,10 +306,16 @@ public class SqlCache<D extends DataSource> implements Cache
 			if( debug )
 				x.printStackTrace();
 		}
+		finally
+		{
+			lock.unlock();
+		}
 	}
 
 	public CacheEntry fetch( String key )
 	{
+		Lock lock = getLock( key ).readLock();
+		lock.lock();
 		try
 		{
 			Connection connection = getConnection();
@@ -318,7 +344,18 @@ public class SqlCache<D extends DataSource> implements Cache
 
 							if( new java.util.Date().after( entry.getExpirationDate() ) )
 							{
-								delete( connection, key );
+								lock.unlock();
+								try
+								{
+									delete( connection, key );
+
+									// (Note that this also discarded our lock,
+									// but we kept it as a local variable)
+								}
+								finally
+								{
+									lock.lock();
+								}
 								return null;
 							}
 
@@ -345,6 +382,10 @@ public class SqlCache<D extends DataSource> implements Cache
 			if( debug )
 				x.printStackTrace();
 		}
+		finally
+		{
+			lock.unlock();
+		}
 
 		if( debug )
 			System.out.println( "Did not fetch: " + key );
@@ -362,26 +403,44 @@ public class SqlCache<D extends DataSource> implements Cache
 				if( group.isEmpty() )
 					return;
 
+				ArrayList<Lock> locks = new ArrayList<Lock>( group.size() );
+
 				String sql = "DELETE FROM " + entryTableName + " WHERE key IN (";
-				for( int i = group.size(); i > 0; i-- )
+				for( String key : group )
+				{
 					sql += "?,";
+					locks.add( getLock( key ).writeLock() );
+				}
 				sql = sql.substring( 0, sql.length() - 1 ) + ")";
 
-				PreparedStatement statement = connection.prepareStatement( sql );
+				for( Lock lock : locks )
+					lock.lock();
 				try
 				{
-					int i = 1;
-					for( String key : group )
-						statement.setString( i++, key );
-					if( !statement.execute() )
+					PreparedStatement statement = connection.prepareStatement( sql );
+					try
 					{
-						if( debug )
-							System.out.println( "Invalidated " + statement.getUpdateCount() );
+						int i = 1;
+						for( String key : group )
+							statement.setString( i++, key );
+						if( !statement.execute() )
+						{
+							if( debug )
+								System.out.println( "Invalidated " + statement.getUpdateCount() );
+						}
 					}
+					finally
+					{
+						statement.close();
+					}
+
+					for( String key : group )
+						discardLock( key );
 				}
 				finally
 				{
-					statement.close();
+					for( Lock lock : locks )
+						lock.unlock();
 				}
 			}
 			finally
@@ -398,6 +457,8 @@ public class SqlCache<D extends DataSource> implements Cache
 
 	public void prune()
 	{
+		// Note that this will not discard locks
+
 		try
 		{
 			Connection connection = getConnection();
@@ -429,6 +490,14 @@ public class SqlCache<D extends DataSource> implements Cache
 			if( debug )
 				x.printStackTrace();
 		}
+	}
+
+	public void reset()
+	{
+		// This is not atomic, but does it matter?
+
+		validateTables( true );
+		locks.clear();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -467,6 +536,18 @@ public class SqlCache<D extends DataSource> implements Cache
 	 */
 	private volatile int maxSize;
 
+	/**
+	 * A pool of read/write locks per key.
+	 */
+	private ConcurrentMap<String, ReadWriteLock> locks = new ConcurrentHashMap<String, ReadWriteLock>();
+
+	/**
+	 * Gets the connection, either from the connection pool or directly from the
+	 * data source.
+	 * 
+	 * @return The connection
+	 * @throws SQLException
+	 */
 	private Connection getConnection() throws SQLException
 	{
 		if( connectionPool != null )
@@ -475,6 +556,14 @@ public class SqlCache<D extends DataSource> implements Cache
 			return dataSource.getConnection();
 	}
 
+	/**
+	 * Count all entries.
+	 * 
+	 * @param connection
+	 *        The connection
+	 * @return The entry count
+	 * @throws SQLException
+	 */
 	private int countEntries( Connection connection ) throws SQLException
 	{
 		Statement statement = connection.createStatement();
@@ -500,26 +589,55 @@ public class SqlCache<D extends DataSource> implements Cache
 		return -1;
 	}
 
-	public void delete( Connection connection, String key ) throws SQLException
+	/**
+	 * Delete an entry.
+	 * 
+	 * @param connection
+	 *        The connection
+	 * @param key
+	 *        The key
+	 * @throws SQLException
+	 */
+	private void delete( Connection connection, String key ) throws SQLException
 	{
-		String sql = "DELETE FROM " + entryTableName + " WHERE key=?";
-		PreparedStatement statement = connection.prepareStatement( sql );
+		Lock lock = getLock( key ).writeLock();
+		lock.lock();
 		try
 		{
-			statement.setString( 1, key );
-			if( !statement.execute() )
+			String sql = "DELETE FROM " + entryTableName + " WHERE key=?";
+			PreparedStatement statement = connection.prepareStatement( sql );
+			try
 			{
-				if( debug && statement.getUpdateCount() > 0 )
-					System.out.println( "Deleted: " + key );
+				statement.setString( 1, key );
+				if( !statement.execute() )
+				{
+					if( debug && statement.getUpdateCount() > 0 )
+						System.out.println( "Deleted: " + key );
+				}
+			}
+			finally
+			{
+				statement.close();
 			}
 		}
 		finally
 		{
-			statement.close();
+			lock.unlock();
+			discardLock( key );
 		}
 	}
 
-	public List<String> getGroup( Connection connection, String groupKey ) throws SQLException
+	/**
+	 * Gets a list of keys in a group.
+	 * 
+	 * @param connection
+	 *        The connection
+	 * @param groupKey
+	 *        The group key
+	 * @return The list of keys in the group
+	 * @throws SQLException
+	 */
+	private List<String> getGroup( Connection connection, String groupKey ) throws SQLException
 	{
 		ArrayList<String> group = new ArrayList<String>();
 		String sql = "SELECT key FROM " + groupTableName + " WHERE group_key=?";
@@ -544,5 +662,36 @@ public class SqlCache<D extends DataSource> implements Cache
 		}
 
 		return group;
+	}
+
+	/**
+	 * Gets a unique lock for a key.
+	 * 
+	 * @param key
+	 *        The key
+	 * @return The lock
+	 */
+	private ReadWriteLock getLock( String key )
+	{
+		ReadWriteLock lock = locks.get( key );
+		if( lock == null )
+		{
+			lock = new ReentrantReadWriteLock();
+			ReadWriteLock existing = locks.putIfAbsent( key, lock );
+			if( existing != null )
+				lock = existing;
+		}
+		return lock;
+	}
+
+	/**
+	 * Discards the lock for a key.
+	 * 
+	 * @param key
+	 *        The key
+	 */
+	private void discardLock( String key )
+	{
+		locks.remove( key );
 	}
 }

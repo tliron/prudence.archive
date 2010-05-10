@@ -64,4 +64,9 @@ public interface Cache
 	 * Removes expired cache entries.
 	 */
 	public void prune();
+
+	/**
+	 * Removes all entries in the cache.
+	 */
+	public void reset();
 }
