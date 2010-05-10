@@ -61,7 +61,9 @@ print '.'
 attributes = application_instance.context.attributes
 
 attributes['component'] = component
-attributes['com.threecrickets.prudence.cache'] = component.context.attributes['com.threecrickets.prudence.cache']
+cache = component.context.attributes['com.threecrickets.prudence.cache']
+if cache is not None:
+	attributes['com.threecrickets.prudence.cache'] = cache
 
 #
 # Inbound root

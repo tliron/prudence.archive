@@ -73,7 +73,10 @@ puts '.'
 $attributes = $application_instance.context.attributes
 
 $attributes['component'] = $component
-$attributes['com.threecrickets.prudence.cache'] = $component.context.attributes['com.threecrickets.prudence.cache']
+$cache = $component.context.attributes['com.threecrickets.prudence.cache']
+if !$cache.nil?
+	$attributes['com.threecrickets.prudence.cache'] = $cache
+end
 
 #
 # Inbound root

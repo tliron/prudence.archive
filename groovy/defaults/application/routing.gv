@@ -73,7 +73,10 @@ out.flush()
 attributes = applicationInstance.context.attributes
 
 attributes['componentInstance'] = componentInstance
-attributes['com.threecrickets.prudence.cache'] = componentInstance.context.attributes['com.threecrickets.prudence.cache']
+cache =  component.context.attributes['com.threecrickets.prudence.cache']
+if(cache) {
+	attributes['com.threecrickets.prudence.cache'] = cache
+}
 
 //
 // Inbound root

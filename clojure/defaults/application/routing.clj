@@ -68,7 +68,9 @@
 (def attributes (.. application-instance getContext (getAttributes)))
 
 (.put attributes "component" component)
-(.put attributes "com.threecrickets.prudence.cache" (.. component getContext getAttributes (get "com.threecrickets.prudence.cache")))
+(def cache (.. component getContext getAttributes (get "com.threecrickets.prudence.cache")))
+(if (not (nil? cache))
+	(.put attributes "com.threecrickets.prudence.cache" cache))
 
 ;
 ; Inbound root
