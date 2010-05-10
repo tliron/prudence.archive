@@ -115,7 +115,17 @@ public class CaptiveRedirector extends Redirector
 	@Override
 	public void handle( Request request, Response response )
 	{
-		Reference captiveReference = hostRoot ? new Reference( request.getHostRef(), request.getResourceRef() ) : new Reference( request.getRootRef(), request.getResourceRef() );
+		Reference captiveReference;
+		if( hostRoot )
+		{
+			// Make sure that host reference is complete
+			Reference hostRef = request.getHostRef();
+			if( !hostRef.toString().endsWith( "/" ) )
+				hostRef = new Reference( hostRef.toString() + "/" );
+			captiveReference = new Reference( hostRef, request.getResourceRef() );
+		}
+		else
+			captiveReference = new Reference( request.getRootRef(), request.getResourceRef() );
 		setCaptiveReference( request, captiveReference );
 		super.handle( request, response );
 	}

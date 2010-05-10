@@ -517,23 +517,13 @@ public class ExposedConversationBase<R extends ServerResource>
 		if( reference == null )
 			reference = request.getResourceRef();
 
-		String relative = reference.getRelativeRef().toString();
+		// Reverse relative reference
+		String relative = reference.getBaseRef().getRelativeRef( reference ).getPath();
 
-		// Remove redundant slashes
-		relative = relative.replace( "//", "/" );
+		if( relative.equals( "." ) )
+			relative = "";
 
-		// Count segments
-		int segments = 0;
-		for( int index = relative.indexOf( '/' ); index != -1; index = relative.indexOf( '/', index + 1 ) )
-			segments++;
-
-		// Build relative path
-		StringBuilder path = new StringBuilder();
-		for( int i = 0; i < segments; i++ )
-			path.append( "../" );
-
-		// System.out.println( relative + " - " + path );
-		return path.toString();
+		return relative;
 	}
 
 	//
