@@ -216,6 +216,7 @@
 <target name="libraries-kitchensink" depends="jar-kitchensink" description="Fetch libraries">
 	<fetch-library dist="${dist-kitchensink}" library="clojure" />
 	<fetch-library dist="${dist-kitchensink}" library="commons-fileupload" />
+	<fetch-library dist="${dist-kitchensink}" library="commons-io" />
 	<fetch-library dist="${dist-kitchensink}" library="grizzly" />
 	<fetch-library dist="${dist-kitchensink}" library="groboutils" />
 	<fetch-library dist="${dist-kitchensink}" library="groovy" />
@@ -339,6 +340,7 @@
 
 <target name="libraries-javascript" depends="jar-javascript" description="Fetch libraries">
 	<fetch-library dist="${dist-javascript}" library="commons-fileupload" />
+	<fetch-library dist="${dist-javascript}" library="commons-io" />
 	<fetch-library dist="${dist-javascript}" library="grizzly" />
 	<fetch-library dist="${dist-javascript}" library="h2" />
 	<fetch-library dist="${dist-javascript}" library="json" />
@@ -377,6 +379,7 @@
 
 <target name="libraries-python" depends="jar-python" description="Fetch libraries">
 	<fetch-library dist="${dist-python}" library="commons-fileupload" />
+	<fetch-library dist="${dist-python}" library="commons-io" />
 	<fetch-library dist="${dist-python}" library="grizzly" />
 	<fetch-library dist="${dist-python}" library="h2" />
 	<fetch-library dist="${dist-python}" library="jepp" />
@@ -421,6 +424,7 @@
 <target name="libraries-clojure" depends="jar-clojure" description="Fetch libraries">
 	<fetch-library dist="${dist-clojure}" library="clojure" />
 	<fetch-library dist="${dist-clojure}" library="commons-fileupload" />
+	<fetch-library dist="${dist-clojure}" library="commons-io" />
 	<fetch-library dist="${dist-clojure}" library="grizzly" />
 	<fetch-library dist="${dist-clojure}" library="h2" />
 	<fetch-library dist="${dist-clojure}" library="json" />
@@ -460,6 +464,7 @@
 
 <target name="libraries-groovy" depends="jar-groovy" description="Fetch libraries">
 	<fetch-library dist="${dist-groovy}" library="commons-fileupload" />
+	<fetch-library dist="${dist-groovy}" library="commons-io" />
 	<fetch-library dist="${dist-groovy}" library="grizzly" />
 	<fetch-library dist="${dist-groovy}" library="groovy" />
 	<fetch-library dist="${dist-groovy}" library="h2" />
@@ -500,6 +505,7 @@
 
 <target name="libraries-ruby" depends="jar-ruby" description="Fetch libraries">
 	<fetch-library dist="${dist-ruby}" library="commons-fileupload" />
+	<fetch-library dist="${dist-ruby}" library="commons-io" />
 	<fetch-library dist="${dist-ruby}" library="grizzly" />
 	<fetch-library dist="${dist-ruby}" library="h2" />
 	<fetch-library dist="${dist-ruby}" library="jruby" />
@@ -540,6 +546,7 @@
 
 <target name="libraries-php" depends="jar-php" description="Fetch libraries">
 	<fetch-library dist="${dist-php}" library="commons-fileupload" />
+	<fetch-library dist="${dist-php}" library="commons-io" />
 	<fetch-library dist="${dist-php}" library="grizzly" />
 	<fetch-library dist="${dist-php}" library="h2" />
 	<fetch-library dist="${dist-php}" library="json" />

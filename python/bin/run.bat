@@ -12,6 +12,7 @@ libraries/javax.script.jar;^
 libraries/javax.servlet.jar;^
 libraries/jep.jar;^
 libraries/org.apache.commons.fileupload.jar;^
+libraries/org.apache.commons.io.jar;^
 libraries/org.apache.log4j.jar;^
 libraries/org.apache.velocity.jar;^
 libraries/org.codehaus.jackson.jar;^
