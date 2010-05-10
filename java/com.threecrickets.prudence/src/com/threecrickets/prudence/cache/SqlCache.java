@@ -169,41 +169,93 @@ public class SqlCache<D extends DataSource> implements Cache
 		{
 			Connection connection = getConnection();
 
-			delete( connection, key );
-
-			int size = countEntries( connection );
-			if( size >= maxSize )
-			{
-				prune();
-
-				size = countEntries( connection );
-				if( size >= maxSize )
-				{
-					if( debug )
-						System.out.println( "No room in cache (" + size + ", " + maxSize + ")" );
-
-					return;
-				}
-			}
-
 			try
 			{
-				String sql = "INSERT INTO " + entryTableName + " (key, string, media_type, language, character_set, expiration_date) VALUES (?, ?, ?, ?, ?, ?)";
+				boolean tryInsert = true;
+
+				// Try updating this key
+
+				String sql = "UPDATE " + entryTableName + " SET string=?, media_type=?, language=?, character_set=?, expiration_date=? WHERE key=?";
 				PreparedStatement statement = connection.prepareStatement( sql );
 				try
 				{
+					statement.setString( 1, entry.getString() );
+					statement.setString( 2, entry.getMediaType() != null ? entry.getMediaType().getName() : null );
+					statement.setString( 3, entry.getLanguage() != null ? entry.getLanguage().getName() : null );
+					statement.setString( 4, entry.getCharacterSet() != null ? entry.getCharacterSet().getName() : null );
+					statement.setTimestamp( 5, new Timestamp( entry.getExpirationDate().getTime() ) );
+					statement.setString( 6, key );
+					if( !statement.execute() && statement.getUpdateCount() > 0 )
+					{
+						if( debug )
+							System.out.println( "Updated " + key );
+
+						// Update worked, so no need to try insertion
+
+						tryInsert = false;
+					}
+				}
+				finally
+				{
+					statement.close();
+				}
+
+				if( tryInsert )
+				{
+					// Try inserting this key
+
+					// But first make sure we have room...
+
+					int size = countEntries( connection );
+					if( size >= maxSize )
+					{
+						prune();
+
+						size = countEntries( connection );
+						if( size >= maxSize )
+						{
+							if( debug )
+								System.out.println( "No room in cache (" + size + ", " + maxSize + ")" );
+
+							return;
+						}
+					}
+
+					// delete( connection, key );
+
+					sql = "INSERT INTO " + entryTableName + " (key, string, media_type, language, character_set, expiration_date) VALUES (?, ?, ?, ?, ?, ?)";
+					statement = connection.prepareStatement( sql );
+					try
+					{
+						statement.setString( 1, key );
+						statement.setString( 2, entry.getString() );
+						statement.setString( 3, entry.getMediaType() != null ? entry.getMediaType().getName() : null );
+						statement.setString( 4, entry.getLanguage() != null ? entry.getLanguage().getName() : null );
+						statement.setString( 5, entry.getCharacterSet() != null ? entry.getCharacterSet().getName() : null );
+						statement.setTimestamp( 6, new Timestamp( entry.getExpirationDate().getTime() ) );
+						statement.execute();
+					}
+					finally
+					{
+						statement.close();
+					}
+				}
+
+				// Clean out existing group entries for this key
+
+				sql = "DELETE FROM " + groupTableName + " WHERE key=?";
+				statement = connection.prepareStatement( sql );
+				try
+				{
 					statement.setString( 1, key );
-					statement.setString( 2, entry.getString() );
-					statement.setString( 3, entry.getMediaType() != null ? entry.getMediaType().getName() : null );
-					statement.setString( 4, entry.getLanguage() != null ? entry.getLanguage().getName() : null );
-					statement.setString( 5, entry.getCharacterSet() != null ? entry.getCharacterSet().getName() : null );
-					statement.setTimestamp( 6, new Timestamp( entry.getExpirationDate().getTime() ) );
 					statement.execute();
 				}
 				finally
 				{
 					statement.close();
 				}
+
+				// Add group entries for this key
 
 				if( groupKeys.iterator().hasNext() )
 				{
