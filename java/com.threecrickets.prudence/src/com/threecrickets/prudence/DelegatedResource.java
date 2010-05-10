@@ -12,7 +12,6 @@
 package com.threecrickets.prudence;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -44,11 +43,13 @@ import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
+import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
+import com.threecrickets.scripturian.exception.DocumentException;
+import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
-import com.threecrickets.scripturian.file.DocumentFileSource;
 import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
@@ -997,9 +998,13 @@ public class DelegatedResource extends ServerResource
 					else
 						return new StringRepresentation( documentDescriptor.getSourceCode() );
 				}
-				catch( IOException x )
+				catch( DocumentNotFoundException x )
 				{
 					throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
+				}
+				catch( DocumentException x )
+				{
+					throw new ResourceException( x );
 				}
 			}
 		}
@@ -1433,11 +1438,11 @@ public class DelegatedResource extends ServerResource
 			Object r = executable.enter( entryPointName, exposedConversation );
 			return r;
 		}
-		catch( FileNotFoundException x )
+		catch( DocumentNotFoundException x )
 		{
 			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
 		}
-		catch( IOException x )
+		catch( DocumentException x )
 		{
 			throw new ResourceException( x );
 		}

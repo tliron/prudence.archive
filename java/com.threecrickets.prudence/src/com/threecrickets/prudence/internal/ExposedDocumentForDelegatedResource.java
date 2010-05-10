@@ -12,13 +12,14 @@
 package com.threecrickets.prudence.internal;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.restlet.representation.Representation;
 
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.exception.DocumentException;
+import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
@@ -57,12 +58,13 @@ public class ExposedDocumentForDelegatedResource extends ExposedDocumentBase<Del
 	 * 
 	 * @param documentName
 	 *        The document name
-	 * @throws IOException
 	 * @throws ParsingException
 	 * @throws ExecutionException
+	 * @throws DocumentException
+	 * @throws IOException
 	 */
 	@Override
-	public Representation execute( String documentName ) throws IOException, ParsingException, ExecutionException
+	public Representation execute( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
 	{
 		documentName = resource.validateDocumentName( documentName );
 
@@ -71,7 +73,7 @@ public class ExposedDocumentForDelegatedResource extends ExposedDocumentBase<Del
 		{
 			executable = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() ).getDocument();
 		}
-		catch( FileNotFoundException x )
+		catch( DocumentNotFoundException x )
 		{
 			// Try the library directory
 			File libraryDirectory = resource.getLibraryDirectoryRelative();

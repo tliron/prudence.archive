@@ -3,13 +3,13 @@
 //
 
 import java.lang.System
-import java.io.FileNotFoundException
 import java.util.logging.LogManager
+import com.threecrickets.scripturian.exception.DocumentNotFoundException
 
 executeOrDefault = { name, deflt = null ->
 	try {
 		document.execute(name)
-	} catch(FileNotFoundException) {
+	} catch(DocumentNotFoundException) {
 		if(!deflt) {
 			deflt = 'defaults/' + name
 		}
@@ -35,6 +35,7 @@ prudenceFlavor = 'Groovy'
 //
 
 println('Prudence ' + prudenceVersion + prudenceRevision + ' for ' + prudenceFlavor + '.')
+out.flush()
 
 //
 // Logging
@@ -89,7 +90,7 @@ executeOrDefault('instance/servers/')
 // Start
 //
 
-component.start()
+componentInstance.start()
 
 //
 // Tasks
@@ -99,6 +100,7 @@ if(tasks.size() > 0) {
 	futures = []
 	startTime = System.currentTimeMillis()
 	println('Executing ' + tasks.size() + ' tasks...')
+	out.flush()
 	for(task in tasks) {
 		futures.add(executor.submit(task))
 	}
@@ -106,4 +108,5 @@ if(tasks.size() > 0) {
 		future.get()
 	}
 	print('Finished tasks in ' + ((System.currentTimeMillis() - startTime) / 1000) + ' seconds.\n')
+	out.flush()
 }

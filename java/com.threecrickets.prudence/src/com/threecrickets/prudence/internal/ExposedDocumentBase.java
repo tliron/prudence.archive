@@ -20,6 +20,7 @@ import org.restlet.resource.ServerResource;
 
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentSource;
+import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
@@ -73,11 +74,12 @@ public abstract class ExposedDocumentBase<R extends ServerResource>
 	 * 
 	 * @param documentName
 	 *        The document name
-	 * @throws IOException
 	 * @throws ParsingException
 	 * @throws ExecutionException
+	 * @throws DocumentException
+	 * @throws IOException
 	 */
-	public abstract Representation execute( String documentName ) throws IOException, ParsingException, ExecutionException;
+	public abstract Representation execute( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException;
 
 	/**
 	 * Access a resource internal to the current application.

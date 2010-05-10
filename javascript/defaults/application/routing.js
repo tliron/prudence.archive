@@ -12,7 +12,7 @@ importClass(
 	org.restlet.resource.Finder,
 	org.restlet.resource.Directory,
 	com.threecrickets.scripturian.util.DefrostTask,
-	com.threecrickets.scripturian.file.DocumentFileSource,
+	com.threecrickets.scripturian.document.DocumentFileSource,
 	com.threecrickets.prudence.util.PrudenceRouter,
 	com.threecrickets.prudence.util.PreheatTask,
 	com.threecrickets.prudence.util.PhpExecutionController);

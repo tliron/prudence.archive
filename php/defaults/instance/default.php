@@ -6,14 +6,15 @@
 global $tasks, $component, $prudence_version, $prudence_revision, $prudence_flavor;
 
 import java.lang.System;
-import java.io.FileNotFoundException;
 import java.util.logging.LogManager;
+import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 
 function execute_or_default($name, $def=NULL) {
 	global $document;
 	try {
 		$document->execute($name);
 	} catch(Exception $x) {
+		// TODO: find the exception type!
 		if(is_null($def)) {
 			$def = 'defaults/' . $name;
 		}

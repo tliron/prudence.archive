@@ -13,7 +13,6 @@ package com.threecrickets.prudence.internal;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -34,6 +33,8 @@ import com.threecrickets.prudence.util.CaptiveRedirector;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
+import com.threecrickets.scripturian.exception.DocumentException;
+import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
@@ -150,11 +151,12 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 	 * @param documentName
 	 *        The document name
 	 * @return A representation of the document's output
-	 * @throws IOException
 	 * @throws ParsingException
 	 * @throws ExecutionException
+	 * @throws DocumentException
+	 * @throws IOException
 	 */
-	public Representation include( String documentName ) throws IOException, ParsingException, ExecutionException
+	public Representation include( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
 	{
 		documentName = resource.validateDocumentName( documentName );
 
@@ -163,7 +165,7 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 		{
 			documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
 		}
-		catch( FileNotFoundException x )
+		catch( DocumentNotFoundException x )
 		{
 			// Try the fragment directory
 			File fragmentDirectory = resource.getFragmentDirectoryRelative();
@@ -187,12 +189,13 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 	 * 
 	 * @param documentName
 	 *        The document name
-	 * @throws IOException
 	 * @throws ParsingException
 	 * @throws ExecutionException
+	 * @throws DocumentException
+	 * @throws IOException
 	 */
 	@Override
-	public Representation execute( String documentName ) throws IOException, ParsingException, ExecutionException
+	public Representation execute( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
 	{
 		documentName = resource.validateDocumentName( documentName );
 
@@ -201,7 +204,7 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 		{
 			executable = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() ).getDocument();
 		}
-		catch( FileNotFoundException x )
+		catch( DocumentNotFoundException x )
 		{
 			File libraryDirectory = resource.getLibraryDirectoryRelative();
 			if( libraryDirectory != null )

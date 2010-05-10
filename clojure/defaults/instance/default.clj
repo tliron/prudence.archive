@@ -3,14 +3,14 @@
 ;
 
 (import
-	'java.io.FileNotFoundException
-	'java.util.logging.LogManager)
+	'java.util.logging.LogManager
+	'com.threecrickets.scripturian.exception.DocumentNotFoundException)
 
 (defn execute-or-default
 	([name default]
 		(try
 			(.. executable getContainer (execute name))
-			(catch FileNotFoundException _
+			(catch DocumentNotFoundException _
 				(.execute document
 					(if (nil? default)
 						(str "defaults/" name)

@@ -4,13 +4,13 @@
 
 importClass(
 	java.lang.System,
-	java.io.FileNotFoundException,
-	java.util.logging.LogManager);
+	java.util.logging.LogManager,
+	com.threecrickets.scripturian.exception.DocumentNotFoundException);
 
 function executeOrDefault(name, def) {
 	try {
 		document.execute(name);
-	} catch(e if e.javaException instanceof FileNotFoundException) {
+	} catch(e if e.javaException instanceof DocumentNotFoundException) {
 		if(!def) {
 			def = 'defaults/' + name;
 		}

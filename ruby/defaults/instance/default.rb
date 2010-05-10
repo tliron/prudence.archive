@@ -4,13 +4,13 @@
 
 require 'java'
 import java.lang.System
-import java.io.FileNotFoundException
 import java.util.logging.LogManager
+import com.threecrickets.scripturian.exception.DocumentNotFoundException
 
 def execute_or_default(name, default=nil)
 	begin
 		$document.execute name
-	rescue FileNotFoundException
+	rescue DocumentNotFoundException
 		if !default
 			default = 'defaults/' + name
 		end

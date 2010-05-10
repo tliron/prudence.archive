@@ -11,8 +11,6 @@
 
 package com.threecrickets.prudence;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Context;
@@ -30,6 +28,8 @@ import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
+import com.threecrickets.scripturian.exception.DocumentException;
+import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 
 /**
  * @author Tal Liron
@@ -133,7 +133,7 @@ public class SourceCodeResource extends ServerResource
 				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, document );
 			return new StringRepresentation( format( documentDescriptor, highlight ), MediaType.TEXT_HTML );
 		}
-		catch( IOException x )
+		catch( DocumentException x )
 		{
 			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, document, x );
 		}
@@ -146,7 +146,7 @@ public class SourceCodeResource extends ServerResource
 
 	private volatile DocumentFormatter<Executable> documentFormatter;
 
-	private DocumentDescriptor<Executable> getDocument( String name ) throws IOException
+	private DocumentDescriptor<Executable> getDocument( String name ) throws DocumentException
 	{
 		if( name.startsWith( "/" ) )
 			name = name.substring( 1 );
@@ -162,7 +162,7 @@ public class SourceCodeResource extends ServerResource
 					if( documentDescriptor != null )
 						return documentDescriptor;
 				}
-				catch( FileNotFoundException x )
+				catch( DocumentNotFoundException x )
 				{
 				}
 			}

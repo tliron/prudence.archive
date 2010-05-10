@@ -25,7 +25,7 @@ import org.restlet.data.Protocol
 
 defaultServer = new Server(Protocol.HTTP, 8080)
 defaultServer.name = 'default'
-component.servers.add(defaultServer)
+componentInstance.servers.add(defaultServer)
 
 // Add support for the X-FORWARDED-FOR header used by proxies, such as Apache's
 // mod_proxy. This guarantees that request.clientInfo.upstreamAddress returns
@@ -42,13 +42,13 @@ defaultServer.context.parameters.add('useForwardedForHeader', 'true')
 
 //worldServer = new Server(Protocol.HTTP, '192.168.1.2', 80)
 //worldServer.name = 'world'
-//component.servers.add(worldServer)
+//componentInstance.servers.add(worldServer)
 
 //
 // Welcome
 //
 
-for(server in component.servers) {
+for(server in componentInstance.servers) {
 	if(server.address) {
 		print('Listening on ' + server.address + ' port ' + server.port + ' for ')
 	} else {
@@ -61,4 +61,5 @@ for(server in component.servers) {
 		print(protocol)
 	}
 	println('.')
+	out.flush()
 }

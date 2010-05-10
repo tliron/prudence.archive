@@ -5,7 +5,7 @@
 import org.restlet.data.Protocol
 
 // Required for use of Directory
-component.clients.add(Protocol.FILE)
+componentInstance.clients.add(Protocol.FILE)
 
 // Required for accessing external resources
-component.clients.add(Protocol.HTTP)
+componentInstance.clients.add(Protocol.HTTP)

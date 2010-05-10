@@ -9,7 +9,7 @@ import org.restlet.routing.Template
 import org.restlet.resource.Finder
 import org.restlet.resource.Directory
 import com.threecrickets.scripturian.util.DefrostTask
-import com.threecrickets.scripturian.file.DocumentFileSource
+import com.threecrickets.scripturian.document.DocumentFileSource
 import com.threecrickets.prudence.util.PrudenceRouter
 import com.threecrickets.prudence.util.PreheatTask
 import com.threecrickets.prudence.util.PhpExecutionController

@@ -3,13 +3,14 @@
 #
 
 from java.lang import System
-from java.io import FileNotFoundException
 from java.util.logging import LogManager
+from com.threecrickets.scripturian.exception import DocumentNotFoundException
+
 
 def execute_or_default(name, default=None):
 	try:
 		document.execute(name)
-	except FileNotFoundException:
+	except DocumentNotFoundException:
 		if default is None:
 			default = 'defaults/' + name 
 		document.execute(default)

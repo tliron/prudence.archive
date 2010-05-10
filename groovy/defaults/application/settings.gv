@@ -41,11 +41,11 @@ showSourceCodeURL = '/sourcecode/'
 //
 // This is a vector of vectors of two elements: the first is the virtual hosts to which,
 // our application will be attached, the second is the base URLs on the hosts. See
-// component/hosts.py for more information. Specify None for the URL to default to the
+// componentInstance/hosts.py for more information. Specify None for the URL to default to the
 // application's directory name.
 //
 
-hosts = [[component.defaultHost, null]]
+hosts = [[componentInstance.defaultHost, null]]
 
 //
 // Resources

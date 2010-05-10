@@ -10,7 +10,7 @@ import org.restlet.routing.Template
 import org.restlet.resource.Finder
 import org.restlet.resource.Directory
 import com.threecrickets.scripturian.util.DefrostTask
-import com.threecrickets.scripturian.file.DocumentFileSource
+import com.threecrickets.scripturian.document.DocumentFileSource
 import com.threecrickets.prudence.util.PrudenceRouter
 import com.threecrickets.prudence.util.PreheatTask
 import com.threecrickets.prudence.util.PhpExecutionController
@@ -37,7 +37,7 @@ fixURL = { url ->
 // Internal router
 //
 
-component.internalRouter.attach('/' + applicationInternalName + '/', applicationInstance).matchingMode = Template.MODE_STARTS_WITH
+componentInstance.internalRouter.attach('/' + applicationInternalName + '/', applicationInstance).matchingMode = Template.MODE_STARTS_WITH
 
 //
 // Hosts
@@ -68,11 +68,12 @@ hosts.eachWithIndex() { entry, i ->
 	}
 }
 println('.')
+out.flush()
 
 attributes = applicationInstance.context.attributes
 
-attributes['component'] = component
-attributes['com.threecrickets.prudence.cache'] = component.context.attributes['com.threecrickets.prudence.cache']
+attributes['componentInstance'] = componentInstance
+attributes['com.threecrickets.prudence.cache'] = componentInstance.context.attributes['com.threecrickets.prudence.cache']
 
 //
 // Inbound root
@@ -165,12 +166,12 @@ if(showDebugOnError) {
 //
 
 if(dynamicWebPreheat) {
-	preheatTasks = PreheatTask.forDocumentSource(dynamicWebDocumentSource, component.context, applicationInternalName)
+	preheatTasks = PreheatTask.forDocumentSource(dynamicWebDocumentSource, componentInstance.context, applicationInternalName)
 	for(preheatTask in preheatTasks) {
 		tasks.push(preheatTask)
 	}
 }
 
 for(preheatResource in preheatResources) {
-	tasks.push(new PreheatTask(component.context, applicationInternalName, preheatResource))
+	tasks.push(new PreheatTask(componentInstance.context, applicationInternalName, preheatResource))
 }

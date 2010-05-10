@@ -18,7 +18,7 @@ import org.h2.jdbcx.JdbcDataSource;
  * 
  * @author Tal Liron
  */
-public class H2Cache extends SqlCacheBase<JdbcDataSource>
+public class H2Cache extends SqlCache<JdbcDataSource>
 {
 	//
 	// Construction
@@ -50,5 +50,6 @@ public class H2Cache extends SqlCacheBase<JdbcDataSource>
 		getDataSource().setURL( "jdbc:h2:" + path );
 
 		validateTables( false );
+		//debug=true;
 	}
 }

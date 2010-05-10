@@ -17,10 +17,10 @@ import org.restlet.routing.VirtualHost
 // Our "all" host will accept all incoming requests.
 //
 
-allHost = new VirtualHost(component.context)
+allHost = new VirtualHost(componentInstance.context)
 allHost.name = 'all hosts'
 
-component.hosts.add(allHost)
+componentInstance.hosts.add(allHost)
 
 //
 // mysite.org
@@ -29,13 +29,13 @@ component.hosts.add(allHost)
 // a specific set of domains.
 //
 
-mysiteHost = new VirtualHost(component.context)
+mysiteHost = new VirtualHost(componentInstance.context)
 mysiteHost.name = 'mysite.org'
 mysiteHost.hostScheme = 'http'
 mysiteHost.hostDomain = 'mysite.org|www.mysite.org'
 mysiteHost.hostPort = '80'
 
-component.hosts.add(mysiteHost)
+componentInstance.hosts.add(mysiteHost)
 
 //
 // Default Host
@@ -45,4 +45,4 @@ component.hosts.add(mysiteHost)
 // routing.js.
 //
 
-component.defaultHost = allHost
+componentInstance.defaultHost = allHost
