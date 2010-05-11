@@ -32,6 +32,10 @@ import java.util.Vector;
  */
 public abstract class JavaScriptUnifyMinify
 {
+	//
+	// Constants
+	//
+
 	public static final String EXTENSION = ".js";
 
 	public static final String EXTENSION_MIN = ".min";
@@ -39,6 +43,10 @@ public abstract class JavaScriptUnifyMinify
 	public static final String ALL = "all" + EXTENSION;
 
 	public static final String ALL_MIN = "all" + EXTENSION_MIN + EXTENSION;
+
+	//
+	// Static operations
+	//
 
 	/**
 	 * Unifies all JavaScript files in the directory to "all.js", or unifies and
@@ -147,12 +155,21 @@ public abstract class JavaScriptUnifyMinify
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * Private constructor to avoid inheritence.
+	 */
 	private JavaScriptUnifyMinify()
 	{
 	}
 
+	/**
+	 * Filename filter for JavaScript files.
+	 */
 	private static final JSFilter jsFilter = new JSFilter();
 
+	/**
+	 * Filename filter for JavaScript files.
+	 */
 	private static class JSFilter implements FilenameFilter
 	{
 		public boolean accept( File directory, String name )
@@ -161,6 +178,15 @@ public abstract class JavaScriptUnifyMinify
 		}
 	}
 
+	/**
+	 * Copies streams.
+	 * 
+	 * @param in
+	 *        In stream
+	 * @param out
+	 *        Out stream
+	 * @throws IOException
+	 */
 	private static void copy( InputStream in, OutputStream out ) throws IOException
 	{
 		while( true )
