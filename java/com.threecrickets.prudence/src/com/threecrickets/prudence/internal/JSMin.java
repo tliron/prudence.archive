@@ -44,8 +44,9 @@ import java.io.OutputStream;
 import java.io.PushbackInputStream;
 
 /**
- * This work is a translation from C to Java of jsmin.c published by Douglas
- * Crockford.
+ * This work is a translation from C to Java of <a
+ * href="http://www.crockford.com/javascript/jsmin.html">jsmin.c</a> published
+ * by Douglas Crockford.
  * 
  * @author John Reilly
  */
@@ -86,14 +87,10 @@ public class JSMin
 		int c = in.read();
 
 		if( c >= ' ' || c == '\n' || c == EOF )
-		{
 			return c;
-		}
 
 		if( c == '\r' )
-		{
 			return '\n';
-		}
 
 		return ' ';
 	}
@@ -124,9 +121,7 @@ public class JSMin
 					{
 						c = get();
 						if( c <= '\n' )
-						{
 							return c;
-						}
 					}
 
 				case '*':
@@ -150,7 +145,6 @@ public class JSMin
 				default:
 					return c;
 			}
-
 		}
 		return c;
 	}
@@ -179,13 +173,9 @@ public class JSMin
 						out.write( theA );
 						theA = get();
 						if( theA == theB )
-						{
 							break;
-						}
 						if( theA <= '\n' )
-						{
 							throw new UnterminatedStringLiteralException();
-						}
 						if( theA == '\\' )
 						{
 							out.write( theA );
@@ -205,18 +195,14 @@ public class JSMin
 					{
 						theA = get();
 						if( theA == '/' )
-						{
 							break;
-						}
 						else if( theA == '\\' )
 						{
 							out.write( theA );
 							theA = get();
 						}
 						else if( theA <= '\n' )
-						{
 							throw new UnterminatedRegExpLiteralException();
-						}
 						out.write( theA );
 					}
 					theB = next();
@@ -240,13 +226,9 @@ public class JSMin
 			{
 				case ' ':
 					if( isAlphanum( theB ) )
-					{
 						action( 1 );
-					}
 					else
-					{
 						action( 2 );
-					}
 					break;
 				case '\n':
 					switch( theB )
@@ -263,13 +245,9 @@ public class JSMin
 							break;
 						default:
 							if( isAlphanum( theB ) )
-							{
 								action( 1 );
-							}
 							else
-							{
 								action( 2 );
-							}
 					}
 					break;
 				default:
@@ -297,13 +275,9 @@ public class JSMin
 									break;
 								default:
 									if( isAlphanum( theA ) )
-									{
 										action( 1 );
-									}
 									else
-									{
 										action( 3 );
-									}
 							}
 							break;
 						default:

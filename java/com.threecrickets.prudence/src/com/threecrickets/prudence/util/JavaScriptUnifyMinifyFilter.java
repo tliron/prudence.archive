@@ -33,7 +33,8 @@ import com.threecrickets.prudence.internal.JavaScriptUnifyMinify;
  * <p>
  * Compression is done via <a
  * href="http://www.inconspicuous.org/projects/jsmin/jsmin.java">John Reilly's
- * Java port of JSMin</a>.
+ * Java port</a> of Douglas Crockford's <a
+ * href="http://www.crockford.com/javascript/jsmin.html">JSMin</a>.
  * <p>
  * This filter can track changes to the source files, updating the result file
  * on-the-fly. This makes it easy to develop and debug a live site.
