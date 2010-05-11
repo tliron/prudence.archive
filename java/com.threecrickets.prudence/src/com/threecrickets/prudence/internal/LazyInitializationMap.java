@@ -34,11 +34,30 @@ public abstract class LazyInitializationMap<K, V> implements Map<K, V>
 	 * Construction.
 	 * 
 	 * @param map
-	 *        The map
+	 *        The map to initialize
 	 */
 	public LazyInitializationMap( Map<K, V> map )
 	{
 		this.map = map;
+	}
+
+	//
+	// Operations
+	//
+
+	/**
+	 * Makes sure we initialize once and only once.
+	 */
+	public void validateInitialized()
+	{
+		synchronized( initializedLock )
+		{
+			if( !initialized )
+			{
+				initialize();
+				initialized = true;
+			}
+		}
 	}
 
 	//
@@ -126,7 +145,7 @@ public abstract class LazyInitializationMap<K, V> implements Map<K, V>
 	protected abstract void initialize();
 
 	/**
-	 * The map.
+	 * The actual, wrapped map.
 	 */
 	protected final Map<K, V> map;
 
@@ -144,19 +163,4 @@ public abstract class LazyInitializationMap<K, V> implements Map<K, V>
 	 * For synchronization of {@link #initialized}.
 	 */
 	private Object initializedLock = new Object();
-
-	/**
-	 * Makes sure we initialize once and only once.
-	 */
-	private void validateInitialized()
-	{
-		synchronized( initializedLock )
-		{
-			if( !initialized )
-			{
-				initialize();
-				initialized = true;
-			}
-		}
-	}
 }
