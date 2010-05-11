@@ -251,7 +251,7 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
-	private static final String NAME_VARIABLE = "n";
+	private static final String DOCUMENT_NAME_VARIABLE = "dn";
 
 	private static final String CACHE_DURATION_ATTRIBUTE = "prudence.cacheDuration";
 
@@ -271,8 +271,8 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 		{
 			Template template = new Template( cacheKey );
 
-			// Our additional template variable: {n}
-			template.getVariables().put( NAME_VARIABLE, new Variable( Variable.TYPE_ALL, currentExecutable.getDocumentName(), true, true ) );
+			// Our additional template variable: {dn}
+			template.getVariables().put( DOCUMENT_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, currentExecutable.getDocumentName(), true, true ) );
 
 			// Use captive reference as the resource reference
 			Reference captiveReference = CaptiveRedirector.getCaptiveReference( resource.getRequest() );

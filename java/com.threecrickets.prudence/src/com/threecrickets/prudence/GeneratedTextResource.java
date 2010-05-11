@@ -414,7 +414,7 @@ public class GeneratedTextResource extends ServerResource
 
 	/**
 	 * The default cache key to use if the executable doesn't specify one.
-	 * Defaults to "{ri}".
+	 * Defaults to "{ri}|{dn}".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey</code>
@@ -430,7 +430,7 @@ public class GeneratedTextResource extends ServerResource
 			defaultCacheKey = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey" );
 
 			if( defaultCacheKey == null )
-				defaultCacheKey = "{ri}";
+				defaultCacheKey = "{ri}|{dn}";
 		}
 
 		return defaultCacheKey;

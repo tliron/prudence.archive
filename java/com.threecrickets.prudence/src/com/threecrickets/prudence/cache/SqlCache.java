@@ -42,7 +42,8 @@ import com.threecrickets.prudence.util.MiniConnectionPoolManager;
  * storing, fetching and invalidating. It does not use SQL transactions. This
  * allows you disable transaction features in your database for better
  * performance. However, it also means that you should not have more than one
- * instance of this working on the same set of keys.
+ * instance of this class working on the same set of keys, because they will not
+ * be sharing the locks.
  * <p>
  * Also note that {@link #prune()} does not clean up unused locks. Since most
  * applications reuse cache keys anyway, this seems like an insignificant

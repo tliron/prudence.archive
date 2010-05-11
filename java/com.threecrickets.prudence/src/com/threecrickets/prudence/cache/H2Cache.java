@@ -53,6 +53,6 @@ public class H2Cache extends SqlCache<JdbcDataSource>
 		getDataSource().setURL( "jdbc:h2:" + path );
 
 		validateTables( false );
-		// debug=true;
+		//debug=true;
 	}
 }
