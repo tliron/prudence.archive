@@ -61,15 +61,18 @@ public class LazyInitializationExposedPost extends LazyInitializationMap<String,
 	@Override
 	protected void initialize()
 	{
-		// Give the exposed file map a chance to consume the entity first
-		exposedFile.validateInitialized();
-		map.putAll( exposedFile.formFields );
-
-		if( request.getMethod().equals( Method.POST ) && request.isEntityAvailable() )
+		if( request.getMethod().equals( Method.POST ) )
 		{
-			Form form = new Form( request.getEntity() );
-			for( Parameter parameter : form )
-				map.put( parameter.getName(), parameter.getValue() );
+			// Give the exposed file map a chance to consume the entity first
+			exposedFile.validateInitialized();
+			map.putAll( exposedFile.formFields );
+
+			if( request.isEntityAvailable() )
+			{
+				Form form = new Form( request.getEntity() );
+				for( Parameter parameter : form )
+					map.put( parameter.getName(), parameter.getValue() );
+			}
 		}
 	}
 
