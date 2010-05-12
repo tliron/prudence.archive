@@ -12,14 +12,18 @@
 package com.threecrickets.prudence.internal;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.restlet.Request;
 import org.restlet.data.CacheDirective;
 import org.restlet.data.CharacterSet;
+import org.restlet.data.Form;
 import org.restlet.data.Language;
 import org.restlet.data.LocalReference;
 import org.restlet.data.MediaType;
+import org.restlet.data.Parameter;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
@@ -31,6 +35,8 @@ import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.prudence.util.CaptiveRedirector;
+import com.threecrickets.prudence.util.FileParameter;
+import com.threecrickets.prudence.util.FormWithFiles;
 
 /**
  * @author Tal Liron
@@ -569,11 +575,98 @@ public class ExposedConversationBase<R extends ServerResource>
 	/**
 	 * Throws a runtime exception.
 	 * 
-	 * @return Always throws an exception, so nothing is ever returned
+	 * @return Always throws an exception, so nothing is ever returned (some
+	 *         templating languages require a return value anyway)
 	 */
 	public boolean kaboom()
 	{
 		throw new RuntimeException( "Kaboom!" );
+	}
+
+	/**
+	 * The URI query as a list. Includes duplicate keys.
+	 * <p>
+	 * The value is internally cached, so it's cheap to call this repeatedly.
+	 * 
+	 * @return The query form
+	 */
+	public Form getQueryAll()
+	{
+		if( queryAll == null )
+			queryAll = resource.getRequest().getReferrerRef().getQueryAsForm();
+		return queryAll;
+	}
+
+	/**
+	 * The URI query as a map. In the case of duplicate keys, only the last one
+	 * will appear.
+	 * <p>
+	 * The value is internally cached, so it's cheap to call this repeatedly.
+	 * 
+	 * @return The query map
+	 */
+	public Map<String, String> getQuery()
+	{
+		if( query == null )
+			query = getQueryAll().getValuesMap();
+		return query;
+	}
+
+	/**
+	 * The form, sent via POST or PUT, as a list. Includes duplicate keys.
+	 * Uploaded files will appear as instances of {@link FileParameter}.
+	 * <p>
+	 * The value is internally cached, so it's cheap to call this repeatedly.
+	 * 
+	 * @return The form
+	 */
+	public Form getFormAll()
+	{
+		if( formAll == null )
+		{
+			if( resource.getRequest().isEntityAvailable() )
+				formAll = new FormWithFiles( resource.getRequestEntity() );
+			else
+				formAll = new Form();
+		}
+		return formAll;
+	}
+
+	/**
+	 * The form, sent via POST or PUT, as a map. In the case of duplicate keys,
+	 * only the last one will appear. Uploaded files will appear as instances of
+	 * {@link FileParameter}. Other fields will be plain strings.
+	 * <p>
+	 * The value is internally cached, so it's cheap to call this repeatedly.
+	 * 
+	 * @return The form
+	 */
+	public Map<String, Object> getForm()
+	{
+		if( form == null )
+		{
+			form = new HashMap<String, Object>();
+			for( Parameter parameter : getFormAll() )
+			{
+				if( parameter instanceof FileParameter )
+					form.put( parameter.getName(), parameter );
+				else
+					form.put( parameter.getName(), parameter.getValue() );
+			}
+		}
+		return form;
+	}
+
+	/**
+	 * Values of URI template variables will appear here. Note that if you
+	 * iterate this map, you might find values that are not URI values. This is
+	 * because other request attributes are stored here, too.
+	 * 
+	 * @return The URI template values and other request attributes
+	 */
+	public Map<String, Object> getUriValues()
+	{
+		return resource.getRequestAttributes();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -635,4 +728,24 @@ public class ExposedConversationBase<R extends ServerResource>
 	 * <code>handlePut()</code>.
 	 */
 	private Tag tag;
+
+	/**
+	 * The URI query as a map.
+	 */
+	private Map<String, String> query;
+
+	/**
+	 * The URI query as a list.
+	 */
+	private Form queryAll;
+
+	/**
+	 * The form, sent via POST or PUT, as a map.
+	 */
+	private Form formAll;
+
+	/**
+	 * The form, sent via POST or PUT, as a list.
+	 */
+	private Map<String, Object> form;
 }

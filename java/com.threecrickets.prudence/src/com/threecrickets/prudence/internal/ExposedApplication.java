@@ -12,6 +12,7 @@
 package com.threecrickets.prudence.internal;
 
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Logger;
 
 import org.restlet.Application;
 import org.restlet.data.MediaType;
@@ -61,12 +62,12 @@ public class ExposedApplication
 	 */
 	public Object getGlobal( String name, Object defaultValue )
 	{
-		ConcurrentMap<String, Object> attributes = Application.getCurrent().getContext().getAttributes();
-		Object value = attributes.get( name );
+		ConcurrentMap<String, Object> globals = getGlobals();
+		Object value = globals.get( name );
 		if( ( value == null ) && ( defaultValue != null ) )
 		{
 			value = defaultValue;
-			Object existing = attributes.putIfAbsent( name, value );
+			Object existing = globals.putIfAbsent( name, value );
 			if( existing != null )
 				value = existing;
 		}
@@ -84,8 +85,28 @@ public class ExposedApplication
 	 */
 	public Object setGlobal( String name, Object value )
 	{
-		ConcurrentMap<String, Object> attributes = Application.getCurrent().getContext().getAttributes();
-		return attributes.put( name, value );
+		ConcurrentMap<String, Object> globals = getGlobals();
+		return globals.put( name, value );
+	}
+
+	/**
+	 * The underlying application.
+	 * 
+	 * @return The application
+	 */
+	public Application getApplication()
+	{
+		return Application.getCurrent();
+	}
+
+	/**
+	 * The application's logger.
+	 * 
+	 * @return The logger
+	 */
+	public Logger getLogger()
+	{
+		return getApplication().getLogger();
 	}
 
 	/**
@@ -99,7 +120,7 @@ public class ExposedApplication
 	{
 		MediaType mediaType = MediaType.valueOf( name );
 		if( mediaType == null )
-			mediaType = Application.getCurrent().getMetadataService().getMediaType( name );
+			mediaType = getApplication().getMetadataService().getMediaType( name );
 		return mediaType;
 	}
 }
