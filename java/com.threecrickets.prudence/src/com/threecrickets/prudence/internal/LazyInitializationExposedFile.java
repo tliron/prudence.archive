@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.restlet.Request;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -47,10 +47,11 @@ public class LazyInitializationExposedFile extends LazyInitializationMap<String,
 	 * @param request
 	 *        The request
 	 */
-	public LazyInitializationExposedFile( Map<String, Map<String, Object>> map, Request request )
+	public LazyInitializationExposedFile( Map<String, Map<String, Object>> map, Request request, FileItemFactory fileItemFactory )
 	{
 		super( map );
 		this.request = request;
+		fileUpload = new RestletFileUpload( fileItemFactory );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -63,7 +64,7 @@ public class LazyInitializationExposedFile extends LazyInitializationMap<String,
 	@Override
 	protected void initialize()
 	{
-		if( ( request.getMethod().equals( Method.POST ) || request.getMethod().equals( Method.PUT ) ) && request.getEntity().getMediaType().includes( MediaType.MULTIPART_FORM_DATA ) && request.isEntityAvailable() )
+		if( ( request.getMethod().equals( Method.POST ) || request.getMethod().equals( Method.PUT ) ) && request.isEntityAvailable() && request.getEntity().getMediaType().includes( MediaType.MULTIPART_FORM_DATA ) )
 		{
 			try
 			{
@@ -101,7 +102,7 @@ public class LazyInitializationExposedFile extends LazyInitializationMap<String,
 	/**
 	 * The request parser for file uploads.
 	 */
-	private final RestletFileUpload fileUpload = new RestletFileUpload( new DiskFileItemFactory() );
+	private final RestletFileUpload fileUpload;
 
 	/**
 	 * Creates a PHP-style item in the $_FILE map.
@@ -119,7 +120,7 @@ public class LazyInitializationExposedFile extends LazyInitializationMap<String,
 		if( fileItem instanceof DiskFileItem )
 		{
 			DiskFileItem diskFileItem = (DiskFileItem) fileItem;
-			exposedFileItem.put( "tmp_name", diskFileItem.getStoreLocation() );
+			exposedFileItem.put( "tmp_name", diskFileItem.getStoreLocation().getAbsolutePath() );
 		}
 		// exposedFileItem.put("error", );
 		return exposedFileItem;

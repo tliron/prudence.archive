@@ -11,10 +11,13 @@
 
 package com.threecrickets.prudence.util;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.restlet.Request;
 
 import com.threecrickets.prudence.internal.LazyInitializationExposedCookie;
@@ -36,6 +39,42 @@ import com.threecrickets.scripturian.exception.ExecutionException;
 public class PhpExecutionController implements ExecutionController
 {
 	//
+	// Construction
+	//
+
+	/**
+	 * Construction with default system repository directory.
+	 */
+	public PhpExecutionController()
+	{
+		this( new DiskFileItemFactory() );
+	}
+
+	/**
+	 * Construction.
+	 * 
+	 * @param fileItemFactory
+	 *        The file item factory
+	 */
+	public PhpExecutionController( FileItemFactory fileItemFactory )
+	{
+		this.fileItemFactory = fileItemFactory;
+	}
+
+	/**
+	 * Construction.
+	 * 
+	 * @param sizeThreshold
+	 *        The size in bytes beyond which files will be stored to disk
+	 * @param repositoryDirectory
+	 *        The directory in which to place uploaded files
+	 */
+	public PhpExecutionController( int sizeThreshold, File repositoryDirectory )
+	{
+		this( new DiskFileItemFactory( sizeThreshold, repositoryDirectory ) );
+	}
+
+	//
 	// ExecutionController
 	//
 
@@ -44,7 +83,7 @@ public class PhpExecutionController implements ExecutionController
 		Request request = Request.getCurrent();
 
 		LazyInitializationExposedGet exposedGet = new LazyInitializationExposedGet( new HashMap<String, String>(), request );
-		LazyInitializationExposedFile exposedFile = new LazyInitializationExposedFile( new HashMap<String, Map<String, Object>>(), request );
+		LazyInitializationExposedFile exposedFile = new LazyInitializationExposedFile( new HashMap<String, Map<String, Object>>(), request, fileItemFactory );
 		LazyInitializationExposedPost exposedPost = new LazyInitializationExposedPost( new HashMap<String, String>(), request, exposedFile );
 		LazyInitializationExposedCookie exposedCookie = new LazyInitializationExposedCookie( new HashMap<String, String>(), request );
 		LazyInitializationExposedRequest exposedRequest = new LazyInitializationExposedRequest( new HashMap<String, String>(), exposedGet, exposedPost, exposedCookie );
@@ -62,4 +101,6 @@ public class PhpExecutionController implements ExecutionController
 	public void release( ExecutionContext executionContext )
 	{
 	}
+
+	private final FileItemFactory fileItemFactory;
 }
