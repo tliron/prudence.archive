@@ -145,7 +145,7 @@ if($dynamic_web_defrost) {
 // Static web
 //
 
-$static_web = new Directory($router->context, new File($application_base_path . $static_web_base_path)->toURI()->toString());
+$static_web = new Directory($application_instance->context, new File($application_base_path . $static_web_base_path)->toURI()->toString());
 $static_web->listingAllowed = $static_web_directory_listing_allowed;
 $static_web->negotiatingContent = true;
 $router->attachBase(fix_url($static_web_base_url), $static_web);

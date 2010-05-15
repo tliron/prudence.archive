@@ -128,7 +128,7 @@ end
 # Static web
 #
 
-$static_web = Directory.new($router.context, java.io.File.new($application_base_path + $static_web_base_path).to_uri.to_string)
+$static_web = Directory.new($application_instance.context, java.io.File.new($application_base_path + $static_web_base_path).to_uri.to_string)
 $static_web.listing_allowed = $static_web_directory_listing_allowed
 $static_web.negotiating_content = true
 $router.attach_base fix_url($static_web_base_url), $static_web

@@ -130,7 +130,7 @@ if(dynamicWebDefrost) {
 // Static web
 //
 
-var staticWeb = new Directory(router.context, new File(applicationBasePath + staticWebBasePath).toURI().toString());
+var staticWeb = new Directory(applicationInstance.context, new File(applicationBasePath + staticWebBasePath).toURI().toString());
 staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
 staticWeb.negotiatingContent = true;
 router.attachBase(fixURL(staticWebBaseURL), staticWeb);
