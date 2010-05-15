@@ -141,7 +141,7 @@ public class DelegatedStatusService extends StatusService
 	public void capture( int statusCode, String application, String internalUriTemplate, Context context )
 	{
 		String targetUriTemplate = "riap://component/" + application + "/" + internalUriTemplate;
-		setHandler( statusCode, new CaptiveRedirector( context, targetUriTemplate, false ) );
+		setHandler( statusCode, new CaptiveRedirector( context.createChildContext(), targetUriTemplate, false ) );
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class DelegatedStatusService extends StatusService
 	public void captureHostRoot( int statusCode, String application, String internalUriTemplate, Context context )
 	{
 		String targetUriTemplate = "riap://component/" + application + "/" + internalUriTemplate;
-		setHandler( statusCode, new CaptiveRedirector( context, targetUriTemplate, true ) );
+		setHandler( statusCode, new CaptiveRedirector( context.createChildContext(), targetUriTemplate, true ) );
 	}
 
 	/**
