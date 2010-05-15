@@ -58,8 +58,9 @@
 ; Set Restlet to use SLF4J, which will use log4j as its engine
 (System/setProperty "org.restlet.engine.loggerFacadeClass" "org.restlet.ext.slf4j.Slf4jLoggerFacade")
 
-; Velocity logging
-(System/setProperty "com.sun.script.velocity.properties" "configuration/velocity.conf")
+; Set Velocity to use log4j
+(.. executable getManager getAttributes (put "velocity.runtime.log.logsystem.class" "org.apache.velocity.runtime.log.Log4JLogChute"))
+(.. executable getManager getAttributes (put "velocity.runtime.log.logsystem.log4j.logger" "velocity"))
 
 ;
 ; Component

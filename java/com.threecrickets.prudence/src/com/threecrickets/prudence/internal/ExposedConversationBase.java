@@ -526,9 +526,6 @@ public class ExposedConversationBase<R extends ServerResource>
 		// Reverse relative reference
 		String relative = reference.getBaseRef().getRelativeRef( reference ).getPath();
 
-		if( relative.equals( "." ) )
-			relative = "";
-
 		return relative;
 	}
 
