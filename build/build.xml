@@ -7,6 +7,7 @@
 
 	<property name="lib" value="../libraries" />
 	<property name="common" value="../common" />
+	<property name="documentation" value="../documentation" />
 	<property name="java" value="../java" />
 	<property name="java-src" value="${java}/com.threecrickets.prudence/src" />
 	<property name="python" value="../python" />
@@ -63,6 +64,7 @@
 			<copy todir="@{dist}/content/applications/prudence-test/web/static/api">
 				<fileset dir="${tmp}/api" />
 			</copy>
+			<copy tofile="@{dist}/content/applications/prudence-test/web/static/manual/index.html" file="${documentation}/prudence_manual.html" />
 		</sequential>
 	</macrodef>
 

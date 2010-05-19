@@ -1,0 +1,4778 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 0
+\tocdepth 2
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+The Prudence Manual
+\end_layout
+
+\begin_layout Author
+Tal Liron
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Tutorial
+\end_layout
+
+\begin_layout Subsection
+Run the Prudence Instance
+\end_layout
+
+\begin_layout Standard
+Prudence comes ready to rumble!
+\end_layout
+
+\begin_layout Standard
+All you need is a Java Virtual Machine (JVM), minimally version 5.
+ Your operating system may already have one.
+ Typing ``java'' from the command line will usually tell you so.
+ Otherwise, an excellent, open-source JVM is available from the 
+\begin_inset CommandInset href
+LatexCommand href
+name "OpenJDK"
+target "http://openjdk.java.net/"
+
+\end_inset
+
+ project.
+\end_layout
+
+\begin_layout Quote
+A Java Runtime Environment (JRE) is enough for Prudence.
+ You need a Java Development Kit (JDK) only if you plan to write code in
+ Java.
+ Also, Prudence does not require anything from Java Enterprise Edition (JEE).
+ In fact, you can see Prudence as a RESTful, minimal alternative to developing
+ web applications under JEE.
+\end_layout
+
+\begin_layout Standard
+Try Prudence! Run /bin/run.sh for Unix-like systems (Linux and OS X), or
+ /bin/run.bat for Windows.
+ Prudence should declare its version list the installed demo applications.
+ When it announces that it is listening on port 8080, it's ready to go.
+ Open your web browser to 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://localhost:8080/"
+target "http://localhost:8080/"
+
+\end_inset
+
+.
+ You should see the Prudence Administration application, where you can access
+ the demos.
+ 
+\end_layout
+
+\begin_layout Quote
+
+\emph on
+By the way:
+\emph default
+ The /bin/run scripts are there for getting you quickly up and running,
+ however it is strongly recommended that you run 
+\begin_inset CommandInset href
+LatexCommand href
+name "Prudence as a daemon"
+target "../daemon/"
+
+\end_inset
+
+ in production environments.
+\end_layout
+
+\begin_layout Subsection
+Your First Application
+\end_layout
+
+\begin_layout Standard
+Your Prudence instance hosts all applications under the /applications/ directory.
+ To install a new application, simply create a new subdirectory there.
+ The subdirectory name will be used as a default for various things: the
+ base URL, logging, etc.
+ We can change those later.
+ 
+\end_layout
+
+\begin_layout Standard
+So, let's create /applications/wackywiki/
+\end_layout
+
+\begin_layout Standard
+If you restart Prudence, you'll see wackywiki listed in the admin application.
+ There's nothing to see there quite yet, though.
+\end_layout
+
+\begin_layout Quote
+
+\emph on
+By the way:
+\emph default
+ It's perfectly fine to use symbolic links or mounts to put your application
+ subdirectories elsewhere.
+\end_layout
+
+\begin_layout Subsection
+A Static Web Page
+\end_layout
+
+\begin_layout Standard
+Create /applications/wackywiki/web/static/.
+ Files you put there will served just like from any static web server.
+ You can put images, HTML files, CSS or anything else.
+ Let's start with a default web page.
+\end_layout
+
+\begin_layout Standard
+/web/static/index.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=HTML"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<head>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<title>Wacky Wiki</title>
+\end_layout
+
+\begin_layout Plain Layout
+
+</head>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<div>
+\end_layout
+
+\begin_layout Plain Layout
+
+		Nothing to see here, for now.
+ Carry on.
+\end_layout
+
+\begin_layout Plain Layout
+
+	</div>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html> 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Restart Prudence, and browse to 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://localhost:8080/wackiwiki/"
+target " http://localhost:8080/wackiwiki/"
+
+\end_inset
+
+ to see the page.
+ 
+\end_layout
+
+\begin_layout Subsection
+A Dynamic Web Page
+\end_layout
+
+\begin_layout Quote
+Important! While Prudence does dynamic web pages well, it really stands
+ out from other web frameworks in its support for REST resources, which
+ we'll see in the next section.
+ We decided to start this tutorial with web pages, because the topic would
+ likely be more familiar to most newcomers to Prudence.
+\end_layout
+
+\begin_layout Standard
+Create /applications/wackywiki/web/dynamic/.
+ Unlike /web/static/, files in this directory must be text files (HTML,
+ XML, plain text, etc.) They are specially processed so that they can include
+ ``scriptlets'' of programming code.
+ 
+\end_layout
+
+\begin_layout Standard
+Let's move our index.html from /web/static/ to /web/dynamic/ and edit it
+ to add some Python scriptlets.
+ 
+\end_layout
+
+\begin_layout Standard
+/web/dynamic/index.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=HTML"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<head>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<title>Wacky Wiki</title>
+\end_layout
+
+\begin_layout Plain Layout
+
+</head>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<div>
+\end_layout
+
+\begin_layout Plain Layout
+
+		It is currently
+\end_layout
+
+\begin_layout Plain Layout
+
+<%python
+\end_layout
+
+\begin_layout Plain Layout
+
+from datetime import datetime
+\end_layout
+
+\begin_layout Plain Layout
+
+now = datetime.now()
+\end_layout
+
+\begin_layout Plain Layout
+
+print now.strftime('%H:%M')
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+		o' clock, and
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+print now.strftime('%S')
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+		seconds
+\end_layout
+
+\begin_layout Plain Layout
+
+	</div>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Restart Prudence, and browse to 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://localhost:8080/wackiwiki/"
+target " http://localhost:8080/wackiwiki/"
+
+\end_inset
+
+ to see the page.
+ 
+\end_layout
+
+\begin_layout Standard
+You'll notice the <% and %> are used to delimit scriptlets, and that we've
+ added ``python'' to the opening delimiter of the first scriptlet.
+ Subsequent scriptlets on the page will automatically use the language of
+ the previous scriptlets, so we don't have to repeat ``python''.
+\end_layout
+
+\begin_layout Standard
+Note, too, that Python's ``print'' works by adding output to the stream
+ of text where the scriptlet is located.
+\end_layout
+
+\begin_layout Standard
+Final note: Though they are conventionally called ``scriptlets,'' they are
+ not ``scripts'' in the common meaning of interpreted code.
+ All scriptlets are, in fact, compiled and run as JVM bytecode.
+ That's fast.
+\end_layout
+
+\begin_layout Subsubsection
+Expressions
+\end_layout
+
+\begin_layout Standard
+Let's make our dynamic page more readable by using special ``expression
+ scriptlets.'' They're really just a shorthand for ``print.''
+\end_layout
+
+\begin_layout Standard
+/web/dynamic/index.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<head>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<title>Wacky Wiki</title>
+\end_layout
+
+\begin_layout Plain Layout
+
+</head>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<div>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%python
+\end_layout
+
+\begin_layout Plain Layout
+
+from datetime import datetime
+\end_layout
+
+\begin_layout Plain Layout
+
+now = datetime.now()
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+		It is currently <%= now.strftime('%H:%M') %> o' clock, and <%= now.strftime('%S'
+) %> seconds
+\end_layout
+
+\begin_layout Plain Layout
+
+	</div>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+What happens if you have a coding error in your scriptlets? Let's try and
+ introduce an error on purpose.
+\end_layout
+
+\begin_layout Standard
+/web/dynamic/index.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+...
+ from dratetime import datetime ...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If you try to browse to the page, Prudence will show you a detailed debug
+ page, from where you can also access the source code with the troublesome
+ code line highlighted.
+ Once you deploy your application, you can cancel this debug feature.
+ Also, you can show your own, custom, user-friendly error pages.
+ We'll get to that below.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Fragments
+\end_layout
+
+\begin_layout Standard
+Prudence lets you include others documents in-place using a special scriptlet.
+ This makes it very easy to reuse fragments of documents (which can include
+ scriptlets) throughout your dynamic pages.
+ Common reusbale fragments are page headers, footers, and navigation menus.
+\end_layout
+
+\begin_layout Standard
+By convention in Prudence, fragments are put in /web/fragments/, though
+ you can include them from anywhere, even from your regular /web/dynamic/
+ or /web/static/ subdirectories.
+ The advantage of keeping them out of those subdiretories is that users
+ won't be able to access the individual fragments directly.
+ Instead, we must explicitly include them in our /web/dynamic/ files.
+ 
+\end_layout
+
+\begin_layout Standard
+Let's create a fragment that displays the current time.
+\end_layout
+
+\begin_layout Standard
+/web/fragments/time.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%python
+\end_layout
+
+\begin_layout Plain Layout
+
+from datetime import datetime
+\end_layout
+
+\begin_layout Plain Layout
+
+now = datetime.now()
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+It is currently <%= now.strftime('%H:%M') %> o' clock, and <%= now.strftime('%S')
+ %> seconds
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+/web/dynamic/index.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<head>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<title>Wacky Wiki</title>
+\end_layout
+
+\begin_layout Plain Layout
+
+</head>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<div>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<%& 'time/' %>
+\end_layout
+
+\begin_layout Plain Layout
+
+	</div>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that the included scriptlet, which begins with the <%& delimiter, accepts
+ a real Python expression.
+ For example, you can do Pythony things like string interpolation: <%& '%s-%s'
+ % (language, encoding) %>, allowing you to include different fragments
+ according to changing circumstances.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Caching
+\end_layout
+
+\begin_layout Standard
+Dynamically generating HTML and other text is very powerful.
+ You may be wondering, however, how well this scales.
+ Even if the Python code is compiled, it would still need to be run for
+ every user request, right? Prudence supports straightforward per-page caching
+ to greatly help you scale.
+ By changing document.cacheDuration within a scriptlet, you can dynamically
+ change how long Prudence will look for updates in the document.
+ Note that even very short caching times can be a great boost to scalability.
+ For example, if your cache duration is 1 second, it means that your scriptlets
+ would only be run once every second.
+ In computing terms, that's a very long time! Imagine that your popular
+ web site is getting 1000 hits per second...
+ 
+\end_layout
+
+\begin_layout Standard
+Finally, you'll be happy to know that by default Prudence also enables client-si
+de caching.
+ It does this by setting a standard HTTP header that tells the client how
+ long the content should be cached.
+ All popular desktop and mobile web browsers recognize it.
+ This means bandwidth savings for you, because the client will not download
+ content it already has in its cache.
+ 
+\end_layout
+
+\begin_layout Standard
+Let's enable a simple 60 second cache.
+\end_layout
+
+\begin_layout Standard
+/web/dynamic/index.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<% document.cacheDuration = 60000 %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<head>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<title>Wacky Wiki</title>
+\end_layout
+
+\begin_layout Plain Layout
+
+</head>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<div>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<%& 'time/' %>
+\end_layout
+
+\begin_layout Plain Layout
+
+	</div>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To test the above, go to our page and keep refreshing it in your web browser.
+ You will see that the printed time will only be updated once every 10 seconds.
+\end_layout
+
+\begin_layout Standard
+To verify that client-side caching works correctly, we recommend using the
+ free Firefox browser with the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Firebug"
+target "http://getfirebug.com/"
+
+\end_inset
+
+ add-on.
+ In the Firebug network panel, you can see which requests are sent to the
+ server.
+ Within those 60 seconds between updates, you will see the that the request
+ for the page returns a 304 status code: ``the document has not been modified.''
+\end_layout
+
+\begin_layout Standard
+For an even more elaborate experiment, try running two browsers at the same
+ time on different machines, and keep refreshing them.
+ You'll see each client caching individually, and yet the server still returning
+ a different page only after the 60 second cache duration has passed.
+ 
+\end_layout
+
+\begin_layout Standard
+Caching is very powerful, but obviously not useful for all pages.
+ For example, if it's important for a page to always show the up-to-date
+ to the moment information, you might not be able to afford even a one second
+ cache.
+ It's useful, then, to know that Prudence's document.cacheDuration works
+ at the level of the actual document, so that each included fragment can
+ set its own cache duration.
+ Just remember that the top document or fragment requests will determine
+ the caching for included fragments, too.
+ If your index.html has a cache duration of 60 seconds, then even if an included
+ fragment has a cache duration of 1 second, it would only appear to update
+ every 60 seconds.
+ 
+\end_layout
+
+\begin_layout Standard
+Scriptlets can also dynamically change the cache duration according to changing
+ circumstances.
+ For example, under heavy load, you might want your application to cache
+ for longer periods of time.
+\end_layout
+
+\begin_layout Subsubsection
+HTML Forms
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Standard
+Let's allow users to edit our wacky wicki.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+form = prudence.resource.request.resourceRef.queryAsForm
+\end_layout
+
+\begin_layout Plain Layout
+
+fresh = form.getFirstValue('fresh') == 'true'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+/web/fragments/wiki.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%python
+\end_layout
+
+\begin_layout Plain Layout
+
+wiki = 'Nothing in the wiki yet.'
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+Wiki content is: <%= wiki %>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+/web/dynamic/index.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<head>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<title>Wacky Wiki</title>
+\end_layout
+
+\begin_layout Plain Layout
+
+</head>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<div>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<%& 'time/' %>
+\end_layout
+
+\begin_layout Plain Layout
+
+	</div>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<div>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<%& 'wiki/' %>
+\end_layout
+
+\begin_layout Plain Layout
+
+	</div>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+More HTTP
+\end_layout
+
+\begin_layout Standard
+Prudence does a lot of the HTTP work automatically, but you can manipulate
+ the response yourself.
+ For example, to redirect the client: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+prudence.resource.response.locationRef = prudence.resource.request.resourceRef.baseRef
+\end_layout
+
+\begin_layout Plain Layout
+
+prudence.statusCode = 303
+\end_layout
+
+\begin_layout Plain Layout
+
+raise
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+Note the use of "raise": it's a handy trick to end processing of our page.
+ Prudence recognizes that we explicitly changed the status code, so it doesn't
+ consider this to be a real error.
+\end_layout
+
+\begin_layout Standard
+You can use also prudence.statusCode to explicitly set an error, for example
+ to send 403 (``Forbidden'') if the user is not logged in.
+ 
+\end_layout
+
+\begin_layout Standard
+Need more HTTP? Prudence supports HTTP cookies and HTTP authentication challenge
+s.
+ We won't get into that in this tutorial, though.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Templating
+\end_layout
+
+\begin_layout Standard
+You might wonder what other options are available to you other than ``python''
+ for scriptlets.
+ You can choose other languages---Ruby, JavaScript, Clojure, PHP, etc.---if
+ you have them installed.
+ But, more importantly, you can choose to use one of the pre-included templating
+ languages, Succint and Velocity.
+\end_layout
+
+\begin_layout Standard
+Templating languages have far less features than any of the above programming
+ languages, but this can be an advantage if you all you need is simple templatin
+g.
+ They tend to be more readable for templates.
+ Best of all, you can mix scriptlets from various languages in one page.
+ Here's an example of using Velocity and Python: 
+\end_layout
+
+\begin_layout Standard
+/web/fragments/time.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%python
+\end_layout
+
+\begin_layout Plain Layout
+
+from datetime import datetime
+\end_layout
+
+\begin_layout Plain Layout
+
+now = datetime.now()
+\end_layout
+
+\begin_layout Plain Layout
+
+clock = now.strftime('%H:%M')
+\end_layout
+
+\begin_layout Plain Layout
+
+seconds = now.strftime('%S')
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%velocity It is currently $clock o' clock, and $seconds seconds %>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+A Resource
+\end_layout
+
+\begin_layout Standard
+As stated earlier, where Prudence truly shines is in its support for REST
+ resources.
+ A resource is a piece of data associated with a URL, which clients can
+ optionally create, read, update or delete.
+ An HTML web page is an example of a resource which is usually read, and
+ sometimes supports writing (for handling HTML forms).
+ Prudence lets you create resources that support one or more formats, all
+ create/read/update/delete (CRUD) operations, and advanced caching.
+ 
+\end_layout
+
+\begin_layout Standard
+A resource-oriented architecture is perfect for ``AJAX'' and other rich
+ client platforms (Flash, Silverlight, etc.).
+ Another use is for a scalable backend conduit between servers.
+ Depending on how you look at it, resources are either an online database,
+ an API for your service, or both.
+ 
+\end_layout
+
+\begin_layout Quote
+You might want to take a look at 
+\begin_inset CommandInset href
+LatexCommand href
+name "Making the Case for REST"
+target "../rest/"
+
+\end_inset
+
+ for a better understanding of REST and what it can do for you.
+\end_layout
+
+\begin_layout Standard
+Let's start with a resource that can be read for some plain text.
+ Resources are put in the /resources/ subdirectory, and, like /web/dynamic/
+ and /web/static/, the filename and directory tree define the URL:
+\end_layout
+
+\begin_layout Standard
+/resources/wiki.py:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def handle_init(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('text/plain')
+\end_layout
+
+\begin_layout Plain Layout
+
+def handle_get(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	return 'Nothing in the wiki yet.'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+handleInit() always gets called first, before any of the other handler functions.
+ 
+\end_layout
+
+\begin_layout Standard
+Try browsing to 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://localhost:8080/wackiwiki/wiki/"
+target " http://localhost:8080/wackiwiki/wiki/"
+
+\end_inset
+
+ to see your resource.
+\end_layout
+
+\begin_layout Standard
+Plain text is good for us humans to read.
+ But, we might want to support formats that are more useful for client applicati
+ons, such as 
+\begin_inset CommandInset href
+LatexCommand href
+name "JSON"
+target "http://www.json.org/"
+
+\end_inset
+
+ for browser-based JavaScript or Flash's ActiveScript.
+ 
+\end_layout
+
+\begin_layout Standard
+Let's add support for JSON to our resource:
+\end_layout
+
+\begin_layout Standard
+/resources/wiki.py:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+wiki = 'Nothing in the wiki yet.'
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def handle_init(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('text/plain')
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('application/json')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def handle_get(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	if conversation.mediaTypeByName == 'text/plain':
+\end_layout
+
+\begin_layout Plain Layout
+
+		return wiki
+\end_layout
+
+\begin_layout Plain Layout
+
+	else:
+\end_layout
+
+\begin_layout Plain Layout
+
+		return '{"content": "%s"}' % wiki
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+[Add jQuery to dynamic page to test in browser.]
+\end_layout
+
+\begin_layout Standard
+Just as /web/fragments/ was a useful place for us to put reusable web fragments,
+ we can use /libraries/ for reusable code for resources, as well as dynamic
+ web scriptlets.
+ Let's create a library to handle our wiki:
+\end_layout
+
+\begin_layout Standard
+/libraries/wiki.py:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+wiki = 'Nothing in the wiki yet.'
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def get_wiki():
+\end_layout
+
+\begin_layout Plain Layout
+
+	return wikiwiki = 'Nothing in the wiki yet.'
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def handle_init(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('text/plain')
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('application/json')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def handle_get(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	if conversation.mediaTypeByName == 'text/plain':
+\end_layout
+
+\begin_layout Plain Layout
+
+		return wiki
+\end_layout
+
+\begin_layout Plain Layout
+
+	else:
+\end_layout
+
+\begin_layout Plain Layout
+
+		return '{"content": "%s"}' % wiki
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let's make use of our library in our resource: 
+\end_layout
+
+\begin_layout Standard
+/resources/wiki.py:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+from wiki import get_wiki
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def handle_init(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('text/plain')
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('application/json')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def handle_get(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	if conversation.mediaTypeByName == 'text/plain':
+\end_layout
+
+\begin_layout Plain Layout
+
+		return get_wiki()
+\end_layout
+
+\begin_layout Plain Layout
+
+	else:
+\end_layout
+
+\begin_layout Plain Layout
+
+		return '{"content": "%s"}' % get_wiki()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+[Put, Post, Delete.]
+\end_layout
+
+\begin_layout Standard
+/libraries/wiki.py:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+from threading import RLock
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+wiki = 'Nothing in the wiki yet.'
+\end_layout
+
+\begin_layout Plain Layout
+
+wiki_lock = RLock()
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def get_wiki():
+\end_layout
+
+\begin_layout Plain Layout
+
+	wiki_lock.acquire()
+\end_layout
+
+\begin_layout Plain Layout
+
+	try:
+\end_layout
+
+\begin_layout Plain Layout
+
+		return wiki
+\end_layout
+
+\begin_layout Plain Layout
+
+	finally:
+\end_layout
+
+\begin_layout Plain Layout
+
+		wiki_lock.release()
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def set_wiki(content):
+\end_layout
+
+\begin_layout Plain Layout
+
+	wiki_lock.acquire()
+\end_layout
+
+\begin_layout Plain Layout
+
+	try:
+\end_layout
+
+\begin_layout Plain Layout
+
+		wiki = content
+\end_layout
+
+\begin_layout Plain Layout
+
+	finally:
+\end_layout
+
+\begin_layout Plain Layout
+
+		wiki_lock.release()
+\end_layout
+
+\end_inset
+
+[Fixing our form handling from earlier using doPost.]
+\end_layout
+
+\begin_layout Standard
+Remember how we supported client-side caching for our dynamic web pages?
+ We have much more control over this process in resources.
+ We can set explicit modification dates and ETags.
+ 
+\end_layout
+
+\begin_layout Standard
+Let's give our wiki resources a modification date, so that clients can properly
+ cache it:
+\end_layout
+
+\begin_layout Standard
+/libraries/wiki.py:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+from threading import RLock
+\end_layout
+
+\begin_layout Plain Layout
+
+from datetime import datetime
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def to_milliseconds(dt):
+\end_layout
+
+\begin_layout Plain Layout
+
+	return long(mktime(dt.timetuple()) * 1000)
+\end_layout
+
+\begin_layout Plain Layout
+
+	wiki = {content: 'Nothing in the wiki yet.', timestamp: datetime.now()}
+\end_layout
+
+\begin_layout Plain Layout
+
+	wiki_lock = RLock()
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def get_wiki():
+\end_layout
+
+\begin_layout Plain Layout
+
+	wiki_lock.acquire()
+\end_layout
+
+\begin_layout Plain Layout
+
+	try:
+\end_layout
+
+\begin_layout Plain Layout
+
+		# Note that we are returning a copy of our wiki dictionary!
+\end_layout
+
+\begin_layout Plain Layout
+
+		return {content: wiki['content'], timestamp: wiki['timestamp']}
+\end_layout
+
+\begin_layout Plain Layout
+
+	finally:
+\end_layout
+
+\begin_layout Plain Layout
+
+		wiki_lock.release()
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def set_wiki(content):
+\end_layout
+
+\begin_layout Plain Layout
+
+	wiki_lock.acquire()
+\end_layout
+
+\begin_layout Plain Layout
+
+	try:
+\end_layout
+
+\begin_layout Plain Layout
+
+		wiki['content'] = content
+\end_layout
+
+\begin_layout Plain Layout
+
+		wiki['timestamp'] = datetime.now()
+\end_layout
+
+\begin_layout Plain Layout
+
+	finally:
+\end_layout
+
+\begin_layout Plain Layout
+
+		wiki_lock.release()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+/resources/wiki.py:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+from wiki import get_wiki, set_wiki, to_milliseconds
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def handle_init(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('text/plain')
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('application/json')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def handle_get(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	wiki = get_wiki()
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.modificationTimestamp = to_milliseconds(wiki['timestamp'])
+\end_layout
+
+\begin_layout Plain Layout
+
+	if conversation.mediaTypeByName == 'text/plain':
+\end_layout
+
+\begin_layout Plain Layout
+
+		return wiki['content']
+\end_layout
+
+\begin_layout Plain Layout
+
+	else:
+\end_layout
+
+\begin_layout Plain Layout
+
+		return '{"content": "%s"}' % wiki['content']
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Support for modification date can go a long way towards saving us bandwidth.
+ However, note that we still have to fetch the entire wiki in order to get
+ its modification date.
+ This could potentially be a costly operation, say, if the wiki is stored
+ in a database.
+ 
+\end_layout
+
+\begin_layout Standard
+Prudence lets you optimize this by letting you check only the modification
+ date (or ETag) before actually fetching the resource.
+ 
+\end_layout
+
+\begin_layout Standard
+Let's add handleGetInfo():
+\end_layout
+
+\begin_layout Standard
+/resources/wiki.py:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+from wiki import get_wiki, set_wiki, to_milliseconds
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def handle_init(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('text/plain')
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('application/json')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def handle_get(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	wiki = get_wiki()
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.modificationTimestamp = to_milliseconds(wiki['timestamp'])
+\end_layout
+
+\begin_layout Plain Layout
+
+	if conversation.mediaTypeByName == 'text/plain':
+\end_layout
+
+\begin_layout Plain Layout
+
+		return wiki['content']
+\end_layout
+
+\begin_layout Plain Layout
+
+	else:
+\end_layout
+
+\begin_layout Plain Layout
+
+		return '{"content": "%s"}' % wiki['content']
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def handle_get_info(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	wiki = get_wiki()
+\end_layout
+
+\begin_layout Plain Layout
+
+	return to_milliseconds(wiki['timestamp'])
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Our trivial example didn't offer any significant savings.
+ But, suppose our resource involved fetching lots of wiki pages at once?
+ We could save computing power if you we only had to fetch a modification
+ date.
+ 
+\end_layout
+
+\begin_layout Standard
+As we said earlier, our resources can be seen as an API.
+ Indeed, there's no reason to maintain two sets of APIs, one for ``the world''
+ to access via your resources, and one for your application to use internally.
+ You can use easily use your resources internally: 
+\end_layout
+
+\begin_layout Standard
+/fragments/wiki.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%python
+\end_layout
+
+\begin_layout Plain Layout
+
+wiki = document.internal('wiki', 'application/json')
+\end_layout
+
+\begin_layout Plain Layout
+
+wiki = eval('(' + wiki.text + ')')
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+Wiki content is: <%= wiki['content'] %>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The above is wasteful because we are turning the wiki data into JSON and
+ then back again.
+ For internal API uses, it's possible to support direct access to the object:
+ 
+\end_layout
+
+\begin_layout Standard
+[ObjectRepresentation]
+\end_layout
+
+\begin_layout Standard
+For completion, here's an example of how to access our resources from another
+ Prudence-based application:
+\end_layout
+
+\begin_layout Standard
+/fragments/wiki.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%python
+\end_layout
+
+\begin_layout Plain Layout
+
+wiki = document.external('http://192.168.1.2/wackywiki/wiki', 'application/json')
+\end_layout
+
+\begin_layout Plain Layout
+
+wiki = eval('(' + wiki.text + ')')
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+Wiki content is: <%= wiki['content'] %>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Advanced Routing
+\end_layout
+
+\begin_layout Standard
+Capturing URL patterns.
+\end_layout
+
+\begin_layout Standard
+Improve our resource above over the query params.
+\end_layout
+
+\begin_layout Quote
+
+\emph on
+By the way:
+\emph default
+ Difference between URL and URI.
+\end_layout
+
+\begin_layout Standard
+Virtual hosting, multiple servers.
+\end_layout
+
+\begin_layout Standard
+Status handlers---custom 404.
+\end_layout
+
+\begin_layout Standard
+Just for fun: robots.txt, sitemap.xml.
+\end_layout
+
+\begin_layout Subsection
+Other Features
+\end_layout
+
+\begin_layout Standard
+Logging.
+\end_layout
+
+\begin_layout Standard
+Debug page.
+\end_layout
+
+\begin_layout Standard
+Defrosting and pre-heating.
+\end_layout
+
+\begin_layout Standard
+SSL.
+\end_layout
+
+\begin_layout Standard
+Advanced representations.
+ (Restlet extensions.)
+\end_layout
+
+\begin_layout Section
+Instance Configuration
+\end_layout
+
+\begin_layout Section
+Application Configuration
+\end_layout
+
+\begin_layout Subsection
+Settings 
+\end_layout
+
+\begin_layout Subsection
+Routing
+\end_layout
+
+\begin_layout Subsubsection
+URI templates
+\end_layout
+
+\begin_layout Subsubsection
+Attaching 
+\end_layout
+
+\begin_layout Subsubsection
+Redirecting 
+\end_layout
+
+\begin_layout Subsubsection
+Capturing 
+\end_layout
+
+\begin_layout Section
+Resources 
+\end_layout
+
+\begin_layout Section
+HTML Generation
+\end_layout
+
+\begin_layout Subsection
+Scriptlets 
+\end_layout
+
+\begin_layout Section
+Static Web
+\end_layout
+
+\begin_layout Subsection
+CacheControlFilter 
+\end_layout
+
+\begin_layout Subsection
+JavaScriptUnifyMinifyFilter 
+\end_layout
+
+\begin_layout Section
+Debugging 
+\end_layout
+
+\begin_layout Section
+API
+\end_layout
+
+\begin_layout Standard
+Prudence exposes its API as services to your source code, whether its in
+ scriptlets in /web/dynamic/, complete source code in /resources/, or your
+ configuration scripts.
+\end_layout
+
+\begin_layout Subsection
+application
+\end_layout
+
+\begin_layout Standard
+The same ``application'' service is shared between all code in a single
+ application.
+ Note this there is a single application instance per component, even if
+ the application is routed on several virtual hosts and servers.
+ The ``application'' service is a good place to store shared state for the
+ application.
+\end_layout
+
+\begin_layout Paragraph
+application.globals, getGlobal, setGlobal
+\end_layout
+
+\begin_layout Paragraph
+application.arguments (for configuration scripts)
+\end_layout
+
+\begin_layout Paragraph
+application.application
+\end_layout
+
+\begin_layout Paragraph
+application.logger
+\end_layout
+
+\begin_layout Paragraph
+application.getMediaType
+\end_layout
+
+\begin_layout Subsection
+document
+\end_layout
+
+\begin_layout Standard
+The ``document'' service has two distinct uses: first, it represents the
+ file you are in: 
+\shape italic
+this
+\shape default
+ document.
+ This is where you can access the document's attributes and possibly change
+ them.
+ The second use of this service is for accessing 
+\shape italic
+other
+\shape default
+ documents.
+ Prudence combines these two uses into one service, but they functionally
+ separate.
+\end_layout
+
+\begin_layout Standard
+In the case of /resources/ and the configuration scripts, ``this document''
+ is simply the source code file.
+ In the case /web/dynamic/, it's the whole ``text-with-scriptlets'' page,
+ so it is shared by all scriptlets on the page, even if they are written
+ in different languages.
+\end_layout
+
+\begin_layout Subsubsection
+
+\shape italic
+This
+\shape default
+ document:
+\end_layout
+
+\begin_layout Paragraph
+document.source
+\end_layout
+
+\begin_layout Paragraph
+document.source.basePath
+\end_layout
+
+\begin_layout Paragraph
+document.cache
+\end_layout
+
+\begin_layout Paragraph
+document.cache.invalidate
+\end_layout
+
+\begin_layout Paragraph
+document.cacheKey
+\end_layout
+
+\begin_layout Paragraph
+document.cacheDuration
+\end_layout
+
+\begin_layout Paragraph
+document.cacheGroups
+\end_layout
+
+\begin_layout Subsubsection
+
+\shape italic
+Other
+\shape default
+ documents:
+\end_layout
+
+\begin_layout Paragraph
+document.include (/web/dynamic/)
+\end_layout
+
+\begin_layout Paragraph
+document.defaultLanguageTag (for include in startup scripts)
+\end_layout
+
+\begin_layout Paragraph
+document.internal
+\end_layout
+
+\begin_layout Paragraph
+document.external
+\end_layout
+
+\begin_layout Subsection
+executable
+\end_layout
+
+\begin_layout Standard
+The ``executable'' is the low-level equivalent of ``this document'' (see
+ above).
+ Here you can explore which languages are installed in your Prudence instance,
+ and gain access to their implementation mechanism.
+ You'll likely never need to do any of this in your Prudence application.
+ For more information on executables, see Scripturian, the library that
+ handles code execution for Prudence.
+\end_layout
+
+\begin_layout Standard
+A feature that you might want to use here is the executable globals.
+ These are similar to the application globals (see above), except that they
+ are global to the entire Prudence instance (in fact, to the virtual machine).
+ It's a good place to store state that you want shared between Prudence
+ applications.
+\end_layout
+
+\begin_layout Paragraph
+executable.context
+\end_layout
+
+\begin_layout Paragraph
+executable.context.writer
+\end_layout
+
+\begin_layout Paragraph
+executable.context.attributes
+\end_layout
+
+\begin_layout Paragraph
+executable.context.exposedVariables
+\end_layout
+
+\begin_layout Paragraph
+executable.manager
+\end_layout
+
+\begin_layout Paragraph
+executable.container = the document!
+\end_layout
+
+\begin_layout Paragraph
+executable.globals, getGlobal, setGlobal
+\end_layout
+
+\begin_layout Subsection
+conversation
+\end_layout
+
+\begin_layout Standard
+The ``conversation'' represents the request received from the user.
+ This includes your response to the request, hence it's a ``conversation.''
+ Here you can access various aspects of the request: the URI, formatting
+ preferences, client information, and actual data sent with the request
+ (the ``entity'').
+ You can likewise set response characteristics.
+\end_layout
+
+\begin_layout Paragraph
+conversation.resource
+\end_layout
+
+\begin_layout Paragraph
+conversation.resource.request
+\end_layout
+
+\begin_layout Paragraph
+conversation.resource.request.resourceRef
+\end_layout
+
+\begin_layout Paragraph
+conversation.resource.response
+\end_layout
+
+\begin_layout Paragraph
+conversation.form, formAll
+\end_layout
+
+\begin_layout Paragraph
+conversation.uriValues
+\end_layout
+
+\begin_layout Paragraph
+conversation.characterSet Name, Extension
+\end_layout
+
+\begin_layout Paragraph
+conversation.language Name, Extension
+\end_layout
+
+\begin_layout Paragraph
+conversation.mediaType Name, Extension
+\end_layout
+
+\begin_layout Paragraph
+conversation.expirationDate/Timestamp
+\end_layout
+
+\begin_layout Paragraph
+conversation.modificationDate/Timestamp
+\end_layout
+
+\begin_layout Paragraph
+conversation.tag httpTag
+\end_layout
+
+\begin_layout Paragraph
+conversation.maxAge
+\end_layout
+
+\begin_layout Paragraph
+conversation.statusCode
+\end_layout
+
+\begin_layout Paragraph
+conversation.variant
+\end_layout
+
+\begin_layout Paragraph
+conversation.entity
+\end_layout
+
+\begin_layout Paragraph
+conversation.internal?
+\end_layout
+
+\begin_layout Paragraph
+conversation.addMediaType ByName, ByExtension
+\end_layout
+
+\begin_layout Paragraph
+conversation.streaming? (/web/dynamic/)
+\end_layout
+
+\begin_layout Paragraph
+conversation.stream (/web/dynamic/)
+\end_layout
+
+\begin_layout Paragraph
+conversation.yield
+\end_layout
+
+\begin_layout Paragraph
+conversation.locals
+\end_layout
+
+\begin_layout Paragraph
+conversation.kaboom
+\end_layout
+
+\begin_layout Subsection
+Routing
+\end_layout
+
+\begin_layout Paragraph
+router.redirect
+\end_layout
+
+\begin_layout Paragraph
+router.capture
+\end_layout
+
+\begin_layout Paragraph
+statusService.capture
+\end_layout
+
+\begin_layout Section
+For Java Programmers
+\end_layout
+
+\begin_layout Standard
+Prudence brings the power of REST and the JVM to programmers in other languages,
+ but has a lot to offer to Java/Restlet developers.
+\end_layout
+
+\begin_layout Standard
+A 100% Restlet-based alternative to servlet/JEE containers.
+ (Requires only Restlet SE.)
+\end_layout
+
+\begin_layout Enumerate
+Easy deployment
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Boot scripts: avoid weird configuration formats and start your Restlet component
+ exactly as you want (in your choice of scripting language) 
+\end_layout
+
+\begin_layout Enumerate
+Default scripts already handle things like virtual hosting, multiple servers
+ and internal routing 
+\end_layout
+
+\begin_layout Enumerate
+Designed from the ground-up to handle multiple apps on the same component
+ 
+\end_layout
+
+\begin_layout Enumerate
+Admin app for realtime management of server(s) 
+\end_layout
+
+\begin_layout Enumerate
+Logging is pre-configured and ``just works,'' including Apache-compatible
+ web log 
+\end_layout
+
+\begin_layout Enumerate
+Single-file ``plop'' deployment (like WAR files) 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Easy prototyping of REST resources
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+In the language of your choice 
+\end_layout
+
+\begin_layout Enumerate
+Code is compiled, cached and loaded on-the-fly 
+\end_layout
+
+\begin_layout Enumerate
+Rich debug page for runtime errors 
+\end_layout
+
+\begin_layout Enumerate
+When you're happy with it, you can rewrite it as a ServerResource in Java
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Powerful HTML generation platform, like JSP/ASP/PHP (again, 100% Restlet-based)
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+In the language of your choice, including mixing languages and template
+ engines (Velocity, Succinct) on one page 
+\end_layout
+
+\begin_layout Enumerate
+Code is compiled, cached and loaded on-the-fly 
+\end_layout
+
+\begin_layout Enumerate
+RAM/db server-side caching (uses Restlet's URI template language for cache
+ key generation) 
+\end_layout
+
+\begin_layout Enumerate
+Straightforward support for client-side caching 
+\end_layout
+
+\begin_layout Enumerate
+Easily ``stream'' output (Restlet async) 
+\end_layout
+
+\begin_layout Enumerate
+Easily accept uploaded files 
+\end_layout
+
+\begin_layout Enumerate
+Rich debug page for runtime errors 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Restlet sugar 
+\end_layout
+
+\begin_layout Standard
+Prudence comes with classes to Restlet tasks.
+ You are free to use them without the Prudence platform.
+ (They are available as a standalone jar.)
+\end_layout
+
+\begin_layout Enumerate
+Fallback router - Attach multiple MODE_STARTS_WITH restlets to the same
+ base URI.
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+URI ``capturing'' (internal redirection) - Let the URI-space you expose
+ to the world be different from the one you use internally.
+ 
+\end_layout
+
+\begin_layout Enumerate
+JavaScript unify-and-minify filter - Improve performance on web browsers.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Delegated status service for displaying custom pages for error codes (404,
+ 500, etc.) - They can be dynamically generated with Prudence ``text-with-scriptl
+ets.'' 
+\end_layout
+
+\begin_layout Enumerate
+Rich debug representation 
+\end_layout
+
+\begin_layout Enumerate
+Caching system designed for StringRepresentations 
+\end_layout
+
+\begin_layout Enumerate
+Easy file uploads - Slightly higher-level than the Restlet FileUpload extension.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Also check out Scripturian and Jygments, Prudence's sister libraries 
+\end_layout
+
+\end_deeper
+\begin_layout Section
+How to Choose a Flavor?
+\end_layout
+
+\begin_layout Subsection
+Python (Succulent!)
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "Python"
+target "http://www.python.org/"
+
+\end_inset
+
+ is a powerful object-oriented language, far richer in features than JavaScript
+ and PHP, with many high-quality core and 3rd party libraries.
+ Python has already proven itself as a web programming language with many
+ excellent platforms.
+\end_layout
+
+\begin_layout Standard
+Python presents a unique challenge in a scriptlet environment, due to its
+ reliance on indentation.
+ However, because HTML is loose with whitespace, it's possible to force
+ the whole file to adhere to Python's scheme.
+ In fact, as many Python enthusiasts would argue, forcing your code to adhere
+ to Python's indentation requirements can go a long way towards making it
+ more readable and manageable.
+\end_layout
+
+\begin_layout Standard
+In the included example application we show how to use 
+\begin_inset CommandInset href
+LatexCommand href
+name "SQLAlchemy"
+target "http://www.sqlalchemy.org/"
+
+\end_inset
+
+ as a data backend for Prudence.
+\end_layout
+
+\begin_layout Quote
+Note: Prudence Python was built primarily around 
+\begin_inset CommandInset href
+LatexCommand href
+name "Jython"
+target "http://www.jython.org/"
+
+\end_inset
+
+, but also offers limited support for 
+\begin_inset CommandInset href
+LatexCommand href
+name "Jepp"
+target "http://jepp.sourceforge.net/"
+
+\end_inset
+
+ if it's installed.
+ For those cases where you need access to a natively built Python library
+ that won't work on Jython, Jepp lets you run code on the CPython platform.
+\end_layout
+
+\begin_layout Subsection
+Ruby (Delectable!)
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "Ruby"
+target "http://www.ruby-lang.org/"
+
+\end_inset
+
+ can do most of what Python can do and more.
+ A true chameleon, it can adapt to many styles of code and programming.
+ If something can be possible, Ruby allows it and supports it.
+ Unlike Python, it has a very loose and forgiving syntax, which is perfect
+ for scriptlets.
+\end_layout
+
+\begin_layout Standard
+Ruby's 
+\begin_inset CommandInset href
+LatexCommand href
+name "Rails"
+target "http://rubyonrails.org/"
+
+\end_inset
+
+ platform has revolutionized web programming by offering elegant, powerful
+ alternatives to working directly with HTTP.
+ We hope Ruby web programmers will find in Prudence a refreshing alternative
+ to Rails: elegantly embracing HTTP, instead of avoiding it.
+\end_layout
+
+\begin_layout Subsection
+Clojure (Scrumptious!)
+\end_layout
+
+\begin_layout Standard
+Prudence's only functional flavor is a Lisp designed from the ground up
+ for high concurrency.
+ If you're serious about scaling, 
+\begin_inset CommandInset href
+LatexCommand href
+name "Clojure"
+target "http://clojure.org/"
+
+\end_inset
+
+ is the way to go.
+ Though new, Clojure is based on one of the oldest programming languages
+ around, and enjoys a rich tradition of elegant solutions for tough programming
+ challenges.
+\end_layout
+
+\begin_layout Standard
+Clojure embraces the JVM, but also has a growing collection of nifty ``contrib''
+ libraries---all included in Prudence.
+ In the included example application, we show how to use Clojure's SQL library
+ to access a data backend the Clojure way.
+\end_layout
+
+\begin_layout Standard
+Three Crickets ♥ Clojure.
+ 
+\end_layout
+
+\begin_layout Subsection
+JavaScript (Savory!)
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "JavaScript"
+target "https://developer.mozilla.org/en/JavaScript"
+
+\end_inset
+
+ (a dialect of 
+\begin_inset CommandInset href
+LatexCommand href
+name "ECMAScript"
+target "http://www.ecmascript.org/"
+
+\end_inset
+
+) is a sensible choice for ``AJAX'' and other rich web client applications,
+ because it's the same language used by web browsers and other client platforms.
+ Web developers are already proficient in JavaScript, and can quickly be
+ brought on board to a server-side project.
+ JavaScript lets you to write server-side and client-side code in the same
+ language, and have both sides share code.
+ Couple it with 
+\begin_inset CommandInset href
+LatexCommand href
+name "JSON"
+target "http://www.json.org/"
+
+\end_inset
+
+, and you're on solid ground for rapid development.
+ Of all the web programming languages, it's the one most widely deployed
+ and with the most secure future.
+\end_layout
+
+\begin_layout Standard
+JavaScript is an under-appreciated language.
+ Though not as feature-rich as Python or Ruby, it's still very powerful.
+ Its straightforward closure/prototype mechanisms allow it to support object-ori
+entation, namespaces and other paradigms.
+ It's also been the target of much un-deserved angst due to the fickleness
+ of in-browser development.
+ Working with the DOM, cross-browser HTML rendering quirks---none of these
+ are the faults of the language itself, and none of these are relevant to
+ server-side development with Prudence.
+\end_layout
+
+\begin_layout Standard
+JavaScript does not have its own core libraries, making it the most minimal
+ Prudence flavor.
+ But this isn't necessarily a deficiency: instead, it uses the excellent
+ JVM core.
+\end_layout
+
+\begin_layout Subsection
+PHP (Ambrosial!)
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "PHP"
+target "http://www.php.net/"
+
+\end_inset
+
+is, of course, ubiquitous.
+ It's a simple language with the most mature libraries of any web programming
+ language, and programmers are available with years of experience.
+ It's also designed from the ground up as a programming language for the
+ web.
+\end_layout
+
+\begin_layout Standard
+Prudence allows a smooth transition from traditional PHP HTML generation
+ to REST resources.
+ It supports PHP "superglobals" such as $_GET, $_POST, $_COOKIE and $_FILE
+ (but not $_SESSION) to make you feel right at home.
+ It also adds many new features to conventional HTML generation: fine-grained
+ caching, high-performance templating languages, and more.
+\end_layout
+
+\begin_layout Quote
+Note: Prudence PHP was built around the open source edition of 
+\begin_inset CommandInset href
+LatexCommand href
+name "Quercus"
+target "http://quercus.caucho.com/Quercus"
+
+\end_inset
+
+, which does not feature JVM bytecode compilation as is available in the
+ non-free professional edition.
+ Nevertheless, we found it an excellent performer!
+\end_layout
+
+\begin_layout Subsection
+Groovy (Luscious!)
+\end_layout
+
+\begin_layout Standard
+In some ways, 
+\begin_inset CommandInset href
+LatexCommand href
+name "Groovy"
+target "http://groovy.codehaus.org/"
+
+\end_inset
+
+ is the best of this bunch.
+ It has all the flexibility of Ruby, but is designed from the ground up
+ to enhance and extend Java.
+ Java programmers would immediately feel at home, while gaining access to
+ far less restrictive programming paradigms.
+ Groovy makes Java...
+ groovy.
+\end_layout
+
+\begin_layout Standard
+If you know your project will require a lot of interaction with Java libraries,
+ Groovy is a terrific---and fun!---choice.
+ (Note that other Prudence flavors also offer JVM interaction, but Groovy
+ does it best.) 
+\end_layout
+
+\begin_layout Section
+The Case for REST
+\end_layout
+
+\begin_layout Standard
+There's a lot of buzz about REST, but also a lot confusion about what it
+ is and what it's good for.
+ The essay attempts to convey its simple essence.
+\end_layout
+
+\begin_layout Standard
+Let's start, then, not at REST, but at an attempt to create a new architecture
+ for building scalabale applications.
+ Our goals are for it to be minimal, straightforward, and still have enough
+ features to be productive.
+ We want to learn some lessons from the failures of other, more elaborate
+ and ``complete'' architectures.
+\end_layout
+
+\begin_layout Standard
+Let's call ours a ``resource-oriented architecture.''
+\end_layout
+
+\begin_layout Subsection
+Resources
+\end_layout
+
+\begin_layout Standard
+Our base unit is a ``resource,'' which, like an object in object-oriented
+ architectures, encapsulates data with some functionality.
+ However, we've learned from object-orientation that implementing arbitrary
+ interfaces is a recipe for enormous complexity.
+ Instead, then, we'll keep it simple and define a limited interface that
+ would still be useful enough.
+\end_layout
+
+\begin_layout Standard
+From our experience with relational databases, we've learned that a tremendous
+ amount of power can be found in ``CRUD'': Create, Read, Update and Delete.
+ If we support just these operations, our resources will already be very
+ powerful, enjoying the accumulated wisdom and design patterns from the
+ database world.
+ 
+\end_layout
+
+\begin_layout Subsection
+Identifiers
+\end_layout
+
+\begin_layout Standard
+First, let's start with a way of discriminating our resources.
+ We'll define a name-based address space where our resources live.
+ Each resource is ``attached'' to one or more addresses.
+ We'll allow for ``/'' as a customary separator to allow for hierarchical
+ addressing schemes.
+ For example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+/animal/cat/12/image
+\end_layout
+
+\begin_layout Plain Layout
+
+/animal/cat/12/image/large
+\end_layout
+
+\begin_layout Plain Layout
+
+/animal/cat/12/specs
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the above, we've allowed for different kinds of animals, a way of referencing
+ individual animals, and a way of referencing specific aspects of these
+ animals.
+ Let's now go over CRUD operations in order of complexity.
+\end_layout
+
+\begin_layout Subsection
+Delete
+\end_layout
+
+\begin_layout Standard
+``Delete'' is the most trivial operation.
+ After sending ``delete'' to an identifier, we expect it to not exist anymore.
+ Whether or not sub-resources in our hierarchy can exist or not, we'd leave
+ up to individual implementations.
+ For example, deleting ``/animal/cat/12/image'' may or may not delete ``/animal/
+cat/12/image/large''.
+\end_layout
+
+\begin_layout Standard
+Note that we don't care about atomicity here, because we don't expect anything
+ after our ``delete'' operation.
+ A million changes can happen to our cat before our command is processed,
+ but they're all forgotten after ``delete.'' (See ``update,'' below, for
+ a small caveat.)
+\end_layout
+
+\begin_layout Subsection
+Read
+\end_layout
+
+\begin_layout Standard
+``Read'' is a bit more complicated than ``delete.'' Since we expect our resource
+ to change, we want to make sure that there's some kind of way to mark which
+ version we are reading.
+ This will allow us to avoid unnecessary reads if there hasn't been any
+ change.
+\end_layout
+
+\begin_layout Standard
+We'll need our resource-oriented architecture to support some kind of version
+ tagging feature.
+\end_layout
+
+\begin_layout Subsection
+Update
+\end_layout
+
+\begin_layout Standard
+The problem with ``update'' is that it always references a certain version
+ that we have ``read'' before.
+ In some cases, though not all, we need some way to make sure that the data
+ we expect to be there hasn't changed since we've last ``read'' it.
+ Let's call this a ``conditional update.''
+\end_layout
+
+\begin_layout Standard
+Actually, we've oversimplified our earlier definition of ``delete.'' In some
+ cases, we'd want a ``conditional delete'' to depend on certain expectations
+ about the data.
+ We might not want the resource deleted in some cases.
+\end_layout
+
+\begin_layout Standard
+We'll need our resource-oriented architecture to support a ``conditional''
+ feature.
+ 
+\end_layout
+
+\begin_layout Subsection
+Create
+\end_layout
+
+\begin_layout Standard
+This is our most complex operation.
+ Our first problem is that our identifier might not exist yet.
+ One approach could be to try identifiers in sequence:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Create: /animal/cat/13 -> Error, already exists
+\end_layout
+
+\begin_layout Plain Layout
+
+Create: /animal/cat/14 -> Error, already exists
+\end_layout
+
+\begin_layout Plain Layout
+
+Create: /animal/cat/15 -> Error, already exists
+\end_layout
+
+\begin_layout Plain Layout
+
+...
+\end_layout
+
+\begin_layout Plain Layout
+
+Create: /animal/cat/302041 -> Success!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Obviously, this is not a scalable solution.
+ Another approach could be to have a helper resource which provides us with
+ the necessary ID:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Read: /animal/cat/next -> 14
+\end_layout
+
+\begin_layout Plain Layout
+
+Create: /animal/cat/14 -> Oops, someone else beat us to 14!
+\end_layout
+
+\begin_layout Plain Layout
+
+Read: /animal/cat/next -> 15
+\end_layout
+
+\begin_layout Plain Layout
+
+Create: /animal/cat/15 -> Success!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Of course, we can also have ``/animal/cat/next'' return IDs that are never
+ used and avoid duplications.
+ If we never create our cat, they will be wasted, though.
+ The main problem with this approach is that it requires two calls per creation:
+ a ``read,'' and then a ``create.'' We can handle this in one call by allowing
+ for ``partial'' creation:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Create: /animal/cat -> We send the data for the cat without the ID, and
+ get back the ID
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Other solutions exist, too.
+ The point of this discussion is to show you that ``create'' is not trivial,
+ but also that solutions to ``create'' exist within the resource-oriented
+ architecture we've defined.
+ ``Create,'' though complex, does not demand any new features.
+ 
+\end_layout
+
+\begin_layout Subsection
+Aggregate Resources
+\end_layout
+
+\begin_layout Standard
+At first glance, handling the problem of getting lots of resources at the
+ same time, thus saving on the number of calls, can trivially be handled
+ by the features we've listed so far.
+ A common solution is to define a ``plural'' version of the ``singular''
+ resource:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+/animal/cats
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A ``read'' would give us all cats.
+ But what if there are ten million cats? We can support paging.
+ Again, we have a solution within our current feature set, using identifiers
+ for each subset of cats:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+/animal/cats/100/200
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The above would return no more than 100 cats: from the 100th, to the 200th.
+ There's a slight problem in this solution: the burden is on whatever component
+ in our system handles mapping identifiers to resources.
+ This is not terrible, but if we want our system to be more generic, it
+ could help if things like ``100 to 200'' could be handled by our resource
+ more directly.
+ For this convenience, let's implement a simple parameter system for all
+ commands:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Read(100, 200): /animal/cats
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the above, our mapping component only needs to know ``/animal/cats''.
+ It can be very dumb, and easy to implement.
+ 
+\end_layout
+
+\begin_layout Subsection
+Formats
+\end_layout
+
+\begin_layout Standard
+The problem of supporting multiple formats seems similar, at first glance,
+ to that of aggregate resources.
+ Again, we could potentially solve it with command parameters:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Read(UTF-8, Russian): /animal/cat/13
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This would give us a Russian, Unicode UTF-8 encoded version of our cat.
+ Looks good, except that there is a potential problem.
+ The client might prefer certain formats, but actually be able to handle
+ others.
+ We would not want a series of wasteful operations to happen until one succeeds.
+ Of course, we can have another resource where all available formats are
+ listed, but this would require an extra call, and also introduce the problem
+ of atomicity.
+ A better solution would be to have the client associate certain preferences
+ per command, have our resource emit its capabilities, with mapping component
+ in between ``negotiating'' these two lists, via a simple algorithm, and
+ choose the best mutually preferable format.
+\end_layout
+
+\begin_layout Standard
+This would be a simple feature to add to our resource-oriented architecture,
+ which could greatly help to decouple its support for multiple formats from
+ its addressing scheme.
+ 
+\end_layout
+
+\begin_layout Subsection
+Shared State
+\end_layout
+
+\begin_layout Standard
+Shared state between the client and server is very useful for managing sessions,
+ and implementing basic security.
+ Of course, it's quite easy to abuse shared state, too, by treating it as
+ a cache for data.
+ We don't want to encourage that.
+ Instead, we just want a very simple shared state system.
+\end_layout
+
+\begin_layout Standard
+We'll allow for this by attaching small, named, shared state objects to
+ every request and response to a command.
+ Nothing fancy or elaborate.
+ There is a potential security breach here, so we have to trust that all
+ components along the way honor the relationship between client and server,
+ and don't allow other servers access to our shared state.
+ 
+\end_layout
+
+\begin_layout Subsection
+Summary of Features
+\end_layout
+
+\begin_layout Standard
+So, what do we need?
+\end_layout
+
+\begin_layout Standard
+We need a way to map identifiers to resources.
+ We need support for the four CRUD operations.
+ We need support for "conditional" updates and deletes.
+ We need all operations to support ``parameters.'' We need ``negotiation''
+ of formats.
+ And, we need a simple shared state attachment feature.
+\end_layout
+
+\begin_layout Standard
+This list is very easy to implement.
+ It requires very little computing power, and no support for generic, arbitrary
+ additions.
+\end_layout
+
+\begin_layout Standard
+Before we go on, it's worth mentioning one important feature which we did
+ not require: transactions.
+ Transactions are optional, and sometimes core features in many databases
+ and distributed object systems.
+ They can be extremely powerful, as they allow atomicity across an arbitrary
+ number of commands.
+ They are also, however, heavy to implement, as they require considerable
+ shared state between client and server.
+ Powerful as they are, it is possible to live without them.
+ It's possible, for example, to implement this atomicity within a single
+ resource.
+ This would require us to define special resources per type of transaction
+ which we want to support, but it does remove the heavy burden of supporting
+ arbitrary transactions from our architecture.
+ With some small reluctance, then, we'll do without transactions.
+ 
+\end_layout
+
+\begin_layout Subsection
+Let's Do It!
+\end_layout
+
+\begin_layout Standard
+OK, so now we know what we need, let's go ahead and implement the infrastructure
+ of components to handle our requirements.
+ All we need is stacks for all supported clients, backend stacks for all
+ our potential server platforms, middleware components to handle all the
+ identifier routing, content negotiation, caching of data...
+\end_layout
+
+\begin_layout Standard
+...And thousands of man hours to develop, test, deploy, and integrate.
+ Like any large-scale, enterprise architecture, even trivial requirements
+ have to jump through the usual hoops set up by the sheer scale of the task.
+ Behind every great architecture are the nuts and bolts of the infrastructure.
+\end_layout
+
+\begin_layout Standard
+Wouldn't it be great if the infrastructure already existed?
+\end_layout
+
+\begin_layout Subsection
+The Punchline
+\end_layout
+
+\begin_layout Standard
+Well, duh.
+ All the requirements for our resource-oriented architecture are already
+ supported by HTTP:
+\end_layout
+
+\begin_layout Standard
+Our resource identifiers are simple URLs.
+ The CRUD operations are in the four HTTP verbs: PUT, GET, POST and DELETE.
+ ``Conditional'' and ``negotiated'' modes are handled by headers, as are
+ ``cookies'' for shared state.
+ Version stamps are e-tags.
+ Command parameters are query matrixes appended to URLs.
+ It's all there.
+\end_layout
+
+\begin_layout Standard
+Most importantly, the infrastructure for HTTP is already fully deployed
+ world-wide.
+ TCP/IP stacks are part of practically every operating system; wiring, switching
+ and routing are part and parcel; HTTP gateways, firewalls, load balancers,
+ proxies, caches, filters, etc., are stable consumer components; certificate
+ authorities, national laws, international agreements are already in place
+ to support the complex inter-business interaction.
+ Importantly, this infrastructure is successfully maintained, with minimal
+ down-time, by highly-skilled independent technicians, organizations and
+ component vendors across the world.
+\end_layout
+
+\begin_layout Standard
+It's important to note a dependency and possible limitation of HTTP: it
+ is bound to TCP/IP.
+ Indeed, all identifiers are URLs: Uniform Resource Locators.
+ In URLs, the first segment is reserved for the domain, either an IP address
+ or a domain name translatable to an IP address.
+ Compare this with the more general URIs (Uniform Resource Identifiers),
+ which do not have this requirement.
+ Though we'll often be tied to HTTP in REST, you'll see the literature attemptin
+g, at least, to be more generic.
+ There are definitely use cases for non-HTTP, and even non-TCP/IP addressing
+ schemes.
+ In Prudence, you'll see that it's possible to 
+\begin_inset CommandInset href
+LatexCommand href
+name "address internal resources with non-URL kinds of URIs"
+target "http://localhost:8080/prudence-guide/rest/guide/resources"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsection
+It's All About Infrastructure
+\end_layout
+
+\begin_layout Standard
+The most important lesson to take from this experience is the importance
+ of infrastructure.
+ This is why, I believe, Roy Fielding named 
+\begin_inset CommandInset href
+LatexCommand href
+name "Chapter 5 of his 2000 dissertation"
+target "http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm"
+
+\end_inset
+
+ ``Representational State Transfer'' rather than, say, ``resource-oriented
+ architecture,'' as we have here.
+ Fielding, one of the authors of the HTTP protocol, was intimately familiar
+ with its challenges, and the name is intended to point out the key characterist
+ic of its infrastructure: it's all about the transfer of lightly annotated
+ data representations.
+ "Resources" are merely logical encapsulations of these representations,
+ depending on a contract between client and server.
+ The infrastructure does not, in itself, do anything in particular to maintain,
+ say, a sensible hierarchy of addresses, the atomicity of CRUD operations,
+ etc.
+ That's up to your implementation.
+ But, representational state transfer---REST---is the mundane, underlying
+ magic that makes it all possible.
+\end_layout
+
+\begin_layout Standard
+To put it succinctly, a resource-oriented architecture requires a REST infrastru
+cture.
+ Practically, the two terms become interchangeable.
+\end_layout
+
+\begin_layout Standard
+The principles of resource-orientation can and are applied in many systems.
+ The word wide web, of course, with its ecology of web browsers, web servers,
+ certificate authorities, etc., is the most obvious model.
+ But other core internet systems, such as email (SMTP, POP, IMAP), file
+ transfer (FTP, WebDAV) also implement some subset of REST.
+ Your application can do this, too, and enjoy the same potential for scalability
+ as the above.
+ 
+\end_layout
+
+\begin_layout Subsection
+Does REST Scale?
+\end_layout
+
+\begin_layout Standard
+Part of the buzz about REST is that it's an inherently scalable architecture.
+ This is true, but perhaps not in the way that you think.
+\end_layout
+
+\begin_layout Standard
+Consider that there are two uses of the term ``scalable'':
+\end_layout
+
+\begin_layout Standard
+First, it's the ability to respond to a growing number of user requests
+ without degradation in response time, by ``simply'' adding hardware.
+ This is the aspect of scalability that engineers care about.
+ The simple answer is that REST can help, but it doesn't stand out.
+ SOAP can also do it pretty well.
+ REST aficionados sometimes point out that REST is ``stateless,'' or ``session-l
+ess,'' both characteristics that would definitely help scale.
+ But, this is misleading.
+ Protocols might be stateless, but architectures built on top of them don't
+ have to be.
+ For example, we've specifically talked about sessions here.
+ And, you can easily make poorly scalable REST.
+ The bottom line is that there's nothing in REST that guarantees scalability
+ in 
+\emph on
+this
+\emph default
+ respect.
+ Indeed, engineers coming to REST due to this false lure end up wondering
+ what the big deal is.
+\end_layout
+
+\begin_layout Standard
+The second use of ``scalability'' comes from the realm of enterprise and
+ project management.
+ It's the ability of your project to grow in complexity without degradation
+ in your ability to manage it.
+ And that's REST's beauty---you already have the infrastructure, which is
+ the hardest thing to scale in a project.
+ You don't need to deploy client stacks.
+ You don't need to create and update proxy objects for five different programmin
+g languages used in your enterprise.
+ You don't need to deploy incompatible middleware by three different vendors
+ and spend weeks trying to force them to play well together.
+ Why would engineers care about REST? Precisely because they don't have
+ to: they can focus on engineering, rather than get bogged down by infrastructur
+e management.
+\end_layout
+
+\begin_layout Standard
+That said, a ``resource-oriented architecture'' as we defined here is not
+ a bad start for (engineering-wise) scalable systems.
+ Keep your extras lightweight, minimize or eliminate shared state, and encapsula
+te your resources according to use cases, and you won't, at least, create
+ any obstacles to scaling.
+ 
+\end_layout
+
+\begin_layout Subsection
+Prudence
+\end_layout
+
+\begin_layout Standard
+Convinced? The best way to understand REST is to experiment with it.
+ You've come to the right place.
+ Start with the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Prudence tutorial"
+target "../guide/tutorial/"
+
+\end_inset
+
+, and feel free to skip around the documentation and try things out for
+ yourself.
+ You'll find it easy, fun, and powerful enough for you to create large-scale
+ applications that take full advantage of the inherently scalable infrastructure
+ of REST.
+ Happy RESTing! 
+\end_layout
+
+\begin_layout Section
+Scaling Tips
+\end_layout
+
+\begin_layout Standard
+If you want your application to handle many concurrent users, then you are
+ fighting this fact: a request will get queued in the best case or discarded
+ in the worst case if there is no thread available to serve it.
+\end_layout
+
+\begin_layout Standard
+Two variables influence this: 1) your total number of threads and 2) the
+ time it takes each thread to process a request.
+ Increasing the number of threads is straightforward: you keep adding more
+ and more machines behind load balancers.
+ The only challenge in this respect is financial.
+ On the other hand, the time per request has little to do with your computer
+ power.
+ In fact, for various reasons it can grow longer as you keep adding threads.
+ Minimizing the time per request is a design challenge.
+\end_layout
+
+\begin_layout Standard
+Your design objective is to increase concurrency, not necessarily performance.
+ Optimizing for concurrency means breaking up tasks to as many pieces as
+ possible, and possibly even breaking requests into smaller pieces.
+ We'll cover numerous strategies here.
+\end_layout
+
+\begin_layout Standard
+Meanwhile, feel free to frame these mantras on your wall:
+\end_layout
+
+\begin_layout Quote
+``Requests are hot potatoes: Pass them on!''
+\end_layout
+
+\begin_layout Quote
+``It's better to have many short requests than one long one.''
+\end_layout
+
+\begin_layout Standard
+And a favorite:
+\end_layout
+
+\begin_layout Quote
+``Performance does not equal scalability.
+ Performance does not equal scalability.
+ Performance does not equal scalability.''
+\end_layout
+
+\begin_layout Subsection
+Caching
+\end_layout
+
+\begin_layout Standard
+Retrieving from a cache can be orders of magnitude faster than dynamically
+ processing a request.
+ It's your most powerful tool for increasing concurrency.
+\end_layout
+
+\begin_layout Standard
+Caching, however, is only effective is there's something in the cache.
+ It's pointless to cache fragments that appear only to one user on only
+ one page that they won't return to.
+ On the other hand, there may very well be fragments on the page that will
+ recur often.
+ If you design your page carefully to allow for fragmentation, you will
+ reap the benefits of fine-grained caching.
+ Remember, though, that the outermost fragment's expiration defines the
+ expiration of the included fragments.
+ It's thus good practice to define no caching on the page itself, and only
+ to cache fragments.
+\end_layout
+
+\begin_layout Standard
+In your plan for fine-grained caching, take special care to isolate those
+ fragments that cannot be cached, and cache everything around them.
+\end_layout
+
+\begin_layout Standard
+Make sure to change Prudence's cacheKey to fit the lowest common denominator:
+ you want as many possible requests to use the already-cached data, rather
+ than generating new data.
+ Note that, by default, Prudence includes the request URI in the cacheKey.
+ Fragments, though, may very well appear identically in many different URIs.
+ You would thus not want the URI as part of their cacheKey.
+\end_layout
+
+\begin_layout Standard
+Cache aggressively, but also take cache validation seriously.
+ Make good use of Prudence's cacheGroups to allow you to invalidate portions
+ of the cache that should be updated as data changes.
+ Note, though, that every time you invalidate you will lose caching benefits.
+ If possible, make sure that your cacheGroups don't include too many pages.
+ Invalidate only those entries that really need to be invalidated.
+\end_layout
+
+\begin_layout Standard
+(It's sad that many popular web sites do cache validation so poorly.
+ Users have come to expect that sometimes they see wrong, outdated data
+ on a page, sometimes mixed with up-to-date data.
+ The problem is usually solved within minutes, or after a few browser refreshes,
+ but please do strive for a better user experience in your web site!)
+\end_layout
+
+\begin_layout Standard
+If you're using a deferrable task handler, you might want to invalidate
+ cache groups when tasks are done.
+ Consider creating a special internal API that lets the task handler call
+ back to your application to do this.
+\end_layout
+
+\begin_layout Standard
+How long should you cache? As long as the user can bear! In a perfect world,
+ of limitless computing resources, all pages would always be generated freshly
+ per request.
+ In a great many cases, however, there is no harm at all if users see some
+ data that's a few hours or a few days old.
+\end_layout
+
+\begin_layout Subsection
+Necessary Tasks
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+The user can't continue without the task being resolved.
+\end_layout
+
+\begin_layout Standard
+If the necessary task is deterministically fast, you can do all processing
+ in the request iself.
+\end_layout
+
+\begin_layout Standard
+If not, you should queue the task on a handling service and return a ``please
+ wait'' page to the user.
+ It woule be nice to add a progress bar or some other kind of estimation
+ of how long it would take for the task to be done.
+ The client will poll until the task status is marked ``done,'' after which
+ they will be redirected somewhere else.
+ Each polling request sent by the client could likely be processed very
+ quickly, so this this strategy effectively breaks the task into many small
+ requests (``It's better to have many short requests than one long one'').
+\end_layout
+
+\begin_layout Standard
+Implementing a handling service is by no means trivial.
+ It adds a new component to your architecture, one that also has to be made
+ to scale.
+ One can also argue that it adversely affects user experience by adding
+ overhead, delaying the time it takes for the tast to complete.
+ The bottom line, though, is you're vastly increasing concurrency and your
+ ability to scale.
+ And, you're actually improving the user experience: they would get a feedback
+ on what's going on rather than having their browsers spin, waiting for
+ their requests to complete.
+\end_layout
+
+\begin_layout Subsection
+Deferrable Tasks
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+It's OK if the task occurs later.
+\end_layout
+
+\begin_layout Standard
+As with necessary tasks, you can queue these with a task handling service,
+ but it's much simpler because you don't have to keep track of status or
+ display it to the user.
+ This allows you to use a simpler---and more scalable---task handling service.
+\end_layout
+
+\begin_layout Standard
+Deferring tasks does present a challenge to the user experience: What do
+ you do if the task fails, and the user needs to know about it? One solution
+ can be to send a warning email or other kind of message to the user.
+ Another solution could be to have your client constantly poll in the background
+ (via ``AJAX'') to see if there are any error messages, which in turn might
+ require you to keep a queue of such error messages per user.
+\end_layout
+
+\begin_layout Standard
+Before you decide on deferring a task, think carefully of the user experience:
+ for example, users might be constantly refreshing a web page waiting to
+ see the results of their operation.
+ Perhaps the task you thought is deferrable should actually be considered
+ necessary?
+\end_layout
+
+\begin_layout Subsection
+Request Fragmentation
+\end_layout
+
+\begin_layout Standard
+The method suggested above, of having the client poll until a task is completed,
+ lets you break up a task into multiple requests and increase concurrency.
+ In some cases, it's also possible to be break an individual request into
+ pieces.
+ Thus, while you're doing processing, you can free the thread to handle
+ other requests.
+ When you're ready to deliver content, you signal it, and then next available
+ thread takes care of sending your response to the client.
+\end_layout
+
+\begin_layout Standard
+This is also called ``chunking,'' ``asynchronous'' request handling and,
+ at a lower level, ``non-blocking I/O.'' For web services that deliver heavy
+ content, such as images, video, audio, it's absolutely necessary.
+ Without it, a single user could tie up a thread for minutes, if not hours.
+ You would still get degraded performance if you have more concurrent users
+ than you have threads, but at least degradation will be shared among users.
+ Without fragmentation, each user will tie up a thread, and if you're saturated
+ it means that more users won't even be able to access your service.
+\end_layout
+
+\begin_layout Standard
+Even for HTML web pages, which easily fit in a single ``chunk,'' fragmentation
+ can be a good tactic for increasing concurrency.
+ For example, if you need to fetch data from a backend with non-deterministic
+ response time, it's best to free your thread until you actually have content
+ available for the response.
+\end_layout
+
+\begin_layout Standard
+Prudence's streaming mode allows for this: conversation.stream and conversation.yi
+eld let you break up your response.
+ Note that your local variables aren't kept between calls, but in some cases
+ you won't have to keep them, because different parts of the response do
+ entirely different things.
+ If you do need to pass state to the next segment, then you can use conversation.
+locals.
+\end_layout
+
+\begin_layout Standard
+Using conversation.locals requires considerable responsibility.
+ You need to make sure that objects stored there do not hold up any other
+ part of the stack.
+ For example, you might be tempted to put a database connection there so
+ that you can reuse it in the next segment, but this will offer poor concurrency.
+ Though you're releasing the web thread by calling conversation.yield, the
+ database connection is not released.
+ You'll probably want to maintain a database connection pool, so that you
+ can release it before calling yield, and get a new connection afterwards.
+ As you can see, efficient use of conversation.locals requires careful planning,
+ and possibly auxiliary systems.
+\end_layout
+
+\begin_layout Standard
+It's not a good idea to do this for every page.
+ While it's better to have many short requests instead of one long one,
+ it's obviously better to have one short request rather than many short
+ ones.
+ Which web requests are good candidates for fragmentation?
+\end_layout
+
+\begin_layout Enumerate
+Requests that do a few independent operations (meaning that you won't have
+ to use conversation.locals to coordinate between them).
+\end_layout
+
+\begin_layout Enumerate
+Requests that must access services with non-deterministic response times.
+\end_layout
+
+\begin_layout Standard
+And, even for #2, if the service can take a 
+\emph on
+very
+\emph default
+ long time to respond, consider that it might be better to queue the task
+ on a task handler and give proper feedback to the user.
+\end_layout
+
+\begin_layout Standard
+And so, after this lengthy discussion, it turns out that request fragmentation
+ is not such a useful strategy for increasing concurrency.
+ Caching is definitely far more important.
+\end_layout
+
+\begin_layout Subsection
+Data Backends
+\end_layout
+
+\begin_layout Standard
+You can keeping adding more nodes behind a load balancer insofar as each
+ request does not have to access shared state.
+ Useful web applications, however, are likely data-driven.
+\end_layout
+
+\begin_layout Standard
+If the challenge in handling web requests is cutting down the length of
+ request, then that of relational data backends is the struggle against
+ degraded performance as you add new nodes to your database cluster.
+ These nodes have to be synchronized with each other, and that synchronization
+ overhead increases exponentially.
+ There's a definite point of diminishing returns.
+\end_layout
+
+\begin_layout Standard
+Fortunately, there are perfectly workable strategies for scaling data backends.
+\end_layout
+
+\begin_layout Subsubsection
+Graph Databases
+\end_layout
+
+\begin_layout Standard
+If your relational data structure contains a lot of many-to-many relationships
+ and ``generic'' relationships forced into a relational model, then consider
+ using a graph database instead.
+ Not only will your queries be faster, but also the database structure will
+ allow for more efficient replication, and thus scalability.
+ The improvement over relational databases can be dramatic.
+\end_layout
+
+\begin_layout Subsubsection
+Document Databases
+\end_layout
+
+\begin_layout Standard
+If your data contains mostly ``documents''---self-contained records with
+ few relationships to other documents---then consider a document database.
+\end_layout
+
+\begin_layout Standard
+Document databases allow for straightforward distribution and very fine-grained
+ replication, requiring considerably less overhead than relational databases.
+ They are very scalable.
+\end_layout
+
+\begin_layout Standard
+The cost of this scalability is that you cannot do relational queries of
+ your data.
+ Instead, you'll be using distributed map/reduce, or rely on an external
+ indexing service.
+ These are powerful tools, but they do not match relational queries in speed
+ and power.
+\end_layout
+
+\begin_layout Standard
+Document databases are not recommended for all web applications.
+ Many useful applications cannot be reduced to sets of lightly interconnected
+ ``documents'' without giving up a lot of useful functionality.
+\end_layout
+
+\begin_layout Subsubsection
+Best of Both Worlds
+\end_layout
+
+\begin_layout Standard
+Of course, consider that it's very possible to use both SQL and ``NoSQL''
+ databases together for different parts of your application.
+\end_layout
+
+\begin_layout Subsubsection
+Powering Up
+\end_layout
+
+\begin_layout Standard
+The database is one place where high-performance hardware can help.
+ Ten expensive, powerful machines might be equal in total power to forty
+ cheap machines, but they require a quarter of the synchronization overhead,
+ giving you more elbow room to scale up.
+\end_layout
+
+\begin_layout Subsubsection
+Partitioning
+\end_layout
+
+\begin_layout Standard
+Partitioning is as useful to relational database scaling as caching is to
+ web request scaling.
+\end_layout
+
+\begin_layout Standard
+Rather than having one big cluster of identical databases, you will have
+ several smaller clusters of different, independent databases.
+ This lets you add nodes to each cluster without spreading synchronization
+ overhead everywhere.
+ The more partitions you can create, the better you'll be able to scale.
+\end_layout
+
+\begin_layout Paragraph
+Reads vs.
+ Writes
+\end_layout
+
+\begin_layout Standard
+This simple partitioning scheme greatly reduces synchronization overhead.
+ Read-only servers will never send data to the writable servers.
+ Also, knowing that they don't have to handle writes means you can optimize
+ their configurations for aggressive caching.
+\end_layout
+
+\begin_layout Standard
+(In fact, some database synchronization systems will only let you create
+ this kind of cluster, providing you with one ``master'' writable node and
+ several read-only ``slaves.'' They force you to partition!)
+\end_layout
+
+\begin_layout Standard
+Another nice thing about read/write partitioning is that you can easily
+ add it to all the other strategies.
+ Any cluster can thus be divided into two.
+\end_layout
+
+\begin_layout Standard
+Of course, for web services that are heavily balanced towards writes, this
+ is not an effective strategy.
+ For example, if you are implementing an auditing service that is constantly
+ being bombarded by incoming data, but is only queried once in a while,
+ then an extra read-only node won't help you scale.
+\end_layout
+
+\begin_layout Paragraph
+By Feature
+\end_layout
+
+\begin_layout Standard
+The most obvious and effective partitioning scheme is by feature.
+ Your site might offer different kinds of services that are functionally
+ independent of each other, even though they are displayed to users as united.
+ Behind the scenes, each feature uses a different set of tables.
+ The rule of thumb is trivial: if you can put the tables in separate databases,
+ then you can put them these databases in separate clusters.
+\end_layout
+
+\begin_layout Standard
+One concern in feature-based partitioning is that there are a few tables
+ that still need to be shared.
+ For example, even though the features are separate, they all depend on
+ user settings that are stored in one table.
+\end_layout
+
+\begin_layout Standard
+The good news is that it can be cheap to synchronize just this one table
+ between all clusters.
+ Especially if this table doesn't change often---how often do you get new
+ users signing up for your service?---then synchronization overhead will
+ be minimal.
+\end_layout
+
+\begin_layout Standard
+If your database system doesn't let you synchronize individual tables, then
+ you can do it in your code by writing to all clusters at the same time.
+\end_layout
+
+\begin_layout Standard
+Partitioning by feature is terrific in that it lets you partition other
+ parts of the stack, too.
+ For example, you can also use a different set of web servers for each feature.
+\end_layout
+
+\begin_layout Standard
+Also consider that some features might be candidates for using a ``NoSQL''
+ database.
+ Choose the best backend for each feature.
+\end_layout
+
+\begin_layout Paragraph
+By Section
+\end_layout
+
+\begin_layout Standard
+Another kind of partitioning is sometimes called ``sharding.'' It involves
+ splitting up tables into sections that can be placed in different databases.
+ Some databases support sharding as part of their synchronization strategy,
+ but you can also implement it in your code.
+ The great thing about sharding is that it lets you create as many shards
+ (and clusters) as you want.
+ It's the key to the truly large scale.
+\end_layout
+
+\begin_layout Standard
+Unfortunately, like partitioning by feature, sharding is not always possible.
+ You need to also shard all related tables, so that queries can be self-containe
+d within each shard.
+ It's thus most appropriate for one-to-many data hierarchies.
+ For example, if your application is a blog that supports comments, then
+ you put some blogs and their comments on one shard, and others in another
+ shard.
+ However, if, say, you have a feature where blog posts can refer to other
+ arbitrary blog posts, then querying for those would have to cross shard
+ boundaries.
+\end_layout
+
+\begin_layout Standard
+The best way to see where sharding is possible is to draw a diagram of your
+ table relationships.
+ Places in the diagram which look like individual trees---trunks spreading
+ out into branches and twigs---are good candidates for sharding.
+\end_layout
+
+\begin_layout Standard
+How to decide which data goes in which shard?
+\end_layout
+
+\begin_layout Standard
+Sometimes the best strategy is arbitrary.
+ For example, put all the even-numbered IDs in one shard, and the odd-numbered
+ ones in another.
+ This allows for straightforward growth because you can just switch it to
+ division by three if you want three shards.
+\end_layout
+
+\begin_layout Standard
+Another strategy might seem obvious: If you're running a site which shows
+ different sets of data to different users, then why not implement it as
+ essentially separate sites? For example, a social networking site strictly
+ organized around individual cities could have separate database clusters
+ per city.
+\end_layout
+
+\begin_layout Standard
+A ``region'' can be geographical, but also topical.
+ For example, a site hosting dance-related discussion forums might have
+ one cluster for ballet and one for tango.
+ A ``region'' can also refer to user types.
+ For example, your social networking site could be partitioned according
+ to age groups.
+\end_layout
+
+\begin_layout Standard
+The only limitation is queries.
+ You can still let users access profiles in other regions, but cross-regional
+ relational queries won't be possible.
+ Depending on what your application does, this could be a reasonable solution.
+\end_layout
+
+\begin_layout Standard
+A great side-benefit to geographical partitioning is that you can host your
+ servers at data centers within the geographical location, leading to better
+ user experiences.
+ Regional partitioning is useful even for ``NoSQL'' databases.
+\end_layout
+
+\begin_layout Subsubsection
+Coding Tips
+\end_layout
+
+\begin_layout Standard
+If you organize your code well, it would be very easy to implement partitioning.
+ You simply assign different database operations to use different connection
+ pools.
+ If it's by feature, then you can hardcode it for those features.
+ If it's sharding, then you add a switch before each operation telling it
+ which connection pool to use.
+\end_layout
+
+\begin_layout Standard
+Unfortunately, some programming practices make such an effective, clean
+ organization difficult.
+\end_layout
+
+\begin_layout Standard
+Some developers prefer to use ORMs rather than access the database directly.
+ Unfortunately, many ORMs do not easily allow for partitioning, either because
+ they support only a single database connection pool, or because they don't
+ allow your objects to be easily shared between connections.
+\end_layout
+
+\begin_layout Standard
+For example, your logic might require you to retrieve an ``object'' from
+ the database, and only then decide if you need to alter it or not.
+ If you're doing read/write partitioning, then you obviously want to read
+ from the read partition.
+ Some ORMs, though, have the object tied so strongly to an internal connection
+ object that you can't trivially read it from one connection and save it
+ into another.
+ You'd either have to read the object initially from the write partition,
+ minimizing the usefulness of read/write partitioning, or re-read it from
+ the write partition when you realize you need to alter it, causing unnecessary
+ overhead.
+\end_layout
+
+\begin_layout Quote
+If you want to use an ORM, make sure it lets you move objects between connection
+s.
+\end_layout
+
+\begin_layout Standard
+Object oriented design is also problematic in a more general sense.
+ The first principle of object orientation is ``encapsulation,'' putting
+ your code and data structure in one place: the class.
+ This might make sense for business logic, but, for the purposes of partitioning
+, you really don't want the data access code to be spread out among dozens
+ of classes in your application.
+ You want it all in one place, preferably even one source code file, so
+ that you can apply partitioning strategies easily.
+\end_layout
+
+\begin_layout Standard
+In fact, organizing code together by mechanism, rather than by ``class,''
+ will let you apply all kinds of large-scale refactorizations more easily,
+ especially if you manage to decouple your data structures from any library-spec
+ific data structures.
+\end_layout
+
+\begin_layout Standard
+If you must use object orientation, consider separating only the data layer
+ from the class hierarchy.
+ You'll save yourself from a lot of trouble later on as you find yourself
+ having to scale up.
+ For data-driven web development, you are better off not being too object
+ oriented.
+\end_layout
+
+\begin_layout Section
+Under the Hood
+\end_layout
+
+\begin_layout Standard
+Prudence brings together many open source libraries, some of which were
+ designed specifically for Prudence.
+\end_layout
+
+\begin_layout Standard
+Consider this as Prudence's ``acknowledgments'' page.
+ Hundreds of people have worked on these libraries, and we're grateful to
+ all of them for sharing their hard work, for embracing open source licensing,
+ and for adhering to design principles that allow reuse of their work in
+ other projects, such as Prudence.
+\end_layout
+
+\begin_layout Subsection
+Restlet
+\end_layout
+
+\begin_layout Standard
+Prudence went through many transformations before aligning itself strongly
+ with Restlet.
+ First, we experimented with 
+\begin_inset CommandInset href
+LatexCommand href
+name "Facelets"
+target "https://facelets.dev.java.net/"
+
+\end_inset
+
+, but ended up giving up on 
+\begin_inset CommandInset href
+LatexCommand href
+name "JSF"
+target "http://java.sun.com/javaee/javaserverfaces/"
+
+\end_inset
+
+, its complex lifecycle, and on the promise of component-based web development
+ in general.
+ Then, we designed REST architectures using servlets and 
+\begin_inset CommandInset href
+LatexCommand href
+name "Succinct"
+target "http://threecrickets.com/succinct/"
+
+\end_inset
+
+ templates, but found it awkward to force servlets into a REST architecture.
+ Discovering 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet"
+target "http://www.restlet.org/"
+
+\end_inset
+
+ was a breath of fresh air.
+\end_layout
+
+\begin_layout Standard
+Restlet's super-powers are three:
+\end_layout
+
+\begin_layout Enumerate
+Clean abstraction of HTTP requests, responses and headers over best-of-breed
+ engines, such as 
+\begin_inset CommandInset href
+LatexCommand href
+name "Grizzly"
+target "https://grizzly.dev.java.net/"
+
+\end_inset
+
+, 
+\begin_inset CommandInset href
+LatexCommand href
+name "Jetty"
+target "http://jetty.codehaus.org/jetty/"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset href
+LatexCommand href
+name "Netty"
+target "http://www.jboss.org/netty"
+
+\end_inset
+
+.
+ Automatically gain the scalable advantages of non-blocking I/O and even
+ asynchronous request handling (which will be even better supported in Restlet
+ 2.1).
+ Restlet transparently handles conditional requests, content negotiation,
+ and other complicated HTTP labor.
+\end_layout
+
+\begin_layout Enumerate
+Powerful URI routing and manipulation.
+ Expose your service to users and APIs with elegance and coherence.
+ Make sure the URI reaches its destination, with support for virtual hosting,
+ rewriting, templating, and other useful real-world features.
+ Restlet is truly the Swiss army knife of URIs!
+\end_layout
+
+\begin_layout Enumerate
+Straightforward data representation and consumption through a diverse set
+ of extensions.
+ Expose your data using any standard format, and even convert it on-the-fly.
+ Easily parse data received from clients.
+\end_layout
+
+\begin_layout Standard
+Restlet is a great library, with a great ecosystem of extensions.
+ In embracing it, though, we missed some of the advantages of having a servlet
+ container: easy deployment and configuration, centralized logging, etc.
+ We also missed having JSP at our fingertips to quickly push out dynamic
+ HTML.
+\end_layout
+
+\begin_layout Standard
+Prudence is meant to fill in these gaps.
+ 
+\end_layout
+
+\begin_layout Subsection
+The JVM
+\end_layout
+
+\begin_layout Standard
+How wonderful that the best-performing, most robust and most widely ported
+ virtual machine is now open source? How wonderful that you can use it with
+ JavaScript, Python, Ruby, Clojure, PHP and others languages?
+\end_layout
+
+\begin_layout Standard
+We strongly recommend the JVM for enterprise and internet applications,
+ even if you're not particularly fond of Java (the programming language).
+ 
+\end_layout
+
+\begin_layout Subsection
+Jython, JRuby, Clojure, Rhino, Quercus, Groovy
+\end_layout
+
+\begin_layout Standard
+Prudence would hardly be as exciting if you had to use Java.
+\end_layout
+
+\begin_layout Standard
+These open source language engines have allowed us to extend the power of
+ Prudence, REST and the JVM to languages outside of Java.
+ Some of these engines are huge, complex projects, and are in fact the biggest
+ libraries included in Prudence.
+ We strongly recommend you join in the communities surrounding the language
+ engines corresponding to your chosen Prudence flavor.
+\end_layout
+
+\begin_layout Subsection
+Scripturian
+\end_layout
+
+\begin_layout Standard
+To make Prudence applications easy to deploy, they could not be traditional
+ Java.
+ The cycle of compilation and packaging is unnecessarily cumbersome.
+ Though we could have implemented something like the on-the-fly Java compilation
+ done in JSP, but we felt that, if that's the route to go, many choices
+ open up besides Java, and that these languages are more relevant to Prudence's
+ goals.
+\end_layout
+
+\begin_layout Standard
+There are many terrific JVM-based languages out there.
+ Unfortunately, we found that integrating these languages into Prudence
+ was anything but trivial.
+ Each implementation had its own idea of what was acceptable support for
+ embedding.
+ We tried to standardize on 
+\begin_inset CommandInset href
+LatexCommand href
+name "JSR-223 (the Java scripting standard)"
+target "http://java.sun.com/developer/technicalArticles/J2SE/Desktop/scripting/"
+
+\end_inset
+
+, but found that adherence to the spec was inconsistent.
+ We hacked and hacked and hacked.
+ We even submitted patches to fix broken implementations of various languages.
+ All in all, we probably spent more time on this than on any other aspect
+ of Prudence.
+\end_layout
+
+\begin_layout Standard
+Since we think software other than Prudence can make use of our hard-won
+ gains, we've abstracted and separated our language integration code as
+ the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Scripturian"
+target "http://threecrickets.com/scripturian/"
+
+\end_inset
+
+ library.
+ 
+\end_layout
+
+\begin_layout Subsection
+Succinct
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "Succinct"
+target "http://threecrickets.com/succinct/"
+
+\end_inset
+
+also started as a part of Prudence (one of its earliest components) that
+ branched out into an independent library.
+ We created it because we wanted straightforward, scalable templating built
+ in to Prudence, and were unsatisfied by other open source offerings.
+ We think you'll like it.
+ 
+\end_layout
+
+\begin_layout Subsection
+Jygments
+\end_layout
+
+\begin_layout Standard
+Yet another Prudence side-project!
+\end_layout
+
+\begin_layout Standard
+For Prudence's debug mode, we wanted good syntax highlighting for viewing
+ source code.
+ We found nothing adequate enough in the Java world, though we fell in love
+ with Pygments.
+ For a while, we ran Pygments in Prudence via Jython, but found it too heavy
+ for this particular use case.
+ Thus, 
+\begin_inset CommandInset href
+LatexCommand href
+name "Jygments"
+target "http://jygments.tigris.org/"
+
+\end_inset
+
+ was born as a port of Pygments to Java.
+ 
+\end_layout
+
+\begin_layout Subsection
+H2
+\end_layout
+
+\begin_layout Standard
+We're great fans of this lean and mean database engine! It has allowed us
+ to distribute Prudence with a fully-functioning data-drive demo application,
+ without any external dependencies.
+ We're proud to introduce 
+\begin_inset CommandInset href
+LatexCommand href
+name "H2"
+target "http://www.h2database.com/"
+
+\end_inset
+
+, through Prudence, to more people, and we believe you'll find it fast enough,
+ reliable enough, and flexible enough for many production environments.
+ 
+\end_layout
+
+\begin_layout Section
+FAQ
+\end_layout
+
+\begin_layout Subsection
+REST
+\end_layout
+
+\begin_layout Subsubsection
+Why are plural URL forms for aggregate resources (/animal/cats/) preferred
+ over singular forms (/animal/cat/)?
+\end_layout
+
+\begin_layout Standard
+You'll see RESTful implementations that use either convention.
+ The advantage of using the singular form is that you have less addresses,
+ and what some people would call a more elegant scheme:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+/animal/cat/12 -> Just one cat
+\end_layout
+
+\begin_layout Plain Layout
+
+/animal/cat/ -> All cats
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Why add another URL when a single one is enough to do the work?  One reason
+ is that you can help the client avoid potential errors.
+ For example, the client probably uses a variable to hold the ID of the
+ cat and then constructs the URL dynamically.
+ But, what if the client forgets to check for null IDs? It might then construct
+ a URL in the form "/animal/cat//" which would then successfully access
+ 
+\emph on
+all
+\emph default
+ cats.
+ This can cause unintended consequences and be difficult to debug.
+ If, however, we used this scheme:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+/animal/cat/12 -> Just one cat
+\end_layout
+
+\begin_layout Plain Layout
+
+/animal/cats/ -> All cats
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+...then the form ``/animal/cat//'' would route to our singular cat resource,
+ which would indeed not find the cat and return the expected, debuggable
+ 404 error.
+ From this example, we can extract a good rule of thumb: clearly separate
+ URLs at their base by usage, so that mistakes cannot happen.
+ More addresses means more debuggability.
+ 
+\end_layout
+
+\begin_layout Subsection
+Languages
+\end_layout
+
+\begin_layout Subsubsection
+Why mix languages? 
+\end_layout
+
+\begin_layout Subsubsection
+What are ``in-flow'' scriptlets? 
+\end_layout
+
+\begin_layout Subsubsection
+Can different languages share state? 
+\end_layout
+
+\begin_layout Subsubsection
+Can languages call each other's functions? 
+\end_layout
+
+\begin_layout Subsection
+Concurrency
+\end_layout
+
+\begin_layout Subsubsection
+Should I be worried? 
+\end_layout
+
+\begin_layout Subsubsection
+How to make my code thread safe? 
+\end_layout
+
+\begin_layout Subsection
+Performance
+\end_layout
+
+\begin_layout Subsubsection
+Which Prudence flavor performs best? 
+\end_layout
+
+\begin_layout Subsubsection
+How well does Prudence perform? How well does it scale?
+\end_layout
+
+\begin_layout Standard
+First, recognize that there are two common uses for the term ``scale.'' REST
+ is often referred to as an inherently scalable architecture, but that has
+ more to do with project management than technical performance.
+ This difference is address in the <a href="../rest/">Making the Case for
+ REST</a>.
+ 
+\end_layout
+
+\begin_layout Standard
+From the perspective of the ability to respond to user requests, there are
+ three aspects to consider: 
+\end_layout
+
+\begin_layout Paragraph
+1.
+ Serving HTTP
+\end_layout
+
+\begin_layout Standard
+Prudence comes with <a href="https://grizzly.dev.java.net/">Grizzly</a>, an
+ HTTP server based on the JVM's non-blocking I/O API.
+ Grizzly handles concurrent HTTP requests very well, and serves static files
+ at scales comparable to popular HTTP servers.
+ See the <a href="../guide/tutorial/">tutorial</a> for more information.
+ 
+\end_layout
+
+\begin_layout Paragraph
+2.
+ Generating HTML
+\end_layout
+
+\begin_layout Standard
+Prudence supports two modes for generating HTML (and other textual formats),
+ each with its own performance characteristics:
+\end_layout
+
+\begin_layout Subparagraph
+Caching mode:
+\end_layout
+
+\begin_layout Standard
+First, the entire document is run, with its output sent into a buffer.
+ This buffer is then cached, and 
+\emph on
+only then
+\emph default
+ sent to the client.
+ This is the default mode and recommended for most documents.
+ Scriptlets can be used to control the duration of the document's individual
+ cache.
+ 
+\end_layout
+
+\begin_layout Subparagraph
+Streaming mode:
+\end_layout
+
+\begin_layout Standard
+Output is sent to the client 
+\emph on
+while
+\emph default
+ the document runs.
+ This is recommended for documents that need to output a very large amount
+ of text, which might take a long time, or that might otherwise encounter
+ slow-downs while running.
+ In either case, you want the client to receive ongoing output.
+ The output of the document is not cached.
+  Scriptlets can switch between modes according to changing circumstances.
+ For example, to increase caching duration during heavy loads, to decrease
+ it during periods where data changes often, or to stream in the case of
+ an expected large output.
+ See the <a href="../guide/tutorial/">tutorial</a> for more information.
+ 
+\end_layout
+
+\begin_layout Paragraph
+3.
+ Running code
+\end_layout
+
+\begin_layout Standard
+There may be a delay when starting up a specific language engine in Prudence
+ for the first time in an application, as it loads and initializes itself.
+ Then, there may be a delay when accessing a dynamic web page or resource
+ for the first time, or after it has been changed, as it might require compilati
+on.
+ Once it's up and running, though, your code performs and scale very well---as
+ well as you've written it.
+ You need to understand concurrency and make sure you make good choices
+ to handle coordination between threads accessing the same data.
+ If all is good, your code will actually perform better throughout the life
+ of the application.
+ The JVM learns and adapts as it runs, and performance can improve the more
+ the application is used.
+\end_layout
+
+\begin_layout Standard
+If you are performing CPU-intensive or time-sensitive tasks, then it's best
+ to profile these code segments precisely.
+ Exact performance characteristics depend on the language and engine used.
+ The 
+\begin_inset CommandInset href
+LatexCommand href
+name "Bechmarks Game"
+target "http://shootout.alioth.debian.org/"
+
+\end_inset
+
+ can give you some comparisons of different language engines running high-comput
+ation programs.
+ In any case, if you have a piece of intensive code that really needs to
+ perform well, it's probably best to write it in Java and access it from
+ the your language.
+ You can even write it in C or assembly, and have it linked to Java via
+ JNI.
+   If you're not doing intensive computation, then don't worry too much
+ about your language being "slow." It's been shown that for the vast majority
+ of web applications, the performance of the web programming language is
+ rarely the bottleneck.
+ The deciding factors are the usually performance of the backend data-driving
+ technologies and architectures.
+  
+\end_layout
+
+\begin_layout Subsection
+Scalability
+\end_layout
+
+\begin_layout Subsubsection
+Do you have any tips?
+\end_layout
+
+\begin_layout Standard
+Yes.
+ :)
+\end_layout
+
+\begin_layout Subsection
+Licensing
+\end_layout
+
+\begin_layout Standard
+(The author is not a lawyer.
+ This is not a legal advice, but a personal interpretation.
+ The wording of the license itself superceds anything written here.)
+\end_layout
+
+\begin_layout Subsubsection
+Does the LGPL mean I can't use Prudence unless my product is open sourced?
+\end_layout
+
+\begin_layout Standard
+The GPL family of licenses restrict your ability to 
+\emph on
+redistribute
+\emph default
+ software, not to use it.
+ You are free to use Prudence as you please within your organization, even
+ if you're using it to serve public web sites (though with no warranty nor
+ an implicit guarantee of support from Three Crickets, the copyright holder).
+\end_layout
+
+\begin_layout Standard
+The GPL would thus only be an issue if you're selling, or even giving away,
+ a product that 
+\emph on
+would include
+\emph default
+ Prudence.
+\end_layout
+
+\begin_layout Standard
+Prudence uses the Lesser GPL, which has even less restrictions on redistribution
+ than the regular GPL.
+ As long as you do not alter Prudence in any way, you can include Prudence
+ in any product, free or non-free.
+ (Actually, Prudence uses version 3 of the Lesser GPL, which requires your
+ product, even if it's not free software, to at least not restrict users'
+ ownership of data via schemes such as DRM if you want to include Prudence
+ in its distribution.)
+\end_layout
+
+\begin_layout Standard
+Even if your product does not qualify for including Prudence in it, you
+ always have the option of distributing your product without Prudence, and
+ instructing your customers to download and install Prudence on their own.
+\end_layout
+
+\begin_layout Standard
+Three Crickets, the original developers of Prudence, are not trying to force
+ you to purchase it.
+ Instead, they hope to encourage you 1) to pay Three Crickets for consultation,
+ support and development services for Prudence, and 2) to release your own
+ product as free software, thereby truly sharing your innovation with all
+ of society.
+\end_layout
+
+\begin_layout Standard
+We understand that in some cases open sourcing your product is impossible.
+ As a last resort, we offer you a commercial license.
+ Please contact us for details.
+\end_layout
+
+\begin_layout Subsubsection
+Why the LGPL and not the GPL?
+\end_layout
+
+\begin_layout Standard
+The Lesser GPL used to be called the ``Library GPL,'' and was originally
+ drafted for glibc.
+ It represents a certain admission of defeat: there are so many alternatives
+ to our library out there, that you might not consider using our library
+ under GPL.
+\end_layout
+
+\begin_layout Standard
+In the case of Linux, the GPL has done a wonderful job in convincing vendors
+ to open source their code in order to ship their products with Linux inside.
+ It just doesn't seem likely that they would do the same for Prudence.
+\end_layout
+
+\begin_layout Standard
+Note that the LGPL version 3 has a clause allowing you to ``upgrade'' Prudence
+ to the full GPL for inclusion in your GPL-ed product.
+ This is a terrific feature, and another reason to love this excellent license.
+\end_layout
+
+\end_body
+\end_document
