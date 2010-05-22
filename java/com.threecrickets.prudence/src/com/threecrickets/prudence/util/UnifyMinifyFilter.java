@@ -21,6 +21,8 @@ import java.io.OutputStream;
 import java.io.SequenceInputStream;
 import java.util.Arrays;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.restlet.Context;
@@ -39,6 +41,9 @@ import org.restlet.routing.Filter;
  * <p>
  * This filter can track changes to the source files, updating the result file
  * on-the-fly. This makes it easy to develop and debug a live site.
+ * <p>
+ * Note that this instances of this class can only guarantee atomic access to
+ * the unified/minified version within the VM.
  * 
  * @author Tal Liron
  */
@@ -107,63 +112,71 @@ public abstract class UnifyMinifyFilter extends Filter
 	//
 
 	/**
-	 * Unifies all script files in the directory, or unifies and minifies them.
+	 * Unifies all source files in the directory, or unifies and minifies them.
 	 */
-	public void unify( File file, boolean minify ) throws IOException
+	public void unify( File sourceDirectory, boolean minify ) throws IOException
 	{
-		if( !file.isDirectory() )
-			throw new IOException();
+		File unifiedSourceFile = getUniqueFile( new File( sourceDirectory, minify ? unifiedMinifiedFilename : unifiedFilename ) );
 
-		File newFile;
-		InputStream in;
-		OutputStream out;
-		long newLastModified = 0;
-
-		newFile = new File( file, minify ? unifiedMinifiedFilename : unifiedFilename );
-
-		String[] names = file.list( sourceFilenameFilter );
-
-		for( String name : names )
+		synchronized( unifiedSourceFile )
 		{
-			long lastModified = new File( file, name ).lastModified();
-			if( lastModified > newLastModified )
-				newLastModified = lastModified;
-		}
+			if( unifiedSourceFile.exists() )
+				unifiedSourceFile.delete();
 
-		if( newFile.lastModified() == newLastModified )
-			return;
+			String[] sourceFilenames = sourceDirectory.list( sourceFilenameFilter );
 
-		if( newFile.exists() )
-			newFile.delete();
+			long newLastModified = 0;
 
-		Arrays.sort( names );
-		Vector<InputStream> ins = new Vector<InputStream>();
-		for( String name : names )
-			ins.add( new FileInputStream( new File( file, name ) ) );
+			for( String sourceFilename : sourceFilenames )
+			{
+				long lastModified = new File( sourceDirectory, sourceFilename ).lastModified();
+				if( lastModified > newLastModified )
+					newLastModified = lastModified;
+			}
 
-		in = new SequenceInputStream( ins.elements() );
-		try
-		{
-			out = new FileOutputStream( newFile );
+			if( unifiedSourceFile.lastModified() == newLastModified )
+				return;
+
+			Arrays.sort( sourceFilenames );
+			Vector<InputStream> ins = new Vector<InputStream>();
+			for( String name : sourceFilenames )
+			{
+				try
+				{
+					ins.add( new FileInputStream( new File( sourceDirectory, name ) ) );
+				}
+				catch( IOException x )
+				{
+					for( InputStream in : ins )
+						in.close();
+					throw x;
+				}
+			}
+
+			InputStream in = new SequenceInputStream( ins.elements() );
 			try
 			{
-				if( minify )
-					minify( in, out );
-				else
-					copyStream( in, out );
+				OutputStream out = new FileOutputStream( unifiedSourceFile );
+				try
+				{
+					if( minify )
+						minify( in, out );
+					else
+						copyStream( in, out );
+				}
+				finally
+				{
+					out.close();
+				}
 			}
 			finally
 			{
-				out.close();
+				in.close();
 			}
-		}
-		finally
-		{
-			in.close();
-		}
 
-		if( !newFile.setLastModified( newLastModified ) )
-			throw new IOException( "Could not update timestamp on file: " + newFile );
+			if( !unifiedSourceFile.setLastModified( newLastModified ) )
+				throw new IOException( "Could not update timestamp on file: " + unifiedSourceFile );
+		}
 	}
 
 	//
@@ -274,6 +287,32 @@ public abstract class UnifyMinifyFilter extends Filter
 		{
 			return name.endsWith( sourceExtension ) && !name.equals( unifiedMinifiedFilename ) && !name.equals( unifiedFilename );
 		}
+	}
+
+	/**
+	 * Cache of unique files.
+	 */
+	private static final ConcurrentMap<String, File> uniqueFiles = new ConcurrentHashMap<String, File>();
+
+	/**
+	 * Makes sure the file is unique.
+	 * 
+	 * @param file
+	 *        The file
+	 * @return The unique file
+	 */
+	private static File getUniqueFile( File file )
+	{
+		String key = file.getAbsolutePath();
+		File uniqueFile = uniqueFiles.get( key );
+		if( uniqueFile == null )
+		{
+			uniqueFile = file;
+			File existing = uniqueFiles.put( key, uniqueFile );
+			if( existing != null )
+				uniqueFile = existing;
+		}
+		return uniqueFile;
 	}
 
 	/**
