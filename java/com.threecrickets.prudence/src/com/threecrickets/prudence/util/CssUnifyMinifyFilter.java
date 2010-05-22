@@ -34,6 +34,9 @@ import com.threecrickets.prudence.internal.CSSMin;
  * <p>
  * This filter can track changes to the source files, updating the result file
  * on-the-fly. This makes it easy to develop and debug a live site.
+ * <p>
+ * Note that this instances of this class can only guarantee atomic access to
+ * the unified/minified version within the current VM.
  * 
  * @author Tal Liron
  */
