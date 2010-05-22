@@ -4,12 +4,14 @@
 
 document.execute('defaults/application/routing/');
 
-importClass(com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter);
+importClass(
+	com.threecrickets.prudence.util.CssUnifyMinifyFilter,
+	com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter);
 
 router.capture(fixURL(resourcesBaseURL + '/data/note/{id}/'), '/data/note/');
 
-//Wrap the static web with a JavaScriptUnifyMinifyFilter
+// Wrap the static web with unify-minify filters
 router.detach(staticWeb);
-router.attach(fixURL(staticWebBaseURL),
-	new JavaScriptUnifyMinifyFilter(applicationInstance.context, staticWeb, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks))
-	.matchingMode = Template.MODE_STARTS_WITH;
+var wrappedStaticWeb = new CssUnifyMinifyFilter(applicationInstance.context, staticWeb, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks);
+var wrappedStaticWeb = new JavaScriptUnifyMinifyFilter(applicationInstance.context, wrappedStaticWeb, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks);
+router.attach(fixURL(staticWebBaseURL), wrappedStaticWeb).matchingMode = Template.MODE_STARTS_WITH;

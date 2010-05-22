@@ -4,14 +4,16 @@
 
 (.. executable getContainer (execute "defaults/application/routing/"))
 
-(import 'com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter)
+(import
+	'com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter
+	'com.threecrickets.prudence.util.CssUnifyMinifyFilter)
 
 (.capture router (fix-url (str resources-base-url "/data/note/{id}/")) "/data/note/")
 
-; Wrap the static web with a JavaScriptUnifyMinifyFilter
+; Wrap the static web with unify-minify filters
 (.detach router static-web)
+(def wrapped-static-web (CssUnifyMinifyFilter. (.getContext application-instance) static-web (File. (str application-base-path static-web-base-path)) dynamic-web-minimum-time-between-validity-checks))
+(def wrapped-static-web (JavaScriptUnifyMinifyFilter. (.getContext application-instance) wrapped-static-web (File. (str application-base-path static-web-base-path)) dynamic-web-minimum-time-between-validity-checks))
 (.setMatchingMode
-	(.attach router
-		(fix-url static-web-base-url)
-		(JavaScriptUnifyMinifyFilter. (.getContext application-instance) static-web (File. (str application-base-path static-web-base-path)) dynamic-web-minimum-time-between-validity-checks))
+	(.attach router (fix-url static-web-base-url) wrapped-static-web)
 	Template/MODE_STARTS_WITH)

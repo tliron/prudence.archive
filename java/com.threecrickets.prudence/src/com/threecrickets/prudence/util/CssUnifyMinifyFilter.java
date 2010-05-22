@@ -14,31 +14,30 @@ package com.threecrickets.prudence.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.routing.Filter;
 
-import com.threecrickets.prudence.internal.JSMin;
+import com.threecrickets.prudence.internal.CSSMin;
 
 /**
- * A {@link Filter} that automatically unifies and/or compresses JavaScript
- * source files, saving them as a single file. Unifying them allows clients to
- * retrieve the JavaScript via one request rather than many. Compressing them
- * makes them retrievable faster.
+ * A {@link Filter} that automatically unifies and/or compresses CSS source
+ * files, saving them as a single file. Unifying them allows clients to retrieve
+ * the CSS via one request rather than many. Compressing them makes them
+ * retrievable faster.
  * <p>
  * Compression is done via <a
- * href="http://www.inconspicuous.org/projects/jsmin/jsmin.java">John Reilly's
- * Java port</a> of Douglas Crockford's <a
- * href="http://www.crockford.com/javascript/jsmin.html">JSMin</a>.
+ * href="http://barryvan.github.com/CSSMin/">CSSMin</a>.
  * <p>
  * This filter can track changes to the source files, updating the result file
  * on-the-fly. This makes it easy to develop and debug a live site.
  * 
  * @author Tal Liron
  */
-public class JavaScriptUnifyMinifyFilter extends UnifyMinifyFilter
+public class CssUnifyMinifyFilter extends UnifyMinifyFilter
 {
 	//
 	// Construction
@@ -56,9 +55,9 @@ public class JavaScriptUnifyMinifyFilter extends UnifyMinifyFilter
 	 * @param minimumTimeBetweenValidityChecks
 	 *        See {@link #getMinimumTimeBetweenValidityChecks()}
 	 */
-	public JavaScriptUnifyMinifyFilter( Context context, Restlet next, File scriptsDirectory, long minimumTimeBetweenValidityChecks )
+	public CssUnifyMinifyFilter( Context context, Restlet next, File scriptsDirectory, long minimumTimeBetweenValidityChecks )
 	{
-		super( context, next, scriptsDirectory, minimumTimeBetweenValidityChecks, "js", "min", "all" );
+		super( context, next, scriptsDirectory, minimumTimeBetweenValidityChecks, "css", "min", "all" );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -67,14 +66,9 @@ public class JavaScriptUnifyMinifyFilter extends UnifyMinifyFilter
 	@Override
 	protected void minify( InputStream in, OutputStream out ) throws IOException
 	{
-		JSMin jsMin = new JSMin( in, out );
 		try
 		{
-			jsMin.jsmin();
-		}
-		catch( IOException x )
-		{
-			throw x;
+			CSSMin.formatFile( new InputStreamReader( in ), out );
 		}
 		catch( Exception x )
 		{

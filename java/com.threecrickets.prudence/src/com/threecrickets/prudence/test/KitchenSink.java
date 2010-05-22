@@ -43,6 +43,8 @@ public class KitchenSink extends MultiTest
 		}
 		catch( InterruptedException x )
 		{
+			// Restore interrupt status
+			Thread.currentThread().interrupt();
 		}
 	}
 
