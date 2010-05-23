@@ -195,384 +195,394 @@
 			<bottom>
 				<![CDATA[<i>Copyright &#169; 2009-2010 <a target="_top" href="http://threecrickets.com/">Three Crickets LLC</a>.</i>]]>
 			</bottom>
-	</javadoc>
-</target>
-
-<!-- Kitchensink -->
-
-<target name="kitchensink" depends="libraries-kitchensink, content-kitchensink" description="Create distribution" />
-
-<target name="package-kitchensink" depends="kitchensink" description="Create distribution zip">
-	<package dist="${dist-kitchensink}" name="kitchensink" />
-</target>
-
-<target name="jar-kitchensink" depends="jar" description="Fetch Prudence jar">
-	<fetch-prudence-jar dist="${dist-kitchensink}" />
-	<fetch-prudence-test-jar dist="${dist-kitchensink}" />
-</target>
-
-<target name="javadoc-kitchensink" depends="javadoc" description="Fetch Prudence API docs">
-	<fetch-javadocs dist="${dist-kitchensink}" />
-</target>
-
-<target name="libraries-kitchensink" depends="jar-kitchensink" description="Fetch libraries">
-	<fetch-library dist="${dist-kitchensink}" library="clojure" />
-	<fetch-library dist="${dist-kitchensink}" library="commons-fileupload" />
-	<fetch-library dist="${dist-kitchensink}" library="commons-io" />
-	<fetch-library dist="${dist-kitchensink}" library="grizzly" />
-	<fetch-library dist="${dist-kitchensink}" library="groboutils" />
-	<fetch-library dist="${dist-kitchensink}" library="groovy" />
-	<fetch-library dist="${dist-kitchensink}" library="h2" />
-	<fetch-library dist="${dist-kitchensink}" library="jackson" />
-	<fetch-library dist="${dist-kitchensink}" library="jepp" />
-	<fetch-library dist="${dist-kitchensink}" library="jruby" />
-	<fetch-library dist="${dist-kitchensink}" library="json" />
-	<fetch-library dist="${dist-kitchensink}" library="jsr223" />
-	<fetch-library dist="${dist-kitchensink}" library="junit" />
-	<fetch-library dist="${dist-kitchensink}" library="jygments" />
-	<fetch-library dist="${dist-kitchensink}" library="jython" />
-	<fetch-library dist="${dist-kitchensink}" library="log4j" />
-	<fetch-library dist="${dist-kitchensink}" library="mysqlconnector" />
-	<!-- GPL: <fetch-library dist="${dist-kitchensink}" library="quercus" /> -->
-	<fetch-library dist="${dist-kitchensink}" library="restlet" />
-	<fetch-library dist="${dist-kitchensink}" library="rhino" />
-	<fetch-library dist="${dist-kitchensink}" library="scripturian" />
-	<fetch-library dist="${dist-kitchensink}" library="servlet" />
-	<fetch-library dist="${dist-kitchensink}" library="slf4j" />
-	<fetch-library dist="${dist-kitchensink}" library="sqlalchemy" />
-	<fetch-library dist="${dist-kitchensink}" library="succinct" />
-	<fetch-library dist="${dist-kitchensink}" library="velocity" />
-	<fetch-library-versions dist="${dist-kitchensink}" />
-</target>
-
-<target name="content-kitchensink" depends="javadoc-kitchensink, revision" description="Fetch content">
-	<echo>Using ${kitchensink-base} as base for Kitchen Sink distribution.</echo>
-	<fetch-common-content dist="${dist-kitchensink}" base="${kitchensink-base}" bin-base="${common}" />
-	<!-- Fetch Prudence Guide -->
-	<copy todir="${dist-kitchensink}/content/applications/prudence-test/web">
-		<fileset dir="${python}/applications/prudence-test/web" />
-		<fileset dir="${ruby}/applications/prudence-test/web" />
-		<fileset dir="${groovy}/applications/prudence-test/web" />
-		<fileset dir="${clojure}/applications/prudence-test/web" />
-		<fileset dir="${javascript}/applications/prudence-test/web" />
-		<fileset dir="${php}/applications/prudence-test/web" />
-		<fileset dir="${velocity}/applications/prudence-test/web" />
-	</copy>
-	<copy todir="${dist-kitchensink}/content/applications/prudence-test/resources">
-		<fileset dir="${python}/applications/prudence-test/resources" />
-		<fileset dir="${ruby}/applications/prudence-test/resources" />
-		<fileset dir="${groovy}/applications/prudence-test/resources" />
-		<fileset dir="${clojure}/applications/prudence-test/resources" />
-		<fileset dir="${javascript}/applications/prudence-test/resources" />
-		<fileset dir="${php}/applications/prudence-test/resources" />
-	</copy>
-	<copy todir="${dist-kitchensink}/content/applications/prudence-test/libraries">
-		<fileset dir="${python}/applications/prudence-test/libraries" />
-		<fileset dir="${ruby}/applications/prudence-test/libraries" />
-		<fileset dir="${groovy}/applications/prudence-test/libraries" />
-		<fileset dir="${clojure}/applications/prudence-test/libraries" />
-		<fileset dir="${javascript}/applications/prudence-test/libraries" />
-		<fileset dir="${php}/applications/prudence-test/libraries" />
-	</copy>
-	<!-- <fetch-syntaxhighlighter dist="${dist-kitchensink}" application="prudence-test" /> -->
-	<!-- Fetch other applications -->
-	<!--<copy todir="${dist-kitchensink}/content/applications/stickstick">
-		<fileset dir="${python}/applications/stickstick" excludes="*" />
-	</copy>-->
-	<!-- <fetch-syntaxhighlighter dist="${dist-kitchensink}" application="stickstick" /> -->
-</target>
-
-<target name="test-kitchensink" depends="kitchensink" description="Unit tests">
-	<junit dir="${dist-kitchensink}/content" haltonfailure="true" showoutput="true" fork="true" forkmode="perBatch" newenvironment="true" jvm="${test-jvm}">
-		<test name="com.threecrickets.prudence.test.KitchenSink" />
-		<classpath>
-			<fileset dir="${dist-kitchensink}/content/libraries">
-				<include name="*.jar" />
-			</fileset>
-		</classpath>
-		<jvmarg value="-Djava.library.path=${jepp-path}" />
-		<jvmarg value="-Dpython.home=libraries/python" />
-		<jvmarg value="-Dpython.cachedir=cache" />
-		<jvmarg value="-Dython.verbose=warning" />
-		<formatter type="plain" usefile="false" />
-	</junit>
-</target>
-
-<!-- Standalone -->
-
-<target name="standalone" depends="src-standalone, jar-standalone, content-standalone" description="Create distribution" />
-
-<target name="package-standalone" depends="standalone" description="Create distribution zip">
-	<package dist="${dist-standalone}" name="standalone" />
-</target>
-
-<target name="jar-standalone" depends="jar" description="Fetch Prudence jar">
-	<fetch-prudence-jar dist="${dist-standalone}" />
-</target>
-
-<target name="src-standalone" description="Fetch Prudence source">
-	<copy todir="${dist-standalone}/content/src">
-		<fileset dir="${java-src}" />
-	</copy>
-</target>
-
-<target name="javadoc-standalone" depends="javadoc" description="Fetch Prudence API docs">
-	<copy todir="${dist-standalone}/content/api">
-		<fileset dir="${tmp}/api" />
-	</copy>
-</target>
-
-<target name="content-standalone" depends="javadoc-standalone" description="Fetch content">
-	<copy todir="${dist-standalone}/content">
-		<fileset dir="${common}" excludes="log/, configuration/, applications/, bin/" />
-	</copy>
-</target>
-
-<!-- JavaScript -->
-
-<target name="javascript" depends="libraries-javascript, content-javascript" description="Create distribution" />
-
-<target name="package-javascript" depends="javascript" description="Create distribution zip">
-	<package dist="${dist-javascript}" name="javascript" />
-</target>
-
-<target name="jar-javascript" depends="jar" description="Fetch Prudence jar">
-	<fetch-prudence-jar dist="${dist-javascript}" />
-</target>
-
-<target name="libraries-javascript" depends="jar-javascript" description="Fetch libraries">
-	<fetch-library dist="${dist-javascript}" library="commons-fileupload" />
-	<fetch-library dist="${dist-javascript}" library="commons-io" />
-	<fetch-library dist="${dist-javascript}" library="grizzly" />
-	<fetch-library dist="${dist-javascript}" library="h2" />
-	<fetch-library dist="${dist-javascript}" library="json" />
-	<fetch-library dist="${dist-javascript}" library="jygments" />
-	<fetch-library dist="${dist-javascript}" library="log4j" />
-	<fetch-library dist="${dist-javascript}" library="restlet" />
-	<fetch-library dist="${dist-javascript}" library="rhino" />
-	<fetch-library dist="${dist-javascript}" library="scripturian" />
-	<fetch-library dist="${dist-javascript}" library="servlet" />
-	<fetch-library dist="${dist-javascript}" library="slf4j" />
-	<fetch-library dist="${dist-javascript}" library="succinct" />
-	<fetch-library dist="${dist-javascript}" library="velocity" />
-	<fetch-library-versions dist="${dist-javascript}" />
-</target>
-
-<target name="javadoc-javascript" depends="javadoc" description="Fetch Prudence API docs">
-	<fetch-javadocs dist="${dist-javascript}" />
-</target>
-
-<target name="content-javascript" depends="javadoc-javascript, revision" description="Fetch content">
-	<fetch-common-content dist="${dist-javascript}" base="${javascript}" bin-base="${javascript}" />
-	<!-- <fetch-syntaxhighlighter dist="${dist-javascript}" application="prudence-test" /> -->
-</target>
-
-<!-- Python -->
-
-<target name="python" depends="libraries-python, content-python" description="Create distribution" />
-
-<target name="package-python" depends="python" description="Create distribution zip">
-	<package dist="${dist-python}" name="python" />
-</target>
-
-<target name="jar-python" depends="jar" description="Fetch Prudence jar">
-	<fetch-prudence-jar dist="${dist-python}" />
-</target>
-
-<target name="libraries-python" depends="jar-python" description="Fetch libraries">
-	<fetch-library dist="${dist-python}" library="commons-fileupload" />
-	<fetch-library dist="${dist-python}" library="commons-io" />
-	<fetch-library dist="${dist-python}" library="grizzly" />
-	<fetch-library dist="${dist-python}" library="h2" />
-	<fetch-library dist="${dist-python}" library="jepp" />
-	<fetch-library dist="${dist-python}" library="json" />
-	<fetch-library dist="${dist-python}" library="jsr223" />
-	<fetch-library dist="${dist-python}" library="jygments" />
-	<fetch-library dist="${dist-python}" library="jython" />
-	<fetch-library dist="${dist-python}" library="log4j" />
-	<fetch-library dist="${dist-python}" library="mysqlconnector" />
-	<fetch-library dist="${dist-python}" library="restlet" />
-	<fetch-library dist="${dist-python}" library="scripturian" />
-	<fetch-library dist="${dist-python}" library="servlet" />
-	<fetch-library dist="${dist-python}" library="slf4j" />
-	<fetch-library dist="${dist-python}" library="sqlalchemy" />
-	<fetch-library dist="${dist-python}" library="succinct" />
-	<fetch-library dist="${dist-python}" library="velocity" />
-	<fetch-library-versions dist="${dist-python}" />
-</target>
-
-<target name="javadoc-python" depends="javadoc" description="Fetch Prudence API docs">
-	<fetch-javadocs dist="${dist-python}" />
-</target>
-
-<target name="content-python" depends="javadoc-python, revision" description="Fetch content">
-	<fetch-common-content dist="${dist-python}" base="${python}" bin-base="${python}" />
-	<!-- <fetch-syntaxhighlighter dist="${dist-python}" application="prudence-test" />
-	<fetch-syntaxhighlighter dist="${dist-python}" application="stickstick" /> -->
-</target>
-
-<!-- Clojure -->
-
-<target name="clojure" depends="libraries-clojure, content-clojure" description="Create distribution" />
-
-<target name="package-clojure" depends="clojure" description="Create distribution zip">
-	<package dist="${dist-clojure}" name="clojure" />
-</target>
-
-<target name="jar-clojure" depends="jar" description="Fetch Prudence jar">
-	<fetch-prudence-jar dist="${dist-clojure}" />
-</target>
-
-<target name="libraries-clojure" depends="jar-clojure" description="Fetch libraries">
-	<fetch-library dist="${dist-clojure}" library="clojure" />
-	<fetch-library dist="${dist-clojure}" library="commons-fileupload" />
-	<fetch-library dist="${dist-clojure}" library="commons-io" />
-	<fetch-library dist="${dist-clojure}" library="grizzly" />
-	<fetch-library dist="${dist-clojure}" library="h2" />
-	<fetch-library dist="${dist-clojure}" library="json" />
-	<fetch-library dist="${dist-clojure}" library="jygments" />
-	<fetch-library dist="${dist-clojure}" library="log4j" />
-	<fetch-library dist="${dist-clojure}" library="mysqlconnector" />
-	<fetch-library dist="${dist-clojure}" library="restlet" />
-	<fetch-library dist="${dist-clojure}" library="scripturian" />
-	<fetch-library dist="${dist-clojure}" library="servlet" />
-	<fetch-library dist="${dist-clojure}" library="slf4j" />
-	<fetch-library dist="${dist-clojure}" library="succinct" />
-	<fetch-library dist="${dist-clojure}" library="velocity" />
-	<fetch-library-versions dist="${dist-clojure}" />
-</target>
-
-<target name="javadoc-clojure" depends="javadoc" description="Fetch Prudence API docs">
-	<fetch-javadocs dist="${dist-clojure}" />
-</target>
-
-<target name="content-clojure" depends="javadoc-clojure, revision" description="Fetch content">
-	<fetch-common-content dist="${dist-clojure}" base="${clojure}" bin-base="${clojure}" />
-	<!-- <fetch-syntaxhighlighter dist="${dist-clojure}" application="prudence-test" />
-	<fetch-syntaxhighlighter dist="${dist-clojure}" application="stickstick" /> -->
-</target>
+		</javadoc>
+	</target>
 	
-<!-- Groovy -->
+	<target name="documentation">
+		<exec executable="elyxer" failifexecutionfails="false">
+			<arg value="--html"/>
+			<arg value="--title"/>
+			<arg value="Prudence Manual"/>
+			<arg value="${documentation}/prudence_manual.lyx"/>
+			<arg value="${documentation}/prudence_manual.html"/>
+		</exec>
+	</target>
 
-<target name="groovy" depends="libraries-groovy, content-groovy" description="Create distribution" />
-
-<target name="package-groovy" depends="groovy" description="Create distribution zip">
-	<package dist="${dist-groovy}" name="groovy" />
-</target>
-
-<target name="jar-groovy" depends="jar" description="Fetch Prudence jar">
-	<fetch-prudence-jar dist="${dist-groovy}" />
-</target>
-
-<target name="libraries-groovy" depends="jar-groovy" description="Fetch libraries">
-	<fetch-library dist="${dist-groovy}" library="commons-fileupload" />
-	<fetch-library dist="${dist-groovy}" library="commons-io" />
-	<fetch-library dist="${dist-groovy}" library="grizzly" />
-	<fetch-library dist="${dist-groovy}" library="groovy" />
-	<fetch-library dist="${dist-groovy}" library="h2" />
-	<fetch-library dist="${dist-groovy}" library="json" />
-	<fetch-library dist="${dist-groovy}" library="jygments" />
-	<fetch-library dist="${dist-groovy}" library="log4j" />
-	<fetch-library dist="${dist-groovy}" library="mysqlconnector" />
-	<fetch-library dist="${dist-groovy}" library="restlet" />
-	<fetch-library dist="${dist-groovy}" library="scripturian" />
-	<fetch-library dist="${dist-groovy}" library="servlet" />
-	<fetch-library dist="${dist-groovy}" library="slf4j" />
-	<fetch-library dist="${dist-groovy}" library="succinct" />
-	<fetch-library dist="${dist-groovy}" library="velocity" />
-	<fetch-library-versions dist="${dist-groovy}" />
-</target>
-
-<target name="javadoc-groovy" depends="javadoc" description="Fetch Prudence API docs">
-	<fetch-javadocs dist="${dist-groovy}" />
-</target>
-
-<target name="content-groovy" depends="javadoc-groovy, revision" description="Fetch content">
-	<fetch-common-content dist="${dist-groovy}" base="${groovy}" bin-base="${groovy}" />
-	<!-- <fetch-syntaxhighlighter dist="${dist-groovy}" application="prudence-test" />
-	<fetch-syntaxhighlighter dist="${dist-groovy}" application="stickstick" /> -->
-</target>
-
-<!-- Ruby -->
-
-<target name="ruby" depends="libraries-ruby, content-ruby" description="Create distribution" />
-
-<target name="package-ruby" depends="ruby" description="Create distribution zip">
-	<package dist="${dist-ruby}" name="ruby" />
-</target>
-
-<target name="jar-ruby" depends="jar" description="Fetch Prudence jar">
-	<fetch-prudence-jar dist="${dist-ruby}" />
-</target>
-
-<target name="libraries-ruby" depends="jar-ruby" description="Fetch libraries">
-	<fetch-library dist="${dist-ruby}" library="commons-fileupload" />
-	<fetch-library dist="${dist-ruby}" library="commons-io" />
-	<fetch-library dist="${dist-ruby}" library="grizzly" />
-	<fetch-library dist="${dist-ruby}" library="h2" />
-	<fetch-library dist="${dist-ruby}" library="jruby" />
-	<fetch-library dist="${dist-ruby}" library="json" />
-	<fetch-library dist="${dist-ruby}" library="jygments" />
-	<fetch-library dist="${dist-ruby}" library="log4j" />
-	<fetch-library dist="${dist-ruby}" library="mysqlconnector" />
-	<fetch-library dist="${dist-ruby}" library="restlet" />
-	<fetch-library dist="${dist-ruby}" library="scripturian" />
-	<fetch-library dist="${dist-ruby}" library="servlet" />
-	<fetch-library dist="${dist-ruby}" library="slf4j" />
-	<fetch-library dist="${dist-ruby}" library="succinct" />
-	<fetch-library dist="${dist-ruby}" library="velocity" />
-	<fetch-library-versions dist="${dist-ruby}" />
-</target>
-
-<target name="javadoc-ruby" depends="javadoc" description="Fetch Prudence API docs">
-	<fetch-javadocs dist="${dist-ruby}" />
-</target>
-
-<target name="content-ruby" depends="javadoc-ruby, revision" description="Fetch content">
-	<fetch-common-content dist="${dist-ruby}" base="${ruby}" bin-base="${ruby}" />
-	<!-- <fetch-syntaxhighlighter dist="${dist-ruby}" application="prudence-test" />
-	<fetch-syntaxhighlighter dist="${dist-ruby}" application="stickstick" /> -->
-</target>
-
-<!-- PHP -->
-
-<target name="php" depends="libraries-php, content-php" description="Create distribution" />
-
-<target name="package-php" depends="php" description="Create distribution zip">
-	<package dist="${dist-php}" name="php" />
-</target>
-
-<target name="jar-php" depends="jar" description="Fetch Prudence jar">
-	<fetch-prudence-jar dist="${dist-php}" />
-</target>
-
-<target name="libraries-php" depends="jar-php" description="Fetch libraries">
-	<fetch-library dist="${dist-php}" library="commons-fileupload" />
-	<fetch-library dist="${dist-php}" library="commons-io" />
-	<fetch-library dist="${dist-php}" library="grizzly" />
-	<fetch-library dist="${dist-php}" library="h2" />
-	<fetch-library dist="${dist-php}" library="json" />
-	<fetch-library dist="${dist-php}" library="jygments" />
-	<fetch-library dist="${dist-php}" library="log4j" />
-	<fetch-library dist="${dist-php}" library="mysqlconnector" />
-	<!-- GPL: <fetch-library dist="${dist-php}" library="quercus" /> -->
-	<fetch-library dist="${dist-php}" library="restlet" />
-	<fetch-library dist="${dist-php}" library="scripturian" />
-	<fetch-library dist="${dist-php}" library="servlet" />
-	<fetch-library dist="${dist-php}" library="slf4j" />
-	<fetch-library dist="${dist-php}" library="succinct" />
-	<fetch-library dist="${dist-php}" library="velocity" />
-	<fetch-library-versions dist="${dist-php}" />
-</target>
-
-<target name="javadoc-php" depends="javadoc" description="Fetch Prudence API docs">
-	<fetch-javadocs dist="${dist-php}" />
-</target>
-
-<target name="content-php" depends="javadoc-php, revision" description="Fetch content">
-	<fetch-common-content dist="${dist-php}" base="${php}" bin-base="${php}" />
-	<!-- <fetch-syntaxhighlighter dist="${dist-php}" application="prudence-test" />
-	<fetch-syntaxhighlighter dist="${dist-php}" application="stickstick" /> -->
-</target>
+	<!-- Kitchensink -->
+	
+	<target name="kitchensink" depends="libraries-kitchensink, content-kitchensink" description="Create distribution" />
+	
+	<target name="package-kitchensink" depends="kitchensink" description="Create distribution zip">
+		<package dist="${dist-kitchensink}" name="kitchensink" />
+	</target>
+	
+	<target name="jar-kitchensink" depends="jar" description="Fetch Prudence jar">
+		<fetch-prudence-jar dist="${dist-kitchensink}" />
+		<fetch-prudence-test-jar dist="${dist-kitchensink}" />
+	</target>
+	
+	<target name="javadoc-kitchensink" depends="javadoc" description="Fetch Prudence API docs">
+		<fetch-javadocs dist="${dist-kitchensink}" />
+	</target>
+	
+	<target name="libraries-kitchensink" depends="jar-kitchensink" description="Fetch libraries">
+		<fetch-library dist="${dist-kitchensink}" library="clojure" />
+		<fetch-library dist="${dist-kitchensink}" library="commons-fileupload" />
+		<fetch-library dist="${dist-kitchensink}" library="commons-io" />
+		<fetch-library dist="${dist-kitchensink}" library="grizzly" />
+		<fetch-library dist="${dist-kitchensink}" library="groboutils" />
+		<fetch-library dist="${dist-kitchensink}" library="groovy" />
+		<fetch-library dist="${dist-kitchensink}" library="h2" />
+		<fetch-library dist="${dist-kitchensink}" library="jackson" />
+		<fetch-library dist="${dist-kitchensink}" library="jepp" />
+		<fetch-library dist="${dist-kitchensink}" library="jruby" />
+		<fetch-library dist="${dist-kitchensink}" library="json" />
+		<fetch-library dist="${dist-kitchensink}" library="jsr223" />
+		<fetch-library dist="${dist-kitchensink}" library="junit" />
+		<fetch-library dist="${dist-kitchensink}" library="jygments" />
+		<fetch-library dist="${dist-kitchensink}" library="jython" />
+		<fetch-library dist="${dist-kitchensink}" library="log4j" />
+		<fetch-library dist="${dist-kitchensink}" library="mysqlconnector" />
+		<!-- GPL: <fetch-library dist="${dist-kitchensink}" library="quercus" /> -->
+		<fetch-library dist="${dist-kitchensink}" library="restlet" />
+		<fetch-library dist="${dist-kitchensink}" library="rhino" />
+		<fetch-library dist="${dist-kitchensink}" library="scripturian" />
+		<fetch-library dist="${dist-kitchensink}" library="servlet" />
+		<fetch-library dist="${dist-kitchensink}" library="slf4j" />
+		<fetch-library dist="${dist-kitchensink}" library="sqlalchemy" />
+		<fetch-library dist="${dist-kitchensink}" library="succinct" />
+		<fetch-library dist="${dist-kitchensink}" library="velocity" />
+		<fetch-library-versions dist="${dist-kitchensink}" />
+	</target>
+	
+	<target name="content-kitchensink" depends="javadoc-kitchensink, revision" description="Fetch content">
+		<echo>Using ${kitchensink-base} as base for Kitchen Sink distribution.</echo>
+		<fetch-common-content dist="${dist-kitchensink}" base="${kitchensink-base}" bin-base="${common}" />
+		<!-- Fetch Prudence Guide -->
+		<copy todir="${dist-kitchensink}/content/applications/prudence-test/web">
+			<fileset dir="${python}/applications/prudence-test/web" />
+			<fileset dir="${ruby}/applications/prudence-test/web" />
+			<fileset dir="${groovy}/applications/prudence-test/web" />
+			<fileset dir="${clojure}/applications/prudence-test/web" />
+			<fileset dir="${javascript}/applications/prudence-test/web" />
+			<fileset dir="${php}/applications/prudence-test/web" />
+			<fileset dir="${velocity}/applications/prudence-test/web" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/applications/prudence-test/resources">
+			<fileset dir="${python}/applications/prudence-test/resources" />
+			<fileset dir="${ruby}/applications/prudence-test/resources" />
+			<fileset dir="${groovy}/applications/prudence-test/resources" />
+			<fileset dir="${clojure}/applications/prudence-test/resources" />
+			<fileset dir="${javascript}/applications/prudence-test/resources" />
+			<fileset dir="${php}/applications/prudence-test/resources" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/applications/prudence-test/libraries">
+			<fileset dir="${python}/applications/prudence-test/libraries" />
+			<fileset dir="${ruby}/applications/prudence-test/libraries" />
+			<fileset dir="${groovy}/applications/prudence-test/libraries" />
+			<fileset dir="${clojure}/applications/prudence-test/libraries" />
+			<fileset dir="${javascript}/applications/prudence-test/libraries" />
+			<fileset dir="${php}/applications/prudence-test/libraries" />
+		</copy>
+		<!-- <fetch-syntaxhighlighter dist="${dist-kitchensink}" application="prudence-test" /> -->
+		<!-- Fetch other applications -->
+		<!--<copy todir="${dist-kitchensink}/content/applications/stickstick">
+			<fileset dir="${python}/applications/stickstick" excludes="*" />
+		</copy>-->
+		<!-- <fetch-syntaxhighlighter dist="${dist-kitchensink}" application="stickstick" /> -->
+	</target>
+	
+	<target name="test-kitchensink" depends="kitchensink" description="Unit tests">
+		<junit dir="${dist-kitchensink}/content" haltonfailure="true" showoutput="true" fork="true" forkmode="perBatch" newenvironment="true" jvm="${test-jvm}">
+			<test name="com.threecrickets.prudence.test.KitchenSink" />
+			<classpath>
+				<fileset dir="${dist-kitchensink}/content/libraries">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+			<jvmarg value="-Djava.library.path=${jepp-path}" />
+			<jvmarg value="-Dpython.home=libraries/python" />
+			<jvmarg value="-Dpython.cachedir=cache" />
+			<jvmarg value="-Dython.verbose=warning" />
+			<formatter type="plain" usefile="false" />
+		</junit>
+	</target>
+	
+	<!-- Standalone -->
+	
+	<target name="standalone" depends="src-standalone, jar-standalone, content-standalone" description="Create distribution" />
+	
+	<target name="package-standalone" depends="standalone" description="Create distribution zip">
+		<package dist="${dist-standalone}" name="standalone" />
+	</target>
+	
+	<target name="jar-standalone" depends="jar" description="Fetch Prudence jar">
+		<fetch-prudence-jar dist="${dist-standalone}" />
+	</target>
+	
+	<target name="src-standalone" description="Fetch Prudence source">
+		<copy todir="${dist-standalone}/content/src">
+			<fileset dir="${java-src}" />
+		</copy>
+	</target>
+	
+	<target name="javadoc-standalone" depends="javadoc" description="Fetch Prudence API docs">
+		<copy todir="${dist-standalone}/content/api">
+			<fileset dir="${tmp}/api" />
+		</copy>
+	</target>
+	
+	<target name="content-standalone" depends="javadoc-standalone" description="Fetch content">
+		<copy todir="${dist-standalone}/content">
+			<fileset dir="${common}" excludes="log/, configuration/, applications/, bin/" />
+		</copy>
+	</target>
+	
+	<!-- JavaScript -->
+	
+	<target name="javascript" depends="libraries-javascript, content-javascript" description="Create distribution" />
+	
+	<target name="package-javascript" depends="javascript" description="Create distribution zip">
+		<package dist="${dist-javascript}" name="javascript" />
+	</target>
+	
+	<target name="jar-javascript" depends="jar" description="Fetch Prudence jar">
+		<fetch-prudence-jar dist="${dist-javascript}" />
+	</target>
+	
+	<target name="libraries-javascript" depends="jar-javascript" description="Fetch libraries">
+		<fetch-library dist="${dist-javascript}" library="commons-fileupload" />
+		<fetch-library dist="${dist-javascript}" library="commons-io" />
+		<fetch-library dist="${dist-javascript}" library="grizzly" />
+		<fetch-library dist="${dist-javascript}" library="h2" />
+		<fetch-library dist="${dist-javascript}" library="json" />
+		<fetch-library dist="${dist-javascript}" library="jygments" />
+		<fetch-library dist="${dist-javascript}" library="log4j" />
+		<fetch-library dist="${dist-javascript}" library="restlet" />
+		<fetch-library dist="${dist-javascript}" library="rhino" />
+		<fetch-library dist="${dist-javascript}" library="scripturian" />
+		<fetch-library dist="${dist-javascript}" library="servlet" />
+		<fetch-library dist="${dist-javascript}" library="slf4j" />
+		<fetch-library dist="${dist-javascript}" library="succinct" />
+		<fetch-library dist="${dist-javascript}" library="velocity" />
+		<fetch-library-versions dist="${dist-javascript}" />
+	</target>
+	
+	<target name="javadoc-javascript" depends="javadoc" description="Fetch Prudence API docs">
+		<fetch-javadocs dist="${dist-javascript}" />
+	</target>
+	
+	<target name="content-javascript" depends="javadoc-javascript, revision" description="Fetch content">
+		<fetch-common-content dist="${dist-javascript}" base="${javascript}" bin-base="${javascript}" />
+		<!-- <fetch-syntaxhighlighter dist="${dist-javascript}" application="prudence-test" /> -->
+	</target>
+	
+	<!-- Python -->
+	
+	<target name="python" depends="libraries-python, content-python" description="Create distribution" />
+	
+	<target name="package-python" depends="python" description="Create distribution zip">
+		<package dist="${dist-python}" name="python" />
+	</target>
+	
+	<target name="jar-python" depends="jar" description="Fetch Prudence jar">
+		<fetch-prudence-jar dist="${dist-python}" />
+	</target>
+	
+	<target name="libraries-python" depends="jar-python" description="Fetch libraries">
+		<fetch-library dist="${dist-python}" library="commons-fileupload" />
+		<fetch-library dist="${dist-python}" library="commons-io" />
+		<fetch-library dist="${dist-python}" library="grizzly" />
+		<fetch-library dist="${dist-python}" library="h2" />
+		<fetch-library dist="${dist-python}" library="jepp" />
+		<fetch-library dist="${dist-python}" library="json" />
+		<fetch-library dist="${dist-python}" library="jsr223" />
+		<fetch-library dist="${dist-python}" library="jygments" />
+		<fetch-library dist="${dist-python}" library="jython" />
+		<fetch-library dist="${dist-python}" library="log4j" />
+		<fetch-library dist="${dist-python}" library="mysqlconnector" />
+		<fetch-library dist="${dist-python}" library="restlet" />
+		<fetch-library dist="${dist-python}" library="scripturian" />
+		<fetch-library dist="${dist-python}" library="servlet" />
+		<fetch-library dist="${dist-python}" library="slf4j" />
+		<fetch-library dist="${dist-python}" library="sqlalchemy" />
+		<fetch-library dist="${dist-python}" library="succinct" />
+		<fetch-library dist="${dist-python}" library="velocity" />
+		<fetch-library-versions dist="${dist-python}" />
+	</target>
+	
+	<target name="javadoc-python" depends="javadoc" description="Fetch Prudence API docs">
+		<fetch-javadocs dist="${dist-python}" />
+	</target>
+	
+	<target name="content-python" depends="javadoc-python, revision" description="Fetch content">
+		<fetch-common-content dist="${dist-python}" base="${python}" bin-base="${python}" />
+		<!-- <fetch-syntaxhighlighter dist="${dist-python}" application="prudence-test" />
+		<fetch-syntaxhighlighter dist="${dist-python}" application="stickstick" /> -->
+	</target>
+	
+	<!-- Clojure -->
+	
+	<target name="clojure" depends="libraries-clojure, content-clojure" description="Create distribution" />
+	
+	<target name="package-clojure" depends="clojure" description="Create distribution zip">
+		<package dist="${dist-clojure}" name="clojure" />
+	</target>
+	
+	<target name="jar-clojure" depends="jar" description="Fetch Prudence jar">
+		<fetch-prudence-jar dist="${dist-clojure}" />
+	</target>
+	
+	<target name="libraries-clojure" depends="jar-clojure" description="Fetch libraries">
+		<fetch-library dist="${dist-clojure}" library="clojure" />
+		<fetch-library dist="${dist-clojure}" library="commons-fileupload" />
+		<fetch-library dist="${dist-clojure}" library="commons-io" />
+		<fetch-library dist="${dist-clojure}" library="grizzly" />
+		<fetch-library dist="${dist-clojure}" library="h2" />
+		<fetch-library dist="${dist-clojure}" library="json" />
+		<fetch-library dist="${dist-clojure}" library="jygments" />
+		<fetch-library dist="${dist-clojure}" library="log4j" />
+		<fetch-library dist="${dist-clojure}" library="mysqlconnector" />
+		<fetch-library dist="${dist-clojure}" library="restlet" />
+		<fetch-library dist="${dist-clojure}" library="scripturian" />
+		<fetch-library dist="${dist-clojure}" library="servlet" />
+		<fetch-library dist="${dist-clojure}" library="slf4j" />
+		<fetch-library dist="${dist-clojure}" library="succinct" />
+		<fetch-library dist="${dist-clojure}" library="velocity" />
+		<fetch-library-versions dist="${dist-clojure}" />
+	</target>
+	
+	<target name="javadoc-clojure" depends="javadoc" description="Fetch Prudence API docs">
+		<fetch-javadocs dist="${dist-clojure}" />
+	</target>
+	
+	<target name="content-clojure" depends="javadoc-clojure, revision" description="Fetch content">
+		<fetch-common-content dist="${dist-clojure}" base="${clojure}" bin-base="${clojure}" />
+		<!-- <fetch-syntaxhighlighter dist="${dist-clojure}" application="prudence-test" />
+		<fetch-syntaxhighlighter dist="${dist-clojure}" application="stickstick" /> -->
+	</target>
+		
+	<!-- Groovy -->
+	
+	<target name="groovy" depends="libraries-groovy, content-groovy" description="Create distribution" />
+	
+	<target name="package-groovy" depends="groovy" description="Create distribution zip">
+		<package dist="${dist-groovy}" name="groovy" />
+	</target>
+	
+	<target name="jar-groovy" depends="jar" description="Fetch Prudence jar">
+		<fetch-prudence-jar dist="${dist-groovy}" />
+	</target>
+	
+	<target name="libraries-groovy" depends="jar-groovy" description="Fetch libraries">
+		<fetch-library dist="${dist-groovy}" library="commons-fileupload" />
+		<fetch-library dist="${dist-groovy}" library="commons-io" />
+		<fetch-library dist="${dist-groovy}" library="grizzly" />
+		<fetch-library dist="${dist-groovy}" library="groovy" />
+		<fetch-library dist="${dist-groovy}" library="h2" />
+		<fetch-library dist="${dist-groovy}" library="json" />
+		<fetch-library dist="${dist-groovy}" library="jygments" />
+		<fetch-library dist="${dist-groovy}" library="log4j" />
+		<fetch-library dist="${dist-groovy}" library="mysqlconnector" />
+		<fetch-library dist="${dist-groovy}" library="restlet" />
+		<fetch-library dist="${dist-groovy}" library="scripturian" />
+		<fetch-library dist="${dist-groovy}" library="servlet" />
+		<fetch-library dist="${dist-groovy}" library="slf4j" />
+		<fetch-library dist="${dist-groovy}" library="succinct" />
+		<fetch-library dist="${dist-groovy}" library="velocity" />
+		<fetch-library-versions dist="${dist-groovy}" />
+	</target>
+	
+	<target name="javadoc-groovy" depends="javadoc" description="Fetch Prudence API docs">
+		<fetch-javadocs dist="${dist-groovy}" />
+	</target>
+	
+	<target name="content-groovy" depends="javadoc-groovy, revision" description="Fetch content">
+		<fetch-common-content dist="${dist-groovy}" base="${groovy}" bin-base="${groovy}" />
+		<!-- <fetch-syntaxhighlighter dist="${dist-groovy}" application="prudence-test" />
+		<fetch-syntaxhighlighter dist="${dist-groovy}" application="stickstick" /> -->
+	</target>
+	
+	<!-- Ruby -->
+	
+	<target name="ruby" depends="libraries-ruby, content-ruby" description="Create distribution" />
+	
+	<target name="package-ruby" depends="ruby" description="Create distribution zip">
+		<package dist="${dist-ruby}" name="ruby" />
+	</target>
+	
+	<target name="jar-ruby" depends="jar" description="Fetch Prudence jar">
+		<fetch-prudence-jar dist="${dist-ruby}" />
+	</target>
+	
+	<target name="libraries-ruby" depends="jar-ruby" description="Fetch libraries">
+		<fetch-library dist="${dist-ruby}" library="commons-fileupload" />
+		<fetch-library dist="${dist-ruby}" library="commons-io" />
+		<fetch-library dist="${dist-ruby}" library="grizzly" />
+		<fetch-library dist="${dist-ruby}" library="h2" />
+		<fetch-library dist="${dist-ruby}" library="jruby" />
+		<fetch-library dist="${dist-ruby}" library="json" />
+		<fetch-library dist="${dist-ruby}" library="jygments" />
+		<fetch-library dist="${dist-ruby}" library="log4j" />
+		<fetch-library dist="${dist-ruby}" library="mysqlconnector" />
+		<fetch-library dist="${dist-ruby}" library="restlet" />
+		<fetch-library dist="${dist-ruby}" library="scripturian" />
+		<fetch-library dist="${dist-ruby}" library="servlet" />
+		<fetch-library dist="${dist-ruby}" library="slf4j" />
+		<fetch-library dist="${dist-ruby}" library="succinct" />
+		<fetch-library dist="${dist-ruby}" library="velocity" />
+		<fetch-library-versions dist="${dist-ruby}" />
+	</target>
+	
+	<target name="javadoc-ruby" depends="javadoc" description="Fetch Prudence API docs">
+		<fetch-javadocs dist="${dist-ruby}" />
+	</target>
+	
+	<target name="content-ruby" depends="javadoc-ruby, revision" description="Fetch content">
+		<fetch-common-content dist="${dist-ruby}" base="${ruby}" bin-base="${ruby}" />
+		<!-- <fetch-syntaxhighlighter dist="${dist-ruby}" application="prudence-test" />
+		<fetch-syntaxhighlighter dist="${dist-ruby}" application="stickstick" /> -->
+	</target>
+	
+	<!-- PHP -->
+	
+	<target name="php" depends="libraries-php, content-php" description="Create distribution" />
+	
+	<target name="package-php" depends="php" description="Create distribution zip">
+		<package dist="${dist-php}" name="php" />
+	</target>
+	
+	<target name="jar-php" depends="jar" description="Fetch Prudence jar">
+		<fetch-prudence-jar dist="${dist-php}" />
+	</target>
+	
+	<target name="libraries-php" depends="jar-php" description="Fetch libraries">
+		<fetch-library dist="${dist-php}" library="commons-fileupload" />
+		<fetch-library dist="${dist-php}" library="commons-io" />
+		<fetch-library dist="${dist-php}" library="grizzly" />
+		<fetch-library dist="${dist-php}" library="h2" />
+		<fetch-library dist="${dist-php}" library="json" />
+		<fetch-library dist="${dist-php}" library="jygments" />
+		<fetch-library dist="${dist-php}" library="log4j" />
+		<fetch-library dist="${dist-php}" library="mysqlconnector" />
+		<!-- GPL: <fetch-library dist="${dist-php}" library="quercus" /> -->
+		<fetch-library dist="${dist-php}" library="restlet" />
+		<fetch-library dist="${dist-php}" library="scripturian" />
+		<fetch-library dist="${dist-php}" library="servlet" />
+		<fetch-library dist="${dist-php}" library="slf4j" />
+		<fetch-library dist="${dist-php}" library="succinct" />
+		<fetch-library dist="${dist-php}" library="velocity" />
+		<fetch-library-versions dist="${dist-php}" />
+	</target>
+	
+	<target name="javadoc-php" depends="javadoc" description="Fetch Prudence API docs">
+		<fetch-javadocs dist="${dist-php}" />
+	</target>
+	
+	<target name="content-php" depends="javadoc-php, revision" description="Fetch content">
+		<fetch-common-content dist="${dist-php}" base="${php}" bin-base="${php}" />
+		<!-- <fetch-syntaxhighlighter dist="${dist-php}" application="prudence-test" />
+		<fetch-syntaxhighlighter dist="${dist-php}" application="stickstick" /> -->
+	</target>
 
 </project>
