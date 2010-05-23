@@ -8,17 +8,11 @@
 <%clojure
 
 ;
-; Accessing the request
+; Defer this page
 ;
 
-(def form (.. conversation getResource getRequest getResourceRef getQueryAsForm))
-
-;
-; Stream this page
-;
-
-(if (= (.getFirstValue form "stream") "true") 
-	(if (.stream conversation)
+(if (= (.. conversation getQuery (get "defer")) "true") 
+	(if (.defer conversation)
 		(throw nil)))
 
 ;
@@ -67,7 +61,7 @@
 %>
 </td><td>
 <h3>The "id" attribute in the URL query is:</h3>
-<p><%= (or (.getFirstValue form "id") "") %></p>
+<p><%= (or (.. conversation getQuery (get "id")) "") %></p>
 <h3>A few tests:</h3>
 <p>
 <%

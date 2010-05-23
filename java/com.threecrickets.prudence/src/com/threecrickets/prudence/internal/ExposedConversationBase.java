@@ -590,7 +590,7 @@ public class ExposedConversationBase<R extends ServerResource>
 	public Form getQueryAll()
 	{
 		if( queryAll == null )
-			queryAll = resource.getRequest().getReferrerRef().getQueryAsForm();
+			queryAll = resource.getRequest().getResourceRef().getQueryAsForm();
 		return queryAll;
 	}
 

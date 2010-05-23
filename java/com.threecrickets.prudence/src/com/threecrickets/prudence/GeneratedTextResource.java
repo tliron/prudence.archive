@@ -1023,49 +1023,51 @@ public class GeneratedTextResource extends ServerResource
 				// Execute and represent output
 				representation = exposedContainer.include( documentName );
 
-				if( representation == null )
-					throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-				else
+				switch( getClientCachingMode() )
 				{
-					switch( getClientCachingMode() )
+					case CLIENT_CACHING_MODE_DISABLED:
 					{
-						case CLIENT_CACHING_MODE_DISABLED:
-						{
-							// Remove all caching headers
-							representation.setModificationDate( null );
-							representation.setExpirationDate( null );
-							representation.setTag( null );
-							List<CacheDirective> cacheDirectives = getResponse().getCacheDirectives();
-							cacheDirectives.clear();
-							cacheDirectives.add( CacheDirective.noCache() );
-							break;
-						}
-
-						case CLIENT_CACHING_MODE_CONDITIONAL:
-							// Leave conditional headers intact
-							break;
-
-						case CLIENT_CACHING_MODE_OFFLINE:
-						{
-							// Add offline caching headers based on conditional
-							// headers
-							Date expirationDate = representation.getExpirationDate();
-							if( expirationDate != null )
-							{
-								long maxAge = ( expirationDate.getTime() - System.currentTimeMillis() );
-								if( maxAge > 0 )
-								{
-									List<CacheDirective> cacheDirectives = getResponse().getCacheDirectives();
-									cacheDirectives.clear();
-									cacheDirectives.add( CacheDirective.maxAge( (int) maxAge / 1000 ) );
-								}
-							}
-							break;
-						}
+						// Remove all caching headers
+						representation.setModificationDate( null );
+						representation.setExpirationDate( null );
+						representation.setTag( null );
+						List<CacheDirective> cacheDirectives = getResponse().getCacheDirectives();
+						cacheDirectives.clear();
+						cacheDirectives.add( CacheDirective.noCache() );
+						break;
 					}
 
-					return representation;
+					case CLIENT_CACHING_MODE_CONDITIONAL:
+						// Leave conditional headers intact
+						break;
+
+					case CLIENT_CACHING_MODE_OFFLINE:
+					{
+						// Add offline caching headers based on conditional
+						// headers
+						Date expirationDate = representation.getExpirationDate();
+						if( expirationDate != null )
+						{
+							long maxAge = ( expirationDate.getTime() - System.currentTimeMillis() );
+							if( maxAge > 0 )
+							{
+								List<CacheDirective> cacheDirectives = getResponse().getCacheDirectives();
+								cacheDirectives.clear();
+								cacheDirectives.add( CacheDirective.maxAge( (int) maxAge / 1000 ) );
+							}
+						}
+						break;
+					}
 				}
+
+				/*if( representation instanceof GeneratedTextDeferredRepresentation )
+				{
+					setAutoCommitting( false );
+					getApplication().getTaskService().submit( (GeneratedTextDeferredRepresentation) representation );
+					return null;
+				}*/
+
+				return representation;
 			}
 			catch( ParsingException x )
 			{

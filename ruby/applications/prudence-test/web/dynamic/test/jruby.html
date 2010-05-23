@@ -8,17 +8,11 @@
 <%ruby
 
 #
-# Accessing the request
+# Defer this page
 #
 
-form = $conversation.resource.request.resource_ref.query_as_form
-
-#
-# Stream this page
-#
-
-if form.get_first_value('stream') == 'true'
-	if $conversation.stream
+if $conversation.query['defer'] == 'true'
+	if $conversation.defer
 		raise
 	end
 end
@@ -74,7 +68,7 @@ end
 %>
 </td><td>
 <h3>The "id" attribute in the URL query is:</h3>
-<p><%= form.get_first_value('id') %></p>
+<p><%= $conversation.query['id'] || '' %></p>
 <h3>A few tests:</h3>
 <p>
 <%

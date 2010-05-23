@@ -8,17 +8,11 @@
 <%python
 
 #
-# Accessing the request
+# Defer this page
 #
 
-form = conversation.resource.request.resourceRef.queryAsForm
-
-#
-# Stream this page
-#
-
-if form.getFirstValue('stream') == 'true':
-	if conversation.stream():
+if conversation.query['defer'] == 'true':
+	if conversation.defer():
 		raise
 
 #
@@ -69,7 +63,7 @@ for adapter in adapters:
 %>
 </td><td>
 <h3>The "id" attribute in the URL query is:</h3>
-<p><%= form.getFirstValue('id') or '' %></p>
+<p><%= conversation.query['id'] or '' %></p>
 <h3>A few tests:</h3>
 <p>
 <%

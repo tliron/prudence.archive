@@ -36,26 +36,26 @@ public class ExposedConversationForGeneratedTextResource extends ExposedConversa
 	//
 
 	/**
-	 * This boolean is true when the writer is in streaming mode.
+	 * This boolean is true when the writer is in deferred mode.
 	 * 
-	 * @return True if in streaming mode, false if in caching mode
+	 * @return True if in deffered mode
 	 */
-	public boolean isStreaming()
+	public boolean isDeferred()
 	{
-		return isStreaming;
+		return isDeferred;
 	}
 
 	/**
-	 * Identical to {@link #isStreaming()}. Supports scripting engines which
+	 * Identical to {@link #isDeferred()}. Supports scripting engines which
 	 * don't know how to recognize the "is" getter notation, but can recognize
 	 * the "get" notation.
 	 * 
-	 * @return True if in streaming mode, false if in caching mode
-	 * @see #isStreaming()
+	 * @return True if in deferred mode
+	 * @see #isDeferred()
 	 */
-	public boolean getIsStreaming()
+	public boolean getIsDeferred()
 	{
-		return isStreaming();
+		return isDeferred();
 	}
 
 	//
@@ -80,33 +80,14 @@ public class ExposedConversationForGeneratedTextResource extends ExposedConversa
 	 * streaming mode. If you want to disable this behavior, use
 	 * {@link #stream(boolean)}.
 	 * 
-	 * @return True if started streaming mode, false if already in streaming
-	 *         mode
-	 * @see #stream(boolean)
+	 * @return True if deferred, false if already in deferred mode
 	 */
-	public boolean stream()
+	public boolean defer()
 	{
-		return stream( true );
-	}
-
-	/**
-	 * This version of {@link #stream()} adds a boolean argument to let you
-	 * control whether to flush the writer after every line in streaming mode.
-	 * By default auto-flushing is enabled.
-	 * 
-	 * @param flushLines
-	 *        Whether to flush the writers after every line in streaming mode
-	 * @return True if started streaming mode, false if already in streaming
-	 *         mode
-	 * @see #stream()
-	 */
-	public boolean stream( boolean flushLines )
-	{
-		if( isStreaming )
+		if( isDeferred )
 			return false;
 
-		startStreaming = true;
-		this.flushLines = flushLines;
+		defer = true;
 		return true;
 	}
 
@@ -114,21 +95,12 @@ public class ExposedConversationForGeneratedTextResource extends ExposedConversa
 	// Protected
 
 	/**
-	 * Flag to signify that we should enter streaming mode.
+	 * Flag to signify that we should enter deferred mode.
 	 */
-	protected boolean startStreaming;
+	protected boolean defer;
 
 	/**
-	 * This boolean is true when the writer is in streaming mode.
+	 * This boolean is true when the writer is in deferred mode.
 	 */
-	protected boolean isStreaming;
-
-	// //////////////////////////////////////////////////////////////////////////
-	// Private
-
-	/**
-	 * Whether to flush the writers after every line in streaming mode.
-	 */
-	@SuppressWarnings("unused")
-	private boolean flushLines;
+	protected boolean isDeferred;
 }

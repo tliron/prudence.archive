@@ -226,6 +226,9 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 	 */
 	protected final ExposedConversationForGeneratedTextResource exposedConversation;
 
+	/**
+	 * The exposed application.
+	 */
 	protected final ExposedApplication exposedApplication = new ExposedApplication();
 
 	/**
@@ -329,7 +332,7 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 		int startPosition = 0;
 
 		// Make sure we have a valid writer for caching mode
-		if( !exposedConversation.isStreaming )
+		if( !exposedConversation.isDeferred )
 		{
 			if( writer == null )
 			{
@@ -378,20 +381,18 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 			executable.execute( executionContext, this, resource.getExecutionController() );
 			currentExecutable = executable;
 
-			// Did the executable ask us to start streaming?
-			if( exposedConversation.startStreaming )
+			// Did the executable ask us to defer?
+			if( exposedConversation.defer )
 			{
-				exposedConversation.startStreaming = false;
+				exposedConversation.defer = false;
 
 				// Note that this will cause the executable to execute again!
-				// TODO: flushLines!
-				resource.setAutoCommitting( false );
-				return new GeneratedTextStreamingRepresentation( this );
+				return new GeneratedTextDeferredRepresentation( this );
 			}
 
-			if( exposedConversation.isStreaming )
+			if( exposedConversation.isDeferred )
 			{
-				// Nothing to return in streaming mode
+				// Nothing to return in deferred mode
 				return null;
 			}
 			else
@@ -421,20 +422,18 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 		}
 		catch( ExecutionException x )
 		{
-			// Did the executable ask us to start streaming?
-			if( exposedConversation.startStreaming )
+			// Did the executable ask us to defer?
+			if( exposedConversation.defer )
 			{
-				exposedConversation.startStreaming = false;
+				// Note that we will allow exceptions in an executable that ask
+				// us to defer! In fact, throwing an exception is a good way for
+				// the executable to signal that it's done and is ready to
+				// defer.
+
+				exposedConversation.defer = false;
 
 				// Note that this will cause the executable to run again!
-				// TODO: flushLines!
-				resource.setAutoCommitting( false );
-				return new GeneratedTextStreamingRepresentation( this );
-
-				// Note that we will allow exceptions in executable that ask us
-				// to start streaming! In fact, throwing an exception is a
-				// good way for the executable to signal that it's done and is
-				// ready to start streaming.
+				return new GeneratedTextDeferredRepresentation( this );
 			}
 			else
 				throw x;

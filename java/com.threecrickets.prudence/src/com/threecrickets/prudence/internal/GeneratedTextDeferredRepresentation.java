@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
 
+import org.restlet.Response;
+import org.restlet.data.Status;
 import org.restlet.representation.WriterRepresentation;
 
 import com.threecrickets.prudence.GeneratedTextResource;
@@ -24,12 +26,12 @@ import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
- * Representation used in streaming mode of {@link GeneratedTextResource}.
+ * Representation used in deferred mode of {@link GeneratedTextResource}.
  * 
  * @author Tal Liron
  * @see GeneratedTextResource
  */
-public class GeneratedTextStreamingRepresentation extends WriterRepresentation
+public class GeneratedTextDeferredRepresentation extends WriterRepresentation implements Runnable
 {
 	//
 	// Construction
@@ -41,7 +43,7 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 	 * @param exposedDocument
 	 *        The exposed document to clone
 	 */
-	public GeneratedTextStreamingRepresentation( ExposedDocumentForGeneratedTextResource exposedDocument )
+	public GeneratedTextDeferredRepresentation( ExposedDocumentForGeneratedTextResource exposedDocument )
 	{
 		// Note that we are setting representation characteristics
 		// before we actually execute the executable
@@ -53,7 +55,7 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		// Clone container
 		this.exposedDocument = new ExposedDocumentForGeneratedTextResource( exposedDocument.resource, executionContext, exposedDocument.exposedConversation.getEntity(), exposedDocument.exposedConversation.getVariant() );
 		this.exposedDocument.currentExecutable = exposedDocument.currentExecutable;
-		this.exposedDocument.exposedConversation.isStreaming = true;
+		this.exposedDocument.exposedConversation.isDeferred = true;
 
 		// Initialize execution context
 		executionContext.getExposedVariables().put( this.exposedDocument.resource.getExposedDocumentName(), this.exposedDocument );
@@ -107,6 +109,27 @@ public class GeneratedTextStreamingRepresentation extends WriterRepresentation
 		super.release();
 		if( !exposedDocument.resource.isCommitted() )
 			exposedDocument.resource.getResponse().abort();
+	}
+
+	//
+	// Runnable
+	//
+
+	public void run()
+	{
+		try
+		{
+			Thread.sleep( 1000 );
+		}
+		catch( InterruptedException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Response response = exposedDocument.resource.getResponse();
+		response.setEntity( this );
+		response.setStatus( Status.SUCCESS_OK );
+		response.commit();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

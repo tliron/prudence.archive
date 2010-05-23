@@ -8,16 +8,10 @@
 <%javascript
 
 //
-// Accessing the request
+// Defer this page
 //
 
-var form = conversation.resource.request.resourceRef.queryAsForm;
-
-//
-// Stream this page
-//
-
-if(form.getFirstValue('stream') == 'true') if(conversation.stream()) throw null;
+if(conversation.query.get('defer') == 'true') if(conversation.defer()) throw null;
 
 //
 // Cache this page 
@@ -67,7 +61,7 @@ for(var i = 0; i < adapters.length; i++) {
 %>
 </td><td>
 <h3>The "id" attribute in the URL query is:</h3>
-<p><%= form.getFirstValue('id') || '' %></p>
+<p><%= conversation.query.get('id') || '' %></p>
 <h3>A few tests:</h3>
 <p>
 <%

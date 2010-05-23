@@ -20,7 +20,7 @@ quercus				4.0.3
 restlet (JSE)		2.0 (Revision 6588 + patch)
 rhino				1.7R2
 servlet (tomcat)	6.0.26
-scripturian			1.0 (Revision 198)
+scripturian			1.0 (Revision 199)
 slf4j				1.5.8
 sqlalchemy			0.6 (Revision 6720 + H2 patch)
 succinct			1.0 (Revision 21)

@@ -8,17 +8,11 @@
 <%groovy
 
 //
-// Accessing the request
+// Defer this page
 //
 
-def form = conversation.resource.request.resourceRef.queryAsForm
-
-//
-// Stream this page
-//
-
-if(form.getFirstValue('stream') == 'true') {
-	if(conversation.stream()) {
+if(conversation.query['defer'] == 'true') {
+	if(conversation.defer()) {
 		throw new Exception()
 	}
 }
@@ -72,7 +66,7 @@ for(def adapter in adapters) {
 %>
 </td><td>
 <h3>The "id" attribute in the URL query is:</h3>
-<p><%= form.getFirstValue('id') %></p>
+<p><%= conversation.query['id'] ?: '' %></p>
 <h3>A few tests:</h3>
 <p>
 <%

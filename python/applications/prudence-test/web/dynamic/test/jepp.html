@@ -8,17 +8,11 @@
 <%jepp
 
 #
-# Accessing the request
+# Defer this page
 #
 
-form = conversation.getResource().getRequest().getResourceRef().getQueryAsForm()
-
-#
-# Stream this page
-#
-
-if form.getFirstValue('stream') == 'true':
-	if conversation.stream():
+if str(conversation.getQuery().get('defer')) == 'true':
+	if conversation.defer():
 		raise
 
 #
@@ -68,7 +62,7 @@ for adapter in adapters:
 %>
 </td><td>
 <h3>The "id" attribute in the URL query is:</h3>
-<p><%= '%s' % form.getFirstValue('id') %></p>
+<p><%= conversation.getQuery().get('id') or '' %></p>
 <h3>A few tests:</h3>
 <p>
 <%

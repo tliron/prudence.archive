@@ -8,16 +8,10 @@
 <?php
 
 //
-// Accessing the request
+// Defer this page
 //
 
-$form = $conversation->resource->request->resourceRef->queryAsForm;
-
-//
-// Stream this page
-//
-
-if($form->getFirstValue('stream') == 'true') if($conversation->stream()) exit;
+if($_GET['defer'] == 'true') if($conversation->defer()) exit;
 
 //
 // Cache this page
