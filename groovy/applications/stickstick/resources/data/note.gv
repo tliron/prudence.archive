@@ -15,14 +15,13 @@ merge = { key, a, b ->
 
 getId = { conversation ->
     try {
-        return Integer.parseInt(conversation.resource.request.attributes.id)
+        return Integer.parseInt(conversation.locals.id)
     }
     catch(Exception) {
     	return null
     }
 
-    //def form = conversation.resource.request.resourceRef.queryAsForm
-    //return Integer.valueOf(form.getFirstValue('id'))
+	// return Integer.parseInt(conversation.query.id)
 }
 
 handleInit = { conversation ->

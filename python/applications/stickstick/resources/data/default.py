@@ -13,8 +13,7 @@ def handle_init(conversation):
     conversation.addMediaTypeByName('application/json')
 
 def handle_get(conversation):
-    form = conversation.resource.request.resourceRef.queryAsForm
-    fresh = form.getFirstValue('fresh') == 'true'
+    fresh = conversation.query['fresh'] == 'true'
 
     max_timestamp = None
     board_list = []

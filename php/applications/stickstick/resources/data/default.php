@@ -7,8 +7,7 @@ function handle_init($conversation) {
 }
 
 function handle_get($conversation) {
-    $form = $conversation->resource->request->resourceRef->queryAsForm;
-    $fresh = $form->getFirstValue('fresh') == 'true';
+    $fresh = $_GET['fresh'] == 'true';
     
     $max_timestamp = NULL;
     $board_list = array();

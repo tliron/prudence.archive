@@ -7,13 +7,12 @@ import minjson as json
 
 def get_id(conversation):
     try:
-        return int(conversation.resource.request.attributes.get('id'))
+        return int(conversation.locals['id'])
     except ValueError:
         return None
     except TypeError:
         return None
-    #form = conversation.resource.request.resourceRef.queryAsForm
-    #return int(form.getFirstValue('id'))
+    #return int(conversation.query['id'])
 
 def handle_init(conversation):
     conversation.addMediaTypeByName('text/plain')

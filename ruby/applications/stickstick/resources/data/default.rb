@@ -10,8 +10,7 @@ def handle_init conversation
 end
 
 def handle_get conversation
-    form = conversation.resource.request.resource_ref.query_as_form
-    fresh = form.get_first_value('fresh') == 'true'
+    fresh = conversation.query['fresh'] == 'true'
     
     max_timestamp = nil
     board_list = Array.new

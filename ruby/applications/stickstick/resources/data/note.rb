@@ -15,13 +15,12 @@ end
 
 def get_id conversation
     begin
-        return Integer(conversation.resource.request.attributes['id'])
+        return Integer(conversation.locals['id'])
     except
     	return nil
     end
 
-    #form = conversation.resource.request.resource_ref.query_as_form
-    #return Integer(form.get_first_value('id'))
+    #return Integer(conversation.query['id'])
 end
 
 def handle_init conversation

@@ -9,8 +9,7 @@ handleInit = { conversation ->
 }
 
 handleGet = { conversation ->
-    def form = conversation.resource.request.resourceRef.queryAsForm
-    def fresh = form.getFirstValue('fresh') == 'true'
+    def fresh = conversation.query.fresh == 'true'
     
     def maxTimestamp
     def boardList = []

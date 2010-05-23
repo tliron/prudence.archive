@@ -15,14 +15,13 @@ function merge(key, a, b) {
 
 function getId(conversation) {
     try {
-        return parseInt(conversation.resource.request.attributes.get('id'));
+        return parseInt(conversation.locals.get('id'));
     }
     catch(e) {
     	return null;
     }
 
-    //var form = conversation.resource.request.resourceRef.queryAsForm;
-    //return parseInt(form.getFirstValue('id'));
+    //return parseInt(conversation.query.get('id'));
 }
 
 function handleInit(conversation) {

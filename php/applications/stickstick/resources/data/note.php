@@ -13,7 +13,7 @@ function merge($key, $a, $b) {
 }
 
 function get_id($conversation) {
-    return intval($conversation->resource->request->attributes['id']);
+    return intval($conversation->locals['id']);
 
     //return intval($_GET['id']);
 }

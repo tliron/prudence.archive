@@ -25,8 +25,7 @@
 				 		(max (board :timestamp) others-max-timestamp))]))))
 
 (defn handle-get [conversation]
-	(let [form (.. conversation getResource getRequest getResourceRef getQueryAsForm)
-		fresh (.equals "true" (.getFirstValue form "fresh"))]
+	(let [fresh (.equals "true" (.. conversation getQuery (get "fresh")))]
 		;(println form)
 		;(println fresh)
 		(with-connection (if fresh fresh-from-pool from-pool)

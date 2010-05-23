@@ -8,8 +8,7 @@ function handleInit(conversation) {
 }
 
 function handleGet(conversation) {
-    var form = conversation.resource.request.resourceRef.queryAsForm;
-    var fresh = form.getFirstValue('fresh') == 'true';
+    var fresh = conversation.query.get('fresh') == 'true';
     
     var maxTimestamp;
     var boardList = [];

@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.data.CacheDirective;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
@@ -462,6 +463,26 @@ public class ExposedConversationBase<R extends ServerResource>
 	}
 
 	/**
+	 * A shortcut to the resource request.
+	 * 
+	 * @return The request
+	 */
+	public Request getRequest()
+	{
+		return resource.getRequest();
+	}
+
+	/**
+	 * A shortcut to the resource response.
+	 * 
+	 * @return The response
+	 */
+	public Response getResponse()
+	{
+		return resource.getResponse();
+	}
+
+	/**
 	 * The {@link Variant} of this request. Useful for interrogating the
 	 * client's preferences. This is available only in <code>handleGet()</code>,
 	 * <code>handlePost()</code> and <code>handlePut()</code>.
@@ -655,13 +676,11 @@ public class ExposedConversationBase<R extends ServerResource>
 	}
 
 	/**
-	 * Values of URI template variables will appear here. Note that if you
-	 * iterate this map, you might find values that are not URI values. This is
-	 * because other request attributes are stored here, too.
+	 * The conversation locals include the URI template variables.
 	 * 
-	 * @return The URI template values and other request attributes
+	 * @return The locals
 	 */
-	public Map<String, Object> getUriValues()
+	public Map<String, Object> getLocals()
 	{
 		return resource.getRequestAttributes();
 	}

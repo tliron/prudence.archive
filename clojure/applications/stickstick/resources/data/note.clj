@@ -9,11 +9,10 @@
 
 (defn get-id [conversation]
 	(try
-  	(Integer/parseInt (.. conversation getResource getRequest getAttributes (get "id")))
+  	(Integer/parseInt (.. conversation getLocals (get "id")))
   	(catch Exception _ nil)))
 
-	;(let [form (.. conversation getResource getRequest getResourceRef getQueryAsForm)]
-	;	(Integer/parseInt (.getFirstValue form "id")))
+	;(Integer/parseInt (.. conversation getQuery (get "id")))
 
 (defn handle-init [conversation]
 	(.. conversation (addMediaTypeByName "text/plain"))
