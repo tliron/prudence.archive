@@ -9,7 +9,7 @@ global $show_debug_on_error, $preheat_resources;
 
 $document->execute('defaults/application/settings/');
 
-$application_name = 'Prudence Tewt';
+$application_name = 'Prudence Test';
 $application_description = 'Prudence tests';
 $application_author = 'Tal Liron';
 $application_owner = 'Three Crickets';

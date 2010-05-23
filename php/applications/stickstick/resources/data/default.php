@@ -61,7 +61,7 @@ function handle_put($conversation) {
     // as text, and want to refer to it more than once, we should keep
     // a reference to that text.
     
-    $text = $conversation->entity->text;
+    $text = $conversation->entity->getText();
     $note = json_decode($text, true);
     
     $connection = get_connection();

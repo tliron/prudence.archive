@@ -58,7 +58,7 @@ function get_connection($fresh=false) {
 			$connection = $connection_pool->connection;
 	
 			if($fresh) {
-				print "fresh\n";
+				//print "fresh\n";
 				$statement = $connection->createStatement();
 				try {
 					$statement->execute('DROP TABLE board');
@@ -301,7 +301,7 @@ function update_note($note, $connection) {
 		$statement->execute();
 	}
 	catch(Exception $x) {
-		print $x;
+		//print $x;
 		$statement->close();
 		throw $x;
 	}
