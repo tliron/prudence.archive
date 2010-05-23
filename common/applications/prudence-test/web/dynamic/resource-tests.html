@@ -84,9 +84,13 @@ function seeMainSource() {
 	<p>
 		<select id="resource">
 <% #if($executable.manager.getAdapterByTag('jython')) %>
-			<option value="../data/jython/">Python</option>
+			<option value="../data/jython/">Python (Jython)</option>
 <% #end %>
-			<!-- <option value="../data/jepp/">Python (Jepp) [BROKEN]</option> -->
+<!-- 
+<% #if($executable.manager.getAdapterByTag('jepp')) %>
+			<option value="../data/jepp/">Python (Jepp)</option>
+<% #end %>
+ -->
 <% #if($executable.manager.getAdapterByTag('ruby')) %>
 			<option value="../data/jruby/">Ruby</option>
 <% #end %>

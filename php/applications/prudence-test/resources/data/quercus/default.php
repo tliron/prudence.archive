@@ -63,7 +63,7 @@ function handle_init($conversation) {
 //
 // The expectation is that it return one representation, out of possibly many, of the
 // resource's state. Returned values can be of any explicit sub-class of
-// org.restlet.resource.Representation. Other types will be automatically converted to
+// org.restlet.representation.Representation. Other types will be automatically converted to
 // string representation using the client's requested media type and character set.
 // These, and the language of the representation (defaulting to NULL), can be read and
 // changed via $conversation->mediaType, $conversation->characterSet, and
