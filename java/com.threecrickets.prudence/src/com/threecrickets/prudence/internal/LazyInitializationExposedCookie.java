@@ -11,7 +11,7 @@
 
 package com.threecrickets.prudence.internal;
 
-import java.util.Map;
+import java.util.HashMap;
 
 import org.restlet.Request;
 import org.restlet.data.Cookie;
@@ -34,14 +34,12 @@ public class LazyInitializationExposedCookie extends LazyInitializationMap<Strin
 	/**
 	 * Construction.
 	 * 
-	 * @param map
-	 *        The map to initialize
 	 * @param request
 	 *        The request
 	 */
-	public LazyInitializationExposedCookie( Map<String, String> map, Request request )
+	public LazyInitializationExposedCookie( Request request )
 	{
-		super( map );
+		super( new HashMap<String, String>() );
 		this.request = request;
 	}
 

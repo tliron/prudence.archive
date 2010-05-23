@@ -11,6 +11,7 @@
 
 package com.threecrickets.prudence.internal;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,8 +32,6 @@ public class LazyInitializationExposedRequest extends LazyInitializationMap<Stri
 	/**
 	 * Construction.
 	 * 
-	 * @param map
-	 *        The map to initialize
 	 * @param exposedGet
 	 *        The exposed get map to use
 	 * @param exposedPost
@@ -40,9 +39,9 @@ public class LazyInitializationExposedRequest extends LazyInitializationMap<Stri
 	 * @param exposedCookie
 	 *        The exposed cookie map to use
 	 */
-	public LazyInitializationExposedRequest( Map<String, String> map, Map<String, String> exposedGet, Map<String, String> exposedPost, Map<String, String> exposedCookie )
+	public LazyInitializationExposedRequest( Map<String, String> exposedGet, Map<String, String> exposedPost, Map<String, String> exposedCookie )
 	{
-		super( map );
+		super( new HashMap<String, String>() );
 		this.exposedGet = exposedGet;
 		this.exposedPost = exposedPost;
 		this.exposedCookie = exposedCookie;

@@ -42,14 +42,12 @@ public class LazyInitializationExposedFile extends LazyInitializationMap<String,
 	/**
 	 * Construction.
 	 * 
-	 * @param map
-	 *        The map to intitialize
 	 * @param request
 	 *        The request
 	 */
-	public LazyInitializationExposedFile( Map<String, Map<String, Object>> map, Request request, FileItemFactory fileItemFactory )
+	public LazyInitializationExposedFile( Request request, FileItemFactory fileItemFactory )
 	{
-		super( map );
+		super( new HashMap<String, Map<String, Object>>() );
 		this.request = request;
 		fileUpload = new RestletFileUpload( fileItemFactory );
 	}

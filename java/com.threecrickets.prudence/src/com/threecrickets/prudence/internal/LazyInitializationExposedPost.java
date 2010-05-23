@@ -11,7 +11,7 @@
 
 package com.threecrickets.prudence.internal;
 
-import java.util.Map;
+import java.util.HashMap;
 
 import org.restlet.Request;
 import org.restlet.data.Form;
@@ -36,17 +36,15 @@ public class LazyInitializationExposedPost extends LazyInitializationMap<String,
 	/**
 	 * Construction.
 	 * 
-	 * @param map
-	 *        The map to initialize
 	 * @param request
 	 *        The request
 	 * @param exposedFile
 	 *        The exposed file map which will have a chance to consume the
 	 *        entity first
 	 */
-	public LazyInitializationExposedPost( Map<String, String> map, Request request, LazyInitializationExposedFile exposedFile )
+	public LazyInitializationExposedPost( Request request, LazyInitializationExposedFile exposedFile )
 	{
-		super( map );
+		super( new HashMap<String, String>() );
 		this.request = request;
 		this.exposedFile = exposedFile;
 	}

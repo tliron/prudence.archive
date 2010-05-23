@@ -13,8 +13,6 @@ package com.threecrickets.prudence.util;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -82,14 +80,14 @@ public class PhpExecutionController implements ExecutionController
 	{
 		Request request = Request.getCurrent();
 
-		LazyInitializationExposedGet exposedGet = new LazyInitializationExposedGet( new HashMap<String, String>(), request );
-		LazyInitializationExposedFile exposedFile = new LazyInitializationExposedFile( new HashMap<String, Map<String, Object>>(), request, fileItemFactory );
-		LazyInitializationExposedPost exposedPost = new LazyInitializationExposedPost( new HashMap<String, String>(), request, exposedFile );
-		LazyInitializationExposedCookie exposedCookie = new LazyInitializationExposedCookie( new HashMap<String, String>(), request );
-		LazyInitializationExposedRequest exposedRequest = new LazyInitializationExposedRequest( new HashMap<String, String>(), exposedGet, exposedPost, exposedCookie );
+		LazyInitializationExposedGet exposedGet = new LazyInitializationExposedGet( request );
+		LazyInitializationExposedFile exposedFile = new LazyInitializationExposedFile( request, fileItemFactory );
+		LazyInitializationExposedPost exposedPost = new LazyInitializationExposedPost( request, exposedFile );
+		LazyInitializationExposedCookie exposedCookie = new LazyInitializationExposedCookie( request );
+		LazyInitializationExposedRequest exposedRequest = new LazyInitializationExposedRequest( exposedGet, exposedPost, exposedCookie );
 
 		// Note that our maps will only contain the last parameter in case of
-		// duplicates. This is PHP's behavior.
+		// duplicates. This is PHP's defined behavior.
 
 		executionContext.getExposedVariables().put( "_GET", Collections.unmodifiableMap( exposedGet ) );
 		executionContext.getExposedVariables().put( "_FILE", Collections.unmodifiableMap( exposedFile ) );
@@ -102,5 +100,11 @@ public class PhpExecutionController implements ExecutionController
 	{
 	}
 
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	/**
+	 * The file item factory.
+	 */
 	private final FileItemFactory fileItemFactory;
 }
