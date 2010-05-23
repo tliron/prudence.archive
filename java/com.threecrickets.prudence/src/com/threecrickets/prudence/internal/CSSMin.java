@@ -84,7 +84,9 @@ public class CSSMin
 		}
 		catch( java.io.FileNotFoundException e )
 		{
-			System.out.println( e.getMessage() );
+			// TAL LIRON: added if()
+			if( bDebug )
+				System.out.println( e.getMessage() );
 		}
 	}
 
@@ -167,7 +169,9 @@ public class CSSMin
 				}
 				catch( Exception e )
 				{
-					System.out.println( e.getMessage() );
+					// TAL LIRON: added if()
+					if( bDebug )
+						System.out.println( e.getMessage() );
 				}
 				n = k + 1;
 			}
@@ -183,7 +187,9 @@ public class CSSMin
 		}
 		catch( Exception e )
 		{
-			System.out.println( e.getMessage() );
+			// TAL LIRON: added if()
+			if( bDebug )
+				System.out.println( e.getMessage() );
 		}
 
 	}
@@ -296,7 +302,8 @@ class Selector
 			}
 			catch( Exception e )
 			{
-				System.out.println( e.getMessage() );
+				// TAL LIRON: commented out
+				// System.out.println( e.getMessage() );
 				results[i] = null;
 			}
 		}
@@ -426,7 +433,8 @@ class Property implements Comparable<Property>
 			}
 			catch( Exception e )
 			{
-				System.out.println( e.getMessage() );
+				// TAL LIRON: commented out
+				// System.out.println( e.getMessage() );
 				results[i] = null;
 			}
 		}

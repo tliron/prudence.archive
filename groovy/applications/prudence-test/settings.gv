@@ -11,7 +11,7 @@ applicationOwner = 'Three Crickets'
 applicationHomeURL = 'http://threecrickets.com/prudence/'
 applicationContactEmail = 'prudence@threecrickets.com'
 
-hosts = [[component.defaultHost, null], [mysiteHost, null]]
+hosts = [[componentInstance.defaultHost, null], [mysiteHost, null]]
 
 showDebugOnError = true
 
