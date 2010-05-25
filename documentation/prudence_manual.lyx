@@ -47,13 +47,41 @@ The Prudence Manual
 \end_layout
 
 \begin_layout Author
-Tal Liron
+Copyright 2009-2010 by Three Crickets LLC
+\begin_inset Newline newline
+\end_inset
+
+Main text written by Tal Liron
+\end_layout
+
+\begin_layout Standard
+\noindent
+Permission is granted to copy, distribute and/or modify this document under
+ the terms of the 
+\begin_inset CommandInset href
+LatexCommand href
+name "GNU Free Documentation License"
+target "http://www.gnu.org/licenses/fdl.html"
+
+\end_inset
+
+, Version 1.3 or any later version published by the Free Software Foundation;
+ with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+ A copy of the license is included in the file license.txt.
+\begin_inset Newpage pagebreak
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 \begin_inset CommandInset toc
 LatexCommand tableofcontents
 
+\end_inset
+
+
+\begin_inset Newpage pagebreak
 \end_inset
 
 
@@ -1031,7 +1059,7 @@ raise
 \end_layout
 
 \begin_layout Quote
-Note the use of "raise": it's a handy trick to end processing of our page.
+Note the use of ``raise'': it's a handy trick to end processing of our page.
  Prudence recognizes that we explicitly changed the status code, so it doesn't
  consider this to be a real error.
 \end_layout
@@ -2070,48 +2098,1713 @@ Advanced representations.
 Instance Configuration
 \end_layout
 
+\begin_layout Subsection
+Configuration by Script
+\end_layout
+
+\begin_layout Standard
+Most instance and application configuration files are written in programming
+ language code, rather than XML or other configuration formats.
+ This method is sometimes called ``boot-strapping'' or just ``scripting.''
+\end_layout
+
+\begin_layout Standard
+Scripting is powerful.
+ It lets your configuration be dynamic, such that the same configuration
+ script can do different things depending on the actual deployment environment
+ and runtime circumstances.
+ For example, you can deploy the same instance to a development environment,
+ where it will start various debugging processes and logs, and a production
+ environment, where it will optimize for performance and scale.
+ You can even have different optimizations for different deployments.
+ For example, a weak cloud-based instance with a single virtual CPU might
+ be different from a dedicated box with 8 cores and a lot of RAM.
+ You can dynamically test for the presence of installed optional components,
+ etc.
+\end_layout
+
+\begin_layout Standard
+The disadvantage is portability between Prudence flavors.
+ For example, if you write your scripts in Ruby, they will not work in Prudence
+ for Python---
+\emph on
+unless
+\emph default
+ you manually install Python support.
+\end_layout
+
+\begin_layout Standard
+The default scripts are designed to fall back on other default scripts,
+ which are all in the /defaults/ subdirectory.
+ The common way to override any default script is to create your own version,
+ execute the default script first, and then apply your overrides.
+ You can also 
+\emph on
+not 
+\emph default
+execute the default script, and instead handle things your own way.
+ Or, you can edit the defaults directly to apply changes across the board.
+\end_layout
+
+\begin_layout Quote
+For changes in your configuration scripts to take effect, you will need
+ to restart the Prudence instance.
+ This is true for Prudence 1.0: we planto support runtime configuration in
+ a future version of Prudence.
+\end_layout
+
+\begin_layout Subsection
+/defaults/
+\end_layout
+
+\begin_layout Standard
+Here you'll find defaults used in /instance/ and /applications/.
+ Generally, you'll not want to edit these, but instead override them there.
+ Prudence tries to make configuration easy by using sensible default behavior,
+ and making it easy to override it.
+ However, you can always edit these files directly if necessary.
+\end_layout
+
+\begin_layout Standard
+Rather than explain their use here, we will refer to them as they are used
+ in the sections below.
+\end_layout
+
+\begin_layout Subsection
+/applications/
+\end_layout
+
+\begin_layout Standard
+This is where you deploy your applications, each occupying a subdirectory.
+ Your application's subdirectory name serves as a useful default name for
+ your application.
+ It is also the default base URL, and the default logging name.
+ You can change any of these default easily.
+\end_layout
+
+\begin_layout Standard
+More about configuring applications 
+\begin_inset CommandInset href
+LatexCommand href
+name "here"
+target "../application-structure/"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+/instance/
+\end_layout
+
+\begin_layout Standard
+This is where the Prudence instance gets initialized.
+ The instance is the overall container which manages the servers and the
+ applications.
+\end_layout
+
+\begin_layout Subsubsection
+/instance/default.*
+\end_layout
+
+\begin_layout Standard
+This is the only required instance configuration script.
+ It simply executes /defaults/instance/.
+\end_layout
+
+\begin_layout Standard
+You'll usually prefer to override the other configuration files below.
+ Override default.* if you want to do things after everything else in the
+ instance has been initialized.
+\end_layout
+
+\begin_layout Standard
+The default script does the following:
+\end_layout
+
+\begin_layout Enumerate
+Prints the Prudence welcome message
+\end_layout
+
+\begin_layout Enumerate
+Sets up logging, including applying /configuration/logging.conf
+\end_layout
+
+\begin_layout Enumerate
+Executes /instance/component/ or /defaults/instance/component/
+\end_layout
+
+\begin_layout Enumerate
+Executes /instance/clients/ or /defaults/instance/clients/
+\end_layout
+
+\begin_layout Enumerate
+Executes /instance/routing/ or /defaults/instance/routing/
+\end_layout
+
+\begin_layout Enumerate
+Executes /instance/servers/ or /defaults/instance/servers/
+\end_layout
+
+\begin_layout Enumerate
+Starts the component
+\end_layout
+
+\begin_layout Enumerate
+Submits tasks for execution
+\end_layout
+
+\begin_layout Subsubsection
+/instance/component.*
+\end_layout
+
+\begin_layout Standard
+The ``component'' in REST terminology refers to the highest-level communication
+ abstraction.
+ In essence, its all ``components'' communicating with other ``components.''
+ Every Prudence instance is in essence a single component, which can include
+ multiple servers and clients.
+\end_layout
+
+\begin_layout Standard
+Override this script to change the way the component is created.
+ In particular you might want to change the default cache backend or executor
+ from the defaults.
+\end_layout
+
+\begin_layout Standard
+The default script does the following:
+\end_layout
+
+\begin_layout Enumerate
+Creates a Restlet component
+\end_layout
+
+\begin_layout Enumerate
+Configures its logService
+\end_layout
+
+\begin_layout Enumerate
+Sets its statusService to be a DelegatedStatusService
+\end_layout
+
+\begin_layout Enumerate
+Creates a global, fixed-thread-pool executor (accessible as ``prudence.executor''
+ in the component's context)
+\end_layout
+
+\begin_layout Enumerate
+Creates an InProcessMemory cache backend (accessible as ``com.threecrickets.pruden
+ce.cache'' in the component's context)
+\end_layout
+
+\begin_layout Subsubsection
+/instance/clients.*
+\end_layout
+
+\begin_layout Standard
+Override this script to add more clients to your component.
+\end_layout
+
+\begin_layout Standard
+The default script adds file and HTTP clients.
+\end_layout
+
+\begin_layout Standard
+The file client is required for static web support, and also for you to
+ access files on your filesystem as REST resources.
+\end_layout
+
+\begin_layout Standard
+The HTTP client is required for you to access external REST resources on
+ the web.
+\end_layout
+
+\begin_layout Subsubsection
+/instance/routing.*
+\end_layout
+
+\begin_layout Standard
+Override this script to change the way the component initializes its routing.
+ Because this script delegates to /instance/hosts/ and to individual application
+, it's unlikely that you'll need to override the default behavior.
+\end_layout
+
+\begin_layout Standard
+The default script does the following:
+\end_layout
+
+\begin_layout Enumerate
+Executes /instance/hosts/ or /defaults/instances/hosts/
+\end_layout
+
+\begin_layout Enumerate
+Initializes all applications in /applications/ (this list is accessible
+ as ``applications'' in the component's context)
+\end_layout
+
+\begin_layout Enumerate
+If there are no applications, Prudence quits
+\end_layout
+
+\begin_layout Subsubsection
+/instance/hosts.*
+\end_layout
+
+\begin_layout Standard
+Virtual hosting allows you to serve multiple web sites from a single component.
+ You can configure individual applications to attach one or more hosts,
+ and to have different base URLs on each of these hosts.
+ Prudence allows you to create virtual hosts for multiple domain names and
+ HTTP ports, using simple expressions and wildcards.
+ (Note that actually creating a server to listen on additional ports is
+ a separate matter, dealt with in /instances/servers/*, below.)
+\end_layout
+
+\begin_layout Standard
+By default, an ``allHosts'' virtual host is created, and set as the component's
+ default host, which in turn all applications attach to by default.
+ ``allHosts'' accepts all incoming requests, to any domain name, to any
+ port.
+\end_layout
+
+\begin_layout Standard
+Override this script to create additional virtual hosts for your component,
+ and to change the default host.
+\end_layout
+
+\begin_layout Standard
+For example, you might want your Prudence component to only serve requests
+ for ``www.mysite.org'' instead of the permissive ``allHosts.'' Or, you might
+ want to serve multiple web sites with different sets of applications on
+ each.
+\end_layout
+
+\begin_layout Standard
+The default script does the following:
+\end_layout
+
+\begin_layout Enumerate
+Creates the ``allHosts'' virtual host
+\end_layout
+
+\begin_layout Enumerate
+Sets it as the component's default host
+\end_layout
+
+\begin_layout Subsubsection
+/instance/servers.*
+\end_layout
+
+\begin_layout Standard
+Servers do the low-level work of listening to a port, accepting requests,
+ and returning responses according to supported protocols.
+ Prudence currently supports various HTTP servers: 
+\begin_inset CommandInset href
+LatexCommand href
+name "Grizzly"
+target "https://grizzly.dev.java.net/"
+
+\end_inset
+
+, 
+\begin_inset CommandInset href
+LatexCommand href
+name "Jetty"
+target "http://jetty.codehaus.org/jetty/"
+
+\end_inset
+
+, 
+\begin_inset CommandInset href
+LatexCommand href
+name "Netty"
+target "http://www.jboss.org/netty"
+
+\end_inset
+
+ and an ``internal'' connector.
+ (To change the HTTP server technology, you have to add it to /libraries/.)
+\end_layout
+
+\begin_layout Standard
+You can create as many servers as you need to listen on multiple ports.
+ Remember that routing is actually handled by virtual hosts, not the servers.
+ So, if you have servers on ports 8081, 8082, and 8083, and your applications
+ all attach to ``allHosts,'' then the applications will be available on
+ all ports.
+ To limit applications to specific ports, you will need to create additional
+ virtual hosts.
+\end_layout
+
+\begin_layout Standard
+Override this script to change the default port (8080) or add additional
+ servers on other ports.
+\end_layout
+
+\begin_layout Standard
+The default script does the following:
+\end_layout
+
+\begin_layout Enumerate
+Creates an HTTP server on port 8080, with support for the X-FORWARDED-FOR
+ used by proxies
+\end_layout
+
+\begin_layout Enumerate
+Prints out information about this server
+\end_layout
+
+\begin_layout Subsection
+/bin/
+\end_layout
+
+\begin_layout Standard
+Use run.sh for Unix-like operating systems, such as Linux, *BSD and Mac OS
+ X, and run.bat for Windows.
+\end_layout
+
+\begin_layout Standard
+In production environments, it's best to run Prudence as a daemon in Unix-like
+ systems or a service in Windows, via a lightweight wrapper.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "Prudence As a Daemon"
+target "../daemon/"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+What the /bin/ scripts do is:
+\end_layout
+
+\begin_layout Enumerate
+Set the JVM classpath to include all the JARs in /libraries/
+\end_layout
+
+\begin_layout Enumerate
+Start the JVM
+\end_layout
+
+\begin_layout Enumerate
+Delegate to your /instance/ script
+\end_layout
+
+\begin_layout Quote
+Note that if you're using JVM version 6 or above, you can use wildcards
+ for specifying the classpath in run.sh and run.bat, instead of having to
+ list individual JAR files.
+\end_layout
+
+\begin_layout Subsection
+/logs/
+\end_layout
+
+\begin_layout Standard
+This is where your rolling logs will appear.
+ Prudence logs are highly configurable and powerful.
+ In particular, your web.log will show all requests hitting your Prudence
+ server, using a standard format that can be consumes and analyzed by software.
+\end_layout
+
+\begin_layout Standard
+More on logging 
+\begin_inset CommandInset href
+LatexCommand href
+name "here"
+target "../logging/"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+/configuration/
+\end_layout
+
+\begin_layout Standard
+There are a few essential configuration files here.
+ Most important is 
+\begin_inset CommandInset href
+LatexCommand href
+name "logging.conf"
+target "../logging/"
+
+\end_inset
+
+, but you will also find some optional files to help you configure Prudence
+ to run as a daemon.
+\end_layout
+
+\begin_layout Subsection
+/libraries/
+\end_layout
+
+\begin_layout Standard
+Here you will find Prudence's main libraries as well as support libraries.
+ The main subdirectory is for Java archives (JARs), but you may find subdirector
+ies for libraries in other languages, such as Python.
+\end_layout
+
+\begin_layout Standard
+If you add your own JARs, make sure to edit the scripts in /bin/ to accommodate
+ your additions.
+\end_layout
+
 \begin_layout Section
 Application Configuration
 \end_layout
 
-\begin_layout Subsection
-Settings 
+\begin_layout Standard
+Each application's subdirectory name under the /applications/ directory
+ is used as a default for many things.
+ Under that subdirectory is a straightforward structure, detailed below.
 \end_layout
 
 \begin_layout Subsection
-Routing
+/web/dynamic/
+\end_layout
+
+\begin_layout Standard
+This is where you'll put your dynamic HTML files.
+ By ``dynamic'' is meant that they are generated on-demand, such that each
+ request can potentially produce a different result.
+ Prudence has a powerful framework for embedding programming language code
+ into HTML as ``scriptlets,'' with support for caching, as well as textual
+ formats other than HTML, such as XML, RSS, JSON, etc.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "generating HTML"
+target "../generating-html/"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The names of the files and subdirectories under /web/dynamic/ attach to
+ URLs, with simple intelligence to make it easy for you to create sensible,
+ pretty URL schemes.
+\end_layout
+
+\begin_layout Subsection
+/web/static/
+\end_layout
+
+\begin_layout Standard
+This subdirectory works like a standard ``static'' web server.
+ Files put here are attached to URLs and accessible to clients as is.
+ Prudence uses non-blocking I/O for high performance, scalable delivery
+ of data to client.
+\end_layout
+
+\begin_layout Standard
+Like many web servers, MIME types for HTTP headers are automatically assigned
+ according to the filename extension.
+ For example.
+ ``.html'' files will be sent as ``application/html'', and ``.png'' files
+ will be sent as ``image/png''.
+\end_layout
+
+\begin_layout Standard
+The static web subdirectory will likely just work for you as is.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "static web"
+target "../static-web/"
+
+\end_inset
+
+ for details on configuring it, for example, in order to add/change filename-ext
+ension-to-MIME-type mappings.
+\end_layout
+
+\begin_layout Subsection
+/web/fragments/
+\end_layout
+
+\begin_layout Standard
+Your dynamic pages in /web/dynamic/ can include any page fragments from
+ here.
+ The advantage of putting them here rather than there is that here they
+ will not be attached to URLs and be available to users.
+\end_layout
+
+\begin_layout Standard
+Fragments allow you to compose complex pages out of basic building blocks.
+ Another import use is for fine-grained caching: each fragment has its own
+ caching behavior.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "generating HTML"
+target "../generating-html/"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+/resources/
+\end_layout
+
+\begin_layout Standard
+Whereas the /web/dynamic/ subdirectory has HTML files with embedded programming
+ language code, /resources/ is pure code.
+ This is Prudence's most flexible development feature: files here are attached
+ as REST resources, capable of handling all HTTP verbs and responding with
+ appropriate representations in many different formats.
+\end_layout
+
+\begin_layout Standard
+From the perspective of web development, consider that if /web/dynamic/
+ lets you write HTML-based front ends for ``thin'' clients, such as simple
+ web browsers, /resources/ lets you handle ``rich'' clients, such as AJAX,
+ Flash and other dynamic platforms.
+\end_layout
+
+\begin_layout Standard
+See
+\begin_inset CommandInset href
+LatexCommand href
+name "resources"
+target "../resources/"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+/libraries/
+\end_layout
+
+\begin_layout Standard
+All your code, whether its in /resources/ or scriptlets in /web/dynamic/
+ and /fragments/, can include code from /libraries/.
+\end_layout
+
+\begin_layout Standard
+Use whatever mechanism is appropriate for your language: ``import'' for
+ Python or Ruby, ``use'' for Clojure, etc.
+ For languages that don't have inclusion mechanisms---Groovy, JavaScript---you
+ can use Prudence's inclusion mechanism, document.execute.
+\end_layout
+
+\begin_layout Subsection
+Configuration Scripts
+\end_layout
+
+\begin_layout Standard
+The application's configuration scripts are in its base subdirectory.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "instance configuration"
+target "../instance/"
+
+\end_inset
+
+ for more details about configuration scripts.
 \end_layout
 
 \begin_layout Subsubsection
-URI templates
+/default.*
+\end_layout
+
+\begin_layout Standard
+You'll rarely need to do it, but you can also override Prudence's default
+ application bootstrap.
 \end_layout
 
 \begin_layout Subsubsection
-Attaching 
+/settings.*
+\end_layout
+
+\begin_layout Standard
+Here you can override some of Prudence's defaults for your application,
+ such as the subdirectory structure detailed here, the default URLs, include
+ some distribution information, configure the logging name, etc.
+\end_layout
+
+\begin_layout Standard
+You can also add your own runtime settings for your code to use, such as
+ database usernames and passwords.
+\end_layout
+
+\begin_layout Standard
+See Settings, below, for full detail on overrides and default settings.
 \end_layout
 
 \begin_layout Subsubsection
-Redirecting 
+/routing.*
+\end_layout
+
+\begin_layout Standard
+The settings file gives you some control over the default URLs, but here
+ you can manipulate them extensively.
+ Your routing tools are very powerful, including redirection based on URL
+ patterns, regular expressions, and route scoring.
+\end_layout
+
+\begin_layout Standard
+In particular, this is where you install URL patterns for your resources.
+ For example, you can attach /item/{id}/ to your item resource, and have
+ ``id'' automatically extracted from the URL.
+\end_layout
+
+\begin_layout Standard
+This is also where you can attach your own custom (non-Prudence) resources
+ to URLs.
+ Actually, anything that's a ``restlet'' will do, because Prudence uses
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet"
+target "http://restlet.org/"
+
+\end_inset
+
+ for its resource routing.
+ More on integrating custom restlets 
+\begin_inset CommandInset href
+LatexCommand href
+name "here"
+target "../restlet-container/"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+More on 
+\begin_inset CommandInset href
+LatexCommand href
+name "routing"
+target "../routing/"
+
+\end_inset
+
+ later.
 \end_layout
 
 \begin_layout Subsubsection
-Capturing 
+/application.*
+\end_layout
+
+\begin_layout Standard
+Use this to install non-Prudence Restlet applications into Prudence.
+ By default, Prudence creates a basic Restlet application, but you can override
+ that creation in this file.
+ More on this topic 
+\begin_inset CommandInset href
+LatexCommand href
+name "here"
+target "../restlet-container/"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Settings
+\end_layout
+
+\begin_layout Subsubsection
+Information
+\end_layout
+
+\begin_layout Standard
+These are for administrative purposes only.
+\end_layout
+
+\begin_layout Paragraph
+applicationName
+\end_layout
+
+\begin_layout Standard
+Defaults to the application's subdirectory name
+\end_layout
+
+\begin_layout Paragraph
+applicationDescription
+\end_layout
+
+\begin_layout Paragraph
+applicationAuthor
+\end_layout
+
+\begin_layout Paragraph
+applicationOwner
+\end_layout
+
+\begin_layout Paragraph
+applicationHomeURL
+\end_layout
+
+\begin_layout Paragraph
+applicationContactEmail
+\end_layout
+
+\begin_layout Subsubsection
+Debugging
+\end_layout
+
+\begin_layout Paragraph
+showDebugOnError
+\end_layout
+
+\begin_layout Standard
+Set to true to show debug information on error
+\end_layout
+
+\begin_layout Paragraph
+showSourceCodeURL
+\end_layout
+
+\begin_layout Standard
+The base URL for showing source code (only relevant when showDebugOnError
+ is true)
+\end_layout
+
+\begin_layout Subsubsection
+Logging
+\end_layout
+
+\begin_layout Paragraph
+applicationLoggerName
+\end_layout
+
+\begin_layout Standard
+Defaults to the application's subdirectory name
+\end_layout
+
+\begin_layout Subsubsection
+Hosts
+\end_layout
+
+\begin_layout Paragraph
+hosts
+\end_layout
+
+\begin_layout Standard
+This is a vector of vectors of two elements: the first is the virtual host
+ to which our application will be attached, the second is the base URLs
+ on the hosts.
+ Specify null for the URL to default to the application's directory name.
+\end_layout
+
+\begin_layout Subsubsection
+Resources
+\end_layout
+
+\begin_layout Standard
+Sets up a directory under which you can place script files that implement
+ RESTful resources.
+ The directory structure underneath the base directory is directly linked
+ to the base URL.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+resourcesBaseURL
+\end_layout
+
+\begin_layout Paragraph
+resourcesBasePath
+\end_layout
+
+\begin_layout Paragraph
+resourcesDefaultName
+\end_layout
+
+\begin_layout Standard
+If the URL points to a directory rather than a file, and that directory
+ contains a file with this name, then it will be used.
+ This allows you to use the directory structure to create nice URLs without
+ relying on filenames.
+\end_layout
+
+\begin_layout Paragraph
+resourcesDefrost
+\end_layout
+
+\begin_layout Standard
+Set this to true if you want to start to load and compile your resources
+ as soon as Prudence starts.
+\end_layout
+
+\begin_layout Paragraph
+resourcesSourceViewable
+\end_layout
+
+\begin_layout Standard
+This is so we can see the source code for scripts by adding ?source=true
+ to the URL.
+ You probably wouldn't want this for most applications.
+\end_layout
+
+\begin_layout Paragraph
+resourcesMinimumTimeBetweenValidityChecks
+\end_layout
+
+\begin_layout Standard
+This is the time (in milliseconds) allowed to pass until a script file is
+ tested to see if it was changed.
+ During development, you'd want this to be low, but during production, it
+ should be high in order to avoid unnecessary hits on the filesystem.
+\end_layout
+
+\begin_layout Subsubsection
+Dynamic Web
+\end_layout
+
+\begin_layout Standard
+Sets up a directory under which you can place text files that support embedded
+ scriptlets.
+ Note that the generated result can be cached for better performance.
+\end_layout
+
+\begin_layout Paragraph
+dynamicWebBaseURL
+\end_layout
+
+\begin_layout Paragraph
+dynamicWebBasePath
+\end_layout
+
+\begin_layout Paragraph
+dynamicWebDefaultDocument
+\end_layout
+
+\begin_layout Standard
+If the URL points to a directory rather than a file, and that directory
+ contains a file with this name, then it will be used.
+ This allows you to use the directory structure to create nice URLs that
+ do not contain filenames.
+\end_layout
+
+\begin_layout Paragraph
+dynamicWebDefrost
+\end_layout
+
+\begin_layout Standard
+Set this to true if you want to compile your scriptlets as soon as Prudence
+ starts.
+\end_layout
+
+\begin_layout Paragraph
+dynamicWebPreheat
+\end_layout
+
+\begin_layout Standard
+Set this to true if you want to load all your dynamic web documents as soon
+ as Prudence starts.
+\end_layout
+
+\begin_layout Paragraph
+dynamicWebSourceViewable
+\end_layout
+
+\begin_layout Standard
+This is so we can see the source code for scripts by adding ?source=true
+ to the URL.
+ You probably wouldn't want this for most applications.
+\end_layout
+
+\begin_layout Paragraph
+dynamicWebMinimumTimeBetweenValidityChecks
+\end_layout
+
+\begin_layout Standard
+This is the time (in milliseconds) allowed to pass until a script file is
+ tested to see if it was changed.
+ During development, you'd want this to be low, but during production, it
+ should be high in order to avoid unnecessary hits on the filesystem.
+\end_layout
+
+\begin_layout Subsubsection
+Static Web
+\end_layout
+
+\begin_layout Standard
+Sets up a directory under which you can place static files of any type.
+ // Servers like Grizzly and Jetty can use non-blocking I/O to stream static
+ files efficiently to clients.
+\end_layout
+
+\begin_layout Paragraph
+staticWebBaseURL
+\end_layout
+
+\begin_layout Paragraph
+staticWebBasePath
+\end_layout
+
+\begin_layout Paragraph
+staticWebDirectoryListingAllowed
+\end_layout
+
+\begin_layout Standard
+If the URL points to a directory rather than a file, then this will allow
+ automatic creation of an HTML page with a directory listing.
+\end_layout
+
+\begin_layout Subsubsection
+Preheater
+\end_layout
+
+\begin_layout Paragraph
+preheatResources
+\end_layout
+
+\begin_layout Standard
+List resources here that you want heated up as soon as Prudence starts.
+\end_layout
+
+\begin_layout Subsubsection
+URL Manipulation
+\end_layout
+
+\begin_layout Paragraph
+urlAddTrailingSlash
+\end_layout
+
+\begin_layout Standard
+The URLs in this array will automatically be redirected to have a trailing
+ slash added to them if it's missing.
+\end_layout
+
+\begin_layout Subsubsection
+Runtime Attributes
+\end_layout
+
+\begin_layout Standard
+runtimeAttributes
+\end_layout
+
+\begin_layout Section
+Generating HTML
+\end_layout
+
+\begin_layout Standard
+Prudence has good support for generating HTML by allowing you to embed programmi
+ng language code in it.
+ Despite some unique and useful features, Prudence is not so much different
+ in this than other platforms that support dynamic HTML generation.
+ Where Prudence stands out is in its support for REST resources, which we'll
+ deal with in 
+\begin_inset CommandInset href
+LatexCommand href
+name "the next section"
+target "../resources/"
+
+\end_inset
+
+.
+ Go ahead and skip to there if HTML generation bores you!
+\end_layout
+
+\begin_layout Subsection
+Files
+\end_layout
+
+\begin_layout Standard
+Files under /web/dynamic/ are all assumed to be text files.
+ While we're titling this section ``Generating HTML,'' these files can,
+ in fact, be in any textual format.
+ The filename's extension will be used to map the default MIME type for
+ the file, though you can easily change it in code.
+\end_layout
+
+\begin_layout Quote
+Create a file named index.html under /web/dynamic/.
+ Open your web browser to http://localhost:8080/hello/.
+ You should see your file rendered in the browser.
+ Note that you did not have to enter index.html, though it would also work.
+ Additionally, just index would work: in the /web/dynamic/ and /resources/
+ subdirectories, Prudence considers filename extensions to be optional for
+ URLs.
+\end_layout
+
+\begin_layout Subsection
+Scriptlets
+\end_layout
+
+\begin_layout Standard
+Programming language code can be embedded within your /web/dynamic/ files
+ using either <% %> or <? ?>.
+ Note, however, that you can only use one of either in the same file.
+\end_layout
+
+\begin_layout Standard
+For historical reasons, these embedded bits of code are called ``scriptlets.''
+ However, they are usually compiled, not interpreted.
+\end_layout
+
+\begin_layout Standard
+Blocks can span several scriptlets (as long as you are using the same programmin
+g language: see below).
+ For example, this will work as expected:
+\end_layout
+
+\begin_layout Standard
+You can achieve the same result by printing out the text in Python code:
+\end_layout
+
+\begin_layout Standard
+In fact, behind the scenes, all non-scriptlet text is turned into code.
+ It's a simple print of the non-scriptlet text.
+\end_layout
+
+\begin_layout Standard
+A common idiom is to print out expressions interwoven with non-scriptlet
+ text.
+ The expression scriptlet, marked by an equal sign, can help you reduce
+ clutter.
+ For example:
+\end_layout
+
+\begin_layout Standard
+Just remember that behind the scenes the expression scriptlet is turned
+ into a regular scriptlet, So, you need to follow all the rules of Python
+ expressions.
+\end_layout
+
+\begin_layout Subsection
+Mixing Languages
+\end_layout
+
+\begin_layout Standard
+By default, Prudence will assume your scriptlets to be Python code.
+ However, Prudence lets you scriptlets of various languages by adding the
+ language name after the first scriptlet delimiter.
+ For example:
+\end_layout
+
+\begin_layout Quote
+You need the appropriate language JARs under your /libs/ directory for this
+ to work.
+\end_layout
+
+\begin_layout Standard
+Once you change the language, all subsequent scriptlets will default to
+ that language.
+ Make sure to change back if you need to.
+\end_layout
+
+\begin_layout Standard
+You might think that mixing programming languages is a bad idea in general,
+ and only necessary for making use of legacy code.
+ However, it can be a great idea if you consider that Prudence comes with
+ high-performance templating languages, both Succinct and Velocity.
+ This lets you write all the more straightforward templating as Succinct
+ scriptlets, switching to Python scriptlets only when you need Python features.
+ For example:
+\end_layout
+
+\begin_layout Standard
+Not only is the Succinct code more readable and easier to manage, but it
+ also performs betters, is less prone to errors, and more secure.
+ Prudence lets you use the right tool for the right job.
+\end_layout
+
+\begin_layout Standard
+One tiny hiccup to be aware of is that blocks can no longer trivially span
+ several scriptlets.
+ For example, this won't immediately work:
+\end_layout
+
+\begin_layout Standard
+The reason is that, by necessity, Prudence must run scriptlets of different
+ languages separately, in sequence.
+ The language switch thus represents a boundary, But, fear not, Prudence
+ lets you solve this problem via the ``in-flow'' scriptlet, marked by a
+ colon:
+\end_layout
+
+\begin_layout Standard
+This works! But how, you might wonder? Behind the scenes, the in-flow scriptlet
+ is run from within the enclosing language.
+ We thus do never leave the enclosing language for the purposes of running
+ through the file.
+ Don't worry about performance here: in-flow scriptlets are compiled only
+ once per file.
+ Also, in-flow scriptlets are treated as regular scriptlets if there is
+ no language switch.
+\end_layout
+
+\begin_layout Quote
+Prudence's terrific handling of scriptlets in multiple languages is internally
+ handled by the Scripturian library.
+ Scripturian was originally developed for Prudence, but its use is generic
+ and useful enough that it merited separating it into a separate project.
+ With Scripturian, you can easily add scriptlet power to your Java applications.
+\end_layout
+
+\begin_layout Subsection
+Includes
+\end_layout
+
+\begin_layout Subsection
+Life
+\end_layout
+
+\begin_layout Standard
+As mentioned, files are only compiled once, when they are first requested
+ by a client.
+ From then on, each request is handled by the compiled version.
+\end_layout
+
+\begin_layout Standard
+What if you edit the file? Prudence can automatically pick up your changes
+ and recompile.
+ This happens on the fly, while the application is running.
+ Are you worried that this check would happen for every client request?
+ You can easily disable this feature for production deployments, or control
+ the minimum time interval in which Prudence assumes the file is unchanged.
+\end_layout
+
+\begin_layout Quote
+Your compiled file can be run by multiple threads concurrently.
+ It is up to you to avoid race conditions and guarantee thread safety.
+\end_layout
+
+\begin_layout Subsection
+Caching
+\end_layout
+
+\begin_layout Standard
+You've chosen to use dynamically-generated HTML because you want request
+ to be able to have different results.
+ However, sometimes you do not expect results to change very often.
+ For example, a home web page might display the local temperature, but it
+ would probably be good enough to update it every hour, instead of per request.
+\end_layout
+
+\begin_layout Standard
+Depending on what your scriptlets are doing, dynamically generating a web
+ page can be very costly, and could be a performance and scalability bottleneck
+ for your application under heavy load.
+ You don't want to waste energy and resources to generate results that do
+ not change.
+\end_layout
+
+\begin_layout Standard
+The solution is to cache results.
+ Sometimes even caching for tiny time intervals can make a huge different
+ in the ability of your application to handle load.
+ For example, let's say that in order to fetch the local temperature for
+ our web page we need to query a service on the network.
+ Without caching, every client request would result in a service query.
+ Let's say our web page gets 100 hits per second.
+ Even just caching our home page for 5 seconds would throttle our service
+ queries down to 1 every 5 seconds, vs.
+ 500 every 5 seconds without caching.
+ And users would get temperature readings up to 5 seconds old.
+ It's a negligible usability with enormous savings.
+\end_layout
+
+\begin_layout Standard
+This was a trivial example.
+ Truly scalable software requires smart caching everywhere, from the level
+ of file and database access all the way to the generated results.
+\end_layout
+
+\begin_layout Standard
+Prudence handles caching of results.
+ Every file has its own caching interval, which you can access and change
+ via scriptlet:
+\end_layout
+
+\begin_layout Standard
+Note that you can change the cache interval dynamically.
+ For example, you might want to increase it if you see that your machine's
+ CPU load is too high, or you might even want to decrease it during ``rush
+ hours'' where users expect to see especially up-to-date results.
+\end_layout
+
+\begin_layout Standard
+By using includes, you can fine-tune your caching strategy even more.
+ Since each file has its own caching interval, you can fragment your page
+ into parts with different caching sensitivity.
+ For example, you can put the temperature reading in its own fragment, with
+ a high cache interval, with another fragment being a ``number of visitors
+ today'' counter with no cache interval, always up-to-date.
+ The home page itself could have its own interval, or none.
+ This setup can help you think of caching problems independently, while
+ allowing for subtle overall schemes.
+\end_layout
+
+\begin_layout Standard
+TODO: default caching time in application context
+\end_layout
+
+\begin_layout Subsection
+Streaming
+\end_layout
+
+\begin_layout Standard
+Sometimes the client expects a slow, and long response from your application.
+ For example, a list of bank account transactions for the past year might
+ be hundreds of rows in length.
+ The client does not want to wait until you've produced the entire result,
+ but can start consuming results as they come.
+\end_layout
+
+\begin_layout Standard
+Streaming mode lets send results to your client as you produce them.
+\end_layout
+
+\begin_layout Standard
+There are risks to streaming mode.
+ If your scriptlet code fails along the way, the stream will stop and the
+ client might get broken results, For example, an HTML table might not get
+ its closing </table> tag, leading to a broken rendering on a web browser.
+ Of course, this is a general risk, and can happen due to connection failures
+ along the way.
+ It's just something you need to be extra careful about in streaming mode.
+ So, make sure you catch all exceptions and gracefully finish the request
+ for the client in case of error.
+\end_layout
+
+\begin_layout Subsection
+HTML forms
+\end_layout
+
+\begin_layout Standard
+The files in /web/dynamic/ are meant to be sent to the clients, in response
+ to an HTTP GET.
+ Later on, we'll look at files under /resources/, which can respond to all
+ HTTP verbs.
+ However, there is one case in which you might want to respond to HTTP POST
+ and PUT directly in your /web/dynamic/ files: HTML form submissions.
+ Though hardly ideal, HTML forms are the most universally supported technique
+ of getting input from clients, and are easy to set up.
+\end_layout
+
+\begin_layout Standard
+Prudence's solution is trivial: it attaches your file to HTTP POST and PUT
+ in addition to HTTP GET.
+ This leaves it up to you to handle each method accordingly.
+ Here is an example:
+\end_layout
+
+\begin_layout Standard
+Handling form responses via scriplets can make your files hard to read,
+ as they turn into a patchwork of various results all overlapped in one
+ file.
+ This can be cleaned up via includes:
+\end_layout
+
+\begin_layout Standard
+Still, it might make more sense to remove all this form handling logic from
+ /web/dynamic/ to /resources/.
+ We'll show you an example of it in the next section.
+\end_layout
+
+\begin_layout Subsection
+Mapping and Changing MIME Types
+\end_layout
+
+\begin_layout Standard
+See 
+\begin_inset CommandInset href
+LatexCommand href
+name "this"
+target "../static-web/"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+By extension Programmatically (text, XML, JSON)
 \end_layout
 
 \begin_layout Section
 Resources 
 \end_layout
 
-\begin_layout Section
-HTML Generation
+\begin_layout Standard
+Resources as API.
+\end_layout
+
+\begin_layout Standard
+There's no need to maintain a separate ``internal API,'' with REST resources
+ serving as an ``external API.'' Your resources are available internally,
+ without having to use HTTP.
+ A single, uniform API is more maintainable, and less prone to bugs.
+ Additionally, the internal connectivity is an easy way to test your resources.
+ See below for internal access to your resources.
 \end_layout
 
 \begin_layout Subsection
-Scriptlets 
+Life
+\end_layout
+
+\begin_layout Subsection
+CRUD
+\end_layout
+
+\begin_layout Standard
+An example of handleGet in Python:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def handleGet():
+\end_layout
+
+\begin_layout Plain Layout
+
+	id = int(prudence.resource.request.attributes.get('id'))
+\end_layout
+
+\begin_layout Plain Layout
+
+	session = get_session()
+\end_layout
+
+\begin_layout Plain Layout
+
+	try:
+\end_layout
+
+\begin_layout Plain Layout
+
+		note = session.query(Note).filter_by(id=id).one()
+\end_layout
+
+\begin_layout Plain Layout
+
+	except NoResultFound:
+\end_layout
+
+\begin_layout Plain Layout
+
+		return 404 finally: session.close()
+\end_layout
+
+\begin_layout Plain Layout
+
+	prudence.modificationTimestamp = note.timestamp
+\end_layout
+
+\begin_layout Plain Layout
+
+	if prudence.mediaTypeName == 'application/json':
+\end_layout
+
+\begin_layout Plain Layout
+
+		return json.write(note.to_dict())
+\end_layout
+
+\begin_layout Plain Layout
+
+	elif if prudence.mediaTypeName == 'application/xml':
+\end_layout
+
+\begin_layout Plain Layout
+
+		return dict_to_xml(note.to_dict())
+\end_layout
+
+\begin_layout Plain Layout
+
+	else:
+\end_layout
+
+\begin_layout Plain Layout
+
+		return 415
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Implied Representation
+\end_layout
+
+\begin_layout Subsection
+Error Codes
+\end_layout
+
+\begin_layout Subsection
+Explicit Representation
+\end_layout
+
+\begin_layout Subsection
+Conditional HTTP
+\end_layout
+
+\begin_layout Standard
+getInfo(), modification dates and ETags
+\end_layout
+
+\begin_layout Subsection
+Concurrency Concerns
+\end_layout
+
+\begin_layout Subsection
+Mixing Languages
+\end_layout
+
+\begin_layout Subsection
+Accessing Resources Internally
+\end_layout
+
+\begin_layout Standard
+Prudence has very easy-to-use REST client, and a rich API for creating and
+ manipulation data 
+\begin_inset CommandInset href
+LatexCommand href
+name "representations"
+target "../representations/"
+
+\end_inset
+
+.
+ You can use it to access your own resources, as well as resources from
+ other applications in your Prudence installation.
+ Examples:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+importClass(org.restlet.resource.ClientResource);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// A resource in our application
+\end_layout
+
+\begin_layout Plain Layout
+
+var r = new ClientResource('riap://application/hosts');
+\end_layout
+
+\begin_layout Plain Layout
+
+print(r.get().text);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// A resource from another application on our host
+\end_layout
+
+\begin_layout Plain Layout
+
+var id = 9;
+\end_layout
+
+\begin_layout Plain Layout
+
+var r = new ClientResource('riap://host/stickstick/note/' + id + '/');
+\end_layout
+
+\begin_layout Plain Layout
+
+var note = JSON.parse(String(r.get(MediaType.APPLICATION_JSON).text));
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Accessing External REST Services
+\end_layout
+
+\begin_layout Standard
+The client API mentioned above can also be used to access external resources
+ from anywhere on the web.
+\end_layout
+
+\begin_layout Standard
+Examples:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+importClass(org.restlet.resource.ClientResource);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// An external resource
+\end_layout
+
+\begin_layout Plain Layout
+
+var r = new ClientResource('http://threecrickets/prudence/data/rhino');
+\end_layout
+
+\begin_layout Plain Layout
+
+print(r.get().text);
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that for the above to work, you need HTTP configured in your clients
+ file:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+component.clients.add(Protocol.HTTP);
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Representations
+\end_layout
+
+\begin_layout Standard
+MIME Types
 \end_layout
 
 \begin_layout Section
 Static Web
+\end_layout
+
+\begin_layout Standard
+Prudence attaches your application's /web/static/ subdirectory to URLs,
+ making files there available via HTTP GET.
+ In other words, /static/web/ is a ``web server.'' It's a convenient place
+ for storing immutable resources that your clients will need to run your
+ application: images, styles, scripts, etc.
+\end_layout
+
+\begin_layout Standard
+You're likely, though, wondering if /web/static/ is merely a convenience,
+ and if you'd be better off using Apache or other dedicated web servers
+ instead of Prudence to serve your the static files.
+\end_layout
+
+\begin_layout Standard
+Our recommendation is to take that route only if those web servers offer
+ important features that you won't find in Prudence.
+ Remember that Prudence has many powerful features, including URL redirecting,
+ rewriting and routing, and that Prudence's non-blocking I/O actually does
+ a great job at serving files.
+ You will likely not see many performance or scalability gains replacing
+ /web/static/ with standard Apache.
+\end_layout
+
+\begin_layout Subsection
+Mapping MIME Types
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+application.metadataService.addExtension('php', MediaType.TEXT_HTML)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Replacing Grizzly
+\end_layout
+
+\begin_layout Standard
+Grizzly can be replaced with 
+\begin_inset CommandInset href
+LatexCommand href
+name "Netty"
+target "http://jboss.org/netty"
+
+\end_inset
+
+, a non-blocking I/O HTTP server with slightly different performance characteris
+tics, and 
+\begin_inset CommandInset href
+LatexCommand href
+name "Jetty"
+target "http://www.mortbay.org/jetty/"
+
+\end_inset
+
+, which offers similar performance, but with many more features.
+ Or, use any other connector supported by 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet"
+target "http://www.restlet.org/"
+
+\end_inset
+
+.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -2122,8 +3815,142 @@ CacheControlFilter
 JavaScriptUnifyMinifyFilter 
 \end_layout
 
+\begin_layout Subsection
+CssUnifyMinifyFilter
+\end_layout
+
 \begin_layout Section
-Debugging 
+Routing
+\end_layout
+
+\begin_layout Standard
+Prudence can actually run several servers at the same time, on multiple
+ IP addresses and ports, as well as handle several web sites via virtual
+ hosting.
+\end_layout
+
+\begin_layout Standard
+``Routing'' in Prudence refers to how URLs are attached to resources.
+ In fact, this is often not a simple one-to-one relationship, and different
+ routes may be selected according to changing circumstances.
+\end_layout
+
+\begin_layout Subsection
+Directories As URL Segments
+\end_layout
+
+\begin_layout Standard
+Prudence provides straightforward, hierarchical, live routing between your
+ directory structure and URLs.
+ Simply put, file paths are mapped directly to URLs.
+ Files added at runtime will automatically create new URLs for them.
+ To keep the URLs pretty, filename extensions are optional.
+ The filename extension, though serves two purposes:
+\end_layout
+
+\begin_layout Standard
+In the case of code in /resources/, /libraries/ or other places, the extension
+ selects the language engine which will run the code.
+ For example, ``search.py'' will be run using Python, ``search.gv'' will be
+ Groovy, ``search.clj'' will be Clojure, etc.
+\end_layout
+
+\begin_layout Standard
+In the case of files in /web/dynamic/ and /web/static/, it helps select
+ the default MIME type for representations.
+ This selection is based on the meta data service, which you can customize
+ (see 
+\begin_inset CommandInset href
+LatexCommand href
+name "static web"
+target "../static-web/"
+
+\end_inset
+
+).
+ Embedded language code in /web/dynamic/ files can also programatically
+ change the returns MIME types (see 
+\begin_inset CommandInset href
+LatexCommand href
+name "resources"
+target "../resources/"
+
+\end_inset
+
+).
+ 
+\end_layout
+
+\begin_layout Quote
+When Prudence URLs are attached to files in /web/dynamic/ and /resources/,
+ the filename extension is optional.
+ Prudence simply grabs the first file it finds with that name.
+ So, generally, get used to not have more than one file with the same name
+ in the same directory, even if they have different extensions.
+\end_layout
+
+\begin_layout Quote
+Prudence routing rule: route by filename, format/language by extension
+\end_layout
+
+\begin_layout Subsection
+default.*
+\end_layout
+
+\begin_layout Subsection
+URI Templates
+\end_layout
+
+\begin_layout Standard
+See 
+\begin_inset CommandInset href
+LatexCommand href
+name "this"
+target "http://www.restlet.org/documentation/2.0/jse/api/org/restlet/util/Resolver.html#createResolver(org.restlet.Request,%20org.restlet.Response)"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Virtual Hosts
+\end_layout
+
+\begin_layout Subsection
+Attaching
+\end_layout
+
+\begin_layout Subsection
+Redirecting
+\end_layout
+
+\begin_layout Subsection
+Capturing
+\end_layout
+
+\begin_layout Subsection
+Capturing Errors
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+// 404 handler
+\end_layout
+
+\begin_layout Plain Layout
+
+component.statusService.redirect(404, '{hi}/404.html', component.context);
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -2327,11 +4154,11 @@ conversation.resource
 \end_layout
 
 \begin_layout Paragraph
-+conversation.request
+conversation.request
 \end_layout
 
 \begin_layout Paragraph
-+conversation.response
+conversation.response
 \end_layout
 
 \begin_layout Paragraph
@@ -2391,15 +4218,15 @@ conversation.addMediaType ByName, ByExtension
 \end_layout
 
 \begin_layout Paragraph
-? conversation.deferred? (/web/dynamic/)
+conversation.deferred? (/web/dynamic/)
 \end_layout
 
 \begin_layout Paragraph
-? conversation.defer (/web/dynamic/)
+conversation.defer (/web/dynamic/)
 \end_layout
 
 \begin_layout Paragraph
-?? conversation.locals
+conversation.locals
 \end_layout
 
 \begin_layout Paragraph
@@ -2407,28 +4234,443 @@ conversation.kaboom
 \end_layout
 
 \begin_layout Subsection
-Routing
+Managing State
 \end_layout
 
-\begin_layout Paragraph
-router.redirect
+\begin_layout Standard
+Application Globals
 \end_layout
 
-\begin_layout Paragraph
-router.capture
+\begin_layout Standard
+Executable Globals
 \end_layout
 
-\begin_layout Paragraph
-statusService.capture
+\begin_layout Standard
+Conversation Locals
 \end_layout
 
 \begin_layout Section
-For Java Programmers
+Debugging
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Section
+Logging
+\end_layout
+
+\begin_layout Standard
+Prudence comes pre-configured with robust logging, based on log4j.
+ You are encouraged to make use of logging in your applications, but even
+ if you don't, you will still finds the logs useful.
+ Prudence's servers, routers, language engines and other components all
+ send messages to the logs, making them an invaluable tool for debugging,
+ monitoring and understanding.
+\end_layout
+
+\begin_layout Standard
+By default, logs are sent to the /logs/ directory, using a configurable
+ rolling log scheme.
+ web.log records all server requests, using Apache's format, while everything
+ else goes to prudence.log.
+\end_layout
+
+\begin_layout Subsection
+Sending Messages
+\end_layout
+
+\begin_layout Subsection
+logging.conf
+\end_layout
+
+\begin_layout Subsubsection
+Appenders and Loggers
+\end_layout
+
+\begin_layout Subsubsection
+Separate Logs Per Application
+\end_layout
+
+\begin_layout Subsection
+web.log
+\end_layout
+
+\begin_layout Standard
+You can throw Prudence's web.log into almost any Apache log file analyzer.
+ Here's an example using the ubiquitous 
+\begin_inset CommandInset href
+LatexCommand href
+name "Analog"
+target "http://www.analog.cx/"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+analog 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+-C'LOGFORMAT (%Y-%m-%d
+\backslash
+t%h:%n:%j
+\backslash
+t%S
+\backslash
+t%u
+\backslash
+t%j
+\backslash
+t%j
+\backslash
+t%j
+\backslash
+t%r
+\backslash
+t%q
+\backslash
+t%c
+\backslash
+t%b
+\backslash
+t%j
+\backslash
+t%T
+\backslash
+t%v
+\backslash
+t%B
+\backslash
+t%f)' 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+-C'LOCALCHARTDIR local/images/' 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+-C'CHARTDIR images/' 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+-C'HOSTNAME "mysite.org"' 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+log/web.log 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+-Oapplications/myapp/web/static/analog/index.html
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Administration
+\end_layout
+
+\begin_layout Standard
+This is a simple app that lets you see the servers, virtual hosts and applicatio
+ns in the Prudence instance, and lets you start and stop them.
+\end_layout
+
+\begin_layout Section
+Prudence As a Daemon
+\end_layout
+
+\begin_layout Standard
+In production environments, it's best to run Prudence as a daemon in Unix-like
+ systems or a service in Windows, via a lightweight wrapper.
+ This will provide proper process monitoring and control.
+ For example, if Prudence's JVM crashes for some reason, hangs, grabs too
+ much CPU or RAM, the wrapper can automatically shut down and even restart
+ it.
+\end_layout
+
+\begin_layout Standard
+While Prudence comes with the necessary configuration files for this, it
+ does not include the actual wrapper, which you will need to install manually.
+ There are two reasons for this: YAJSW, our preferred wrapper, is too big
+ a download as of now, and including it in Prudence make it too heavy.
+ As for Tanuki's JSW, its license will not allow us to distribute it with
+ Prudence.
+ It does not, however, bar you from downloading and installing it yourself.
+\end_layout
+
+\begin_layout Quote
+Ready for a short history lesson?
+\end_layout
+
+\begin_layout Quote
+The copyright for JSW is held by its developer, Tanuki Software.
+ Up to version 3.2, Tanuki released JSW under a very permissive license,
+ making it popular in many open source projects.
+ However, it has since been distributed under the GPL 2.0 (and also via a
+ commercial license).
+ We applaud Tanuki's commitment to open source, and are big fans of the
+ GPL.
+ However, the GPL makes it impossible to distribute JSW with open source
+ projects using less restrictive licenses, such as Prudence.
+ Many projects have kept distributing version 3.2 of JSW, which is now out
+ of date and missing bug fixes.
+\end_layout
+
+\begin_layout Quote
+For less restrictive open source projects, the gap has been filled by YAJSW,
+ which seeks not only to be a drop-in replacement for JSW, but also to go
+ beyond it with many additional features.
+\end_layout
+
+\begin_layout Subsection
+YAJSW
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "YAJSW"
+target "http://yajsw.sourceforge.net/"
+
+\end_inset
+
+ is written in 100% Java, using 
+\begin_inset CommandInset href
+LatexCommand href
+name "JNA"
+target "https://jna.dev.java.net/"
+
+\end_inset
+
+ to handle the native operating-system-dependent features.
+ It is a powerful tool with many great features.
+\end_layout
+
+\begin_layout Subsection
+Monitoring via JMX
+\end_layout
+
+\begin_layout Subsection
+JSW
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "JSW"
+target "http://wrapper.tanukisoftware.org/"
+
+\end_inset
+
+ is written in C rather than Java, making it more lightweight than YAJSW.
+ Nevertheless, it has binaries for many operating systems.
+\end_layout
+
+\begin_layout Section
+HTTP Proxy
+\end_layout
+
+\begin_layout Standard
+There's nothing special about how Prudence handles HTTP, and it can work
+ easily behind any reverse proxy.
+ This lets you easily unite Prudence with other web servers or run it behind
+ a load balancer.
+ Though it's not unique to Prudence, we thought to add this section to the
+ documentation in order to get you up and running quickly with this useful
+ scenario.
+\end_layout
+
+\begin_layout Subsection
+Perlbal
+\end_layout
+
+\begin_layout Standard
+You can run many instances of Prudence behind a load balancer.
+ This offers fault tolerance, maintenance options, and the possibility to
+ dramatically scale up the number of requests you can support.
+ Your application can tolerate failure of any number of instances, as long
+ as you have one running, because load balancers will automatically route
+ to working instances.
+ Similarly, load balancing allows you to bring some instances down for maintenan
+ce while keeping your application up and running.
+\end_layout
+
+\begin_layout Standard
+Scaling up can be straightforward: simply add more and more instances behind
+ the load balancer, which will make sure to distribute requests among them,
+ while monitoring their responsiveness to accommodate for how well they
+ handle their load.
+ More complex systems can involve different kinds of instances, with the
+ load balancer being in charge of routing requests to the appropriate pool
+ of instances.
+ This ``partitioning'' can be according to features (one pool handles chat
+ room, one pool handles file downloads), geography (one pool handles England,
+ one pool handles France), or other clever ways to keep the whole system
+ efficient and responsive.
+\end_layout
+
+\begin_layout Standard
+There are many great load balancers out there, but we especially like 
+\begin_inset CommandInset href
+LatexCommand href
+name "Perlbal"
+target "http://www.danga.com/perlbal/"
+
+\end_inset
+
+.
+ Not only is it easy to use and configure, but it also adds a cool feature:
+ instances behind Perlbal can ask it to reroute specific requests.
+ [In the future, we will show you how to do this in Prudence.]
+\end_layout
+
+\begin_layout Subsection
+Apache
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "Apache"
+target "http://httpd.apache.org/"
+
+\end_inset
+
+ is often called the ``Swiss army knife of the Internet'' for how well it
+ manipulates URLs and routes HTTP requests.
+ Prudence already does powerful routing, including virtual hosting, and
+ that this may be good enough for you.
+ However, Apache is also used a container environment for application platforms
+ as modules, such as mod_php and mod_wsgi.
+ If you have no choice but to run Apache as your front end, it is straightforwar
+d to set it to route to Prudence as a reverse proxy.
+\end_layout
+
+\begin_layout Section
+Prudence As a Restlet Container
 \end_layout
 
 \begin_layout Standard
 Prudence brings the power of REST and the JVM to programmers in other languages,
  but has a lot to offer to Java/Restlet developers.
+\end_layout
+
+\begin_layout Standard
+Though applications can be written in Prudence without a single line of
+ Java code, Prudence also acts as a useful container for existing Restlet
+ applications, Restlet resources or just restlets, written in Java or other
+ JVM languages.
+\end_layout
+
+\begin_layout Standard
+Why use Prudence for a Restlet application that already works?
+\end_layout
+
+\begin_layout Standard
+Prudence makes it easy to handle the bootstrapping and 
+\begin_inset CommandInset href
+LatexCommand href
+name "routing"
+target "../routing/"
+
+\end_inset
+
+ of your applications, and the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Prudence administration application"
+target "../prudence-admin/"
+
+\end_inset
+
+, 
+\begin_inset CommandInset href
+LatexCommand href
+name "debugging"
+target "../debugging/"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset href
+LatexCommand href
+name "logging"
+target "../logging/"
+
+\end_inset
+
+ features make it easier to deploy and manage multiple applications together.
+ These issues have more to do with your application's configuration, rather
+ than its functionality, and it can be useful to handle them outside of
+ the Java build process, using live, dynamic languages in simple text source
+ that you can modify on-the-fly.
+ Deploying your Restlet application to a Prudence instance can be as simple
+ as plopping in your jar.
+\end_layout
+
+\begin_layout Standard
+This need is also fulfilled by servlet and Java Enterprise Edition (JEE)
+ containers, such as Tomcat, Resin and JBoss.
+ Indeed, Restlet has a JEE edition, and good support for servlets.
+ However, if all you need is a deployment container, Prudence can serve
+ as a straightforward, pure REST alternative.
+ 
+\end_layout
+
+\begin_layout Standard
+Some people also look to JEE containers for their support of Java Server
+ Pages (JSP).
+ We urge you to take a good look at Prudence's 
+\begin_inset CommandInset href
+LatexCommand href
+name "dynamic web"
+target "../generating-html/"
+
+\end_inset
+
+ support.
+ It may likely surpass JSP for your purposes.
+ In particular, it is based on Restlet, which you already know and love,
+ with the entire Restlet API at your fingertips.
+ It also lets you use many wonderful languages other than Java for scriptlets.
+ For example, we at Three Crickets, are mad about Clojure.
+ And, of course, Velocity and Succinct are built in.
+ 
+\end_layout
+
+\begin_layout Subsection
+Summary
 \end_layout
 
 \begin_layout Standard
@@ -2533,54 +4775,210 @@ Rich debug page for runtime errors
 Restlet sugar 
 \end_layout
 
-\begin_layout Standard
-Prudence comes with classes to Restlet tasks.
- You are free to use them without the Prudence platform.
- (They are available as a standalone jar.)
-\end_layout
-
-\begin_layout Enumerate
-Fallback router - Attach multiple MODE_STARTS_WITH restlets to the same
- base URI.
- 
-\end_layout
-
 \begin_deeper
 \begin_layout Enumerate
-URI ``capturing'' (internal redirection) - Let the URI-space you expose
- to the world be different from the one you use internally.
- 
+Fallback router (attach multiple MODE_STARTS_WITH restlets to the same base
+ URI)
 \end_layout
 
 \begin_layout Enumerate
-JavaScript unify-and-minify filter - Improve performance on web browsers.
- 
+URI ``capturing'' (internal redirection; let the URI-space you expose to
+ the world be different from the one you use internally)
+\end_layout
+
+\begin_layout Enumerate
+JavaScript and CSS unify-and-minify filter
 \end_layout
 
 \begin_layout Enumerate
 Delegated status service for displaying custom pages for error codes (404,
- 500, etc.) - They can be dynamically generated with Prudence ``text-with-scriptl
-ets.'' 
+ 500, etc.)
 \end_layout
 
 \begin_layout Enumerate
-Rich debug representation 
+Rich debugging representation 
 \end_layout
 
 \begin_layout Enumerate
-Caching system designed for StringRepresentations 
-\end_layout
-
-\begin_layout Enumerate
-Easy file uploads - Slightly higher-level than the Restlet FileUpload extension.
+Caching system, with pluggable backends, designed for StringRepresentations
  
 \end_layout
 
 \begin_layout Enumerate
-Also check out Scripturian and Jygments, Prudence's sister libraries 
+Easy file uploads (slightly higher-level than the Restlet FileUpload extension)
 \end_layout
 
 \end_deeper
+\begin_layout Subsection
+Custom Resources
+\end_layout
+
+\begin_layout Standard
+Use your application's routing file to attach your resources, or otherwise
+ manage routing.
+ Example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+// Prudence defaults 
+\end_layout
+
+\begin_layout Plain Layout
+
+document.execute('defaults/application/routing/');
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// MyOrg resources
+\end_layout
+
+\begin_layout Plain Layout
+
+router.attach('data/item/{id}', classLoader.loadClass('org.myorg.ItemResource'));
+\end_layout
+
+\begin_layout Plain Layout
+
+router.attach('data/items', classLoader.loadClass('org.myorg.ItemsResource'));
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You can also change Prudence's default routing by detaching and re-attaching
+ routes:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+// Wrap static web in JavaScript minifying filter
+\end_layout
+
+\begin_layout Plain Layout
+
+importClass(org.myorg.JavaScriptMinifyFilter);
+\end_layout
+
+\begin_layout Plain Layout
+
+router.detach(staticWeb);
+\end_layout
+
+\begin_layout Plain Layout
+
+router.attach(
+\end_layout
+
+\begin_layout Plain Layout
+
+	fixURL(staticWebBaseURL),
+\end_layout
+
+\begin_layout Plain Layout
+
+	new JavaScriptMinifyFilter(application.context, staticWeb, File(applicationBaseP
+ath + staticWebBasePath)))
+\end_layout
+
+\begin_layout Plain Layout
+
+	.matchingMode = Template.MODE_STARTS_WITH;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Custom Application
+\end_layout
+
+\begin_layout Standard
+By default, Prudence creates an instance of the standard Restlet Application
+ class.
+ Use your application's application file to override this, and create and
+ configure your own application.
+ Example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+// MyOrgApplication importClass(org.myorg.MyOrgApplication);
+\end_layout
+
+\begin_layout Plain Layout
+
+var application = new MyOrgApplication();
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// Install our custom tunnel service
+\end_layout
+
+\begin_layout Plain Layout
+
+importClass(org.myorg.MyOrgTunnelService);
+\end_layout
+
+\begin_layout Plain Layout
+
+application.tunnelService = new MyOrgTunnelService(MyOrgTunnelService.MODE_QUERY);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// These attributes are specific to MyOrgApplication
+\end_layout
+
+\begin_layout Plain Layout
+
+application.databaseURI = 'mysql://localhost/myorg';
+\end_layout
+
+\begin_layout Plain Layout
+
+application.useTransactions = true;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 How to Choose a Flavor?
 \end_layout
@@ -2794,7 +5192,7 @@ is, of course, ubiquitous.
 \begin_layout Standard
 Prudence allows a smooth transition from traditional PHP HTML generation
  to REST resources.
- It supports PHP "superglobals" such as $_GET, $_POST, $_COOKIE and $_FILE
+ It supports PHP ``superglobals'' such as $_GET, $_POST, $_COOKIE and $_FILE
  (but not $_SESSION) to make you feel right at home.
  It also adds many new features to conventional HTML generation: fine-grained
  caching, high-performance templating languages, and more.
@@ -3273,7 +5671,7 @@ So, what do we need?
 \begin_layout Standard
 We need a way to map identifiers to resources.
  We need support for the four CRUD operations.
- We need support for "conditional" updates and deletes.
+ We need support for ``conditional'' updates and deletes.
  We need all operations to support ``parameters.'' We need ``negotiation''
  of formats.
  And, we need a simple shared state attachment feature.
@@ -3405,7 +5803,7 @@ target "http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm"
  with its challenges, and the name is intended to point out the key characterist
 ic of its infrastructure: it's all about the transfer of lightly annotated
  data representations.
- "Resources" are merely logical encapsulations of these representations,
+ ``Resources'' are merely logical encapsulations of these representations,
  depending on a contract between client and server.
  The infrastructure does not, in itself, do anything in particular to maintain,
  say, a sensible hierarchy of addresses, the atomicity of CRUD operations,
@@ -4446,15 +6844,14 @@ The JVM
 \end_layout
 
 \begin_layout Standard
-How wonderful that the best-performing, most robust and most widely ported
- virtual machine is now open source? How wonderful that you can use it with
- JavaScript, Python, Ruby, Clojure, PHP and others languages?
+How wonderful that the best-performing, most robust and widely ported virtual
+ machine is now open source? How wonderful that you can use it with JavaScript,
+ Python, Ruby, Clojure, PHP and others languages?
 \end_layout
 
 \begin_layout Standard
-We strongly recommend the JVM for enterprise and internet applications,
- even if you're not particularly fond of Java (the programming language).
- 
+We strongly recommend the JVM for enterprise and scalable internet applications,
+ even if you're not particularly fond of Java-the-programming-language.
 \end_layout
 
 \begin_layout Subsection
@@ -4468,10 +6865,10 @@ Prudence would hardly be as exciting if you had to use Java.
 \begin_layout Standard
 These open source language engines have allowed us to extend the power of
  Prudence, REST and the JVM to languages outside of Java.
- Some of these engines are huge, complex projects, and are in fact the biggest
- libraries included in Prudence.
+ Some of these engines are large, complex projects, and are in fact the
+ biggest libraries included in Prudence.
  We strongly recommend you join in the communities surrounding the language
- engines corresponding to your chosen Prudence flavor.
+ engines corresponding to your favorite flavor of Prudence.
 \end_layout
 
 \begin_layout Subsection
@@ -4536,7 +6933,7 @@ target "http://threecrickets.com/succinct/"
 
 \end_inset
 
-also started as a part of Prudence (one of its earliest components) that
+ also started as a part of Prudence (one of its earliest components) that
  branched out into an independent library.
  We created it because we wanted straightforward, scalable templating built
  in to Prudence, and were unsatisfied by other open source offerings.
@@ -4637,7 +7034,7 @@ Why add another URL when a single one is enough to do the work?  One reason
  For example, the client probably uses a variable to hold the ID of the
  cat and then constructs the URL dynamically.
  But, what if the client forgets to check for null IDs? It might then construct
- a URL in the form "/animal/cat//" which would then successfully access
+ a URL in the form ``/animal/cat//'' which would then successfully access
  
 \emph on
 all
@@ -4725,8 +7122,15 @@ How well does Prudence perform? How well does it scale?
 First, recognize that there are two common uses for the term ``scale.'' REST
  is often referred to as an inherently scalable architecture, but that has
  more to do with project management than technical performance.
- This difference is address in the <a href="../rest/">Making the Case for
- REST</a>.
+ This difference is address in the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Making the Case for REST"
+target "../rest/"
+
+\end_inset
+
+.
  
 \end_layout
 
@@ -4741,11 +7145,26 @@ From the perspective of the ability to respond to user requests, there are
 \end_layout
 
 \begin_layout Standard
-Prudence comes with <a href="https://grizzly.dev.java.net/">Grizzly</a>, an
- HTTP server based on the JVM's non-blocking I/O API.
+Prudence comes with 
+\begin_inset CommandInset href
+LatexCommand href
+name "Grizzly"
+target "https://grizzly.dev.java.net/"
+
+\end_inset
+
+, an HTTP server based on the JVM's non-blocking I/O API.
  Grizzly handles concurrent HTTP requests very well, and serves static files
  at scales comparable to popular HTTP servers.
- See the <a href="../guide/tutorial/">tutorial</a> for more information.
+ See the 
+\begin_inset CommandInset href
+LatexCommand href
+name "tutorial"
+target "../guide/tutorial/"
+
+\end_inset
+
+ for more information.
  
 \end_layout
 
@@ -4795,7 +7214,15 @@ while
  For example, to increase caching duration during heavy loads, to decrease
  it during periods where data changes often, or to stream in the case of
  an expected large output.
- See the <a href="../guide/tutorial/">tutorial</a> for more information.
+ See the 
+\begin_inset CommandInset href
+LatexCommand href
+name "tutorial"
+target "../guide/tutorial/"
+
+\end_inset
+
+ for more information.
  
 \end_layout
 
@@ -4840,7 +7267,7 @@ ation programs.
  You can even write it in C or assembly, and have it linked to Java via
  JNI.
    If you're not doing intensive computation, then don't worry too much
- about your language being "slow." It's been shown that for the vast majority
+ about your language being ``slow.'' It's been shown that for the vast majority
  of web applications, the performance of the web programming language is
  rarely the bottleneck.
  The deciding factors are the usually performance of the backend data-driving

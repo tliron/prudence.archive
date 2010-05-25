@@ -95,8 +95,11 @@
 				<fileset dir="@{bin-base}/bin" />
 			</copy>
 			<chmod file="@{dist}/content/bin/run.sh" perm="ugo+rx" />
+			<copy todir="@{dist}/content/documentation">
+				<fileset dir="${documentation}" excludes="*~,*.emergency" />
+			</copy>
 			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%REVISION%" value="${revision.max}" />
-			<replace dir="@{dist}/content/applications/prudence-test/web/dynamic/" includes="download.html" token="%REVISION%" value="${revision.max}" />
+			<!--<replace dir="@{dist}/content/applications/prudence-test/web/dynamic/" includes="download.html" token="%REVISION%" value="${revision.max}" />-->
 		</sequential>
 	</macrodef>
 
@@ -199,6 +202,12 @@
 	</target>
 	
 	<target name="documentation">
+		<delete file="${documentation}/prudence_manual.pdf" />
+		<exec executable="lyx" failifexecutionfails="false">
+			<arg value="--export"/>
+			<arg value="pdf"/>
+			<arg value="${documentation}/prudence_manual.lyx"/>
+		</exec>
 		<exec executable="elyxer" failifexecutionfails="false">
 			<arg value="--html"/>
 			<arg value="--title"/>
