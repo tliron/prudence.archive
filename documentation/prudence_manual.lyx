@@ -1,4 +1,4 @@
-#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+#LyX 1.6.6 created this file. For more info see http://www.lyx.org/
 \lyxformat 345
 \begin_document
 \begin_header
@@ -56,18 +56,15 @@ Main text written by Tal Liron
 
 \begin_layout Standard
 \noindent
-Permission is granted to copy, distribute and/or modify this document under
- the terms of the 
+This work is licensed under a 
 \begin_inset CommandInset href
 LatexCommand href
-name "GNU Free Documentation License"
-target "http://www.gnu.org/licenses/fdl.html"
+name "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License"
+target "http://creativecommons.org/licenses/by-nc-sa/3.0/"
 
 \end_inset
 
-, Version 1.3 or any later version published by the Free Software Foundation;
- with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
- A copy of the license is included in the file license.txt.
+.
 \begin_inset Newpage pagebreak
 \end_inset
 
@@ -124,9 +121,9 @@ A Java Runtime Environment (JRE) is enough for Prudence.
 \end_layout
 
 \begin_layout Standard
-Try Prudence! Run /bin/run.sh for Unix-like systems (Linux and OS X), or
- /bin/run.bat for Windows.
- Prudence should declare its version list the installed demo applications.
+Try Prudence! Run /bin/run.sh for Unix-like systems (Linux, *BSD and OS X),
+ or /bin/run.bat for Windows.
+ Prudence should declare its version and list the installed demo applications.
  When it announces that it is listening on port 8080, it's ready to go.
  Open your web browser to 
 \begin_inset CommandInset href
@@ -143,12 +140,8 @@ target "http://localhost:8080/"
 \end_layout
 
 \begin_layout Quote
-
-\emph on
-By the way:
-\emph default
- The /bin/run scripts are there for getting you quickly up and running,
- however it is strongly recommended that you run 
+The /bin/run scripts are there for getting you quickly up and running, however
+ it is strongly recommended that you run 
 \begin_inset CommandInset href
 LatexCommand href
 name "Prudence as a daemon"
@@ -5774,7 +5767,7 @@ g, at least, to be more generic.
 \begin_inset CommandInset href
 LatexCommand href
 name "address internal resources with non-URL kinds of URIs"
-target "http://localhost:8080/prudence-guide/rest/guide/resources"
+target "../manual/resources/"
 
 \end_inset
 
@@ -5903,7 +5896,7 @@ Convinced? The best way to understand REST is to experiment with it.
 \begin_inset CommandInset href
 LatexCommand href
 name "Prudence tutorial"
-target "../guide/tutorial/"
+target "../manual/tutorial/"
 
 \end_inset
 
@@ -6256,11 +6249,11 @@ Graph Databases
 \end_layout
 
 \begin_layout Standard
-If your relational data structure contains a lot of many-to-many relationships
- and ``generic'' relationships forced into a relational model, then consider
+If your relational data structure contains a arbitrary-depth relationships
+ or ``generic'' relationships forced into a relational model, then consider
  using a graph database instead.
- Not only will your queries be faster, but also the database structure will
- allow for more efficient replication, and thus scalability.
+ Not only will traversing your data be faster, but also the database structure
+ will allow for more efficient scalability.
  The improvement over relational databases can be dramatic.
 \end_layout
 
@@ -6360,8 +6353,8 @@ target "http://www.mongodb.org/"
 \end_inset
 
 .
- It enables a few basic relational features, while easily scaling to vast
- amounts of documents.
+ Though document-based, it has a few basic relational features that might
+ be just good enough.
  Another is 
 \begin_inset CommandInset href
 LatexCommand href
@@ -7160,7 +7153,7 @@ target "https://grizzly.dev.java.net/"
 \begin_inset CommandInset href
 LatexCommand href
 name "tutorial"
-target "../guide/tutorial/"
+target "../manual/tutorial/"
 
 \end_inset
 
@@ -7218,7 +7211,7 @@ while
 \begin_inset CommandInset href
 LatexCommand href
 name "tutorial"
-target "../guide/tutorial/"
+target "../manual/tutorial/"
 
 \end_inset
 

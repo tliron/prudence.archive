@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2010-05-24">
+<meta name="create-date" content="2010-05-25">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -18,7 +18,7 @@ Copyright 2009-2010 by Three Crickets LLC<br>
 Main text written by Tal Liron
 </h2>
 <div class="Unindented">
-Permission is granted to copy, distribute and/or modify this document under the terms of the <a class="URL" href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation License</a>, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is included in the file license.txt.
+This work is licensed under a <a class="URL" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
 <span class="Newpage">
 
 </span>
@@ -495,10 +495,10 @@ All you need is a Java Virtual Machine (JVM), minimally version 5. Your operatin
 A Java Runtime Environment (JRE) is enough for Prudence. You need a Java Development Kit (JDK) only if you plan to write code in Java. Also, Prudence does not require anything from Java Enterprise Edition (JEE). In fact, you can see Prudence as a RESTful, minimal alternative to developing web applications under JEE.
 </blockquote>
 <div class="Unindented">
-Try Prudence! Run /bin/run.sh for Unix-like systems (Linux and OS X), or /bin/run.bat for Windows. Prudence should declare its version list the installed demo applications. When it announces that it is listening on port 8080, it’s ready to go. Open your web browser to <a class="URL" href="http://localhost:8080/">http://localhost:8080/</a>. You should see the Prudence Administration application, where you can access the demos. 
+Try Prudence! Run /bin/run.sh for Unix-like systems (Linux, *BSD and OS X), or /bin/run.bat for Windows. Prudence should declare its version and list the installed demo applications. When it announces that it is listening on port 8080, it’s ready to go. Open your web browser to <a class="URL" href="http://localhost:8080/">http://localhost:8080/</a>. You should see the Prudence Administration application, where you can access the demos. 
 </div>
 <blockquote class="Quote">
-<i>By the way:</i> The /bin/run scripts are there for getting you quickly up and running, however it is strongly recommended that you run <a class="URL" href="../daemon/">Prudence as a daemon</a> in production environments.
+The /bin/run scripts are there for getting you quickly up and running, however it is strongly recommended that you run <a class="URL" href="../daemon/">Prudence as a daemon</a> in production environments.
 </blockquote>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-2"></a>Your First Application
@@ -2938,7 +2938,7 @@ Our resource identifiers are simple URLs. The CRUD operations are in the four HT
 Most importantly, the infrastructure for HTTP is already fully deployed world-wide. TCP/IP stacks are part of practically every operating system; wiring, switching and routing are part and parcel; HTTP gateways, firewalls, load balancers, proxies, caches, filters, etc., are stable consumer components; certificate authorities, national laws, international agreements are already in place to support the complex inter-business interaction. Importantly, this infrastructure is successfully maintained, with minimal down-time, by highly-skilled independent technicians, organizations and component vendors across the world.
 </div>
 <div class="Indented">
-It’s important to note a dependency and possible limitation of HTTP: it is bound to TCP/IP. Indeed, all identifiers are URLs: Uniform Resource Locators. In URLs, the first segment is reserved for the domain, either an IP address or a domain name translatable to an IP address. Compare this with the more general URIs (Uniform Resource Identifiers), which do not have this requirement. Though we’ll often be tied to HTTP in REST, you’ll see the literature attempting, at least, to be more generic. There are definitely use cases for non-HTTP, and even non-TCP/IP addressing schemes. In Prudence, you’ll see that it’s possible to <a class="URL" href="http://localhost:8080/prudence-guide/rest/guide/resources">address internal resources with non-URL kinds of URIs</a>. 
+It’s important to note a dependency and possible limitation of HTTP: it is bound to TCP/IP. Indeed, all identifiers are URLs: Uniform Resource Locators. In URLs, the first segment is reserved for the domain, either an IP address or a domain name translatable to an IP address. Compare this with the more general URIs (Uniform Resource Identifiers), which do not have this requirement. Though we’ll often be tied to HTTP in REST, you’ll see the literature attempting, at least, to be more generic. There are definitely use cases for non-HTTP, and even non-TCP/IP addressing schemes. In Prudence, you’ll see that it’s possible to <a class="URL" href="../manual/resources/">address internal resources with non-URL kinds of URIs</a>. 
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-90"></a>It’s All About Infrastructure
@@ -2974,7 +2974,7 @@ That said, a ‘‘resource-oriented architecture’’ as we defined here is no
 <a class="toc" name="toc-Subsection-92"></a>Prudence
 </h2>
 <div class="Unindented">
-Convinced? The best way to understand REST is to experiment with it. You’ve come to the right place. Start with the <a class="URL" href="../guide/tutorial/">Prudence tutorial</a>, and feel free to skip around the documentation and try things out for yourself. You’ll find it easy, fun, and powerful enough for you to create large-scale applications that take full advantage of the inherently scalable infrastructure of REST. Happy RESTing! 
+Convinced? The best way to understand REST is to experiment with it. You’ve come to the right place. Start with the <a class="URL" href="../manual/tutorial/">Prudence tutorial</a>, and feel free to skip around the documentation and try things out for yourself. You’ll find it easy, fun, and powerful enough for you to create large-scale applications that take full advantage of the inherently scalable infrastructure of REST. Happy RESTing! 
 </div>
 <h1 class="Section">
 <a class="toc" name="toc-Section-17"></a>Scaling Tips
@@ -3129,7 +3129,7 @@ Fortunately, there are workable strategies for scaling data backends. Unfortunat
 <a class="toc" name="toc-Subsection-99"></a>Graph Databases
 </h2>
 <div class="Unindented">
-If your relational data structure contains a lot of many-to-many relationships and ‘‘generic’’ relationships forced into a relational model, then consider using a graph database instead. Not only will your queries be faster, but also the database structure will allow for more efficient replication, and thus scalability. The improvement over relational databases can be dramatic.
+If your relational data structure contains a arbitrary-depth relationships or ‘‘generic’’ relationships forced into a relational model, then consider using a graph database instead. Not only will traversing your data be faster, but also the database structure will allow for more efficient scalability. The improvement over relational databases can be dramatic.
 </div>
 <div class="Indented">
 Social networking applications are often used as examples of graph structures, but there are many others: forums with threaded and cross-referenced discussions, semantic knowledge bases, music ‘‘genomes,’’ user-tagged media sharing sites, and many science and engineering applications.
@@ -3156,7 +3156,7 @@ The cost of this scalability is the loss of your ability to do relational querie
 Candidate applications include online retail, blogs, wikis, archives, newspapers, contact lists, calendars, photo galleries, dating profiles... This is a long list, but by no means exhaustive of all that is possible in web applications. Many useful applications cannot be reduced to sets of lightly interconnected ‘‘documents’’ without giving up a lot of useful functionality. For example, merely adding social networking capabilities to a dating site would require complex relations that might be better handled with a graph database.
 </div>
 <div class="Indented">
-A popular document database is <a class="URL" href="http://www.mongodb.org/">MongoDB</a>. It enables a few basic relational features, while easily scaling to vast amounts of documents. Another is <a class="URL" href="http://couchdb.apache.org/">CouchDB</a>, which is a truly distributed database. With CouchDB it’s trivial to replicate and synchronize data with clients’ desktops or mobile devices, and to distribute it to partners. It also supports a REST interface which you can easily access via Prudence’s document.external.
+A popular document database is <a class="URL" href="http://www.mongodb.org/">MongoDB</a>. Though document-based, it has a few basic relational features that might be just good enough. Another is <a class="URL" href="http://couchdb.apache.org/">CouchDB</a>, which is a truly distributed database. With CouchDB it’s trivial to replicate and synchronize data with clients’ desktops or mobile devices, and to distribute it to partners. It also supports a REST interface which you can easily access via Prudence’s document.external.
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-101"></a>Best of All Worlds
@@ -3461,7 +3461,7 @@ From the perspective of the ability to respond to user requests, there are three
 <a class="toc" name="toc-Paragraph-72"></a>1. Serving HTTP
 </div>
 <div class="Unindented">
-Prudence comes with <a class="URL" href="https://grizzly.dev.java.net/">Grizzly</a>, an HTTP server based on the JVM’s non-blocking I/O API. Grizzly handles concurrent HTTP requests very well, and serves static files at scales comparable to popular HTTP servers. See the <a class="URL" href="../guide/tutorial/">tutorial</a> for more information. 
+Prudence comes with <a class="URL" href="https://grizzly.dev.java.net/">Grizzly</a>, an HTTP server based on the JVM’s non-blocking I/O API. Grizzly handles concurrent HTTP requests very well, and serves static files at scales comparable to popular HTTP servers. See the <a class="URL" href="../manual/tutorial/">tutorial</a> for more information. 
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-73"></a>2. Generating HTML
@@ -3479,7 +3479,7 @@ First, the entire document is run, with its output sent into a buffer. This buff
 Streaming mode:
 </div>
 <div class="Unindented">
-Output is sent to the client <i>while</i> the document runs. This is recommended for documents that need to output a very large amount of text, which might take a long time, or that might otherwise encounter slow-downs while running. In either case, you want the client to receive ongoing output. The output of the document is not cached.  Scriptlets can switch between modes according to changing circumstances. For example, to increase caching duration during heavy loads, to decrease it during periods where data changes often, or to stream in the case of an expected large output. See the <a class="URL" href="../guide/tutorial/">tutorial</a> for more information. 
+Output is sent to the client <i>while</i> the document runs. This is recommended for documents that need to output a very large amount of text, which might take a long time, or that might otherwise encounter slow-downs while running. In either case, you want the client to receive ongoing output. The output of the document is not cached.  Scriptlets can switch between modes according to changing circumstances. For example, to increase caching duration during heavy loads, to decrease it during periods where data changes often, or to stream in the case of an expected large output. See the <a class="URL" href="../manual/tutorial/">tutorial</a> for more information. 
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-74"></a>3. Running code
