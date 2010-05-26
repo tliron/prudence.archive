@@ -583,7 +583,7 @@ Fragments
 Prudence lets you include others documents in-place using a special scriptlet.
  This makes it very easy to reuse fragments of documents (which can include
  scriptlets) throughout your dynamic pages.
- Common reusbale fragments are page headers, footers, and navigation menus.
+ Common reusable fragments are page headers, footers, and navigation menus.
 \end_layout
 
 \begin_layout Standard
@@ -879,7 +879,7 @@ TODO
 \end_layout
 
 \begin_layout Standard
-Let's allow users to edit our wacky wicki.
+Let's allow users to edit our wacky wiki.
  
 \end_layout
 
@@ -2098,7 +2098,7 @@ Configuration by Script
 \begin_layout Standard
 Most instance and application configuration files are written in programming
  language code, rather than XML or other configuration formats.
- This method is sometimes called ``boot-strapping'' or just ``scripting.''
+ This method is sometimes called ``bootstrapping'' or just ``scripting.''
 \end_layout
 
 \begin_layout Standard
@@ -2142,8 +2142,8 @@ execute the default script, and instead handle things your own way.
 \begin_layout Quote
 For changes in your configuration scripts to take effect, you will need
  to restart the Prudence instance.
- This is true for Prudence 1.0: we planto support runtime configuration in
- a future version of Prudence.
+ This is true for Prudence 1.0: we plan to support runtime configuration
+ in a future version of Prudence.
 \end_layout
 
 \begin_layout Subsection
@@ -5246,7 +5246,7 @@ There's a lot of buzz about REST, but also a lot confusion about what it
 
 \begin_layout Standard
 Let's start, then, not at REST, but at an attempt to create a new architecture
- for building scalabale applications.
+ for building scalable applications.
  Our goals are for it to be minimal, straightforward, and still have enough
  features to be productive.
  We want to learn some lessons from the failures of other, more elaborate
@@ -5945,7 +5945,7 @@ Meanwhile, feel free to frame these inspirational slogans on your wall:
 Requests are hot potatoes: Pass them on!
 \end_layout
 
-\begin_layout Quote
+\begin_layout Standard
 And:
 \end_layout
 
@@ -6025,8 +6025,8 @@ Cache aggressively, but also take cache validation seriously.
 \end_layout
 
 \begin_layout Standard
-If you're using a deferrable task handler, you might want to invalidate
- cache groups when tasks are done.
+If you're using a deferred task handler, you might want to invalidate cache
+ groups when tasks are done.
  Consider creating a special internal API that lets the task handler call
  back to your application to do this.
 \end_layout
@@ -6039,7 +6039,151 @@ How long should you cache? As long as the user can bear! In a perfect world,
  data that's a few hours or a few days old.
 \end_layout
 
+\begin_layout Subsubsection
+Cache Warming
+\end_layout
+
+\begin_layout Standard
+Caches work best when they are ``warm,'' meaning that they are full of data
+ ready to be retrieved.
+\end_layout
+
+\begin_layout Standard
+A ``cold'' cache is not only useless, but it can also lead indirectly to
+ a serious problem.
+ If your site has been optimized for a warm cache, starting from cold could
+ significantly strain your performance, as your application servers struggle
+ to generate all pages and fragments from scratch.
+ Users would be getting slow response times until the cache is significantly
+ warm.
+ Worse, your system could crash under the sudden extra load.
+\end_layout
+
+\begin_layout Standard
+There are two strategies to deal with cold caches.
+ The first is to allow your cache to be persistent, so that if you restart
+ the cache system it retains the same warmth it had before.
+ This happens automatically with database-backed caches (see below).
+ The second strategy is to deliberately warm up the cache in preparation
+ for user requests.
+\end_layout
+
+\begin_layout Standard
+Consider creating a special external process or processes to do so.
+ Here are some tips:
+\end_layout
+
+\begin_layout Enumerate
+Consider mechanisms to make sure that your warmer does not overload your
+ system or take too much bandwidth from actual users.
+ The best warmers are adaptive, changing their load according to what the
+ servers can handle.
+ Otherwise, consider shutting down your site for a certain amount of time
+ until the cache is sufficiently warm.
+\end_layout
+
+\begin_layout Enumerate
+If the scope is very large, you will have to pick and choose which pages
+ to warm up.
+ You would want to choose only the most popular pages, in which case you
+ might need a system to record and measure popularity.
+ For example, for a blog, it's not enough just to warm up, say, the last
+ two weeks of blog posts, because a blog post from a year ago might be very
+ popular at the moment.
+ Effective warming would require you to find out how many times certain
+ blog posts were hit in the past two weeks.
+ It might make sense to embed this auditing ability into the cache backend
+ itself.
+\end_layout
+
+\begin_layout Subsubsection
+Cache Backends
+\end_layout
+
+\begin_layout Standard
+Your cache backend can become a bottleneck to scalability if 1) it can't
+ handle the amount of data you are storing, or 2) it can't response quickly
+ enough to cache fetching.
+ 
+\end_layout
+
+\begin_layout Standard
+Before you start worrying about this, consider that it's a rare problem
+ to have.
+ Even if you are caching millions of pages and fragments, a simple relational-da
+tabase-backed cache, such as Prudence's SqlCache implementations, could
+ handle this just fine.
+ A key/value table is the most trivial workload for relational databases,
+ and it's also easy to shard (see data backends, below).
+ Relational database are usually very good at caching these tables in their
+ memory and responding optimally to read requests.
+ Prudence even lets you chain caches together to create tiers: an in-process
+ memory cache in front of a SQL cache would ensure that many requests don't
+ even reach the SQL backend.
+\end_layout
+
+\begin_layout Standard
+High concurrency can also be handled very well by this solution.
+ Despite any limits to the number of concurrent connections you can maintain
+ to the database, each request is handled very quickly, and it would be
+ require very high loads to saturate.
+ The math is straightforward: with a 10ms average retrieval time (very pessimist
+ic!) and a maximum of 10 concurrent database connections (again, pessimistic!)
+ you can handle 1,000 cache hits per second.
+ A real environment would likely provide results orders of magnitude better.
+\end_layout
+
+\begin_layout Standard
+The nice thing about this solution is that it uses the infrastructure you
+ likely already have.
+\end_layout
+
+\begin_layout Standard
+But, what if you need to handle 
+\emph on
+millions
+\emph default
+ of cache hits per second? First, let us congratulate you for your global
+ popularity.
+ Second, there is a simple solution: distributed memory caches, like 
+\begin_inset CommandInset href
+LatexCommand href
+name "memcached"
+target "http://memcached.org/"
+
+\end_inset
+
+, offer much better scalability than database backends.
+ (Your real challenge will be load-balancing all those the incoming HTTP
+ requests.) Because the cache is in memory, you lose the ability to easily
+ persist your cache and keep it warm: restarting your cache nodes will effective
+ly reset them.
+ There are workarounds---for example, parts of the cache can be persisted
+ to a second database-backed cache tier---but this is a significant feature
+ to lose.
+\end_layout
+
+\begin_layout Standard
+You'll see many web frameworks out there that support memcached (``it's
+ fast!'') and recommend you use it.
+ We'd urge you to reconsider: cache warming (see above) is a challenge made
+ much easier if you can store your cache in a persistent backend, and database
+ backends can actually take you very far without adding a new infrastructure
+ to your deployment.
+ It's good to know, though, that there is a solution in case you reach the
+ popularity levels of LiveJournal, Facebook, YouTube, Twitter, etc.
+\end_layout
+
 \begin_layout Subsection
+Dealing with Lengthy Requests
+\end_layout
+
+\begin_layout Standard
+One size does not fit all: you will want to use different strategies to
+ deal with different kinds of tasks.
+\end_layout
+
+\begin_layout Subsubsection
 Necessary Tasks
 \end_layout
 
@@ -6051,13 +6195,13 @@ The user can't continue without the task being resolved.
 
 \begin_layout Standard
 If the necessary task is deterministically fast, you can do all processing
- in the request iself.
+ in the request itself.
 \end_layout
 
 \begin_layout Standard
 If not, you should queue the task on a handling service and return a ``please
  wait'' page to the user.
- It woule be nice to add a progress bar or some other kind of estimation
+ It would be nice to add a progress bar or some other kind of estimation
  of how long it would take for the task to be done.
  The client will poll until the task status is marked ``done,'' after which
  they will be redirected somewhere else.
@@ -6071,7 +6215,7 @@ Implementing a handling service is by no means trivial.
  It adds a new component to your architecture, one that also has to be made
  to scale.
  One can also argue that it adversely affects user experience by adding
- overhead, delaying the time it takes for the tast to complete.
+ overhead, delaying the time it takes for the task to complete.
  The bottom line, though, is you're vastly increasing concurrency and your
  ability to scale.
  And, you're actually improving the user experience: they would get a feedback
@@ -6079,7 +6223,7 @@ Implementing a handling service is by no means trivial.
  their requests to complete.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 Deferrable Tasks
 \end_layout
 
@@ -6109,17 +6253,17 @@ Deferring tasks does present a challenge to the user experience: What do
 Before you decide on deferring a task, think carefully of the user experience:
  for example, users might be constantly refreshing a web page waiting to
  see the results of their operation.
- Perhaps the task you thought is deferrable should actually be considered
+ Perhaps the task you thought you can defer should actually be considered
  necessary?
 \end_layout
 
-\begin_layout Subsection
-Uploads
+\begin_layout Subsubsection
+File Uploads
 \end_layout
 
 \begin_layout Standard
-File uploads are very long tasks that you cannot break into smaller tasks,
- because they depend entirely on the client.
+These are potentially very long requests that you cannot break into smaller
+ tasks, because they depend entirely on the client.
  As such, they present a unique challenge to scalability.
 \end_layout
 
@@ -6134,10 +6278,12 @@ Unfortunately, many concurrent uploads will still saturate your threads.
  If your application relies on file uploads, you are advised to handle such
  requests on separate Prudence instances, so that uploads won't stop your
  application from handling other web requests.
+ You may also consider using a third-party service specializing in file
+ storage and web uploads.
 \end_layout
 
-\begin_layout Subsection
-Asynchronous Processing
+\begin_layout Subsubsection
+Asynchronous Request Processing
 \end_layout
 
 \begin_layout Standard
@@ -6191,7 +6337,9 @@ It's not a good idea to do this for every page.
 \end_layout
 
 \begin_layout Enumerate
-Requests that do a few independent operations.
+Requests for which processing is made of independent operations.
+ (They'll likely be required to work in sequence, but if they can be processed
+ in parallel, even better!)
 \end_layout
 
 \begin_layout Enumerate
@@ -6210,13 +6358,14 @@ very
 
 \begin_layout Standard
 And so, after this lengthy discussion, it turns out that asynchronous processing
- is not such a useful strategy for increasing concurrency in web applications.
+ is not such a useful strategy for increasing concurrency for web pages.
  Caching is far more useful.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Quote
 As of version 1.0, Prudence has limited support for asynchronous processing,
  via conversation.defer.
+ Better support is planned for a future version.
 \end_layout
 
 \begin_layout Subsection
@@ -6244,14 +6393,26 @@ Fortunately, there are workable strategies for scaling data backends.
  for your application's needs.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
+Powering Up
+\end_layout
+
+\begin_layout Standard
+The database is one place where high-performance hardware can help.
+ Ten expensive, powerful machines might be equal in total power to forty
+ cheap machines, but they require a quarter of the synchronization overhead,
+ giving you more elbow room to scale up.
+ Fewer nodes is better.
+\end_layout
+
+\begin_layout Subsubsection
 Graph Databases
 \end_layout
 
 \begin_layout Standard
-If your relational data structure contains a arbitrary-depth relationships
- or ``generic'' relationships forced into a relational model, then consider
- using a graph database instead.
+If your relational data structure contains arbitrary-depth relationships
+ or many ``generic'' relationships forced into a relational model, then
+ consider using a graph database instead.
  Not only will traversing your data be faster, but also the database structure
  will allow for more efficient scalability.
  The improvement over relational databases can be dramatic.
@@ -6295,13 +6456,14 @@ target "http://neo4j.org/"
 
 \end_inset
 
-, and it's perfect for Prudence.
+, and it's especially easy to use Prudence.
  Because it's JVM-based, you can access it internally from Prudence.
- It also supports a REST interface which you can easily access via Prudence's
- document.external.
+ It also has embedded bindings for many of Prudence's supported languages,
+ and supports a network REST interface which you can easily access via Prudence'
+s document.external.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 Document Databases
 \end_layout
 
@@ -6315,7 +6477,8 @@ If your data contains mostly ``documents''---self-contained records with
 Document databases allow for straightforward distribution and very fine-grained
  replication, requiring considerably less overhead than relational and graph
  databases.
- Document databases are almost limitlessly scalable.
+ Document databases are as scalable as data storage gets: variants are used
+ by all the super-massive internet services.
 \end_layout
 
 \begin_layout Standard
@@ -6370,7 +6533,7 @@ target "http://couchdb.apache.org/"
  document.external.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 Best of All Worlds
 \end_layout
 
@@ -6380,32 +6543,30 @@ Of course, consider that it's very possible to use both SQL and ``NoSQL''
 \end_layout
 
 \begin_layout Subsection
-Powering Up
-\end_layout
-
-\begin_layout Standard
-The database is one place where high-performance hardware can help.
- Ten expensive, powerful machines might be equal in total power to forty
- cheap machines, but they require a quarter of the synchronization overhead,
- giving you more elbow room to scale up.
- Fewer nodes is better.
-\end_layout
-
-\begin_layout Subsection
 Partitioning
 \end_layout
 
 \begin_layout Standard
-Partitioning is as useful to relational database scaling as caching is to
- web request scaling.
+Partitioning is as useful to backend scaling as caching is to web request
+ scaling.
 \end_layout
 
 \begin_layout Standard
-Rather than having one big cluster of identical databases, you will have
- several smaller clusters of different, independent databases.
+The problem is that many backend systems need nodes to synchronize state
+ between each other.
+ Rather than having one big cluster of identical nodes, you will have several
+ smaller, independent clusters.
  This lets you add nodes to each cluster without spreading synchronization
  overhead everywhere.
  The more partitions you can create, the better you'll be able to scale.
+\end_layout
+
+\begin_layout Standard
+Partitioning can happen in various components of your application, such
+ as application servers, the caching system, task queues, etc.
+ However, it is most effective, and most complicated to implement, for databases.
+ Our discussion will thus focus on databases.
+ Other systems would likely require simpler subsets of these strategies.
 \end_layout
 
 \begin_layout Subsubsection
@@ -6578,15 +6739,15 @@ A great side-benefit to geographical partitioning is that you can host your
  Regional partitioning is useful even for ``NoSQL'' databases.
 \end_layout
 
-\begin_layout Subsection
-Coding Tips
+\begin_layout Subsubsection*
+Coding Tips for Partitioning
 \end_layout
 
 \begin_layout Standard
 If you organize your code well, it would be very easy to implement partitioning.
  You simply assign different database operations to use different connection
  pools.
- If it's by feature, then you can hardcode it for those features.
+ If it's by feature, then you can hard code it for those features.
  If it's sharding, then you add a switch before each operation telling it
  which connection pool to use.
 \end_layout
@@ -6686,7 +6847,7 @@ For example, your logic might require you to retrieve an ``object'' from
 Object oriented design is also problematic in a more general sense.
  The first principle of object orientation is ``encapsulation,'' putting
  your code and data structure in one place: the class.
- This might make sense for business logic, but, for the purposes of refactoring
+ This might make sense for business logic, but, for the purposes of re-factoring
  your data backend for partitioning or other strategies, you really don't
  want the data access code to be spread out among dozens of classes in your
  application.
@@ -6698,8 +6859,8 @@ Object oriented design is also problematic in a more general sense.
 \end_layout
 
 \begin_layout Standard
-Even more generally speaking, irganizing code together by mechanism, rather
- than by data ``class,'' will let you apply all kinds of refactorizations
+Even more generally speaking, organizing code together by mechanism, rather
+ than by data ``class,'' will let you apply all kinds of re-factorizations
  more easily, especially if you manage to decouple your application data
  structures from any library-specific data structures.
 \end_layout
@@ -7084,7 +7245,7 @@ Can different languages share state?
 \end_layout
 
 \begin_layout Subsubsection
-Can languages call each other's functions? 
+Can languages call each others' functions? 
 \end_layout
 
 \begin_layout Subsection
@@ -7259,8 +7420,11 @@ ation programs.
  the your language.
  You can even write it in C or assembly, and have it linked to Java via
  JNI.
-   If you're not doing intensive computation, then don't worry too much
- about your language being ``slow.'' It's been shown that for the vast majority
+\end_layout
+
+\begin_layout Standard
+If you're not doing intensive computation, then don't worry too much about
+ your language being ``slow.'' It's been shown that for the vast majority
  of web applications, the performance of the web programming language is
  rarely the bottleneck.
  The deciding factors are the usually performance of the backend data-driving
@@ -7288,7 +7452,7 @@ Licensing
 \begin_layout Standard
 (The author is not a lawyer.
  This is not a legal advice, but a personal interpretation.
- The wording of the license itself superceds anything written here.)
+ The wording of the license itself supersedes anything written here.)
 \end_layout
 
 \begin_layout Subsubsection

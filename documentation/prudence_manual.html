@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2010-05-25">
+<meta name="create-date" content="2010-05-26">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -391,37 +391,13 @@ Table of Contents
 <a class="Link" href="#toc-Subsection-93">Subsection: Caching</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-94">Subsection: Necessary Tasks</a>
+<a class="Link" href="#toc-Subsection-94">Subsection: Dealing with Lengthy Requests</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-95">Subsection: Deferrable Tasks</a>
+<a class="Link" href="#toc-Subsection-95">Subsection: Data Backends</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-96">Subsection: Uploads</a>
-</div>
-<div class="toc">
-<a class="Link" href="#toc-Subsection-97">Subsection: Asynchronous Processing</a>
-</div>
-<div class="toc">
-<a class="Link" href="#toc-Subsection-98">Subsection: Data Backends</a>
-</div>
-<div class="toc">
-<a class="Link" href="#toc-Subsection-99">Subsection: Graph Databases</a>
-</div>
-<div class="toc">
-<a class="Link" href="#toc-Subsection-100">Subsection: Document Databases</a>
-</div>
-<div class="toc">
-<a class="Link" href="#toc-Subsection-101">Subsection: Best of All Worlds</a>
-</div>
-<div class="toc">
-<a class="Link" href="#toc-Subsection-102">Subsection: Powering Up</a>
-</div>
-<div class="toc">
-<a class="Link" href="#toc-Subsection-103">Subsection: Partitioning</a>
-</div>
-<div class="toc">
-<a class="Link" href="#toc-Subsection-104">Subsection: Coding Tips</a>
+<a class="Link" href="#toc-Subsection-96">Subsection: Partitioning</a>
 </div></div>
 
 <div class="toc">
@@ -429,25 +405,25 @@ Table of Contents
 </div><div class="tocindent">
 
 <div class="toc">
-<a class="Link" href="#toc-Subsection-105">Subsection: Restlet</a>
+<a class="Link" href="#toc-Subsection-97">Subsection: Restlet</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-106">Subsection: The JVM</a>
+<a class="Link" href="#toc-Subsection-98">Subsection: The JVM</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-107">Subsection: Jython, JRuby, Clojure, Rhino, Quercus, Groovy</a>
+<a class="Link" href="#toc-Subsection-99">Subsection: Jython, JRuby, Clojure, Rhino, Quercus, Groovy</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-108">Subsection: Scripturian</a>
+<a class="Link" href="#toc-Subsection-100">Subsection: Scripturian</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-109">Subsection: Succinct</a>
+<a class="Link" href="#toc-Subsection-101">Subsection: Succinct</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-110">Subsection: Jygments</a>
+<a class="Link" href="#toc-Subsection-102">Subsection: Jygments</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-111">Subsection: H2</a>
+<a class="Link" href="#toc-Subsection-103">Subsection: H2</a>
 </div></div>
 
 <div class="toc">
@@ -455,22 +431,22 @@ Table of Contents
 </div><div class="tocindent">
 
 <div class="toc">
-<a class="Link" href="#toc-Subsection-112">Subsection: REST</a>
+<a class="Link" href="#toc-Subsection-104">Subsection: REST</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-113">Subsection: Languages</a>
+<a class="Link" href="#toc-Subsection-105">Subsection: Languages</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-114">Subsection: Concurrency</a>
+<a class="Link" href="#toc-Subsection-106">Subsection: Concurrency</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-115">Subsection: Performance</a>
+<a class="Link" href="#toc-Subsection-107">Subsection: Performance</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-116">Subsection: Scalability</a>
+<a class="Link" href="#toc-Subsection-108">Subsection: Scalability</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-117">Subsection: Licensing</a>
+<a class="Link" href="#toc-Subsection-109">Subsection: Licensing</a>
 </div></div>
 </div>
 
@@ -657,7 +633,7 @@ If you try to browse to the page, Prudence will show you a detailed debug page, 
 <a class="toc" name="toc-Subsubsection-2"></a>Fragments
 </h3>
 <div class="Unindented">
-Prudence lets you include others documents in-place using a special scriptlet. This makes it very easy to reuse fragments of documents (which can include scriptlets) throughout your dynamic pages. Common reusbale fragments are page headers, footers, and navigation menus.
+Prudence lets you include others documents in-place using a special scriptlet. This makes it very easy to reuse fragments of documents (which can include scriptlets) throughout your dynamic pages. Common reusable fragments are page headers, footers, and navigation menus.
 </div>
 <div class="Indented">
 By convention in Prudence, fragments are put in /web/fragments/, though you can include them from anywhere, even from your regular /web/dynamic/ or /web/static/ subdirectories. The advantage of keeping them out of those subdiretories is that users won’t be able to access the individual fragments directly. Instead, we must explicitly include them in our /web/dynamic/ files. 
@@ -764,7 +740,7 @@ Scriptlets can also dynamically change the cache duration according to changing 
 TODO
 </div>
 <div class="Indented">
-Let’s allow users to edit our wacky wicki. 
+Let’s allow users to edit our wacky wiki. 
 </div>
 <div class="Indented">
 
@@ -1229,7 +1205,7 @@ Advanced representations. (Restlet extensions.)
 <a class="toc" name="toc-Subsection-8"></a>Configuration by Script
 </h2>
 <div class="Unindented">
-Most instance and application configuration files are written in programming language code, rather than XML or other configuration formats. This method is sometimes called ‘‘boot-strapping’’ or just ‘‘scripting.’’
+Most instance and application configuration files are written in programming language code, rather than XML or other configuration formats. This method is sometimes called ‘‘bootstrapping’’ or just ‘‘scripting.’’
 </div>
 <div class="Indented">
 Scripting is powerful. It lets your configuration be dynamic, such that the same configuration script can do different things depending on the actual deployment environment and runtime circumstances. For example, you can deploy the same instance to a development environment, where it will start various debugging processes and logs, and a production environment, where it will optimize for performance and scale. You can even have different optimizations for different deployments. For example, a weak cloud-based instance with a single virtual CPU might be different from a dedicated box with 8 cores and a lot of RAM. You can dynamically test for the presence of installed optional components, etc.
@@ -1241,7 +1217,7 @@ The disadvantage is portability between Prudence flavors. For example, if you wr
 The default scripts are designed to fall back on other default scripts, which are all in the /defaults/ subdirectory. The common way to override any default script is to create your own version, execute the default script first, and then apply your overrides. You can also <i>not </i>execute the default script, and instead handle things your own way. Or, you can edit the defaults directly to apply changes across the board.
 </div>
 <blockquote class="Quote">
-For changes in your configuration scripts to take effect, you will need to restart the Prudence instance. This is true for Prudence 1.0: we planto support runtime configuration in a future version of Prudence.
+For changes in your configuration scripts to take effect, you will need to restart the Prudence instance. This is true for Prudence 1.0: we plan to support runtime configuration in a future version of Prudence.
 </blockquote>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-9"></a>/defaults/
@@ -2705,7 +2681,7 @@ If you know your project will require a lot of interaction with Java libraries, 
 There’s a lot of buzz about REST, but also a lot confusion about what it is and what it’s good for. The essay attempts to convey its simple essence.
 </div>
 <div class="Indented">
-Let’s start, then, not at REST, but at an attempt to create a new architecture for building scalabale applications. Our goals are for it to be minimal, straightforward, and still have enough features to be productive. We want to learn some lessons from the failures of other, more elaborate and ‘‘complete’’ architectures.
+Let’s start, then, not at REST, but at an attempt to create a new architecture for building scalable applications. Our goals are for it to be minimal, straightforward, and still have enough features to be productive. We want to learn some lessons from the failures of other, more elaborate and ‘‘complete’’ architectures.
 </div>
 <div class="Indented">
 Let’s call ours a ‘‘resource-oriented architecture.’’
@@ -2994,9 +2970,9 @@ Meanwhile, feel free to frame these inspirational slogans on your wall:
 <blockquote class="Quote">
 Requests are hot potatoes: Pass them on!
 </blockquote>
-<blockquote class="Quote">
+<div class="Unindented">
 And:
-</blockquote>
+</div>
 <blockquote class="Quote">
 It’s better to have many short requests than one long one.
 </blockquote>
@@ -3030,29 +3006,80 @@ Cache aggressively, but also take cache validation seriously. Make good use of P
 (It’s sad that many popular web sites do cache validation so poorly. Users have come to expect that sometimes they see wrong, outdated data on a page, sometimes mixed with up-to-date data. The problem is usually solved within minutes, or after a few browser refreshes, but please do strive for a better user experience in your web site!)
 </div>
 <div class="Indented">
-If you’re using a deferrable task handler, you might want to invalidate cache groups when tasks are done. Consider creating a special internal API that lets the task handler call back to your application to do this.
+If you’re using a deferred task handler, you might want to invalidate cache groups when tasks are done. Consider creating a special internal API that lets the task handler call back to your application to do this.
 </div>
 <div class="Indented">
 How long should you cache? As long as the user can bear! In a perfect world, of limitless computing resources, all pages would always be generated freshly per request. In a great many cases, however, there is no harm at all if users see some data that’s a few hours or a few days old.
 </div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-32"></a>Cache Warming
+</h3>
+<div class="Unindented">
+Caches work best when they are ‘‘warm,’’ meaning that they are full of data ready to be retrieved.
+</div>
+<div class="Indented">
+A ‘‘cold’’ cache is not only useless, but it can also lead indirectly to a serious problem. If your site has been optimized for a warm cache, starting from cold could significantly strain your performance, as your application servers struggle to generate all pages and fragments from scratch. Users would be getting slow response times until the cache is significantly warm. Worse, your system could crash under the sudden extra load.
+</div>
+<div class="Indented">
+There are two strategies to deal with cold caches. The first is to allow your cache to be persistent, so that if you restart the cache system it retains the same warmth it had before. This happens automatically with database-backed caches (see below). The second strategy is to deliberately warm up the cache in preparation for user requests.
+</div>
+<div class="Indented">
+Consider creating a special external process or processes to do so. Here are some tips:
+</div>
+<ol>
+
+<li>
+Consider mechanisms to make sure that your warmer does not overload your system or take too much bandwidth from actual users. The best warmers are adaptive, changing their load according to what the servers can handle. Otherwise, consider shutting down your site for a certain amount of time until the cache is sufficiently warm.
+</li>
+<li>
+If the scope is very large, you will have to pick and choose which pages to warm up. You would want to choose only the most popular pages, in which case you might need a system to record and measure popularity. For example, for a blog, it’s not enough just to warm up, say, the last two weeks of blog posts, because a blog post from a year ago might be very popular at the moment. Effective warming would require you to find out how many times certain blog posts were hit in the past two weeks. It might make sense to embed this auditing ability into the cache backend itself.
+</li>
+</ol>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-33"></a>Cache Backends
+</h3>
+<div class="Unindented">
+Your cache backend can become a bottleneck to scalability if 1) it can’t handle the amount of data you are storing, or 2) it can’t response quickly enough to cache fetching. 
+</div>
+<div class="Indented">
+Before you start worrying about this, consider that it’s a rare problem to have. Even if you are caching millions of pages and fragments, a simple relational-database-backed cache, such as Prudence’s SqlCache implementations, could handle this just fine. A key/value table is the most trivial workload for relational databases, and it’s also easy to shard (see data backends, below). Relational database are usually very good at caching these tables in their memory and responding optimally to read requests. Prudence even lets you chain caches together to create tiers: an in-process memory cache in front of a SQL cache would ensure that many requests don’t even reach the SQL backend.
+</div>
+<div class="Indented">
+High concurrency can also be handled very well by this solution. Despite any limits to the number of concurrent connections you can maintain to the database, each request is handled very quickly, and it would be require very high loads to saturate. The math is straightforward: with a 10ms average retrieval time (very pessimistic!) and a maximum of 10 concurrent database connections (again, pessimistic!) you can handle 1,000 cache hits per second. A real environment would likely provide results orders of magnitude better.
+</div>
+<div class="Indented">
+The nice thing about this solution is that it uses the infrastructure you likely already have.
+</div>
+<div class="Indented">
+But, what if you need to handle <i>millions</i> of cache hits per second? First, let us congratulate you for your global popularity. Second, there is a simple solution: distributed memory caches, like <a class="URL" href="http://memcached.org/">memcached</a>, offer much better scalability than database backends. (Your real challenge will be load-balancing all those the incoming HTTP requests.) Because the cache is in memory, you lose the ability to easily persist your cache and keep it warm: restarting your cache nodes will effectively reset them. There are workarounds---for example, parts of the cache can be persisted to a second database-backed cache tier---but this is a significant feature to lose.
+</div>
+<div class="Indented">
+You’ll see many web frameworks out there that support memcached (‘‘it’s fast!’’) and recommend you use it. We’d urge you to reconsider: cache warming (see above) is a challenge made much easier if you can store your cache in a persistent backend, and database backends can actually take you very far without adding a new infrastructure to your deployment. It’s good to know, though, that there is a solution in case you reach the popularity levels of LiveJournal, Facebook, YouTube, Twitter, etc.
+</div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-94"></a>Necessary Tasks
+<a class="toc" name="toc-Subsection-94"></a>Dealing with Lengthy Requests
 </h2>
+<div class="Unindented">
+One size does not fit all: you will want to use different strategies to deal with different kinds of tasks.
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-34"></a>Necessary Tasks
+</h3>
 <div class="Unindented">
 <i>The user can’t continue without the task being resolved.</i>
 </div>
 <div class="Indented">
-If the necessary task is deterministically fast, you can do all processing in the request iself.
+If the necessary task is deterministically fast, you can do all processing in the request itself.
 </div>
 <div class="Indented">
-If not, you should queue the task on a handling service and return a ‘‘please wait’’ page to the user. It woule be nice to add a progress bar or some other kind of estimation of how long it would take for the task to be done. The client will poll until the task status is marked ‘‘done,’’ after which they will be redirected somewhere else. Each polling request sent by the client could likely be processed very quickly, so this this strategy effectively breaks the task into many small requests (‘‘It’s better to have many short requests than one long one’’).
+If not, you should queue the task on a handling service and return a ‘‘please wait’’ page to the user. It would be nice to add a progress bar or some other kind of estimation of how long it would take for the task to be done. The client will poll until the task status is marked ‘‘done,’’ after which they will be redirected somewhere else. Each polling request sent by the client could likely be processed very quickly, so this this strategy effectively breaks the task into many small requests (‘‘It’s better to have many short requests than one long one’’).
 </div>
 <div class="Indented">
-Implementing a handling service is by no means trivial. It adds a new component to your architecture, one that also has to be made to scale. One can also argue that it adversely affects user experience by adding overhead, delaying the time it takes for the tast to complete. The bottom line, though, is you’re vastly increasing concurrency and your ability to scale. And, you’re actually improving the user experience: they would get a feedback on what’s going on rather than having their browsers spin, waiting for their requests to complete.
+Implementing a handling service is by no means trivial. It adds a new component to your architecture, one that also has to be made to scale. One can also argue that it adversely affects user experience by adding overhead, delaying the time it takes for the task to complete. The bottom line, though, is you’re vastly increasing concurrency and your ability to scale. And, you’re actually improving the user experience: they would get a feedback on what’s going on rather than having their browsers spin, waiting for their requests to complete.
 </div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-95"></a>Deferrable Tasks
-</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-35"></a>Deferrable Tasks
+</h3>
 <div class="Unindented">
 <i>It’s OK if the task occurs later.</i>
 </div>
@@ -3063,23 +3090,23 @@ As with necessary tasks, you can queue these with a task handling service, but i
 Deferring tasks does present a challenge to the user experience: What do you do if the task fails, and the user needs to know about it? One solution can be to send a warning email or other kind of message to the user. Another solution could be to have your client constantly poll in the background (via ‘‘AJAX’’) to see if there are any error messages, which in turn might require you to keep a queue of such error messages per user.
 </div>
 <div class="Indented">
-Before you decide on deferring a task, think carefully of the user experience: for example, users might be constantly refreshing a web page waiting to see the results of their operation. Perhaps the task you thought is deferrable should actually be considered necessary?
+Before you decide on deferring a task, think carefully of the user experience: for example, users might be constantly refreshing a web page waiting to see the results of their operation. Perhaps the task you thought you can defer should actually be considered necessary?
 </div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-96"></a>Uploads
-</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-36"></a>File Uploads
+</h3>
 <div class="Unindented">
-File uploads are very long tasks that you cannot break into smaller tasks, because they depend entirely on the client. As such, they present a unique challenge to scalability.
+These are potentially very long requests that you cannot break into smaller tasks, because they depend entirely on the client. As such, they present a unique challenge to scalability.
 </div>
 <div class="Indented">
 Fortunately, Prudence handles client requests via non-blocking I/O, meaning that large file uploads will not hold on to a single thread for the duration of the upload.
 </div>
 <div class="Indented">
-Unfortunately, many concurrent uploads will still saturate your threads. If your application relies on file uploads, you are advised to handle such requests on separate Prudence instances, so that uploads won’t stop your application from handling other web requests.
+Unfortunately, many concurrent uploads will still saturate your threads. If your application relies on file uploads, you are advised to handle such requests on separate Prudence instances, so that uploads won’t stop your application from handling other web requests. You may also consider using a third-party service specializing in file storage and web uploads.
 </div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-97"></a>Asynchronous Processing
-</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-37"></a>Asynchronous Request Processing
+</h3>
 <div class="Unindented">
 Having the client poll until a task is completed lets you break up a task into multiple requests and increase concurrency. Another strategy is to be break an <i>individual request</i> into pieces. While you’re processing the request and preparing the response, you can free the web thread to handle other requests. When you’re ready to deliver content, you raise a signal, and the next available web thread takes care of sending your response to the client. You can continue doing this indefinitely until the response is complete. From the client’s perspective it’s a single request: a web browser, for example, would spin until the request was completed.
 </div>
@@ -3098,7 +3125,7 @@ It’s not a good idea to do this for every page. While it’s better to have ma
 <ol>
 
 <li>
-Requests that do a few independent operations.
+Requests for which processing is made of independent operations. (They’ll likely be required to work in sequence, but if they can be processed in parallel, even better!)
 </li>
 <li>
 Requests that must access backend services with non-deterministic response times.
@@ -3108,13 +3135,13 @@ Requests that must access backend services with non-deterministic response times
 And, even for #2, if the service can take a <i>very</i> long time to respond, consider that it might be better to queue the task on a task handler and give proper feedback to the user.
 </div>
 <div class="Indented">
-And so, after this lengthy discussion, it turns out that asynchronous processing is not such a useful strategy for increasing concurrency in web applications. Caching is far more useful.
+And so, after this lengthy discussion, it turns out that asynchronous processing is not such a useful strategy for increasing concurrency for web pages. Caching is far more useful.
 </div>
-<div class="Indented">
-As of version 1.0, Prudence has limited support for asynchronous processing, via conversation.defer.
-</div>
+<blockquote class="Quote">
+As of version 1.0, Prudence has limited support for asynchronous processing, via conversation.defer. Better support is planned for a future version.
+</blockquote>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-98"></a>Data Backends
+<a class="toc" name="toc-Subsection-95"></a>Data Backends
 </h2>
 <div class="Unindented">
 You can keeping adding more nodes behind a load balancer insofar as each request does not have to access shared state. Useful web applications, however, are likely data-driven.
@@ -3125,11 +3152,17 @@ If the challenge in handling web requests is cutting down the length of request,
 <div class="Indented">
 Fortunately, there are workable strategies for scaling data backends. Unfortunately, they all have limitations, and must be carefully selected for your application’s needs.
 </div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-99"></a>Graph Databases
-</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-38"></a>Powering Up
+</h3>
 <div class="Unindented">
-If your relational data structure contains a arbitrary-depth relationships or ‘‘generic’’ relationships forced into a relational model, then consider using a graph database instead. Not only will traversing your data be faster, but also the database structure will allow for more efficient scalability. The improvement over relational databases can be dramatic.
+The database is one place where high-performance hardware can help. Ten expensive, powerful machines might be equal in total power to forty cheap machines, but they require a quarter of the synchronization overhead, giving you more elbow room to scale up. Fewer nodes is better.
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-39"></a>Graph Databases
+</h3>
+<div class="Unindented">
+If your relational data structure contains arbitrary-depth relationships or many ‘‘generic’’ relationships forced into a relational model, then consider using a graph database instead. Not only will traversing your data be faster, but also the database structure will allow for more efficient scalability. The improvement over relational databases can be dramatic.
 </div>
 <div class="Indented">
 Social networking applications are often used as examples of graph structures, but there are many others: forums with threaded and cross-referenced discussions, semantic knowledge bases, music ‘‘genomes,’’ user-tagged media sharing sites, and many science and engineering applications.
@@ -3138,16 +3171,16 @@ Social networking applications are often used as examples of graph structures, b
 Though fast, querying a complex graph can be difficult to prototype. Fortunately, the <a class="URL" href="http://wiki.github.com/tinkerpop/gremlin/">Gremlin</a> and <a class="URL" href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL</a> languages do for graphs what SQL does for relational databases. Your query becomes coherent and portable.
 </div>
 <div class="Indented">
-A popular graph database is <a class="URL" href="http://neo4j.org/">Neo4j</a>, and it’s perfect for Prudence. Because it’s JVM-based, you can access it internally from Prudence. It also supports a REST interface which you can easily access via Prudence’s document.external.
+A popular graph database is <a class="URL" href="http://neo4j.org/">Neo4j</a>, and it’s especially easy to use Prudence. Because it’s JVM-based, you can access it internally from Prudence. It also has embedded bindings for many of Prudence’s supported languages, and supports a network REST interface which you can easily access via Prudence’s document.external.
 </div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-100"></a>Document Databases
-</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-40"></a>Document Databases
+</h3>
 <div class="Unindented">
 If your data contains mostly ‘‘documents’’---self-contained records with few relationships to other documents---then consider a document database. 
 </div>
 <div class="Indented">
-Document databases allow for straightforward distribution and very fine-grained replication, requiring considerably less overhead than relational and graph databases. Document databases are almost limitlessly scalable.
+Document databases allow for straightforward distribution and very fine-grained replication, requiring considerably less overhead than relational and graph databases. Document databases are as scalable as data storage gets: variants are used by all the super-massive internet services.
 </div>
 <div class="Indented">
 The cost of this scalability is the loss of your ability to do relational queries of your data. Instead, you’ll be using distributed map/reduce, or rely on an external indexing service. These are powerful tools, but they do not match relational queries in sheer speed of complex queries. Implementing something as simple as a many-to-many connection, the bread-and-butter of relational databases, requires some specialization. Document databases shine at listing, sorting and searching through extremely large catalogs of documents.
@@ -3158,29 +3191,26 @@ Candidate applications include online retail, blogs, wikis, archives, newspapers
 <div class="Indented">
 A popular document database is <a class="URL" href="http://www.mongodb.org/">MongoDB</a>. Though document-based, it has a few basic relational features that might be just good enough. Another is <a class="URL" href="http://couchdb.apache.org/">CouchDB</a>, which is a truly distributed database. With CouchDB it’s trivial to replicate and synchronize data with clients’ desktops or mobile devices, and to distribute it to partners. It also supports a REST interface which you can easily access via Prudence’s document.external.
 </div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-101"></a>Best of All Worlds
-</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-41"></a>Best of All Worlds
+</h3>
 <div class="Unindented">
 Of course, consider that it’s very possible to use both SQL and ‘‘NoSQL’’ (graph, document) databases together for different parts of your application.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-102"></a>Powering Up
+<a class="toc" name="toc-Subsection-96"></a>Partitioning
 </h2>
 <div class="Unindented">
-The database is one place where high-performance hardware can help. Ten expensive, powerful machines might be equal in total power to forty cheap machines, but they require a quarter of the synchronization overhead, giving you more elbow room to scale up. Fewer nodes is better.
-</div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-103"></a>Partitioning
-</h2>
-<div class="Unindented">
-Partitioning is as useful to relational database scaling as caching is to web request scaling.
+Partitioning is as useful to backend scaling as caching is to web request scaling.
 </div>
 <div class="Indented">
-Rather than having one big cluster of identical databases, you will have several smaller clusters of different, independent databases. This lets you add nodes to each cluster without spreading synchronization overhead everywhere. The more partitions you can create, the better you’ll be able to scale.
+The problem is that many backend systems need nodes to synchronize state between each other. Rather than having one big cluster of identical nodes, you will have several smaller, independent clusters. This lets you add nodes to each cluster without spreading synchronization overhead everywhere. The more partitions you can create, the better you’ll be able to scale.
+</div>
+<div class="Indented">
+Partitioning can happen in various components of your application, such as application servers, the caching system, task queues, etc. However, it is most effective, and most complicated to implement, for databases. Our discussion will thus focus on databases. Other systems would likely require simpler subsets of these strategies.
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-32"></a>Reads vs. Writes
+<a class="toc" name="toc-Subsubsection-42"></a>Reads vs. Writes
 </h3>
 <div class="Unindented">
 This simple partitioning scheme greatly reduces synchronization overhead. Read-only servers will never send data to the writable servers. Also, knowing that they don’t have to handle writes means you can optimize their configurations for aggressive caching.
@@ -3198,7 +3228,7 @@ Of course, for web services that are heavily balanced towards writes, this is no
 Note that one feature you lose is the ability to have a transaction in which a write <i>might</i> happen, because a transaction cannot contain both a read-only node and a write-only node. If you must have atomicity, you will have to do your transaction on the writable cluster, or have two transactions: one to lookup and see if you need to change the data, and the second to perform the change---while first checking again that data didn’t change since the previous transaction. Too much of this obviously lessens the effectiveness of read/write partitioning.
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-33"></a>By Feature
+<a class="toc" name="toc-Subsubsection-43"></a>By Feature
 </h3>
 <div class="Unindented">
 The most obvious and effective partitioning scheme is by feature. Your site might offer different kinds of services that are functionally independent of each other, even though they are displayed to users as united. Behind the scenes, each feature uses a different set of tables. The rule of thumb is trivial: if you can put the tables in separate databases, then you can put them these databases in separate clusters.
@@ -3219,7 +3249,7 @@ Partitioning by feature is terrific in that it lets you partition other parts of
 Also consider that some features might be candidates for using a ‘‘NoSQL’’ database. Choose the best backend for each feature.
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-34"></a>By Section
+<a class="toc" name="toc-Subsubsection-44"></a>By Section
 </h3>
 <div class="Unindented">
 Another kind of partitioning is sometimes called ‘‘sharding.’’ It involves splitting up tables into sections that can be placed in different databases. Some databases support sharding as part of their synchronization strategy, but you can also implement it in your code. The great thing about sharding is that it lets you create as many shards (and clusters) as you want. It’s the key to the truly large scale.
@@ -3248,11 +3278,11 @@ The only limitation is queries. You can still let users access profiles in other
 <div class="Indented">
 A great side-benefit to geographical partitioning is that you can host your servers at data centers within the geographical location, leading to better user experiences. Regional partitioning is useful even for ‘‘NoSQL’’ databases.
 </div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-104"></a>Coding Tips
-</h2>
+<h3 class="Subsubsection-">
+<a class="toc" name="toc-Subsubsection*-1"></a>Coding Tips for Partitioning
+</h3>
 <div class="Unindented">
-If you organize your code well, it would be very easy to implement partitioning. You simply assign different database operations to use different connection pools. If it’s by feature, then you can hardcode it for those features. If it’s sharding, then you add a switch before each operation telling it which connection pool to use.
+If you organize your code well, it would be very easy to implement partitioning. You simply assign different database operations to use different connection pools. If it’s by feature, then you can hard code it for those features. If it’s sharding, then you add a switch before each operation telling it which connection pool to use.
 </div>
 <div class="Indented">
 For example:
@@ -3286,10 +3316,10 @@ Some developers prefer to use ORMs rather than access the database directly. Unf
 For example, your logic might require you to retrieve an ‘‘object’’ from the database, and only then decide if you need to alter it or not. If you’re doing read/write partitioning, then you obviously want to read from the read partition. Some ORMs, though, have the object tied so strongly to an internal connection object that you can’t trivially read it from one connection and save it into another. You’d either have to read the object initially from the write partition, minimizing the usefulness of read/write partitioning, or re-read it from the write partition when you realize you need to alter it, causing unnecessary overhead. (Note that you’ll need to do this anyway if you need the write to happen in a transaction.)
 </div>
 <div class="Indented">
-Object oriented design is also problematic in a more general sense. The first principle of object orientation is ‘‘encapsulation,’’ putting your code and data structure in one place: the class. This might make sense for business logic, but, for the purposes of refactoring your data backend for partitioning or other strategies, you really don’t want the data access code to be spread out among dozens of classes in your application. You want it all in one place, preferably even one source code file. It would let you plug in a whole new data backend strategy by replacing this source code file. For data-driven web development, you are better off not being too object oriented.
+Object oriented design is also problematic in a more general sense. The first principle of object orientation is ‘‘encapsulation,’’ putting your code and data structure in one place: the class. This might make sense for business logic, but, for the purposes of re-factoring your data backend for partitioning or other strategies, you really don’t want the data access code to be spread out among dozens of classes in your application. You want it all in one place, preferably even one source code file. It would let you plug in a whole new data backend strategy by replacing this source code file. For data-driven web development, you are better off not being too object oriented.
 </div>
 <div class="Indented">
-Even more generally speaking, irganizing code together by mechanism, rather than by data ‘‘class,’’ will let you apply all kinds of refactorizations more easily, especially if you manage to decouple your application data structures from any library-specific data structures.
+Even more generally speaking, organizing code together by mechanism, rather than by data ‘‘class,’’ will let you apply all kinds of re-factorizations more easily, especially if you manage to decouple your application data structures from any library-specific data structures.
 </div>
 <h1 class="Section">
 <a class="toc" name="toc-Section-18"></a>Under the Hood
@@ -3301,7 +3331,7 @@ Prudence brings together many open source libraries, some of which were designed
 Consider this as Prudence’s ‘‘acknowledgments’’ page. Hundreds of people have worked on these libraries, and we’re grateful to all of them for sharing their hard work, for embracing open source licensing, and for adhering to design principles that allow reuse of their work in other projects, such as Prudence.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-105"></a>Restlet
+<a class="toc" name="toc-Subsection-97"></a>Restlet
 </h2>
 <div class="Unindented">
 Prudence went through many transformations before aligning itself strongly with Restlet. First, we experimented with <a class="URL" href="https://facelets.dev.java.net/">Facelets</a>, but ended up giving up on <a class="URL" href="http://java.sun.com/javaee/javaserverfaces/">JSF</a>, its complex lifecycle, and on the promise of component-based web development in general. Then, we designed REST architectures using servlets and <a class="URL" href="http://threecrickets.com/succinct/">Succinct</a> templates, but found it awkward to force servlets into a REST architecture. Discovering <a class="URL" href="http://www.restlet.org/">Restlet</a> was a breath of fresh air.
@@ -3328,7 +3358,7 @@ Restlet is a great library, with a great ecosystem of extensions. In embracing i
 Prudence is meant to fill in these gaps. 
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-106"></a>The JVM
+<a class="toc" name="toc-Subsection-98"></a>The JVM
 </h2>
 <div class="Unindented">
 How wonderful that the best-performing, most robust and widely ported virtual machine is now open source? How wonderful that you can use it with JavaScript, Python, Ruby, Clojure, PHP and others languages?
@@ -3337,7 +3367,7 @@ How wonderful that the best-performing, most robust and widely ported virtual ma
 We strongly recommend the JVM for enterprise and scalable internet applications, even if you’re not particularly fond of Java-the-programming-language.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-107"></a>Jython, JRuby, Clojure, Rhino, Quercus, Groovy
+<a class="toc" name="toc-Subsection-99"></a>Jython, JRuby, Clojure, Rhino, Quercus, Groovy
 </h2>
 <div class="Unindented">
 Prudence would hardly be as exciting if you had to use Java.
@@ -3346,7 +3376,7 @@ Prudence would hardly be as exciting if you had to use Java.
 These open source language engines have allowed us to extend the power of Prudence, REST and the JVM to languages outside of Java. Some of these engines are large, complex projects, and are in fact the biggest libraries included in Prudence. We strongly recommend you join in the communities surrounding the language engines corresponding to your favorite flavor of Prudence.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-108"></a>Scripturian
+<a class="toc" name="toc-Subsection-100"></a>Scripturian
 </h2>
 <div class="Unindented">
 To make Prudence applications easy to deploy, they could not be traditional Java. The cycle of compilation and packaging is unnecessarily cumbersome. Though we could have implemented something like the on-the-fly Java compilation done in JSP, but we felt that, if that’s the route to go, many choices open up besides Java, and that these languages are more relevant to Prudence’s goals.
@@ -3358,13 +3388,13 @@ There are many terrific JVM-based languages out there. Unfortunately, we found t
 Since we think software other than Prudence can make use of our hard-won gains, we’ve abstracted and separated our language integration code as the <a class="URL" href="http://threecrickets.com/scripturian/">Scripturian</a> library. 
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-109"></a>Succinct
+<a class="toc" name="toc-Subsection-101"></a>Succinct
 </h2>
 <div class="Unindented">
 <a class="URL" href="http://threecrickets.com/succinct/">Succinct</a> also started as a part of Prudence (one of its earliest components) that branched out into an independent library. We created it because we wanted straightforward, scalable templating built in to Prudence, and were unsatisfied by other open source offerings. We think you’ll like it. 
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-110"></a>Jygments
+<a class="toc" name="toc-Subsection-102"></a>Jygments
 </h2>
 <div class="Unindented">
 Yet another Prudence side-project!
@@ -3373,7 +3403,7 @@ Yet another Prudence side-project!
 For Prudence’s debug mode, we wanted good syntax highlighting for viewing source code. We found nothing adequate enough in the Java world, though we fell in love with Pygments. For a while, we ran Pygments in Prudence via Jython, but found it too heavy for this particular use case. Thus, <a class="URL" href="http://jygments.tigris.org/">Jygments</a> was born as a port of Pygments to Java. 
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-111"></a>H2
+<a class="toc" name="toc-Subsection-103"></a>H2
 </h2>
 <div class="Unindented">
 We’re great fans of this lean and mean database engine! It has allowed us to distribute Prudence with a fully-functioning data-drive demo application, without any external dependencies. We’re proud to introduce <a class="URL" href="http://www.h2database.com/">H2</a>, through Prudence, to more people, and we believe you’ll find it fast enough, reliable enough, and flexible enough for many production environments. 
@@ -3382,10 +3412,10 @@ We’re great fans of this lean and mean database engine! It has allowed us to d
 <a class="toc" name="toc-Section-19"></a>FAQ
 </h1>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-112"></a>REST
+<a class="toc" name="toc-Subsection-104"></a>REST
 </h2>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-35"></a>Why are plural URL forms for aggregate resources (/animal/cats/) preferred over singular forms (/animal/cat/)?
+<a class="toc" name="toc-Subsubsection-45"></a>Why are plural URL forms for aggregate resources (/animal/cats/) preferred over singular forms (/animal/cat/)?
 </h3>
 <div class="Unindented">
 You’ll see RESTful implementations that use either convention. The advantage of using the singular form is that you have less addresses, and what some people would call a more elegant scheme:
@@ -3419,37 +3449,37 @@ Why add another URL when a single one is enough to do the work?  One reason is t
 ...then the form ‘‘/animal/cat//’’ would route to our singular cat resource, which would indeed not find the cat and return the expected, debuggable 404 error. From this example, we can extract a good rule of thumb: clearly separate URLs at their base by usage, so that mistakes cannot happen. More addresses means more debuggability. 
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-113"></a>Languages
+<a class="toc" name="toc-Subsection-105"></a>Languages
 </h2>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-36"></a>Why mix languages? 
+<a class="toc" name="toc-Subsubsection-46"></a>Why mix languages? 
 </h3>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-37"></a>What are ‘‘in-flow’’ scriptlets? 
+<a class="toc" name="toc-Subsubsection-47"></a>What are ‘‘in-flow’’ scriptlets? 
 </h3>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-38"></a>Can different languages share state? 
+<a class="toc" name="toc-Subsubsection-48"></a>Can different languages share state? 
 </h3>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-39"></a>Can languages call each other’s functions? 
+<a class="toc" name="toc-Subsubsection-49"></a>Can languages call each others’ functions? 
 </h3>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-114"></a>Concurrency
+<a class="toc" name="toc-Subsection-106"></a>Concurrency
 </h2>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-40"></a>Should I be worried? 
+<a class="toc" name="toc-Subsubsection-50"></a>Should I be worried? 
 </h3>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-41"></a>How to make my code thread safe? 
+<a class="toc" name="toc-Subsubsection-51"></a>How to make my code thread safe? 
 </h3>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-115"></a>Performance
+<a class="toc" name="toc-Subsection-107"></a>Performance
 </h2>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-42"></a>Which Prudence flavor performs best? 
+<a class="toc" name="toc-Subsubsection-52"></a>Which Prudence flavor performs best? 
 </h3>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-43"></a>How well does Prudence perform? How well does it scale?
+<a class="toc" name="toc-Subsubsection-53"></a>How well does Prudence perform? How well does it scale?
 </h3>
 <div class="Unindented">
 First, recognize that there are two common uses for the term ‘‘scale.’’ REST is often referred to as an inherently scalable architecture, but that has more to do with project management than technical performance. This difference is address in the <a class="URL" href="../rest/">Making the Case for REST</a>. 
@@ -3488,25 +3518,28 @@ Output is sent to the client <i>while</i> the document runs. This is recommended
 There may be a delay when starting up a specific language engine in Prudence for the first time in an application, as it loads and initializes itself. Then, there may be a delay when accessing a dynamic web page or resource for the first time, or after it has been changed, as it might require compilation. Once it’s up and running, though, your code performs and scale very well---as well as you’ve written it. You need to understand concurrency and make sure you make good choices to handle coordination between threads accessing the same data. If all is good, your code will actually perform better throughout the life of the application. The JVM learns and adapts as it runs, and performance can improve the more the application is used.
 </div>
 <div class="Indented">
-If you are performing CPU-intensive or time-sensitive tasks, then it’s best to profile these code segments precisely. Exact performance characteristics depend on the language and engine used. The <a class="URL" href="http://shootout.alioth.debian.org/">Bechmarks Game</a> can give you some comparisons of different language engines running high-computation programs. In any case, if you have a piece of intensive code that really needs to perform well, it’s probably best to write it in Java and access it from the your language. You can even write it in C or assembly, and have it linked to Java via JNI.   If you’re not doing intensive computation, then don’t worry too much about your language being ‘‘slow.’’ It’s been shown that for the vast majority of web applications, the performance of the web programming language is rarely the bottleneck. The deciding factors are the usually performance of the backend data-driving technologies and architectures.  
+If you are performing CPU-intensive or time-sensitive tasks, then it’s best to profile these code segments precisely. Exact performance characteristics depend on the language and engine used. The <a class="URL" href="http://shootout.alioth.debian.org/">Bechmarks Game</a> can give you some comparisons of different language engines running high-computation programs. In any case, if you have a piece of intensive code that really needs to perform well, it’s probably best to write it in Java and access it from the your language. You can even write it in C or assembly, and have it linked to Java via JNI.
+</div>
+<div class="Indented">
+If you’re not doing intensive computation, then don’t worry too much about your language being ‘‘slow.’’ It’s been shown that for the vast majority of web applications, the performance of the web programming language is rarely the bottleneck. The deciding factors are the usually performance of the backend data-driving technologies and architectures.  
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-116"></a>Scalability
+<a class="toc" name="toc-Subsection-108"></a>Scalability
 </h2>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-44"></a>Do you have any tips?
+<a class="toc" name="toc-Subsubsection-54"></a>Do you have any tips?
 </h3>
 <div class="Unindented">
 Yes. :)
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-117"></a>Licensing
+<a class="toc" name="toc-Subsection-109"></a>Licensing
 </h2>
 <div class="Unindented">
-(The author is not a lawyer. This is not a legal advice, but a personal interpretation. The wording of the license itself superceds anything written here.)
+(The author is not a lawyer. This is not a legal advice, but a personal interpretation. The wording of the license itself supersedes anything written here.)
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-45"></a>Does the LGPL mean I can’t use Prudence unless my product is open sourced?
+<a class="toc" name="toc-Subsubsection-55"></a>Does the LGPL mean I can’t use Prudence unless my product is open sourced?
 </h3>
 <div class="Unindented">
 The GPL family of licenses restrict your ability to <i>redistribute</i> software, not to use it. You are free to use Prudence as you please within your organization, even if you’re using it to serve public web sites (though with no warranty nor an implicit guarantee of support from Three Crickets, the copyright holder).
@@ -3527,7 +3560,7 @@ Three Crickets, the original developers of Prudence, are not trying to force you
 We understand that in some cases open sourcing your product is impossible. As a last resort, we offer you a commercial license. Please contact us for details.
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-46"></a>Why the LGPL and not the GPL?
+<a class="toc" name="toc-Subsubsection-56"></a>Why the LGPL and not the GPL?
 </h3>
 <div class="Unindented">
 The Lesser GPL used to be called the ‘‘Library GPL,’’ and was originally drafted for glibc. It represents a certain admission of defeat: there are so many alternatives to our library out there, that you might not consider using our library under GPL.
