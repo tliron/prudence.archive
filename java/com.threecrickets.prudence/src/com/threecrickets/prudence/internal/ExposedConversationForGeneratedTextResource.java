@@ -38,7 +38,7 @@ public class ExposedConversationForGeneratedTextResource extends ExposedConversa
 	/**
 	 * This boolean is true when the writer is in deferred mode.
 	 * 
-	 * @return True if in deffered mode
+	 * @return True if in deferred mode
 	 */
 	public boolean isDeferred()
 	{

@@ -20,6 +20,7 @@ import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.CacheDirective;
 import org.restlet.data.CharacterSet;
+import org.restlet.data.Encoding;
 import org.restlet.data.Form;
 import org.restlet.data.Language;
 import org.restlet.data.LocalReference;
@@ -81,6 +82,16 @@ public class ExposedConversationBase<R extends ServerResource>
 	//
 
 	/**
+	 * The resource reference.
+	 * 
+	 * @return The reference
+	 */
+	public Reference getReference()
+	{
+		return resource.getReference();
+	}
+
+	/**
 	 * The {@link CharacterSet} that will be used if you return an arbitrary
 	 * type for <code>handleGet()</code>, <code>handlePost()</code> and
 	 * <code>handlePut()</code>. Defaults to what the client requested (in
@@ -126,22 +137,64 @@ public class ExposedConversationBase<R extends ServerResource>
 	}
 
 	/**
-	 * @return The character set extension
+	 * @return The character set short name
 	 * @see #getCharacterSet()
 	 */
-	public String getCharacterSetExtension()
+	public String getCharacterSetShortName()
 	{
 		return characterSet != null ? resource.getApplication().getMetadataService().getExtension( characterSet ) : null;
 	}
 
 	/**
-	 * @param characterSetExtension
-	 *        The character set extension
+	 * @param characterSetShortName
+	 *        The character set short name
 	 * @see #setCharacterSet(CharacterSet)
 	 */
-	public void setCharacterSetExtension( String characterSetExtension )
+	public void setCharacterSetShortName( String characterSetShortName )
 	{
-		characterSet = resource.getApplication().getMetadataService().getCharacterSet( characterSetExtension );
+		characterSet = resource.getApplication().getMetadataService().getCharacterSet( characterSetShortName );
+	}
+
+	/**
+	 * The {@link Encoding} that will be used if you return an arbitrary type
+	 * for <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>. Defaults to null.
+	 * 
+	 * @return The encoding or null if not set
+	 * @see #setEncoding(Language)
+	 */
+	public Encoding getEncoding()
+	{
+		return encoding;
+	}
+
+	/**
+	 * @param encoding
+	 *        The encoding or null
+	 * @see #getEncoding()
+	 */
+	public void setEncoding( Encoding encoding )
+	{
+		this.encoding = encoding;
+	}
+
+	/**
+	 * @return The encoding name
+	 * @see #getEncoding()
+	 */
+	public String getEncodingName()
+	{
+		return encoding != null ? encoding.getName() : null;
+	}
+
+	/**
+	 * @param encodingName
+	 *        The encoding name
+	 * @see #setEncoding(Encoding)
+	 */
+	public void setEncodingName( String encodingName )
+	{
+		encoding = Encoding.valueOf( encodingName );
 	}
 
 	/**
@@ -184,25 +237,6 @@ public class ExposedConversationBase<R extends ServerResource>
 	public void setLanguageName( String languageName )
 	{
 		language = Language.valueOf( languageName );
-	}
-
-	/**
-	 * @return The language extension
-	 * @see #getLanguage()
-	 */
-	public String getLanguageExtension()
-	{
-		return language != null ? resource.getApplication().getMetadataService().getExtension( language ) : null;
-	}
-
-	/**
-	 * @param languageExtension
-	 *        The language extension
-	 * @see #setLanguage(Language)
-	 */
-	public void setLanguageExtension( String languageExtension )
-	{
-		language = resource.getApplication().getMetadataService().getLanguage( languageExtension );
 	}
 
 	/**
@@ -424,6 +458,29 @@ public class ExposedConversationBase<R extends ServerResource>
 			resource.getResponse().getCacheDirectives().add( CacheDirective.maxAge( maxAge ) );
 		else
 			resource.getResponse().getCacheDirectives().add( CacheDirective.noCache() );
+	}
+
+	/**
+	 * The response status.
+	 * 
+	 * @return The response status
+	 * @see #setStatus(Status)
+	 */
+	public Status getStatus()
+	{
+		return resource.getResponse().getStatus();
+	}
+
+	/**
+	 * The response status.
+	 * 
+	 * @param status
+	 *        The response status
+	 * @see #getStatus()
+	 */
+	public void setStatus( Status status )
+	{
+		resource.getResponse().setStatus( status );
 	}
 
 	/**
@@ -709,6 +766,13 @@ public class ExposedConversationBase<R extends ServerResource>
 	 * <code>handlePut()</code>.
 	 */
 	private CharacterSet characterSet;
+
+	/**
+	 * The {@link Encoding} that will be used if you return an arbitrary type
+	 * for <code>handleGet()</code>, <code>handlePost()</code> and
+	 * <code>handlePut()</code>.
+	 */
+	private Encoding encoding;
 
 	/**
 	 * The {@link Language} that will be used if you return an arbitrary type

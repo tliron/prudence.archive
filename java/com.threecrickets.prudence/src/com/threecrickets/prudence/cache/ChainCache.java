@@ -62,10 +62,10 @@ public class ChainCache implements Cache
 	// Cache
 	//
 
-	public void store( String key, Iterable<String> groupKeys, CacheEntry entry )
+	public void store( String key, Iterable<String> tags, CacheEntry entry )
 	{
 		for( Cache cache : caches )
-			cache.store( key, groupKeys, entry );
+			cache.store( key, tags, entry );
 	}
 
 	public CacheEntry fetch( String key )
@@ -80,10 +80,10 @@ public class ChainCache implements Cache
 		return null;
 	}
 
-	public void invalidate( String groupKey )
+	public void invalidate( String tag )
 	{
 		for( Cache cache : caches )
-			cache.invalidate( groupKey );
+			cache.invalidate( tag );
 	}
 
 	public void prune()

@@ -25,7 +25,7 @@ public class FakeCache implements Cache
 	// Cache
 	//
 
-	public void store( String key, Iterable<String> groupKeys, CacheEntry entry )
+	public void store( String key, Iterable<String> tags, CacheEntry entry )
 	{
 	}
 
@@ -34,7 +34,7 @@ public class FakeCache implements Cache
 		return null;
 	}
 
-	public void invalidate( String groupKey )
+	public void invalidate( String tag )
 	{
 	}
 

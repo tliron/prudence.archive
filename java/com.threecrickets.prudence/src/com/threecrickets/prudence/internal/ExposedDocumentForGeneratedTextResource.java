@@ -112,21 +112,21 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 	}
 
 	/**
-	 * @return The cache group keys
+	 * @return The cache tags
 	 */
 	@SuppressWarnings("unchecked")
-	public Set<String> getCacheGroups()
+	public Set<String> getCacheTags()
 	{
-		Set<String> cacheGroups = (Set<String>) currentExecutable.getAttributes().get( CACHE_GROUPS_ATTRIBUTE );
-		if( cacheGroups == null )
+		Set<String> cacheTags = (Set<String>) currentExecutable.getAttributes().get( CACHE_TAGS_ATTRIBUTE );
+		if( cacheTags == null )
 		{
-			cacheGroups = new HashSet<String>();
-			Set<String> existing = (Set<String>) currentExecutable.getAttributes().putIfAbsent( CACHE_GROUPS_ATTRIBUTE, cacheGroups );
+			cacheTags = new HashSet<String>();
+			Set<String> existing = (Set<String>) currentExecutable.getAttributes().putIfAbsent( CACHE_TAGS_ATTRIBUTE, cacheTags );
 			if( existing != null )
-				cacheGroups = existing;
+				cacheTags = existing;
 
 		}
-		return cacheGroups;
+		return cacheTags;
 	}
 
 	/**
@@ -260,7 +260,7 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 
 	private static final String CACHE_KEY_ATTRIBUTE = "prudence.cacheKey";
 
-	private static final String CACHE_GROUPS_ATTRIBUTE = "prudence.cacheGroups";
+	private static final String CACHE_TAGS_ATTRIBUTE = "prudence.cacheTags";
 
 	/**
 	 * @return The cache key for the executable
@@ -368,7 +368,7 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 
 		setCacheDuration( 0 );
 		setCacheKey( resource.getDefaultCacheKey() );
-		getCacheGroups().clear();
+		getCacheTags().clear();
 
 		try
 		{
@@ -405,7 +405,7 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 
 				// Cache if enabled
 				String cacheKey = castCacheKeyPattern();
-				Collection<String> cacheGroups = getCacheGroups();
+				Collection<String> cacheGroups = getCacheTags();
 				if( ( cacheKey != null ) && ( cacheEntry.getExpirationDate() != null ) )
 				{
 					Cache cache = resource.getCache();

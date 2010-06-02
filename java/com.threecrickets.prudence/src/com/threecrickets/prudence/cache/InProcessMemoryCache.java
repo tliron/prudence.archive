@@ -92,12 +92,12 @@ public class InProcessMemoryCache implements Cache
 	// Cache
 	//
 
-	public void store( String key, Iterable<String> groupKeys, CacheEntry entry )
+	public void store( String key, Iterable<String> tags, CacheEntry entry )
 	{
 		int entrySize = entry.getString().length();
 
 		if( debug )
-			System.out.println( "Store: " + key + " " + groupKeys );
+			System.out.println( "Store: " + key + " " + tags );
 
 		CacheEntry removed = cache.put( key, entry );
 		if( removed != null )
@@ -127,19 +127,19 @@ public class InProcessMemoryCache implements Cache
 			}
 		}
 
-		if( groupKeys != null )
+		if( tags != null )
 		{
-			for( String groupKey : groupKeys )
+			for( String tag : tags )
 			{
-				Set<String> group = groups.get( groupKey );
-				if( group == null )
+				Set<String> tagged = tagMap.get( tag );
+				if( tagged == null )
 				{
-					group = new CopyOnWriteArraySet<String>();
-					Set<String> existing = groups.putIfAbsent( groupKey, group );
+					tagged = new CopyOnWriteArraySet<String>();
+					Set<String> existing = tagMap.putIfAbsent( tag, tagged );
 					if( existing != null )
-						group = existing;
+						tagged = existing;
 				}
-				group.add( key );
+				tagged.add( key );
 			}
 		}
 	}
@@ -168,15 +168,15 @@ public class InProcessMemoryCache implements Cache
 		return null;
 	}
 
-	public void invalidate( String groupKey )
+	public void invalidate( String tag )
 	{
-		Set<String> group = groups.remove( groupKey );
-		if( group != null )
+		Set<String> tagged = tagMap.remove( tag );
+		if( tagged != null )
 		{
-			for( String key : group )
+			for( String key : tagged )
 			{
 				if( debug )
-					System.out.println( "Invalidate " + groupKey + ": " + key );
+					System.out.println( "Invalidate " + tag + ": " + key );
 
 				CacheEntry removed = cache.remove( key );
 				if( removed != null )
@@ -209,7 +209,7 @@ public class InProcessMemoryCache implements Cache
 		// This is not atomic, but does it matter?
 
 		cache.clear();
-		groups.clear();
+		tagMap.clear();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -221,9 +221,9 @@ public class InProcessMemoryCache implements Cache
 	private final ConcurrentMap<String, CacheEntry> cache = new ConcurrentHashMap<String, CacheEntry>();
 
 	/**
-	 * The groups, for invalidation.
+	 * The tagged keys, for invalidation.
 	 */
-	private final ConcurrentMap<String, Set<String>> groups = new ConcurrentHashMap<String, Set<String>>();
+	private final ConcurrentMap<String, Set<String>> tagMap = new ConcurrentHashMap<String, Set<String>>();
 
 	/**
 	 * The current cache size.

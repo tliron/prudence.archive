@@ -20,12 +20,16 @@
 \spacing single
 \use_hyperref false
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_amsmath 1
 \use_esint 1
 \cite_engine basic
 \use_bibtopic false
 \paperorientation portrait
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
 \secnumdepth 0
 \tocdepth 2
 \paragraph_separation indent
@@ -2720,6 +2724,10 @@ You'll rarely need to do it, but you can also override Prudence's default
  application bootstrap.
 \end_layout
 
+\begin_layout Standard
+Here you can modify an application's media type mappings.
+\end_layout
+
 \begin_layout Subsubsection
 /settings.*
 \end_layout
@@ -3951,9 +3959,38 @@ API
 \end_layout
 
 \begin_layout Standard
-Prudence exposes its API as services to your source code, whether its in
- scriptlets in /web/dynamic/, complete source code in /resources/, or your
- configuration scripts.
+Prudence exposes its API as a set of services to your source code.
+ These services are available in scriptlets in /web/dynamic/, complete source
+ code in /resources/, and in your configuration scripts.
+\end_layout
+
+\begin_layout Quote
+Note for Python flavor: If you're using the Jepp engine, not the default
+ Jython engine, you will need to use get- and set- notation to access attributes.
+ For example, use application.getArguments() to access application.arguments.
+\end_layout
+
+\begin_layout Quote
+Note for Ruby flavor: Our Ruby engine, JRuby, conveniently lets you use
+ the Ruby code convention.
+ For example, you can use $application.get_global rather than $application.getGlob
+al.
+\end_layout
+
+\begin_layout Quote
+Note for JavaScript flavor: Our JavaScript engine, Rhino, does not provide
+ dictionary access to maps, so you must use get- and put- notation to access
+ map attributes.
+ For example, use application.globals.get('myapp.data.name') rather than application.
+globals['myapp.data.name'].
+\end_layout
+
+\begin_layout Quote
+Note for Clojure flavor: Clojure does not support bean attributes, so you
+ will need to use get- and set- notation to access them.
+ For example, use (.getArguments application) to access application.arguments.
+ You can, though, use Clojure's bean function to create a read-only representati
+on of Prudence services.
 \end_layout
 
 \begin_layout Subsection
@@ -3963,30 +4000,114 @@ application
 \begin_layout Standard
 The same ``application'' service is shared between all code in a single
  application.
- Note this there is a single application instance per component, even if
- the application is routed on several virtual hosts and servers.
- The ``application'' service is a good place to store shared state for the
+ Note that there is always a single application instance per application
+ per component, even if the application is attached to several virtual hosts
+ and servers.
+\end_layout
+
+\begin_layout Standard
+The ``application'' service is a good place to store shared state for the
  application.
 \end_layout
 
 \begin_layout Paragraph
-application.globals, getGlobal, setGlobal
+application.globals, application.getGlobal
+\end_layout
+
+\begin_layout Standard
+Application globals are general purpose attributes accessible by any code
+ in the application.
+\end_layout
+
+\begin_layout Standard
+Names can be any string, but the convention is to use ``.'' paths to allow
+ for unique ``namespaces'' that would not overlap with future extensions,
+ expansions or third-party libraries.
+ For example, use ``myapp.data.sourceName'' rather than ``dataSourceName''
+ to avoid conflict.
+\end_layout
+
+\begin_layout Quote
+Though application.globals is thread safe, it's important to understand how
+ to use it properly.
+ Make sure you read the section on concurrency in Sharing State, below.
 \end_layout
 
 \begin_layout Paragraph
-application.arguments (for configuration scripts)
+application.arguments
+\end_layout
+
+\begin_layout Standard
+Available only in configuration scripts.
+ This is a list of command-line arguments provided to the Prudence instance
+ script.
 \end_layout
 
 \begin_layout Paragraph
 application.application
 \end_layout
 
+\begin_layout Standard
+This is a reference to the underlying Restlet application instance.
+\end_layout
+
+\begin_layout Standard
+For more information, refer to the Restlet API documentation.
+\end_layout
+
 \begin_layout Paragraph
 application.logger
 \end_layout
 
+\begin_layout Standard
+Use the logger to print messages in the log files.
+ The messages are prefixed by the applicationLoggerName 
+\begin_inset CommandInset href
+LatexCommand href
+name "setting"
+target "../application/"
+
+\end_inset
+
+, which defaults to the application's subdirectory name.
+\end_layout
+
+\begin_layout Standard
+By default, all log messages from all applications will be sent to prudence.log,
+ but you can change this in /configuration/logging.conf.
+\end_layout
+
+\begin_layout Standard
+For more information, see 
+\begin_inset CommandInset href
+LatexCommand href
+name "logging"
+target "../logging/"
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Paragraph
 application.getMediaType
+\end_layout
+
+\begin_layout Standard
+Utility to get a media type from a MIME type name or filename extension.
+\end_layout
+
+\begin_layout Standard
+Note that each application has its own mappings.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "application configuration"
+target "../application/"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -4024,35 +4145,217 @@ In the case of /resources/ and the configuration scripts, ``this document''
 \shape italic
 This
 \shape default
- document:
+ Document
 \end_layout
 
-\begin_layout Paragraph
-document.source
-\end_layout
+\begin_layout Standard
+Many of these attributes have to do with caching.
+ Caching is your best tool to make sure your application can scale well.
+ Read more about it in 
+\begin_inset CommandInset href
+LatexCommand href
+name "Scaling Tips"
+target "../../scaling/"
 
-\begin_layout Paragraph
-document.source.basePath
-\end_layout
+\end_inset
 
-\begin_layout Paragraph
-document.cache
-\end_layout
-
-\begin_layout Paragraph
-document.cache.invalidate
-\end_layout
-
-\begin_layout Paragraph
-document.cacheKey
+.
 \end_layout
 
 \begin_layout Paragraph
 document.cacheDuration
 \end_layout
 
+\begin_layout Standard
+The duration in milleseconds for which the output of this document will
+ be cached.
+ If this value is zero, the default, then caching is disabled.
+ So, you must explicitly set this to a greater than zero value to enable
+ caching.
+ The key used to store and retrieve the cached output is determined by document.c
+acheKey (see below).
+\end_layout
+
 \begin_layout Paragraph
-document.cacheGroups
+document.cacheKey
+\end_layout
+
+\begin_layout Standard
+This lets you control the key that is used to store and retrieve the cached
+ output of the current document.
+ 
+\emph on
+Not that this is not the key itself
+\emph default
+, but instead a template that can contain variables that are dynamically
+ set according to conversation attributes.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "routing"
+target "../routing/"
+
+\end_inset
+
+ for a complete list of Prudence's URI templating variables.
+ document.cacheKey is ignored if document.cacheDuration is zero.
+\end_layout
+
+\begin_layout Standard
+Cache key templating is a very powerful feature that lets you easily create
+ different cached versions of documents for different kinds of users and
+ requests, but it's not always trivial to determine the best cache key for
+ every situation.
+ It depends strongly on how you use and cache your fragments.
+\end_layout
+
+\begin_layout Standard
+The default cache key template is ``{ri}|{dn}'', which is a string containing
+ the request identifier (the URI), a pipe character (``|''), and then the
+ document name.
+ An actual key could thus be: ``http://mysite.org/wackywiki/main|/common/header.ht
+ml''.
+ This default is sensible, because it makes sure that included fragments
+ are chached invidually.
+ For example, only using ``{ri}'' would have each included fragment use
+ the same key and override others.
+\end_layout
+
+\begin_layout Standard
+However, though sensible, the default cache key template may not be the
+ most efficient.
+ For example, if the header fragment used in the example above never changes
+ per page, then it's wasteful to cache it separately per URI.
+ It would make more sense to set document.cacheKey = ``{dn}'' in a scriptlet
+ in header.html.
+\end_layout
+
+\begin_layout Standard
+Of course, you do not have to use Prudence's templating system, and can
+ create your cacheKeys explicitly using your own scheme.
+ Just make sure not to use ``{'' and ``}'', which are reserved for template
+ variables.
+\end_layout
+
+\begin_layout Quote
+Rule of thumb: Set document.cacheKey to be as short as you possibly can.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "Scaling Tips"
+target "../../scaling/"
+
+\end_inset
+
+ for more information on how caching can help you scale.
+\end_layout
+
+\begin_layout Standard
+Note the default cache key template can be changed by setting the ``com.threecric
+kets.prudence.GeneratedTextResource.defaultCharacterSet'' application global.
+\end_layout
+
+\begin_layout Paragraph
+document.cacheTags
+\end_layout
+
+\begin_layout Standard
+This is a list of one or more strings that will be attached to the cached
+ output of the page.
+ Any number of tags can be associated with a cache entry.
+ Cache tags are used for document.cache.invalidate (see below).
+ Note that you can set cache tags to hardcoded strings (for example: ``browse-pa
+ges'') or dynamically generate them using code (for example: ``blog-comments-for
+-entry-'' + blogId).
+\end_layout
+
+\begin_layout Standard
+document.cacheTags is ignored if document.cacheDuration is zero.
+\end_layout
+
+\begin_layout Paragraph
+document.cache
+\end_layout
+
+\begin_layout Standard
+Provides access to the cache implementation used by this document.
+ Prudence supports a pluggable cache backend mechanism, allowing you to
+ use RAM, disk, database, distributed and other cache systems.
+ It also allows for chaining of various backends together for improved performan
+ce and reliability.
+\end_layout
+
+\begin_layout Standard
+Prudence's default implementation is an in-process memory cache chained
+ before an H2 database cache.
+ The memory cache ensures extremely fast retrieval times, while the database
+ cache makes sure entries will persist even if you restart Prudence.
+\end_layout
+
+\begin_layout Standard
+See 
+\begin_inset CommandInset href
+LatexCommand href
+name "application configuration"
+target "../application/"
+
+\end_inset
+
+ for more information on configuring the cache backend.
+\end_layout
+
+\begin_layout Paragraph
+document.cache.invalidate
+\end_layout
+
+\begin_layout Standard
+This lets you remove entries, zero or many, from your cache at once.
+ It is useful for when your application state changes in such a way that
+ certain pages must be regenerated.
+ The argument is a cache tag, as defined by document.cacheTags, above.
+\end_layout
+
+\begin_layout Standard
+A common use case is to invalidate display pages when a user posts new data.
+ For a detailed example, consider a forum hosting site.
+ The home page has a section showing ``recent posts in our forums'' and
+ additionally each forum has its own front page showing ``forum highlights''.
+ Both of these query the data backend in order to generate the last, and
+ have a 24-hour cache.
+ You can associate each forum with cache tag ``forum-X'', where X is the
+ forum number, and associate the home page with all these cache tags.
+ When a user posts a new forum thread in forum X, you just need to call
+ document.cache.invalidate(``forum-X'') to make sure all associated pages
+ will be regenerated on the next user request.
+\end_layout
+
+\begin_layout Standard
+See 
+\begin_inset CommandInset href
+LatexCommand href
+name "Scaling Tips"
+target "../../scaling/"
+
+\end_inset
+
+ for more information on how caching can help you scale.
+\end_layout
+
+\begin_layout Paragraph
+document.source
+\end_layout
+
+\begin_layout Standard
+This provides access to the underlying Scripturian DocumentSource instance
+ used for this document.
+\end_layout
+
+\begin_layout Standard
+Scripturian is Prudence's mechanism for loading, caching and executing source
+ code in various languages.
+ By default, Prudence uses a FileDocumentSource.
+ From here, you can access attributes of it, for example: document.source.basePath
+ and document.source.minimumTimeBetweenValidityChecks.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4060,23 +4363,283 @@ document.cacheGroups
 \shape italic
 Other
 \shape default
- documents:
+ Documents
 \end_layout
 
 \begin_layout Paragraph
 document.include (/web/dynamic/)
 \end_layout
 
-\begin_layout Paragraph
-document.defaultLanguageTag (for include in startup scripts)
+\begin_layout Standard
+Executes another document ``in place,'' meaning that its output is appended
+ at the location in the document where you call document.include.
+ Global variables, function definitions, class definitions, etc., in the
+ other document would be made available locally.
+\end_layout
+
+\begin_layout Standard
+The included path is an internal URI, not the external URL visible to the
+ world.
+ The URI can be relative to either /web/dynamic/ or to /web/fragments/.
+ The difference is that the former is open to the world, while the latter
+ isn't.
+\end_layout
+
+\begin_layout Standard
+Prudence might compile or otherwise prepare and cache scriptlets in the
+ included document.
+ This means that the first time it is included it would be delayed, but
+ subsequent includes would be much faster.
+ To avoid that first-time wait, Prudence supports ``defrosting'' of your
+ documents when it starts.
+ This is enabled by default for all documents in /web/dynamic/, and would
+ affect included documents from /web/fragments/.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "application configuration"
+target "../application/"
+
+\end_inset
+
+ for more information.
+ What ``preparation'' actually involves depends on the language used by
+ the scriptlets.
+\end_layout
+
+\begin_layout Quote
+Calling document.include is equivalent to using the include scriptlet, <%&
+ ...
+ %>.
+ Internally, the include is turned into a regular scriptlet that called
+ document.include.
+\end_layout
+
+\begin_layout Standard
+There are three main use cases for inclusion:
+\end_layout
+
+\begin_layout Enumerate
+This mechanism allows you to divide your documents into fragments that you
+ can re-use in many documents, helping you manage large applications and
+ keep them consistent.
+ Fragments can include other fragments, those can include others, etc.
+ A common strategy is to separate the document header and footer into fragments
+ and include these in all pages.
+\end_layout
+
+\begin_layout Enumerate
+Because each document fragment can have its own caching properties, fragmentatio
+n is also an important strategy for fine-grained caching.
+ It's important to keep in mind, though, that the outermost document's cacheDura
+tion will override all others.
+ If a cached version of a document is used, then it is not executed, which
+ means that document.include calls in it are not executed, too.
+\end_layout
+
+\begin_layout Enumerate
+Scriptlets in the fragments can include re-usable code, such as function
+ and class definitions.
+ You can thus use document.include to include code libraries.
+ You might want to consider, though, using document.execute instead (see
+ below), as it will let you use regular source code documents and not have
+ to use scriptlets.
+\end_layout
+
+\begin_layout Subsubsection
+document.execute
+\end_layout
+
+\begin_layout Standard
+Executes a program defined by source code in another document.
+ Global variables, function definitions, class definitions, etc., in the
+ other document would be made available locally.
+\end_layout
+
+\begin_layout Standard
+The included path is an internal URI, not the external URL visible to the
+ world.
+ The URI can be relative to either /web/dynamic/ in the case of scriptlets,
+ /resources/ in the case of resources, or to /libraries/ in either case.
+ The /libraries/ subdirectory is indeed the best place to put code usable
+ by all parts of your application.
+\end_layout
+
+\begin_layout Standard
+Prudence might compile or otherwise prepare and cache code in the executed
+ document.
+ This means that the first time it is executed it would be delayed, but
+ subsequent execution would be much faster.
+ To avoid that first-time wait, Prudence supports ``defrosting'' of your
+ documents when it starts.
+ This is enabled by default for all documents in /resources/, and would
+ affect documents they execute from /libraries/.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "application configuration"
+target "../application/"
+
+\end_inset
+
+ for more information.
+ What ``preparation'' actually involves depends on the language of the source
+ code.
+\end_layout
+
+\begin_layout Quote
+The main difference between document.include and document.execute is that
+ the former expects ``text-with-scriptlets'' documents, while the latter
+ uses plain source code.
+\end_layout
+
+\begin_layout Standard
+Common use cases:
+\end_layout
+
+\begin_layout Enumerate
+The executed code can be re-usable, such as function and class definitions.
+ This allows you to treat it as a code library.
+ Notes:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+In most cases, you would probably want to use your language's code inclusion
+ mechanism instead of document.execute.
+ For example, use ``import'' in Python, Ruby and PHP, and ``require'' in
+ Clojure.
+ The native inclusion mechanism would do a better job at caching code, managing
+ namespaces, avoiding duplication, etc.
+ For example, if you use document.execute in Clojure, then you would have
+ to use defonce rather than def to avoid duplication in case you execute
+ the same document multiple times in the same context.
+\end_layout
+
+\begin_layout Enumerate
+For JavaScript and Groovy flavors: Prudence's document.execute is your only
+ option for code inclusion in Prudence, because both JavaScript and Groovy
+ do not have a code inclusion mechanism.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+The executed code does not have to be in the same language as the calling
+ code.
+ This lets you use multiple languages in your applications, using the strengths
+ of each.
+ Note that languages cannot normally share function and class definitions,
+ but can share state, via mechanisms such as application.globals, if the
+ languages use compatible structures.
+\end_layout
+
+\begin_layout Enumerate
+Use document.execute is an alternative to document.include if you prefer not
+ to use scriptlets.
+ For example, executing mylibrary.js might be more readable than including
+ a fragment called mylibrary.html that is all just one JavaScript scriptlet.
 \end_layout
 
 \begin_layout Paragraph
 document.internal
 \end_layout
 
+\begin_layout Standard
+Creates a proxy for a resource in the current application, or in other applicati
+ons in your component.
+ You can perform all the usual REST verbs via the proxy: GET, PUT, POST,
+ DELETE, etc.
+ For more information, refer to the Restlet API documentation for ClientResource.
+\end_layout
+
+\begin_layout Standard
+The URIs used in document.internal are not relative to any server or virtual
+ host, but to the application root.
+\end_layout
+
+\begin_layout Standard
+Common use cases:
+\end_layout
+
+\begin_layout Enumerate
+By letting you use your RESTful resources both internally and externally,
+ document.internal lets you create unified resource API.
+ document.internal directly accesses the resource (not via HTTP), so it is
+ just about as fast as a simple function call, and is definitely scalable.
+ Thus, there may be no need to create a separate set of functions for you
+ to use internally and HTTP resources for external clients to use.
+ A unified API would minimize the possibility of bugs and add coherence
+ to your code, by enforcing a RESTful architecture all around.
+ A second advantage is that you could trivially make your API remote by
+ running it on a different Prudence instance, and using document.external
+ instead (see below).
+ This could allow for an easy way to run your application in a cluster,
+ behind a load balancer.
+\end_layout
+
+\begin_layout Enumerate
+You can create unit tests for your resources without having to start an
+ HTTP server.
+\end_layout
+
+\begin_layout Enumerate
+The defrosting mechanism uses document.internal to load resources.
+\end_layout
+
 \begin_layout Paragraph
 document.external
+\end_layout
+
+\begin_layout Standard
+Creates a proxy for a resource.
+ You can perform all the usual REST verbs via the proxy: GET, PUT, POST,
+ DELETE, etc.
+ For more information, refer to the Restlet API documentation for ClientResource.
+\end_layout
+
+\begin_layout Standard
+This is a good place to remind you that REST is not just HTTP.
+ By default, Prudence supports http: and file: scheme URIs for document.external,
+ and you can add more protocols via your clients.* configuration script.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "instance configuration"
+target "../instance/"
+
+\end_inset
+
+ for more information.
+\end_layout
+
+\begin_layout Standard
+Common use cases:
+\end_layout
+
+\begin_layout Enumerate
+You can add scale and redundancy to your internal REST API by running several
+ Prudence instances behind a load balancer, and using document.external instead
+ of document.internal.
+\end_layout
+
+\begin_layout Enumerate
+You can use Prudence to create an internal communication backbone for your
+ enterprise, with various backend services exposing resources to each other.
+ You can expose the same resources to business partners, allowing for ``B2B''
+ (business-to-business) services.
+\end_layout
+
+\begin_layout Enumerate
+There are many, many use cases for document.external, and they keep growing
+ as REST is adopted by service providers on the internet.
+ There are online storage, publishing and content delivery systems, public
+ databases, archives, geolocation services, social networking applications,
+ etc.
+ Perhaps, with Prudence, you will create the next one.
+\end_layout
+
+\begin_layout Paragraph
+document.defaultLanguageTag (for include in startup scripts)
 \end_layout
 
 \begin_layout Subsection
@@ -4101,6 +4664,20 @@ A feature that you might want to use here is the executable globals.
  applications.
 \end_layout
 
+\begin_layout Standard
+For more information, refer to the Scripturian API documentation.
+\end_layout
+
+\begin_layout Paragraph
+executable.globals, executable.getGlobal
+\end_layout
+
+\begin_layout Standard
+There are similar in use to application.globals, but are shared by all applicatio
+ns on the VM.
+ See Sharing State, below, for more information.
+\end_layout
+
 \begin_layout Paragraph
 executable.context
 \end_layout
@@ -4122,11 +4699,17 @@ executable.manager
 \end_layout
 
 \begin_layout Paragraph
-executable.container = the document!
+executable.container
 \end_layout
 
-\begin_layout Paragraph
-executable.globals, getGlobal, setGlobal
+\begin_layout Standard
+This is identical to the ``document'' service detailed above.
+\end_layout
+
+\begin_layout Standard
+For example, ``document.include'' is the same as ``executable.container.include''.
+ Internally, Prudence uses this equivalence to hook the include scriptlet
+ into document.include.
 \end_layout
 
 \begin_layout Subsection
@@ -4134,56 +4717,429 @@ conversation
 \end_layout
 
 \begin_layout Standard
-The ``conversation'' represents the request received from the user.
- This includes your response to the request, hence it's a ``conversation.''
- Here you can access various aspects of the request: the URI, formatting
- preferences, client information, and actual data sent with the request
- (the ``entity'').
+The ``conversation'' represents the request received from the user as well
+ your response to it, hence it's a ``conversation.'' Here you can access
+ various aspects of the request: the URI, formatting preferences, client
+ information, and actual data sent with the request (the ``entity'').
  You can likewise set response characteristics.
 \end_layout
 
-\begin_layout Paragraph
-conversation.resource
+\begin_layout Subsubsection
+Request Attributes
 \end_layout
 
 \begin_layout Paragraph
-conversation.request
+conversation.reference
+\end_layout
+
+\begin_layout Standard
+This is the URI used by the client.
+ Refer to the Restlet API documentation for details.
+\end_layout
+
+\begin_layout Standard
+A few useful attributes:
+\end_layout
+
+\begin_layout Itemize
+conversation.reference.identifier: the complete URI
+\end_layout
+
+\begin_layout Itemize
+conversation.reference.path: the URI, not including the domain name and the
+ query matrix
+\end_layout
+
+\begin_layout Itemize
+conversation.reference.segments: a list of URI segments in the path
+\end_layout
+
+\begin_layout Itemize
+conversation.reference.lastSegment: the last segment in the URI path
+\end_layout
+
+\begin_layout Itemize
+conversation.reference.fragment: the URI fragment (whatever follows ``#'')
+\end_layout
+
+\begin_layout Itemize
+conversation.reference.query: the URI query (whatever follows ``?''); you
+ might prefer to use conversation.query, instead (see below)
+\end_layout
+
+\begin_layout Itemize
+conversation.reference.relativeRef: a new reference relative to the base URI
+ (usually the application root URI on this virtual host)
 \end_layout
 
 \begin_layout Paragraph
-conversation.response
+conversation.form, conversation.formAll
+\end_layout
+
+\begin_layout Standard
+Use these to access data sent via HTML forms, or any other request with
+ data of the ``application/x-www-form-urlencoded'' MIME type.
+\end_layout
+
+\begin_layout Standard
+conversation.form is a map of form names to values.
+ In case the form has multiple values for the same name, only the last one
+ is mapped.
+\end_layout
+
+\begin_layout Standard
+conversation.formAll is a list of parameters.
+ Use this if you need to support multiple values for the same name.
 \end_layout
 
 \begin_layout Paragraph
-conversation.form, formAll
+conversation.query, conversation.queryAll
+\end_layout
+
+\begin_layout Standard
+Use these to access data sent via the URI query.
+\end_layout
+
+\begin_layout Standard
+conversation.query is a map of query parameter names to values.
+ In case the URI has multiple values for the same name, only the last one
+ is mapped.
+\end_layout
+
+\begin_layout Standard
+conversation.queryAll is a list of parameters.
+ Use this if you need to support multiple values for the same name.
 \end_layout
 
 \begin_layout Paragraph
-conversation.uriValues
+conversation.entity
+\end_layout
+
+\begin_layout Standard
+This is data sent by the client.
+ For more information, refer to the Restlet API documentation for Representation.
+\end_layout
+
+\begin_layout Standard
+In the case of an HTML form, it would be more convenient conversation.form
+ to access the parsed entity data.
+ For other kinds of data, you have to parse the entity data yourself.
+ Before attempting to parse entity data on your own, make sure to look through
+ the Restlet API and its extensive set of plugins for tools to help you
+ parse representations.
+ Plugins exist for many common internet formats.
+\end_layout
+
+\begin_layout Standard
+A few useful representation attributes:
+\end_layout
+
+\begin_layout Itemize
+conversation.entity.size: the size of the data in bytes, or -1 if unknown
+\end_layout
+
+\begin_layout Itemize
+* conversation.entity.text: the data as text (only useful if the data is textual)
+\end_layout
+
+\begin_layout Itemize
+* conversation.entity.reader: an open JVM Reader to the data (only useful
+ if the data is textual)
+\end_layout
+
+\begin_layout Itemize
+* conversation.entity.stream: an open JVM InputStream to the data (useful
+ for binary data)
+\end_layout
+
+\begin_layout Quote
+Note: Client data is provided as a stream that can only be ``consumed''
+ once.
+ Attributes that cause consumption are marked with a ``*'' above.
+ Note that conversation.entity.text is one of them!
+\end_layout
+
+\begin_layout Paragraph*
+conversation.variant
+\end_layout
+
+\begin_layout Standard
+This allows low-level access to the Restlet Variant instance sent by the
+ client.
+ In negotiated HTTP mode, the ``variant'' encapsulates a set of preferences
+ the client might have for returned representations.
+ You usually don't have to access the variant: Prudence expands these via
+ conversation.mediaType, conversation.characterSet, conversation.encoding,
+ and conversation.language.
+ Refer to the Restlet API documentation for details.
+\end_layout
+
+\begin_layout Standard
+Note that in non-negotiated HTTP mode, Prudence ``passes through'' the client
+ entity as a variant.
+\end_layout
+
+\begin_layout Subsubsection
+Request and Response Attributes
+\end_layout
+
+\begin_layout Standard
+The attributes are initially set according to the client request, and by
+ default are passed through as is to the response.
+ For example, if a client send you data in mediaType ``application/json,''
+ then the default would be for the response to be in the same format.
+ Obviously, this is not always the desired outcome, and you can explicitly
+ examine and change these attributes.
+\end_layout
+
+\begin_layout Quote
+This is definitely not the desired outcome if you're accepting data from
+ an HTML form! The data comes from the client as MIME type ``application/x-www-f
+orm-urlencoded,'' but you'd probably want to send data to the client back
+ as ``application/html.'' In that case, make sure to set conversation.mediaTypeNam
+e = ``application/html'' in a scriptlet.
+\end_layout
+
+\begin_layout Quote
+This may seem a little awkward...
+ The design decision for Prudence 1.0 was to ``pass through'' all formatting
+ attributes from the request to the response, which makes sense for JSON
+ or XML communication, but not for HTML forms.
+ A future version of Prudence may offer more sophisticated setting of the
+ default response attributes.
+\end_layout
+
+\begin_layout Standard
+Note that in /resources/ you always have the option of explicitly returning
+ a Representation instance to the client, in which case none of these attributes
+ will be used for the response.
 \end_layout
 
 \begin_layout Paragraph
-conversation.characterSet Name, Extension
+conversation.mediaTypeName, conversation.mediaTypeExtension, conversation.mediaType
+\end_layout
+
+\begin_layout Standard
+These three variants all represent the same value, letting you access the
+ value in different ways.
+\end_layout
+
+\begin_layout Standard
+conversation.mediaTypeName is the MIME representing the media type.
+ MIME (Multipurpose Internet Mail Extensions) is an established web standard
+ for specifying media types.
+ Examples include: ``text/plain,'' ``text/html,'' ``application/json,''
+ and ``application/x-www-form-urlencoded.'' The exact list of supported MIME
+ types depends on the underlying Restlet implementation.
+\end_layout
+
+\begin_layout Standard
+conversation.mediaTypeExtension is the media type as the default filename
+ extension for the media type.
+ For example, ``txt'' is equivalent to MIME ``text/plain,'' and ``xml''
+ is equivalent to ``application/xml.'' Each application has its own mappings
+ of filename extensions to media types.
+ See also application.getMediaType, above, and 
+\begin_inset CommandInset href
+LatexCommand href
+name "application configuration"
+target "../application/"
+
+\end_inset
+
+ for how to change the mappings for your application.
+\end_layout
+
+\begin_layout Standard
+conversation.mediaType is the underlying Restlet MediaType instance.
+ Refer to the Restlet API documentation for details.
+\end_layout
+
+\begin_layout Standard
+To find out which media types the client accepts and prefers, use conversation.re
+quest.clientInfo.acceptedMediaTypes and conversation.request.clientInfo.getPreferredM
+ediaType().
 \end_layout
 
 \begin_layout Paragraph
-conversation.language Name, Extension
+conversation.characterSetName, conversation.characterSetShortName, conversation.cha
+racterSet
+\end_layout
+
+\begin_layout Standard
+These three variants all represent the same value, letting you access the
+ value in different ways.
+\end_layout
+
+\begin_layout Standard
+conversation.characterSetName is ISO's UTC (Universal Character Set) name
+ of the character set.
+ For example, ``ISO-8859-1'' is the ``Latin 1'' character set and ``UTF-8''
+ is the 8-bit Unicode Transformation Format, ``US-ASCII'' is ASCII, etc.
+ The exact list of supported ISO names depends on the underlying Restlet
+ implementation.
+\end_layout
+
+\begin_layout Standard
+conversation.characterSetShortName is a shortcut name for the character set.
+ Shortcuts include ``ascii,'' ``utf8,'' and ``win'' (for the Windows 1252
+ character set).
+ Restlet handles shortcuts names together with filename extension mappings.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "application configuration"
+target "../application/"
+
+\end_inset
+
+ for how to change the mappings for your application.
+\end_layout
+
+\begin_layout Standard
+conversation.characterSet is the underlying Restlet CharacterSet instance.
+ Refer to the Restlet API documentation for details.
+\end_layout
+
+\begin_layout Standard
+To find out which character sets the client accepts and prefers, use conversatio
+n.request.clientInfo.acceptedCharacterSets and conversation.request.clientInfo.getPref
+erredCharacterSet().
+\end_layout
+
+\begin_layout Quote
+If the client request does not specificy a character set, then the character
+ set will fall back to a default determined by the ``com.threecrickets.prudence.Gen
+eratedTextResource.defaultCharacterSet'' application global.
+ It not explicitly set, it will be UTF-8.
+\end_layout
+
+\begin_layout Subsubsection
+Response Attributes
 \end_layout
 
 \begin_layout Paragraph
-conversation.mediaType Name, Extension
+conversation.languageName, conversation.language
+\end_layout
+
+\begin_layout Standard
+These two variants represent the same value, letting you access the value
+ in different ways.
+\end_layout
+
+\begin_layout Standard
+conversation.languageName is the IETF locale name for the language.
+ Examples include ``en'' for English, ``en-us'' for USA English, ``fr''
+ for French, etc.
+ The exact list of supported IETF names depends on the underlying Restlet
+ implementation.
+\end_layout
+
+\begin_layout Standard
+conversation.language is the underlying Restlet Language instance.
+ Because IETF names are hierarchical, you might prefer to use this as a
+ way to test for containment.
+ For example, conversation.language.includes will tell you that ``en-us''
+ is included in ``en.'' Refer to the Restlet API documentation for details.
+\end_layout
+
+\begin_layout Standard
+To find out which languages the client accepts and prefers, use conversation.requ
+est.clientInfo.acceptedLanguages and conversation.request.clientInfo.getPreferredLang
+uage().
+\end_layout
+
+\begin_layout Standard
+Note that the language can be a null value.
+ Responses do not have to specify a language.
 \end_layout
 
 \begin_layout Paragraph
-conversation.expirationDate/Timestamp
+conversation.encodingName, conversation.encoding
+\end_layout
+
+\begin_layout Standard
+These two variants represent the same value, letting you access the value
+ in different ways.
+\end_layout
+
+\begin_layout Standard
+conversation.encodingName is an internal name used for the encoding.
+ Examples include ``zip,'' ``gzip,'' ``compres,'' and ``deflate.'' The ``*''
+ name represents all possible encodings.
+ The exact list of supported names depends on the underlying Restlet implementat
+ion.
+\end_layout
+
+\begin_layout Standard
+conversation.encoding is the underlying Restlet Language instance.
+ Refer to the Restlet API documentation for details.
+\end_layout
+
+\begin_layout Standard
+To find out which encodings the client accepts and prefers, use conversation.requ
+est.clientInfo.acceptedEncodings and conversation.request.clientInfo.getPreferredEnco
+ding().
 \end_layout
 
 \begin_layout Paragraph
-conversation.modificationDate/Timestamp
+conversation.expirationTimestamp, conversation.expirationDate
+\end_layout
+
+\begin_layout Standard
+These two variants represent the same value, letting you access the value
+ in different ways.
+\end_layout
+
+\begin_layout Standard
+conversation.expirationTimestamp is a long integer value representing the
+ number of milliseconds since January 1, 1970, 00:00:00 GMT (``Unix time'').
+ While not too useful in itself, it's easy to compare timestamps to see
+ which moment in time is before the other.
+\end_layout
+
+\begin_layout Standard
+conversation.expirationDate is the underlying JVM Date instance.
+ Refer to the Java API documentation for details.
 \end_layout
 
 \begin_layout Paragraph
-conversation.tag httpTag
+conversation.modificationTimestamp, conversation.modificationDate
+\end_layout
+
+\begin_layout Standard
+These two variants represent the same value, letting you access the value
+ in different ways.
+\end_layout
+
+\begin_layout Standard
+conversation.modificationTimestamp is a long integer value representing the
+ number of milliseconds since January 1, 1970, 00:00:00 GMT (``Unix time'').
+ While not too useful in itself, it's easy to compare timestamps to see
+ which moment in time is before the other.
+\end_layout
+
+\begin_layout Standard
+conversation.modificationDate is the underlying JVM Date instance.
+ Refer to the Java API documentation for details.
+\end_layout
+
+\begin_layout Paragraph
+conversation.httpTag, conversation.tag
+\end_layout
+
+\begin_layout Standard
+These two variants represent the same value, letting you access the value
+ in different ways.
+\end_layout
+
+\begin_layout Standard
+conversation.httpTag is an HTTP ETag string.
+\end_layout
+
+\begin_layout Standard
+conversation.tag is the underlying Restlet Tag instance.
+ Refer to the Restlet API documentation for details.
 \end_layout
 
 \begin_layout Paragraph
@@ -4191,15 +5147,21 @@ conversation.maxAge
 \end_layout
 
 \begin_layout Paragraph
-conversation.statusCode
+conversation.statusCode, conversation.status
 \end_layout
 
-\begin_layout Paragraph
-conversation.variant
+\begin_layout Standard
+These two variants represent the same value, letting you access the value
+ in different ways.
 \end_layout
 
-\begin_layout Paragraph
-conversation.entity
+\begin_layout Standard
+conversation.statusCode is an HTTP status code as an integer.
+\end_layout
+
+\begin_layout Standard
+conversation.status is the underlying Restlet Status instance.
+ Refer to the Restlet API documentation for details.
 \end_layout
 
 \begin_layout Paragraph
@@ -4207,15 +5169,12 @@ conversation.internal?
 \end_layout
 
 \begin_layout Paragraph
-conversation.addMediaType ByName, ByExtension
+conversation.addMediaTypeByName, conversation.addMediaTypeByExtension, conversatio
+n.addMediaType (/resources/)
 \end_layout
 
-\begin_layout Paragraph
-conversation.deferred? (/web/dynamic/)
-\end_layout
-
-\begin_layout Paragraph
-conversation.defer (/web/dynamic/)
+\begin_layout Subsubsection
+Conversation Flow
 \end_layout
 
 \begin_layout Paragraph
@@ -4223,23 +5182,532 @@ conversation.locals
 \end_layout
 
 \begin_layout Paragraph
+conversation.defer (/web/dynamic/)
+\end_layout
+
+\begin_layout Paragraph
+conversation.deferred? (/web/dynamic/)
+\end_layout
+
+\begin_layout Paragraph
 conversation.kaboom
 \end_layout
 
+\begin_layout Subsubsection
+Low-level Access
+\end_layout
+
+\begin_layout Standard
+Use these to access the Restlet instances underlying the conversation.
+ This is useful for features not covered by Prudence's standard API.
+\end_layout
+
+\begin_layout Standard
+For more information, refer to Restlet's API documentation.
+\end_layout
+
+\begin_layout Paragraph
+conversation.resource
+\end_layout
+
+\begin_layout Standard
+The Restlet resource.
+ In the case of /web/dynamic/, this will be Prudence's GeneratedTextResource.
+ In the case of /resources/, this will be DelegatedResource.
+\end_layout
+
+\begin_layout Paragraph
+conversation.request
+\end_layout
+
+\begin_layout Standard
+Equivalent to conversation.resource.request.
+\end_layout
+
+\begin_layout Paragraph
+conversation.response
+\end_layout
+
+\begin_layout Standard
+Equivalent to conversation.resource.response.
+\end_layout
+
 \begin_layout Subsection
-Managing State
+Sharing State
 \end_layout
 
 \begin_layout Standard
-Application Globals
+Prudence is designed to allow massive concurrency and scalability while
+ at the same time shielding you from the gorier details.
+ However, when it comes to sharing state between different parts of your
+ code, it's critical that you understand how Prudence works.
+\end_layout
+
+\begin_layout Subsubsection
+Global Variables
 \end_layout
 
 \begin_layout Standard
-Executable Globals
+You know how local variables work in your programming language: they exist
+ only for the duration of a function call, after which their state is discarded.
+ If you want state to persist beyond the function call, you use a global
+ variable (or a ``static'' local, which is really a global).
 \end_layout
 
 \begin_layout Standard
-Conversation Locals
+
+\emph on
+But in Prudence, you cannot expect global variables to persist beyond a
+ user request.
+
+\emph default
+ To put it another way, you should consider every single user request as
+ a separate ``program'' with its own global variables.
+ If you need global variables to persist, you must use application.globals
+ or executable.globals.
+\end_layout
+
+\begin_layout Standard
+Why does Prudence discard your language's globals? This has to do with allowing
+ for concurrency while shielding you from the complexity of having to guarantee
+ the thread-safety of your code.
+ By making each user request a separate ``program,'' you don't have to worry
+ about overlapping shared state, coordinating thread access, etc., for every
+ use of a variable.
+\end_layout
+
+\begin_layout Quote
+The exception to this is code in /resources/, in which language globals
+ 
+\emph on
+might
+\emph default
+ persist.
+ To improve performance, Prudence caches the global context for these in
+ memory, with the side effect that your language globals persist beyond
+ a single user request.
+ For various reasons, however, Prudence may reset this global context.
+ You should not rely on this side effect, and instead always use application.glob
+als or executable.globals.
+\end_layout
+
+\begin_layout Subsubsection
+application.globals vs.
+ executable.globals
+\end_layout
+
+\begin_layout Standard
+You should prefer application.globals.
+ By doing so, you'll minimize interdependencies between applications, and
+ help make each application deployable on its own.
+\end_layout
+
+\begin_layout Standard
+It's best to use executable.globals as an 
+\emph on
+optional
+\emph default
+ bridge between applications.
+ Examples:
+\end_layout
+
+\begin_layout Enumerate
+To save resources.
+ For example, if an application detects that a database connection has already
+ been opened by another application in the Prudence instance, and stored
+ in executable.globals, then it could use that connection rather than create
+ a new one.
+ This would only work, of course, if a few applications share the same database.
+\end_layout
+
+\begin_layout Enumerate
+To send messages between applications.
+ This would be necessary if operations in one application could affect another.
+ For example, you could place a task queue in executable.globals, where applicati
+on could queue required operations.
+ A thread in another application would consume these and act accordingly.
+ Of course, you will have to plan for asynchronous behavior, and especially
+ allow for failure.
+ What happens if the consumer application is down?
+\end_layout
+
+\begin_layout Standard
+Generally, if you find yourself having to rely on executable.globals, ask
+ yourself if your code would be better off encapsulated as a single application.
+ Remember that Prudence has powerful URL routing, support for virtual hosting,
+ etc., letting you easily have one application work in several sites simultaneous
+ly
+\end_layout
+
+\begin_layout Subsubsection
+Concurrency
+\end_layout
+
+\begin_layout Standard
+Though application.globals and executable.globals are thread safe, it's important
+ to understand how to use them properly.
+\end_layout
+
+\begin_layout Quote
+Note for Clojure flavor: Though Clojure goes a long way towards simplifying
+ concurrent programming, it does not solve the problem of concurrent access
+ to global state.
+ You still need to read this section!
+\end_layout
+
+\begin_layout Standard
+For example, this code is broken:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def get_connection()
+\end_layout
+
+\begin_layout Plain Layout
+
+	data_source = application.globals['myapp.data.source']
+\end_layout
+
+\begin_layout Plain Layout
+
+	if data_source is None:
+\end_layout
+
+\begin_layout Plain Layout
+
+		data_source = data_source_factory.create()
+\end_layout
+
+\begin_layout Plain Layout
+
+		application.globals['myapp.data.source'] = data_source
+\end_layout
+
+\begin_layout Plain Layout
+
+	return data_source.get_connection()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The problem is that in the short interval between comparing the value in
+ the ``if'' statement and setting the global value in the ``then'' statement,
+ another thread may have already set the value.
+ Thus, the ``data_source'' instance you are referring to in the current
+ thread would be different from the ``myapp.data.source'' global used by other
+ threads.
+\end_layout
+
+\begin_layout Quote
+This may seem like a very rare occurence to you: another thread would have
+ to set the value 
+\emph on
+exactly
+\emph default
+ between our comparison and our set.
+ If your application has many concurrent users, and your machine has many
+ CPU cores, it can actually happen quite frequently.
+ And, even if rare, your application has a chance of breaking if just two
+ users use it at the same time!
+\end_layout
+
+\begin_layout Standard
+Use this code instead:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def get_connection()
+\end_layout
+
+\begin_layout Plain Layout
+
+	data_source = application.globals['myapp.data.source']
+\end_layout
+
+\begin_layout Plain Layout
+
+	if data_source is None:
+\end_layout
+
+\begin_layout Plain Layout
+
+		data_source = data_source_factory.create()
+\end_layout
+
+\begin_layout Plain Layout
+
+		data_source = application.getGlobal('myapp.data.source', data_source)
+\end_layout
+
+\begin_layout Plain Layout
+
+	return data_source.get_connection()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The getGlobal call is an atomic compare-and-set operation.
+ It guarantees that the returned value is the unique one.
+\end_layout
+
+\begin_layout Paragraph
+Optimizing for Performance
+\end_layout
+
+\begin_layout Standard
+You may have noticed, in the code above, that if another thread had already
+ set the global value, then our created data source would be discarded.
+ If data source creation is heavy and slow, then this could significantly
+ affect our performance.
+ The only way to guarantee that this would not happen would be to make the
+ entire operation atomic, by synchronizing it with a lock:
+\end_layout
+
+\begin_layout Standard
+Here's an example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def get_connection()
+\end_layout
+
+\begin_layout Plain Layout
+
+	lock = application.getGlobal('myapp.data.source.lock', RLock())
+\end_layout
+
+\begin_layout Plain Layout
+
+	lock.acquire()
+\end_layout
+
+\begin_layout Plain Layout
+
+	try:
+\end_layout
+
+\begin_layout Plain Layout
+
+		data_source = application.globals['myapp.data.source']
+\end_layout
+
+\begin_layout Plain Layout
+
+		if data_source is None:
+\end_layout
+
+\begin_layout Plain Layout
+
+			data_source = data_source_factory.create()
+\end_layout
+
+\begin_layout Plain Layout
+
+			application.globals['myapp.data.source'] = data_source
+\end_layout
+
+\begin_layout Plain Layout
+
+		return data_source.get_connection()
+\end_layout
+
+\begin_layout Plain Layout
+
+	finally:
+\end_layout
+
+\begin_layout Plain Layout
+
+		lock.release()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that we have to store our RLock as a unique global, too.
+\end_layout
+
+\begin_layout Standard
+Not only is the code above complicated, but synchronization has its own
+ performance penalties, which 
+\emph on
+might
+\emph default
+ make this apparent optimization actually perform worse.
+ It's definitely not a good idea to blindly apply this technique: attempt
+ it only if you are experiencing a problem with resource use or performance,
+ and then make sure that you're not making things worse with synchronization.
+\end_layout
+
+\begin_layout Standard
+If all else fails, then Prudence's globals may not be the best solution
+ for your problem.
+ Look into creating an external service (possibly written in Java) to manage
+ global connections for you.
+\end_layout
+
+\begin_layout Standard
+Here's a final version of our get_connection function that lets you control
+ whether to lock access:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def get_connection(lock_access=False)
+\end_layout
+
+\begin_layout Plain Layout
+
+	if lock_access:
+\end_layout
+
+\begin_layout Plain Layout
+
+		lock = application.getGlobal('myapp.data.source.lock', RLock())
+\end_layout
+
+\begin_layout Plain Layout
+
+		lock.acquire()
+\end_layout
+
+\begin_layout Plain Layout
+
+	try:
+\end_layout
+
+\begin_layout Plain Layout
+
+		data_source = application.globals['myapp.data.source']
+\end_layout
+
+\begin_layout Plain Layout
+
+		if data_source is None:
+\end_layout
+
+\begin_layout Plain Layout
+
+			data_source = data_source_factory.create()
+\end_layout
+
+\begin_layout Plain Layout
+
+			if lock_access:
+\end_layout
+
+\begin_layout Plain Layout
+
+				application.globals['myapp.data.source'] = data_source
+\end_layout
+
+\begin_layout Plain Layout
+
+			else:
+\end_layout
+
+\begin_layout Plain Layout
+
+				data_source = application.getGlobal('myapp.data.source', data_source)
+\end_layout
+
+\begin_layout Plain Layout
+
+		return data_source.get_connection()
+\end_layout
+
+\begin_layout Plain Layout
+
+	finally:
+\end_layout
+
+\begin_layout Plain Layout
+
+		if lock_access:
+\end_layout
+
+\begin_layout Plain Layout
+
+			lock.release()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Complicated, isn't it? Unfortunately, complicated code and fine-tuning is
+ the price you must pay in order to support concurrent access, which is
+ the key to Prudence's scalability.
+\end_layout
+
+\begin_layout Standard
+But, don't be discouraged.
+ The standard protocol for using Prudence's globals will likely be good
+ enough for the vast majority of your state-sharing needs.
+\end_layout
+
+\begin_layout Subsubsection
+conversation.locals
+\end_layout
+
+\begin_layout Standard
+These are not ``local'' in the same way that function locals are.
+ The term ``local'' here should be read as ``local to the conversation''
+ (compare with the term ``thread locals'').
+ They are ``global'' in the sense that they can be accessed by any function
+ in your code, but are ``local'' in the sense that they persist only for
+ the duration of the user request.
+\end_layout
+
+\begin_layout Standard
+You may ask, then, why you wouldn't want to just use your language globals,
+ which have the same scope and life.
+ conversation.locals exist for two reasons:
+\end_layout
+
+\begin_layout Enumerate
+To easily share conversation-scope state between scriptlets written in different
+ languages.
+\end_layout
+
+\begin_layout Enumerate
+To share state for deferred conversations (see conversation.defer, above).
 \end_layout
 
 \begin_layout Section
@@ -5919,22 +7387,25 @@ If you want your application to handle many concurrent users, then you are
 \end_layout
 
 \begin_layout Standard
-Two variables influence this: 1) your total number of threads and 2) the
- time it takes each thread to process a request.
+Two variables influence your capacity: 1) your total number of threads and
+ 2) the time it takes each thread to process a request.
  Increasing the number of threads is straightforward: you keep adding more
- and more machines behind load balancers.
+ machines behind load balancers.
  The only challenge in this respect is financial.
- On the other hand, the time per request has little to do with your computer
- power.
- In fact, for various reasons it can grow longer as you keep adding threads.
- Minimizing the time per request is a design challenge.
+ On the other hand, the time per request has little to do with your hardware
+ prowess.
+ In fact, there are diminishing returns and even reversals: beyond a certain
+ point, time per request can actually grow longer as you add threads and
+ machines.
+ Minimizing the time per request is an architectural challenge.
 \end_layout
 
 \begin_layout Standard
-Your design objective is to increase concurrency, not necessarily performance.
- Optimizing for concurrency means breaking up tasks to as many pieces as
- possible, and possibly even breaking requests into smaller pieces.
- We'll cover numerous strategies here.
+Your architectural objective is to increase concurrency, not necessarily
+ performance.
+ Optimizing for concurrency means breaking up tasks into as many pieces
+ as possible, and possibly even breaking requests into smaller pieces.
+ We'll cover numerous strategies here, from frontend to backend.
 \end_layout
 
 \begin_layout Standard
@@ -5953,20 +7424,240 @@ And:
 It's better to have many short requests than one long one.
 \end_layout
 
+\begin_layout Subsection
+Performance Does Not Equal Scalability
+\end_layout
+
 \begin_layout Standard
-Finally, a favorite:
+Performance does not equal scalability.
+ Performance does not equal scalability.
+ Performance does not equal scalability.
+\end_layout
+
+\begin_layout Standard
+Get it? Performance does not equal scalability.
+\end_layout
+
+\begin_layout Standard
+This is an important mantra for two reasons:
+\end_layout
+
+\begin_layout Subsubsection
+1.
+ Opposite Results
+\end_layout
+
+\begin_layout Standard
+Optimizing for performance can adversely affect your scalability.
+ The reason is contextual: when you optimize for performance, you often
+ work in an isolated context, specifically so you can accurately measure
+ response times and fine-tune them.
+ For example, making sure that a specific SQL query is fast would involve
+ just running that query.
+ A full-blown experiment involving millions of users doing various operations
+ on your application would make it very hard to accurately measure and optimize
+ the query.
+ Unfortunately, by working in an isolated context you cannot easily see
+ how your efforts would affect other parts of an application.
+ To do so would require a lot of experience and imagination.
+ To continue our example, in order to optimize your one SQL query you might
+ create an index.
+ That index might need to be synchronized with many servers in your cluster.
+ And that synchronization overhead, in turn, could seriously affect your
+ ability to scale.
+ Congratulations! You've made one query run fast in a situation that never
+ happens in real life, and you've brought your web site to a halt.
+\end_layout
+
+\begin_layout Standard
+One way to try to get around this is to fake scale.
+ Tools such as 
+\begin_inset CommandInset href
+LatexCommand href
+name "JMeter"
+target "http://jakarta.apache.org/jmeter/"
+
+\end_inset
+
+, 
+\begin_inset CommandInset href
+LatexCommand href
+name "Siege"
+target "http://www.joedog.org/index/siege-home"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset href
+LatexCommand href
+name "ApacheBench"
+target "http://httpd.apache.org/"
+
+\end_inset
+
+ can create ``load.'' They also create unfounded confidence in engineers.
+ If you simulate 10,000 users bombarding a single web page, then you're,
+ as before, working in an isolated context.
+ All you've done is add concurrency to your performance optimization measurement
+s.
+ Your application pathways might work optimally in these situations, but
+ this might very well be due to the fact that the system is not doing anything
+ else.
+ Add those ``other'' operations in, and you might get worse site capacity
+ than you did before ``optimizing.''
+\end_layout
+
+\begin_layout Subsubsection
+2.
+ Wasted effort
+\end_layout
+
+\begin_layout Standard
+Even if you don't adversely affect your scalability through optimizing for
+ performance, you might be making no gains, either.
+ No harm done? Well, plenty of harm, maybe.
+ Optimizing for performance might waste a lot of development time and money.
+ This effort would be better spent on work that could actually help scalability.
+\end_layout
+
+\begin_layout Standard
+And, perhaps more seriously, it demonstrates a fundamental misunderstanding
+ of the problem field.
+ If you don't know what your problems are, you'll never be able to solve
+ them.
+\end_layout
+
+\begin_layout Subsubsection
+Optimizing for Scalability
+\end_layout
+
+\begin_layout Standard
+So, what can
+\emph on
+ 
+\emph default
+you do?
+\end_layout
+
+\begin_layout Standard
+First, study the problem field carefully.
+ Understand the challenges and potential pitfalls.
+ You don't have to apply every single strategy up-front, but at least make
+ sure you're not making a fatal mistake, such as binding yourself strongly
+ to a technology or product with poor scalability.
+ Then, when you need to scale up in the future, no amount of money and engineeri
+ng effort will be able to save you in time.
+\end_layout
+
+\begin_layout Standard
+Moreover, be very careful of blindly applying strategies used by other people
+ to your own application.
+ What worked for them might not work for you.
+ In fact, there's a chance that their strategy doesn't even work for them,
+ and they just think it did because of some combination of factors.
+ The realm of web scalability is still young, full of guesswork, intuition
+ and magical thinking.
+\end_layout
+
+\begin_layout Standard
+Be especially careful of applying a solution before you know if you even
+ have a problem.
+\end_layout
+
+\begin_layout Standard
+How to identify the problems? You can create simulations and measurements
+ of scalability rather than performance.
+ You need to model actual user behavior patterns, allow for a diversity
+ of such behaviors to happen concurrently, and replicate this diversity
+ on a massive scale.
+\end_layout
+
+\begin_layout Standard
+Creating such a simulation is a difficult and expensive, as is monitoring
+ and interpreting the results and identifying potential bottlenecks.
+ This is the main reason for the lack of good data and good judgment about
+ how to scale.
+ Most of what we know comes from tweaking real live web sites, which either
+ comes at the expense of user experience, or allows for very limited experimenta
+tion.
+ Your best bet is to hire a team who's already been through this before.
+\end_layout
+
+\begin_layout Standard
+Generally, be very suspicious of products or technologies being touted as
+ ``faster'' than others.
+ 
+\emph on
+``Fast'' doesn't say anything about the ability to scale.
+
+\emph default
+ Is a certain database engine ``fast''? That's important for certain application
+s, no doubt.
+ But maybe it's missing important clustering features, making it a poor
+ choice for large applications.
+ Does a certain programming language execute faster than another? That's
+ great if you're doing video compression, but speed of execution might not
+ be your bottleneck at all.
+ Web applications mostly do I/O, not computation.
+ The same web application might have very similar performance characteristics
+ whether it's written in C++ or PHP.
+\end_layout
+
+\begin_layout Standard
+Moreover, if the faster language is difficult to work with, has poor debugging
+ tools, limited integration with web technologies, then it would slow down
+ your work and your ability to scale.
 \end_layout
 
 \begin_layout Quote
-Performance does not equal scalability.
-\begin_inset Newline newline
+Speed of execution can actually help scalability in one respect: If your
+ application servers are constantly at maximum CPU load, then a faster execution
+ platform would let you cram more web threads into each server.
+ This will help you reduce costs.
+ Because Prudence is built on the fast JVM platform, you're in good hands
+ in this respect.
+ Also see 
+\begin_inset CommandInset href
+LatexCommand href
+name "Facebook's HipHop"
+target "http://developers.facebook.com/blog/post/358"
+
 \end_inset
 
-Performance does not equal scalability.
-\begin_inset Newline newline
+.
+ Note, too, that more threads threads per machine would also mean more RAM
+ requirements per machine, which also costs money.
+ Once again, performance does not equal scalability, and you need to optimize
+ specifically for scalability.
+\end_layout
+
+\begin_layout Subsubsection
+Project Scalability
+\end_layout
+
+\begin_layout Standard
+That last point about programming languages is worth some elaboration.
+ Beyond how well your chosen technologies perform, it's important to evaluate
+ them in terms to how easy they are to manage.
+ Large web sites are large projects, involving large teams of people and
+ large amounts of money.
+ That's difficult enough to coordinate.
+ You want the technology to present you with as few extra managerial challenges
+ as possible.
+\end_layout
+
+\begin_layout Standard
+We discuss this topic some more in 
+\begin_inset CommandInset href
+LatexCommand href
+name "Making the Case for REST"
+target "../rest/"
+
 \end_inset
 
-Performance does not equal scalability.
+.
+ By building on the existing web infrastructure, Prudence can make large
+ internet projects easier to manage.
 \end_layout
 
 \begin_layout Subsection
@@ -6009,10 +7700,10 @@ Make sure to change Prudence's cacheKey to fit the lowest common denominator:
 
 \begin_layout Standard
 Cache aggressively, but also take cache validation seriously.
- Make good use of Prudence's cacheGroups to allow you to invalidate portions
+ Make good use of Prudence's cacheTags to allow you to invalidate portions
  of the cache that should be updated as data changes.
  Note, though, that every time you invalidate you will lose caching benefits.
- If possible, make sure that your cacheGroups don't include too many pages.
+ If possible, make sure that your cacheTags don't include too many pages.
  Invalidate only those entries that really need to be invalidated.
 \end_layout
 
@@ -6025,8 +7716,8 @@ Cache aggressively, but also take cache validation seriously.
 \end_layout
 
 \begin_layout Standard
-If you're using a deferred task handler, you might want to invalidate cache
- groups when tasks are done.
+If you're using a deferred task handler (see below), you might want to invalidat
+e tagged cache entries when tasks are done.
  Consider creating a special internal API that lets the task handler call
  back to your application to do this.
 \end_layout
@@ -6037,6 +7728,17 @@ How long should you cache? As long as the user can bear! In a perfect world,
  per request.
  In a great many cases, however, there is no harm at all if users see some
  data that's a few hours or a few days old.
+\end_layout
+
+\begin_layout Quote
+Note that even very small cache durations can make a big difference in applicati
+on stability.
+ Consider it the maximum throttle for load.
+ For example, a huge sudden peak of user load, or even a denial-of-service
+ (DOS) attack, might overrun your thread pool.
+ However, a cache duration of just 1 second would mean that your page would
+ never be generated more than once every second.
+ You are instantly protected against a destructive scenario.
 \end_layout
 
 \begin_layout Subsubsection
@@ -6102,7 +7804,7 @@ Cache Backends
 
 \begin_layout Standard
 Your cache backend can become a bottleneck to scalability if 1) it can't
- handle the amount of data you are storing, or 2) it can't response quickly
+ handle the amount of data you are storing, or 2) it can't respond quickly
  enough to cache fetching.
  
 \end_layout
@@ -6114,7 +7816,7 @@ Before you start worrying about this, consider that it's a rare problem
 tabase-backed cache, such as Prudence's SqlCache implementations, could
  handle this just fine.
  A key/value table is the most trivial workload for relational databases,
- and it's also easy to shard (see data backends, below).
+ and it's also easy to shard (see backend partitioning, below).
  Relational database are usually very good at caching these tables in their
  memory and responding optimally to read requests.
  Prudence even lets you chain caches together to create tiers: an in-process
@@ -6125,8 +7827,12 @@ tabase-backed cache, such as Prudence's SqlCache implementations, could
 \begin_layout Standard
 High concurrency can also be handled very well by this solution.
  Despite any limits to the number of concurrent connections you can maintain
- to the database, each request is handled very quickly, and it would be
- require very high loads to saturate.
+ to the database, each request is handled very quickly, and it would require
+ 
+\emph on
+very 
+\emph default
+high loads to saturate.
  The math is straightforward: with a 10ms average retrieval time (very pessimist
 ic!) and a maximum of 10 concurrent database connections (again, pessimistic!)
  you can handle 1,000 cache hits per second.
@@ -6135,7 +7841,7 @@ ic!) and a maximum of 10 concurrent database connections (again, pessimistic!)
 
 \begin_layout Standard
 The nice thing about this solution is that it uses the infrastructure you
- likely already have.
+ already have: the database.
 \end_layout
 
 \begin_layout Standard
@@ -6155,7 +7861,7 @@ target "http://memcached.org/"
 
 , offer much better scalability than database backends.
  (Your real challenge will be load-balancing all those the incoming HTTP
- requests.) Because the cache is in memory, you lose the ability to easily
+ requests...) Because the cache is in memory, you lose the ability to easily
  persist your cache and keep it warm: restarting your cache nodes will effective
 ly reset them.
  There are workarounds---for example, parts of the cache can be persisted
@@ -6164,14 +7870,105 @@ ly reset them.
 \end_layout
 
 \begin_layout Standard
-You'll see many web frameworks out there that support memcached (``it's
- fast!'') and recommend you use it.
- We'd urge you to reconsider: cache warming (see above) is a challenge made
- much easier if you can store your cache in a persistent backend, and database
- backends can actually take you very far without adding a new infrastructure
- to your deployment.
+You'll see many web frameworks out there that support memcached and recommend
+ you use it (``it's fast!'' they claim, except that it can be slower per
+ request than optimized databases, and that anyway performance does not
+ equal scalability).
+ We'd urge you to consider that advice carefully: keeping your cache warm
+ is a challenge made much easier if you can store it in a persistent backend,
+ and database backends can take you very far in scale without adding a new
+ infrastructure to your deployment.
  It's good to know, though, that there is a solution in case you reach the
  popularity levels of LiveJournal, Facebook, YouTube, Twitter, etc.
+\end_layout
+
+\begin_layout Subsubsection
+Frontend Caching
+\end_layout
+
+\begin_layout Standard
+If you need to quickly scale a web site that has not been designed for caching,
+ a band-aid is available: frontend caches, such as 
+\begin_inset CommandInset href
+LatexCommand href
+name "Varnish"
+target "http://varnish-cache.org/"
+
+\end_inset
+
+, 
+\begin_inset CommandInset href
+LatexCommand href
+name "NCache"
+target "http://code.google.com/p/ncache/"
+
+\end_inset
+
+ and even 
+\begin_inset CommandInset href
+LatexCommand href
+name "Squid"
+target "http://www.squid-cache.org/"
+
+\end_inset
+
+.
+ For archaic reasons, these are called ``reverse proxy'' caches, but they
+ really work more like filters.
+ According to attributes in the user request (URL, cookies, etc.), they decide
+ whether to fetch and send a cached version of the response, or to allow
+ the request to continue to your application servers.
+\end_layout
+
+\begin_layout Standard
+The crucial use case is archaic, too.
+ If you're using an old web framework in which you cannot implement caching
+ logic yourself, or cannot plug in to a good cache backend, then these frontend
+ caches can do it for you.
+\end_layout
+
+\begin_layout Standard
+They are problematic in two ways:
+\end_layout
+
+\begin_layout Enumerate
+Decoupling caching logic from your application means losing many features.
+ For example, invalidating portions of the cache is difficult if not impossible.
+ It's because of frontend caching, indeed, that so many web sites do a poor
+ job at showing up-to-date information.
+\end_layout
+
+\begin_layout Enumerate
+Filtering actually implements a kind of partitioning, but one that is vertical
+ rather than horizontal.
+ In horizontal partitioning, a ``switch'' decides to send requests to one
+ cluster of servers or another.
+ Within each cluster, you can control capacity and scale.
+ But in vertical partitioning, the ``filter'' handles requests internally.
+ Not only is the ``filter'' more complex and vulnerable than a ``switch''
+ as a frontend connector to the world, but you've also complicated your
+ ability to control the capacity of the caching layer.
+ It's embedded inside your front end, rather than being another cluster
+ of servers.
+ (More on backend partitioning below.)
+\end_layout
+
+\begin_layout Standard
+Unfortunately, there is a use case relevant for newer web frameworks, too:
+ if you've designed your application poorly, and you have many requests
+ that could take a long time to complete, then your thread pools could get
+ saturated when many users are concurrently making those requests.
+ When saturated, you cannot handle even the super-quick cache requests.
+ A frontend cache band-aid could, at least, keep cached pages working, even
+ though your application servers are at full capacity.
+ This creates an illusion of scalability: some users will see your web site
+ behaving fine, while others will see it hanging.
+\end_layout
+
+\begin_layout Standard
+The real solution would be to re-factor your application so that it does
+ not have long request.
+ Below are tips on how to do this.
 \end_layout
 
 \begin_layout Subsection
@@ -6289,7 +8086,7 @@ Asynchronous Request Processing
 \begin_layout Standard
 Having the client poll until a task is completed lets you break up a task
  into multiple requests and increase concurrency.
- Another strategy is to be break an 
+ Another strategy is to break an 
 \emph on
 individual request
 \emph default
@@ -6357,8 +8154,8 @@ very
 \end_layout
 
 \begin_layout Standard
-And so, after this lengthy discussion, it turns out that asynchronous processing
- is not such a useful strategy for increasing concurrency for web pages.
+And so, after this lengthy discussion, it turns out that there aren't that
+ many places where asynchronous processing can help you scale.
  Caching is far more useful.
 \end_layout
 
@@ -6369,192 +8166,41 @@ As of version 1.0, Prudence has limited support for asynchronous processing,
 \end_layout
 
 \begin_layout Subsection
-Data Backends
+Backend Partitioning
 \end_layout
 
 \begin_layout Standard
 You can keeping adding more nodes behind a load balancer insofar as each
  request does not have to access shared state.
- Useful web applications, however, are likely data-driven.
+ Useful web applications, however, are likely data-driven, requiring considerabl
+e state.
 \end_layout
 
 \begin_layout Standard
 If the challenge in handling web requests is cutting down the length of
- request, then that of relational data backends is the struggle against
- degraded performance as you add new nodes to your database cluster.
- These nodes have to be synchronized with each other, and that synchronization
- overhead increases exponentially.
+ request, then that of backends is the struggle against degraded performance
+ as you add new nodes to your database cluster.
+ These nodes have to synchronize their state with each other, and that synchroni
+zation overhead increases exponentially.
  There's a definite point of diminishing returns.
 \end_layout
 
 \begin_layout Standard
-Fortunately, there are workable strategies for scaling data backends.
- Unfortunately, they all have limitations, and must be carefully selected
- for your application's needs.
-\end_layout
-
-\begin_layout Subsubsection
-Powering Up
-\end_layout
-
-\begin_layout Standard
-The database is one place where high-performance hardware can help.
+The backend is one place where high-performance hardware can help.
  Ten expensive, powerful machines might be equal in total power to forty
  cheap machines, but they require a quarter of the synchronization overhead,
  giving you more elbow room to scale up.
  Fewer nodes is better.
 \end_layout
 
-\begin_layout Subsubsection
-Graph Databases
-\end_layout
-
 \begin_layout Standard
-If your relational data structure contains arbitrary-depth relationships
- or many ``generic'' relationships forced into a relational model, then
- consider using a graph database instead.
- Not only will traversing your data be faster, but also the database structure
- will allow for more efficient scalability.
- The improvement over relational databases can be dramatic.
-\end_layout
-
-\begin_layout Standard
-Social networking applications are often used as examples of graph structures,
- but there are many others: forums with threaded and cross-referenced discussion
-s, semantic knowledge bases, music ``genomes,'' user-tagged media sharing
- sites, and many science and engineering applications.
-\end_layout
-
-\begin_layout Standard
-Though fast, querying a complex graph can be difficult to prototype.
- Fortunately, the 
-\begin_inset CommandInset href
-LatexCommand href
-name "Gremlin"
-target "http://wiki.github.com/tinkerpop/gremlin/"
-
-\end_inset
-
- and 
-\begin_inset CommandInset href
-LatexCommand href
-name "SPARQL"
-target "http://www.w3.org/TR/rdf-sparql-query/"
-
-\end_inset
-
- languages do for graphs what SQL does for relational databases.
- Your query becomes coherent and portable.
-\end_layout
-
-\begin_layout Standard
-A popular graph database is 
-\begin_inset CommandInset href
-LatexCommand href
-name "Neo4j"
-target "http://neo4j.org/"
-
-\end_inset
-
-, and it's especially easy to use Prudence.
- Because it's JVM-based, you can access it internally from Prudence.
- It also has embedded bindings for many of Prudence's supported languages,
- and supports a network REST interface which you can easily access via Prudence'
-s document.external.
-\end_layout
-
-\begin_layout Subsubsection
-Document Databases
-\end_layout
-
-\begin_layout Standard
-If your data contains mostly ``documents''---self-contained records with
- few relationships to other documents---then consider a document database.
- 
-\end_layout
-
-\begin_layout Standard
-Document databases allow for straightforward distribution and very fine-grained
- replication, requiring considerably less overhead than relational and graph
- databases.
- Document databases are as scalable as data storage gets: variants are used
- by all the super-massive internet services.
-\end_layout
-
-\begin_layout Standard
-The cost of this scalability is the loss of your ability to do relational
- queries of your data.
- Instead, you'll be using distributed map/reduce, or rely on an external
- indexing service.
- These are powerful tools, but they do not match relational queries in sheer
- speed of complex queries.
- Implementing something as simple as a many-to-many connection, the bread-and-bu
-tter of relational databases, requires some specialization.
- Document databases shine at listing, sorting and searching through extremely
- large catalogs of documents.
-\end_layout
-
-\begin_layout Standard
-Candidate applications include online retail, blogs, wikis, archives, newspapers
-, contact lists, calendars, photo galleries, dating profiles...
- This is a long list, but by no means exhaustive of all that is possible
- in web applications.
- Many useful applications cannot be reduced to sets of lightly interconnected
- ``documents'' without giving up a lot of useful functionality.
- For example, merely adding social networking capabilities to a dating site
- would require complex relations that might be better handled with a graph
- database.
-\end_layout
-
-\begin_layout Standard
-A popular document database is 
-\begin_inset CommandInset href
-LatexCommand href
-name "MongoDB"
-target "http://www.mongodb.org/"
-
-\end_inset
-
-.
- Though document-based, it has a few basic relational features that might
- be just good enough.
- Another is 
-\begin_inset CommandInset href
-LatexCommand href
-name "CouchDB"
-target "http://couchdb.apache.org/"
-
-\end_inset
-
-, which is a truly distributed database.
- With CouchDB it's trivial to replicate and synchronize data with clients'
- desktops or mobile devices, and to distribute it to partners.
- It also supports a REST interface which you can easily access via Prudence's
- document.external.
-\end_layout
-
-\begin_layout Subsubsection
-Best of All Worlds
-\end_layout
-
-\begin_layout Standard
-Of course, consider that it's very possible to use both SQL and ``NoSQL''
- (graph, document) databases together for different parts of your application.
-\end_layout
-
-\begin_layout Subsection
-Partitioning
+But CPUs can only take you so far.
 \end_layout
 
 \begin_layout Standard
 Partitioning is as useful to backend scaling as caching is to web request
  scaling.
-\end_layout
-
-\begin_layout Standard
-The problem is that many backend systems need nodes to synchronize state
- between each other.
- Rather than having one big cluster of identical nodes, you will have several
+ Rather than having one big cluster of identical nodes, you would have several
  smaller, independent clusters.
  This lets you add nodes to each cluster without spreading synchronization
  overhead everywhere.
@@ -6565,7 +8211,7 @@ The problem is that many backend systems need nodes to synchronize state
 Partitioning can happen in various components of your application, such
  as application servers, the caching system, task queues, etc.
  However, it is most effective, and most complicated to implement, for databases.
- Our discussion will thus focus on databases.
+ Our discussion will thus focus on relational (SQL) databases.
  Other systems would likely require simpler subsets of these strategies.
 \end_layout
 
@@ -6626,7 +8272,7 @@ The most obvious and effective partitioning scheme is by feature.
  independent of each other, even though they are displayed to users as united.
  Behind the scenes, each feature uses a different set of tables.
  The rule of thumb is trivial: if you can put the tables in separate databases,
- then you can put them these databases in separate clusters.
+ then you can put these databases in separate clusters.
 \end_layout
 
 \begin_layout Standard
@@ -6657,8 +8303,8 @@ Partitioning by feature is terrific in that it lets you partition other
 
 \begin_layout Standard
 Also consider that some features might be candidates for using a ``NoSQL''
- database.
- Choose the best backend for each feature.
+ database (see below).
+ Choose the best backend per feature.
 \end_layout
 
 \begin_layout Subsubsection
@@ -6821,10 +8467,11 @@ Unfortunately, some programming practices make such an effective, clean
 \end_layout
 
 \begin_layout Standard
-Some developers prefer to use ORMs rather than access the database directly.
- Unfortunately, many ORMs do not easily allow for partitioning, either because
- they support only a single database connection pool, or because they don't
- allow your objects to be easily shared between connections.
+Some developers prefer to use ORMs (object-relational mappers) rather than
+ access the database directly.
+ Many ORMs do not easily allow for partitioning, either because they support
+ only a single database connection pool, or because they don't allow your
+ objects to be easily shared between connections.
 \end_layout
 
 \begin_layout Standard
@@ -6859,10 +8506,251 @@ Object oriented design is also problematic in a more general sense.
 \end_layout
 
 \begin_layout Standard
-Even more generally speaking, organizing code together by mechanism, rather
- than by data ``class,'' will let you apply all kinds of re-factorizations
- more easily, especially if you manage to decouple your application data
- structures from any library-specific data structures.
+Even more generally speaking, organizing code together by mechanism or technolog
+y, rather than by ``object'' encapsulation, will let you apply all kinds
+ of re-factorizations more easily, especially if you manage to decouple
+ your application's data structures from any library-specific data structures.
+\end_layout
+
+\begin_layout Subsection
+Data Backends
+\end_layout
+
+\begin_layout Standard
+Relational (SQL) databases such as MySQL were, for decades, the backbone
+ of the web.
+ They were originally developed as minimal alternatives to enterprise database
+ servers such as Oracle Database and IBM's DB2.
+ Their modest feature set allowed for better performance, smaller footprints,
+ and low investment costs---perfect for web applications.
+ The free software LAMP stack (Linux, Apache, MySQL and PHP) 
+\emph on
+was
+\emph default
+ the web.
+\end_layout
+
+\begin_layout Standard
+Relational databases require a lot of synchronization overhead for clusters,
+ limiting their scalability.
+ Though partitioning can take you far, using a ``NoSQL'' database could
+ take you even further.
+\end_layout
+
+\begin_layout Subsubsection
+Graph Databases
+\end_layout
+
+\begin_layout Standard
+If your relational data structure contains arbitrary-depth relationships
+ or many ``generic'' relationships forced into a relational model, then
+ consider using a graph database instead.
+ Not only will traversing your data be faster, but also the database structure
+ will allow for more efficient performance.
+ The implications for scalability can be dramatic.
+\end_layout
+
+\begin_layout Standard
+Social networking applications are often used as examples of graph structures,
+ but there are many others: forums with threaded and cross-referenced discussion
+s, semantic knowledge bases, warehouse and parts management, music ``genomes,''
+ user-tagged media sharing sites, and many science and engineering applications.
+\end_layout
+
+\begin_layout Standard
+Though fast, querying a complex graph can be difficult to prototype.
+ Fortunately, the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Gremlin"
+target "http://wiki.github.com/tinkerpop/gremlin/"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset href
+LatexCommand href
+name "SPARQL"
+target "http://www.w3.org/TR/rdf-sparql-query/"
+
+\end_inset
+
+ languages do for graphs what SQL does for relational databases.
+ Your query becomes coherent and portable.
+\end_layout
+
+\begin_layout Standard
+A popular graph database is 
+\begin_inset CommandInset href
+LatexCommand href
+name "Neo4j"
+target "http://neo4j.org/"
+
+\end_inset
+
+, and it's especially easy to use with Prudence.
+ Because it's JVM-based, you can access it internally from Prudence.
+ It also has embedded bindings for many of Prudence's supported languages,
+ and supports a network REST interface which you can easily access via Prudence'
+s document.external.
+\end_layout
+
+\begin_layout Subsubsection
+Document Databases
+\end_layout
+
+\begin_layout Standard
+If your data contains mostly ``documents''---self-contained records with
+ few relationships to other documents---then consider a document database.
+ 
+\end_layout
+
+\begin_layout Standard
+Document databases allow for straightforward distribution and very fine-grained
+ replication, requiring considerably less overhead than relational and graph
+ databases.
+ Document databases are as scalable as data storage gets: variants are used
+ by all the super-massive internet services.
+\end_layout
+
+\begin_layout Standard
+The cost of this scalability is the loss of your ability to do relational
+ queries of your data.
+ Instead, you'll be using distributed map/reduce, or rely on an external
+ indexing service.
+ These are powerful tools, but they do not match relational queries in sheer
+ speed of complex queries.
+ Implementing something as simple as a many-to-many connection, the bread-and-bu
+tter of relational databases, requires some specialization.
+ Document databases shine at listing, sorting and searching through extremely
+ large catalogs of documents.
+\end_layout
+
+\begin_layout Standard
+Candidate applications include online retail, blogs, wikis, archives, newspapers
+, contact lists, calendars, photo galleries, dating profiles...
+ This is a long list, but by no means exhaustive of all that is possible
+ in web applications.
+ Many useful applications cannot be reduced to sets of lightly interconnected
+ ``documents'' without giving up a lot of useful functionality.
+ For example, merely adding social networking capabilities to a dating site
+ would require complex relations that might be better handled with a graph
+ database.
+\end_layout
+
+\begin_layout Standard
+A popular document database is 
+\begin_inset CommandInset href
+LatexCommand href
+name "MongoDB"
+target "http://www.mongodb.org/"
+
+\end_inset
+
+.
+ Though document-based, it has a few basic relational features that might
+ be just good enough for your needs.
+ Another is 
+\begin_inset CommandInset href
+LatexCommand href
+name "CouchDB"
+target "http://couchdb.apache.org/"
+
+\end_inset
+
+, which is a truly distributed database.
+ With CouchDB it's trivial to replicate and synchronize data with clients'
+ desktops or mobile devices, and to distribute it to partners.
+ It also supports a REST interface which you can easily access via Prudence's
+ document.external.
+\end_layout
+
+\begin_layout Subsubsection
+Column Databases
+\end_layout
+
+\begin_layout Standard
+These can be considered as subsets of document databases.
+ The ``document,'' in this case, is required to have an especially simple,
+ one-dimensional structure.
+\end_layout
+
+\begin_layout Standard
+This requirement allows optimization for a truly massive scale.
+\end_layout
+
+\begin_layout Standard
+Column databases occupy the ``cloud'' market niche: they allow massive companies
+ like Google and Amazon to cheaply offer database storage and services for
+ third parties.
+ See Google's 
+\begin_inset CommandInset href
+LatexCommand href
+name "Datastore"
+target "http://code.google.com/appengine/docs/java/datastore/"
+
+\end_inset
+
+ (based on 
+\begin_inset CommandInset href
+LatexCommand href
+name "Bigtable"
+target "http://labs.google.com/papers/bigtable.html"
+
+\end_inset
+
+) and Amazon's 
+\begin_inset CommandInset href
+LatexCommand href
+name "SimpleDB"
+target "http://aws.amazon.com/simpledb/"
+
+\end_inset
+
+ (based on 
+\begin_inset CommandInset href
+LatexCommand href
+name "Dynamo"
+target "http://www.allthingsdistributed.com/2007/10/amazons_dynamo.html"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+While you can run your own column database via open source projects like
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "Cassandra"
+target "http://cassandra.apache.org/"
+
+\end_inset
+
+ (originally developed by/for Facebook) and 
+\begin_inset CommandInset href
+LatexCommand href
+name "HBase"
+target "http://hadoop.apache.org/hbase/"
+
+\end_inset
+
+, the document databases mentioned above offer richer document structures
+ and more features.
+ Consider column databases only if you need truly massive scale, or if you
+ want to make use of the cheap storage offered by ``cloud'' vendors.
+\end_layout
+
+\begin_layout Subsubsection
+Best of All Worlds
+\end_layout
+
+\begin_layout Standard
+Of course, consider that it's very possible to use both SQL and ``NoSQL''
+ (graph, document, column) databases together for different parts of your
+ application.
+ See backend partitioning, above.
 \end_layout
 
 \begin_layout Section

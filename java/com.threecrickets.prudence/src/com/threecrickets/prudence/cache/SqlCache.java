@@ -38,7 +38,7 @@ import com.threecrickets.prudence.util.MiniConnectionPoolManager;
  * A SQL-backed cache. Automatically uses a {@link MiniConnectionPoolManager}
  * for data sources that support the {@link ConnectionPoolDataSource} interface.
  * <p>
- * This instance maintains a pool of read/write locks to guarantee automicity of
+ * This instance maintains a pool of read/write locks to guarantee atomicity of
  * storing, fetching and invalidating. It does not use SQL transactions. This
  * allows you disable transaction features in your database for better
  * performance. However, it also means that you should not have more than one
@@ -150,13 +150,13 @@ public class SqlCache<D extends DataSource> implements Cache
 					if( fresh )
 					{
 						statement.execute( "DROP TABLE IF EXISTS " + entryTableName );
-						statement.execute( "DROP TABLE IF EXISTS " + groupTableName );
+						statement.execute( "DROP TABLE IF EXISTS " + tagTableName );
 					}
 
 					statement.execute( "CREATE TABLE IF NOT EXISTS " + entryTableName
 						+ " (key VARCHAR(255) PRIMARY KEY, string TEXT, media_type VARCHAR(255), language VARCHAR(255), character_set VARCHAR(255), expiration_date TIMESTAMP)" );
-					statement.execute( "CREATE TABLE IF NOT EXISTS " + groupTableName + " (key VARCHAR(255), group_key VARCHAR(255), FOREIGN KEY(key) REFERENCES " + entryTableName + "(key) ON DELETE CASCADE)" );
-					statement.execute( "CREATE INDEX IF NOT EXISTS " + groupTableName + "_group_key_idx ON " + groupTableName + " (group_key)" );
+					statement.execute( "CREATE TABLE IF NOT EXISTS " + tagTableName + " (key VARCHAR(255), tag VARCHAR(255), FOREIGN KEY(key) REFERENCES " + entryTableName + "(key) ON DELETE CASCADE)" );
+					statement.execute( "CREATE INDEX IF NOT EXISTS " + tagTableName + "_tag_idx ON " + tagTableName + " (tag)" );
 				}
 				finally
 				{
@@ -179,10 +179,10 @@ public class SqlCache<D extends DataSource> implements Cache
 	// Cache
 	//
 
-	public void store( String key, Iterable<String> groupKeys, CacheEntry entry )
+	public void store( String key, Iterable<String> tags, CacheEntry entry )
 	{
 		if( debug )
-			System.out.println( "Store: " + key + " " + groupKeys );
+			System.out.println( "Store: " + key + " " + tags );
 
 		Lock lock = getLock( key ).writeLock();
 		lock.lock();
@@ -262,9 +262,9 @@ public class SqlCache<D extends DataSource> implements Cache
 					}
 				}
 
-				// Clean out existing group entries for this key
+				// Clean out existing tags for this key
 
-				sql = "DELETE FROM " + groupTableName + " WHERE key=?";
+				sql = "DELETE FROM " + tagTableName + " WHERE key=?";
 				statement = connection.prepareStatement( sql );
 				try
 				{
@@ -276,18 +276,18 @@ public class SqlCache<D extends DataSource> implements Cache
 					statement.close();
 				}
 
-				// Add group entries for this key
+				// Add tags for this key
 
-				if( groupKeys.iterator().hasNext() )
+				if( tags.iterator().hasNext() )
 				{
-					sql = "INSERT INTO " + groupTableName + " (key, group_key) VALUES (?, ?)";
+					sql = "INSERT INTO " + tagTableName + " (key, tag) VALUES (?, ?)";
 					statement = connection.prepareStatement( sql );
 					statement.setString( 1, key );
 					try
 					{
-						for( String groupKey : groupKeys )
+						for( String tag : tags )
 						{
-							statement.setString( 2, groupKey );
+							statement.setString( 2, tag );
 							statement.execute();
 						}
 					}
@@ -393,21 +393,21 @@ public class SqlCache<D extends DataSource> implements Cache
 		return null;
 	}
 
-	public void invalidate( String groupKey )
+	public void invalidate( String tag )
 	{
 		try
 		{
 			Connection connection = getConnection();
 			try
 			{
-				List<String> group = getGroup( connection, groupKey );
-				if( group.isEmpty() )
+				List<String> tagged = getTagged( connection, tag );
+				if( tagged.isEmpty() )
 					return;
 
-				ArrayList<Lock> locks = new ArrayList<Lock>( group.size() );
+				ArrayList<Lock> locks = new ArrayList<Lock>( tagged.size() );
 
 				String sql = "DELETE FROM " + entryTableName + " WHERE key IN (";
-				for( String key : group )
+				for( String key : tagged )
 				{
 					sql += "?,";
 					locks.add( getLock( key ).writeLock() );
@@ -422,7 +422,7 @@ public class SqlCache<D extends DataSource> implements Cache
 					try
 					{
 						int i = 1;
-						for( String key : group )
+						for( String key : tagged )
 							statement.setString( i++, key );
 						if( !statement.execute() )
 						{
@@ -435,7 +435,7 @@ public class SqlCache<D extends DataSource> implements Cache
 						statement.close();
 					}
 
-					for( String key : group )
+					for( String key : tagged )
 						discardLock( key );
 				}
 				finally
@@ -528,9 +528,9 @@ public class SqlCache<D extends DataSource> implements Cache
 	private final String entryTableName = "prudence_cache";
 
 	/**
-	 * The group table name.
+	 * The tag table name.
 	 */
-	private final String groupTableName = "prudence_cache_group";
+	private final String tagTableName = "prudence_cache_tag";
 
 	/**
 	 * The current max cache size.
@@ -629,28 +629,28 @@ public class SqlCache<D extends DataSource> implements Cache
 	}
 
 	/**
-	 * Gets a list of keys in a group.
+	 * Gets a list of tagged keys.
 	 * 
 	 * @param connection
 	 *        The connection
-	 * @param groupKey
-	 *        The group key
-	 * @return The list of keys in the group
+	 * @param tag
+	 *        The tag
+	 * @return The list of tagged keys
 	 * @throws SQLException
 	 */
-	private List<String> getGroup( Connection connection, String groupKey ) throws SQLException
+	private List<String> getTagged( Connection connection, String tag ) throws SQLException
 	{
-		ArrayList<String> group = new ArrayList<String>();
-		String sql = "SELECT key FROM " + groupTableName + " WHERE group_key=?";
+		ArrayList<String> tagged = new ArrayList<String>();
+		String sql = "SELECT key FROM " + tagTableName + " WHERE tag=?";
 		PreparedStatement statement = connection.prepareStatement( sql );
 		try
 		{
-			statement.setString( 1, groupKey );
+			statement.setString( 1, tag );
 			ResultSet rs = statement.executeQuery();
 			try
 			{
 				while( rs.next() )
-					group.add( rs.getString( 1 ) );
+					tagged.add( rs.getString( 1 ) );
 			}
 			finally
 			{
@@ -662,7 +662,7 @@ public class SqlCache<D extends DataSource> implements Cache
 			statement.close();
 		}
 
-		return group;
+		return tagged;
 	}
 
 	/**

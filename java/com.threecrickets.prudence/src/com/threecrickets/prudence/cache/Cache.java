@@ -37,12 +37,12 @@ public interface Cache
 	 * 
 	 * @param key
 	 *        A key unique to the cache
-	 * @param groupKeys
-	 *        An optional list of group keys to which this entry is associated
+	 * @param tags
+	 *        An optional list of tags to which this entry is associated
 	 * @param entry
 	 *        The entry
 	 */
-	public void store( String key, Iterable<String> groupKeys, CacheEntry entry );
+	public void store( String key, Iterable<String> tags, CacheEntry entry );
 
 	/**
 	 * Fetches an entry from the cache if it's there and has not yet expired.
@@ -54,11 +54,11 @@ public interface Cache
 	public CacheEntry fetch( String key );
 
 	/**
-	 * Makes sure that all entries associated with the group are un-fetchable.
+	 * Makes sure that all tagged entries are un-fetchable.
 	 * 
-	 * @param groupKey
+	 * @param tag
 	 */
-	public void invalidate( String groupKey );
+	public void invalidate( String tag );
 
 	/**
 	 * Removes expired cache entries.
