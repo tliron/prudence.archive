@@ -405,12 +405,12 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 
 				// Cache if enabled
 				String cacheKey = castCacheKeyPattern();
-				Collection<String> cacheGroups = getCacheTags();
+				Collection<String> cacheTags = getCacheTags();
 				if( ( cacheKey != null ) && ( cacheEntry.getExpirationDate() != null ) )
 				{
 					Cache cache = resource.getCache();
 					if( cache != null )
-						cache.store( cacheKey, cacheGroups, cacheEntry );
+						cache.store( cacheKey, cacheTags, cacheEntry );
 				}
 
 				// Return a representation of the entire buffer
