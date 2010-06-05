@@ -8,7 +8,7 @@ import java.sql.Timestamp
 import org.restlet.Application
 import com.threecrickets.prudence.util.MiniConnectionPoolManager
 
-$connection_pool_lock = $application.get_global 'connection_pool_lock'
+$connection_pool_lock = $application.globals['connection_pool_lock']
 if $connection_pool_lock.nil?
 	$connection_pool_lock = $application.get_global 'connection_pool_lock', ReentrantLock.new
 end
@@ -44,7 +44,7 @@ def get_connection fresh=false
 	attributes = Application.current.context.attributes
 
 	$connection_pool_lock.lock
-	connection_pool = $application.get_global 'connection_pool'
+	connection_pool = $application.globals['connection_pool']
 	begin
 		if connection_pool.nil? || fresh
 			if connection_pool.nil?

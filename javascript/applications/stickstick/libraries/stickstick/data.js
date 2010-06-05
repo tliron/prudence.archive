@@ -9,7 +9,7 @@ importClass(
 	org.restlet.Application,
 	com.threecrickets.prudence.util.MiniConnectionPoolManager);
 
-var connectionPoolLock = application.getGlobal('connectionPoolLock');
+var connectionPoolLock = application.globals.get('connectionPoolLock');
 if(connectionPoolLock == null) {
 	connectionPoolLock = application.getGlobal('connectionPoolLock', new ReentrantLock());
 }
@@ -45,7 +45,7 @@ function getConnection(fresh) {
 	var attributes = Application.current.context.attributes;
 
 	connectionPoolLock.lock();
-	connectionPool = application.getGlobal('connectionPool');
+	connectionPool = application.globals.get('connectionPool');
 	try {
 		if(connectionPool == null || fresh) {
 			if(connectionPool == null) {

@@ -8,7 +8,7 @@ import java.sql.Timestamp
 import org.restlet.Application
 import com.threecrickets.prudence.util.MiniConnectionPoolManager
 
-def connectionPoolLock = application.getGlobal('connectionPoolLock')
+def connectionPoolLock = application.globals['connectionPoolLock']
 if(connectionPoolLock == null) {
 	connectionPoolLock = application.getGlobal('connectionPoolLock', new ReentrantLock())
 }
@@ -44,7 +44,7 @@ getConnection = { fresh=false ->
 	def attributes = Application.current.context.attributes
 
 	connectionPoolLock.lock()
-	connectionPool = application.getGlobal('connectionPool')
+	connectionPool = application.globals['connectionPool']
 	try {
 		if(connectionPool == null || fresh) {
 			if(connectionPool == null) {

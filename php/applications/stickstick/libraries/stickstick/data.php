@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 import org.restlet.Application;
 import com.threecrickets.prudence.util.MiniConnectionPoolManager;
 
-$connection_pool_lock = $application->getGlobal('connection_pool_lock');
+$connection_pool_lock = $application->globals['connection_pool_lock'];
 if(is_null($connection_pool_lock)) {
 	$connection_pool_lock = $application->getGlobal('connection_pool_lock', new ReentrantLock());
 }
@@ -46,7 +46,7 @@ function get_connection($fresh=false) {
 	$attributes = Application::getCurrent()->context->attributes;
 
 	$connection_pool_lock->lock();
-	$connection_pool = $application->getGlobal('connection_pool');
+	$connection_pool = $application->globals['connection_pool'];
 	try {
 		if(is_null($connection_pool) || $fresh) {
 			if(is_null($connection_pool)) {

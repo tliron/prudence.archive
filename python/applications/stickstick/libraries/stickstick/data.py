@@ -104,11 +104,11 @@ class Board(Base):
 
 def get_engine(application, fresh=False):
     global engine
-    #engine_lock = application.getGlobal('engine_lock')
+    #engine_lock = application.globals['engine_lock']
     #if engine_lock is None:
     #    engine_lock = application.getGlobal('engine_lock', RLock())
     #engine_lock.acquire()
-    #engine = application.getGlobal('engine')
+    #engine = application.globals['engine']
     #try:
     if engine is None or fresh:
         attributes = Application.getCurrent().context.attributes
