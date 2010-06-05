@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2010-06-01">
+<meta name="create-date" content="2010-06-04">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -2213,12 +2213,18 @@ Many of these attributes have to do with caching. Caching is your best tool to m
 <a class="toc" name="toc-Paragraph-33"></a>document.cacheDuration
 </div>
 <div class="Unindented">
+(only available in /web/dynamic/ and /web/fragments/)
+</div>
+<div class="Indented">
 The duration in milleseconds for which the output of this document will be cached. If this value is zero, the default, then caching is disabled. So, you must explicitly set this to a greater than zero value to enable caching. The key used to store and retrieve the cached output is determined by document.cacheKey (see below).
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-34"></a>document.cacheKey
 </div>
 <div class="Unindented">
+(only available in /web/dynamic/ and /web/fragments/)
+</div>
+<div class="Indented">
 This lets you control the key that is used to store and retrieve the cached output of the current document. <i>Not that this is not the key itself</i>, but instead a template that can contain variables that are dynamically set according to conversation attributes. See <a class="URL" href="../routing/">routing</a> for a complete list of Prudence’s URI templating variables. document.cacheKey is ignored if document.cacheDuration is zero.
 </div>
 <div class="Indented">
@@ -2243,6 +2249,9 @@ Note the default cache key template can be changed by setting the ‘‘com.thre
 <a class="toc" name="toc-Paragraph-35"></a>document.cacheTags
 </div>
 <div class="Unindented">
+(only available in /web/dynamic/ and /web/fragments/)
+</div>
+<div class="Indented">
 This is a list of one or more strings that will be attached to the cached output of the page. Any number of tags can be associated with a cache entry. Cache tags are used for document.cache.invalidate (see below). Note that you can set cache tags to hardcoded strings (for example: ‘‘browse-pages’’) or dynamically generate them using code (for example: ‘‘blog-comments-for-entry-’’ + blogId).
 </div>
 <div class="Indented">
@@ -2252,10 +2261,16 @@ document.cacheTags is ignored if document.cacheDuration is zero.
 <a class="toc" name="toc-Paragraph-36"></a>document.cache
 </div>
 <div class="Unindented">
+(note that the same cache is accessible in both /web/dynamic/ and /resources/)
+</div>
+<div class="Indented">
 Provides access to the cache implementation used by this document. Prudence supports a pluggable cache backend mechanism, allowing you to use RAM, disk, database, distributed and other cache systems. It also allows for chaining of various backends together for improved performance and reliability.
 </div>
 <div class="Indented">
-Prudence’s default implementation is an in-process memory cache chained before an H2 database cache. The memory cache ensures extremely fast retrieval times, while the database cache makes sure entries will persist even if you restart Prudence.
+Though Prudence automatically caches the output of dynamic HTML and fragments, you can use the cache as you please. Cache entries are instances of CacheEntry, which embeds various formatting attributes that you are free to ignore if you don’t need them.
+</div>
+<div class="Indented">
+Prudence’s default cache backend is an in-process memory cache chained before an H2 database cache. The memory cache ensures extremely fast retrieval times, while the database cache makes sure entries will persist even if you restart Prudence.
 </div>
 <div class="Indented">
 See <a class="URL" href="../application/">application configuration</a> for more information on configuring the cache backend.
@@ -2285,9 +2300,12 @@ Scripturian is Prudence’s mechanism for loading, caching and executing source 
 <a class="toc" name="toc-Subsubsection-29"></a><i>Other</i> Documents
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-39"></a>document.include (/web/dynamic/)
+<a class="toc" name="toc-Paragraph-39"></a>document.include
 </div>
 <div class="Unindented">
+(only available in /web/dynamic/ and /web/fragments/)
+</div>
+<div class="Indented">
 Executes another document ‘‘in place,’’ meaning that its output is appended at the location in the document where you call document.include. Global variables, function definitions, class definitions, etc., in the other document would be made available locally.
 </div>
 <div class="Indented">
@@ -2425,38 +2443,53 @@ There are similar in use to application.globals, but are shared by all applicati
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-44"></a>executable.context
 </div>
+<div class="Unindented">
+The context is used for communication between the Prudence container and the executable.
+</div>
+<ul>
+
+<li>
+executable.context.writer: direct access to the output writer (a memory buffer for /web/dynamic/, and standard output for /resources/ and configuration scripts)
+</li>
+<li>
+executable.context.exposedVariables: Prudence services are here (application, document, executable, conversation)
+</li>
+<li>
+executable.context.attributes: for use by the language engines
+</li>
+</ul>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-45"></a>executable.context.writer
+<a class="toc" name="toc-Paragraph-45"></a>executable.manager
+</div>
+<div class="Unindented">
+This is the language manager used to create executable in many languages. Here you can query which languages are supported by the current Prudence instance (executable.manager.adapters).
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-46"></a>executable.context.attributes
-</div>
-<div class="Paragraph">
-<a class="toc" name="toc-Paragraph-47"></a>executable.context.exposedVariables
-</div>
-<div class="Paragraph">
-<a class="toc" name="toc-Paragraph-48"></a>executable.manager
-</div>
-<div class="Paragraph">
-<a class="toc" name="toc-Paragraph-49"></a>executable.container
+<a class="toc" name="toc-Paragraph-46"></a>executable.container
 </div>
 <div class="Unindented">
 This is identical to the ‘‘document’’ service detailed above.
 </div>
 <div class="Indented">
-For example, ‘‘document.include’’ is the same as ‘‘executable.container.include’’. Internally, Prudence uses this equivalence to hook the include scriptlet into document.include.
+For example, ‘‘document.include’’ is the same as ‘‘executable.container.include’’. Internally, Prudence uses this equivalence to hook the include scriptlet, a Scripturian feature, into document.include, Prudence’s implementation of this feature.
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-59"></a>conversation
 </h2>
 <div class="Unindented">
-The ‘‘conversation’’ represents the request received from the user as well your response to it, hence it’s a ‘‘conversation.’’ Here you can access various aspects of the request: the URI, formatting preferences, client information, and actual data sent with the request (the ‘‘entity’’). You can likewise set response characteristics.
+The ‘‘conversation’’ represents the request received from the user as well your response to it, hence it’s a ‘‘conversation.’’ Because Prudence is RESTful, conversations encapsulate only a single request and its response. Higher level ‘‘session’’ management is up to you.
 </div>
+<div class="Indented">
+Here you can access various aspects of the request: the URI, formatting preferences, client information, and actual data sent with the request (the ‘‘entity’’). You can likewise set response characteristics.
+</div>
+<blockquote class="Quote">
+Note that in /web/dynamic/ and /web/fragments/, ‘‘conversation’’ is available as a global variable. In /resources/, it is sent to the handling entry points (functions, closures, etc.) as an argument. Usage is otherwise identical.
+</blockquote>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-31"></a>Request Attributes
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-50"></a>conversation.reference
+<a class="toc" name="toc-Paragraph-47"></a>conversation.reference
 </div>
 <div class="Unindented">
 This is the URI used by the client. Refer to the Restlet API documentation for details.
@@ -2489,7 +2522,7 @@ conversation.reference.relativeRef: a new reference relative to the base URI (us
 </li>
 </ul>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-51"></a>conversation.form, conversation.formAll
+<a class="toc" name="toc-Paragraph-48"></a>conversation.form, conversation.formAll
 </div>
 <div class="Unindented">
 Use these to access data sent via HTML forms, or any other request with data of the ‘‘application/x-www-form-urlencoded’’ MIME type.
@@ -2501,7 +2534,7 @@ conversation.form is a map of form names to values. In case the form has multipl
 conversation.formAll is a list of parameters. Use this if you need to support multiple values for the same name.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-52"></a>conversation.query, conversation.queryAll
+<a class="toc" name="toc-Paragraph-49"></a>conversation.query, conversation.queryAll
 </div>
 <div class="Unindented">
 Use these to access data sent via the URI query.
@@ -2513,7 +2546,7 @@ conversation.query is a map of query parameter names to values. In case the URI 
 conversation.queryAll is a list of parameters. Use this if you need to support multiple values for the same name.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-53"></a>conversation.entity
+<a class="toc" name="toc-Paragraph-50"></a>conversation.entity
 </div>
 <div class="Unindented">
 This is data sent by the client. For more information, refer to the Restlet API documentation for Representation.
@@ -2540,7 +2573,7 @@ conversation.entity.size: the size of the data in bytes, or -1 if unknown
 </li>
 </ul>
 <blockquote class="Quote">
-Note: Client data is provided as a stream that can only be ‘‘consumed’’ once. Attributes that cause consumption are marked with a ‘‘*’’ above. Note that conversation.entity.text is one of them!
+Note: Client data is provided as a stream that can only be ‘‘consumed’’ once. Attributes that cause consumption are marked with a ‘‘*’’ above. <i>Note that conversation.entity.text is one of them! </i>If you want to access conversation.entity.text more than once, save it to a variable first.
 </blockquote>
 <div class="Paragraph-">
 <a class="toc" name="toc-Paragraph*-1"></a>conversation.variant
@@ -2561,13 +2594,73 @@ The attributes are initially set according to the client request, and by default
 This is definitely not the desired outcome if you’re accepting data from an HTML form! The data comes from the client as MIME type ‘‘application/x-www-form-urlencoded,’’ but you’d probably want to send data to the client back as ‘‘application/html.’’ In that case, make sure to set conversation.mediaTypeName = ‘‘application/html’’ in a scriptlet.
 </blockquote>
 <blockquote class="Quote">
-This may seem a little awkward... The design decision for Prudence 1.0 was to ‘‘pass through’’ all formatting attributes from the request to the response, which makes sense for JSON or XML communication, but not for HTML forms. A future version of Prudence may offer more sophisticated setting of the default response attributes.
+This may seem a little awkward. The design decision for Prudence 1.0 was to ‘‘pass through,’’ by default, all formatting attributes from the request to the response, with the expectation that the client expects the response from the server to be in the same format. This makes sense for JSON or XML communication, but not for HTML forms. A future version of Prudence may offer more sophisticated setting of the default response attributes in a conversation.
 </blockquote>
 <div class="Unindented">
 Note that in /resources/ you always have the option of explicitly returning a Representation instance to the client, in which case none of these attributes will be used for the response.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-54"></a>conversation.mediaTypeName, conversation.mediaTypeExtension, conversation.mediaType
+<a class="toc" name="toc-Paragraph-51"></a>conversation.cookies
+</div>
+<div class="Unindented">
+This is initialized as a list (not a map) of cookies sent from the client.
+</div>
+<div class="Indented">
+If you want to ask the client to change any of them, be sure to call save() on the cookie in order to send it in the response. You can also call delete() to ask the client to delete the cookie (no need to call save in that case; internally sets maxAge to zero). Note that you can call save() and delete() as many times as you like, and that only the last changes will be sent in the response.
+</div>
+<div class="Indented">
+Note that you can only <i>ask </i>a client to change, store cookies, or for them to be used in various. It’s up to the client to decide what to do with your requirements. For example, many web browsers allow users to turn off cookie support or filter out certain cookies.
+</div>
+<div class="Indented">
+Cookies have the following attributes:
+</div>
+<ul>
+
+<li>
+cookie.name: (read only)
+</li>
+<li>
+cookie.version: (integer) per a specific cookie.name
+</li>
+<li>
+cookie.value: textual, or text-encoded binary data (note that most clients have strict limits on how much total data is allowed to be stored in all cookies per domain)
+</li>
+<li>
+cookie.domain: the client should only use the cookie with this domain and its subdomains (web browsers will not let you set a cookie for a domain which is not the domain of the request or a subdomain of it)
+</li>
+<li>
+cookie.path: the client should only use the cookie with URIs that begin with this path (‘‘/’’ would mean to use it with all URIs)
+</li>
+</ul>
+<div class="Unindented">
+The following attributes are not received from the client, but you can set them for sending to the client:
+</div>
+<ul>
+
+<li>
+cookie.maxAge: age in seconds, after which the client should delete the cookie. maxAge=0 deletes the cookie immediately, while maxAge=-1 (the default) asks the client to keep the cookie only for the duration of the ‘‘session’’ (this is defined by the client; for most web browsers this means that the cookie will be deleted when the browser is closed).
+</li>
+<li>
+cookie.secure: true if the cookie is meant to be used only in secure connections (defaults to false)
+</li>
+<li>
+cookie.accessRestricted: true if the cookie is meant to be used only in authenticated connections (defaults to false)
+</li>
+<li>
+cookie.comment: some clients store this, some discard it
+</li>
+</ul>
+<div class="Paragraph">
+<a class="toc" name="toc-Paragraph-52"></a>conversation.createCookie
+</div>
+<div class="Unindented">
+You must provide the cookie name as an argument. Returns a new cookie instance if the cookie doesn’t exist yet, or the existing cookie if it does.
+</div>
+<div class="Indented">
+For new cookies, be sure to call save() on the cookie in order to send it in the response, thus asking the client to create it, or delete() if you want to cancel the creation (in which case nothing will be sent in the response).
+</div>
+<div class="Paragraph">
+<a class="toc" name="toc-Paragraph-53"></a>conversation.mediaTypeName, conversation.mediaTypeExtension, conversation.mediaType
 </div>
 <div class="Unindented">
 These three variants all represent the same value, letting you access the value in different ways.
@@ -2585,7 +2678,7 @@ conversation.mediaType is the underlying Restlet MediaType instance. Refer to th
 To find out which media types the client accepts and prefers, use conversation.request.clientInfo.acceptedMediaTypes and conversation.request.clientInfo.getPreferredMediaType().
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-55"></a>conversation.characterSetName, conversation.characterSetShortName, conversation.characterSet
+<a class="toc" name="toc-Paragraph-54"></a>conversation.characterSetName, conversation.characterSetShortName, conversation.characterSet
 </div>
 <div class="Unindented">
 These three variants all represent the same value, letting you access the value in different ways.
@@ -2609,7 +2702,7 @@ If the client request does not specificy a character set, then the character set
 <a class="toc" name="toc-Subsubsection-33"></a>Response Attributes
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-56"></a>conversation.languageName, conversation.language
+<a class="toc" name="toc-Paragraph-55"></a>conversation.languageName, conversation.language
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -2627,7 +2720,7 @@ To find out which languages the client accepts and prefers, use conversation.req
 Note that the language can be a null value. Responses do not have to specify a language.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-57"></a>conversation.encodingName, conversation.encoding
+<a class="toc" name="toc-Paragraph-56"></a>conversation.encodingName, conversation.encoding
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -2642,7 +2735,7 @@ conversation.encoding is the underlying Restlet Language instance. Refer to the 
 To find out which encodings the client accepts and prefers, use conversation.request.clientInfo.acceptedEncodings and conversation.request.clientInfo.getPreferredEncoding().
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-58"></a>conversation.expirationTimestamp, conversation.expirationDate
+<a class="toc" name="toc-Paragraph-57"></a>conversation.expirationTimestamp, conversation.expirationDate
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -2654,7 +2747,7 @@ conversation.expirationTimestamp is a long integer value representing the number
 conversation.expirationDate is the underlying JVM Date instance. Refer to the Java API documentation for details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-59"></a>conversation.modificationTimestamp, conversation.modificationDate
+<a class="toc" name="toc-Paragraph-58"></a>conversation.modificationTimestamp, conversation.modificationDate
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -2666,7 +2759,7 @@ conversation.modificationTimestamp is a long integer value representing the numb
 conversation.modificationDate is the underlying JVM Date instance. Refer to the Java API documentation for details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-60"></a>conversation.httpTag, conversation.tag
+<a class="toc" name="toc-Paragraph-59"></a>conversation.httpTag, conversation.tag
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -2678,10 +2771,10 @@ conversation.httpTag is an HTTP ETag string.
 conversation.tag is the underlying Restlet Tag instance. Refer to the Restlet API documentation for details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-61"></a>conversation.maxAge
+<a class="toc" name="toc-Paragraph-60"></a>conversation.maxAge
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-62"></a>conversation.statusCode, conversation.status
+<a class="toc" name="toc-Paragraph-61"></a>conversation.statusCode, conversation.status
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -2693,25 +2786,31 @@ conversation.statusCode is an HTTP status code as an integer.
 conversation.status is the underlying Restlet Status instance. Refer to the Restlet API documentation for details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-63"></a>conversation.internal?
+<a class="toc" name="toc-Paragraph-62"></a>conversation.internal?
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-64"></a>conversation.addMediaTypeByName, conversation.addMediaTypeByExtension, conversation.addMediaType (/resources/)
+<a class="toc" name="toc-Paragraph-63"></a>conversation.addMediaTypeByName, conversation.addMediaTypeByExtension, conversation.addMediaType (/resources/)
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-34"></a>Conversation Flow
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-65"></a>conversation.locals
+<a class="toc" name="toc-Paragraph-64"></a>conversation.locals
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-66"></a>conversation.defer (/web/dynamic/)
+<a class="toc" name="toc-Paragraph-65"></a>conversation.defer
+</div>
+<div class="Unindented">
+(only available in /web/dynamic/ and /web/fragments/)
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-67"></a>conversation.deferred? (/web/dynamic/)
+<a class="toc" name="toc-Paragraph-66"></a>conversation.deferred?
+</div>
+<div class="Unindented">
+(only available in /web/dynamic/ and /web/fragments/)
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-68"></a>conversation.kaboom
+<a class="toc" name="toc-Paragraph-67"></a>conversation.kaboom
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-35"></a>Low-level Access
@@ -2723,19 +2822,19 @@ Use these to access the Restlet instances underlying the conversation. This is u
 For more information, refer to Restlet’s API documentation.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-69"></a>conversation.resource
+<a class="toc" name="toc-Paragraph-68"></a>conversation.resource
 </div>
 <div class="Unindented">
 The Restlet resource. In the case of /web/dynamic/, this will be Prudence’s GeneratedTextResource. In the case of /resources/, this will be DelegatedResource.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-70"></a>conversation.request
+<a class="toc" name="toc-Paragraph-69"></a>conversation.request
 </div>
 <div class="Unindented">
 Equivalent to conversation.resource.request.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-71"></a>conversation.response
+<a class="toc" name="toc-Paragraph-70"></a>conversation.response
 </div>
 <div class="Unindented">
 Equivalent to conversation.resource.response.
@@ -2837,7 +2936,7 @@ Use this code instead:
 The getGlobal call is an atomic compare-and-set operation. It guarantees that the returned value is the unique one.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-72"></a>Optimizing for Performance
+<a class="toc" name="toc-Paragraph-71"></a>Optimizing for Performance
 </div>
 <div class="Unindented">
 You may have noticed, in the code above, that if another thread had already set the global value, then our created data source would be discarded. If data source creation is heavy and slow, then this could significantly affect our performance. The only way to guarantee that this would not happen would be to make the entire operation atomic, by synchronizing it with a lock:
@@ -3072,22 +3171,22 @@ Easy deployment
 <ol>
 
 <li>
-Boot scripts: avoid weird configuration formats and start your Restlet component exactly as you want (in your choice of scripting language) 
+Boot scripts: avoid weird configuration formats and start your Restlet component exactly as you want (in your choice of scripting language)
 </li>
 <li>
-Default scripts already handle things like virtual hosting, multiple servers and internal routing 
+Default scripts already handle things like virtual hosting, multiple servers and internal routing
 </li>
 <li>
-Designed from the ground-up to handle multiple apps on the same component 
+Designed from the ground-up to handle multiple apps on the same component
 </li>
 <li>
-Admin app for realtime management of server(s) 
+Admin app for realtime management of server(s)
 </li>
 <li>
-Logging is pre-configured and ‘‘just works,’’ including Apache-compatible web log 
+Logging is pre-configured and ‘‘just works,’’ including Apache-compatible web log
 </li>
 <li>
-Single-file ‘‘plop’’ deployment (like WAR files) 
+Single-file ‘‘plop’’ deployment (like WAR files)
 </li>
 </ol>
 </li>
@@ -3096,16 +3195,16 @@ Easy prototyping of REST resources
 <ol>
 
 <li>
-In the language of your choice 
+In the language of your choice
 </li>
 <li>
-Code is compiled, cached and loaded on-the-fly 
+Code is compiled, cached and loaded on-the-fly
 </li>
 <li>
-Rich debug page for runtime errors 
+Rich debug page for runtime errors
 </li>
 <li>
-When you’re happy with it, you can rewrite it as a ServerResource in Java 
+When you’re happy with it, you can rewrite it as a ServerResource in Java
 </li>
 </ol>
 </li>
@@ -3114,30 +3213,30 @@ Powerful HTML generation platform, like JSP/ASP/PHP (again, 100% Restlet-based)
 <ol>
 
 <li>
-In the language of your choice, including mixing languages and template engines (Velocity, Succinct) on one page 
+In the language of your choice, including mixing languages and template engines (Velocity, Succinct) on one page
 </li>
 <li>
-Code is compiled, cached and loaded on-the-fly 
+Code is compiled, cached and loaded on-the-fly
 </li>
 <li>
-RAM/db server-side caching (uses Restlet’s URI template language for cache key generation) 
+RAM/db server-side caching (uses Restlet’s URI template language for cache key generation)
 </li>
 <li>
-Straightforward support for client-side caching 
+Straightforward support for client-side caching
 </li>
 <li>
-Easily ‘‘stream’’ output (Restlet async) 
+Easily ‘‘stream’’ output (Restlet async)
 </li>
 <li>
-Easily accept uploaded files 
+Easily accept uploaded files
 </li>
 <li>
-Rich debug page for runtime errors 
+Rich debug page for runtime errors
 </li>
 </ol>
 </li>
 <li>
-Restlet sugar 
+Restlet sugar
 <ol>
 
 <li>
@@ -3153,13 +3252,16 @@ JavaScript and CSS unify-and-minify filter
 Delegated status service for displaying custom pages for error codes (404, 500, etc.)
 </li>
 <li>
-Rich debugging representation 
+Rich debugging representation
 </li>
 <li>
-Caching system, with pluggable backends, designed for StringRepresentations 
+Caching system, with pluggable backends, designed for StringRepresentations
 </li>
 <li>
 Easy file uploads (slightly higher-level than the Restlet FileUpload extension)
+</li>
+<li>
+Easy cookie modification (combines Cookie and CookieSetting)
 </li>
 </ol>
 </li>
@@ -3747,14 +3849,62 @@ But, what if you need to handle <i>millions</i> of cache hits per second? First,
 <div class="Indented">
 You’ll see many web frameworks out there that support memcached and recommend you use it (‘‘it’s fast!’’ they claim, except that it can be slower per request than optimized databases, and that anyway performance does not equal scalability). We’d urge you to consider that advice carefully: keeping your cache warm is a challenge made much easier if you can store it in a persistent backend, and database backends can take you very far in scale without adding a new infrastructure to your deployment. It’s good to know, though, that there is a solution in case you reach the popularity levels of LiveJournal, Facebook, YouTube, Twitter, etc.
 </div>
-<h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-48"></a>Frontend Caching
+<h3 class="Subsubsection-">
+<a class="toc" name="toc-Subsubsection*-1"></a>Pre-Filling the Cache
 </h3>
 <div class="Unindented">
-If you need to quickly scale a web site that has not been designed for caching, a band-aid is available: frontend caches, such as <a class="URL" href="http://varnish-cache.org/">Varnish</a>, <a class="URL" href="http://code.google.com/p/ncache/">NCache</a> and even <a class="URL" href="http://www.squid-cache.org/">Squid</a>. For archaic reasons, these are called ‘‘reverse proxy’’ caches, but they really work more like filters. According to attributes in the user request (URL, cookies, etc.), they decide whether to fetch and send a cached version of the response, or to allow the request to continue to your application servers.
+If there are thousands of ways in which users can organize a data view, and each of these views is particular to one user, then it may make little sense to cache them individually, because individual schemes would hardly ever be re-used. You’ll just be filling up the cache with useless entries.
 </div>
 <div class="Indented">
-The crucial use case is archaic, too. If you’re using an old web framework in which you cannot implement caching logic yourself, or cannot plug in to a good cache backend, then these frontend caches can do it for you.
+Take a closer look, though:
+</div>
+<ol>
+
+<li>
+It may be that of the thousands of organization schemes only a few are commonly used, so it’s worth caching the output of just those.
+</li>
+<li>
+It could be that these schemes are similar enough to each other that you could generate them all in one operation, and save them each separately in the cache. Even if cache entries will barely be used, if they’re cheap to create, it still might be worth creating them.
+</li>
+</ol>
+<div class="Unindented">
+This leads us to an important point:
+</div>
+<blockquote class="Quote">
+Prudence is a ‘‘frontend’’ platform, in that it does not specify which data backend, if at all, you should use. Its cache, however, is general purpose, and you can store in it anything that you can encode as a string.
+</blockquote>
+<div class="Unindented">
+Let’s take as a pre-filling example a tree data structure in which branches can be visually opened and closed. Additionally, according to user permissions different parts of the tree may be hidden. Sounds too complicated to cache all the view combinations? Well, consider that you can trigger, upon any change to the tree data structure, a function that loops through all the different iterations of the tree recursively and saves a view of each of them to the cache. The cache keys can be something like ‘‘branch1+.branch2-.branch3+’’, with ‘‘+’’ signifying ‘‘-’’ whether the branch is visually open or closed. You can use similar +’s and -’s for permissions, and create views per permission combinations. Later, when users with specific permissions request different views of the tree, no problem: all possibilities were already pre-filled. You might end up having to generate and cache thousands of views at once, but the difference between generating one view and generating thousands of views may be quite small, because the majority of the duration is spend communicating with the database backend. 
+</div>
+<div class="Indented">
+If generating thousands of views takes too long for the duration of a single request, another option is to generate them on a separate thread. Even if it takes a few minutes to generate all the many, many tree views combinations, it might be OK in your application for views to be a few minutes out-of-date. Consider that the scalability benefits can be very significant: you generate views only <i>once </i>for the entire system, while millions of concurrent users do a simple retrieval from the cache.
+</div>
+<h3 class="Subsubsection-">
+<a class="toc" name="toc-Subsubsection*-2"></a>Caching the Data Backend
+</h3>
+<div class="Unindented">
+Pre-filling the cache can take you very far. It is, however, quite complicated to implement, and can be ineffective if data changes too frequently or if the cache has to constantly be updated. Also, it’s hard to scale the pre-filling to <i>millions </i>of fragments.
+</div>
+<div class="Indented">
+If we go back to our tree example above, the problem was that it was too costly to fetch the entire tree from the database. But what if we cache the tree itself? In that case, it would be very quick to generate any view of the tree on-demand. Instead of caching the view, we’d be caching the data, and achieving the same scalability gains.
+</div>
+<div class="Indented">
+Easy, right? So why not cache <i>all</i> our data structures? The reason is that it’s very difficult to do this correctly beyond trivial examples. Data structures tend to have complex interrelationships (one-to-many, many-to-many, foreign keys, recursive tree structures, graphs, etc.) such that a change in data at one point of the structure may alter various others in particular ways. For example, consider a calendar database, and that you’re caching individual days with all their events. Weekly calendar views are then generated on-the-fly (and quickly) for users according to what kinds of events they want to see in their personal calendars. What happens if a user adds a recurring event that happens every Monday? You’ll need to make sure that all Mondays currently cached would be invalidated, which might mean tagging all these as ‘‘monday’’ using Prudence’s cache tags. This requires a specific caching strategy for a specific application.
+</div>
+<div class="Indented">
+By all means, cache your data structures if you can’t easily cache your output, but be aware of the challenge!
+</div>
+<blockquote class="Quote">
+Prudence’s sister project, Diligence, is designed specifically to solve this problem. It not only caches your data structures, but it validates them in memory using your coded logic, instead of invalidating them and forcing them to be re-fetched from the database. It supports data structures commonly used with relational databases, pluggable storage technologies, high-performance resource pooling and throttling, and natural integration with Prudence. Together, <a class="URL" href="http://threecrickets.com/diligenceandprudence/">Diligence and Prudence</a> form a solid platform for building scalable, data-backed web applications. At the time of this writing, Diligence is still under development. We hope to release it as open source soon, so stay tuned!
+</blockquote>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-48"></a>Filter Caching
+</h3>
+<div class="Unindented">
+If you need to quickly scale a web site that has not been designed for caching, a band-aid is available: filter caches, such as <a class="URL" href="http://varnish-cache.org/">Varnish</a>, <a class="URL" href="http://code.google.com/p/ncache/">NCache</a> and even <a class="URL" href="http://www.squid-cache.org/">Squid</a>. For archaic reasons, these are called ‘‘reverse proxy’’ caches, but they really work more like filters. According to attributes in the user request (URL, cookies, etc.), they decide whether to fetch and send a cached version of the response, or to allow the request to continue to your application servers.
+</div>
+<div class="Indented">
+The crucial use case is archaic, too. If you’re using an old web framework in which you cannot implement caching logic yourself, or cannot plug in to a good cache backend, then these filter caches can do it for you.
 </div>
 <div class="Indented">
 They are problematic in two ways:
@@ -3762,14 +3912,14 @@ They are problematic in two ways:
 <ol>
 
 <li>
-Decoupling caching logic from your application means losing many features. For example, invalidating portions of the cache is difficult if not impossible. It’s because of frontend caching, indeed, that so many web sites do a poor job at showing up-to-date information.
+Decoupling caching logic from your application means losing many features. For example, invalidating portions of the cache is difficult if not impossible. It’s because of filter caching, indeed, that so many web sites do a poor job at showing up-to-date information.
 </li>
 <li>
-Filtering actually implements a kind of partitioning, but one that is vertical rather than horizontal. In horizontal partitioning, a ‘‘switch’’ decides to send requests to one cluster of servers or another. Within each cluster, you can control capacity and scale. But in vertical partitioning, the ‘‘filter’’ handles requests internally. Not only is the ‘‘filter’’ more complex and vulnerable than a ‘‘switch’’ as a frontend connector to the world, but you’ve also complicated your ability to control the capacity of the caching layer. It’s embedded inside your front end, rather than being another cluster of servers. (More on backend partitioning below.)
+Filtering actually implements a kind of partitioning, but one that is vertical rather than horizontal. In horizontal partitioning, a ‘‘switch’’ decides to send requests to one cluster of servers or another. Within each cluster, you can control capacity and scale. But in vertical partitioning, the ‘‘filter’’ handles requests internally. Not only is the ‘‘filter’’ more complex and vulnerable than a ‘‘switch’’ as a frontend connector to the world, but you’ve also complicated your ability to control the capacity of the caching layer. It’s embedded inside your frontend, rather than being another cluster of servers. (More on backend partitioning below.)
 </li>
 </ol>
 <div class="Unindented">
-Unfortunately, there is a use case relevant for newer web frameworks, too: if you’ve designed your application poorly, and you have many requests that could take a long time to complete, then your thread pools could get saturated when many users are concurrently making those requests. When saturated, you cannot handle even the super-quick cache requests. A frontend cache band-aid could, at least, keep cached pages working, even though your application servers are at full capacity. This creates an illusion of scalability: some users will see your web site behaving fine, while others will see it hanging.
+Unfortunately, there is a use case relevant for newer web frameworks, too: if you’ve designed your application poorly, and you have many requests that could take a long time to complete, then your thread pools could get saturated when many users are concurrently making those requests. When saturated, you cannot handle even the super-quick cache requests. A filter cache band-aid could, at least, keep cached pages working, even though your application servers are at full capacity. This creates an illusion of scalability: some users will see your web site behaving fine, while others will see it hanging.
 </div>
 <div class="Indented">
 The real solution would be to re-factor your application so that it does not have long request. Below are tips on how to do this.
@@ -3949,7 +4099,7 @@ The only limitation is queries. You can still let users access profiles in other
 A great side-benefit to geographical partitioning is that you can host your servers at data centers within the geographical location, leading to better user experiences. Regional partitioning is useful even for ‘‘NoSQL’’ databases.
 </div>
 <h3 class="Subsubsection-">
-<a class="toc" name="toc-Subsubsection*-1"></a>Coding Tips for Partitioning
+<a class="toc" name="toc-Subsubsection*-3"></a>Coding Tips for Partitioning
 </h3>
 <div class="Unindented">
 If you organize your code well, it would be very easy to implement partitioning. You simply assign different database operations to use different connection pools. If it’s by feature, then you can hard code it for those features. If it’s sharding, then you add a switch before each operation telling it which connection pool to use.
@@ -4221,13 +4371,13 @@ First, recognize that there are two common uses for the term ‘‘scale.’’ 
 From the perspective of the ability to respond to user requests, there are three aspects to consider: 
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-73"></a>1. Serving HTTP
+<a class="toc" name="toc-Paragraph-72"></a>1. Serving HTTP
 </div>
 <div class="Unindented">
 Prudence comes with <a class="URL" href="https://grizzly.dev.java.net/">Grizzly</a>, an HTTP server based on the JVM’s non-blocking I/O API. Grizzly handles concurrent HTTP requests very well, and serves static files at scales comparable to popular HTTP servers. See the <a class="URL" href="../manual/tutorial/">tutorial</a> for more information. 
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-74"></a>2. Generating HTML
+<a class="toc" name="toc-Paragraph-73"></a>2. Generating HTML
 </div>
 <div class="Unindented">
 Prudence supports two modes for generating HTML (and other textual formats), each with its own performance characteristics:
@@ -4245,7 +4395,7 @@ Streaming mode:
 Output is sent to the client <i>while</i> the document runs. This is recommended for documents that need to output a very large amount of text, which might take a long time, or that might otherwise encounter slow-downs while running. In either case, you want the client to receive ongoing output. The output of the document is not cached.  Scriptlets can switch between modes according to changing circumstances. For example, to increase caching duration during heavy loads, to decrease it during periods where data changes often, or to stream in the case of an expected large output. See the <a class="URL" href="../manual/tutorial/">tutorial</a> for more information. 
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-75"></a>3. Running code
+<a class="toc" name="toc-Paragraph-74"></a>3. Running code
 </div>
 <div class="Unindented">
 There may be a delay when starting up a specific language engine in Prudence for the first time in an application, as it loads and initializes itself. Then, there may be a delay when accessing a dynamic web page or resource for the first time, or after it has been changed, as it might require compilation. Once it’s up and running, though, your code performs and scale very well---as well as you’ve written it. You need to understand concurrency and make sure you make good choices to handle coordination between threads accessing the same data. If all is good, your code will actually perform better throughout the life of the application. The JVM learns and adapts as it runs, and performance can improve the more the application is used.

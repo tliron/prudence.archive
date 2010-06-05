@@ -4167,6 +4167,10 @@ document.cacheDuration
 \end_layout
 
 \begin_layout Standard
+(only available in /web/dynamic/ and /web/fragments/)
+\end_layout
+
+\begin_layout Standard
 The duration in milleseconds for which the output of this document will
  be cached.
  If this value is zero, the default, then caching is disabled.
@@ -4178,6 +4182,10 @@ acheKey (see below).
 
 \begin_layout Paragraph
 document.cacheKey
+\end_layout
+
+\begin_layout Standard
+(only available in /web/dynamic/ and /web/fragments/)
 \end_layout
 
 \begin_layout Standard
@@ -4260,6 +4268,10 @@ document.cacheTags
 \end_layout
 
 \begin_layout Standard
+(only available in /web/dynamic/ and /web/fragments/)
+\end_layout
+
+\begin_layout Standard
 This is a list of one or more strings that will be attached to the cached
  output of the page.
  Any number of tags can be associated with a cache entry.
@@ -4278,6 +4290,10 @@ document.cache
 \end_layout
 
 \begin_layout Standard
+(note that the same cache is accessible in both /web/dynamic/ and /resources/)
+\end_layout
+
+\begin_layout Standard
 Provides access to the cache implementation used by this document.
  Prudence supports a pluggable cache backend mechanism, allowing you to
  use RAM, disk, database, distributed and other cache systems.
@@ -4286,8 +4302,15 @@ ce and reliability.
 \end_layout
 
 \begin_layout Standard
-Prudence's default implementation is an in-process memory cache chained
- before an H2 database cache.
+Though Prudence automatically caches the output of dynamic HTML and fragments,
+ you can use the cache as you please.
+ Cache entries are instances of CacheEntry, which embeds various formatting
+ attributes that you are free to ignore if you don't need them.
+\end_layout
+
+\begin_layout Standard
+Prudence's default cache backend is an in-process memory cache chained before
+ an H2 database cache.
  The memory cache ensures extremely fast retrieval times, while the database
  cache makes sure entries will persist even if you restart Prudence.
 \end_layout
@@ -4367,7 +4390,11 @@ Other
 \end_layout
 
 \begin_layout Paragraph
-document.include (/web/dynamic/)
+document.include
+\end_layout
+
+\begin_layout Standard
+(only available in /web/dynamic/ and /web/fragments/)
 \end_layout
 
 \begin_layout Standard
@@ -4682,20 +4709,34 @@ ns on the VM.
 executable.context
 \end_layout
 
-\begin_layout Paragraph
-executable.context.writer
+\begin_layout Standard
+The context is used for communication between the Prudence container and
+ the executable.
 \end_layout
 
-\begin_layout Paragraph
-executable.context.attributes
+\begin_layout Itemize
+executable.context.writer: direct access to the output writer (a memory buffer
+ for /web/dynamic/, and standard output for /resources/ and configuration
+ scripts)
 \end_layout
 
-\begin_layout Paragraph
-executable.context.exposedVariables
+\begin_layout Itemize
+executable.context.exposedVariables: Prudence services are here (application,
+ document, executable, conversation)
+\end_layout
+
+\begin_layout Itemize
+executable.context.attributes: for use by the language engines
 \end_layout
 
 \begin_layout Paragraph
 executable.manager
+\end_layout
+
+\begin_layout Standard
+This is the language manager used to create executable in many languages.
+ Here you can query which languages are supported by the current Prudence
+ instance (executable.manager.adapters).
 \end_layout
 
 \begin_layout Paragraph
@@ -4708,8 +4749,9 @@ This is identical to the ``document'' service detailed above.
 
 \begin_layout Standard
 For example, ``document.include'' is the same as ``executable.container.include''.
- Internally, Prudence uses this equivalence to hook the include scriptlet
- into document.include.
+ Internally, Prudence uses this equivalence to hook the include scriptlet,
+ a Scripturian feature, into document.include, Prudence's implementation
+ of this feature.
 \end_layout
 
 \begin_layout Subsection
@@ -4718,10 +4760,24 @@ conversation
 
 \begin_layout Standard
 The ``conversation'' represents the request received from the user as well
- your response to it, hence it's a ``conversation.'' Here you can access
- various aspects of the request: the URI, formatting preferences, client
- information, and actual data sent with the request (the ``entity'').
+ your response to it, hence it's a ``conversation.'' Because Prudence is
+ RESTful, conversations encapsulate only a single request and its response.
+ Higher level ``session'' management is up to you.
+\end_layout
+
+\begin_layout Standard
+Here you can access various aspects of the request: the URI, formatting
+ preferences, client information, and actual data sent with the request
+ (the ``entity'').
  You can likewise set response characteristics.
+\end_layout
+
+\begin_layout Quote
+Note that in /web/dynamic/ and /web/fragments/, ``conversation'' is available
+ as a global variable.
+ In /resources/, it is sent to the handling entry points (functions, closures,
+ etc.) as an argument.
+ Usage is otherwise identical.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4856,7 +4912,12 @@ conversation.entity.size: the size of the data in bytes, or -1 if unknown
 Note: Client data is provided as a stream that can only be ``consumed''
  once.
  Attributes that cause consumption are marked with a ``*'' above.
- Note that conversation.entity.text is one of them!
+ 
+\emph on
+Note that conversation.entity.text is one of them! 
+\emph default
+If you want to access conversation.entity.text more than once, save it to
+ a variable first.
 \end_layout
 
 \begin_layout Paragraph*
@@ -4901,18 +4962,121 @@ e = ``application/html'' in a scriptlet.
 \end_layout
 
 \begin_layout Quote
-This may seem a little awkward...
- The design decision for Prudence 1.0 was to ``pass through'' all formatting
- attributes from the request to the response, which makes sense for JSON
- or XML communication, but not for HTML forms.
+This may seem a little awkward.
+ The design decision for Prudence 1.0 was to ``pass through,'' by default,
+ all formatting attributes from the request to the response, with the expectatio
+n that the client expects the response from the server to be in the same
+ format.
+ This makes sense for JSON or XML communication, but not for HTML forms.
  A future version of Prudence may offer more sophisticated setting of the
- default response attributes.
+ default response attributes in a conversation.
 \end_layout
 
 \begin_layout Standard
 Note that in /resources/ you always have the option of explicitly returning
  a Representation instance to the client, in which case none of these attributes
  will be used for the response.
+\end_layout
+
+\begin_layout Paragraph
+conversation.cookies
+\end_layout
+
+\begin_layout Standard
+This is initialized as a list (not a map) of cookies sent from the client.
+\end_layout
+
+\begin_layout Standard
+If you want to ask the client to change any of them, be sure to call save()
+ on the cookie in order to send it in the response.
+ You can also call delete() to ask the client to delete the cookie (no need
+ to call save in that case; internally sets maxAge to zero).
+ Note that you can call save() and delete() as many times as you like, and
+ that only the last changes will be sent in the response.
+\end_layout
+
+\begin_layout Standard
+Note that you can only 
+\emph on
+ask 
+\emph default
+a client to change, store cookies, or for them to be used in various.
+ It's up to the client to decide what to do with your requirements.
+ For example, many web browsers allow users to turn off cookie support or
+ filter out certain cookies.
+\end_layout
+
+\begin_layout Standard
+Cookies have the following attributes:
+\end_layout
+
+\begin_layout Itemize
+cookie.name: (read only)
+\end_layout
+
+\begin_layout Itemize
+cookie.version: (integer) per a specific cookie.name
+\end_layout
+
+\begin_layout Itemize
+cookie.value: textual, or text-encoded binary data (note that most clients
+ have strict limits on how much total data is allowed to be stored in all
+ cookies per domain)
+\end_layout
+
+\begin_layout Itemize
+cookie.domain: the client should only use the cookie with this domain and
+ its subdomains (web browsers will not let you set a cookie for a domain
+ which is not the domain of the request or a subdomain of it)
+\end_layout
+
+\begin_layout Itemize
+cookie.path: the client should only use the cookie with URIs that begin with
+ this path (``/'' would mean to use it with all URIs)
+\end_layout
+
+\begin_layout Standard
+The following attributes are not received from the client, but you can set
+ them for sending to the client:
+\end_layout
+
+\begin_layout Itemize
+cookie.maxAge: age in seconds, after which the client should delete the cookie.
+ maxAge=0 deletes the cookie immediately, while maxAge=-1 (the default)
+ asks the client to keep the cookie only for the duration of the ``session''
+ (this is defined by the client; for most web browsers this means that the
+ cookie will be deleted when the browser is closed).
+\end_layout
+
+\begin_layout Itemize
+cookie.secure: true if the cookie is meant to be used only in secure connections
+ (defaults to false)
+\end_layout
+
+\begin_layout Itemize
+cookie.accessRestricted: true if the cookie is meant to be used only in authentic
+ated connections (defaults to false)
+\end_layout
+
+\begin_layout Itemize
+cookie.comment: some clients store this, some discard it
+\end_layout
+
+\begin_layout Paragraph
+conversation.createCookie
+\end_layout
+
+\begin_layout Standard
+You must provide the cookie name as an argument.
+ Returns a new cookie instance if the cookie doesn't exist yet, or the existing
+ cookie if it does.
+\end_layout
+
+\begin_layout Standard
+For new cookies, be sure to call save() on the cookie in order to send it
+ in the response, thus asking the client to create it, or delete() if you
+ want to cancel the creation (in which case nothing will be sent in the
+ response).
 \end_layout
 
 \begin_layout Paragraph
@@ -5182,11 +5346,19 @@ conversation.locals
 \end_layout
 
 \begin_layout Paragraph
-conversation.defer (/web/dynamic/)
+conversation.defer
+\end_layout
+
+\begin_layout Standard
+(only available in /web/dynamic/ and /web/fragments/)
 \end_layout
 
 \begin_layout Paragraph
-conversation.deferred? (/web/dynamic/)
+conversation.deferred?
+\end_layout
+
+\begin_layout Standard
+(only available in /web/dynamic/ and /web/fragments/)
 \end_layout
 
 \begin_layout Paragraph
@@ -6146,30 +6318,29 @@ Easy deployment
 \begin_deeper
 \begin_layout Enumerate
 Boot scripts: avoid weird configuration formats and start your Restlet component
- exactly as you want (in your choice of scripting language) 
+ exactly as you want (in your choice of scripting language)
 \end_layout
 
 \begin_layout Enumerate
 Default scripts already handle things like virtual hosting, multiple servers
- and internal routing 
+ and internal routing
 \end_layout
 
 \begin_layout Enumerate
 Designed from the ground-up to handle multiple apps on the same component
- 
 \end_layout
 
 \begin_layout Enumerate
-Admin app for realtime management of server(s) 
+Admin app for realtime management of server(s)
 \end_layout
 
 \begin_layout Enumerate
 Logging is pre-configured and ``just works,'' including Apache-compatible
- web log 
+ web log
 \end_layout
 
 \begin_layout Enumerate
-Single-file ``plop'' deployment (like WAR files) 
+Single-file ``plop'' deployment (like WAR files)
 \end_layout
 
 \end_deeper
@@ -6179,20 +6350,19 @@ Easy prototyping of REST resources
 
 \begin_deeper
 \begin_layout Enumerate
-In the language of your choice 
+In the language of your choice
 \end_layout
 
 \begin_layout Enumerate
-Code is compiled, cached and loaded on-the-fly 
+Code is compiled, cached and loaded on-the-fly
 \end_layout
 
 \begin_layout Enumerate
-Rich debug page for runtime errors 
+Rich debug page for runtime errors
 \end_layout
 
 \begin_layout Enumerate
 When you're happy with it, you can rewrite it as a ServerResource in Java
- 
 \end_layout
 
 \end_deeper
@@ -6203,37 +6373,37 @@ Powerful HTML generation platform, like JSP/ASP/PHP (again, 100% Restlet-based)
 \begin_deeper
 \begin_layout Enumerate
 In the language of your choice, including mixing languages and template
- engines (Velocity, Succinct) on one page 
+ engines (Velocity, Succinct) on one page
 \end_layout
 
 \begin_layout Enumerate
-Code is compiled, cached and loaded on-the-fly 
+Code is compiled, cached and loaded on-the-fly
 \end_layout
 
 \begin_layout Enumerate
 RAM/db server-side caching (uses Restlet's URI template language for cache
- key generation) 
+ key generation)
 \end_layout
 
 \begin_layout Enumerate
-Straightforward support for client-side caching 
+Straightforward support for client-side caching
 \end_layout
 
 \begin_layout Enumerate
-Easily ``stream'' output (Restlet async) 
+Easily ``stream'' output (Restlet async)
 \end_layout
 
 \begin_layout Enumerate
-Easily accept uploaded files 
+Easily accept uploaded files
 \end_layout
 
 \begin_layout Enumerate
-Rich debug page for runtime errors 
+Rich debug page for runtime errors
 \end_layout
 
 \end_deeper
 \begin_layout Enumerate
-Restlet sugar 
+Restlet sugar
 \end_layout
 
 \begin_deeper
@@ -6257,16 +6427,19 @@ Delegated status service for displaying custom pages for error codes (404,
 \end_layout
 
 \begin_layout Enumerate
-Rich debugging representation 
+Rich debugging representation
 \end_layout
 
 \begin_layout Enumerate
 Caching system, with pluggable backends, designed for StringRepresentations
- 
 \end_layout
 
 \begin_layout Enumerate
 Easy file uploads (slightly higher-level than the Restlet FileUpload extension)
+\end_layout
+
+\begin_layout Enumerate
+Easy cookie modification (combines Cookie and CookieSetting)
 \end_layout
 
 \end_deeper
@@ -7882,13 +8055,163 @@ You'll see many web frameworks out there that support memcached and recommend
  popularity levels of LiveJournal, Facebook, YouTube, Twitter, etc.
 \end_layout
 
+\begin_layout Subsubsection*
+Pre-Filling the Cache
+\end_layout
+
+\begin_layout Standard
+If there are thousands of ways in which users can organize a data view,
+ and each of these views is particular to one user, then it may make little
+ sense to cache them individually, because individual schemes would hardly
+ ever be re-used.
+ You'll just be filling up the cache with useless entries.
+\end_layout
+
+\begin_layout Standard
+Take a closer look, though:
+\end_layout
+
+\begin_layout Enumerate
+It may be that of the thousands of organization schemes only a few are commonly
+ used, so it's worth caching the output of just those.
+\end_layout
+
+\begin_layout Enumerate
+It could be that these schemes are similar enough to each other that you
+ could generate them all in one operation, and save them each separately
+ in the cache.
+ Even if cache entries will barely be used, if they're cheap to create,
+ it still might be worth creating them.
+\end_layout
+
+\begin_layout Standard
+This leads us to an important point:
+\end_layout
+
+\begin_layout Quote
+Prudence is a ``frontend'' platform, in that it does not specify which data
+ backend, if at all, you should use.
+ Its cache, however, is general purpose, and you can store in it anything
+ that you can encode as a string.
+\end_layout
+
+\begin_layout Standard
+Let's take as a pre-filling example a tree data structure in which branches
+ can be visually opened and closed.
+ Additionally, according to user permissions different parts of the tree
+ may be hidden.
+ Sounds too complicated to cache all the view combinations? Well, consider
+ that you can trigger, upon any change to the tree data structure, a function
+ that loops through all the different iterations of the tree recursively
+ and saves a view of each of them to the cache.
+ The cache keys can be something like ``branch1+.branch2-.branch3+'', with
+ ``+'' signifying ``-'' whether the branch is visually open or closed.
+ You can use similar +'s and -'s for permissions, and create views per permissio
+n combinations.
+ Later, when users with specific permissions request different views of
+ the tree, no problem: all possibilities were already pre-filled.
+ You might end up having to generate and cache thousands of views at once,
+ but the difference between generating one view and generating thousands
+ of views may be quite small, because the majority of the duration is spend
+ communicating with the database backend.
+ 
+\end_layout
+
+\begin_layout Standard
+If generating thousands of views takes too long for the duration of a single
+ request, another option is to generate them on a separate thread.
+ Even if it takes a few minutes to generate all the many, many tree views
+ combinations, it might be OK in your application for views to be a few
+ minutes out-of-date.
+ Consider that the scalability benefits can be very significant: you generate
+ views only 
+\emph on
+once 
+\emph default
+for the entire system, while millions of concurrent users do a simple retrieval
+ from the cache.
+\end_layout
+
+\begin_layout Subsubsection*
+Caching the Data Backend
+\end_layout
+
+\begin_layout Standard
+Pre-filling the cache can take you very far.
+ It is, however, quite complicated to implement, and can be ineffective
+ if data changes too frequently or if the cache has to constantly be updated.
+ Also, it's hard to scale the pre-filling to 
+\emph on
+millions 
+\emph default
+of fragments.
+\end_layout
+
+\begin_layout Standard
+If we go back to our tree example above, the problem was that it was too
+ costly to fetch the entire tree from the database.
+ But what if we cache the tree itself? In that case, it would be very quick
+ to generate any view of the tree on-demand.
+ Instead of caching the view, we'd be caching the data, and achieving the
+ same scalability gains.
+\end_layout
+
+\begin_layout Standard
+Easy, right? So why not cache 
+\emph on
+all
+\emph default
+ our data structures? The reason is that it's very difficult to do this
+ correctly beyond trivial examples.
+ Data structures tend to have complex interrelationships (one-to-many, many-to-m
+any, foreign keys, recursive tree structures, graphs, etc.) such that a change
+ in data at one point of the structure may alter various others in particular
+ ways.
+ For example, consider a calendar database, and that you're caching individual
+ days with all their events.
+ Weekly calendar views are then generated on-the-fly (and quickly) for users
+ according to what kinds of events they want to see in their personal calendars.
+ What happens if a user adds a recurring event that happens every Monday?
+ You'll need to make sure that all Mondays currently cached would be invalidated
+, which might mean tagging all these as ``monday'' using Prudence's cache
+ tags.
+ This requires a specific caching strategy for a specific application.
+\end_layout
+
+\begin_layout Standard
+By all means, cache your data structures if you can't easily cache your
+ output, but be aware of the challenge!
+\end_layout
+
+\begin_layout Quote
+Prudence's sister project, Diligence, is designed specifically to solve
+ this problem.
+ It not only caches your data structures, but it validates them in memory
+ using your coded logic, instead of invalidating them and forcing them to
+ be re-fetched from the database.
+ It supports data structures commonly used with relational databases, pluggable
+ storage technologies, high-performance resource pooling and throttling,
+ and natural integration with Prudence.
+ Together, 
+\begin_inset CommandInset href
+LatexCommand href
+name "Diligence and Prudence"
+target "http://threecrickets.com/diligenceandprudence/"
+
+\end_inset
+
+ form a solid platform for building scalable, data-backed web applications.
+ At the time of this writing, Diligence is still under development.
+ We hope to release it as open source soon, so stay tuned!
+\end_layout
+
 \begin_layout Subsubsection
-Frontend Caching
+Filter Caching
 \end_layout
 
 \begin_layout Standard
 If you need to quickly scale a web site that has not been designed for caching,
- a band-aid is available: frontend caches, such as 
+ a band-aid is available: filter caches, such as 
 \begin_inset CommandInset href
 LatexCommand href
 name "Varnish"
@@ -7923,7 +8246,7 @@ target "http://www.squid-cache.org/"
 \begin_layout Standard
 The crucial use case is archaic, too.
  If you're using an old web framework in which you cannot implement caching
- logic yourself, or cannot plug in to a good cache backend, then these frontend
+ logic yourself, or cannot plug in to a good cache backend, then these filter
  caches can do it for you.
 \end_layout
 
@@ -7934,7 +8257,7 @@ They are problematic in two ways:
 \begin_layout Enumerate
 Decoupling caching logic from your application means losing many features.
  For example, invalidating portions of the cache is difficult if not impossible.
- It's because of frontend caching, indeed, that so many web sites do a poor
+ It's because of filter caching, indeed, that so many web sites do a poor
  job at showing up-to-date information.
 \end_layout
 
@@ -7948,8 +8271,8 @@ Filtering actually implements a kind of partitioning, but one that is vertical
  Not only is the ``filter'' more complex and vulnerable than a ``switch''
  as a frontend connector to the world, but you've also complicated your
  ability to control the capacity of the caching layer.
- It's embedded inside your front end, rather than being another cluster
- of servers.
+ It's embedded inside your frontend, rather than being another cluster of
+ servers.
  (More on backend partitioning below.)
 \end_layout
 
@@ -7959,7 +8282,7 @@ Unfortunately, there is a use case relevant for newer web frameworks, too:
  that could take a long time to complete, then your thread pools could get
  saturated when many users are concurrently making those requests.
  When saturated, you cannot handle even the super-quick cache requests.
- A frontend cache band-aid could, at least, keep cached pages working, even
+ A filter cache band-aid could, at least, keep cached pages working, even
  though your application servers are at full capacity.
  This creates an illusion of scalability: some users will see your web site
  behaving fine, while others will see it hanging.

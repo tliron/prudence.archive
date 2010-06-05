@@ -11,6 +11,7 @@
 
 package com.threecrickets.prudence.internal;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,6 +38,7 @@ import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.prudence.util.CaptiveRedirector;
+import com.threecrickets.prudence.util.ConversationCookie;
 import com.threecrickets.prudence.util.FileParameter;
 import com.threecrickets.prudence.util.FormWithFiles;
 
@@ -89,6 +91,32 @@ public class ExposedConversationBase<R extends ServerResource>
 	public Reference getReference()
 	{
 		return resource.getReference();
+	}
+
+	/**
+	 * The cookies.
+	 * 
+	 * @return The cookies
+	 */
+	public Collection<ConversationCookie> getCookies()
+	{
+		if( conversationCookies == null )
+			conversationCookies = ConversationCookie.wrapCookies( resource );
+		return conversationCookies;
+	}
+
+	/**
+	 * Returns a new cookie instance if the cookie doesn't exist yet, or the
+	 * existing cookie if it does. Note that the cookie will not be saved into
+	 * the response until you call {@link ConversationCookie#save()}.
+	 * 
+	 * @param name
+	 *        The cookie name
+	 * @return A new cookie or the existing cookie
+	 */
+	public ConversationCookie createCookie( String name )
+	{
+		return ConversationCookie.createCookie( name, resource.getCookieSettings(), getCookies() );
 	}
 
 	/**
@@ -828,4 +856,9 @@ public class ExposedConversationBase<R extends ServerResource>
 	 * The form, sent via POST or PUT, as a list.
 	 */
 	private Map<String, Object> form;
+
+	/**
+	 * The conversation cookies.
+	 */
+	private Collection<ConversationCookie> conversationCookies;
 }
