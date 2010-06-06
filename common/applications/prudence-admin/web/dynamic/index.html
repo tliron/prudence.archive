@@ -1,6 +1,6 @@
 <%velocity
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-#set($component = $application.getGlobal('component'))
+#set($component = $application.globals.get('component'))
 #set($applications = $component.context.attributes.get('applications'))
 #set($version = $component.context.attributes.get('prudence.version'))
 #set($revision = $component.context.attributes.get('prudence.revision'))
