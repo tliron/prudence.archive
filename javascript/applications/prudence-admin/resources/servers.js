@@ -2,8 +2,8 @@ importClass(
 	org.restlet.data.MediaType,
 	org.restlet.representation.Variant);
 
-//Include the JSON library
-document.execute('../libraries/json2');
+// Include the JSON library
+document.execute('json2/');
 
 function handleInit() {
 	prudence.variants.add(new Variant(MediaType.TEXT_PLAIN));
