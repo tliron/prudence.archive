@@ -5412,7 +5412,7 @@ Sharing State
 Prudence is designed to allow massive concurrency and scalability while
  at the same time shielding you from the gorier details.
  However, when it comes to sharing state between different parts of your
- code, it's critical that you understand how Prudence works.
+ code, it's critical that you understand Prudence's state services.
 \end_layout
 
 \begin_layout Subsubsection
@@ -5509,6 +5509,20 @@ Generally, if you find yourself having to rely on executable.globals, ask
  Remember that Prudence has powerful URL routing, support for virtual hosting,
  etc., letting you easily have one application work in several sites simultaneous
 ly
+\end_layout
+
+\begin_layout Quote
+Note for Clojure flavor: All Clojure vars are VM-wide globals equivalent
+ in scope to executable.globals.
+ You usually work with namespaces that Prudence creates on-the-fly, so they
+ do not persist beyond the execution.
+ However, if you explicitly define a namespace, then you use it as a place
+ for shared state.
+ It will then be up to you to make sure that your namescape doesn't collide
+ with that of another application installed in the Prudence insstance.
+ Though this approach might seem to break our rule of thumb here, of preferring
+ application.globals to executable.globals, it is more idiomatic to Clojure
+ and Lisps more generally.
 \end_layout
 
 \begin_layout Subsubsection
@@ -6308,7 +6322,7 @@ Summary
 
 \begin_layout Standard
 A 100% Restlet-based alternative to servlet/JEE containers.
- (Requires only Restlet SE.)
+ (Requires only Restlet JSE.)
 \end_layout
 
 \begin_layout Enumerate
@@ -6318,7 +6332,7 @@ Easy deployment
 \begin_deeper
 \begin_layout Enumerate
 Boot scripts: avoid weird configuration formats and start your Restlet component
- exactly as you want (in your choice of scripting language)
+ exactly as you want (your choice among 6 langauges)
 \end_layout
 
 \begin_layout Enumerate
@@ -6350,7 +6364,7 @@ Easy prototyping of REST resources
 
 \begin_deeper
 \begin_layout Enumerate
-In the language of your choice
+Your choice among 6 langauges
 \end_layout
 
 \begin_layout Enumerate
@@ -6413,8 +6427,7 @@ Fallback router (attach multiple MODE_STARTS_WITH restlets to the same base
 \end_layout
 
 \begin_layout Enumerate
-URI ``capturing'' (internal redirection; let the URI-space you expose to
- the world be different from the one you use internally)
+URI ``capturing'' (internal redirection)
 \end_layout
 
 \begin_layout Enumerate
@@ -6440,6 +6453,10 @@ Easy file uploads (slightly higher-level than the Restlet FileUpload extension)
 
 \begin_layout Enumerate
 Easy cookie modification (combines Cookie and CookieSetting)
+\end_layout
+
+\begin_layout Enumerate
+Filter to selectively add CacheControl to Directory
 \end_layout
 
 \end_deeper

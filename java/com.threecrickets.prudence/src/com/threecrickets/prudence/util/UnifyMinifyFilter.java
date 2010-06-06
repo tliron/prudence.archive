@@ -21,8 +21,6 @@ import java.io.OutputStream;
 import java.io.SequenceInputStream;
 import java.util.Arrays;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.restlet.Context;
@@ -32,6 +30,7 @@ import org.restlet.Restlet;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.routing.Filter;
+
 
 /**
  * A {@link Filter} that automatically unifies and/or minifies source files,
@@ -116,7 +115,7 @@ public abstract class UnifyMinifyFilter extends Filter
 	 */
 	public void unify( File sourceDirectory, boolean minify ) throws IOException
 	{
-		File unifiedSourceFile = getUniqueFile( new File( sourceDirectory, minify ? unifiedMinifiedFilename : unifiedFilename ) );
+		File unifiedSourceFile = IoUtil.getUniqueFile( new File( sourceDirectory, minify ? unifiedMinifiedFilename : unifiedFilename ) );
 
 		synchronized( unifiedSourceFile )
 		{
@@ -162,7 +161,7 @@ public abstract class UnifyMinifyFilter extends Filter
 					if( minify )
 						minify( in, out );
 					else
-						copyStream( in, out );
+						IoUtil.copyStream( in, out );
 				}
 				finally
 				{
@@ -286,52 +285,6 @@ public abstract class UnifyMinifyFilter extends Filter
 		public boolean accept( File directory, String name )
 		{
 			return name.endsWith( sourceExtension ) && !name.equals( unifiedMinifiedFilename ) && !name.equals( unifiedFilename );
-		}
-	}
-
-	/**
-	 * Cache of unique files.
-	 */
-	private static final ConcurrentMap<String, File> uniqueFiles = new ConcurrentHashMap<String, File>();
-
-	/**
-	 * Makes sure the file is unique.
-	 * 
-	 * @param file
-	 *        The file
-	 * @return The unique file
-	 */
-	private static File getUniqueFile( File file )
-	{
-		String key = file.getAbsolutePath();
-		File uniqueFile = uniqueFiles.get( key );
-		if( uniqueFile == null )
-		{
-			uniqueFile = file;
-			File existing = uniqueFiles.put( key, uniqueFile );
-			if( existing != null )
-				uniqueFile = existing;
-		}
-		return uniqueFile;
-	}
-
-	/**
-	 * Copies streams.
-	 * 
-	 * @param in
-	 *        Input stream
-	 * @param out
-	 *        Output stream
-	 * @throws IOException
-	 */
-	private static void copyStream( InputStream in, OutputStream out ) throws IOException
-	{
-		while( true )
-		{
-			int data = in.read();
-			if( data == -1 )
-				break;
-			out.write( data );
 		}
 	}
 }
