@@ -146,7 +146,7 @@ var staticWebDirectoryListingAllowed = true;
 var preheatResources = [];
 
 //
-// URL manipulation
+// URL Manipulation
 //
 
 // The URLs in this array will automatically be redirected to have a trailing
@@ -155,9 +155,9 @@ var preheatResources = [];
 var urlAddTrailingSlash = [dynamicWebBaseURL, staticWebBaseURL];
 
 //
-// Runtime Attributes
+// Predefined Globals
 //
-// These will be available to your code via the application's context.
+// These will be available to your code via application.globals.
 //
 
-runtimeAttributes = {};
+predefinedGlobals = {};

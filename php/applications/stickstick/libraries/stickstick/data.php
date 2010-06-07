@@ -4,7 +4,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import org.restlet.Application;
 import com.threecrickets.prudence.util.MiniConnectionPoolManager;
 
 $connection_pool_lock = $application->globals['connection_pool_lock'];
@@ -12,30 +11,34 @@ if(is_null($connection_pool_lock)) {
 	$connection_pool_lock = $application->getGlobal('connection_pool_lock', new ReentrantLock());
 }
 
-function get_data_source($attributes) {
-	if($attributes['stickstick.backend'] == 'h2') {
+function get_data_source() {
+	global $application;
+
+	if($application->globals['stickstick.backend'] == 'h2') {
 		import org.h2.jdbcx.JdbcDataSource;
 		$data_source = new JdbcDataSource();
-	} else if($attributes['stickstick.backend'] == 'mysql') {
+	} else if($application->globals['stickstick.backend'] == 'mysql') {
 		import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 		$data_source = new MysqlDataSource();
 	}
-	$data_source->URL = get_url($attributes);
-	$data_source->user = $attributes['stickstick.username'];
-	$data_source->password = $attributes['stickstick.password'];
+	$data_source->URL = get_url();
+	$data_source->user = $application->globals['stickstick.username'];
+	$data_source->password = $application->globals['stickstick.password'];
 	return $data_source;
 }
 
-function get_url($attributes) {
-	$url = 'jdbc:' . $attributes['stickstick.backend'] . ':';
-	if($attributes['stickstick.host'] != '') {
-		if($attributes['stickstick.backend'] == 'h2') {
+function get_url() {
+	global $application;
+
+	$url = 'jdbc:' . $application->globals['stickstick.backend'] . ':';
+	if($application->globals['stickstick.host'] != '') {
+		if($application->globals['stickstick.backend'] == 'h2') {
 			$url = $url . 'tcp:';
 		}
-		$url = $url . '//' . $attributes['stickstick.host'] . '/';
+		$url = $url . '//' . $application->globals['stickstick.host'] . '/';
 	}
-	if($attributes['stickstick.database'] != '') {
-		$url = $url . $attributes['stickstick.database'];
+	if($application->globals['stickstick.database'] != '') {
+		$url = $url . $application->globals['stickstick.database'];
 	}
 	return $url;
 }
@@ -43,14 +46,12 @@ function get_url($attributes) {
 function get_connection($fresh=false) {
 	global $connection_pool_lock, $application;
 	
-	$attributes = Application::getCurrent()->context->attributes;
-
 	$connection_pool_lock->lock();
 	$connection_pool = $application->globals['connection_pool'];
 	try {
 		if(is_null($connection_pool) || $fresh) {
 			if(is_null($connection_pool)) {
-				$connection_pool = $application->getGlobal('connection_pool', new MiniConnectionPoolManager(get_data_source($attributes), 10));
+				$connection_pool = $application->getGlobal('connection_pool', new MiniConnectionPoolManager(get_data_source(), 10));
 			}
 			
 			// TODO: CREATE DATABASE IF NOT EXISTS

@@ -145,7 +145,7 @@ static_web_directory_listing_allowed = True
 preheat_resources = []
 
 #
-# URL manipulation
+# URL Manipulation
 #
 
 # The URLs in this array will automatically be redirected to have a trailing
@@ -154,9 +154,9 @@ preheat_resources = []
 url_add_trailing_slash = [dynamic_web_base_url, static_web_base_url]
 
 #
-# Runtime Attributes
+# Predefined Globals
 #
-# These will be available to your code via the application's context.
+# These will be available to your code via application.globals.
 #
 
-runtime_attributes = {}
+predefined_globals = {}

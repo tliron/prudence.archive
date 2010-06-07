@@ -28,7 +28,7 @@
 	(let [fresh (.equals "true" (.. conversation getQuery (get "fresh")))]
 		;(println form)
 		;(println fresh)
-		(with-connection (if fresh fresh-from-pool from-pool)
+		(with-connection (if fresh (fresh-from-pool application) (from-pool application))
 			(let [boards (get-boards)]
 				;(println (get-board-max-timestamp))
 				;(println boards)
@@ -53,7 +53,7 @@
   (let [text (.. conversation getEntity (getText))
   	note (keyword-map (read-json text))]
 		;(println note)
-		(with-connection from-pool
+		(with-connection (from-pool application)
 			(let [note (add-note note)]
 				;(println note)
     		(update-board-timestamp note))))

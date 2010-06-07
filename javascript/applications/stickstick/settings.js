@@ -11,11 +11,11 @@ applicationOwner = 'Three Crickets';
 applicationHomeURL = 'http://threecrickets.com/prudence/stickstick/';
 applicationContactEmail = 'prudence@threecrickets.com';
 
-runtimeAttributes['stickstick.backend'] = 'h2';
-runtimeAttributes['stickstick.username'] = 'root';
-runtimeAttributes['stickstick.password'] = 'root';
-runtimeAttributes['stickstick.host'] = '';
-runtimeAttributes['stickstick.database'] = 'data/stickstick/stickstick';
+predefinedGlobals['stickstick.backend'] = 'h2';
+predefinedGlobals['stickstick.username'] = 'root';
+predefinedGlobals['stickstick.password'] = 'root';
+predefinedGlobals['stickstick.host'] = '';
+predefinedGlobals['stickstick.database'] = 'data/stickstick/stickstick';
 
 showDebugOnError = true;
 

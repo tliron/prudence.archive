@@ -3,6 +3,7 @@
 #
 
 from java.io import File
+from com.threecrickets.prudence.util import IoUtil
 
 # Hosts
 
@@ -11,7 +12,24 @@ execute_or_default('instance/hosts/')
 # Applications
 
 applications = component.context.attributes['applications'] = []
-application_dirs = File('applications').listFiles()
+applications_dir = File('applications')
+
+properties_file = File(applications_dir, 'applications.properties')
+properties = IoUtil.loadProperties(properties_file)
+save_properties = False
+application_files = applications_dir.listFiles()
+for application_file in application_files:
+    last_modified = str(application_file.lastModified())
+    if not application_file.directory and application_file.name[-4:] == '.zip' and properties.getProperty(application_file.name, '') != last_modified:
+        print 'Unpacking "' + application_file.name + '"...'
+        IoUtil.unzip(application_file, applications_dir)
+        properties.setProperty(application_file.name, last_modified)
+        save_properties = True
+
+if save_properties:
+    IoUtil.saveProperties(properties, properties_file)
+
+application_dirs = applications_dir.listFiles()
 for application_dir in application_dirs:
     if application_dir.isDirectory():
         application_name = application_dir.name

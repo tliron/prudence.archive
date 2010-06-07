@@ -5,7 +5,6 @@ import java.util.concurrent.locks.ReentrantLock
 import java.sql.DriverManager
 import java.sql.SQLException
 import java.sql.Timestamp
-import org.restlet.Application
 import com.threecrickets.prudence.util.MiniConnectionPoolManager
 
 $connection_pool_lock = $application.globals['connection_pool_lock']
@@ -13,42 +12,40 @@ if $connection_pool_lock.nil?
 	$connection_pool_lock = $application.get_global 'connection_pool_lock', ReentrantLock.new
 end
 
-def get_data_source attributes
+def get_data_source
 	data_source = nil
-	if attributes['stickstick.backend'] == 'h2'
+	if $application.globals['stickstick.backend'] == 'h2'
 		data_source = org.h2.jdbcx.JdbcDataSource.new
-	elsif attributes['stickstick.backend'] == 'mysql'
+	elsif $application.globals['stickstick.backend'] == 'mysql'
 		data_source = com.mysql.jdbc.jdbc2.optional.MysqlDataSource.new
 	end
-	data_source.setURL get_url(attributes)
-	data_source.user = attributes['stickstick.username']
-	data_source.password = attributes['stickstick.password']
+	data_source.setURL get_url
+	data_source.user = $application.globals['stickstick.username']
+	data_source.password = $application.globals['stickstick.password']
 	return data_source
 end
 
-def get_url attributes
-	url = 'jdbc:' + attributes['stickstick.backend'] + ':'
-	if attributes['stickstick.host'] != ''
-		if attributes['stickstick.backend'] == 'h2'
+def get_url
+	url = 'jdbc:' + $application.globals['stickstick.backend'] + ':'
+	if $application.globals['stickstick.host'] != ''
+		if $application.globals['stickstick.backend'] == 'h2'
 			url += 'tcp:'
 		end
-		url += '//' + attributes['stickstick.host'] + '/'
+		url += '//' + $application.globals['stickstick.host'] + '/'
 	end
-	if attributes['stickstick.database'] != ''
-		url += attributes['stickstick.database']
+	if $application.globals['stickstick.database'] != ''
+		url += $application.globals['stickstick.database']
 	end
 	return url
 end
 
 def get_connection fresh=false
-	attributes = Application.current.context.attributes
-
 	$connection_pool_lock.lock
 	connection_pool = $application.globals['connection_pool']
 	begin
 		if connection_pool.nil? || fresh
 			if connection_pool.nil?
-				connection_pool = $application.get_global 'connection_pool', MiniConnectionPoolManager.new(get_data_source(attributes), 10)
+				connection_pool = $application.get_global 'connection_pool', MiniConnectionPoolManager.new(get_data_source, 10)
 			end
 			
 			# TODO: CREATE DATABASE IF NOT EXISTS

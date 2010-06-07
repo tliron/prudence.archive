@@ -221,6 +221,10 @@
 	
 	<target name="kitchensink" depends="libraries-kitchensink, content-kitchensink" description="Create distribution" />
 	
+	<target name="clean-kitchensink" description="Clean distribution">
+		<delete dir="${dist-kitchensink}" />
+	</target>
+
 	<target name="package-kitchensink" depends="kitchensink" description="Create distribution zip">
 		<package dist="${dist-kitchensink}" name="kitchensink" />
 	</target>

@@ -13,7 +13,7 @@ global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_docum
 global $static_web_base_url, $static_web_base_path, $static_web_directory_listing_allowed;
 global $preheat_resources;
 global $url_add_trailing_slash;
-global $runtime_attributes;
+global $predefined_globals;
 
 //
 // Information
@@ -159,7 +159,7 @@ $static_web_directory_listing_allowed = true;
 $preheat_resources = array();
 
 //
-// URL manipulation
+// URL Manipulation
 //
 
 // The URLs in this array will automatically be redirected to have a trailing
@@ -168,10 +168,10 @@ $preheat_resources = array();
 $url_add_trailing_slash = array($dynamic_web_base_url, $static_web_base_url);
 
 //
-// Runtime Attributes
+// Predefined Globals
 //
-// These will be available to your code via the application's context.
+// These will be available to your code via $application->globals.
 //
 
-$runtime_attributes = array();
+$predefined_globals = array();
 ?>

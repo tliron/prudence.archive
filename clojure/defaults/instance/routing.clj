@@ -2,7 +2,9 @@
 ; Prudence Routing
 ;
 
-(import 'java.io.File)
+(import
+  'java.io.File
+  'com.threecrickets.prudence.util.IoUtil)
 
 ; Hosts
 
@@ -12,8 +14,23 @@
 
 (def applications []) 
 (.. component getContext getAttributes (put "applications" applications))
+(def applications-dir (File. "applications"))
 
-(def application-dirs (.. (File. "applications") listFiles))
+(def properties-file (File. applications-dir "applications.properties"))
+(def properties (IoUtil/loadProperties properties-file))
+(def save-properties false)
+(def application-files (.listFiles applications-dir))
+(doseq [application-file (filter #(and (not (.isDirectory %)) (.. % getName (endsWith ".zip"))) application-files)]
+  (let [last-modified (str (.lastModified application-file))]
+    (when (not (.equals (.getProperty properties (.getName application-file) "") last-modified))
+		  (print (str "Unpacking \"" (.getName application-file) "\"...\n"))
+		  (IoUtil/unzip application-file applications-dir)
+		  (.setProperty properties (.getName application-file) last-modified)
+		  (def save-properties true))))
+(if save-properties
+  (IoUtil/saveProperties properties properties-file))
+
+(def application-dirs (.listFiles applications-dir))
 (doseq [application-dir (filter #(.isDirectory %) application-dirs)]
 	(def application-name (.getName application-dir))
   (def application-internal-name (.getName application-dir))
@@ -25,5 +42,5 @@
   (def applications (conj applications application-instance)))
 
 (if (empty? applications) (do
- 		(print "No applications found. Exiting.")
+ 		(print "No applications found. Exiting.\n")
   	(System/exit 0)))

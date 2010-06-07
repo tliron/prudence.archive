@@ -21,7 +21,7 @@
 (defn handle-get [conversation]
 	(let [id (get-id conversation)]
 
-		(with-connection from-pool
+		(with-connection (from-pool application)
 			(let [note (get-note id)]
 				(if (nil? note)
 					404
@@ -33,7 +33,7 @@
 (defn handle-get-info [conversation]
 	(let [id (get-id conversation)]
 
-		(with-connection from-pool
+		(with-connection (from-pool application)
 			(let [note (get-note id)]
 				(if (nil? note)
 					nil
@@ -50,7 +50,7 @@
     	note (keyword-map (read-json text))]
 
 			;(println note)
-			(with-connection from-pool
+			(with-connection (from-pool application)
 				(let [existing (get-note id)]
 					(if (nil? existing)
 						404
@@ -66,7 +66,7 @@
 (defn handle-delete [conversation]
 	(let [id (get-id conversation)]
 
-		(with-connection from-pool
+		(with-connection (from-pool application)
 			(let [note (get-note id)]
 				(if (nil? note)
 					404

@@ -3,6 +3,7 @@
 #
 
 import java.util.ArrayList
+import com.threecrickets.prudence.util.IoUtil
 
 # Hosts
 
@@ -12,7 +13,26 @@ execute_or_default 'instance/hosts/'
 
 $applications = ArrayList.new
 $component.context.attributes['applications'] = $applications
-$application_dirs = java.io.File.new('applications').list_files
+$applications_dir = java.io.File.new('applications')
+
+$properties_file = java.io.File.new($applications_dir, 'applications.properties')
+$properties = IoUtil::load_properties $properties_file
+$save_properties = false
+$application_files = $applications_dir.list_files
+for application_file in $application_files
+	last_modified = application_file.last_modified.to_s
+	if not application_file.is_directory and application_file.name =~ /.zip$/ and $properties.get_property(application_file.name, '') != last_modified
+		puts 'Unpacking "' + application_file.name + '"...'
+		IoUtil::unzip application_file, $applications_dir
+		$properties.set_property application_file.name, last_modified
+		$save_properties = true
+	end
+end
+if $save_properties
+	IoUtil::save_properties $properties, $properties_file
+end
+
+$application_dirs = $applications_dir.list_files
 for application_dir in $application_dirs
 	if application_dir.is_directory
 		$application_name = application_dir.name

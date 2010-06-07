@@ -6,7 +6,6 @@ importClass(
 	java.sql.DriverManager,
 	java.sql.SQLException,
 	java.sql.Timestamp,
-	org.restlet.Application,
 	com.threecrickets.prudence.util.MiniConnectionPoolManager);
 
 var connectionPoolLock = application.globals.get('connectionPoolLock');
@@ -14,42 +13,40 @@ if(connectionPoolLock == null) {
 	connectionPoolLock = application.getGlobal('connectionPoolLock', new ReentrantLock());
 }
 
-function getDataSource(attributes) {
+function getDataSource() {
 	var dataSource;
-	if(attributes.get('stickstick.backend') == 'h2') {
+	if(application.globals.get('stickstick.backend') == 'h2') {
 		dataSource = new org.h2.jdbcx.JdbcDataSource();
-	} else if(attributes.get('stickstick.backend') == 'mysql') {
+	} else if(application.globals.get('stickstick.backend') == 'mysql') {
 		dataSource = new com.mysql.jdbc.jdbc2.optional.MysqlDataSource();
 	}
-	dataSource.URL = getUrl(attributes);
-	dataSource.user = attributes.get('stickstick.username');
-	dataSource.password = attributes.get('stickstick.password');
+	dataSource.URL = getUrl();
+	dataSource.user = application.globals.get('stickstick.username');
+	dataSource.password = application.globals.get('stickstick.password');
 	return dataSource;
 }
 
-function getUrl(attributes) {
-	var url = 'jdbc:' + attributes.get('stickstick.backend') + ':';
-	if(attributes.get('stickstick.host') != '') {
-		if(attributes.get('stickstick.backend') == 'h2') {
+function getUrl() {
+	var url = 'jdbc:' + application.globals.get('stickstick.backend') + ':';
+	if(application.globals.get('stickstick.host') != '') {
+		if(application.globals.get('stickstick.backend') == 'h2') {
 			url += 'tcp:';
 		}
-		url += '//' + attributes.get('stickstick.host') + '/';
+		url += '//' + application.globals.get('stickstick.host') + '/';
 	}
-	if(attributes.get('stickstick.database') != '') {
-		url += attributes.get('stickstick.database');
+	if(application.globals.get('stickstick.database') != '') {
+		url += application.globals.get('stickstick.database');
 	}
 	return url;
 }
 
 function getConnection(fresh) {
-	var attributes = Application.current.context.attributes;
-
 	connectionPoolLock.lock();
 	connectionPool = application.globals.get('connectionPool');
 	try {
 		if(connectionPool == null || fresh) {
 			if(connectionPool == null) {
-				connectionPool = application.getGlobal('connectionPool', new MiniConnectionPoolManager(getDataSource(attributes), 10));
+				connectionPool = application.getGlobal('connectionPool', new MiniConnectionPoolManager(getDataSource(), 10));
 			}
 			
 			// TODO: CREATE DATABASE IF NOT EXISTS

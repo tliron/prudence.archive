@@ -8,37 +8,41 @@
 	'stickstick.shared)
 
 (import
-	'org.restlet.Application
 	'java.sql.Timestamp
 	'java.sql.Clob
+  'java.io.StringWriter
 	'com.threecrickets.prudence.util.MiniConnectionPoolManager)
 
-(defn get-url [attributes]
-	"jdbc:h2:data/h2/stickstick")
+; clojure.contrib.sql annoyingly prints exceptions to *err* 
+(defmacro with-connection-silent [db-spec & body]
+  `(binding [*err* (StringWriter.)]
+    (with-connection ~db-spec ~@body)))
 
-(defn get-data-source [attributes]
+(defn get-url [application]
+	"jdbc:h2:data/h2/stickstick;TRACE_LEVEL_FILE=3")
+
+(defn get-data-source [application]
 	(let [data-source (org.h2.jdbcx.JdbcDataSource.)]
-		(.setURL data-source (get-url attributes))
-		(.setUser data-source (get attributes "stickstick.username"))
-		(.setPassword data-source (get attributes "stickstick.password"))
+		(.setURL data-source (get-url application))
+		(.setUser data-source (.. application getGlobals (get "stickstick.username")))
+		(.setPassword data-source (.. application getGlobals (get "stickstick.password")))
 		data-source))
 		
-(defn create-connection-pool []
+(defn create-connection-pool [application]
 	;(println "new pool")
-	(let [attributes (.. (Application/getCurrent) getContext getAttributes)]
-		(MiniConnectionPoolManager. (get-data-source attributes) 10)))
+  (MiniConnectionPoolManager. (get-data-source application) 10))
 
 (declare from-pool)
 (declare add-board)
 (declare add-note)
 
-(defn get-connection [fresh]
+(defn get-connection [application fresh]
 	(.lock stickstick.shared/connection-pool-lock)
 	(try
 		(when (or (nil? @stickstick.shared/connection-pool) fresh)
 			(if (nil? @stickstick.shared/connection-pool)
-				(compare-and-set! stickstick.shared/connection-pool nil (create-connection-pool)))
-			(with-connection from-pool
+				(compare-and-set! stickstick.shared/connection-pool nil (create-connection-pool application)))
+			(with-connection-silent (from-pool application) 
 				(do
 					(if fresh
 						(do
@@ -55,16 +59,15 @@
 						(add-board {:id "Great Ideas"})
 						(add-board {:id "Sandbox"})
 						(add-note {:board "Sandbox" :x 50 :y 50 :size 1 :content "Clojure Rocks!"})
-						;(catch Exception x (throw x))))))
 						(catch Exception _)))))
 		(.getConnection @stickstick.shared/connection-pool)
 		(finally
 			(.unlock stickstick.shared/connection-pool-lock))))
 
 ; DB specs for getting clojure.contrib.sql to use our connection pool
-(defn connection-factory [params] (get-connection (params :fresh)))
-(def from-pool {:factory connection-factory :fresh false})
-(def fresh-from-pool {:factory connection-factory :fresh true})
+(defn connection-factory [params] (get-connection (params :application) (params :fresh)))
+(defn from-pool [application] {:factory connection-factory :application application :fresh false})
+(defn fresh-from-pool [application] {:factory connection-factory :application application :fresh true})
 
 (defn jsonable [o]
 	(cond

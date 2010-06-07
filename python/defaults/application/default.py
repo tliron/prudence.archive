@@ -50,7 +50,7 @@ execute_or_default(application_base_path + '/routing/', 'defaults/application/ro
 application_instance.context.setLogger(application_logger_name)
 
 #
-# Additional/Override Runtime Attributes
+# Predefined Globals
 #
 
-attributes.putAll(runtime_attributes)
+attributes.putAll(predefined_globals)

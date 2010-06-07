@@ -7,7 +7,7 @@ global $application_instance, $application_base_path, $attributes;
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $show_debug_on_error, $show_source_code_url;
 global $application_logger_name;
-global $runtime_attributes;
+global $predefined_globals;
 
 import org.restlet.data.Reference;
 import org.restlet.data.MediaType;
@@ -58,10 +58,10 @@ execute_or_default($application_base_path . '/routing/', 'defaults/application/r
 $application_instance->context->setLogger($application_logger_name);
 
 //
-// Additional/Override Runtime Attributes
+// Predefined Globals
 //
 
-foreach($runtime_attributes as $key => $value) {
+foreach($predefined_globals as $key => $value) {
 	$attributes[$key] = $value;
 }
 ?>

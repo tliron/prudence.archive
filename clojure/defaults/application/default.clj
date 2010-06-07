@@ -51,7 +51,7 @@
 (.. application-instance getContext (setLogger application-logger-name))
 
 ;
-; Additional/Override Runtime Attributes
+; Predefined Globals
 ;
 
-(.putAll attributes runtime-attributes)
+(.putAll attributes predefined-globals)

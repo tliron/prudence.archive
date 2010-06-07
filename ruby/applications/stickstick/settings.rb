@@ -11,11 +11,11 @@ $application_owner = 'Three Crickets'
 $application_home_url = 'http://threecrickets.com/prudence/stickstick/'
 $application_contact_email = 'prudence@threecrickets.com'
 
-$runtime_attributes['stickstick.backend'] = 'h2'
-$runtime_attributes['stickstick.username'] = 'root'
-$runtime_attributes['stickstick.password'] = 'root'
-$runtime_attributes['stickstick.host'] = ''
-$runtime_attributes['stickstick.database'] = 'data/stickstick/stickstick'
+$predefined_globals['stickstick.backend'] = 'h2'
+$predefined_globals['stickstick.username'] = 'root'
+$predefined_globals['stickstick.password'] = 'root'
+$predefined_globals['stickstick.host'] = ''
+$predefined_globals['stickstick.database'] = 'data/stickstick/stickstick'
 
 $show_debug_on_error = true
 

@@ -51,9 +51,9 @@ execute_or_default $application_base_path + '/routing/', 'defaults/application/r
 $application_instance.context.set_logger $application_logger_name
 
 #
-# Additional/Override Runtime Attributes
+# Predfined Globals
 #
 
-for key in $runtime_attributes.keys
-	$attributes[key] = $runtime_attributes[key]
+for key in $predefined_globals.keys
+	$attributes[key] = $predefined_globals[key]
 end

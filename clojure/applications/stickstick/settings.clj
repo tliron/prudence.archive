@@ -11,7 +11,7 @@
 (def application-home-url "http://threecrickets.com/prudence/stickstick/")
 (def application-contact-email "prudence@threecrickets.com")
 
-(def runtime-attributes (merge runtime-attributes
+(def predefined-globals (merge predefined-globals
 	{"stickstick.backend" "h2"}
 	{"stickstick.username" "root"}
 	{"stickstick.password" "root"}

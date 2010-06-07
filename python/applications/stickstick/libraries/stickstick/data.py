@@ -2,7 +2,6 @@ from sqlalchemy import Column, Integer, String, Text, DateTime
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 from threading import RLock
-from org.restlet import Application
 
 from sqlalchemy import create_engine
 from datetime import datetime
@@ -111,31 +110,29 @@ def get_engine(application, fresh=False):
     #engine = application.globals['engine']
     #try:
     if engine is None or fresh:
-        attributes = Application.getCurrent().context.attributes
-
         # Make sure database exists
-        if attributes['stickstick.host']:
+        if application.globals['stickstick.host']:
             root_engine = create_engine('%s://%s:%s@%s/' % (
-                attributes['stickstick.backend'],
-                attributes['stickstick.username'],
-                attributes['stickstick.password'],
-                attributes['stickstick.host']),
+                application.globals['stickstick.backend'],
+                application.globals['stickstick.username'],
+                application.globals['stickstick.password'],
+                application.globals['stickstick.host']),
                 convert_unicode=True)
             connection = root_engine.connect()
             if fresh:
-                connection.execute('DROP DATABASE %s' % attributes['stickstick.database'])
-            connection.execute('CREATE DATABASE IF NOT EXISTS %s' % attributes['stickstick.database'])
+                connection.execute('DROP DATABASE %s' % application.globals['stickstick.database'])
+            connection.execute('CREATE DATABASE IF NOT EXISTS %s' % application.globals['stickstick.database'])
             connection.close()
 
         # Connect to database
         if engine is None:
             #print 'new engine!!!!'
             new_engine = create_engine('%s://%s:%s@%s/%s' % (
-                attributes['stickstick.backend'],
-                attributes['stickstick.username'],
-                attributes['stickstick.password'],
-                attributes['stickstick.host'],
-                attributes['stickstick.database']),
+                application.globals['stickstick.backend'],
+                application.globals['stickstick.username'],
+                application.globals['stickstick.password'],
+                application.globals['stickstick.host'],
+                application.globals['stickstick.database']),
                 convert_unicode=True,
                 pool_recycle=3600)
             #engine = application.getGlobal('engine', new_engine)
@@ -148,8 +145,8 @@ def get_engine(application, fresh=False):
         #connection.execute('SET AUTOCOMMIT ON')
         #connection.close()
         
-        if attributes['stickstick.host'] is None and fresh:
-            if attributes['stickstick.backend'] == 'h2':
+        if application.globals['stickstick.host'] is None and fresh:
+            if application.globals['stickstick.backend'] == 'h2':
                 connection = engine.connect()
                 connection.execute('DROP ALL OBJECTS')
                 connection.close()

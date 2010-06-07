@@ -7,6 +7,7 @@ global $component, $application_name, $application_internal_name, $application_l
 
 import java.io.File;
 import java.util.ArrayList;
+import com.threecrickets.prudence.util.IoUtil;
 
 // Hosts
 
@@ -16,7 +17,25 @@ execute_or_default('instance/hosts/');
 
 $applications = new ArrayList();
 $component->context->attributes['applications'] = $applications;
-$application_dirs = new File('applications')->listFiles();
+$applications_dir = new File('applications');
+
+$properties_file = new File($applications_dir, 'applications.properties');
+$properties = IoUtil::loadProperties($properties_file);
+$save_properties = FALSE;
+$application_files = $applications_dir->listFiles();
+foreach($application_files as $application_file) {
+	if(!$application_file->directory && substr($application_file->name, -4) == '.zip' && $properties->getProperty($application_file->name, '') != $application_file->lastModified()) {
+		print 'Unpacking "' . $application_file->name . '"...' . "\n";
+		IoUtil::unzip($application_file, $applications_dir);
+		$properties->setProperty($application_file->name, $application_file->lastModified());
+		$save_properties = TRUE;
+	}
+}
+if($save_properties) {
+	IoUtil::saveProperties($properties, $properties_file);
+}
+
+$application_dirs = $applications_dir->listFiles();
 foreach($application_dirs as $application_dir) {
 	if($application_dir->directory) {
 		$application_name = $application_dir->name;

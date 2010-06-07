@@ -52,9 +52,9 @@ executeOrDefault(applicationBasePath + '/routing/', 'defaults/application/routin
 applicationInstance.context.setLogger(applicationLoggerName);
 
 //
-// Additional/Override Runtime Attributes
+// Predefined Globals
 //
 
-for(var key in runtimeAttributes) {
-	attributes.put(key, runtimeAttributes[key]);
+for(var key in predefinedGlobals) {
+	attributes.put(key, predefinedGlobals[key]);
 }

@@ -13,42 +13,40 @@ if(connectionPoolLock == null) {
 	connectionPoolLock = application.getGlobal('connectionPoolLock', new ReentrantLock())
 }
 
-getDataSource = { attributes ->
+getDataSource = {
 	def dataSource
-	if(attributes['stickstick.backend'] == 'h2') {
+	if(application.globals['stickstick.backend'] == 'h2') {
 		dataSource = new org.h2.jdbcx.JdbcDataSource()
-	} else if(attributes['stickstick.backend'] == 'mysql') {
+	} else if(application.globals['stickstick.backend'] == 'mysql') {
 		dataSource = new com.mysql.jdbc.jdbc2.optional.MysqlDataSource()
 	}
-	dataSource.URL = getUrl(attributes)
-	dataSource.user = attributes['stickstick.username']
-	dataSource.password = attributes['stickstick.password']
+	dataSource.URL = getUrl()
+	dataSource.user = application.globals['stickstick.username']
+	dataSource.password = application.globals['stickstick.password']
 	return dataSource
 }
 
-getUrl = { attributes ->
-	def url = 'jdbc:' + attributes['stickstick.backend'] + ':'
-	if(attributes['stickstick.host'] != '') {
-		if(attributes['stickstick.backend'] == 'h2') {
+getUrl = {
+	def url = 'jdbc:' + application.globals['stickstick.backend'] + ':'
+	if(application.globals['stickstick.host'] != '') {
+		if(application.globals['stickstick.backend'] == 'h2') {
 			url += 'tcp:'
 		}
-		url += '//' + attributes['stickstick.host'] + '/'
+		url += '//' + application.globals['stickstick.host'] + '/'
 	}
-	if(attributes['stickstick.database'] != '') {
-		url += attributes['stickstick.database']
+	if(application.globals['stickstick.database'] != '') {
+		url += application.globals['stickstick.database']
 	}
 	return url
 }
 
 getConnection = { fresh=false ->
-	def attributes = Application.current.context.attributes
-
 	connectionPoolLock.lock()
 	connectionPool = application.globals['connectionPool']
 	try {
 		if(connectionPool == null || fresh) {
 			if(connectionPool == null) {
-				connectionPool = application.getGlobal('connectionPool', new MiniConnectionPoolManager(getDataSource(attributes), 10))
+				connectionPool = application.getGlobal('connectionPool', new MiniConnectionPoolManager(getDataSource(), 10))
 			}
 			
 			// TODO: CREATE DATABASE IF NOT EXISTS

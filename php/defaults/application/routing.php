@@ -27,7 +27,7 @@ global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_docum
 global $static_web_base_url, $static_web_base_path, $static_web_directory_listing_allowed;
 global $preheat_resources;
 global $url_add_trailing_slash;
-global $runtime_attributes;
+global $predefined_globals;
 
 $class_loader = ClassLoader::getSystemClassLoader();
 

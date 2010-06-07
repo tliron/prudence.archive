@@ -8,7 +8,7 @@ application_owner = 'Three Crickets'
 application_home_url = 'http://threecrickets.com/prudence/stickstick/'
 application_contact_email = 'prudence@threecrickets.com'
 
-runtime_attributes.update({
+predefined_globals.update({
     'stickstick.backend': 'h2',
     'stickstick.username': 'root',
     'stickstick.password': 'root',
@@ -17,5 +17,4 @@ runtime_attributes.update({
     })
 
 show_debug_on_error = True
-
 preheat_resources = ['data/']

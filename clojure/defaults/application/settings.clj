@@ -145,7 +145,7 @@
 (def preheat-resources [])
 
 ;
-; URL manipulation
+; URL Manipulation
 ;
 
 ; The URLs in this array will automatically be redirected to have a trailing
@@ -154,9 +154,9 @@
 (def url-add-trailing-slash [dynamic-web-base-url static-web-base-url])
 
 ;
-; Runtime Attributes
+; Predfined Globals
 ;
-; These will be available to your code via the application's context.
+; These will be available to your code via (.getGlobals application).
 ;
 
-(def runtime-attributes {})
+(def predefined-globals {})
