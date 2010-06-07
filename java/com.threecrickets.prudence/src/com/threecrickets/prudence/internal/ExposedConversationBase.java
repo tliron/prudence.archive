@@ -75,6 +75,10 @@ public class ExposedConversationBase<R extends ServerResource>
 			characterSet = variant.getCharacterSet();
 		}
 
+		// For HTML forms, switch to HTML
+		if( entity != null && ( entity.getMediaType().equals( MediaType.APPLICATION_WWW_FORM ) ) )
+			mediaType = MediaType.TEXT_HTML;
+
 		if( characterSet == null )
 			characterSet = defaultCharacterSet;
 	}

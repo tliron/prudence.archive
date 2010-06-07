@@ -9,7 +9,7 @@
 (defn execute-or-default
 	([name default]
 		(try
-			(.. executable getContainer (execute name))
+			(.execute document name)
 			(catch DocumentNotFoundException _
 				(.execute document
 					(if (nil? default)

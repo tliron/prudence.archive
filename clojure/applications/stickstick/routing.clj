@@ -2,7 +2,7 @@
 ; Stickstick Routing
 ;
 
-(.. executable getContainer (execute "defaults/application/routing/"))
+(.execute document "defaults/application/routing/")
 
 (import
 	'com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter

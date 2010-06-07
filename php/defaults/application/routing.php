@@ -123,7 +123,7 @@ foreach($url_add_trailing_slash as $url) {
 //
 
 $language_manager = $executable->manager;
-$dynamic_web_document_source = new DocumentFileSource($application_base_path . $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_minimum_time_between_validity_checks);
+$dynamic_web_document_source = new DocumentFileSource($application_base_path . $dynamic_web_base_path, $dynamic_web_default_document, 'php', $dynamic_web_minimum_time_between_validity_checks);
 $attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = $language_manager;
 $attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'php';
 $attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = $dynamic_web_default_document;
@@ -154,7 +154,7 @@ $router->attachBase(fix_url($static_web_base_url), $static_web);
 // Resources
 //
 
-$resources_document_source = new DocumentFileSource($application_base_path . $resources_base_path, $resources_default_name, $resources_minimum_time_between_validity_checks);
+$resources_document_source = new DocumentFileSource($application_base_path . $resources_base_path, $resources_default_name, 'php', $resources_minimum_time_between_validity_checks);
 $attributes['com.threecrickets.prudence.DelegatedResource.languageManager'] = $language_manager;
 $attributes['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'php';
 $attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = $resources_default_name;

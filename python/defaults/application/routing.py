@@ -89,7 +89,7 @@ for url in url_add_trailing_slash:
 #
 
 language_manager = executable.manager
-dynamic_web_document_source = DocumentFileSource(application_base_path + dynamic_web_base_path, dynamic_web_default_document, dynamic_web_minimum_time_between_validity_checks)
+dynamic_web_document_source = DocumentFileSource(application_base_path + dynamic_web_base_path, dynamic_web_default_document, 'py', dynamic_web_minimum_time_between_validity_checks)
 attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = language_manager
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'python'
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamic_web_default_document
@@ -117,7 +117,7 @@ router.attachBase(fix_url(static_web_base_url), static_web)
 # Resources
 #
 
-resources_document_source = DocumentFileSource(application_base_path + resources_base_path, resources_default_name, resources_minimum_time_between_validity_checks)
+resources_document_source = DocumentFileSource(application_base_path + resources_base_path, resources_default_name, 'py', resources_minimum_time_between_validity_checks)
 attributes['com.threecrickets.prudence.DelegatedResource.languageManager'] = language_manager
 attributes['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'python'
 attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resources_default_name

@@ -108,7 +108,7 @@ for(var i in urlAddTrailingSlash) {
 //
 
 var languageManager = executable.manager;
-var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, dynamicWebMinimumTimeBetweenValidityChecks);
+var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'js', dynamicWebMinimumTimeBetweenValidityChecks);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'javascript');
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
@@ -139,7 +139,7 @@ router.attachBase(fixURL(staticWebBaseURL), staticWeb);
 // Resources
 //
 
-var resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, resourcesMinimumTimeBetweenValidityChecks);
+var resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, 'js', resourcesMinimumTimeBetweenValidityChecks);
 attributes.put('com.threecrickets.prudence.DelegatedResource.languageManager', languageManager);
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultLanguageTag', 'javascript');
 attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName);

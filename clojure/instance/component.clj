@@ -2,7 +2,7 @@
 ; Prudence Component
 ;
 
-(.. executable getContainer (execute "defaults/instance/component/"))
+(.execute document "defaults/instance/component/")
 
 (import
 	'com.threecrickets.prudence.cache.H2Cache

@@ -95,7 +95,7 @@
 ;
 
 (def language-manager (.. executable getManager))
-(def dynamic-web-document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document (.longValue dynamic-web-minimum-time-between-validity-checks)))
+(def dynamic-web-document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document "clj" (.longValue dynamic-web-minimum-time-between-validity-checks)))
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.languageManager" language-manager)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag" "clojure")
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
@@ -123,7 +123,7 @@
 ; Resources
 ;
 
-(def resources-document-source (DocumentFileSource. (str application-base-path resources-base-path) resources-default-name (.longValue resources-minimum-time-between-validity-checks))) 
+(def resources-document-source (DocumentFileSource. (str application-base-path resources-base-path) resources-default-name "clj" (.longValue resources-minimum-time-between-validity-checks))) 
 (.put attributes "com.threecrickets.prudence.DelegatedResource.languageManager" language-manager)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultLanguageTag" "clojure")
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultName" resources-default-name)

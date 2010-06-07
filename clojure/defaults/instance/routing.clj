@@ -23,7 +23,7 @@
 (doseq [application-file (filter #(and (not (.isDirectory %)) (.. % getName (endsWith ".zip"))) application-files)]
   (let [last-modified (str (.lastModified application-file))]
     (when (not (.equals (.getProperty properties (.getName application-file) "") last-modified))
-		  (print (str "Unpacking \"" (.getName application-file) "\"...\n"))
+		  (println (str "Unpacking \"" (.getName application-file) "\"..."))
 		  (IoUtil/unzip application-file applications-dir)
 		  (.setProperty properties (.getName application-file) last-modified)
 		  (def save-properties true))))

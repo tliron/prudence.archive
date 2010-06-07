@@ -2,4 +2,5 @@
 ; Prudence Instance
 ;
 
-(.. executable getContainer (execute "defaults/instance/"))
+(.setPreferredExtension document "clj")
+(.execute document "defaults/instance/")
