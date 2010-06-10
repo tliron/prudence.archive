@@ -31,6 +31,7 @@ import javax.sql.DataSource;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
+import org.restlet.data.Metadata;
 
 import com.threecrickets.prudence.util.MiniConnectionPoolManager;
 
@@ -250,9 +251,9 @@ public class SqlCache<D extends DataSource> implements Cache
 					{
 						statement.setString( 1, key );
 						statement.setString( 2, entry.getString() );
-						statement.setString( 3, entry.getMediaType() != null ? entry.getMediaType().getName() : null );
-						statement.setString( 4, entry.getLanguage() != null ? entry.getLanguage().getName() : null );
-						statement.setString( 5, entry.getCharacterSet() != null ? entry.getCharacterSet().getName() : null );
+						statement.setString( 3, getName( entry.getMediaType() ) );
+						statement.setString( 4, getName( entry.getLanguage() ) );
+						statement.setString( 5, getName( entry.getCharacterSet() ) );
 						statement.setTimestamp( 6, new Timestamp( entry.getExpirationDate().getTime() ) );
 						statement.execute();
 					}
@@ -697,5 +698,17 @@ public class SqlCache<D extends DataSource> implements Cache
 	private void discardLock( String key )
 	{
 		locks.remove( key );
+	}
+
+	/**
+	 * Metadata name.
+	 * 
+	 * @param metadata
+	 *        The metadata or null
+	 * @return The name or null
+	 */
+	private static String getName( Metadata metadata )
+	{
+		return metadata == null ? null : metadata.getName();
 	}
 }
