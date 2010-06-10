@@ -61,6 +61,12 @@ System.setProperty('org.restlet.engine.loggerFacadeClass', 'org.restlet.ext.slf4
 executable.manager.attributes['velocity.runtime.log.logsystem.class'] = 'org.apache.velocity.runtime.log.Log4JLogChute'
 executable.manager.attributes['velocity.runtime.log.logsystem.log4j.logger'] = 'velocity'
 
+#
+# Configuration
+#
+
+# Hazelcast
+System.setProperty('hazelcast.config', 'configuration/hazelcast.conf')
 
 #
 # Component

@@ -4,6 +4,7 @@ set main=com.threecrickets.scripturian.Scripturian
 
 set jars=libraries/clojure.jar;^
 libraries/clojure.contrib.jar;^
+libraries/com.hazelcast.jar;^
 libraries/com.mysql.jdbc.jar;^
 libraries/com.sun.grizzly.jar;^
 libraries/com.sun.script.velocity.jar;^

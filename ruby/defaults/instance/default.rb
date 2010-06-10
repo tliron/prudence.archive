@@ -66,6 +66,13 @@ $executable.manager.attributes['velocity.runtime.log.logsystem.class'] = 'org.ap
 $executable.manager.attributes['velocity.runtime.log.logsystem.log4j.logger'] = 'velocity'
 
 #
+# Configuration
+#
+
+# Hazelcast
+System::set_property 'hazelcast.config', 'configuration/hazelcast.conf'
+
+#
 # Component
 #
 

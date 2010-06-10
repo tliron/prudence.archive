@@ -161,6 +161,7 @@
 			<classpath>
 				<fileset dir="${lib}/commons-fileupload/lib" />
 				<fileset dir="${lib}/groboutils/lib" />
+				<fileset dir="${lib}/hazelcast/lib" />
 				<fileset dir="${lib}/h2/lib" />
 				<fileset dir="${lib}/junit/lib" />
 				<fileset dir="${lib}/jygments/lib" />
@@ -246,6 +247,7 @@
 		<fetch-library dist="${dist-kitchensink}" library="groboutils" />
 		<fetch-library dist="${dist-kitchensink}" library="groovy" />
 		<fetch-library dist="${dist-kitchensink}" library="h2" />
+		<fetch-library dist="${dist-kitchensink}" library="hazelcast" />
 		<fetch-library dist="${dist-kitchensink}" library="jackson" />
 		<fetch-library dist="${dist-kitchensink}" library="jepp" />
 		<fetch-library dist="${dist-kitchensink}" library="jruby" />
@@ -368,6 +370,7 @@
 		<fetch-library dist="${dist-javascript}" library="commons-io" />
 		<fetch-library dist="${dist-javascript}" library="grizzly" />
 		<fetch-library dist="${dist-javascript}" library="h2" />
+		<fetch-library dist="${dist-javascript}" library="hazelcast" />
 		<fetch-library dist="${dist-javascript}" library="json" />
 		<fetch-library dist="${dist-javascript}" library="jygments" />
 		<fetch-library dist="${dist-javascript}" library="log4j" />
@@ -407,6 +410,7 @@
 		<fetch-library dist="${dist-python}" library="commons-io" />
 		<fetch-library dist="${dist-python}" library="grizzly" />
 		<fetch-library dist="${dist-python}" library="h2" />
+		<fetch-library dist="${dist-python}" library="hazelcast" />
 		<fetch-library dist="${dist-python}" library="jepp" />
 		<fetch-library dist="${dist-python}" library="json" />
 		<fetch-library dist="${dist-python}" library="jsr223" />
@@ -452,6 +456,7 @@
 		<fetch-library dist="${dist-clojure}" library="commons-io" />
 		<fetch-library dist="${dist-clojure}" library="grizzly" />
 		<fetch-library dist="${dist-clojure}" library="h2" />
+		<fetch-library dist="${dist-clojure}" library="hazelcast" />
 		<fetch-library dist="${dist-clojure}" library="json" />
 		<fetch-library dist="${dist-clojure}" library="jygments" />
 		<fetch-library dist="${dist-clojure}" library="log4j" />
@@ -493,6 +498,7 @@
 		<fetch-library dist="${dist-groovy}" library="grizzly" />
 		<fetch-library dist="${dist-groovy}" library="groovy" />
 		<fetch-library dist="${dist-groovy}" library="h2" />
+		<fetch-library dist="${dist-groovy}" library="hazelcast" />
 		<fetch-library dist="${dist-groovy}" library="json" />
 		<fetch-library dist="${dist-groovy}" library="jygments" />
 		<fetch-library dist="${dist-groovy}" library="log4j" />
@@ -533,6 +539,7 @@
 		<fetch-library dist="${dist-ruby}" library="commons-io" />
 		<fetch-library dist="${dist-ruby}" library="grizzly" />
 		<fetch-library dist="${dist-ruby}" library="h2" />
+		<fetch-library dist="${dist-ruby}" library="hazelcast" />
 		<fetch-library dist="${dist-ruby}" library="jruby" />
 		<fetch-library dist="${dist-ruby}" library="json" />
 		<fetch-library dist="${dist-ruby}" library="jygments" />
@@ -574,6 +581,7 @@
 		<fetch-library dist="${dist-php}" library="commons-io" />
 		<fetch-library dist="${dist-php}" library="grizzly" />
 		<fetch-library dist="${dist-php}" library="h2" />
+		<fetch-library dist="${dist-php}" library="hazelcast" />
 		<fetch-library dist="${dist-php}" library="json" />
 		<fetch-library dist="${dist-php}" library="jygments" />
 		<fetch-library dist="${dist-php}" library="log4j" />

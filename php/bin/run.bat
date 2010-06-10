@@ -3,6 +3,7 @@ set java=java
 set main=com.threecrickets.scripturian.Scripturian
 
 set jars=libraries/com.caucho.quercus.jar;^
+libraries/com.hazelcast.jar;^
 libraries/com.mysql.jdbc.jar;^
 libraries/com.sun.grizzly.jar;^
 libraries/com.threecrickets.jygments.jar;^

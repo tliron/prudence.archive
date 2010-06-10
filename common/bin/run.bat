@@ -4,7 +4,7 @@ set main=com.threecrickets.scripturian.Scripturian
 
 set jars=libraries/clojure.jar;^
 libraries/clojure.contrib.jar;^
-libraries/clojure.contrib.jsr223.jar;^
+libraries/com.hazelcast.jar;^
 libraries/com.sun.grizzly.jar;^
 libraries/com.sun.phobos.script.javascript.jar;^
 libraries/com.caucho.quercus.jar;^

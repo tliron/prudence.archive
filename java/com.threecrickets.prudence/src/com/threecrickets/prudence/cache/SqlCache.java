@@ -348,6 +348,9 @@ public class SqlCache<D extends DataSource> implements Cache
 								lock.unlock();
 								try
 								{
+									if( debug )
+										System.out.println( "Stale entry: " + key );
+
 									delete( connection, key );
 
 									// (Note that this also discarded our lock,

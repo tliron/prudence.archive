@@ -9,6 +9,7 @@ java=/usr/bin/java
 main=com.threecrickets.scripturian.Scripturian
 
 jars=\
+libraries/com.hazelcast.jar:\
 libraries/com.mysql.jdbc.jar:\
 libraries/com.sun.grizzly.jar:\
 libraries/com.threecrickets.jygments.jar:\

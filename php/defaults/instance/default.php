@@ -68,6 +68,14 @@ $executable->manager->attributes['velocity.runtime.log.logsystem.class'] = 'org.
 $executable->manager->attributes['velocity.runtime.log.logsystem.log4j.logger'] = 'velocity';
 
 //
+// Configuration
+//
+
+// Hazelcast
+System::setProperty('hazelcast.config', 'configuration/hazelcast.conf');
+
+
+//
 // Component
 //
 

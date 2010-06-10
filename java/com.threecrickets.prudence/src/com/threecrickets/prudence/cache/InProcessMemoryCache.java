@@ -151,6 +151,9 @@ public class InProcessMemoryCache implements Cache
 		{
 			if( new Date().after( entry.getExpirationDate() ) )
 			{
+				if( debug )
+					System.out.println( "Stale entry: " + key );
+
 				entry = cache.remove( key );
 				if( entry != null )
 					size.addAndGet( -entry.getString().length() );

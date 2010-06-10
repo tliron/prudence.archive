@@ -11,12 +11,16 @@
 
 package com.threecrickets.prudence.cache;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Date;
 
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
+import org.restlet.data.Metadata;
 import org.restlet.representation.StringRepresentation;
 
 /**
@@ -26,11 +30,19 @@ import org.restlet.representation.StringRepresentation;
  * @author Tal Liron
  * @see Cache
  */
-public class CacheEntry implements Serializable
+public class CacheEntry implements Externalizable
 {
 	//
 	// Construction
 	//
+
+	/**
+	 * Constructor. A constructor without arguments is requires for
+	 * {@link Externalizable}.
+	 */
+	public CacheEntry()
+	{
+	}
 
 	/**
 	 * Constructor.
@@ -143,41 +155,84 @@ public class CacheEntry implements Serializable
 		return representation;
 	}
 
+	//
+	// Externalizable
+	//
+
+	public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
+	{
+		string = in.readUTF();
+		mediaType = MediaType.valueOf( in.readUTF() );
+		language = Language.valueOf( in.readUTF() );
+		characterSet = CharacterSet.valueOf( in.readUTF() );
+		modificationDate = new Date( in.readLong() );
+		expirationDate = new Date( in.readLong() );
+	}
+
+	public void writeExternal( ObjectOutput out ) throws IOException
+	{
+		out.writeUTF( nonNull( string ) );
+		out.writeUTF( nonNull( mediaType ) );
+		out.writeUTF( nonNull( language ) );
+		out.writeUTF( nonNull( characterSet ) );
+		out.writeLong( modificationDate.getTime() );
+		out.writeLong( expirationDate.getTime() );
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
 	/**
-	 * For the Serializable interface.
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * The stored string.
 	 */
-	private final String string;
+	private String string;
 
 	/**
 	 * The media type.
 	 */
-	private final MediaType mediaType;
+	private MediaType mediaType;
 
 	/**
 	 * The language.
 	 */
-	private final Language language;
+	private Language language;
 
 	/**
 	 * The character set.
 	 */
-	private final CharacterSet characterSet;
+	private CharacterSet characterSet;
 
 	/**
 	 * The modification date.
 	 */
-	private final Date modificationDate = new Date();
+	private Date modificationDate = new Date();
 
 	/**
 	 * The expiration date.
 	 */
-	private final Date expirationDate;
+	private Date expirationDate;
+
+	/**
+	 * Makes sure to return a non-null string.
+	 * 
+	 * @param metadata
+	 *        The metadata or null
+	 * @return A string
+	 */
+	private static String nonNull( Metadata metadata )
+	{
+		return metadata == null ? "" : nonNull( metadata.getName() );
+	}
+
+	/**
+	 * Makes sure to return a non-null string.
+	 * 
+	 * @param string
+	 *        The string or null
+	 * @return A string
+	 */
+	private static String nonNull( String string )
+	{
+		return string == null ? "" : string;
+	}
 }
