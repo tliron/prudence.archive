@@ -34,7 +34,7 @@
 ; Executor
 ;
 
-(def executor (Executors/newFixedThreadPool (.. Runtime getRuntime (availableProcessors))))
+(def executor (Executors/newFixedThreadPool (+ (* (.. Runtime getRuntime (availableProcessors)) 2) 1)))
 (.. component getContext getAttributes (put "prudence.executor" executor))
 
 ;

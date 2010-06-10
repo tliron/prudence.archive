@@ -35,7 +35,7 @@ $component.status_service = DelegatedStatusService.new
 # Executor
 #
 
-$executor = Executors.new_fixed_thread_pool Runtime::runtime.available_processors
+$executor = Executors.new_fixed_thread_pool(Runtime::runtime.available_processors * 2 + 1)
 $component.context.attributes['prudence.executor'] = $executor
 
 #

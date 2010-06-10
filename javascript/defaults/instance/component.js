@@ -35,7 +35,7 @@ component.statusService = new DelegatedStatusService();
 // Executor
 //
 
-var executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors());
+var executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors() * 2 + 1);
 component.context.attributes.put('prudence.executor', executor);
 
 //

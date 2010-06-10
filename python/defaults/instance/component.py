@@ -34,7 +34,7 @@ component.statusService = DelegatedStatusService()
 # Executor
 #
 
-executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2 + 1)
 component.context.attributes['prudence.executor'] = executor
 
 #
