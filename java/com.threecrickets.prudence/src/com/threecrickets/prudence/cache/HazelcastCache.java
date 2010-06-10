@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
 
 /**
  * A <a href="http://www.hazelcast.com/">Hazelcast</a>-backed cache.
@@ -38,21 +39,35 @@ public class HazelcastCache implements Cache
 	 */
 	public HazelcastCache()
 	{
-		this( "prudence.cache", "prudence.tagMap" );
+		this( null );
 	}
 
 	/**
 	 * Construction.
 	 * 
+	 * @param hazelcast
+	 *        The hazelcast instance or null to use the default instance
+	 */
+	public HazelcastCache( HazelcastInstance hazelcast )
+	{
+		this( hazelcast, "prudence.cache", "prudence.tagMap" );
+	}
+
+	/**
+	 * Construction.
+	 * 
+	 * @param hazelcast
+	 *        The hazelcast instance or null to use the default instance
 	 * @param cacheName
 	 *        The Hazelcast map name for the cache
 	 * @param tagMapName
 	 *        The Hazelcast map name for the tag map
 	 */
-	public HazelcastCache( String cacheName, String tagMapName )
+	public HazelcastCache( HazelcastInstance hazelcast, String cacheName, String tagMapName )
 	{
 		this.cacheName = cacheName;
 		this.tagMapName = tagMapName;
+		this.hazelcast = hazelcast != null ? hazelcast : Hazelcast.getDefaultInstance();
 	}
 
 	//
@@ -144,6 +159,11 @@ public class HazelcastCache implements Cache
 	// Private
 
 	/**
+	 * The Hazelcast instance.
+	 */
+	private final HazelcastInstance hazelcast;
+
+	/**
 	 * The Hazelcast map name for the cache.
 	 */
 	private final String cacheName;
@@ -165,7 +185,7 @@ public class HazelcastCache implements Cache
 	 */
 	private ConcurrentMap<String, CacheEntry> getCache()
 	{
-		return Hazelcast.getMap( cacheName );
+		return hazelcast.getMap( cacheName );
 	}
 
 	/**
@@ -175,6 +195,6 @@ public class HazelcastCache implements Cache
 	 */
 	private ConcurrentMap<String, Set<String>> getTagMap()
 	{
-		return Hazelcast.getMap( tagMapName );
+		return hazelcast.getMap( tagMapName );
 	}
 }
