@@ -21,10 +21,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.EmptyStackException;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -49,7 +49,9 @@ import javax.sql.PooledConnection;
  * efficiently.<br>
  * 2009-06-25 Daniel Jurado: Timeout to handle and idle connection.<br>
  * 2009-12-07 Carlos Vizcaino: Shutting timer on dispose, timer was preventing
- * Tomcat from shutting down within 60 secs.
+ * Tomcat from shutting down within 60 secs.<br>
+ * 2010-06-10 Tal Liron: Change recycledConnections to use
+ * PriorityBlockingQueue.
  */
 public class MiniConnectionPoolManager
 {
@@ -218,7 +220,7 @@ public class MiniConnectionPoolManager
 		this.maxIdleConnectionLife = maxIdleConnectionLife;
 		this.timeout = timeout;
 		semaphore = new Semaphore( maxConnections, true );
-		recycledConnections = new PriorityQueue<PCTS>();
+		recycledConnections = new PriorityBlockingQueue<PCTS>();
 		poolConnectionEventListener = new PoolConnectionEventListener();
 
 		// start the monitor
