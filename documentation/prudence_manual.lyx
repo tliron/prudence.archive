@@ -2122,8 +2122,8 @@ Scripting is powerful.
 
 \begin_layout Standard
 The disadvantage is portability between Prudence flavors.
- For example, if you write your scripts in Ruby, they will not work in Prudence
- for Python---
+ For example, if you write your configuration scripts in Ruby, they will
+ not work in Prudence for Python---
 \emph on
 unless
 \emph default
@@ -2565,6 +2565,34 @@ Each application's subdirectory name under the /applications/ directory
 \end_layout
 
 \begin_layout Subsection
+Deploy by Zip
+\end_layout
+
+\begin_layout Standard
+The /applications/ directory is ``zip-aware,'' meaning that any file placed
+ here with the .zip extension will automatically be unzipped when Prudence
+ starts up.
+ Prudence will only unzip the file again if its modification date changes
+ (it creates an ``applications.properties'' file to keep track of that).
+ Zips can contain pre-packaged single applications, groups of applications,
+ and even patches for individual applications.
+ Zip-awareness makes it very easy to package, deploy and upgrade applications,
+ and even entire sites containing many applications.
+\end_layout
+
+\begin_layout Quote
+This above is true for Prudence 1.0.
+ A future version of Prudence will feature live zip-awareness, so that you
+ will not have to restart the Prudence instance in order to take new or
+ updates zips into account.
+\end_layout
+
+\begin_layout Standard
+By convention, we hope you will name your deployable zips with the ``.prudence.zip
+'' extension, for example ``wackywiki-1.1.prudence.zip''.
+\end_layout
+
+\begin_layout Subsection
 /web/dynamic/
 \end_layout
 
@@ -2821,6 +2849,13 @@ target "../restlet-container/"
 
 \begin_layout Subsection
 Settings
+\end_layout
+
+\begin_layout Standard
+The setting names are in camel case, as is used by JavaScript and Groovy.
+ For Python, Ruby and PHP use lowercase underscore notation, for example:
+ ``application_home_url.'' For Clojure, use lowercase hyphenated notation,
+ for example ``application-home-url.''
 \end_layout
 
 \begin_layout Subsubsection
@@ -3089,11 +3124,11 @@ The URLs in this array will automatically be redirected to have a trailing
 \end_layout
 
 \begin_layout Subsubsection
-Runtime Attributes
+Predefined Globals
 \end_layout
 
 \begin_layout Standard
-runtimeAttributes
+predefinedGlobals
 \end_layout
 
 \begin_layout Section
@@ -4473,7 +4508,7 @@ Scriptlets in the fragments can include re-usable code, such as function
  to use scriptlets.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Paragraph
 document.execute
 \end_layout
 
@@ -4954,22 +4989,12 @@ The attributes are initially set according to the client request, and by
 \end_layout
 
 \begin_layout Quote
-This is definitely not the desired outcome if you're accepting data from
- an HTML form! The data comes from the client as MIME type ``application/x-www-f
-orm-urlencoded,'' but you'd probably want to send data to the client back
- as ``application/html.'' In that case, make sure to set conversation.mediaTypeNam
-e = ``application/html'' in a scriptlet.
-\end_layout
-
-\begin_layout Quote
-This may seem a little awkward.
- The design decision for Prudence 1.0 was to ``pass through,'' by default,
- all formatting attributes from the request to the response, with the expectatio
-n that the client expects the response from the server to be in the same
- format.
- This makes sense for JSON or XML communication, but not for HTML forms.
- A future version of Prudence may offer more sophisticated setting of the
- default response attributes in a conversation.
+The one exception to this rule is HTML forms.
+ The data comes from the client as MIME type ``application/x-www-form-urlencoded
+,'' but it's highly unlikely that you'd want to return an HTML form back
+ to the client.
+ For this case only, Prudence sets the mediaType to ``application/html''.
+ You can explicitly change it something else if you need to.
 \end_layout
 
 \begin_layout Standard
@@ -6332,12 +6357,12 @@ Easy deployment
 \begin_deeper
 \begin_layout Enumerate
 Boot scripts: avoid weird configuration formats and start your Restlet component
- exactly as you want (your choice among 6 langauges)
+ exactly as you want (your choice among 6 languages)
 \end_layout
 
 \begin_layout Enumerate
-Default scripts already handle things like virtual hosting, multiple servers
- and internal routing
+The default scripts already handle virtual hosting, multiple servers and
+ internal routing
 \end_layout
 
 \begin_layout Enumerate
@@ -6345,16 +6370,16 @@ Designed from the ground-up to handle multiple apps on the same component
 \end_layout
 
 \begin_layout Enumerate
-Admin app for realtime management of server(s)
+Admin app for live management of components
 \end_layout
 
 \begin_layout Enumerate
-Logging is pre-configured and ``just works,'' including Apache-compatible
+Logging is pre-configured and ``just works,'' including an Apache-compatible
  web log
 \end_layout
 
 \begin_layout Enumerate
-Single-file ``plop'' deployment (like WAR files)
+Single zip-file application deployment (like WAR files in JEE)
 \end_layout
 
 \end_deeper
@@ -6364,7 +6389,7 @@ Easy prototyping of REST resources
 
 \begin_deeper
 \begin_layout Enumerate
-Your choice among 6 langauges
+Your choice among 6 languages
 \end_layout
 
 \begin_layout Enumerate
@@ -6372,7 +6397,7 @@ Code is compiled, cached and loaded on-the-fly
 \end_layout
 
 \begin_layout Enumerate
-Rich debug page for runtime errors
+Rich debug page shows errors and source code
 \end_layout
 
 \begin_layout Enumerate
@@ -6386,8 +6411,8 @@ Powerful HTML generation platform, like JSP/ASP/PHP (again, 100% Restlet-based)
 
 \begin_deeper
 \begin_layout Enumerate
-In the language of your choice, including mixing languages and template
- engines (Velocity, Succinct) on one page
+Your choice among 6 languages, including mixing languages and template engines
+ (Velocity, Succinct) on one page
 \end_layout
 
 \begin_layout Enumerate
@@ -6395,8 +6420,8 @@ Code is compiled, cached and loaded on-the-fly
 \end_layout
 
 \begin_layout Enumerate
-RAM/db server-side caching (uses Restlet's URI template language for cache
- key generation)
+RAM/database/Hazelcast server-side caching (uses Restlet's URI template
+ language for cache key generation)
 \end_layout
 
 \begin_layout Enumerate
@@ -6404,7 +6429,7 @@ Straightforward support for client-side caching
 \end_layout
 
 \begin_layout Enumerate
-Easily ``stream'' output (Restlet async)
+Asynchronous output
 \end_layout
 
 \begin_layout Enumerate
@@ -6412,12 +6437,12 @@ Easily accept uploaded files
 \end_layout
 
 \begin_layout Enumerate
-Rich debug page for runtime errors
+Rich debug page shows errors and source code
 \end_layout
 
 \end_deeper
 \begin_layout Enumerate
-Restlet sugar
+Restlet sugar (available as a standalone JAR)
 \end_layout
 
 \begin_deeper
@@ -6431,32 +6456,33 @@ URI ``capturing'' (internal redirection)
 \end_layout
 
 \begin_layout Enumerate
-JavaScript and CSS unify-and-minify filter
+JavaScript/CSS unify-and-minify filter
 \end_layout
 
 \begin_layout Enumerate
-Delegated status service for displaying custom pages for error codes (404,
- 500, etc.)
+Delegated status service for easily diverting to custom pages (404, 500
+ errors, etc.)
 \end_layout
 
 \begin_layout Enumerate
-Rich debugging representation
+Rich DebugRepresentation
 \end_layout
 
 \begin_layout Enumerate
-Caching system, with pluggable backends, designed for StringRepresentations
+Cache backend abstraction, designed for storing StringRepresentations
 \end_layout
 
 \begin_layout Enumerate
-Easy file uploads (slightly higher-level than the Restlet FileUpload extension)
+Easier file uploads (slightly higher-level than the Restlet FileUpload extension
+)
 \end_layout
 
 \begin_layout Enumerate
-Easy cookie modification (combines Cookie and CookieSetting)
+ConversationCookie (combines Cookie and CookieSetting)
 \end_layout
 
 \begin_layout Enumerate
-Filter to selectively add CacheControl to Directory
+Filter to selectively add CacheControl (to Directory, for example)
 \end_layout
 
 \end_deeper
@@ -6755,12 +6781,7 @@ target "http://clojure.org/"
 Clojure embraces the JVM, but also has a growing collection of nifty ``contrib''
  libraries---all included in Prudence.
  In the included example application, we show how to use Clojure's SQL library
- to access a data backend the Clojure way.
-\end_layout
-
-\begin_layout Standard
-Three Crickets ♥ Clojure.
- 
+ to access a data backend.
 \end_layout
 
 \begin_layout Subsection
@@ -6807,18 +6828,17 @@ JavaScript is an under-appreciated language.
  Though not as feature-rich as Python or Ruby, it's still very powerful.
  Its straightforward closure/prototype mechanisms allow it to support object-ori
 entation, namespaces and other paradigms.
- It's also been the target of much un-deserved angst due to the fickleness
- of in-browser development.
- Working with the DOM, cross-browser HTML rendering quirks---none of these
- are the faults of the language itself, and none of these are relevant to
- server-side development with Prudence.
+ Likewise,JavaScript has been the target of much un-deserved angst due to
+ the fickleness of client-side development.
+ Working with the browser DOM, testing with cross-browser HTML rendering
+ quirks---these are the not the fault of the language itself.
+ They are also not relevant to server-side development with Prudence.
 \end_layout
 
 \begin_layout Standard
 JavaScript does not have its own core libraries, making it the most minimal
  Prudence flavor.
- But this isn't necessarily a deficiency: instead, it uses the excellent
- JVM core.
+ Instead, it uses the excellent JVM core.
 \end_layout
 
 \begin_layout Subsection
@@ -6833,7 +6853,7 @@ target "http://www.php.net/"
 
 \end_inset
 
-is, of course, ubiquitous.
+ is, of course, ubiquitous.
  It's a simple language with the most mature libraries of any web programming
  language, and programmers are available with years of experience.
  It's also designed from the ground up as a programming language for the
@@ -6882,14 +6902,14 @@ target "http://groovy.codehaus.org/"
  Java programmers would immediately feel at home, while gaining access to
  far less restrictive programming paradigms.
  Groovy makes Java...
- groovy.
+ groovy!
 \end_layout
 
 \begin_layout Standard
-If you know your project will require a lot of interaction with Java libraries,
+ All the other Prudence flavors offer JVM interaction, but Groovy does it
+ best.
+ If you know your project will require a lot of interaction with Java libraries,
  Groovy is a terrific---and fun!---choice.
- (Note that other Prudence flavors also offer JVM interaction, but Groovy
- does it best.) 
 \end_layout
 
 \begin_layout Section
@@ -8041,7 +8061,33 @@ millions
 \emph default
  of cache hits per second? First, let us congratulate you for your global
  popularity.
- Second, there is a simple solution: distributed memory caches, like 
+ Second, there is a simple solution: distributed memory caches.
+ Prudence comes with 
+\begin_inset CommandInset href
+LatexCommand href
+name "Hazelcast"
+target "http://www.hazelcast.com/"
+
+\end_inset
+
+, which offers much better scalability than database backends.
+ Because the cache is in memory, you lose the ability to easily persist
+ your cache and keep it warm: restarting your cache nodes will effectively
+ reset them.
+ There are workarounds---for example, parts of the cache can be persisted
+ to a second database-backed cache tier---but this is a significant feature
+ to lose.
+\end_layout
+
+\begin_layout Quote
+Actually, Hazelcast offers fail-safe, live backups.
+ While it's not quite as permanent as a database, it might be good enough
+ for your needs.
+\end_layout
+
+\begin_layout Standard
+You'll see many web frameworks out there that support a distributed memory
+ cache (usually 
 \begin_inset CommandInset href
 LatexCommand href
 name "memcached"
@@ -8049,27 +8095,16 @@ target "http://memcached.org/"
 
 \end_inset
 
-, offer much better scalability than database backends.
- (Your real challenge will be load-balancing all those the incoming HTTP
- requests...) Because the cache is in memory, you lose the ability to easily
- persist your cache and keep it warm: restarting your cache nodes will effective
-ly reset them.
- There are workarounds---for example, parts of the cache can be persisted
- to a second database-backed cache tier---but this is a significant feature
- to lose.
-\end_layout
-
-\begin_layout Standard
-You'll see many web frameworks out there that support memcached and recommend
- you use it (``it's fast!'' they claim, except that it can be slower per
- request than optimized databases, and that anyway performance does not
- equal scalability).
+) and recommend you use it (``it's fast!'' they claim, except that it can
+ be slower per request than optimized databases, and that anyway performance
+ does not equal scalability).
  We'd urge you to consider that advice carefully: keeping your cache warm
  is a challenge made much easier if you can store it in a persistent backend,
  and database backends can take you very far in scale without adding a new
  infrastructure to your deployment.
- It's good to know, though, that there is a solution in case you reach the
- popularity levels of LiveJournal, Facebook, YouTube, Twitter, etc.
+ It's good to know, though, that Prudence's built-in support for Hazelcast
+ is there to help you in case you reach the popularity levels of LiveJournal,
+ Facebook, YouTube, Twitter, etc.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -8309,6 +8344,14 @@ Unfortunately, there is a use case relevant for newer web frameworks, too:
 The real solution would be to re-factor your application so that it does
  not have long request.
  Below are tips on how to do this.
+\end_layout
+
+\begin_layout Quote
+While filter caching doesn't really help you scale, it can provide useful
+ redundancy: in case all your application servers are down, it can continue
+ serving cached pages.
+ Again, non-cached pages will not be available, making this an inadequate
+ ``solution,'' but it might be better than nothing.
 \end_layout
 
 \begin_layout Subsection
