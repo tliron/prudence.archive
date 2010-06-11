@@ -103,77 +103,77 @@ class Board(Base):
 
 def get_engine(application, fresh=False):
     global engine
-    #engine_lock = application.globals['engine_lock']
-    #if engine_lock is None:
-    #    engine_lock = application.getGlobal('engine_lock', RLock())
-    #engine_lock.acquire()
-    #engine = application.globals['engine']
-    #try:
-    if engine is None or fresh:
-        # Make sure database exists
-        if application.globals['stickstick.host']:
-            root_engine = create_engine('%s://%s:%s@%s/' % (
-                application.globals['stickstick.backend'],
-                application.globals['stickstick.username'],
-                application.globals['stickstick.password'],
-                application.globals['stickstick.host']),
-                convert_unicode=True)
-            connection = root_engine.connect()
-            if fresh:
-                connection.execute('DROP DATABASE %s' % application.globals['stickstick.database'])
-            connection.execute('CREATE DATABASE IF NOT EXISTS %s' % application.globals['stickstick.database'])
-            connection.close()
-
-        # Connect to database
-        if engine is None:
-            #print 'new engine!!!!'
-            new_engine = create_engine('%s://%s:%s@%s/%s' % (
-                application.globals['stickstick.backend'],
-                application.globals['stickstick.username'],
-                application.globals['stickstick.password'],
-                application.globals['stickstick.host'],
-                application.globals['stickstick.database']),
-                convert_unicode=True,
-                pool_recycle=3600)
-            #engine = application.getGlobal('engine', new_engine)
-            engine = new_engine
-
-        Base.metadata.bind = engine
-        Session.configure(bind=engine)
-
-        #connection = engine.connect()
-        #connection.execute('SET AUTOCOMMIT ON')
-        #connection.close()
-        
-        if application.globals['stickstick.host'] is None and fresh:
-            if application.globals['stickstick.backend'] == 'h2':
-                connection = engine.connect()
-                connection.execute('DROP ALL OBJECTS')
+    engine_lock = application.globals['engine_lock']
+    if engine_lock is None:
+        engine_lock = application.getGlobal('engine_lock', RLock())
+    engine_lock.acquire()
+    engine = application.globals['engine']
+    try:
+        if engine is None or fresh:
+            # Make sure database exists
+            if application.globals['stickstick.host']:
+                root_engine = create_engine('%s://%s:%s@%s/' % (
+                    application.globals['stickstick.backend'],
+                    application.globals['stickstick.username'],
+                    application.globals['stickstick.password'],
+                    application.globals['stickstick.host']),
+                    convert_unicode=True)
+                connection = root_engine.connect()
+                if fresh:
+                    connection.execute('DROP DATABASE %s' % application.globals['stickstick.database'])
+                connection.execute('CREATE DATABASE IF NOT EXISTS %s' % application.globals['stickstick.database'])
                 connection.close()
-            else:
-                Base.metadata.drop_all(engine)
-                
-        # Make sure tables exist
-        Base.metadata.create_all(engine)
-
-        # Make sure a few boards exist
-        session = Session()
-        try:
-            session.add(Board('Todo List'))
-            session.add(Board('Great Ideas'))
-            session.add(Board('Sandbox'))
-            session.flush()
-        except IntegrityError:
-            pass
-        finally:
-            session.close()
-    else:
-        Base.metadata.bind = engine
-        Session.configure(bind=engine)
-        
-    return engine
-    #finally:
-    #    engine_lock.release()
+    
+            # Connect to database
+            if engine is None:
+                #print 'new engine!!!!'
+                new_engine = create_engine('%s://%s:%s@%s/%s' % (
+                    application.globals['stickstick.backend'],
+                    application.globals['stickstick.username'],
+                    application.globals['stickstick.password'],
+                    application.globals['stickstick.host'],
+                    application.globals['stickstick.database']),
+                    convert_unicode=True,
+                    pool_recycle=3600)
+                engine = application.getGlobal('engine', new_engine)
+                #engine = new_engine
+    
+            Base.metadata.bind = engine
+            Session.configure(bind=engine)
+    
+            #connection = engine.connect()
+            #connection.execute('SET AUTOCOMMIT ON')
+            #connection.close()
+            
+            if application.globals['stickstick.host'] is None and fresh:
+                if application.globals['stickstick.backend'] == 'h2':
+                    connection = engine.connect()
+                    connection.execute('DROP ALL OBJECTS')
+                    connection.close()
+                else:
+                    Base.metadata.drop_all(engine)
+                    
+            # Make sure tables exist
+            Base.metadata.create_all(engine)
+    
+            # Make sure a few boards exist
+            session = Session()
+            try:
+                session.add(Board('Todo List'))
+                session.add(Board('Great Ideas'))
+                session.add(Board('Sandbox'))
+                session.flush()
+            except IntegrityError:
+                pass
+            finally:
+                session.close()
+        else:
+            Base.metadata.bind = engine
+            Session.configure(bind=engine)
+            
+        return engine
+    finally:
+        engine_lock.release()
 
 def get_connection(application, fresh=False):
     engine = get_engine(application, fresh)

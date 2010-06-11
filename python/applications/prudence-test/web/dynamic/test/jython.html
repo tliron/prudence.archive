@@ -13,7 +13,7 @@
 
 if conversation.query['defer'] == 'true':
 	if conversation.defer():
-		raise
+		raise Exception()
 
 #
 # Cache this page
@@ -25,13 +25,12 @@ document.cacheDuration = 5000
 # Calling Java
 #
 
-import sys
 from java.lang import *
-sys.stdout.write('<p>This page was dynamically generated at %s</p>' % System.currentTimeMillis())
+executable.context.writer.write('<p>This page was dynamically generated at %s</p>' % System.currentTimeMillis())
 
 # (Note: Python's print statement can be used here, too, but it may not be the best choice
 # for outputting HTML due to its "softspace" feature. It is meant more for debugging than
-# for clean output. Also, it is no longer supported in Python 3. We'll prefer sys.stdout
+# for clean output. Also, it is no longer supported in Python 3. We'll prefer executable.context.writer
 # in this example.)
 
 #
@@ -45,9 +44,9 @@ def print_adapter(adapter):
 	<i>Tags:</i> <%
 	tags = adapter.attributes['tags'].toArray()
 	for i in range(len(tags)):
-		sys.stdout.write(tags[i])
+		executable.context.writer.write(tags[i])
 		if i < len(tags) - 1:
-			sys.stdout.write(', ')
+			executable.context.writer.write(', ')
 	%></p><%
 
 %>
