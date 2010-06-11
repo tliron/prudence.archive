@@ -21,8 +21,9 @@
   `(binding [*err* (StringWriter.)]
     (with-connection ~db-spec ~@body)))
 
+; TODO: use settings 
 (defn get-url [application]
-	"jdbc:h2:data/h2/stickstick")
+	"jdbc:h2:data/h2/stickstick;MVCC=TRUE")
 
 (defn get-data-source [application]
 	(let [data-source (org.h2.jdbcx.JdbcDataSource.)]

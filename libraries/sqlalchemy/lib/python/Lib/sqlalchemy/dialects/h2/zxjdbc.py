@@ -25,7 +25,7 @@ class H2_zxjdbc(ZxJDBCConnector, H2Dialect):
 
     def _create_jdbc_url(self, url):
         """Create a JDBC url from a :class:`~sqlalchemy.engine.url.URL`"""
-        return 'jdbc:%s:%s' % (self.jdbc_db_name, url.database)
+        return 'jdbc:%s:%s;MVCC=TRUE' % (self.jdbc_db_name, url.database)
         #return 'jdbc:%s:%s;TRACE_LEVEL_SYSTEM_OUT=2' % (self.jdbc_db_name, url.database)
 
     def _driver_kwargs(self):

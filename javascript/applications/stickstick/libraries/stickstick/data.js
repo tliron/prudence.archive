@@ -40,6 +40,9 @@ function getUrl() {
 	if(application.globals.get('stickstick.database') != '') {
 		url += application.globals.get('stickstick.database');
 	}
+	if(application.globals.get('stickstick.backend') == 'h2') {
+		url += ';MVCC=TRUE';
+	}
 	return url;
 }
 

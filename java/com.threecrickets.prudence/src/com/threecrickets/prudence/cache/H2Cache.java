@@ -60,7 +60,7 @@ public class H2Cache extends SqlCache
 	private static JdbcDataSource createDataSource( String path )
 	{
 		JdbcDataSource dataSource = new JdbcDataSource();
-		dataSource.setURL( "jdbc:h2:" + path );
+		dataSource.setURL( "jdbc:h2:" + path + ";MVCC=TRUE" );
 		return dataSource;
 	}
 }

@@ -43,6 +43,9 @@ function get_url() {
 	if($application->globals['stickstick.database'] != '') {
 		$url = $url . $application->globals['stickstick.database'];
 	}
+	if($application->globals['stickstick.backend'] == 'h2') {
+		$url = $url . ';MVCC=TRUE';
+	}
 	return $url;
 }
 

@@ -39,6 +39,9 @@ def get_url
 	if $application.globals['stickstick.database'] != ''
 		url += $application.globals['stickstick.database']
 	end
+	if $application.globals['stickstick.backend'] == 'h2'
+		url += ';MVCC=TRUE'
+	end
 	return url
 end
 
