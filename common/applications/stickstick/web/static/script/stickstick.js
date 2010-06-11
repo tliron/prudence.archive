@@ -24,6 +24,7 @@ function updateBoards(data) {
 	}
 	var boardsDiv = $('#boards');
 	boardsDiv.empty();
+	data.boards.sort();
 	for(var i in data.boards) {
 		var board = data.boards[i];
 		var count = getBoardCount(board, data);
