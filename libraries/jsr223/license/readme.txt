@@ -6,8 +6,8 @@ It is distributed under the CDDL 1.0 license used by the entire Glassfish projec
 
 https://glassfish.dev.java.net/public/CDDLv1.0.html
 
-It is, as I understand, this jar is simply the source code for the JSR-223 implementation
-from JDK 1.6 compiled for JDK 1.5.
+As I (Tal Liron) understand it, this jar is simply the source code for the JSR-223
+implementation from JDK 1.6 compiled for JDK 1.5.
 
 Note that the reference implementation available at JCP is only a partial implementation
 of the JSR. For reference, it is available here:

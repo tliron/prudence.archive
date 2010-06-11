@@ -18,7 +18,7 @@ import org.h2.jdbcx.JdbcDataSource;
  * 
  * @author Tal Liron
  */
-public class H2Cache extends SqlCache<JdbcDataSource>
+public class H2Cache extends SqlCache
 {
 	//
 	// Construction
@@ -48,11 +48,19 @@ public class H2Cache extends SqlCache<JdbcDataSource>
 	 */
 	public H2Cache( String path, int maxSize, int poolSize )
 	{
-		super( new JdbcDataSource(), maxSize, poolSize );
-
-		getDataSource().setURL( "jdbc:h2:" + path );
+		super( createDataSource( path ), maxSize, poolSize );
 
 		validateTables( false );
-		//debug=true;
+		// debug=true;
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	private static JdbcDataSource createDataSource( String path )
+	{
+		JdbcDataSource dataSource = new JdbcDataSource();
+		dataSource.setURL( "jdbc:h2:" + path );
+		return dataSource;
 	}
 }

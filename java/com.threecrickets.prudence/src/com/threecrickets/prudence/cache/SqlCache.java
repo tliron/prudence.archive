@@ -28,12 +28,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 
+import org.apache.commons.dbcp.DataSourceConnectionFactory;
+import org.apache.commons.dbcp.PoolableConnectionFactory;
+import org.apache.commons.dbcp.PoolingDataSource;
+import org.apache.commons.pool.impl.GenericObjectPool;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Metadata;
-
-import com.threecrickets.prudence.util.MiniConnectionPoolManager;
 
 /**
  * A SQL-backed cache. Automatically uses a {@link MiniConnectionPoolManager}
@@ -51,9 +53,8 @@ import com.threecrickets.prudence.util.MiniConnectionPoolManager;
  * "memory leak" cost in order to vastly improve pruning performance.
  * 
  * @author Tal Liron
- * @param <D>
  */
-public class SqlCache<D extends DataSource> implements Cache
+public class SqlCache implements Cache
 {
 	//
 	// Construction
@@ -66,7 +67,7 @@ public class SqlCache<D extends DataSource> implements Cache
 	 * @param dataSource
 	 *        The data source
 	 */
-	public SqlCache( D dataSource )
+	public SqlCache( DataSource dataSource )
 	{
 		this( dataSource, 1000, 10 );
 	}
@@ -81,15 +82,13 @@ public class SqlCache<D extends DataSource> implements Cache
 	 * @param poolSize
 	 *        The number of connections in the pool
 	 */
-	public SqlCache( D dataSource, int maxSize, int poolSize )
+	public SqlCache( DataSource dataSource, int maxSize, int poolSize )
 	{
-		this.dataSource = dataSource;
 		this.maxSize = maxSize;
 
-		if( dataSource instanceof ConnectionPoolDataSource )
-			connectionPool = new MiniConnectionPoolManager( (ConnectionPoolDataSource) dataSource, poolSize );
-		else
-			connectionPool = null;
+		GenericObjectPool connectionPool = new GenericObjectPool( null, poolSize );
+		new PoolableConnectionFactory( new DataSourceConnectionFactory( (DataSource) dataSource ), connectionPool, null, null, false, true );
+		this.dataSource = new PoolingDataSource( connectionPool );
 	}
 
 	//
@@ -101,7 +100,7 @@ public class SqlCache<D extends DataSource> implements Cache
 	 * 
 	 * @return The data source
 	 */
-	public D getDataSource()
+	public DataSource getDataSource()
 	{
 		return dataSource;
 	}
@@ -141,7 +140,7 @@ public class SqlCache<D extends DataSource> implements Cache
 	{
 		try
 		{
-			Connection connection = getConnection();
+			Connection connection = dataSource.getConnection();
 
 			try
 			{
@@ -189,7 +188,7 @@ public class SqlCache<D extends DataSource> implements Cache
 		lock.lock();
 		try
 		{
-			Connection connection = getConnection();
+			Connection connection = dataSource.getConnection();
 
 			try
 			{
@@ -320,7 +319,7 @@ public class SqlCache<D extends DataSource> implements Cache
 		lock.lock();
 		try
 		{
-			Connection connection = getConnection();
+			Connection connection = dataSource.getConnection();
 			try
 			{
 				String sql = "SELECT string, media_type, language, character_set, expiration_date FROM " + entryTableName + " WHERE key=?";
@@ -401,7 +400,7 @@ public class SqlCache<D extends DataSource> implements Cache
 	{
 		try
 		{
-			Connection connection = getConnection();
+			Connection connection = dataSource.getConnection();
 			try
 			{
 				List<String> tagged = getTagged( connection, tag );
@@ -466,7 +465,7 @@ public class SqlCache<D extends DataSource> implements Cache
 
 		try
 		{
-			Connection connection = getConnection();
+			Connection connection = dataSource.getConnection();
 			try
 			{
 				String sql = "DELETE FROM " + entryTableName + " WHERE expiration_date<?";
@@ -519,12 +518,7 @@ public class SqlCache<D extends DataSource> implements Cache
 	/**
 	 * The data source.
 	 */
-	private final D dataSource;
-
-	/**
-	 * The data source.
-	 */
-	private final MiniConnectionPoolManager connectionPool;
+	private final DataSource dataSource;
 
 	/**
 	 * The entry table name.
@@ -545,21 +539,6 @@ public class SqlCache<D extends DataSource> implements Cache
 	 * A pool of read/write locks per key.
 	 */
 	private ConcurrentMap<String, ReadWriteLock> locks = new ConcurrentHashMap<String, ReadWriteLock>();
-
-	/**
-	 * Gets the connection, either from the connection pool or directly from the
-	 * data source.
-	 * 
-	 * @return The connection
-	 * @throws SQLException
-	 */
-	private Connection getConnection() throws SQLException
-	{
-		if( connectionPool != null )
-			return connectionPool.getConnection();
-		else
-			return dataSource.getConnection();
-	}
 
 	/**
 	 * Count all entries.

@@ -5,7 +5,10 @@ import java.util.concurrent.locks.ReentrantLock
 import java.sql.DriverManager
 import java.sql.SQLException
 import java.sql.Timestamp
-import com.threecrickets.prudence.util.MiniConnectionPoolManager
+import org.apache.commons.pool.impl.GenericObjectPool
+import org.apache.commons.dbcp.DataSourceConnectionFactory
+import org.apache.commons.dbcp.PoolableConnectionFactory
+import org.apache.commons.dbcp.PoolingDataSource
 
 $connection_pool_lock = $application.globals['connection_pool_lock']
 if $connection_pool_lock.nil?
@@ -39,13 +42,19 @@ def get_url
 	return url
 end
 
+def get_connection_pool
+	connection_pool = GenericObjectPool.new nil, 10
+	PoolableConnectionFactory.new DataSourceConnectionFactory.new(get_data_source), connection_pool, nil, nil, false, true
+	return PoolingDataSource.new connection_pool
+end
+
 def get_connection fresh=false
 	$connection_pool_lock.lock
 	connection_pool = $application.globals['connection_pool']
 	begin
 		if connection_pool.nil? || fresh
 			if connection_pool.nil?
-				connection_pool = $application.get_global 'connection_pool', MiniConnectionPoolManager.new(get_data_source, 10)
+				connection_pool = $application.get_global 'connection_pool', get_connection_pool
 			end
 			
 			# TODO: CREATE DATABASE IF NOT EXISTS

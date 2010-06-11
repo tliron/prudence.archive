@@ -6,7 +6,10 @@ importClass(
 	java.sql.DriverManager,
 	java.sql.SQLException,
 	java.sql.Timestamp,
-	com.threecrickets.prudence.util.MiniConnectionPoolManager);
+	org.apache.commons.pool.impl.GenericObjectPool,
+	org.apache.commons.dbcp.DataSourceConnectionFactory,
+	org.apache.commons.dbcp.PoolableConnectionFactory,
+	org.apache.commons.dbcp.PoolingDataSource);
 
 var connectionPoolLock = application.globals.get('connectionPoolLock');
 if(connectionPoolLock == null) {
@@ -40,13 +43,19 @@ function getUrl() {
 	return url;
 }
 
+function getConnectionPool() {
+	var connectionPool = new GenericObjectPool(null, 10);
+	new PoolableConnectionFactory(new DataSourceConnectionFactory(getDataSource()), connectionPool, null, null, false, true);
+	return new PoolingDataSource(connectionPool);
+}
+
 function getConnection(fresh) {
 	connectionPoolLock.lock();
 	connectionPool = application.globals.get('connectionPool');
 	try {
 		if(connectionPool == null || fresh) {
 			if(connectionPool == null) {
-				connectionPool = application.getGlobal('connectionPool', new MiniConnectionPoolManager(getDataSource(), 10));
+				connectionPool = application.getGlobal('connectionPool', getConnectionPool());
 			}
 			
 			// TODO: CREATE DATABASE IF NOT EXISTS

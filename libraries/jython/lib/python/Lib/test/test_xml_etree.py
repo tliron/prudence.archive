@@ -300,7 +300,7 @@ def xinclude():
     >>> from xml.etree import ElementInclude
 
     >>> document = xinclude_loader("C1.xml")
-    >>> ElementInclude.execute(document, xinclude_loader)
+    >>> ElementInclude.include(document, xinclude_loader)
     >>> print serialize(ET, document) # C1
     <document>
       <p>120 Mz is adequate for an average home user.</p>
@@ -314,7 +314,7 @@ def xinclude():
     Textual inclusion example (XInclude C.2)
 
     >>> document = xinclude_loader("C2.xml")
-    >>> ElementInclude.execute(document, xinclude_loader)
+    >>> ElementInclude.include(document, xinclude_loader)
     >>> print serialize(ET, document) # C2
     <document>
       <p>This document has been accessed
@@ -324,7 +324,7 @@ def xinclude():
     Textual inclusion of XML example (XInclude C.3)
 
     >>> document = xinclude_loader("C3.xml")
-    >>> ElementInclude.execute(document, xinclude_loader)
+    >>> ElementInclude.include(document, xinclude_loader)
     >>> print serialize(ET, document) # C3
     <document>
       <p>The following is the source of the "data.xml" resource:</p>
@@ -339,7 +339,7 @@ def xinclude():
     Note! Fallback support is not yet implemented
 
     >>> document = xinclude_loader("C5.xml")
-    >>> ElementInclude.execute(document, xinclude_loader)
+    >>> ElementInclude.include(document, xinclude_loader)
     Traceback (most recent call last):
     IOError: resource not found
     >>> # print serialize(ET, document) # C5

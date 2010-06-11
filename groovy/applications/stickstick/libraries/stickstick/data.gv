@@ -6,7 +6,10 @@ import java.sql.DriverManager
 import java.sql.SQLException
 import java.sql.Timestamp
 import org.restlet.Application
-import com.threecrickets.prudence.util.MiniConnectionPoolManager
+import org.apache.commons.pool.impl.GenericObjectPool
+import org.apache.commons.dbcp.DataSourceConnectionFactory
+import org.apache.commons.dbcp.PoolableConnectionFactory
+import org.apache.commons.dbcp.PoolingDataSource
 
 def connectionPoolLock = application.globals['connectionPoolLock']
 if(connectionPoolLock == null) {
@@ -40,13 +43,19 @@ getUrl = {
 	return url
 }
 
+getConnectionPool = {
+	connectionPool = new GenericObjectPool(null, 10)
+	new PoolableConnectionFactory(new DataSourceConnectionFactory(getDataSource()), connectionPool, null, null, false, true)
+	return new PoolingDataSource(connectionPool)
+}
+
 getConnection = { fresh=false ->
 	connectionPoolLock.lock()
 	connectionPool = application.globals['connectionPool']
 	try {
 		if(connectionPool == null || fresh) {
 			if(connectionPool == null) {
-				connectionPool = application.getGlobal('connectionPool', new MiniConnectionPoolManager(getDataSource(), 10))
+				connectionPool = application.getGlobal('connectionPool', getConnectionPool())
 			}
 			
 			// TODO: CREATE DATABASE IF NOT EXISTS

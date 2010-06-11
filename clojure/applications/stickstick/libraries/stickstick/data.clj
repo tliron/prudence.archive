@@ -11,7 +11,10 @@
 	'java.sql.Timestamp
 	'java.sql.Clob
   'java.io.StringWriter
-	'com.threecrickets.prudence.util.MiniConnectionPoolManager)
+  'org.apache.commons.pool.impl.GenericObjectPool
+  'org.apache.commons.dbcp.DataSourceConnectionFactory
+  'org.apache.commons.dbcp.PoolableConnectionFactory
+  'org.apache.commons.dbcp.PoolingDataSource)
 
 ; clojure.contrib.sql annoyingly prints exceptions to *err* 
 (defmacro with-connection-silent [db-spec & body]
@@ -19,7 +22,7 @@
     (with-connection ~db-spec ~@body)))
 
 (defn get-url [application]
-	"jdbc:h2:data/h2/stickstick;TRACE_LEVEL_FILE=3")
+	"jdbc:h2:data/h2/stickstick")
 
 (defn get-data-source [application]
 	(let [data-source (org.h2.jdbcx.JdbcDataSource.)]
@@ -30,7 +33,9 @@
 		
 (defn create-connection-pool [application]
 	;(println "new pool")
-  (MiniConnectionPoolManager. (get-data-source application) 10))
+  (let [connection-pool (GenericObjectPool. nil 10)]
+    (PoolableConnectionFactory. (DataSourceConnectionFactory. (get-data-source application)) connection-pool nil nil false true)
+    (PoolingDataSource. connection-pool)))
 
 (declare from-pool)
 (declare add-board)
