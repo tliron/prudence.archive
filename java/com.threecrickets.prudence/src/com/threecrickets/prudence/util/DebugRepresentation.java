@@ -164,6 +164,12 @@ public class DebugRepresentation extends StringRepresentation
 		}
 		appendName( html, "Host" );
 		appendValue( html, request.getHostRef() );
+		Reference captiveReference = CaptiveRedirector.getCaptiveReference( request );
+		if( captiveReference != null )
+		{
+			appendName( html, "Captive" );
+			appendValue( html, captiveReference );
+		}
 		html.append( "</div>" );
 
 		Form form = request.getResourceRef().getQueryAsForm();
