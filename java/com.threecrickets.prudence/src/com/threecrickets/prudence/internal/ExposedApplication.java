@@ -76,10 +76,25 @@ public class ExposedApplication
 	 * The application's logger.
 	 * 
 	 * @return The logger
+	 * @see #getSubLogger(String)
 	 */
 	public Logger getLogger()
 	{
 		return getApplication().getLogger();
+	}
+
+	/**
+	 * A logger with a name appended with a "." to the application's logger
+	 * name. This allows inheritance of configuration.
+	 * 
+	 * @param name
+	 *        The sub-logger name
+	 * @return The logger
+	 * @see #getLogger()
+	 */
+	public Logger getSubLogger( String name )
+	{
+		return Logger.getLogger( getLogger().getName() + "." + name );
 	}
 
 	/**
