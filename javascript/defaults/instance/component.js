@@ -15,9 +15,9 @@ importClass(
 
 var component = new Component();
 
-component.context.attributes.put('prudence.version', prudenceVersion);
-component.context.attributes.put('prudence.revision', prudenceRevision);
-component.context.attributes.put('prudence.flavor', prudenceFlavor);
+component.context.attributes.put('com.threecrickets.prudence.version', prudenceVersion);
+component.context.attributes.put('com.threecrickets.prudence.revision', prudenceRevision);
+component.context.attributes.put('com.threecrickets.prudence.flavor', prudenceFlavor);
 
 //
 // Logging
@@ -36,7 +36,7 @@ component.statusService = new DelegatedStatusService();
 //
 
 var executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors() * 2 + 1);
-component.context.attributes.put('prudence.executor', executor);
+component.context.attributes.put('com.threecrickets.prudence.executor', executor);
 
 //
 // Cache

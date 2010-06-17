@@ -11,7 +11,7 @@ execute_or_default('instance/hosts/')
 
 # Applications
 
-applications = component.context.attributes['applications'] = []
+applications = component.context.attributes['com.threecrickets.prudence.applications'] = []
 applications_dir = File('applications')
 
 properties_file = File(applications_dir, 'applications.properties')

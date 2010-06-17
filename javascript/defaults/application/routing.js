@@ -74,7 +74,7 @@ print('.\n');
 
 var attributes = applicationInstance.context.attributes;
 
-attributes.put('component', component);
+attributes.put('com.threecrickets.prudence.component', component);
 var cache =  component.context.attributes.get('com.threecrickets.prudence.cache');
 if(cache) {
 	attributes.put('com.threecrickets.prudence.cache', cache);

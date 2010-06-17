@@ -14,9 +14,9 @@
 
 (def component (Component.))
 
-(.. component getContext getAttributes (put "prudence.version" prudence-version))
-(.. component getContext getAttributes (put "prudence.revision" prudence-revision))
-(.. component getContext getAttributes (put "prudence.flavor" prudence-flavor))
+(.. component getContext getAttributes (put "com.threecrickets.prudence.version" prudence-version))
+(.. component getContext getAttributes (put "com.threecrickets.prudence.revision" prudence-revision))
+(.. component getContext getAttributes (put "com.threecrickets.prudence.flavor" prudence-flavor))
 
 ;
 ; Logging
@@ -35,7 +35,7 @@
 ;
 
 (def executor (Executors/newFixedThreadPool (+ (* (.. Runtime getRuntime (availableProcessors)) 2) 1)))
-(.. component getContext getAttributes (put "prudence.executor" executor))
+(.. component getContext getAttributes (put "com.threecrickets.prudence.executor" executor))
 
 ;
 ; Cache

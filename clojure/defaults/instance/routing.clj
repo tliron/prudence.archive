@@ -13,7 +13,7 @@
 ; Applications
 
 (def applications []) 
-(.. component getContext getAttributes (put "applications" applications))
+(.. component getContext getAttributes (put "com.threecrickets.prudence.applications" applications))
 (def applications-dir (File. "applications"))
 
 (def properties-file (File. applications-dir "applications.properties"))

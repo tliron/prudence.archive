@@ -17,9 +17,9 @@ global $component, $executor, $prudence_version, $prudence_revision, $prudence_f
 
 $component = new Component();
 
-$component->context->attributes['prudence.version'] = $prudence_version;
-$component->context->attributes['prudence.revision'] = $prudence_revision;
-$component->context->attributes['prudence.flavor'] = $prudence_flavor;
+$component->context->attributes['com.threecrickets.prudence.version'] = $prudence_version;
+$component->context->attributes['com.threecrickets.prudence.revision'] = $prudence_revision;
+$component->context->attributes['com.threecrickets.prudence.flavor'] = $prudence_flavor;
 
 //
 // Logging
@@ -38,7 +38,7 @@ $component->statusService = new DelegatedStatusService();
 //
 
 $executor = Executors::newFixedThreadPool(Runtime::getRuntime()->availableProcessors() * 2 + 1);
-$component->context->attributes['prudence.executor'] = $executor;
+$component->context->attributes['com.threecrickets.prudence.executor'] = $executor;
 
 //
 // Cache

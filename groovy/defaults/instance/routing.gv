@@ -12,7 +12,7 @@ executeOrDefault('instance/hosts/')
 // Applications
 
 applications = []
-componentInstance.context.attributes['applications'] = applications
+componentInstance.context.attributes['com.threecrickets.prudence.applications'] = applications
 applicationsDir = new File('applications')
 
 propertiesFile = new File(applicationsDir, 'applications.properties')

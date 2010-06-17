@@ -15,9 +15,9 @@ import com.threecrickets.prudence.cache.InProcessMemoryCache
 
 $component = Component.new
 
-$component.context.attributes['prudence.version'] = $prudence_version
-$component.context.attributes['prudence.revision'] = $prudence_revision
-$component.context.attributes['prudence.flavor'] = $prudence_flavor
+$component.context.attributes['com.threecrickets.prudence.version'] = $prudence_version
+$component.context.attributes['com.threecrickets.prudence.revision'] = $prudence_revision
+$component.context.attributes['com.threecrickets.prudence.flavor'] = $prudence_flavor
 
 #
 # Logging
@@ -36,7 +36,7 @@ $component.status_service = DelegatedStatusService.new
 #
 
 $executor = Executors.new_fixed_thread_pool(Runtime::runtime.available_processors * 2 + 1)
-$component.context.attributes['prudence.executor'] = $executor
+$component.context.attributes['com.threecrickets.prudence.executor'] = $executor
 
 #
 # Cache

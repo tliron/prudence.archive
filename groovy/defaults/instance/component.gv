@@ -14,9 +14,9 @@ import com.threecrickets.prudence.cache.InProcessMemoryCache
 
 componentInstance = new Component()
 
-componentInstance.context.attributes['prudence.version'] = prudenceVersion
-componentInstance.context.attributes['prudence.revision'] = prudenceRevision
-componentInstance.context.attributes['prudence.flavor'] = prudenceFlavor
+componentInstance.context.attributes['com.threecrickets.prudence.version'] = prudenceVersion
+componentInstance.context.attributes['com.threecrickets.prudence.revision'] = prudenceRevision
+componentInstance.context.attributes['com.threecrickets.prudence.flavor'] = prudenceFlavor
 
 //
 // Logging
@@ -35,7 +35,7 @@ componentInstance.statusService = new DelegatedStatusService()
 //
 
 executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors() * 2 + 1)
-componentInstance.context.attributes['prudence.executor'] = executor
+componentInstance.context.attributes['com.threecrickets.prudence.executor'] = executor
 
 //
 // Cache

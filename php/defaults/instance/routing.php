@@ -16,7 +16,7 @@ execute_or_default('instance/hosts/');
 // Applications
 
 $applications = new ArrayList();
-$component->context->attributes['applications'] = $applications;
+$component->context->attributes['com.threecrickets.prudence.applications'] = $applications;
 $applications_dir = new File('applications');
 
 $properties_file = new File($applications_dir, 'applications.properties');

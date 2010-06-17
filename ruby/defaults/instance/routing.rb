@@ -12,7 +12,7 @@ execute_or_default 'instance/hosts/'
 # Applications
 
 $applications = ArrayList.new
-$component.context.attributes['applications'] = $applications
+$component.context.attributes['com.threecrickets.prudence.applications'] = $applications
 $applications_dir = java.io.File.new('applications')
 
 $properties_file = java.io.File.new($applications_dir, 'applications.properties')

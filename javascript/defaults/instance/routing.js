@@ -14,7 +14,7 @@ executeOrDefault('instance/hosts/');
 // Applications
 
 var applications = new ArrayList();
-component.context.attributes.put('applications', applications);
+component.context.attributes.put('com.threecrickets.prudence.applications', applications);
 var applicationsDir = new File('applications');
 
 var propertiesFile = new File(applicationsDir, 'applications.properties');
