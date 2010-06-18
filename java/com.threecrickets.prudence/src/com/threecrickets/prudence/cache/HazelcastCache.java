@@ -11,20 +11,20 @@
 
 package com.threecrickets.prudence.cache;
 
+import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.MultiMap;
 
 /**
  * A <a href="http://www.hazelcast.com/">Hazelcast</a>-backed cache.
  * <p>
- * Uses two Hazelcast maps, defaulting to the names "prudence.cache" and
- * "prduence.tagMap". Refer to Hazelcast documentation for instructions on how
- * to configure them.
+ * Uses a Hazelcast map and a Hazelcast multimap, defaulting to the names
+ * "prudence.cache" and "prduence.tagMap" respectively. Refer to Hazelcast
+ * documentation for instructions on how to configure them.
  * 
  * @author Tal Liron
  */
@@ -57,11 +57,9 @@ public class HazelcastCache implements Cache
 	 * Construction.
 	 * 
 	 * @param hazelcast
-	 *        The hazelcast instance or null to use the default instance
+	 *        The Hazelcast instance or null to use the default instance
 	 * @param cacheName
 	 *        The Hazelcast map name for the cache
-	 * @param tagMapName
-	 *        The Hazelcast map name for the tag map
 	 */
 	public HazelcastCache( HazelcastInstance hazelcast, String cacheName, String tagMapName )
 	{
@@ -84,15 +82,9 @@ public class HazelcastCache implements Cache
 
 		if( tags != null )
 		{
-			ConcurrentMap<String, Set<String>> tagMap = getTagMap();
+			MultiMap<String, String> tagMap = getTagMap();
 			for( String tag : tags )
-			{
-				Set<String> tagged = tagMap.get( tag );
-				if( tagged == null )
-					tagged = new HashSet<String>();
-				tagged.add( key );
-				tagMap.put( tag, tagged );
-			}
+				tagMap.put( tag, key );
 		}
 	}
 
@@ -126,8 +118,8 @@ public class HazelcastCache implements Cache
 
 	public void invalidate( String tag )
 	{
-		ConcurrentMap<String, Set<String>> tagMap = getTagMap();
-		Set<String> tagged = tagMap.remove( tag );
+		MultiMap<String, String> tagMap = getTagMap();
+		Collection<String> tagged = tagMap.remove( tag );
 		if( tagged != null )
 		{
 			ConcurrentMap<String, CacheEntry> cache = getCache();
@@ -193,8 +185,8 @@ public class HazelcastCache implements Cache
 	 * 
 	 * @return The tag map
 	 */
-	private ConcurrentMap<String, Set<String>> getTagMap()
+	private MultiMap<String, String> getTagMap()
 	{
-		return hazelcast.getMap( tagMapName );
+		return hazelcast.getMultiMap( tagMapName );
 	}
 }
