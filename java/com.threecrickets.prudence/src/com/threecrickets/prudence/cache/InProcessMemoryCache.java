@@ -157,6 +157,8 @@ public class InProcessMemoryCache implements Cache
 				entry = cache.remove( key );
 				if( entry != null )
 					size.addAndGet( -entry.getString().length() );
+				else
+					entry = null;
 			}
 			else
 			{

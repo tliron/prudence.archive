@@ -99,7 +99,8 @@ public class HazelcastCache implements Cache
 				if( debug )
 					System.out.println( "Stale entry: " + key );
 
-				entry = cache.remove( key );
+				cache.remove( key );
+				entry = null;
 			}
 			else
 			{
