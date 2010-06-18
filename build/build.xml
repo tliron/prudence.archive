@@ -170,6 +170,7 @@
 				<fileset dir="${lib}/restlet/lib" />
 				<fileset dir="${lib}/scripturian/lib" />
 				<fileset dir="${lib}/servlet/lib" />
+				<fileset dir="${lib}/spymemcached/lib" />
 			</classpath>
 		</javac>
 	</target>
@@ -268,6 +269,7 @@
 	<fetch-library dist="${dist-kitchensink}" library="scripturian" />
 	<fetch-library dist="${dist-kitchensink}" library="servlet" />
 	<fetch-library dist="${dist-kitchensink}" library="slf4j" />
+	<fetch-library dist="${dist-kitchensink}" library="spymemcached" />
 	<fetch-library dist="${dist-kitchensink}" library="sqlalchemy" />
 	<fetch-library dist="${dist-kitchensink}" library="succinct" />
 	<fetch-library dist="${dist-kitchensink}" library="velocity" />
@@ -385,6 +387,7 @@
 	<fetch-library dist="${dist-javascript}" library="scripturian" />
 	<fetch-library dist="${dist-javascript}" library="servlet" />
 	<fetch-library dist="${dist-javascript}" library="slf4j" />
+	<fetch-library dist="${dist-javascript}" library="spymemcached" />
 	<fetch-library dist="${dist-javascript}" library="succinct" />
 	<fetch-library dist="${dist-javascript}" library="velocity" />
 	<fetch-library-versions dist="${dist-javascript}" />
@@ -430,6 +433,7 @@
 	<fetch-library dist="${dist-python}" library="scripturian" />
 	<fetch-library dist="${dist-python}" library="servlet" />
 	<fetch-library dist="${dist-python}" library="slf4j" />
+	<fetch-library dist="${dist-python}" library="spymemcached" />
 	<fetch-library dist="${dist-python}" library="sqlalchemy" />
 	<fetch-library dist="${dist-python}" library="succinct" />
 	<fetch-library dist="${dist-python}" library="velocity" />
@@ -475,6 +479,7 @@
 	<fetch-library dist="${dist-clojure}" library="scripturian" />
 	<fetch-library dist="${dist-clojure}" library="servlet" />
 	<fetch-library dist="${dist-clojure}" library="slf4j" />
+	<fetch-library dist="${dist-clojure}" library="spymemcached" />
 	<fetch-library dist="${dist-clojure}" library="succinct" />
 	<fetch-library dist="${dist-clojure}" library="velocity" />
 	<fetch-library-versions dist="${dist-clojure}" />
@@ -519,6 +524,7 @@
 	<fetch-library dist="${dist-groovy}" library="scripturian" />
 	<fetch-library dist="${dist-groovy}" library="servlet" />
 	<fetch-library dist="${dist-groovy}" library="slf4j" />
+	<fetch-library dist="${dist-groovy}" library="spymemcached" />
 	<fetch-library dist="${dist-groovy}" library="succinct" />
 	<fetch-library dist="${dist-groovy}" library="velocity" />
 	<fetch-library-versions dist="${dist-groovy}" />
@@ -563,6 +569,7 @@
 	<fetch-library dist="${dist-ruby}" library="scripturian" />
 	<fetch-library dist="${dist-ruby}" library="servlet" />
 	<fetch-library dist="${dist-ruby}" library="slf4j" />
+	<fetch-library dist="${dist-ruby}" library="spymemcached" />
 	<fetch-library dist="${dist-ruby}" library="succinct" />
 	<fetch-library dist="${dist-ruby}" library="velocity" />
 	<fetch-library-versions dist="${dist-ruby}" />
@@ -607,6 +614,7 @@
 	<fetch-library dist="${dist-php}" library="scripturian" />
 	<fetch-library dist="${dist-php}" library="servlet" />
 	<fetch-library dist="${dist-php}" library="slf4j" />
+	<fetch-library dist="${dist-php}" library="spymemcached" />
 	<fetch-library dist="${dist-php}" library="succinct" />
 	<fetch-library dist="${dist-php}" library="velocity" />
 	<fetch-library-versions dist="${dist-php}" />

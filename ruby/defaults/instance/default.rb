@@ -65,6 +65,9 @@ System::set_property 'org.restlet.engine.loggerFacadeClass', 'org.restlet.ext.sl
 $executable.manager.attributes['velocity.runtime.log.logsystem.class'] = 'org.apache.velocity.runtime.log.Log4JLogChute'
 $executable.manager.attributes['velocity.runtime.log.logsystem.log4j.logger'] = 'velocity'
 
+# Set spymemcached to use log4j
+System::set_property 'net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.Log4JLogger'
+
 #
 # Configuration
 #

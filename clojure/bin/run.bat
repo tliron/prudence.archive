@@ -13,6 +13,7 @@ libraries/com.threecrickets.prudence.jar;^
 libraries/com.threecrickets.scripturian.jar;^
 libraries/com.threecrickets.succinct.jar;^
 libraries/javax.servlet.jar;^
+libraries/net.spy.memcached.jar;^
 libraries/org.apache.commons.dbcp.jar;^
 libraries/org.apache.commons.fileupload.jar;^
 libraries/org.apache.commons.io.jar;^

@@ -63,6 +63,9 @@ System.setProperty('org.restlet.engine.loggerFacadeClass', 'org.restlet.ext.slf4
 executable.manager.attributes.put('velocity.runtime.log.logsystem.class', 'org.apache.velocity.runtime.log.Log4JLogChute');
 executable.manager.attributes.put('velocity.runtime.log.logsystem.log4j.logger', 'velocity');
 
+// Set spymemcached to use log4j
+System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.Log4JLogger');
+
 //
 // Configuration
 //
