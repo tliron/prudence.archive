@@ -124,32 +124,6 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
-	 * Redirects a URI to a new URI relative to the original. You can use
-	 * template variables in the URIs.
-	 * <p>
-	 * Enforces matching mode {@link Template#MODE_EQUALS}.
-	 * <p>
-	 * This is handled via a {@link NormalizingRedirector} in
-	 * {@link Redirector#MODE_SERVER_INBOUND} mode.
-	 * 
-	 * @param uriTemplate
-	 *        The URI path template that must match the relative part of the
-	 *        resource URI
-	 * @param relativeUriTemplate
-	 *        The URI path to which we will redirect
-	 * @return The created route
-	 * @see NormalizingRedirector
-	 * @see Resolver#createResolver(Request, Response)
-	 */
-	public Route redirectRelative( String uriTemplate, String relativeUriTemplate )
-	{
-		String targetPathTemplate = "{ri}" + relativeUriTemplate;
-		Route route = attach( uriTemplate, new NormalizingRedirector( getContext(), targetPathTemplate, Redirector.MODE_SERVER_INBOUND ) );
-		route.setMatchingMode( Template.MODE_EQUALS );
-		return route;
-	}
-
-	/**
 	 * Captures (internally redirects) a URI to a new URI within this router's
 	 * application. You can use template variables in the URIs.
 	 * <p>

@@ -14,6 +14,4 @@
 (.detach router static-web)
 (def wrapped-static-web (CssUnifyMinifyFilter. (.getContext application-instance) static-web (File. (str application-base-path static-web-base-path)) dynamic-web-minimum-time-between-validity-checks))
 (def wrapped-static-web (JavaScriptUnifyMinifyFilter. (.getContext application-instance) wrapped-static-web (File. (str application-base-path static-web-base-path)) dynamic-web-minimum-time-between-validity-checks))
-(.setMatchingMode
-	(.attach router (fix-url static-web-base-url) wrapped-static-web)
-	Template/MODE_STARTS_WITH)
+(.attachBase router (fix-url static-web-base-url) wrapped-static-web)

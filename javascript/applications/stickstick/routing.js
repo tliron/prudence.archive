@@ -14,4 +14,4 @@ router.capture(fixURL(resourcesBaseURL + '/data/note/{id}/'), '/data/note/');
 router.detach(staticWeb);
 var wrappedStaticWeb = new CssUnifyMinifyFilter(applicationInstance.context, staticWeb, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks);
 var wrappedStaticWeb = new JavaScriptUnifyMinifyFilter(applicationInstance.context, wrappedStaticWeb, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks);
-router.attach(fixURL(staticWebBaseURL), wrappedStaticWeb).matchingMode = Template.MODE_STARTS_WITH;
+router.attachBase(fixURL(staticWebBaseURL), wrappedStaticWeb);

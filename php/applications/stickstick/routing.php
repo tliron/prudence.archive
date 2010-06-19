@@ -16,5 +16,5 @@ $router->capture(fix_url($resources_base_url . '/data/note/{id}/'), '/data/note/
 $router->detach($static_web);
 $wrapped_static_web = new CssUnifyMinifyFilter($application_instance->context, $static_web, new File($application_base_path . $static_web_base_path), $dynamic_web_minimum_time_between_validity_checks);
 $wrapped_static_web = new JavaScriptUnifyMinifyFilter($application_instance->context, $wrapped_static_web, new File($application_base_path . $static_web_base_path), $dynamic_web_minimum_time_between_validity_checks);
-$router->attach(fix_url($static_web_base_url), $wrapped_static_web)->matchingMode = Template::MODE_STARTS_WITH;
+$router->attachBase(fix_url($static_web_base_url), $wrapped_static_web);
 ?>
