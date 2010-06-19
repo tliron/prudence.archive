@@ -117,6 +117,7 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 
 	public void run()
 	{
+		// Experimental
 		try
 		{
 			Thread.sleep( 1000 );
