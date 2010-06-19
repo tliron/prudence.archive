@@ -13,7 +13,7 @@
 
 if(conversation.query['defer'] == 'true') {
 	if(conversation.defer()) {
-		throw new Exception()
+		conversation.stop()
 	}
 }
 

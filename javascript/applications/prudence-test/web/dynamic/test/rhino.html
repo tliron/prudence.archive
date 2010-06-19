@@ -11,7 +11,7 @@
 // Defer this page
 //
 
-if(conversation.query.get('defer') == 'true') if(conversation.defer()) throw null;
+if(conversation.query.get('defer') == 'true') if(conversation.defer()) conversation.stop();
 
 //
 // Cache this page 

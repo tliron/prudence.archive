@@ -11,7 +11,7 @@
 // Defer this page
 //
 
-if($_GET['defer'] == 'true') if($conversation->defer()) exit;
+if($_GET['defer'] == 'true') if($conversation->defer()) $conversation->stop();
 
 //
 // Cache this page

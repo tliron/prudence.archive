@@ -13,7 +13,7 @@
 
 (if (= (.. conversation getQuery (get "defer")) "true") 
 	(if (.defer conversation)
-		(throw nil)))
+		(.stop conversation)))
 
 ;
 ; Cache this page

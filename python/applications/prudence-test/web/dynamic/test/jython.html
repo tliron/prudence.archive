@@ -13,7 +13,7 @@
 
 if conversation.query['defer'] == 'true':
 	if conversation.defer():
-		raise Exception()
+		conversation.stop()
 
 #
 # Cache this page

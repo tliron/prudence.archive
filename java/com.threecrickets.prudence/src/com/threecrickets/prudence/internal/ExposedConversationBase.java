@@ -685,9 +685,9 @@ public class ExposedConversationBase<R extends ServerResource>
 	 * @return Always throws an exception, so nothing is ever returned (some
 	 *         templating languages require a return value anyway)
 	 */
-	public boolean kaboom()
+	public boolean stop()
 	{
-		throw new RuntimeException( "Kaboom!" );
+		throw new RuntimeException( "conversation.stop was called" );
 	}
 
 	/**
