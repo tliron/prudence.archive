@@ -26,8 +26,8 @@ import net.spy.memcached.OperationTimeoutException;
  * herf="http://code.google.com/p/spymemcached/">spymemcached</a> client
  * library.
  * <p>
- * By default, waits for all memcached commands to be completed. However, you
- * can turn this feature off to increase throughput at the cost of allowing for
+ * By default, waits for all memcached commands to complete. However, you can
+ * turn this feature off to increase throughput at the cost of allowing for
  * inconsistent cache states.
  * <p>
  * Note that {@link #reset()} (which causes memcached flushing) works only if
