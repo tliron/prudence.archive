@@ -43,13 +43,27 @@ public class MemcachedCache implements Cache
 
 	/**
 	 * Construction, with single node on the local host, default port 11211
-	 * using the binary protocol. Waits for completion. No tag prefix.
+	 * using the binary protocol; waits for completion; no tag prefix.
 	 * 
 	 * @throws IOException
 	 */
 	public MemcachedCache() throws IOException
 	{
-		this( "127.0.0.1:11211", true, true, "" );
+		this( "127.0.0.1:11211" );
+	}
+
+	/**
+	 * Construction: using the binary protocol; waits for completion; no tag
+	 * prefix.
+	 * 
+	 * @param nodes
+	 *        The node list (space-separated IP addresses or hostnames with port
+	 *        specifications after colon)
+	 * @throws IOException
+	 */
+	public MemcachedCache( String nodes ) throws IOException
+	{
+		this( nodes, true, true, "" );
 	}
 
 	/**
