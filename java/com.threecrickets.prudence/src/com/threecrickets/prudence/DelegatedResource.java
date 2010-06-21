@@ -1182,6 +1182,13 @@ public class DelegatedResource extends ServerResource
 		return getRepresentation( r, exposedConversation );
 	}
 
+	@Override
+	public void doRelease()
+	{
+		super.doRelease();
+		ExecutionContext.disconnect();
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
@@ -1464,7 +1471,6 @@ public class DelegatedResource extends ServerResource
 			{
 				getWriter().flush();
 				getErrorWriter().flush();
-				ExecutionContext.disconnect();
 			}
 			catch( IOException x )
 			{

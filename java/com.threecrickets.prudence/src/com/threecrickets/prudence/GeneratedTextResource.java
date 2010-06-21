@@ -857,6 +857,13 @@ public class GeneratedTextResource extends ServerResource
 		return execute( null, variant );
 	}
 
+	@Override
+	public void doRelease()
+	{
+		super.doRelease();
+		ExecutionContext.disconnect();
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
@@ -1094,7 +1101,6 @@ public class GeneratedTextResource extends ServerResource
 			finally
 			{
 				executionContext.release();
-				ExecutionContext.disconnect();
 			}
 		}
 		catch( DocumentNotFoundException x )
