@@ -1,11 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%velocity
 #set($base = $conversation.pathToBase)
-#set($component = $conversation.resource.context.attributes.get('component'))
-#set($applications = $component.context.attributes.get('applications'))
-#set($version = $component.context.attributes.get('prudence.version'))
-#set($revision = $component.context.attributes.get('prudence.revision'))
-#set($flavor = $component.context.attributes.get('prudence.flavor'))
+#set($component = $application.globals.get('com.threecrickets.prudence.component'))
+#set($applications = $component.context.attributes.get('com.threecrickets.prudence.applications'))
+#set($version = $component.context.attributes.get('com.threecrickets.prudence.version'))
+#set($revision = $component.context.attributes.get('com.threecrickets.prudence.revision'))
+#set($flavor = $component.context.attributes.get('com.threecrickets.prudence.flavor'))
 <html>
 <head>
 	<title>Prudence - Three Crickets</title>
