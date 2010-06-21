@@ -1464,6 +1464,7 @@ public class DelegatedResource extends ServerResource
 			{
 				getWriter().flush();
 				getErrorWriter().flush();
+				ExecutionContext.disconnect();
 			}
 			catch( IOException x )
 			{

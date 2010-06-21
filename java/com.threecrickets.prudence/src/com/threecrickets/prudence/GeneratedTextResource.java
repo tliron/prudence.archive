@@ -33,6 +33,7 @@ import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.internal.ExposedDocumentForGeneratedTextResource;
+import com.threecrickets.prudence.internal.GeneratedTextDeferredRepresentation;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
@@ -967,6 +968,8 @@ public class GeneratedTextResource extends ServerResource
 	 */
 	private volatile DocumentFormatter<Executable> documentFormatter;
 
+	private final boolean asynchronousSupport = false;
+
 	/**
 	 * Does the actual handling of requests.
 	 * 
@@ -1060,12 +1063,17 @@ public class GeneratedTextResource extends ServerResource
 					}
 				}
 
-				/*if( representation instanceof GeneratedTextDeferredRepresentation )
+				if( asynchronousSupport )
 				{
-					setAutoCommitting( false );
-					getApplication().getTaskService().submit( (GeneratedTextDeferredRepresentation) representation );
-					return null;
-				}*/
+					// Experimental
+
+					if( representation instanceof GeneratedTextDeferredRepresentation )
+					{
+						setAutoCommitting( false );
+						getApplication().getTaskService().submit( (GeneratedTextDeferredRepresentation) representation );
+						return null;
+					}
+				}
 
 				return representation;
 			}
@@ -1086,6 +1094,7 @@ public class GeneratedTextResource extends ServerResource
 			finally
 			{
 				executionContext.release();
+				ExecutionContext.disconnect();
 			}
 		}
 		catch( DocumentNotFoundException x )

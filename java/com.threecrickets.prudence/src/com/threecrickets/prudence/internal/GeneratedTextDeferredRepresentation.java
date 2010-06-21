@@ -45,9 +45,25 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 	 */
 	public GeneratedTextDeferredRepresentation( ExposedDocumentForGeneratedTextResource exposedDocument )
 	{
+		this( exposedDocument, 0 );
+	}
+
+	/**
+	 * Construction.
+	 * 
+	 * @param exposedDocument
+	 *        The exposed document to clone
+	 * @param delay
+	 *        Delay in millseconds before committing response (for concurrency
+	 *        testing purposes)
+	 */
+	public GeneratedTextDeferredRepresentation( ExposedDocumentForGeneratedTextResource exposedDocument, long delay )
+	{
 		// Note that we are setting representation characteristics
 		// before we actually execute the executable
 		super( exposedDocument.exposedConversation.getMediaType() );
+
+		this.delay = delay;
 
 		// Clone execution context
 		ExecutionContext executionContext = new ExecutionContext();
@@ -117,16 +133,20 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 
 	public void run()
 	{
-		// Experimental
-		try
+		if( delay > 0 )
 		{
-			Thread.sleep( 1000 );
+			try
+			{
+				Thread.sleep( delay );
+			}
+			catch( InterruptedException e )
+			{
+				// Restore interrupt status
+				Thread.currentThread().interrupt();
+				return;
+			}
 		}
-		catch( InterruptedException e )
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		Response response = exposedDocument.resource.getResponse();
 		response.setEntity( this );
 		response.setStatus( Status.SUCCESS_OK );
@@ -140,4 +160,10 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 	 * The exposed container.
 	 */
 	private final ExposedDocumentForGeneratedTextResource exposedDocument;
+
+	/**
+	 * Delay in millseconds before committing response. (For concurrency testing
+	 * purposes.)
+	 */
+	private final long delay;
 }
