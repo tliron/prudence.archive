@@ -27,7 +27,7 @@ import org.restlet.data.Parameter;
  * 
  * @author Tal Liron
  */
-public class LazyInitializationExposedPost extends LazyInitializationMap<String, String>
+public class LazyInitializationPost extends LazyInitializationMap<String, String>
 {
 	//
 	// Construction
@@ -42,7 +42,7 @@ public class LazyInitializationExposedPost extends LazyInitializationMap<String,
 	 *        The exposed file map which will have a chance to consume the
 	 *        entity first
 	 */
-	public LazyInitializationExposedPost( Request request, LazyInitializationExposedFile exposedFile )
+	public LazyInitializationPost( Request request, LazyInitializationFile exposedFile )
 	{
 		super( new HashMap<String, String>() );
 		this.request = request;
@@ -86,5 +86,5 @@ public class LazyInitializationExposedPost extends LazyInitializationMap<String,
 	 * The exposed file map which will have a chance to consume the entity
 	 * first.
 	 */
-	private final LazyInitializationExposedFile exposedFile;
+	private final LazyInitializationFile exposedFile;
 }

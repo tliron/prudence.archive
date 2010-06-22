@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.service;
 
 import java.util.Collection;
 import java.util.Date;
@@ -43,9 +43,11 @@ import com.threecrickets.prudence.util.FileParameter;
 import com.threecrickets.prudence.util.FormWithFiles;
 
 /**
+ * Conversation service exposed to executables.
+ * 
  * @author Tal Liron
  */
-public class ExposedConversationBase<R extends ServerResource>
+public class ConversationServiceBase<R extends ServerResource>
 {
 	//
 	// Construction
@@ -63,7 +65,7 @@ public class ExposedConversationBase<R extends ServerResource>
 	 * @param defaultCharacterSet
 	 *        The character set to use if unspecified by variant
 	 */
-	public ExposedConversationBase( R resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
+	public ConversationServiceBase( R resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
 	{
 		this.resource = resource;
 		this.entity = entity;

@@ -12,14 +12,10 @@
 package com.threecrickets.prudence.internal;
 
 import java.util.HashMap;
-
-import org.restlet.Request;
-import org.restlet.data.Form;
-import org.restlet.data.Method;
-import org.restlet.data.Parameter;
+import java.util.Map;
 
 /**
- * A PHP-style $_GET map.
+ * A PHP-style $_REQUEST map.
  * <p>
  * See PHP's <a
  * href="http://www.php.net/manual/en/reserved.variables.php">predefined
@@ -27,7 +23,7 @@ import org.restlet.data.Parameter;
  * 
  * @author Tal Liron
  */
-public class LazyInitializationExposedGet extends LazyInitializationMap<String, String>
+public class LazyInitializationRequest extends LazyInitializationMap<String, String>
 {
 	//
 	// Construction
@@ -36,13 +32,19 @@ public class LazyInitializationExposedGet extends LazyInitializationMap<String, 
 	/**
 	 * Construction.
 	 * 
-	 * @param request
-	 *        The request
+	 * @param getMap
+	 *        The get map to use
+	 * @param postMap
+	 *        The post map to use
+	 * @param cookieMap
+	 *        The cookie map to use
 	 */
-	public LazyInitializationExposedGet( Request request )
+	public LazyInitializationRequest( Map<String, String> getMap, Map<String, String> postMap, Map<String, String> cookieMap )
 	{
 		super( new HashMap<String, String>() );
-		this.request = request;
+		this.getMap = getMap;
+		this.postMap = postMap;
+		this.cookieMap = cookieMap;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -55,19 +57,26 @@ public class LazyInitializationExposedGet extends LazyInitializationMap<String, 
 	@Override
 	protected void initialize()
 	{
-		if( request.getMethod().equals( Method.GET ) )
-		{
-			Form form = request.getResourceRef().getQueryAsForm();
-			for( Parameter parameter : form )
-				map.put( parameter.getName(), parameter.getValue() );
-		}
+		map.putAll( getMap );
+		map.putAll( postMap );
+		map.putAll( cookieMap );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
 	/**
-	 * The request.
+	 * The get map to use.
 	 */
-	private final Request request;
+	private final Map<String, String> getMap;
+
+	/**
+	 * The post map to use.
+	 */
+	private final Map<String, String> postMap;
+
+	/**
+	 * The cookie map to use.
+	 */
+	private final Map<String, String> cookieMap;
 }

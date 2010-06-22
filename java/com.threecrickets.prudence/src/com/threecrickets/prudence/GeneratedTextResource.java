@@ -22,7 +22,6 @@ import org.restlet.Request;
 import org.restlet.data.CacheDirective;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
-import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
@@ -32,9 +31,11 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.cache.Cache;
-import com.threecrickets.prudence.internal.ExposedDocumentForGeneratedTextResource;
 import com.threecrickets.prudence.internal.GeneratedTextDeferredRepresentation;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
+import com.threecrickets.prudence.service.ApplicationService;
+import com.threecrickets.prudence.service.GeneratedTextResourceConversationService;
+import com.threecrickets.prudence.service.GeneratedTextResourceDocumentService;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
@@ -51,126 +52,31 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * A Restlet resource which executes a "text with scriptlets" Scripturian
- * {@link Executable} document for HTTP GET and POST verbs and redirects its
- * standard output to a {@link StringRepresentation}.
+ * {@link Executable} document for GET and POST verbs and redirects its standard
+ * output to a {@link StringRepresentation}.
+ * <p>
+ * <code>document</code>, <code>application</code> and <code>conversation</code>
+ * are available as global services in scriptlets. See
+ * {@link GeneratedTextResourceDocumentService}, {@link ApplicationService} and
+ * {@link GeneratedTextResourceConversationService}.
  * <p>
  * Before using this resource, make sure to configure a valid document source in
  * the application's {@link Context}; see {@link #getDocumentSource()}. This
- * document source is exposed to scriptlets as <code>prudence.source</code>.
+ * document source is exposed to scriptlets as <code>document.source</code>.
  * <p>
- * This resource supports two modes of output:
- * <ul>
- * <li>Caching mode: First, the entire document is executed, with its output
- * sent into a buffer. This buffer is then cached, and <i>only then</i> sent to
- * the client. This is the default mode and recommended for most documents.
- * Scriptlets can control the duration of their individual cache by changing the
- * value of <code>executable.cacheDuration</code> (see {@link Executable}).
- * Because output is not sent to the client until after the executable finished
- * its execution, it is possible for scriptlets to set output characteristics at
- * any time by changing the values of <code>prudence.mediaType</code>,
- * <code>prudence.characterSet</code>, and <code>prudence.language</code> (see
- * below).</li>
- * <li>Streaming mode: Output is sent to the client <i>while</i> the document is
- * being executed. This is recommended for documents that need to output a very
- * large amount of text, which might take a long time, or that might otherwise
- * encounter slow-downs while running. In either case, you want the client to
- * receive ongoing output. The output of the document is not cached, and the
- * value of <code>executable.cacheDuration</code> is always reset to 0 in this
- * mode. To enter streaming mode, call <code>prudence.stream()</code> (see below
- * for details). Note that you must determine output characteristics (
- * <code>prudence.mediaType</code>, <code>prudence.characterSet</code>, and
- * <code>prudence.language</code>) <i>before</i> entering streaming mode. Trying
- * to change them while running in streaming mode will raise an exception.
- * </ul>
+ * This resource supports caching into implementations of {@link Cache}. First,
+ * the entire document is executed, with its output sent into a buffer. This
+ * buffer is then cached, and <i>only then</i> sent to the client. Scriptlets
+ * can control the duration of their individual cache by changing the value of
+ * <code>document.cacheDuration</code>. Because output is not sent to the client
+ * until after the executable finished its execution, it is possible for
+ * scriptlets to set output characteristics at any time by changing the values
+ * of <code>conversation.mediaType</code>,
+ * <code>conversation.characterSet</code>, and
+ * <code>conversation.language</code>.
  * <p>
- * A special container environment is created for your scriptlets, with some
- * useful services. It is exposed to scriptlets as a global variables named
- * <code>prudence</code>. For some other global variables exposed to scriptlets,
- * see {@link Executable}.
- * <p>
- * Operations:
- * <ul>
- * <li><code>prudence.includeDocument(name)</code>: This powerful method allows
- * scriptlets to execute other documents in place, and is useful for creating
- * large, maintainable applications based on documents. Included documents can
- * act as a library or toolkit and can even be shared among many applications.
- * The included document does not have to be in the same programming language or
- * use the same engine as the calling scriptlet. However, if they do use the
- * same engine, then methods, functions, modules, etc., could be shared.
- * <p>
- * It is important to note that how this works varies a lot per engine. For
- * example, in JRuby, every scriptlet is run in its own scope, so that sharing
- * would have to be done explicitly in the global scope. See the included JRuby
- * examples for a discussion of various ways to do this.
- * </li>
- * <li><code>prudence.include(name)</code>:except that the document is parsed as
- * a single, non-delimited script with the engine name derived from name's
- * extension.</li>
- * <li><code>conversation.stream()</code>: If you are in caching mode, calling
- * this method will return true and cause the document to run again, where this
- * next run will be in streaming mode. Whatever output the document created in
- * the current run is discarded, and all further exceptions are ignored. For
- * this reason, it's probably best to call <code>conversation.stream()</code> as
- * early as possible in the document, and then to quit the document as soon as
- * possible if it returns true. For example, your document can start by testing
- * whether it will have a lot of output, and if so, set output characteristics,
- * call <code>conversation.stream()</code>, and quit. If you are already in
- * streaming mode, calling this method has no effect and returns false. Note
- * that a good way to quit the script is to throw an exception, because it will
- * end the script and otherwise be ignored. By default, writers will be
- * automatically flushed after every line in streaming mode. If you want to
- * disable this behavior, use <code>conversation.stream(flushLines)</code> .</li>
- * <li><code>conversation.stream(flushLines)</code>: This version of the above
- * adds a boolean argument to let you control whether to flush the writer after
- * every line in streaming mode. By default line-by-line flushing is enabled.</li>
- * </ul>
- * Read-only attributes:
- * <ul>
- * <li><code>conversation.entity</code>: The entity of this request. Available
- * only for post and put.</li>
- * <li><code>conversation.isInternal</code>: This boolean is true if the request
- * was received via the RIAP protocol.</li>
- * <li><code>conversation.isStreaming</code>: This boolean is true when the
- * writer is in streaming mode (see above).</li>
- * <li><code>conversation.resource</code>: The instance of this resource. Acts
- * as a "this" reference for scriptlets. You can use it to access the request
- * and response.</li>
- * <li><code>prudence.source</code>: The source used for the script; see
- * {@link #getDocumentSource()}.</li>
- * <li><code>conversation.variant</code>: The {@link Variant} of this request.
- * Useful for interrogating the client's preferences.</li>
- * </ul>
- * Modifiable attributes:
- * <ul>
- * <li><code>prudence.cacheDuration</code>: Setting this to something greater
- * than 0 enables caching of the executable's output for a maximum number of
- * milliseconds. By default {@code cacheDuration} is 0.</li>
- * <li><code>prudence.cacheGroups</code>: An options list of groups for our
- * cache entry to be associated with. Cache groups make it easy to invalidate
- * many entries in the cache at once. (See {@link Cache#invalidate(String)})</li>
- * <li><code>prudence.cacheKey</code>: A template for defining how the cache key
- * will be generated.</li>
- * <li><code>conversation.characterSet</code>: The {@link CharacterSet} that
- * will be used for the generated string. Defaults to what the client requested
- * (in <code>prudence.variant</code>), or to the value of
- * {@link #getDefaultCharacterSet()} if the client did not specify it. If not in
- * streaming mode, your scriptlets can change this to something else.</li>
- * <li><code>prudence.language</code>: The {@link Language} that will be used
- * for the generated string. Defaults to null. If not in streaming mode, your
- * scriptlets can change this to something else.</li>
- * <li><code>conversation.mediaType</code>: The {@link MediaType} that will be
- * used for the generated string. Defaults to what the client requested (in
- * <code>prudence.variant</code>). If not in streaming mode, your scriptlets can
- * change this to something else.</li>
- * <li><code>conversation.statusCode</code>: A convenient way to set the
- * response status code. This is equivalent to setting
- * <code>prudence.resource.response.status</code> using
- * {@link Status#valueOf(int)}.</li>
- * </ul>
- * <p>
- * In addition to the above, a {@link ExecutionController} can be set to expose
- * your own global variables to scriptlets. See
- * {@link #getExecutionController()}.
+ * There is experimental support for deferred response (asynchronous mode) via
+ * <code>conversation.defer</code>.
  * <p>
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
@@ -181,13 +87,6 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <code>com.threecrickets.prudence.GeneratedTextResource.clientCachingMode:</code>
  * {@link Integer}, defaults to {@link #CLIENT_CACHING_MODE_CONDITIONAL}. See
  * {@link #getClientCachingMode()}.</li>
- * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.prepare:</code>
- * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
- * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.exposedContainerName</code>
- * : The name of the global variable with which to access the container.
- * Defaults to "prudence". See {@link #getExposedDocumentName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey:</code>
  * {@link String}, defaults to "{ri}". See {@link #getDefaultCacheKey()}.</li>
@@ -205,15 +104,32 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <code>com.threecrickets.prudence.GeneratedTextResource.documentSource:</code>
  * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
  * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.executionController:</code>
+ * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.applicationServiceName</code>
+ * : The name of the global variable with which to access the application
+ * service. Defaults to "application". See {@link #getApplicationServiceName()}.
+ * </li>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.documentServiceName</code>
+ * : The name of the global variable with which to access the document service.
+ * Defaults to "document". See {@link #getDocumentServiceName()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.conversationServiceName</code>
+ * : The name of the global variable with which to access the conversation
+ * service. Defaults to "conversation". See
+ * {@link #getConversationServiceName()}.</li>
+ * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.languageManager:</code>
  * {@link LanguageManager}, defaults to a new instance. See
  * {@link #getLanguageManager()}.</li>
  * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.prepare:</code>
+ * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
+ * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.sourceViewable:</code>
  * {@link Boolean}, defaults to false. See {@link #isSourceViewable()}.</li>
- * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.executionController:</code>
- * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.trailingSlashRequired:</code>
  * {@link Boolean}, defaults to true. See {@link #isTrailingSlashRequired()}.</li>
@@ -223,8 +139,6 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
  * @author Tal Liron
- * @see Executable
- * @see DelegatedResource
  */
 public class GeneratedTextResource extends ServerResource
 {
@@ -243,75 +157,75 @@ public class GeneratedTextResource extends ServerResource
 	//
 
 	/**
-	 * The name of the global variable with which to access the document.
-	 * Defaults to "document".
+	 * The name of the global variable with which to access the document
+	 * service. Defaults to "document".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.exposedContainerName</code>
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.documentServiceName</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The document name
+	 * @return The document service name
 	 */
-	public String getExposedDocumentName()
+	public String getDocumentServiceName()
 	{
-		if( exposedDocumentName == null )
+		if( documentServiceName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			exposedDocumentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.exposedDocumentName" );
+			documentServiceName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentServiceName" );
 
-			if( exposedDocumentName == null )
-				exposedDocumentName = "document";
+			if( documentServiceName == null )
+				documentServiceName = "document";
 		}
 
-		return exposedDocumentName;
+		return documentServiceName;
 	}
 
 	/**
-	 * The name of the global variable with which to access the application.
-	 * Defaults to "application".
+	 * The name of the global variable with which to access the application
+	 * service. Defaults to "application".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.exposedApplicationName</code>
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.applicationServiceName</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The application name
+	 * @return The application service name
 	 */
-	public String getExposedApplicationName()
+	public String getApplicationServiceName()
 	{
-		if( exposedApplicationName == null )
+		if( applicationServiceName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			exposedApplicationName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.exposedApplicationName" );
+			applicationServiceName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.applicationServiceName" );
 
-			if( exposedApplicationName == null )
-				exposedApplicationName = "application";
+			if( applicationServiceName == null )
+				applicationServiceName = "application";
 		}
 
-		return exposedApplicationName;
+		return applicationServiceName;
 	}
 
 	/**
-	 * The name of the global variable with which to access the conversation.
-	 * Defaults to "conversation".
+	 * The name of the global variable with which to access the conversation
+	 * service. Defaults to "conversation".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.exposedConversationName</code>
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.conversationServiceName</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The conversation name
+	 * @return The conversation service name
 	 */
-	public String getExposedConversationName()
+	public String getConversationServiceName()
 	{
-		if( exposedConversationName == null )
+		if( conversationServiceName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			exposedConversationName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.exposedConversationName" );
+			conversationServiceName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.conversationServiceName" );
 
-			if( exposedConversationName == null )
-				exposedConversationName = "conversation";
+			if( conversationServiceName == null )
+				conversationServiceName = "conversation";
 		}
 
-		return exposedConversationName;
+		return conversationServiceName;
 	}
 
 	/**
@@ -956,25 +870,31 @@ public class GeneratedTextResource extends ServerResource
 	private volatile Cache cache;
 
 	/**
-	 * The name of the global variable with which to access the document.
+	 * The name of the global variable with which to access the document
+	 * service.
 	 */
-	private volatile String exposedDocumentName;
+	private volatile String documentServiceName;
 
 	/**
-	 * The name of the global variable with which to access the application.
+	 * The name of the global variable with which to access the application
+	 * service.
 	 */
-	private volatile String exposedApplicationName;
+	private volatile String applicationServiceName;
 
 	/**
-	 * The name of the global variable with which to access the conversation.
+	 * The name of the global variable with which to access the conversation
+	 * service.
 	 */
-	private volatile String exposedConversationName;
+	private volatile String conversationServiceName;
 
 	/**
 	 * The document formatter.
 	 */
 	private volatile DocumentFormatter<Executable> documentFormatter;
 
+	/**
+	 * Flag for asynchronous support (experimental).
+	 */
 	private final boolean asynchronousSupport = false;
 
 	/**
@@ -1026,12 +946,12 @@ public class GeneratedTextResource extends ServerResource
 			File libraryDirectory = getLibraryDirectory();
 			if( libraryDirectory != null )
 				executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
-			ExposedDocumentForGeneratedTextResource exposedContainer = new ExposedDocumentForGeneratedTextResource( this, executionContext, entity, variant );
+			GeneratedTextResourceDocumentService conversationService = new GeneratedTextResourceDocumentService( this, executionContext, entity, variant );
 			Representation representation = null;
 			try
 			{
 				// Execute and represent output
-				representation = exposedContainer.include( documentName );
+				representation = conversationService.include( documentName );
 
 				switch( getClientCachingMode() )
 				{

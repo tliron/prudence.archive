@@ -33,7 +33,7 @@ import org.restlet.ext.fileupload.RestletFileUpload;
  * 
  * @author Tal Liron
  */
-public class LazyInitializationExposedFile extends LazyInitializationMap<String, Map<String, Object>>
+public class LazyInitializationFile extends LazyInitializationMap<String, Map<String, Object>>
 {
 	//
 	// Construction
@@ -45,7 +45,7 @@ public class LazyInitializationExposedFile extends LazyInitializationMap<String,
 	 * @param request
 	 *        The request
 	 */
-	public LazyInitializationExposedFile( Request request, FileItemFactory fileItemFactory )
+	public LazyInitializationFile( Request request, FileItemFactory fileItemFactory )
 	{
 		super( new HashMap<String, Map<String, Object>>() );
 		this.request = request;

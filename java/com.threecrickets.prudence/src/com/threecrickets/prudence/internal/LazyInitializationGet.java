@@ -12,10 +12,14 @@
 package com.threecrickets.prudence.internal;
 
 import java.util.HashMap;
-import java.util.Map;
+
+import org.restlet.Request;
+import org.restlet.data.Form;
+import org.restlet.data.Method;
+import org.restlet.data.Parameter;
 
 /**
- * A PHP-style $_REQUEST map.
+ * A PHP-style $_GET map.
  * <p>
  * See PHP's <a
  * href="http://www.php.net/manual/en/reserved.variables.php">predefined
@@ -23,7 +27,7 @@ import java.util.Map;
  * 
  * @author Tal Liron
  */
-public class LazyInitializationExposedRequest extends LazyInitializationMap<String, String>
+public class LazyInitializationGet extends LazyInitializationMap<String, String>
 {
 	//
 	// Construction
@@ -32,19 +36,13 @@ public class LazyInitializationExposedRequest extends LazyInitializationMap<Stri
 	/**
 	 * Construction.
 	 * 
-	 * @param exposedGet
-	 *        The exposed get map to use
-	 * @param exposedPost
-	 *        The exposed post map to use
-	 * @param exposedCookie
-	 *        The exposed cookie map to use
+	 * @param request
+	 *        The request
 	 */
-	public LazyInitializationExposedRequest( Map<String, String> exposedGet, Map<String, String> exposedPost, Map<String, String> exposedCookie )
+	public LazyInitializationGet( Request request )
 	{
 		super( new HashMap<String, String>() );
-		this.exposedGet = exposedGet;
-		this.exposedPost = exposedPost;
-		this.exposedCookie = exposedCookie;
+		this.request = request;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -57,26 +55,19 @@ public class LazyInitializationExposedRequest extends LazyInitializationMap<Stri
 	@Override
 	protected void initialize()
 	{
-		map.putAll( exposedGet );
-		map.putAll( exposedPost );
-		map.putAll( exposedCookie );
+		if( request.getMethod().equals( Method.GET ) )
+		{
+			Form form = request.getResourceRef().getQueryAsForm();
+			for( Parameter parameter : form )
+				map.put( parameter.getName(), parameter.getValue() );
+		}
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
 	/**
-	 * The exposed get map to use.
+	 * The request.
 	 */
-	private final Map<String, String> exposedGet;
-
-	/**
-	 * The exposed post map to use.
-	 */
-	private final Map<String, String> exposedPost;
-
-	/**
-	 * The exposed cookie map to use.
-	 */
-	private final Map<String, String> exposedCookie;
+	private final Request request;
 }

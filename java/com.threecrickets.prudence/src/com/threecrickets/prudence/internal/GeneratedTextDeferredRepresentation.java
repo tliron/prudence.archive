@@ -11,7 +11,6 @@
 
 package com.threecrickets.prudence.internal;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
@@ -21,6 +20,9 @@ import org.restlet.data.Status;
 import org.restlet.representation.WriterRepresentation;
 
 import com.threecrickets.prudence.GeneratedTextResource;
+import com.threecrickets.prudence.service.GeneratedTextResourceConversationService;
+import com.threecrickets.prudence.service.GeneratedTextResourceDocumentService;
+import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
@@ -40,50 +42,58 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 	/**
 	 * Construction.
 	 * 
-	 * @param exposedDocument
-	 *        The exposed document to clone
+	 * @param resource
+	 *        The resource
+	 * @param executable
+	 *        The executable
+	 * @param executionContext
+	 *        The execution context
+	 * @param documentService
+	 *        The document service
+	 * @param conversationService
+	 *        The conversation service
 	 */
-	public GeneratedTextDeferredRepresentation( ExposedDocumentForGeneratedTextResource exposedDocument )
+	public GeneratedTextDeferredRepresentation( GeneratedTextResource resource, Executable executable, ExecutionContext executionContext, GeneratedTextResourceDocumentService documentService,
+		GeneratedTextResourceConversationService conversationService )
 	{
-		this( exposedDocument, 0 );
+		this( resource, executable, executionContext, documentService, conversationService, 0 );
 	}
 
 	/**
 	 * Construction.
 	 * 
-	 * @param exposedDocument
-	 *        The exposed document to clone
+	 * @param resource
+	 *        The resource
+	 * @param executable
+	 *        The executable
+	 * @param executionContext
+	 *        The execution context
+	 * @param documentService
+	 *        The document service
+	 * @param conversationService
+	 *        The conversation service
 	 * @param delay
 	 *        Delay in millseconds before committing response (for concurrency
 	 *        testing purposes)
 	 */
-	public GeneratedTextDeferredRepresentation( ExposedDocumentForGeneratedTextResource exposedDocument, long delay )
+	public GeneratedTextDeferredRepresentation( GeneratedTextResource resource, Executable executable, ExecutionContext executionContext, GeneratedTextResourceDocumentService documentService,
+		GeneratedTextResourceConversationService conversationService, long delay )
 	{
 		// Note that we are setting representation characteristics
 		// before we actually execute the executable
-		super( exposedDocument.exposedConversation.getMediaType() );
+		super( conversationService.getMediaType() );
 
+		this.resource = resource;
+		this.executable = executable;
+		this.executionContext = executionContext;
+		this.documentService = documentService;
 		this.delay = delay;
 
-		// Clone execution context
-		ExecutionContext executionContext = new ExecutionContext();
-
-		// Clone container
-		this.exposedDocument = new ExposedDocumentForGeneratedTextResource( exposedDocument.resource, executionContext, exposedDocument.exposedConversation.getEntity(), exposedDocument.exposedConversation.getVariant() );
-		this.exposedDocument.currentExecutable = exposedDocument.currentExecutable;
-		this.exposedDocument.exposedConversation.isDeferred = true;
-
-		// Initialize execution context
-		executionContext.getExposedVariables().put( this.exposedDocument.resource.getExposedDocumentName(), this.exposedDocument );
-		executionContext.getExposedVariables().put( this.exposedDocument.resource.getExposedApplicationName(), this.exposedDocument.exposedApplication );
-		executionContext.getExposedVariables().put( this.exposedDocument.resource.getExposedConversationName(), this.exposedDocument.exposedConversation );
-		File libraryDirectory = this.exposedDocument.resource.getLibraryDirectory();
-		if( libraryDirectory != null )
-			executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
-
-		setCharacterSet( this.exposedDocument.exposedConversation.getCharacterSet() );
-		if( this.exposedDocument.exposedConversation.getLanguage() != null )
-			setLanguages( Arrays.asList( this.exposedDocument.exposedConversation.getLanguage() ) );
+		setCharacterSet( conversationService.getCharacterSet() );
+		if( conversationService.getLanguage() != null )
+			setLanguages( Arrays.asList( conversationService.getLanguage() ) );
+		if( conversationService.getEncoding() != null )
+			setEncodings( Arrays.asList( conversationService.getEncoding() ) );
 	}
 
 	//
@@ -93,11 +103,11 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 	@Override
 	public void write( Writer writer ) throws IOException
 	{
-		exposedDocument.writer = writer;
-		exposedDocument.executionContext.setWriter( writer );
+		// documentService.writer = writer;
+		executionContext.setWriter( writer );
 		try
 		{
-			exposedDocument.currentExecutable.execute( exposedDocument.executionContext, exposedDocument, exposedDocument.resource.getExecutionController() );
+			executable.execute( executionContext, documentService, resource.getExecutionController() );
 		}
 		catch( ParsingException x )
 		{
@@ -113,18 +123,18 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 		}
 		finally
 		{
-			exposedDocument.executionContext.getErrorWriterOrDefault().flush();
-			exposedDocument.resource.commit();
+			executionContext.getErrorWriterOrDefault().flush();
+			resource.commit();
 		}
 	}
 
 	@Override
 	public void release()
 	{
-		exposedDocument.executionContext.release();
+		executionContext.release();
 		super.release();
-		if( !exposedDocument.resource.isCommitted() )
-			exposedDocument.resource.getResponse().abort();
+		if( !resource.isCommitted() )
+			resource.abort();
 	}
 
 	//
@@ -147,7 +157,7 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 			}
 		}
 
-		Response response = exposedDocument.resource.getResponse();
+		Response response = resource.getResponse();
 		response.setEntity( this );
 		response.setStatus( Status.SUCCESS_OK );
 		response.commit();
@@ -157,9 +167,24 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 	// Private
 
 	/**
-	 * The exposed container.
+	 * The resource.
 	 */
-	private final ExposedDocumentForGeneratedTextResource exposedDocument;
+	private final GeneratedTextResource resource;
+
+	/**
+	 * The executable.
+	 */
+	private final Executable executable;
+
+	/**
+	 * The execution context.
+	 */
+	private final ExecutionContext executionContext;
+
+	/**
+	 * The document service.
+	 */
+	private final GeneratedTextResourceDocumentService documentService;
 
 	/**
 	 * Delay in millseconds before committing response. (For concurrency testing

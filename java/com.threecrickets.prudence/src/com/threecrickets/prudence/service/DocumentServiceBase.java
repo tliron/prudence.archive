@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.service;
 
 import java.io.IOException;
 
@@ -25,12 +25,12 @@ import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
- * Document services exposed to executables.
+ * Document service exposed to executables.
  * 
  * @author Tal Liron
  * @param <R>
  */
-public abstract class ExposedDocumentBase<R extends ServerResource>
+public abstract class DocumentServiceBase<R extends ServerResource>
 {
 	//
 	// Construction
@@ -44,7 +44,7 @@ public abstract class ExposedDocumentBase<R extends ServerResource>
 	 * @param documentSource
 	 *        The document source
 	 */
-	public ExposedDocumentBase( R resource, DocumentSource<Executable> documentSource )
+	public DocumentServiceBase( R resource, DocumentSource<Executable> documentSource )
 	{
 		this.resource = resource;
 		this.documentSource = documentSource;

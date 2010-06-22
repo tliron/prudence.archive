@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.service;
 
 import org.restlet.data.CharacterSet;
 import org.restlet.representation.Representation;
@@ -18,15 +18,18 @@ import org.restlet.representation.Variant;
 import com.threecrickets.prudence.GeneratedTextResource;
 
 /**
+ * Conversation service exposed to executables.
+ * 
  * @author Tal Liron
+ * @see GeneratedTextResource
  */
-public class ExposedConversationForGeneratedTextResource extends ExposedConversationBase<GeneratedTextResource>
+public class GeneratedTextResourceConversationService extends ConversationServiceBase<GeneratedTextResource>
 {
 	//
 	// Construction
 	//
 
-	public ExposedConversationForGeneratedTextResource( GeneratedTextResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
+	public GeneratedTextResourceConversationService( GeneratedTextResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
 	{
 		super( resource, entity, variant, defaultCharacterSet );
 	}

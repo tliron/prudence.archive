@@ -32,6 +32,8 @@ import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 
 /**
+ * TODO
+ * 
  * @author Tal Liron
  */
 public class SourceCodeResource extends ServerResource
@@ -142,10 +144,24 @@ public class SourceCodeResource extends ServerResource
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * The document sources.
+	 */
 	private volatile Iterable<DocumentSource<Executable>> documentSources;
 
+	/**
+	 * The document formatter.
+	 */
 	private volatile DocumentFormatter<Executable> documentFormatter;
 
+	/**
+	 * Gets a document from the sources.
+	 * 
+	 * @param name
+	 *        The document name
+	 * @return The document descriptor
+	 * @throws DocumentException
+	 */
 	private DocumentDescriptor<Executable> getDocument( String name ) throws DocumentException
 	{
 		if( name.startsWith( "/" ) )
@@ -171,6 +187,15 @@ public class SourceCodeResource extends ServerResource
 		return null;
 	}
 
+	/**
+	 * Formats a document.
+	 * 
+	 * @param documentDescriptor
+	 *        The document descriptor
+	 * @param highlightLineNumber
+	 *        The line number to highlight
+	 * @return The formatted document
+	 */
 	private String format( DocumentDescriptor<Executable> documentDescriptor, int highlightLineNumber )
 	{
 		DocumentFormatter<Executable> documentFormatter = getDocumentFormatter();

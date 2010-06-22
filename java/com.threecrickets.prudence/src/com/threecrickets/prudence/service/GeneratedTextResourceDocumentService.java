@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.service;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -29,6 +29,7 @@ import org.restlet.routing.Variable;
 import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.CacheEntry;
+import com.threecrickets.prudence.internal.GeneratedTextDeferredRepresentation;
 import com.threecrickets.prudence.util.CaptiveRedirector;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
@@ -39,33 +40,54 @@ import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
- * This is the <code>prudence</code> variable exposed to scriptlets.
+ * Document service exposed to executables.
  * 
  * @author Tal Liron
  */
-public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase<GeneratedTextResource>
+public class GeneratedTextResourceDocumentService extends DocumentServiceBase<GeneratedTextResource>
 {
 	//
 	// Construction
 	//
 
 	/**
-	 * Constructs a container with media type and character set according to the
-	 * variant, or {@link GeneratedTextResource#getDefaultCharacterSet()} if
-	 * none is provided.
+	 * Constructor.
 	 * 
 	 * @param resource
 	 *        The resource
 	 * @param executionContext
 	 *        The execution context
-	 * @param exposedConversation
+	 * @param conversationService
 	 *        The exposed conversation
 	 */
-	public ExposedDocumentForGeneratedTextResource( GeneratedTextResource resource, ExecutionContext executionContext, Representation entity, Variant variant )
+	public GeneratedTextResourceDocumentService( GeneratedTextResource resource, ExecutionContext executionContext, Representation entity, Variant variant )
 	{
 		super( resource, resource.getDocumentSource() );
 		this.executionContext = executionContext;
-		this.exposedConversation = new ExposedConversationForGeneratedTextResource( resource, entity, variant, resource.getDefaultCharacterSet() );
+		this.conversationService = new GeneratedTextResourceConversationService( resource, entity, variant, resource.getDefaultCharacterSet() );
+	}
+
+	/**
+	 * Construction by cloning, with new execution context (for deferred
+	 * execution).
+	 * 
+	 * @param documentService
+	 *        The document service to clone
+	 */
+	public GeneratedTextResourceDocumentService( GeneratedTextResourceDocumentService documentService )
+	{
+		this( documentService.resource, new ExecutionContext(), documentService.conversationService.getEntity(), documentService.conversationService.getVariant() );
+
+		currentExecutable = documentService.currentExecutable;
+		conversationService.isDeferred = true;
+
+		// Initialize execution context
+		executionContext.getServices().put( resource.getDocumentServiceName(), this );
+		executionContext.getServices().put( resource.getApplicationServiceName(), exposedApplication );
+		executionContext.getServices().put( resource.getConversationServiceName(), conversationService );
+		File libraryDirectory = resource.getLibraryDirectory();
+		if( libraryDirectory != null )
+			executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
 	}
 
 	//
@@ -176,9 +198,9 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 				throw x;
 		}
 
-		if( exposedConversation.getMediaType() == null )
+		if( conversationService.getMediaType() == null )
 			// Set initial media type according to the document's tag
-			exposedConversation.setMediaTypeExtension( documentDescriptor.getTag() );
+			conversationService.setMediaTypeExtension( documentDescriptor.getTag() );
 
 		return execute( documentDescriptor.getDocument() );
 	}
@@ -224,12 +246,12 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 	/**
 	 * The exposed conversation.
 	 */
-	protected final ExposedConversationForGeneratedTextResource exposedConversation;
+	protected final GeneratedTextResourceConversationService conversationService;
 
 	/**
 	 * The exposed application.
 	 */
-	protected final ExposedApplication exposedApplication = new ExposedApplication();
+	protected final ApplicationService exposedApplication = new ApplicationService();
 
 	/**
 	 * The execution context.
@@ -326,13 +348,13 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 			if( writer != null )
 				writer.write( pureText );
 
-			return new CacheEntry( pureText, exposedConversation.getMediaType(), exposedConversation.getLanguage(), exposedConversation.getCharacterSet(), getExpiration() ).represent();
+			return new CacheEntry( pureText, conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), getExpiration() ).represent();
 		}
 
 		int startPosition = 0;
 
 		// Make sure we have a valid writer for caching mode
-		if( !exposedConversation.isDeferred )
+		if( !conversationService.isDeferred )
 		{
 			if( writer == null )
 			{
@@ -373,24 +395,25 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 		try
 		{
 			executionContext.setWriter( writer );
-			executionContext.getExposedVariables().put( resource.getExposedDocumentName(), this );
-			executionContext.getExposedVariables().put( resource.getExposedApplicationName(), exposedApplication );
-			executionContext.getExposedVariables().put( resource.getExposedConversationName(), exposedConversation );
+			executionContext.getServices().put( resource.getDocumentServiceName(), this );
+			executionContext.getServices().put( resource.getApplicationServiceName(), exposedApplication );
+			executionContext.getServices().put( resource.getConversationServiceName(), conversationService );
 
 			// Execute!
 			executable.execute( executionContext, this, resource.getExecutionController() );
 			currentExecutable = executable;
 
 			// Did the executable ask us to defer?
-			if( exposedConversation.defer )
+			if( conversationService.defer )
 			{
-				exposedConversation.defer = false;
+				conversationService.defer = false;
 
 				// Note that this will cause the executable to execute again!
-				return new GeneratedTextDeferredRepresentation( this );
+				GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this );
+				return new GeneratedTextDeferredRepresentation( resource, currentExecutable, documentService.executionContext, documentService, documentService.conversationService );
 			}
 
-			if( exposedConversation.isDeferred )
+			if( conversationService.isDeferred )
 			{
 				// Nothing to return in deferred mode
 				return null;
@@ -400,7 +423,7 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 				writer.flush();
 
 				// Get the buffer from when we executed the executable
-				CacheEntry cacheEntry = new CacheEntry( writerBuffer.substring( startPosition ), exposedConversation.getMediaType(), exposedConversation.getLanguage(), exposedConversation.getCharacterSet(),
+				CacheEntry cacheEntry = new CacheEntry( writerBuffer.substring( startPosition ), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(),
 					getExpiration() );
 
 				// Cache if enabled
@@ -417,23 +440,24 @@ public class ExposedDocumentForGeneratedTextResource extends ExposedDocumentBase
 				if( startPosition == 0 )
 					return cacheEntry.represent();
 				else
-					return new CacheEntry( writerBuffer.toString(), exposedConversation.getMediaType(), exposedConversation.getLanguage(), exposedConversation.getCharacterSet(), getExpiration() ).represent();
+					return new CacheEntry( writerBuffer.toString(), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), getExpiration() ).represent();
 			}
 		}
 		catch( ExecutionException x )
 		{
 			// Did the executable ask us to defer?
-			if( exposedConversation.defer )
+			if( conversationService.defer )
 			{
 				// Note that we will allow exceptions in an executable that ask
 				// us to defer! In fact, throwing an exception is a good way for
 				// the executable to signal that it's done and is ready to
 				// defer.
 
-				exposedConversation.defer = false;
+				conversationService.defer = false;
 
 				// Note that this will cause the executable to run again!
-				return new GeneratedTextDeferredRepresentation( this );
+				GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this );
+				return new GeneratedTextDeferredRepresentation( resource, currentExecutable, documentService.executionContext, documentService, documentService.conversationService );
 			}
 			else
 				throw x;

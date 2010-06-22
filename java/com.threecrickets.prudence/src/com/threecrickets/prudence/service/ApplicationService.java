@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.service;
 
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
@@ -17,25 +17,30 @@ import java.util.logging.Logger;
 import org.restlet.Application;
 import org.restlet.data.MediaType;
 
+import com.threecrickets.prudence.DelegatedResource;
+import com.threecrickets.prudence.GeneratedTextResource;
+
 /**
- * Application services exposed to executables.
+ * Application service exposed to executables.
  * 
  * @author Tal Liron
+ * @see DelegatedResource
+ * @see GeneratedTextResource
  */
-public class ExposedApplication
+public class ApplicationService
 {
 	//
 	// Attributes
 	//
 
 	/**
-	 * A map of all values global to the current applications.
+	 * A map of all values global to the current application.
 	 * 
 	 * @return The globals
 	 */
 	public ConcurrentMap<String, Object> getGlobals()
 	{
-		return Application.getCurrent().getContext().getAttributes();
+		return getApplication().getContext().getAttributes();
 	}
 
 	/**

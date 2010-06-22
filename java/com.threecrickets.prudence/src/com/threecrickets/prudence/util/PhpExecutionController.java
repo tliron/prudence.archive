@@ -18,11 +18,11 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.restlet.Request;
 
-import com.threecrickets.prudence.internal.LazyInitializationExposedCookie;
-import com.threecrickets.prudence.internal.LazyInitializationExposedFile;
-import com.threecrickets.prudence.internal.LazyInitializationExposedGet;
-import com.threecrickets.prudence.internal.LazyInitializationExposedPost;
-import com.threecrickets.prudence.internal.LazyInitializationExposedRequest;
+import com.threecrickets.prudence.internal.LazyInitializationCookie;
+import com.threecrickets.prudence.internal.LazyInitializationFile;
+import com.threecrickets.prudence.internal.LazyInitializationGet;
+import com.threecrickets.prudence.internal.LazyInitializationPost;
+import com.threecrickets.prudence.internal.LazyInitializationRequest;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.exception.ExecutionException;
@@ -80,20 +80,20 @@ public class PhpExecutionController implements ExecutionController
 	{
 		Request request = Request.getCurrent();
 
-		LazyInitializationExposedGet exposedGet = new LazyInitializationExposedGet( request );
-		LazyInitializationExposedFile exposedFile = new LazyInitializationExposedFile( request, fileItemFactory );
-		LazyInitializationExposedPost exposedPost = new LazyInitializationExposedPost( request, exposedFile );
-		LazyInitializationExposedCookie exposedCookie = new LazyInitializationExposedCookie( request );
-		LazyInitializationExposedRequest exposedRequest = new LazyInitializationExposedRequest( exposedGet, exposedPost, exposedCookie );
+		LazyInitializationGet exposedGet = new LazyInitializationGet( request );
+		LazyInitializationFile exposedFile = new LazyInitializationFile( request, fileItemFactory );
+		LazyInitializationPost exposedPost = new LazyInitializationPost( request, exposedFile );
+		LazyInitializationCookie exposedCookie = new LazyInitializationCookie( request );
+		LazyInitializationRequest exposedRequest = new LazyInitializationRequest( exposedGet, exposedPost, exposedCookie );
 
 		// Note that our maps will only contain the last parameter in case of
 		// duplicates. This is PHP's defined behavior.
 
-		executionContext.getExposedVariables().put( "_GET", Collections.unmodifiableMap( exposedGet ) );
-		executionContext.getExposedVariables().put( "_FILE", Collections.unmodifiableMap( exposedFile ) );
-		executionContext.getExposedVariables().put( "_POST", Collections.unmodifiableMap( exposedPost ) );
-		executionContext.getExposedVariables().put( "_COOKIE", Collections.unmodifiableMap( exposedCookie ) );
-		executionContext.getExposedVariables().put( "_REQUEST", Collections.unmodifiableMap( exposedRequest ) );
+		executionContext.getServices().put( "_GET", Collections.unmodifiableMap( exposedGet ) );
+		executionContext.getServices().put( "_FILE", Collections.unmodifiableMap( exposedFile ) );
+		executionContext.getServices().put( "_POST", Collections.unmodifiableMap( exposedPost ) );
+		executionContext.getServices().put( "_COOKIE", Collections.unmodifiableMap( exposedCookie ) );
+		executionContext.getServices().put( "_REQUEST", Collections.unmodifiableMap( exposedRequest ) );
 	}
 
 	public void release( ExecutionContext executionContext )

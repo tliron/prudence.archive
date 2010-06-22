@@ -25,7 +25,7 @@ import org.restlet.data.Cookie;
  * 
  * @author Tal Liron
  */
-public class LazyInitializationExposedCookie extends LazyInitializationMap<String, String>
+public class LazyInitializationCookie extends LazyInitializationMap<String, String>
 {
 	//
 	// Construction
@@ -37,7 +37,7 @@ public class LazyInitializationExposedCookie extends LazyInitializationMap<Strin
 	 * @param request
 	 *        The request
 	 */
-	public LazyInitializationExposedCookie( Request request )
+	public LazyInitializationCookie( Request request )
 	{
 		super( new HashMap<String, String>() );
 		this.request = request;

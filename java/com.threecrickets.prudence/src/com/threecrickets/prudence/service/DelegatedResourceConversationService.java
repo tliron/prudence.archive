@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.service;
 
 import org.restlet.data.CharacterSet;
 import org.restlet.representation.Representation;
@@ -18,9 +18,12 @@ import org.restlet.representation.Variant;
 import com.threecrickets.prudence.DelegatedResource;
 
 /**
+ * Conversation service exposed to executables.
+ * 
  * @author Tal Liron
+ * @see DelegatedResource
  */
-public class ExposedConversationForDelegatedResource extends ExposedConversationBase<DelegatedResource>
+public class DelegatedResourceConversationService extends ConversationServiceBase<DelegatedResource>
 {
 	//
 	// Construction
@@ -38,7 +41,7 @@ public class ExposedConversationForDelegatedResource extends ExposedConversation
 	 * @param defaultCharacterSet
 	 *        The character set to use if unspecified by variant
 	 */
-	public ExposedConversationForDelegatedResource( DelegatedResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
+	public DelegatedResourceConversationService( DelegatedResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
 	{
 		super( resource, entity, variant, defaultCharacterSet );
 	}

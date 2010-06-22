@@ -22,7 +22,6 @@ import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
-import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.data.Tag;
@@ -34,10 +33,10 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.cache.Cache;
-import com.threecrickets.prudence.internal.ExposedApplication;
-import com.threecrickets.prudence.internal.ExposedConversationForDelegatedResource;
-import com.threecrickets.prudence.internal.ExposedDocumentForDelegatedResource;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
+import com.threecrickets.prudence.service.ApplicationService;
+import com.threecrickets.prudence.service.DelegatedResourceConversationService;
+import com.threecrickets.prudence.service.DelegatedResourceDocumentService;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
@@ -54,162 +53,38 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * A Restlet resource which delegates functionality to a Scripturian
- * {@link Executable} by invoking defined entry points. The entry points must be
- * global functions, closures, or whatever other technique the language engine
- * uses to make entry points available to Java. They entry points are:
+ * {@link Executable} via entry points. The entry points must be global
+ * functions, closures, or whatever other technique the language engine uses to
+ * for entry points. Supported entry points are:
  * <ul>
- * <li><code>handleInit()</code>: This entry point is called when the resource
- * is initialized. We will use it set general characteristics for the resource.</li>
- * <li><code>handleGet()</code>: This entry point is called for the GET verb,
- * which is expected to behave as a logical "read" of the resource's state. The
- * expectation is that it return one representation, out of possibly many, of
- * the resource's state. Returned values can be of any explicit sub-class of
- * {@link Representation}. If you return an integer, it will be set as the
- * response status code and a null representation will be returned to the
- * client. Other types will be automatically converted to string representation
- * using the client's requested media type and character set. These, and the
- * language of the representation (defaulting to null), can be read and changed
- * via <code>container.mediaType</code>, <code>container.characterSet</code>,
- * and <code>container.language</code>. Additionally, you can use
- * <code>container.variant</code> to interrogate the client's provided list of
- * supported languages and encoding.</li>
- * <li><code>handleGetInfo()</code>: This optional entry point is called, if you
- * defined it, instead of <code>handleGet()</code> during conditional
- * processing. Rather of returning a full-blown representation of your data, it
- * returns a lightweight {@link RepresentationInfo}, which usefully includes the
- * modification date and tag. In cases where constructing the full-blown
- * representation is costly, implementing <code>handleGetInfo()</code> is a
- * great way to improve the performance of your resource. Note, though, that it
- * is only useful if you properly set modification dates and/or tags in both
- * <code>handleGet()</code> and <code>handleGetInfo()</code>. Returned values
- * can be explicit sub-classes of {@link RepresentationInfo} (which includes
- * {@link Representation}), {@link Date}, for only specifying a modification
- * date, or {@link Tag}, for only specifying the tag.</li>
- * <li><code>handlePost()</code>: This entry point is called for the POST verb,
- * which is expected to behave as a logical "update" of the resource's state.
- * The expectation is that <code>container.entity</code> represents an update to
- * the state, that will affect future calls to <code>handleGet()</code>. As
- * such, it may be possible to accept logically partial representations of the
- * state. You may optionally return a representation, in the same way as
- * <code>handleGet()</code>. Because many languages entry points return the last
- * statement's value by default, you must explicitly return a null if you do not
- * want to return a representation to the client.</li>
- * <li><code>handlePut()</code>: This entry point is called for the PUT verb,
- * which is expected to behave as a logical "create" of the resource's state.
- * The expectation is that container.entity represents an entirely new state,
- * that will affect future calls to <code>handleGet()</code>. Unlike
- * <code>handlePost()</code>, it is expected that the representation be
- * logically complete. You may optionally return a representation, in the same
- * way as <code>handleGet()</code>. Because JavaScript entry points return the
- * last statement's value by default, you must explicitly return a null if you
- * do not want to return a representation to the client.</li>
- * <li><code>handleDelete()</code>: This entry point is called for the DELETE
- * verb, which is expected to behave as a logical "delete" of the resource's
- * state. The expectation is that subsequent calls to <code>handleGet()</code>
- * will fail. As such, it doesn't make sense to return a representation, and any
- * returned value will ignored. Still, it's a good idea to return null to avoid
- * any passing of value.</li>
- * <li><code>handleOptions()</code>: This entry point is called for the OPTIONS
- * verb. It is not widely used in HTTP.</li>
+ * <li><code>handleInit()</code></li>
+ * <li><code>handleGet()</code></li>
+ * <li><code>handleGetInfo()</code></li>
+ * <li><code>handlePost()</code></li>
+ * <li><code>handlePut()</code></li>
+ * <li><code>handleDelete()</code></li>
+ * <li><code>handleOptions()</code></li>
  * </ul>
  * <p>
- * Names of these entry point can be configured via attributes in the
- * application's {@link Context}. See {@link #getEntryPointNameForInit()},
- * {@link #getEntryPointNameForGet()}, {@link #getEntryPointNameForGetInfo()},
- * {@link #getEntryPointNameForPost()}, {@link #getEntryPointNameForPut()},
- * {@link #getEntryPointNameForDelete()} and
- * {@link #getEntryPointNameForOptions()}.
+ * A <code>conversation</code> service is sent as an argument to all entry
+ * points. Additionally, <code>document</code> and <code>application</code>
+ * services are available as global services. See
+ * {@link DelegatedResourceConversationService},
+ * {@link DelegatedResourceDocumentService} and {@link ApplicationService}.
  * <p>
  * Before using this resource, make sure to configure a valid document source in
  * the application's {@link Context}; see {@link #getDocumentSource()}. This
- * document source is exposed to the executable as <code>prudence.source</code>.
+ * document source is exposed to the executable as <code>document.source</code>.
  * <p>
  * Note that the executable's output is sent to the system's standard output.
  * Most likely, you will not want to output anything from the executable.
  * However, this redirection is provided as a debugging convenience.
- * <p>
- * A special container environment is created for your executables, with some
- * useful services. It is exposed to executables as a global variable named
- * <code>prudence</code>. For some other global variables exposed to
- * executables, see {@link Executable}.
- * <p>
- * Operations:
- * <ul>
- * <li><code>prudence.include(name)</code>: Let's you use other source code in
- * place.</li>
- * </ul>
- * Read-only attributes:
- * <ul>
- * <li><code>conversation.entity</code>: The {@link Representation} of an entity
- * provided with this request. Available only in <code>handlePost()</code> and
- * <code>handlePut()</code>.
- * <li><code>conversation.isInternal</code>: This boolean is true if the request
- * was received via the RIAP protocol.</li>
- * <li><code>conversation.resource</code>: The instance of this resource. Acts
- * as a "this" reference for scriptlets. For example, during a call to
- * <code>handleInit()</code>, this can be used to change the characteristics of
- * the resource. Otherwise, you can use it to access the request and response.</li>
- * <li><code>prudence.source</code>: The source used for the document; see
- * {@link #getDocumentSource()}.</li>
- * <li><code>conversation.variant</code>: The {@link Variant} of this request.
- * Useful for interrogating the client's preferences. This is available only in
- * <code>handleGet()</code>, <code>handlePost()</code> and
- * <code>handlePut()</code>.</li>
- * </ul>
- * Modifiable attributes:
- * <ul>
- * <li>
- * <li><code>prudence.characterSet</code>: The {@link CharacterSet} that will be
- * used if you return an arbitrary type for <code>handleGet()</code>,
- * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to what the
- * client requested (in <code>prudence.variant</code>), or to the value of
- * {@link #getDefaultCharacterSet()} if the client did not specify it.</li>
- * <li><code>prudence.expirationDate</code>: Smart clients can use this optional
- * value to cache results and avoid unnecessary requests. Most useful in
- * conjunction with <code>getInfo()</code>.</li> <code>prudence.variant</code>
- * is identical to <code>prudence.entity</code> when available.</li>
- * <li><code>prudence.httpTag</code>: See <code>prudence.tag</code>.</li>
- * <li><code>prudence.language</code>: The {@link Language} that will be used if
- * you return an arbitrary type for <code>handleGet()</code>,
- * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to null.</li>
- * <li><code>prudence.mediaType</code>: The {@link MediaType} that will be used
- * if you return an arbitrary type for <code>handleGet()</code>,
- * <code>handlePost()</code> and <code>handlePut()</code>. Defaults to what the
- * client requested (in <code>prudence.variant</code>).</li>
- * <li><code>prudence.modificationDate</code>: Smart clients can use this
- * optional value to cache results and avoid unnecessary requests. Most useful
- * in conjunction with <code>getInfo()</code>. Note that you need to use
- * {@link Date} instances here. Use <code>prudence.modificationTimestamp</code>
- * to access this value as a timestamp (long).</li>
- * <li><code>prudence.modificationTimestamp</code>: See
- * <code>prudence.modificationDate</code>.</li>
- * <li><code>prudence.statusCode</code>: A convenient way to set the response
- * status code. This is equivalent to setting
- * <code>prudence.resource.response.status</code> using
- * {@link Status#valueOf(int)}.</li>
- * <li><code>prudence.tag</code>: Smart clients can use this optional value to
- * cache results and avoid unnecessary requests. Most useful in conjunction with
- * <code>getInfo()</code>. Note that you need to use {@link Tag} instances here.
- * Use <code>prudence.httpTag</code> to access this value as an HTTP ETag
- * string.</li>
- * </ul>
- * <p>
- * In addition to the above, a {@link ExecutionController} can be set to expose
- * your own global variables to executables. See
- * {@link #getExecutionController()}.
  * <p>
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
  * <li>
  * <code>com.threecrickets.prudence.cache:</code> {@link Cache}. See
  * {@link #getCache()}.</li>
- * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.prepare:</code>
- * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
- * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.exposedContainerName</code>
- * : The name of the global variable with which to access the container.
- * Defaults to "prudence". See {@link #getExposedDocumentName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
@@ -225,10 +100,6 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.documentSource:</code>
  * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
- * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.languageManager:</code>
- * {@link LanguageManager}, defaults to a new instance. See
- * {@link #getLanguageManager()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForDelete:</code>
  * {@link String}, defaults to "handleDelete". See
@@ -263,6 +134,22 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <code>com.threecrickets.prudence.DelegatedResource.executionController:</code>
  * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
  * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.applicationServiceName</code>
+ * : The name of the global variable with which to access the application
+ * service. Defaults to "application". See {@link #getApplicationServiceName()}.
+ * </li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.documentServiceName</code>
+ * : The name of the global variable with which to access the document service.
+ * Defaults to "document". See {@link #getDocumentServiceName()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.languageManager:</code>
+ * {@link LanguageManager}, defaults to a new instance. See
+ * {@link #getLanguageManager()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.prepare:</code>
+ * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
+ * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.sourceViewable:</code>
  * {@link Boolean}, defaults to false. See {@link #isSourceViewable()}.</li>
  * <li>
@@ -277,8 +164,6 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
  * @author Tal Liron
- * @see Executable
- * @see GeneratedTextResource
  */
 public class DelegatedResource extends ServerResource
 {
@@ -335,51 +220,51 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * The name of the global variable with which to access the container.
-	 * Defaults to "document".
+	 * The name of the global variable with which to access the document
+	 * service. Defaults to "document".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.exposedContainerName</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.documentServiceName</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The document name
+	 * @return The document service name
 	 */
-	public String getExposedDocumentName()
+	public String getDocumentServiceName()
 	{
-		if( exposedDocumentName == null )
+		if( documentServiceName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			exposedDocumentName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.exposedDocumentName" );
+			documentServiceName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.documentServiceName" );
 
-			if( exposedDocumentName == null )
-				exposedDocumentName = "document";
+			if( documentServiceName == null )
+				documentServiceName = "document";
 		}
 
-		return exposedDocumentName;
+		return documentServiceName;
 	}
 
 	/**
-	 * The name of the global variable with which to access the application.
-	 * Defaults to "application".
+	 * The name of the global variable with which to access the application
+	 * service. Defaults to "application".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.DelegatedResource.exposedApplicationName</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.applicationServiceName</code>
 	 * in the application's {@link Context}.
 	 * 
-	 * @return The application name
+	 * @return The application service name
 	 */
-	public String getExposedApplicationName()
+	public String getApplicationServiceName()
 	{
-		if( exposedApplicationName == null )
+		if( applicationServiceName == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			exposedApplicationName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.exposedApplicationName" );
+			applicationServiceName = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.applicationServiceName" );
 
-			if( exposedApplicationName == null )
-				exposedApplicationName = "application";
+			if( applicationServiceName == null )
+				applicationServiceName = "application";
 		}
 
-		return exposedApplicationName;
+		return applicationServiceName;
 	}
 
 	/**
@@ -482,7 +367,7 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * The name of the <code>handleInit()</code> entry point in the script.
+	 * The name of the <code>handleInit()</code> entry point in the executable.
 	 * Defaults to "handleInit".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
@@ -506,7 +391,7 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * The name of the <code>handleGet()</code> entry point in the script.
+	 * The name of the <code>handleGet()</code> entry point in the executable.
 	 * Defaults to "handleGet".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
@@ -530,8 +415,8 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * The name of the <code>handleGetInfo()</code> entry point in the script.
-	 * Defaults to "handleGetInfo".
+	 * The name of the <code>handleGetInfo()</code> entry point in the
+	 * executable. Defaults to "handleGetInfo".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForGetInfo</code>
@@ -554,8 +439,8 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * The name of the <code>handleOptions()</code> entry point in the script.
-	 * Defaults to "handleOptions".
+	 * The name of the <code>handleOptions()</code> entry point in the
+	 * executable. Defaults to "handleOptions".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForOptions</code>
@@ -578,7 +463,7 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * The name of the <code>handlePost()</code> entry point in the script.
+	 * The name of the <code>handlePost()</code> entry point in the executable.
 	 * Defaults to "handlePost".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
@@ -602,7 +487,7 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * The name of the <code>handlePut()</code> entry point in the script.
+	 * The name of the <code>handlePut()</code> entry point in the executable.
 	 * Defaults to "handlePut".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
@@ -626,8 +511,8 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * The name of the <code>handleDelete()</code> entry point in the script.
-	 * Defaults to "handleDelete".
+	 * The name of the <code>handleDelete()</code> entry point in the
+	 * executable. Defaults to "handleDelete".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForDelete</code>
@@ -921,7 +806,7 @@ public class DelegatedResource extends ServerResource
 
 	/**
 	 * Initializes the resource, and delegates to the <code>handleInit()</code>
-	 * entry point in the script.
+	 * entry point in the executable.
 	 * 
 	 * @see #getEntryPointNameForInit()
 	 */
@@ -940,12 +825,12 @@ public class DelegatedResource extends ServerResource
 				return;
 		}
 
-		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, null, getDefaultCharacterSet() );
-		enter( getEntryPointNameForInit(), exposedConversation );
+		DelegatedResourceConversationService conversationService = new DelegatedResourceConversationService( this, null, null, getDefaultCharacterSet() );
+		enter( getEntryPointNameForInit(), conversationService );
 	}
 
 	/**
-	 * Delegates to the <code>handleGet()</code> entry point in the script.
+	 * Delegates to the <code>handleGet()</code> entry point in the executable.
 	 * 
 	 * @return The optional result entity
 	 * @throws ResourceException
@@ -958,7 +843,7 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * Delegates to the <code>handleGet()</code> entry point in the script.
+	 * Delegates to the <code>handleGet()</code> entry point in the executable.
 	 * 
 	 * @param variant
 	 *        The variant of the response entity
@@ -1009,13 +894,14 @@ public class DelegatedResource extends ServerResource
 			}
 		}
 
-		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, variant, getDefaultCharacterSet() );
-		Object r = enter( getEntryPointNameForGet(), exposedConversation );
-		return getRepresentation( r, exposedConversation );
+		DelegatedResourceConversationService conversationService = new DelegatedResourceConversationService( this, null, variant, getDefaultCharacterSet() );
+		Object r = enter( getEntryPointNameForGet(), conversationService );
+		return getRepresentation( r, conversationService );
 	}
 
 	/**
-	 * Delegates to the <code>handleGetInfo()</code> entry point in the script.
+	 * Delegates to the <code>handleGetInfo()</code> entry point in the
+	 * executable.
 	 * 
 	 * @return The optional result info
 	 * @throws ResourceException
@@ -1028,7 +914,8 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * Delegates to the <code>handleGetInfo()</code> entry point in the script.
+	 * Delegates to the <code>handleGetInfo()</code> entry point in the
+	 * executable.
 	 * 
 	 * @param variant
 	 *        The variant of the response entity
@@ -1039,11 +926,11 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public RepresentationInfo getInfo( Variant variant ) throws ResourceException
 	{
-		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, variant, getDefaultCharacterSet() );
+		DelegatedResourceConversationService conversationService = new DelegatedResourceConversationService( this, null, variant, getDefaultCharacterSet() );
 		try
 		{
-			Object r = enter( getEntryPointNameForGetInfo(), exposedConversation );
-			return getRepresentationInfo( r, exposedConversation );
+			Object r = enter( getEntryPointNameForGetInfo(), conversationService );
+			return getRepresentationInfo( r, conversationService );
 		}
 		catch( ResourceException x )
 		{
@@ -1055,7 +942,7 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * Delegates to the <code>handlePost()</code> entry point in the script.
+	 * Delegates to the <code>handlePost()</code> entry point in the executable.
 	 * 
 	 * @param entity
 	 *        The posted entity
@@ -1070,7 +957,7 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * Delegates to the <code>handlePost()</code> entry point in the script.
+	 * Delegates to the <code>handlePost()</code> entry point in the executable.
 	 * 
 	 * @param entity
 	 *        The posted entity
@@ -1083,13 +970,13 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation post( Representation entity, Variant variant ) throws ResourceException
 	{
-		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, entity, variant, getDefaultCharacterSet() );
-		Object r = enter( getEntryPointNameForPost(), exposedConversation );
-		return getRepresentation( r, exposedConversation );
+		DelegatedResourceConversationService conversationService = new DelegatedResourceConversationService( this, entity, variant, getDefaultCharacterSet() );
+		Object r = enter( getEntryPointNameForPost(), conversationService );
+		return getRepresentation( r, conversationService );
 	}
 
 	/**
-	 * Delegates to the <code>handlePut()</code> entry point in the script.
+	 * Delegates to the <code>handlePut()</code> entry point in the executable.
 	 * 
 	 * @param entity
 	 *        The posted entity
@@ -1104,7 +991,7 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * Delegates to the <code>handlePut()</code> entry point in the script.
+	 * Delegates to the <code>handlePut()</code> entry point in the executable.
 	 * 
 	 * @param entity
 	 *        The posted entity
@@ -1117,13 +1004,14 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation put( Representation entity, Variant variant ) throws ResourceException
 	{
-		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, entity, variant, getDefaultCharacterSet() );
-		Object r = enter( getEntryPointNameForPut(), exposedConversation );
-		return getRepresentation( r, exposedConversation );
+		DelegatedResourceConversationService conversationService = new DelegatedResourceConversationService( this, entity, variant, getDefaultCharacterSet() );
+		Object r = enter( getEntryPointNameForPut(), conversationService );
+		return getRepresentation( r, conversationService );
 	}
 
 	/**
-	 * Delegates to the <code>handleDelete()</code> entry point in the script.
+	 * Delegates to the <code>handleDelete()</code> entry point in the
+	 * executable.
 	 * 
 	 * @return The optional result entity
 	 * @throws ResourceException
@@ -1136,7 +1024,8 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * Delegates to the <code>handleDelete()</code> entry point in the script.
+	 * Delegates to the <code>handleDelete()</code> entry point in the
+	 * executable.
 	 * 
 	 * @param variant
 	 *        The variant of the response entity
@@ -1147,13 +1036,14 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation delete( Variant variant ) throws ResourceException
 	{
-		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, variant, getDefaultCharacterSet() );
-		enter( getEntryPointNameForDelete(), exposedConversation );
+		DelegatedResourceConversationService conversationService = new DelegatedResourceConversationService( this, null, variant, getDefaultCharacterSet() );
+		enter( getEntryPointNameForDelete(), conversationService );
 		return null;
 	}
 
 	/**
-	 * Delegates to the <code>handleOptions()</code> entry point in the script.
+	 * Delegates to the <code>handleOptions()</code> entry point in the
+	 * executable.
 	 * 
 	 * @return The optional result entity
 	 * @throws ResourceException
@@ -1166,7 +1056,8 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
-	 * Delegates to the <code>handleOptions()</code> entry point in the script.
+	 * Delegates to the <code>handleOptions()</code> entry point in the
+	 * executable.
 	 * 
 	 * @param variant
 	 *        The variant of the response entity
@@ -1177,9 +1068,9 @@ public class DelegatedResource extends ServerResource
 	@Override
 	public Representation options( Variant variant ) throws ResourceException
 	{
-		ExposedConversationForDelegatedResource exposedConversation = new ExposedConversationForDelegatedResource( this, null, variant, getDefaultCharacterSet() );
-		Object r = enter( getEntryPointNameForOptions(), exposedConversation );
-		return getRepresentation( r, exposedConversation );
+		DelegatedResourceConversationService conversationService = new DelegatedResourceConversationService( this, null, variant, getDefaultCharacterSet() );
+		Object r = enter( getEntryPointNameForOptions(), conversationService );
+		return getRepresentation( r, conversationService );
 	}
 
 	@Override
@@ -1240,37 +1131,40 @@ public class DelegatedResource extends ServerResource
 	private volatile ExecutionController executionController;
 
 	/**
-	 * The name of the <code>handleInit()</code> entry point in the script.
+	 * The name of the <code>handleInit()</code> entry point in the executable.
 	 */
 	private volatile String entryPointNameForInit;
 
 	/**
-	 * The name of the <code>handleGet()</code> entry point in the script.
+	 * The name of the <code>handleGet()</code> entry point in the executable.
 	 */
 	private volatile String entryPointNameForGet;
 
 	/**
-	 * The name of the <code>handleGetInfo()</code> entry point in the script.
+	 * The name of the <code>handleGetInfo()</code> entry point in the
+	 * executable.
 	 */
 	private volatile String entryPointNameForGetInfo;
 
 	/**
-	 * The name of the <code>handleOptions()</code> entry point in the script.
+	 * The name of the <code>handleOptions()</code> entry point in the
+	 * executable.
 	 */
 	private volatile String entryPointNameForOptions;
 
 	/**
-	 * The name of the <code>handlePost()</code> entry point in the script.
+	 * The name of the <code>handlePost()</code> entry point in the executable.
 	 */
 	private volatile String entryPointNameForPost;
 
 	/**
-	 * The name of the <code>handlePut()</code> entry point in the script.
+	 * The name of the <code>handlePut()</code> entry point in the executable.
 	 */
 	private volatile String entryPointNameForPut;
 
 	/**
-	 * The name of the <code>handleDelete()</code> entry point in the script.
+	 * The name of the <code>handleDelete()</code> entry point in the
+	 * executable.
 	 */
 	private volatile String entryPointNameForDelete;
 
@@ -1296,14 +1190,16 @@ public class DelegatedResource extends ServerResource
 	private volatile Writer errorWriter = new OutputStreamWriter( System.err );
 
 	/**
-	 * The name of the global variable with which to access the document.
+	 * The name of the global variable with which to access the document
+	 * service.
 	 */
-	private volatile String exposedDocumentName;
+	private volatile String documentServiceName;
 
 	/**
-	 * The name of the global variable with which to access the application.
+	 * The name of the global variable with which to access the application
+	 * service.
 	 */
-	private volatile String exposedApplicationName;
+	private volatile String applicationServiceName;
 
 	/**
 	 * The document formatter.
@@ -1332,11 +1228,11 @@ public class DelegatedResource extends ServerResource
 	 * 
 	 * @param object
 	 *        An object
-	 * @param exposedConversation
-	 *        The exposed conversation
+	 * @param conversationService
+	 *        The conversation service
 	 * @return A representation
 	 */
-	private Representation getRepresentation( Object object, ExposedConversationForDelegatedResource exposedConversation )
+	private Representation getRepresentation( Object object, DelegatedResourceConversationService conversationService )
 	{
 		if( object == null )
 			return null;
@@ -1350,10 +1246,10 @@ public class DelegatedResource extends ServerResource
 		}
 		else
 		{
-			Representation representation = new StringRepresentation( object.toString(), exposedConversation.getMediaType(), exposedConversation.getLanguage(), exposedConversation.getCharacterSet() );
-			representation.setTag( exposedConversation.getTag() );
-			representation.setExpirationDate( exposedConversation.getExpirationDate() );
-			representation.setModificationDate( exposedConversation.getModificationDate() );
+			Representation representation = new StringRepresentation( object.toString(), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet() );
+			representation.setTag( conversationService.getTag() );
+			representation.setExpirationDate( conversationService.getExpirationDate() );
+			representation.setModificationDate( conversationService.getModificationDate() );
 			return representation;
 		}
 	}
@@ -1365,24 +1261,24 @@ public class DelegatedResource extends ServerResource
 	 * 
 	 * @param object
 	 *        An object
-	 * @param exposedConversation
-	 *        The exposed conversation
+	 * @param conversationService
+	 *        The conversation service
 	 * @return A representation info
 	 */
-	private RepresentationInfo getRepresentationInfo( Object object, ExposedConversationForDelegatedResource exposedConversation )
+	private RepresentationInfo getRepresentationInfo( Object object, DelegatedResourceConversationService conversationService )
 	{
 		if( object == null )
 			return null;
 		else if( object instanceof RepresentationInfo )
 			return (RepresentationInfo) object;
 		else if( object instanceof Date )
-			return new RepresentationInfo( exposedConversation.getMediaType(), (Date) object );
+			return new RepresentationInfo( conversationService.getMediaType(), (Date) object );
 		else if( object instanceof Number )
-			return new RepresentationInfo( exposedConversation.getMediaType(), new Date( ( (Number) object ).longValue() ) );
+			return new RepresentationInfo( conversationService.getMediaType(), new Date( ( (Number) object ).longValue() ) );
 		else if( object instanceof Tag )
-			return new RepresentationInfo( exposedConversation.getMediaType(), (Tag) object );
+			return new RepresentationInfo( conversationService.getMediaType(), (Tag) object );
 		else if( object instanceof String )
-			return new RepresentationInfo( exposedConversation.getMediaType(), Tag.parse( (String) object ) );
+			return new RepresentationInfo( conversationService.getMediaType(), Tag.parse( (String) object ) );
 		else
 			throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "cannot convert " + object.getClass().toString() + " to a RepresentationInfo" );
 	}
@@ -1392,13 +1288,13 @@ public class DelegatedResource extends ServerResource
 	 * 
 	 * @param entryPointName
 	 *        Name of entry point
-	 * @param exposedConversation
-	 *        The exposed conversation
+	 * @param conversationService
+	 *        The conversation service
 	 * @return Result of invocation
 	 * @throws ResourceException
 	 * @see {@link Executable#invoke(String, Object...)}
 	 */
-	private Object enter( String entryPointName, ExposedConversationForDelegatedResource exposedConversation ) throws ResourceException
+	private Object enter( String entryPointName, DelegatedResourceConversationService conversationService ) throws ResourceException
 	{
 		String documentName = getRequest().getResourceRef().getRemainingPart( true, false );
 		documentName = validateDocumentName( documentName );
@@ -1416,8 +1312,8 @@ public class DelegatedResource extends ServerResource
 				if( libraryDirectory != null )
 					executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
 
-				executionContext.getExposedVariables().put( getExposedDocumentName(), new ExposedDocumentForDelegatedResource( this ) );
-				executionContext.getExposedVariables().put( getExposedApplicationName(), new ExposedApplication() );
+				executionContext.getServices().put( getDocumentServiceName(), new DelegatedResourceDocumentService( this ) );
+				executionContext.getServices().put( getApplicationServiceName(), new ApplicationService() );
 
 				try
 				{
@@ -1442,7 +1338,7 @@ public class DelegatedResource extends ServerResource
 			}
 
 			// Enter!
-			Object r = executable.enter( entryPointName, exposedConversation );
+			Object r = executable.enter( entryPointName, conversationService );
 			return r;
 		}
 		catch( DocumentNotFoundException x )

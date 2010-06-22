@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.service;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,26 +24,24 @@ import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
- * This is the <code>prudence</code> variable exposed to executables.
+ * Document service exposed to executables.
  * 
  * @author Tal Liron
  * @see DelegatedResource
  */
-public class ExposedDocumentForDelegatedResource extends ExposedDocumentBase<DelegatedResource>
+public class DelegatedResourceDocumentService extends DocumentServiceBase<DelegatedResource>
 {
 	//
 	// Construction
 	//
 
 	/**
-	 * Constructs a container with media type and character set according to the
-	 * entity representation, or
-	 * {@link DelegatedResource#getDefaultCharacterSet()} if none is provided.
+	 * Constructor.
 	 * 
 	 * @param resource
 	 *        The resource
 	 */
-	public ExposedDocumentForDelegatedResource( DelegatedResource resource )
+	public DelegatedResourceDocumentService( DelegatedResource resource )
 	{
 		super( resource, resource.getDocumentSource() );
 	}
