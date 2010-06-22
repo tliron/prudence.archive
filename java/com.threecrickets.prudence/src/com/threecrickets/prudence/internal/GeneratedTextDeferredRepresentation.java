@@ -103,7 +103,6 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 	@Override
 	public void write( Writer writer ) throws IOException
 	{
-		// documentService.writer = writer;
 		executionContext.setWriter( writer );
 		try
 		{

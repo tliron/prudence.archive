@@ -64,7 +64,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	{
 		super( resource, resource.getDocumentSource() );
 		this.executionContext = executionContext;
-		this.conversationService = new GeneratedTextResourceConversationService( resource, entity, variant, resource.getDefaultCharacterSet() );
+		conversationService = new GeneratedTextResourceConversationService( resource, entity, variant, resource.getDefaultCharacterSet() );
 	}
 
 	/**
@@ -76,18 +76,20 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	 */
 	public GeneratedTextResourceDocumentService( GeneratedTextResourceDocumentService documentService )
 	{
-		this( documentService.resource, new ExecutionContext(), documentService.conversationService.getEntity(), documentService.conversationService.getVariant() );
-
+		super( documentService.resource, documentService.resource.getDocumentSource() );
+		conversationService = documentService.conversationService;
 		currentExecutable = documentService.currentExecutable;
-		conversationService.isDeferred = true;
+		executionContext = new ExecutionContext();
 
 		// Initialize execution context
 		executionContext.getServices().put( resource.getDocumentServiceName(), this );
-		executionContext.getServices().put( resource.getApplicationServiceName(), exposedApplication );
+		executionContext.getServices().put( resource.getApplicationServiceName(), applicationService );
 		executionContext.getServices().put( resource.getConversationServiceName(), conversationService );
 		File libraryDirectory = resource.getLibraryDirectory();
 		if( libraryDirectory != null )
 			executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
+
+		conversationService.isDeferred = true;
 	}
 
 	//
@@ -241,39 +243,6 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
-	// Protected
-
-	/**
-	 * The exposed conversation.
-	 */
-	protected final GeneratedTextResourceConversationService conversationService;
-
-	/**
-	 * The exposed application.
-	 */
-	protected final ApplicationService exposedApplication = new ApplicationService();
-
-	/**
-	 * The execution context.
-	 */
-	protected final ExecutionContext executionContext;
-
-	/**
-	 * The currently executing executable.
-	 */
-	protected Executable currentExecutable;
-
-	/**
-	 * The {@link Writer} used by the {@link Executable}.
-	 */
-	protected Writer writer;
-
-	/**
-	 * Buffer used for caching mode.
-	 */
-	protected StringBuffer writerBuffer;
-
-	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
 	private static final String DOCUMENT_NAME_VARIABLE = "dn";
@@ -283,6 +252,31 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	private static final String CACHE_KEY_ATTRIBUTE = "prudence.cacheKey";
 
 	private static final String CACHE_TAGS_ATTRIBUTE = "prudence.cacheTags";
+
+	/**
+	 * The conversation service.
+	 */
+	private final GeneratedTextResourceConversationService conversationService;
+
+	/**
+	 * The application service.
+	 */
+	private final ApplicationService applicationService = new ApplicationService();
+
+	/**
+	 * The execution context.
+	 */
+	private final ExecutionContext executionContext;
+
+	/**
+	 * The currently executing executable.
+	 */
+	private Executable currentExecutable;
+
+	/**
+	 * Buffer used for caching mode.
+	 */
+	private StringBuffer writerBuffer;
 
 	/**
 	 * @return The cache key for the executable
@@ -340,6 +334,8 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 		Executable previousExecutable = currentExecutable;
 		currentExecutable = executable;
 
+		Writer writer = executionContext.getWriter();
+
 		// Optimized handling for pure text
 		String pureText = currentExecutable.getAsPureLiteral();
 		if( pureText != null )
@@ -361,6 +357,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 				StringWriter stringWriter = new StringWriter();
 				writerBuffer = stringWriter.getBuffer();
 				writer = new BufferedWriter( stringWriter );
+				executionContext.setWriter( writer );
 			}
 			else
 			{
@@ -396,7 +393,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 		{
 			executionContext.setWriter( writer );
 			executionContext.getServices().put( resource.getDocumentServiceName(), this );
-			executionContext.getServices().put( resource.getApplicationServiceName(), exposedApplication );
+			executionContext.getServices().put( resource.getApplicationServiceName(), applicationService );
 			executionContext.getServices().put( resource.getConversationServiceName(), conversationService );
 
 			// Execute!
@@ -410,7 +407,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 
 				// Note that this will cause the executable to execute again!
 				GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this );
-				return new GeneratedTextDeferredRepresentation( resource, currentExecutable, documentService.executionContext, documentService, documentService.conversationService );
+				return new GeneratedTextDeferredRepresentation( documentService.resource, documentService.currentExecutable, documentService.executionContext, documentService, documentService.conversationService );
 			}
 
 			if( conversationService.isDeferred )
@@ -457,7 +454,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 
 				// Note that this will cause the executable to run again!
 				GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this );
-				return new GeneratedTextDeferredRepresentation( resource, currentExecutable, documentService.executionContext, documentService, documentService.conversationService );
+				return new GeneratedTextDeferredRepresentation( documentService.resource, documentService.currentExecutable, documentService.executionContext, documentService, documentService.conversationService );
 			}
 			else
 				throw x;

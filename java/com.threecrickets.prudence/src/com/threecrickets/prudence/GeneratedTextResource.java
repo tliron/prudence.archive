@@ -958,12 +958,12 @@ public class GeneratedTextResource extends ServerResource
 			File libraryDirectory = getLibraryDirectory();
 			if( libraryDirectory != null )
 				executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
-			GeneratedTextResourceDocumentService conversationService = new GeneratedTextResourceDocumentService( this, executionContext, entity, variant );
+			GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this, executionContext, entity, variant );
 			Representation representation = null;
 			try
 			{
 				// Execute and represent output
-				representation = conversationService.include( documentName );
+				representation = documentService.include( documentName );
 
 				switch( getClientCachingMode() )
 				{
