@@ -33,10 +33,10 @@
 // features we need! In this case, we want to call a static method. So, we'll just use this JavaScript
 // scriptlet to fill in the gaps.
 
-executable.context.exposedVariables.put('currentTimeMillis', String(java.lang.System.currentTimeMillis()));
+conversation.locals.put('currentTimeMillis', String(java.lang.System.currentTimeMillis()));
 %><%velocity
 
-<p>This page was dynamically generated at $currentTimeMillis</p>
+<p>This page was dynamically generated at $conversation.locals.currentTimeMillis</p>
 
 ##
 ## An example of a macro
