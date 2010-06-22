@@ -84,12 +84,22 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <code>com.threecrickets.prudence.cache:</code> {@link Cache}. See
  * {@link #getCache()}.</li>
  * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.applicationServiceName</code>
+ * : The name of the global variable with which to access the application
+ * service. Defaults to "application". See {@link #getApplicationServiceName()}.
+ * </li>
+ * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.clientCachingMode:</code>
  * {@link Integer}, defaults to {@link #CLIENT_CACHING_MODE_CONDITIONAL}. See
  * {@link #getClientCachingMode()}.</li>
  * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.conversationServiceName</code>
+ * : The name of the global variable with which to access the conversation
+ * service. Defaults to "conversation". See
+ * {@link #getConversationServiceName()}.</li>
+ * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey:</code>
- * {@link String}, defaults to "{ri}". See {@link #getDefaultCacheKey()}.</li>
+ * {@link String}, defaults to "{ri}|{dn}". See {@link #getDefaultCacheKey()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
@@ -99,7 +109,15 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultName:</code>
- * {@link String}, defaults to "index.page". See {@link #getDefaultName()}.</li>
+ * {@link String}, defaults to "index". See {@link #getDefaultName()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.documentFormatter:</code>
+ * {@link DocumentFormatter}. Defaults to a {@link JygmentsDocumentFormatter}.
+ * See {@link #getDocumentFormatter()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.documentServiceName</code>
+ * : The name of the global variable with which to access the document service.
+ * Defaults to "document". See {@link #getDocumentServiceName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.documentSource:</code>
  * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
@@ -107,23 +125,17 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <code>com.threecrickets.prudence.GeneratedTextResource.executionController:</code>
  * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.applicationServiceName</code>
- * : The name of the global variable with which to access the application
- * service. Defaults to "application". See {@link #getApplicationServiceName()}.
- * </li>
- * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.documentServiceName</code>
- * : The name of the global variable with which to access the document service.
- * Defaults to "document". See {@link #getDocumentServiceName()}.</li>
- * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.conversationServiceName</code>
- * : The name of the global variable with which to access the conversation
- * service. Defaults to "conversation". See
- * {@link #getConversationServiceName()}.</li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.fragmentDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../fragments/". See {@link #getFragmentDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.languageManager:</code>
  * {@link LanguageManager}, defaults to a new instance. See
  * {@link #getLanguageManager()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.libraryDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../../libraries/". See {@link #getLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.prepare:</code>
  * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>

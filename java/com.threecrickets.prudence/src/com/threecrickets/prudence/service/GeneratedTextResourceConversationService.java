@@ -29,6 +29,18 @@ public class GeneratedTextResourceConversationService extends ConversationServic
 	// Construction
 	//
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param resource
+	 *        The resource
+	 * @param entity
+	 *        The entity or null
+	 * @param variant
+	 *        The variant or null
+	 * @param defaultCharacterSet
+	 *        The character set to use if unspecified by variant
+	 */
 	public GeneratedTextResourceConversationService( GeneratedTextResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
 	{
 		super( resource, entity, variant, defaultCharacterSet );
@@ -66,22 +78,7 @@ public class GeneratedTextResourceConversationService extends ConversationServic
 	//
 
 	/**
-	 * If you are in caching mode, calling this method will return true and
-	 * cause the document to run again, where this next run will be in streaming
-	 * mode. Whatever output the document created in the current run is
-	 * discarded, and all further exceptions are ignored. For this reason, it's
-	 * probably best to call <code>prudence.stream()</code> as early as possible
-	 * in the document, and then to quit the document as soon as possible if it
-	 * returns true. For example, your document can start by testing whether it
-	 * will have a lot of output, and if so, set output characteristics, call
-	 * <code>prudence.stream()</code>, and quit. If you are already in streaming
-	 * mode, calling this method has no effect and returns false. Note that a
-	 * good way to quit the script is to throw an exception, because it will end
-	 * the script and otherwise be ignored.
-	 * <p>
-	 * By default, writers will be automatically flushed after every line in
-	 * streaming mode. If you want to disable this behavior, use
-	 * {@link #stream(boolean)}.
+	 * Ask to defer this conversation.
 	 * 
 	 * @return True if deferred, false if already in deferred mode
 	 */

@@ -36,7 +36,6 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ServerResource;
 
-import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.prudence.util.CaptiveRedirector;
 import com.threecrickets.prudence.util.ConversationCookie;
 import com.threecrickets.prudence.util.FileParameter;
@@ -100,9 +99,11 @@ public class ConversationServiceBase<R extends ServerResource>
 	}
 
 	/**
-	 * The cookies.
+	 * The conversation cookies.
+	 * <p>
+	 * This value is cached locally.
 	 * 
-	 * @return The cookies
+	 * @return The conversation cookies
 	 */
 	public Collection<ConversationCookie> getCookies()
 	{
@@ -112,9 +113,9 @@ public class ConversationServiceBase<R extends ServerResource>
 	}
 
 	/**
-	 * Returns a new cookie instance if the cookie doesn't exist yet, or the
-	 * existing cookie if it does. Note that the cookie will not be saved into
-	 * the response until you call {@link ConversationCookie#save()}.
+	 * Returns a new conversation cookie instance if the cookie doesn't exist
+	 * yet, or the existing cookie if it does. Note that the cookie will not be
+	 * saved into the response until you call {@link ConversationCookie#save()}.
 	 * 
 	 * @param name
 	 *        The cookie name
@@ -126,12 +127,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	}
 
 	/**
-	 * The {@link CharacterSet} that will be used if you return an arbitrary
-	 * type for <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>. Defaults to what the client requested (in
-	 * <code>container.variant</code>), or to the value of
-	 * {@link DelegatedResource#getDefaultCharacterSet()} if the client did not
-	 * specify it.
+	 * The character set.
 	 * 
 	 * @return The character set
 	 * @see #setCharacterSet(CharacterSet)
@@ -190,9 +186,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	}
 
 	/**
-	 * The {@link Encoding} that will be used if you return an arbitrary type
-	 * for <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>. Defaults to null.
+	 * The encoding.
 	 * 
 	 * @return The encoding or null if not set
 	 * @see #setEncoding(Language)
@@ -274,10 +268,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	}
 
 	/**
-	 * The {@link MediaType} that will be used if you return an arbitrary type
-	 * for <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>. Defaults to what the client requested (in
-	 * <code>container.variant</code>).
+	 * The media type.
 	 * 
 	 * @return The media type
 	 * @see #setMediaType(MediaType)
@@ -336,9 +327,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	}
 
 	/**
-	 * The {@link Date} that will be used if you return an arbitrary type for
-	 * <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>. Defaults to null.
+	 * The expiration date.
 	 * 
 	 * @return The date or null if not set
 	 * @see #setExpirationDate(Date)
@@ -378,9 +367,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	}
 
 	/**
-	 * The {@link Date} that will be used if you return an arbitrary type for
-	 * <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>. Defaults to null.
+	 * The modification date.
 	 * 
 	 * @return The date or null if not set
 	 * @see #setModificationDate(Date)
@@ -420,9 +407,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	}
 
 	/**
-	 * The {@link Tag} that will be used if you return an arbitrary type for
-	 * <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>. Defaults to null.
+	 * The tag.
 	 * 
 	 * @return The tag or null if not set
 	 * @see #setTag(Tag)
@@ -541,10 +526,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	}
 
 	/**
-	 * The instance of this resource. Acts as a "this" reference for scriptlets.
-	 * For example, during a call to <code>handleInit()</code>, this can be used
-	 * to change the characteristics of the resource. Otherwise, you can use it
-	 * to access the request and response.
+	 * The resource.
 	 * 
 	 * @return The resource
 	 */
@@ -574,9 +556,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	}
 
 	/**
-	 * The {@link Variant} of this request. Useful for interrogating the
-	 * client's preferences. This is available only in <code>handleGet()</code>,
-	 * <code>handlePost()</code> and <code>handlePut()</code>.
+	 * The variant.
 	 * 
 	 * @return The variant or null if not available
 	 */
@@ -586,10 +566,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	}
 
 	/**
-	 * The {@link Representation} of an entity provided with this request.
-	 * Available only in <code>handlePost()</code> and <code>handlePut()</code>.
-	 * Note that <code>container.variant</code> is identical to
-	 * <code>container.entity</code> when available.
+	 * The entity.
 	 * 
 	 * @return The entity's representation or null if not available
 	 */
@@ -695,7 +672,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	/**
 	 * The URI query as a list. Includes duplicate keys.
 	 * <p>
-	 * The value is internally cached, so it's cheap to call this repeatedly.
+	 * This value is cached locally.
 	 * 
 	 * @return The query form
 	 */
@@ -710,7 +687,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	 * The URI query as a map. In the case of duplicate keys, only the last one
 	 * will appear.
 	 * <p>
-	 * The value is internally cached, so it's cheap to call this repeatedly.
+	 * This value is cached locally.
 	 * 
 	 * @return The query map
 	 */
@@ -725,7 +702,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	 * The form, sent via POST or PUT, as a list. Includes duplicate keys.
 	 * Uploaded files will appear as instances of {@link FileParameter}.
 	 * <p>
-	 * The value is internally cached, so it's cheap to call this repeatedly.
+	 * This value is cached locally.
 	 * 
 	 * @return The form
 	 */
@@ -746,7 +723,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	 * only the last one will appear. Uploaded files will appear as instances of
 	 * {@link FileParameter}. Other fields will be plain strings.
 	 * <p>
-	 * The value is internally cached, so it's cheap to call this repeatedly.
+	 * This value is cached locally.
 	 * 
 	 * @return The form
 	 */
@@ -767,7 +744,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	}
 
 	/**
-	 * The conversation locals include the URI template variables.
+	 * The request attributes.
 	 * 
 	 * @return The locals
 	 */
@@ -790,56 +767,42 @@ public class ConversationServiceBase<R extends ServerResource>
 	private final Variant variant;
 
 	/**
-	 * The {@link Representation} of an entity provided with this request.
+	 * The entity.
 	 */
 	private final Representation entity;
 
 	/**
-	 * The {@link CharacterSet} that will be used if you return an arbitrary
-	 * type for <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>.
+	 * The character set.
 	 */
 	private CharacterSet characterSet;
 
 	/**
-	 * The {@link Encoding} that will be used if you return an arbitrary type
-	 * for <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>.
+	 * The encoding.
 	 */
 	private Encoding encoding;
 
 	/**
-	 * The {@link Language} that will be used if you return an arbitrary type
-	 * for <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>.
+	 * The language.
 	 */
 	private Language language;
 
 	/**
-	 * The {@link MediaType} that will be used if you return an arbitrary type
-	 * for <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>.
+	 * The media type.
 	 */
 	private MediaType mediaType;
 
 	/**
-	 * The {@link Date} that will be used if you return an arbitrary type for
-	 * <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>.
+	 * The expiration date.
 	 */
 	private Date expirationDate;
 
 	/**
-	 * The {@link Date} that will be used if you return an arbitrary type for
-	 * <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>.
+	 * The modification date.
 	 */
 	private Date modificationDate;
 
 	/**
-	 * The {@link Tag} that will be used if you return an arbitrary type for
-	 * <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>.
+	 * The tag.
 	 */
 	private Tag tag;
 

@@ -86,6 +86,11 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <code>com.threecrickets.prudence.cache:</code> {@link Cache}. See
  * {@link #getCache()}.</li>
  * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.applicationServiceName</code>
+ * : The name of the global variable with which to access the application
+ * service. Defaults to "application". See {@link #getApplicationServiceName()}.
+ * </li>
+ * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
  * {@link #getDefaultCharacterSet()}.</li>
@@ -93,10 +98,15 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <code>com.threecrickets.prudence.DelegatedResource.defaultLanguageTag:</code>
  * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
  * <li><code>com.threecrickets.prudence.DelegatedResource.defaultName:</code>
- * {@link String}, defaults to "default.script". See {@link #getDefaultName()}.</li>
+ * {@link String}, defaults to "default". See {@link #getDefaultName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.documentFormatter:</code>
- * {@link DocumentFormatter}. See {@link #getDocumentFormatter()}.</li>
+ * {@link DocumentFormatter}. Defaults to a {@link JygmentsDocumentFormatter}.
+ * See {@link #getDocumentFormatter()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.documentServiceName</code>
+ * : The name of the global variable with which to access the document service.
+ * Defaults to "document". See {@link #getDocumentServiceName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.documentSource:</code>
  * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
@@ -134,14 +144,9 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <code>com.threecrickets.prudence.DelegatedResource.executionController:</code>
  * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.applicationServiceName</code>
- * : The name of the global variable with which to access the application
- * service. Defaults to "application". See {@link #getApplicationServiceName()}.
- * </li>
- * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.documentServiceName</code>
- * : The name of the global variable with which to access the document service.
- * Defaults to "document". See {@link #getDocumentServiceName()}.</li>
+ * <code>com.threecrickets.prudence.DelegatedResource.libraryDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../libraries/". See {@link #getLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.languageManager:</code>
  * {@link LanguageManager}, defaults to a new instance. See
