@@ -120,6 +120,10 @@
 
 (def dynamic-web-minimum-time-between-validity-checks 1000)
 
+; Client caching mode: 0=disabled, 1=conditional, 2=offline
+
+(def dynamic-web-client-caching-mode 1)
+
 ;
 ; Static Web
 ;

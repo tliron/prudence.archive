@@ -120,6 +120,10 @@ dynamic_web_source_viewable = True
 
 dynamic_web_minimum_time_between_validity_checks = 1000
 
+# Client caching mode: 0=disabled, 1=conditional, 2=offline
+
+dynamic_web_client_caching_mode = 1
+
 #
 # Static Web
 #

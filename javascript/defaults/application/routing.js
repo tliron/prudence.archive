@@ -115,6 +115,7 @@ attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', d
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.executionController', new PhpExecutionController()); // Adds PHP predefined variables
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.clientCachingMode', dynamicWebClientCachingMode);
 
 var dynamicWeb = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'));
 router.attachBase(fixURL(dynamicWebBaseURL), dynamicWeb);

@@ -23,7 +23,7 @@ global $application_name, $application_description, $application_author, $applic
 global $show_debug_on_error, $show_source_code_url;
 global $hosts;
 global $resources_base_url, $resources_base_path, $resources_default_name, $resources_defrost, $resources_source_viewable, $resources_minimum_time_between_validity_checks;
-global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_source_viewable, $dynamic_web_minimum_time_between_validity_checks;
+global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_source_viewable, $dynamic_web_minimum_time_between_validity_checks, $dynamic_web_client_caching_mode;
 global $static_web_base_url, $static_web_base_path, $static_web_directory_listing_allowed;
 global $preheat_resources;
 global $url_add_trailing_slash;
@@ -130,6 +130,7 @@ $attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = $d
 $attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source;
 $attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = $dynamic_web_source_viewable;
 $attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController(); // Adds PHP predefined variables
+$attributes['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode;
 
 $dynamic_web = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.GeneratedTextResource'));
 $router->attachBase(fix_url($dynamic_web_base_url), $dynamic_web);

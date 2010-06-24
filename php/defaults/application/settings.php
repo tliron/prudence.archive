@@ -9,7 +9,7 @@ global $show_debug_on_error, $show_source_code_url;
 global $application_logger_name;
 global $hosts;
 global $resources_base_url, $resources_base_path, $resources_default_name, $resources_defrost, $resources_source_viewable, $resources_minimum_time_between_validity_checks;
-global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_source_viewable, $dynamic_web_minimum_time_between_validity_checks;
+global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_source_viewable, $dynamic_web_minimum_time_between_validity_checks, $dynamic_web_client_caching_mode;
 global $static_web_base_url, $static_web_base_path, $static_web_directory_listing_allowed;
 global $preheat_resources;
 global $url_add_trailing_slash;
@@ -133,6 +133,10 @@ $dynamic_web_source_viewable = true;
 // unnecessary hits on the filesystem.
 
 $dynamic_web_minimum_time_between_validity_checks = 1000;
+
+// Client caching mode: 0=disabled, 1=conditional, 2=offline
+
+$dynamic_web_client_caching_mode = 1;
 
 //
 // Static Web

@@ -121,6 +121,10 @@ var dynamicWebSourceViewable = true;
 
 var dynamicWebMinimumTimeBetweenValidityChecks = 1000;
 
+// Client caching mode: 0=disabled, 1=conditional, 2=offline
+
+var dynamicWebClientCachingMode = 1;
+
 //
 // Static Web
 //

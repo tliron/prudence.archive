@@ -588,7 +588,10 @@ public class GeneratedTextResource extends ServerResource
 		if( clientCachingMode == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			clientCachingMode = (Integer) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.clientCachingMode" );
+			Number number = (Number) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.clientCachingMode" );
+
+			if( number != null )
+				clientCachingMode = number.intValue();
 
 			if( clientCachingMode == null )
 				clientCachingMode = CLIENT_CACHING_MODE_CONDITIONAL;

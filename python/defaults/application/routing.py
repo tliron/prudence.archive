@@ -96,6 +96,7 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dyn
 attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamic_web_document_source
 attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
 attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController() # Adds PHP predefined variables
+attributes['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamic_web_client_caching_mode
 
 dynamic_web = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 router.attachBase(fix_url(dynamic_web_base_url), dynamic_web)
