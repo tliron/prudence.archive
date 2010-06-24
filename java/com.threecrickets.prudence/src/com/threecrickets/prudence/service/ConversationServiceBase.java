@@ -12,14 +12,11 @@
 package com.threecrickets.prudence.service;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.restlet.Request;
 import org.restlet.Response;
-import org.restlet.data.CacheDirective;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Encoding;
 import org.restlet.data.Form;
@@ -30,8 +27,6 @@ import org.restlet.data.Parameter;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
-import org.restlet.data.Tag;
-import org.restlet.engine.http.header.HeaderConstants;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ServerResource;
@@ -189,7 +184,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	 * The encoding.
 	 * 
 	 * @return The encoding or null if not set
-	 * @see #setEncoding(Language)
+	 * @see #setEncoding(Encoding)
 	 */
 	public Encoding getEncoding()
 	{
@@ -226,9 +221,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	}
 
 	/**
-	 * The {@link Language} that will be used if you return an arbitrary type
-	 * for <code>handleGet()</code>, <code>handlePost()</code> and
-	 * <code>handlePut()</code>. Defaults to null.
+	 * The language.
 	 * 
 	 * @return The language or null if not set
 	 * @see #setLanguage(Language)
@@ -324,159 +317,6 @@ public class ConversationServiceBase<R extends ServerResource>
 	public void setMediaTypeExtension( String mediaTypeExtension )
 	{
 		mediaType = resource.getApplication().getMetadataService().getMediaType( mediaTypeExtension );
-	}
-
-	/**
-	 * The expiration date.
-	 * 
-	 * @return The date or null if not set
-	 * @see #setExpirationDate(Date)
-	 */
-	public Date getExpirationDate()
-	{
-		return expirationDate;
-	}
-
-	/**
-	 * @param expirationDate
-	 *        The date or null
-	 * @see #getExpirationDate()
-	 */
-	public void setExpirationDate( Date expirationDate )
-	{
-		this.expirationDate = expirationDate;
-	}
-
-	/**
-	 * @return The timestamp or 0 if not set
-	 * @see #setExpirationDate()
-	 */
-	public long getExpirationTimestamp()
-	{
-		return expirationDate != null ? expirationDate.getTime() : 0L;
-	}
-
-	/**
-	 * @param expirationTimestamp
-	 *        The timestamp
-	 * @see #setExpirationDate(Date)
-	 */
-	public void setExpirationTimestamp( long expirationTimestamp )
-	{
-		this.expirationDate = new Date( expirationTimestamp );
-	}
-
-	/**
-	 * The modification date.
-	 * 
-	 * @return The date or null if not set
-	 * @see #setModificationDate(Date)
-	 */
-	public Date getModificationDate()
-	{
-		return modificationDate;
-	}
-
-	/**
-	 * @param modificationDate
-	 *        The date or null
-	 * @see #getModificationDate()
-	 */
-	public void setModificationDate( Date modificationDate )
-	{
-		this.modificationDate = modificationDate;
-	}
-
-	/**
-	 * @return The timestamp or 0 if not set
-	 * @see #setModificationDate()
-	 */
-	public long getModificationTimestamp()
-	{
-		return modificationDate != null ? modificationDate.getTime() : 0L;
-	}
-
-	/**
-	 * @param modificationTimestamp
-	 *        The timestamp
-	 * @see #setModificationDate(Date)
-	 */
-	public void setModificationTimestamp( long modificationTimestamp )
-	{
-		this.modificationDate = modificationTimestamp != 0 ? new Date( modificationTimestamp ) : null;
-	}
-
-	/**
-	 * The tag.
-	 * 
-	 * @return The tag or null if not set
-	 * @see #setTag(Tag)
-	 */
-	public Tag getTag()
-	{
-		return tag;
-	}
-
-	/**
-	 * @param tag
-	 *        The tag or null
-	 * @see #getTag()
-	 */
-	public void setTag( Tag tag )
-	{
-		this.tag = tag;
-	}
-
-	/**
-	 * @return The HTTP-formatted tag or null if not set
-	 * @see #getTag()
-	 */
-	public String getHttpTag()
-	{
-		return tag != null ? tag.format() : null;
-	}
-
-	/**
-	 * @param tag
-	 *        The HTTP-formatted tag or null
-	 * @see #setTag(Tag)
-	 */
-	public void setHttpTag( String tag )
-	{
-		this.tag = tag != null ? Tag.parse( tag ) : null;
-	}
-
-	/**
-	 * The "max-age" cache control header.
-	 * 
-	 * @return The max age in seconds,+ or -1 if not set
-	 * @see #setMaxAge(int)
-	 */
-	public int getMaxAge()
-	{
-		for( CacheDirective cacheDirective : resource.getResponse().getCacheDirectives() )
-			if( cacheDirective.getName().equals( HeaderConstants.CACHE_MAX_AGE ) )
-				return Integer.parseInt( cacheDirective.getValue() );
-
-		return -1;
-	}
-
-	/**
-	 * @param maxAge
-	 *        The max age in seconds, or -1 to explicitly set a "no-cache" cache
-	 *        control header
-	 * @see #getMaxAge()
-	 */
-	public void setMaxAge( int maxAge )
-	{
-		for( Iterator<CacheDirective> i = resource.getResponse().getCacheDirectives().iterator(); i.hasNext(); )
-			if( i.next().getName().equals( HeaderConstants.CACHE_MAX_AGE ) )
-				i.remove();
-
-		if( maxAge != -1 )
-			resource.getResponse().getCacheDirectives().add( CacheDirective.maxAge( maxAge ) );
-		else
-			resource.getResponse().getCacheDirectives().add( CacheDirective.noCache() );
 	}
 
 	/**
@@ -623,42 +463,6 @@ public class ConversationServiceBase<R extends ServerResource>
 	//
 
 	/**
-	 * Adds a media type to the list of variants.
-	 * 
-	 * @param mediaType
-	 *        The media type
-	 * @see #getVariants()
-	 */
-	public void addMediaType( MediaType mediaType )
-	{
-		resource.getVariants().add( new Variant( mediaType ) );
-	}
-
-	/**
-	 * Adds a media type to the list of variants.
-	 * 
-	 * @param mediaTypeName
-	 *        The media type name
-	 * @see #getVariants()
-	 */
-	public void addMediaTypeByName( String mediaTypeName )
-	{
-		resource.getVariants().add( new Variant( MediaType.valueOf( mediaTypeName ) ) );
-	}
-
-	/**
-	 * Adds a media type to the list of variants.
-	 * 
-	 * @param mediaTypeExtension
-	 *        The media type extension
-	 * @see #getVariants()
-	 */
-	public void addMediaTypeByExtension( String mediaTypeExtension )
-	{
-		resource.getVariants().add( new Variant( resource.getApplication().getMetadataService().getMediaType( mediaTypeExtension ) ) );
-	}
-
-	/**
 	 * Throws a runtime exception.
 	 * 
 	 * @return Always throws an exception, so nothing is ever returned (some
@@ -790,21 +594,6 @@ public class ConversationServiceBase<R extends ServerResource>
 	 * The media type.
 	 */
 	private MediaType mediaType;
-
-	/**
-	 * The expiration date.
-	 */
-	private Date expirationDate;
-
-	/**
-	 * The modification date.
-	 */
-	private Date modificationDate;
-
-	/**
-	 * The tag.
-	 */
-	private Tag tag;
 
 	/**
 	 * The URI query as a map.

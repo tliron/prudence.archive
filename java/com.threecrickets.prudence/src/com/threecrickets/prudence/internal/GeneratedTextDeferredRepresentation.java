@@ -92,8 +92,8 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 		setCharacterSet( conversationService.getCharacterSet() );
 		if( conversationService.getLanguage() != null )
 			setLanguages( Arrays.asList( conversationService.getLanguage() ) );
-		if( conversationService.getEncoding() != null )
-			setEncodings( Arrays.asList( conversationService.getEncoding() ) );
+		// if( conversationService.getEncoding() != null )
+		// setEncodings( Arrays.asList( conversationService.getEncoding() ) );
 	}
 
 	//
