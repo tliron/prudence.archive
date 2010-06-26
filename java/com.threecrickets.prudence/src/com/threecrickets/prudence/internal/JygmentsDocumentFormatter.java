@@ -22,7 +22,7 @@ import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFormatter;
 
 /**
- * Use <a href="http://threecrickets.com/jygments/">Jygments</a> to format
+ * Use <a href="https://code.google.com/p/jygments/">Jygments</a> to format
  * source code.
  * 
  * @author Tal Liron

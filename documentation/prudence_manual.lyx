@@ -11948,7 +11948,7 @@ For Prudence's debug mode, we wanted good syntax highlighting for viewing
 \begin_inset CommandInset href
 LatexCommand href
 name "Jygments"
-target "http://jygments.tigris.org/"
+target "https://code.google.com/p/jygments/"
 
 \end_inset
 
