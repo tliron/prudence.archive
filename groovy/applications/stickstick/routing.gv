@@ -8,11 +8,12 @@ import com.threecrickets.prudence.util.CssUnifyMinifyFilter
 import com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter
 import org.restlet.routing.Template
 
-router.capture(fixURL(resourcesBaseURL + '/data/note/{id}/'), '/data/note/')
+router.capture(resourcesBaseURL + 'data/note/{id}/', 'data/note/')
+router.hide('data/note/')
 
 // Wrap the static web with unify-minify filters
 router.detach(staticWeb)
 wrappedStaticWeb = new CssUnifyMinifyFilter(applicationInstance.context, staticWeb, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks)
 wrappedStaticWeb = new JavaScriptUnifyMinifyFilter(applicationInstance.context, wrappedStaticWeb, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks)
-router.attachBase(fixURL(staticWebBaseURL), wrappedStaticWeb)
+router.attachBase(staticWebBaseURL, wrappedStaticWeb)
 	

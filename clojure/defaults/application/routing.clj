@@ -105,7 +105,8 @@
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.clientCachingMode" dynamic-web-client-caching-mode)
 
 (def dynamic-web (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.GeneratedTextResource")))
-(.attachBase router (fix-url dynamic-web-base-url) dynamic-web)
+(def dynamic-web-base-url (fix-url dynamic-web-base-url))
+(.attachBase router dynamic-web-base-url dynamic-web)
 
 (if dynamic-web-defrost
 	(doseq [defrost-task (DefrostTask/forDocumentSource dynamic-web-document-source language-manager "clojure" true true)]
@@ -118,7 +119,8 @@
 (def static-web (Directory. (.getContext application-instance) (.. (File. (str application-base-path static-web-base-path)) toURI (toString))))
 (.setListingAllowed static-web static-web-directory-listing-allowed)
 (.setNegotiateContent static-web true)
-(.attachBase router (fix-url static-web-base-url) static-web)
+(def static-web-base-url (fix-url static-web-base-url))
+(.attachBase router static-web-base-url static-web)
 
 ;
 ; Resources
@@ -132,7 +134,8 @@
 (.put attributes "com.threecrickets.prudence.DelegatedResource.sourceViewable" resources-source-viewable)
 
 (def resources (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
-(.attachBase router (fix-url resources-base-url) resources)
+(def resources-base-url (fix-url resources-base-url))
+(.attachBase router resources-base-url resources)
 
 (if resources-defrost
 	(doseq [defrost-task (DefrostTask/forDocumentSource resources-document-source language-manager "clojure" false true)]
@@ -147,7 +150,8 @@
 		(.put attributes "com.threecrickets.prudence.SourceCodeResource.documentSources" [dynamic-web-document-source resources-document-source])
 		
 		(def source-code (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.SourceCodeResource")))
-		(.setMatchingMode (.attach router (fix-url show-source-code-url) source-code) Template/MODE_EQUALS)))
+    (def show-source-code-url (fix-url show-source-code-url))
+		(.setMatchingMode (.attach router show-source-code-url source-code) Template/MODE_EQUALS)))
 
 ;
 ; Preheat

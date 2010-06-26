@@ -118,7 +118,8 @@ attributes.put('com.threecrickets.prudence.GeneratedTextResource.executionContro
 attributes.put('com.threecrickets.prudence.GeneratedTextResource.clientCachingMode', dynamicWebClientCachingMode);
 
 var dynamicWeb = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'));
-router.attachBase(fixURL(dynamicWebBaseURL), dynamicWeb);
+dynamicWebBaseURL = fixURL(dynamicWebBaseURL);
+router.attachBase(dynamicWebBaseURL, dynamicWeb);
 
 if(dynamicWebDefrost) {
 	var defrostTasks = DefrostTask.forDocumentSource(dynamicWebDocumentSource, languageManager, 'javascript', true, true);
@@ -134,7 +135,8 @@ if(dynamicWebDefrost) {
 var staticWeb = new Directory(applicationInstance.context, new File(applicationBasePath + staticWebBasePath).toURI().toString());
 staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
 staticWeb.negotiatingContent = true;
-router.attachBase(fixURL(staticWebBaseURL), staticWeb);
+staticWebBaseURL = fixURL(staticWebBaseURL);
+router.attachBase(staticWebBaseURL, staticWeb);
 
 //
 // Resources
@@ -148,7 +150,8 @@ attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', re
 attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable);
 
 resources = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
-router.attachBase(fixURL(resourcesBaseURL), resources);
+resourcesBaseURL = fixURL(resourcesBaseURL);
+router.attachBase(resourcesBaseURL, resources);
 
 if(resourcesDefrost) {
 	var defrostTasks = DefrostTask.forDocumentSource(resourcesDocumentSource, languageManager, 'javascript', false, true);
@@ -167,7 +170,8 @@ if(showDebugOnError) {
 	documentSources.add(resourcesDocumentSource);
 	attributes.put('com.threecrickets.prudence.SourceCodeResource.documentSources', documentSources);
 	var sourceCode = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.SourceCodeResource'));
-	router.attach(fixURL(showSourceCodeURL), sourceCode).matchingMode = Template.MODE_EQUALS;
+	showSourceCodeURL = fixURL(showSourceCodeURL);
+	router.attach(showSourceCodeURL, sourceCode).matchingMode = Template.MODE_EQUALS;
 }
 
 //

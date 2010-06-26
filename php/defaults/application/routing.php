@@ -133,7 +133,8 @@ $attributes['com.threecrickets.prudence.GeneratedTextResource.executionControlle
 $attributes['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode;
 
 $dynamic_web = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.GeneratedTextResource'));
-$router->attachBase(fix_url($dynamic_web_base_url), $dynamic_web);
+$dynamic_web_base_url = fix_url(dynamic_web_base_url);
+$router->attachBase($dynamic_web_base_url, $dynamic_web);
 
 if($dynamic_web_defrost) {
 	$defrost_tasks = DefrostTask::forDocumentSource($dynamic_web_document_source, $language_manager, 'php', true, true);
@@ -149,7 +150,8 @@ if($dynamic_web_defrost) {
 $static_web = new Directory($application_instance->context, new File($application_base_path . $static_web_base_path)->toURI()->toString());
 $static_web->listingAllowed = $static_web_directory_listing_allowed;
 $static_web->negotiatingContent = true;
-$router->attachBase(fix_url($static_web_base_url), $static_web);
+$static_web_base_url = fix_url(static_web_base_url);
+$router->attachBase($static_web_base_url, $static_web);
 
 //
 // Resources
@@ -163,7 +165,8 @@ $attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = $re
 $attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = $resources_source_viewable;
 
 $resources = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.DelegatedResource'));
-$router->attachBase(fix_url($resources_base_url), $resources);
+$resources_base_url = fix_url(resources_base_url);
+$router->attachBase($resources_base_url, $resources);
 
 if($resources_defrost) {
 	$defrost_tasks = DefrostTask::forDocumentSource($resources_document_source, $language_manager, 'php', false, true);
@@ -182,7 +185,8 @@ if($show_debug_on_error) {
 	$document_sources->add($resources_document_source);
 	$attributes['com.threecrickets.prudence.SourceCodeResource.documentSources'] = $document_sources;
 	$source_code = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.SourceCodeResource'));
-	$router->attach(fix_url($show_source_code_url), $source_code)->matchingMode = Template::MODE_EQUALS;
+	$show_source_code_url = fix_url(show_source_code_url);
+	$router->attach($show_source_code_url, $source_code)->matchingMode = Template::MODE_EQUALS;
 }
 
 //

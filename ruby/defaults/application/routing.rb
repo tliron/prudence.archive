@@ -116,7 +116,8 @@ $attributes['com.threecrickets.prudence.GeneratedTextResource.executionControlle
 $attributes['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode
 
 $dynamic_web = Finder.new($application_instance.context, $class_loader.load_class('com.threecrickets.prudence.GeneratedTextResource'))
-$router.attach_base fix_url($dynamic_web_base_url), $dynamic_web
+$dynamic_web_base_url = fix_url $dynamic_web_base_url
+$router.attach_base $dynamic_web_base_url, $dynamic_web
 
 if $dynamic_web_defrost
 	defrost_tasks = DefrostTask::for_document_source $dynamic_web_document_source, $language_manager, 'ruby', true, true
@@ -132,7 +133,8 @@ end
 $static_web = Directory.new($application_instance.context, java.io.File.new($application_base_path + $static_web_base_path).to_uri.to_string)
 $static_web.listing_allowed = $static_web_directory_listing_allowed
 $static_web.negotiating_content = true
-$router.attach_base fix_url($static_web_base_url), $static_web
+$static_web_base_url = fix_url $static_web_base_url
+$router.attach_base $static_web_base_url, $static_web
 
 #
 # Resources
@@ -146,7 +148,8 @@ $attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = $re
 $attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = $resources_source_viewable
 
 $resources = Finder.new($application_instance.context, $class_loader.load_class('com.threecrickets.prudence.DelegatedResource'))
-$router.attach_base fix_url($resources_base_url), $resources
+$resources_base_url = fix_url $resources_base_url
+$router.attach_base $resources_base_url, $resources
 
 if $resources_defrost
 	defrost_tasks = DefrostTask::for_document_source $resources_document_source, $language_manager, 'ruby', false, true
@@ -162,7 +165,8 @@ end
 if $show_debug_on_error
 	$attributes['com.threecrickets.prudence.SourceCodeResource.documentSources'] = [$dynamic_web_document_source, $resources_document_source]
 	$source_code = Finder.new($application_instance.context, $class_loader.load_class('com.threecrickets.prudence.SourceCodeResource'))
-	$router.attach(fix_url($show_source_code_url), $source_code).matching_mode = Template::MODE_EQUALS
+	$show_source_code_url = fix_url $show_source_code_url
+	$router.attach($show_source_code_url, $source_code).matching_mode = Template::MODE_EQUALS
 end
 
 #
