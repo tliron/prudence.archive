@@ -75,7 +75,8 @@ public class CacheControlFilter extends Filter
 	 * @param next
 	 *        The next restlet
 	 * @param defaultMaxAge
-	 *        The default max age, in seconds, or -1 to signify "no-cache"
+	 *        The default max age, in seconds, or a negative number to signify
+	 *        "no-cache"
 	 */
 	public CacheControlFilter( Context context, Restlet next, int defaultMaxAge )
 	{
@@ -92,16 +93,17 @@ public class CacheControlFilter extends Filter
 	//
 
 	/**
-	 * @return A map of media types to its max age, in seconds, or -1 to signify
-	 *         "no-cache"
+	 * @return A map of media types to its max age, in seconds, or a negative
+	 *         number to signify "no-cache"
 	 */
-	public Map<MediaType, Integer> getMaxAgeForMediaType()
+	public Map<MediaType, Number> getMaxAgeForMediaType()
 	{
 		return maxAgeForMediaType;
 	}
 
 	/**
-	 * @return The default max age, in seconds, or -1 to signify "no-cache"
+	 * @return The default max age, in seconds, or a negative number to signify
+	 *         "no-cache"
 	 * @see #setDefaultMaxAge(int)
 	 */
 	public int getDefaultMaxAge()
@@ -111,7 +113,8 @@ public class CacheControlFilter extends Filter
 
 	/**
 	 * @param defaultMaxAge
-	 *        The default max age, in seconds, or -1 to signify "no-cache"
+	 *        The default max age, in seconds, or a negative number to signify
+	 *        "no-cache"
 	 * @see #getDefaultMaxAge()
 	 */
 	public void setDefaultMaxAge( int defaultMaxAge )
@@ -132,15 +135,17 @@ public class CacheControlFilter extends Filter
 		if( response.isEntityAvailable() )
 		{
 			MediaType mediaType = response.getEntity().getMediaType();
-			Integer maxAge = maxAgeForMediaType.get( mediaType );
+			Number maxAgeNumber = maxAgeForMediaType.get( mediaType );
 			// System.out.println( mediaType );
 
-			if( maxAge == null )
-				maxAge = defaultMaxAge;
+			if( maxAgeNumber == null )
+				maxAgeNumber = defaultMaxAge;
+
+			int maxAge = maxAgeNumber.intValue();
 
 			List<CacheDirective> cacheDirectives = response.getCacheDirectives();
 			cacheDirectives.clear();
-			if( maxAge == -1 )
+			if( maxAge < 0 )
 				cacheDirectives.add( CacheDirective.noCache() );
 			else
 				cacheDirectives.add( CacheDirective.maxAge( maxAge ) );
@@ -153,7 +158,7 @@ public class CacheControlFilter extends Filter
 	/**
 	 * Max age per media type.
 	 */
-	private final Map<MediaType, Integer> maxAgeForMediaType = new HashMap<MediaType, Integer>();
+	private final Map<MediaType, Number> maxAgeForMediaType = new HashMap<MediaType, Number>();
 
 	/**
 	 * Max age to use if not specified for the media type.

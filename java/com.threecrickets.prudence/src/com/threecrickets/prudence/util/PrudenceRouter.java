@@ -15,6 +15,7 @@ import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.Restlet;
+import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
 import org.restlet.routing.Redirector;
 import org.restlet.routing.Route;
@@ -173,6 +174,25 @@ public class PrudenceRouter extends FallbackRouter
 	{
 		String targetUriTemplate = "riap://component/" + application + "/" + internalUriTemplate + "?{rq}";
 		Route route = attach( uriTemplate, new CaptiveRedirector( getContext(), targetUriTemplate, false ) );
+		route.setMatchingMode( Template.MODE_EQUALS );
+		return route;
+	}
+
+	/**
+	 * Sets the URI to always return {@link Status#CLIENT_ERROR_NOT_FOUND}. Note
+	 * that if there really is a resource at that URI, it might still be
+	 * available via other routes.
+	 * <p>
+	 * Internally uses a {@link StatusRestlet}.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @return The created route
+	 */
+	public Route hide( String uriTemplate )
+	{
+		Route route = attach( uriTemplate, new StatusRestlet( Status.CLIENT_ERROR_NOT_FOUND ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}

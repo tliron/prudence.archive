@@ -195,8 +195,9 @@ public class DelegatedStatusService extends StatusService
 
 			if( errorHandler != null )
 			{
-				// Clear the status
+				// Reset the response
 				response.setStatus( Status.SUCCESS_OK );
+				response.setEntity( null );
 
 				// Delegate
 				errorHandler.handle( request, response );
