@@ -2265,12 +2265,12 @@ document.execute('defaults/application/routing/');
 
 \begin_layout Plain Layout
 
-router.capture(fixURL('/profile/{id}/'), '/profile/');
+router.capture('profile/{id}/'), 'profile/');
 \end_layout
 
 \begin_layout Plain Layout
 
-router.capture(fixURL('/data/schedule/{id}/'), '/data/schedule/');
+router.capture('data/schedule/{id}/'), 'data/schedule/');
 \end_layout
 
 \end_inset
@@ -4094,11 +4094,62 @@ target "http://www.restlet.org/"
 \end_layout
 
 \begin_layout Subsection
-CacheControlFilter 
+CacheControlFilter
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+importClass(
+\end_layout
+
+\begin_layout Plain Layout
+
+	org.restlet.data.MediaType,
+\end_layout
+
+\begin_layout Plain Layout
+
+	com.threecrickets.prudence.util.CacheControlFilter);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// Cache static file types
+\end_layout
+
+\begin_layout Plain Layout
+
+var staticWebCacheControlFilter = new CacheControlFilter(router.context,
+ staticWeb);
+\end_layout
+
+\begin_layout Plain Layout
+
+staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.TEXT_CSS, -1);
+\end_layout
+
+\begin_layout Plain Layout
+
+staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.APPLICATION_JAVASCRIPT
+, -1); 
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
-JavaScriptUnifyMinifyFilter 
+JavaScriptUnifyMinifyFilter
 \end_layout
 
 \begin_layout Subsection
@@ -4403,15 +4454,22 @@ ory, it is mapped to the subdirectory itself.
 \end_layout
 
 \begin_layout Standard
-By using default files, you can thus stick to using only subdirectories
+By using default files, you can using subdirectories instead of filenames
  as URI segments.
+ In very large applications, this can help keep your files well-organized
+ without having any effect on the URIs that exposed externally.
+ You can even change your scheme during development, as the numbers of files
+ you have grows, without any effect on the clients.
 \end_layout
 
 \begin_layout Quote
-The name ``index.html'' is by many web servers for archaic reasons: it was
+The name ``index.html'' is used by web servers for archaic reasons: it was
  conceived of as a place where you could list the contents, or ``index,''
  the subdirectory.
  These days, however, we tend to have a more general understanding of URIs.
+ By default, we've followed this convention in Prudence.
+ You can change this with the ``com.threecrickets.prudence.GeneratedTextResource.def
+aultName'' application attribute.
 \end_layout
 
 \begin_layout Paragraph
@@ -4542,6 +4600,36 @@ The automatic routing provided by using the directories and filenames is
 \end_layout
 
 \begin_layout Subsubsection
+Hiding
+\end_layout
+
+\begin_layout Standard
+The following will make sure that the URI always returns a 404, even if
+ the page or resource exists.
+ For example, in /routing.* (JavaScript flavor):
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+router.hide('administration/');
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The resource will still be available internally, via document.internal, and
+ for capturing (see below).
+\end_layout
+
+\begin_layout Subsubsection
 Capturing
 \end_layout
 
@@ -4585,7 +4673,7 @@ document.execute('defaults/application/routing/');
 
 \begin_layout Plain Layout
 
-router.capture('/forum/help/{topic}/', '/forum/help/');
+router.capture('forum/help/{topic}/', 'forum/help/');
 \end_layout
 
 \end_inset
@@ -4700,10 +4788,18 @@ status open
 \end_layout
 
 \begin_layout Standard
+Capturing in this manner is often used in conjunction with URI hiding (see
+ above).
+ By hiding ``/forum/help/'', users would be able to access ``/forum/help/faq/''
+ via HTTP, but not ``/forum/help/''.
+ This technique lets you effectively control the URI space exposed externally,
+ while still providing complete access within your application.
+\end_layout
+
+\begin_layout Standard
 Another feature of internal redirection is that your code you can check
  for internal access and enforce it.
- For example, we'll add code to the above example to ``hide'' all access
- that is not internal:
+ For example, let's implement URI hiding via a scriptlet:
 \end_layout
 
 \begin_layout Standard
@@ -4772,13 +4868,6 @@ if(!conversation.internal){
 \end_layout
 
 \begin_layout Standard
-With the code above, users would be able to access ``/forum/help/faq/''
- via HTTP, but not ``/forum/help''.
- This technique lets you effectively control the URI space exposed externally,
- while still providing complete access within your application.
-\end_layout
-
-\begin_layout Standard
 Prudence also lets you capture into a different application in the instance.
  Refer to applications using their subdirectory name.
  For example:
@@ -4811,6 +4900,180 @@ router.captureOther('/forum/help/{topic}/', 'wackyhelp', '/help/');
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+In addition to parsing URI segmenets, you can use pre-defined curly-bracket-deli
+mited tags to route based on attributes of the request (see URI Templates,
+ below).
+ For example, we can route with the ``{m}'' tag (HTTP method) to elegantly
+ handle HTTP forms:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+router.capture('message/', 'message/{m}/');
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can then have a dynamic web page named /message/GET.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+<form method="post">
+\end_layout
+
+\begin_layout Plain Layout
+
+	Enter your message:
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<textarea name="message"></textarea>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<input type="submit" />
+\end_layout
+
+\begin_layout Plain Layout
+
+</form>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And one named /message/POST.html:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<%= conversation.form.get('message') %>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Another example of capturing with URI templates:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+router.capture('data/client/', 'data/client/{emt}/');
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Because ``{emt}'' is the MIME type of data sent by the client, we can thus
+ have files such as these:
+\end_layout
+
+\begin_layout Itemize
+/resources/data/client/text/html/default.js
+\end_layout
+
+\begin_layout Itemize
+/resources/data/client/application/json/default.js
+\end_layout
+
+\begin_layout Itemize
+/resources/data/client/default.js (this will be used if no client data is
+ sent, for example in an HTTP GET)
+\end_layout
+
+\begin_layout Standard
+Of course, you might prefer to check the MIME type in code your code (via
+ conversation.mediaTypeName), but it's a nice example of how powerful routing
+ can be with URI templates.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4878,8 +5141,7 @@ document.execute('defaults/instance/routing/');
 
 \begin_layout Plain Layout
 
-component.statusService.capture(404, 'wackyhelp', '/help/main/', component.context)
-;
+component.statusService.capture(404, 'wackyhelp', 'help/main/', component.context);
 \end_layout
 
 \begin_layout Plain Layout
@@ -4893,8 +5155,8 @@ component.statusService.capture(404, 'wackyhelp', '/help/main/', component.conte
 
 \begin_layout Plain Layout
 
-component.statusService.captureHostRoot(500, 'wackywiki', '/oops/', component.conte
-xt);
+component.statusService.captureHostRoot(500, 'wackywiki', 'oops/', component.contex
+t);
 \end_layout
 
 \end_inset
@@ -4932,7 +5194,7 @@ document.execute('defaults/application/routing/');
 
 \begin_layout Plain Layout
 
-applicationInstance.statusService.capture(404, 'wackyhelp', '/help/main/',
+applicationInstance.statusService.capture(404, 'wackyhelp', 'help/main/',
  applicationInstance.context);
 \end_layout
 
@@ -4950,8 +5212,11 @@ You always need to specify the application name (like router.captureOther).
 \end_layout
 
 \begin_layout Itemize
-As with regular capturing, you can hide these pages for non-internal URIs
- if you don't want users to be able to access them directly.
+As with regular capturing, you can hide these pages if you don't want users
+ to be able to access them directly.
+ (Though, if you hide your 404 page, users would still get to it because
+ it's what displayed when pages are not found! The difference is that it
+ appears to uses with a 404 status, not 200 success status.)
 \end_layout
 
 \begin_layout Itemize
@@ -4989,13 +5254,48 @@ conversation.response.redirectPermanent, for HTTP status 301
 \end_layout
 
 \begin_layout Standard
+For example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+conversation.response.redirectSeeOther('../contact-us/');
+\end_layout
+
+\begin_layout Plain Layout
+
+conversation.stop();
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 Most clients will support relative URI paths for redirection.
 \end_layout
 
 \begin_layout Standard
 Note that most clients will ignore any data in the response if it contains
  any redirection status code, so you can just return null in /resources/
- or empty text in /web/dynamic/.
+ or empty text in /web/dynamic/ (which is why we call conversation.stop in
+ the example above).
 \end_layout
 
 \begin_layout Standard
@@ -5016,6 +5316,11 @@ conversation.response.locationRef = 'http://wackywiki.org/report-a-bug/';
 \begin_layout Plain Layout
 
 conversation.statusCode = 302;
+\end_layout
+
+\begin_layout Plain Layout
+
+conversation.stop();
 \end_layout
 
 \end_inset
@@ -5072,8 +5377,8 @@ importClass(org.restlet.resource.Directory);
 
 \begin_layout Plain Layout
 
-router.attach('/forum/help/', new Directory(applicationInstance.context, 'file:///
-user/data/files/'))
+router.attach('forum/help/', new Directory(applicationInstance.context, 'file:///u
+ser/data/files/'))
 \end_layout
 
 \begin_layout Plain Layout
@@ -5092,7 +5397,7 @@ user/data/files/'))
 
 \begin_layout Plain Layout
 
-router.attachBase('/forum/help/', new Directory(applicationInstance.context,
+router.attachBase('forum/help/', new Directory(applicationInstance.context,
  'file:///user/data/files/'));
 \end_layout
 
@@ -5107,7 +5412,7 @@ router.attachBase('/forum/help/', new Directory(applicationInstance.context,
 
 \begin_layout Plain Layout
 
-router.attach('/forum/help/{topic}/', 'org.wackywiki.HelpAccessResource');
+router.attach('forum/help/{topic}/', 'org.wackywiki.HelpAccessResource');
 \end_layout
 
 \begin_layout Plain Layout
@@ -5180,8 +5485,8 @@ importClass(org.restlet.routing.Redirector);
 
 \begin_layout Plain Layout
 
-router.attach('/bug/', new Redirector(applicationInstance.context, 'http://wackywi
-ki.org/contact-us/bug/'));
+router.attach('bug/', new Redirector(applicationInstance.context, 'http://wackywik
+i.org/contact-us/bug/'));
 \end_layout
 
 \begin_layout Plain Layout
@@ -5195,8 +5500,8 @@ ki.org/contact-us/bug/'));
 
 \begin_layout Plain Layout
 
-router.attach('/forum/', new Redirector(applicationInstance.context, '{rp}?debug=t
-rue'))
+router.attach('forum/', new Redirector(applicationInstance.context, '{rp}?debug=tr
+ue'))
 \end_layout
 
 \begin_layout Plain Layout
@@ -5215,7 +5520,7 @@ rue'))
 
 \begin_layout Plain Layout
 
-router.attach('/contact/{reason}/', new Redirector(applicationInstance.context,
+router.attach('contact/{reason}/', new Redirector(applicationInstance.context,
  'http://wackywiki.org/contact-us/{reason}'));
 \end_layout
 
@@ -5248,7 +5553,9 @@ target "../api/"
 
 \end_inset
 
-).
+), and that there are some tags that can only be used for cache keys.
+ In fact, many of these tags might be more useful for cache keys than for
+ routing.
 \end_layout
 
 \begin_layout Standard
@@ -5324,8 +5631,8 @@ Request Attributes
 \end_layout
 
 \begin_layout Itemize
-{ciua}: client upstream IP address (if the request reached us through a
- proxy)
+{ciua}: client upstream IP address (if the request reached us through an
+ upstream load balancer)
 \end_layout
 
 \begin_layout Itemize
@@ -5443,8 +5750,11 @@ target "../api/"
 \end_layout
 
 \begin_layout Standard
-This feature is especially useful for URI capturing (see above), which parses
- URIs into conversation.locals.
+Note that URI capturing (see above) parses URIs 
+\emph on
+into 
+\emph default
+conversation.locals.
 \end_layout
 
 \begin_layout Subsubsection
@@ -8981,7 +9291,7 @@ router.attach(
 
 \begin_layout Plain Layout
 
-	fixURL(staticWebBaseURL),
+	staticWebBaseURL,
 \end_layout
 
 \begin_layout Plain Layout
