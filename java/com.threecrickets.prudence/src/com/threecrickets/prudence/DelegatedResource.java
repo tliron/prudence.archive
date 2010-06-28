@@ -674,7 +674,7 @@ public class DelegatedResource extends ServerResource
 	 * Whether or not trailing slashes are required. Defaults to true.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.trailingSlashRequired</code>
+	 * <code>com.threecrickets.prudence.DelegatedResource.trailingSlashRequired</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return Whether to allow client caching
