@@ -87,6 +87,20 @@ LatexCommand tableofcontents
 
 \begin_layout Section
 Tutorial
+\begin_inset CommandInset label
+LatexCommand label
+name "../tutorial/"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "../manual/tutorial/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -2094,6 +2108,13 @@ The Prudence Instance
 
 \begin_layout Subsection
 Configuration by Script
+\begin_inset CommandInset label
+LatexCommand label
+name "../instance/|configuration-by-script"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2208,8 +2229,12 @@ importClass(com.threecrickets.prudence.cache.HazelcastCache);
 
 \begin_layout Plain Layout
 
-component.context.attributes.put('com.threecrickets.prudence.cache', new HazelcastCach
-e());
+component.context.attributes.put('com.threecrickets.prudence.cache',
+\end_layout
+
+\begin_layout Plain Layout
+
+	new HazelcastCache());
 \end_layout
 
 \end_inset
@@ -2280,10 +2305,9 @@ router.capture('data/schedule/{id}/'), 'data/schedule/');
 
 \begin_layout Standard
 More about configuring applications 
-\begin_inset CommandInset href
-LatexCommand href
-name "here"
-target "../application-structure/"
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../application/"
 
 \end_inset
 
@@ -2353,6 +2377,13 @@ Submits bootstrap tasks for execution
 
 \begin_layout Subsubsection
 /instance/component.*
+\begin_inset CommandInset label
+LatexCommand label
+name "../instance/|component-file"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2390,11 +2421,19 @@ udence.executor'' in the component's context)
 
 \begin_layout Enumerate
 Creates an InProcessMemoryCache backend (accessible as ``com.threecrickets.prudenc
-e.cache'' in the component's context)
+e.cache'' in the component's context); see above for an example on how to
+ configure it
 \end_layout
 
 \begin_layout Subsubsection
 /instance/clients.*
+\begin_inset CommandInset label
+LatexCommand label
+name "../instance/|clients-file"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2452,11 +2491,10 @@ Virtual hosting allows you to serve multiple web sites from a single component.
  and to have different base URLs on each of these hosts.
  Prudence allows you to create virtual hosts for multiple domain names and
  HTTP ports, using simple expressions and wildcards.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "routing"
-target "../routing/"
+ See ``Virtual Hosts'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../routing/|virtual-hosts"
 
 \end_inset
 
@@ -2539,11 +2577,10 @@ You can create as many servers as you need to listen on multiple ports.
  all ports.
  To limit applications to specific ports, you will need to create additional
  virtual hosts.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "routing"
-target "../routing/"
+ See ``Virtual Hosts'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../routing/|virtual-hosts"
 
 \end_inset
 
@@ -2582,10 +2619,9 @@ These shell scripts start up the Prudence instance.
 In production environments, it's best to run Prudence as a daemon in Unix-like
  systems or a service in Windows, via a lightweight wrapper.
  See 
-\begin_inset CommandInset href
-LatexCommand href
-name "Prudence As a Daemon"
-target "../daemon/"
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../daemon/"
 
 \end_inset
 
@@ -2629,10 +2665,9 @@ This is where your rolling logs will appear.
 
 \begin_layout Standard
 More on logging 
-\begin_inset CommandInset href
-LatexCommand href
-name "here"
-target "../logging/"
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../logging/"
 
 \end_inset
 
@@ -2645,15 +2680,14 @@ target "../logging/"
 
 \begin_layout Standard
 There are a few essential configuration files here.
- Most important is 
-\begin_inset CommandInset href
-LatexCommand href
-name "logging.conf"
-target "../logging/"
+ Most important is logging.conf (described 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../logging/|logging-conf"
 
 \end_inset
 
-, but you will also find some optional files to help you configure Prudence
+), but you will also find some optional files to help you configure Prudence
  to run as a daemon, configure Velocity, Hazelcast, etc.
 \end_layout
 
@@ -2679,6 +2713,13 @@ We've named or renamed all Prudence libraries according to their main Java
 
 \begin_layout Section
 Prudence Applications
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2726,11 +2767,10 @@ This is where you'll put your dynamic HTML files.
  request can potentially produce a different, cacheable result.
  Prudence has a powerful framework for embedding programming language code
  into HTML as ``scriptlets.'' (Actually, it supports textual formats other
- than HTML, such as XML, RSS, JSON, etc.) See 
-\begin_inset CommandInset href
-LatexCommand href
-name "generating HTML"
-target "../generating-html/"
+ than HTML, such as XML, RSS, JSON, etc.) See ``Generating HTML'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../generating-html/"
 
 \end_inset
 
@@ -2741,11 +2781,10 @@ target "../generating-html/"
 The names of the files and subdirectories under /web/dynamic/ attach to
  URLs, with simple intelligence to make it easy for you to create sensible,
  pretty URL schemes.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "routing"
-target "../routing/"
+ See ``Pretty URIs'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../routing/|pretty-uris"
 
 \end_inset
 
@@ -2773,11 +2812,10 @@ Like many web servers, MIME types for HTTP headers are automatically assigned
 
 \begin_layout Standard
 The static web subdirectory will likely ``just work'' for you as is.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "static web"
-target "../static-web/"
+ See ``Static Web'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../static-web/"
 
 \end_inset
 
@@ -2800,15 +2838,14 @@ Your dynamic pages in /web/dynamic/ can include any page fragments from
 Fragments allow you to compose complex pages out of basic building blocks.
  Another important use is for fine-grained caching: each fragment has its
  own caching behavior.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "generating HTML"
-target "../generating-html/"
+ See ``Generating HTML'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../generating-html/"
 
 \end_inset
 
-.
+ for a complete guide.
 \end_layout
 
 \begin_layout Subsection
@@ -2831,11 +2868,10 @@ From the perspective of web development, consider that if /web/dynamic/
 \end_layout
 
 \begin_layout Standard
-See 
-\begin_inset CommandInset href
-LatexCommand href
-name "resources"
-target "../resources/"
+See ``Resources'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../resources/"
 
 \end_inset
 
@@ -2855,15 +2891,15 @@ All your code, whether it's in /resources/ or in scriptlets embedded in
 Use whatever mechanism is appropriate for your language: ``import'' for
  Python or Ruby, ``use'' for Clojure, etc.
  For languages that don't have inclusion mechanisms---Groovy, JavaScript---you
- can use Prudence's inclusion mechanism, document.execute (see the 
-\begin_inset CommandInset href
-LatexCommand href
-name "API"
-target "../api/"
+ can use Prudence's inclusion mechanism, document.execute (see the API documentat
+ion 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../api/|document-execute"
 
 \end_inset
 
- documentation).
+).
 \end_layout
 
 \begin_layout Subsection
@@ -2875,11 +2911,10 @@ The application's configuration scripts are in its base subdirectory.
 \end_layout
 
 \begin_layout Standard
-Make sure you read this section in 
-\begin_inset CommandInset href
-LatexCommand href
-name "instance configuration"
-target "../instance/"
+Make sure you read this ``Configuration by Script'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../instance/|configuration-by-script"
 
 \end_inset
 
@@ -2889,6 +2924,13 @@ target "../instance/"
 
 \begin_layout Subsubsection
 /default.*
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|default-file"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2898,6 +2940,10 @@ You'll rarely need to do it, but you can also override Prudence's default
 
 \begin_layout Standard
 Here you can modify an application's media type mappings.
+\end_layout
+
+\begin_layout Standard
+TODO
 \end_layout
 
 \begin_layout Subsubsection
@@ -2922,6 +2968,13 @@ See the Settings section, below, for full detail on overrides and default
 
 \begin_layout Subsubsection
 /routing.*
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|routing-file"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2951,10 +3004,9 @@ target "http://restlet.org/"
 
  for its resource routing.
  More on integrating custom restlets 
-\begin_inset CommandInset href
-LatexCommand href
-name "here"
-target "../restlet-container/"
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../restlet-container/"
 
 \end_inset
 
@@ -2962,15 +3014,14 @@ target "../restlet-container/"
 \end_layout
 
 \begin_layout Standard
-More on 
-\begin_inset CommandInset href
-LatexCommand href
-name "routing"
-target "../routing/"
+Routing is explained in depth 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../routing/"
 
 \end_inset
 
- later.
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2982,10 +3033,9 @@ Use this to install non-Prudence Restlet applications into Prudence.
  By default, Prudence creates a basic Restlet application, but you can override
  that creation in this file.
  More on this topic 
-\begin_inset CommandInset href
-LatexCommand href
-name "here"
-target "../restlet-container/"
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../restlet-container/"
 
 \end_inset
 
@@ -3020,15 +3070,14 @@ These are for administrative purposes, such as the Prudence administration
 
 \begin_layout Standard
 They are directly available at runtime via application.application (see the
- 
-\begin_inset CommandInset href
-LatexCommand href
-name "API"
-target "../api/"
+ API documentation 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../api/|application-application"
 
 \end_inset
 
- documentation).
+).
 \end_layout
 
 \begin_layout Paragraph
@@ -3065,14 +3114,21 @@ Debugging
 
 \begin_layout Paragraph
 showDebugOnError
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|show-debug-on-error"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 Set to true to show debug information on error.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-target "debugging"
+ See ``Debugging'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../debugging/"
 
 \end_inset
 
@@ -3081,6 +3137,13 @@ target "debugging"
 
 \begin_layout Paragraph
 showSourceCodeURL
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|show-source-code-url"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3094,6 +3157,13 @@ Logging
 
 \begin_layout Paragraph
 applicationLoggerName
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|application-logger-name"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3246,19 +3316,33 @@ This is the time (in milliseconds) allowed to pass until a script file is
 
 \begin_layout Paragraph
 dynamicWebClientCachingMode
-\end_layout
-
-\begin_layout Standard
-If you set server-side caching with document.cacheDuration (see the 
-\begin_inset CommandInset href
-LatexCommand href
-name "API"
-target "../api/"
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|dynamic-web-client-caching-mode"
 
 \end_inset
 
- documentation), then you can use this setting to define if client-side
- caching should be enabled, too.
+
+\begin_inset CommandInset label
+LatexCommand label
+name "../manual/application/|dynamic-web-client-caching-mode"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If you set server-side caching with document.cacheDuration (see the API documenta
+tion 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../api/|document-cache-duration"
+
+\end_inset
+
+), then you can use this setting to define if client-side caching should
+ be enabled, too.
  The default mode is 1:
 \end_layout
 
@@ -3288,25 +3372,24 @@ target "../api/"
 \begin_layout Quote
 It's generally safer to apply offline caching for some of your /web/static/
  resources, such as graphics and other resources.
- See how to use the CacheControlFilter in the 
-\begin_inset CommandInset href
-LatexCommand href
-name "static web"
-target "../static/"
+ See how to use the CacheControlFilter in ``Static Web'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../static-web/|cache-control-filter"
 
 \end_inset
 
- chapter.
+.
  For /resources/, you have precise control over each header (see conversation.mod
-ificationDate, conversation.expirationDate and conversation.tag in the 
-\begin_inset CommandInset href
-LatexCommand href
-name "API"
-target "../api/"
+ificationDate, conversation.expirationDate and conversation.tag in the API
+ documentation 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../api/|response-attributes-resources"
 
 \end_inset
 
- documentation).
+).
 \end_layout
 
 \begin_layout Subsubsection
@@ -3370,19 +3453,25 @@ Predefined Globals
 
 \begin_layout Standard
 Values set here will be available in application.globals at runtime.
- See the 
-\begin_inset CommandInset href
-LatexCommand href
-name "API"
-target "../api/"
+ See the API documentation 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../api/|application-globals"
 
 \end_inset
 
- documentation for more information.
+ for more information.
 \end_layout
 
 \begin_layout Section
 Generating HTML
+\begin_inset CommandInset label
+LatexCommand label
+name "../generating-html/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3391,11 +3480,10 @@ ng language code in it.
  Despite some unique and useful features, Prudence is not so much different
  in this than other platforms that support dynamic HTML generation.
  Where Prudence stands out is in its support for REST resources, which we'll
- deal with in 
-\begin_inset CommandInset href
-LatexCommand href
-name "the next section"
-target "../resources/"
+ deal with in ``Resources'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../resources/"
 
 \end_inset
 
@@ -3706,11 +3794,10 @@ Mapping and Changing MIME Types
 \end_layout
 
 \begin_layout Standard
-See 
-\begin_inset CommandInset href
-LatexCommand href
-name "this"
-target "../static-web/"
+See ``Prudence Applications'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../application/|default-file"
 
 \end_inset
 
@@ -3718,11 +3805,22 @@ target "../static-web/"
 \end_layout
 
 \begin_layout Standard
-By extension Programmatically (text, XML, JSON)
+By extension
+\end_layout
+
+\begin_layout Standard
+Programmatically (text, XML, JSON)
 \end_layout
 
 \begin_layout Section
-Resources 
+Resources
+\begin_inset CommandInset label
+LatexCommand label
+name "../resources/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3864,15 +3962,7 @@ Accessing Resources Internally
 
 \begin_layout Standard
 Prudence has very easy-to-use REST client, and a rich API for creating and
- manipulation data 
-\begin_inset CommandInset href
-LatexCommand href
-name "representations"
-target "../representations/"
-
-\end_inset
-
-.
+ manipulation data representations.
  You can use it to access your own resources, as well as resources from
  other applications in your Prudence installation.
  Examples:
@@ -4013,6 +4103,13 @@ MIME Types
 
 \begin_layout Section
 Static Web
+\begin_inset CommandInset label
+LatexCommand label
+name "../static-web/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4095,6 +4192,20 @@ target "http://www.restlet.org/"
 
 \begin_layout Subsection
 CacheControlFilter
+\begin_inset CommandInset label
+LatexCommand label
+name "../static-web/|cache-control-filter"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "../manual/static-web/|cache-control-filter"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4158,6 +4269,13 @@ CssUnifyMinifyFilter
 
 \begin_layout Section
 Routing
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4241,6 +4359,13 @@ servers route to it.
 
 \begin_layout Subsubsection
 Step 3: Virtual Hosts
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|virtual-hosts"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4289,7 +4414,7 @@ Note that you can create a ``nested'' URI scheme for your applications.
 \end_layout
 
 \begin_layout Subsubsection
-Putting the Pieces Together
+A Complete Route
 \end_layout
 
 \begin_layout Standard
@@ -4424,6 +4549,13 @@ This is exactly the scheme used by most static web servers, and it has the
 
 \begin_layout Subsubsection
 Pretty URIs
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|pretty-uris"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4545,6 +4677,13 @@ Though Prudence hides the filename extensions from the URIs, they do have
 
 \begin_layout Paragraph
 Filename Extensions and MIME Types
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|extensions-mime-types"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4556,11 +4695,10 @@ ic/ and /web/static/.
 
 \begin_layout Standard
 Every application has its own filename extension mapping table.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "application configuration"
-target "../application/"
+ See ``Prudence Applications'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../application/"
 
 \end_inset
 
@@ -4631,6 +4769,13 @@ The resource will still be available internally, via document.internal, and
 
 \begin_layout Subsubsection
 Capturing
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|capturing"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4735,11 +4880,10 @@ It's important to understand this distinction: the client might be seeing
  an entirely different URI than your internal one.
  If you're using dynamic HTML, you need to make sure that your relative
  references reach the right place.
- This is easy in Prudence with the conversation.pathToBase 
-\begin_inset CommandInset href
-LatexCommand href
-name "API"
-target "../api/"
+ This is easy in Prudence with the conversation.pathToBase API 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../api/|conversation-path-to-base"
 
 \end_inset
 
@@ -5078,6 +5222,13 @@ Of course, you might prefer to check the MIME type in code your code (via
 
 \begin_layout Subsubsection
 Capturing Errors
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|capturing-errors"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5093,11 +5244,10 @@ If you have debug mode enabled, you would see the special debug page.
  For a production site, you may instead prefer to capture the 500 error
  and provide a friendlier page.
  (You'd also want to test carefully and make sure your code never throws
- exceptions...) See 
-\begin_inset CommandInset href
-LatexCommand href
-name "debugging"
-target "../debugging/"
+ exceptions...) See ``Debugging'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../debugging/"
 
 \end_inset
 
@@ -5141,7 +5291,12 @@ document.execute('defaults/instance/routing/');
 
 \begin_layout Plain Layout
 
-component.statusService.capture(404, 'wackyhelp', 'help/main/', component.context);
+component.statusService.capture(404, 'wackyhelp', 'help/main/',
+\end_layout
+
+\begin_layout Plain Layout
+
+	component.context);
 \end_layout
 
 \begin_layout Plain Layout
@@ -5155,8 +5310,12 @@ component.statusService.capture(404, 'wackyhelp', 'help/main/', component.contex
 
 \begin_layout Plain Layout
 
-component.statusService.captureHostRoot(500, 'wackywiki', 'oops/', component.contex
-t);
+component.statusService.captureHostRoot(500, 'wackywiki', 'oops/',
+\end_layout
+
+\begin_layout Plain Layout
+
+	component.context);
 \end_layout
 
 \end_inset
@@ -5195,7 +5354,11 @@ document.execute('defaults/application/routing/');
 \begin_layout Plain Layout
 
 applicationInstance.statusService.capture(404, 'wackyhelp', 'help/main/',
- applicationInstance.context);
+\end_layout
+
+\begin_layout Plain Layout
+
+	applicationInstance.context);
 \end_layout
 
 \end_inset
@@ -5377,8 +5540,17 @@ importClass(org.restlet.resource.Directory);
 
 \begin_layout Plain Layout
 
-router.attach('forum/help/', new Directory(applicationInstance.context, 'file:///u
-ser/data/files/'))
+router.attach('forum/info/',
+\end_layout
+
+\begin_layout Plain Layout
+
+	new Directory(applicationInstance.context,
+\end_layout
+
+\begin_layout Plain Layout
+
+	'file:///user/info/files/'))
 \end_layout
 
 \begin_layout Plain Layout
@@ -5397,8 +5569,17 @@ ser/data/files/'))
 
 \begin_layout Plain Layout
 
-router.attachBase('forum/help/', new Directory(applicationInstance.context,
- 'file:///user/data/files/'));
+router.attachBase('forum/help/',
+\end_layout
+
+\begin_layout Plain Layout
+
+	new Directory(applicationInstance.context,
+\end_layout
+
+\begin_layout Plain Layout
+
+	'file:///user/data/files/'));
 \end_layout
 
 \begin_layout Plain Layout
@@ -5485,8 +5666,17 @@ importClass(org.restlet.routing.Redirector);
 
 \begin_layout Plain Layout
 
-router.attach('bug/', new Redirector(applicationInstance.context, 'http://wackywik
-i.org/contact-us/bug/'));
+router.attach('bug/',
+\end_layout
+
+\begin_layout Plain Layout
+
+	new Redirector(applicationInstance.context,
+\end_layout
+
+\begin_layout Plain Layout
+
+'http://wackywiki.org/contact-us/bug/'));
 \end_layout
 
 \begin_layout Plain Layout
@@ -5500,8 +5690,17 @@ i.org/contact-us/bug/'));
 
 \begin_layout Plain Layout
 
-router.attach('forum/', new Redirector(applicationInstance.context, '{rp}?debug=tr
-ue'))
+router.attach('forum/',
+\end_layout
+
+\begin_layout Plain Layout
+
+	new Redirector(applicationInstance.context,
+\end_layout
+
+\begin_layout Plain Layout
+
+	'{rp}?debug=true'))
 \end_layout
 
 \begin_layout Plain Layout
@@ -5520,8 +5719,17 @@ ue'))
 
 \begin_layout Plain Layout
 
-router.attach('contact/{reason}/', new Redirector(applicationInstance.context,
- 'http://wackywiki.org/contact-us/{reason}'));
+router.attach('contact/{reason}/',
+\end_layout
+
+\begin_layout Plain Layout
+
+	new Redirector(applicationInstance.context,
+\end_layout
+
+\begin_layout Plain Layout
+
+	'http://wackywiki.org/contact-us/{reason}'));
 \end_layout
 
 \end_inset
@@ -5545,11 +5753,11 @@ The custom routing techniques described above support URI templates, which
 \end_layout
 
 \begin_layout Standard
-Note that the same templates are used to generate cache keys (see the 
-\begin_inset CommandInset href
-LatexCommand href
-name "API documentation"
-target "../api/"
+Note that the same templates are used to generate cache keys (see the the
+ API 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../api/|document-cache-key"
 
 \end_inset
 
@@ -5736,12 +5944,11 @@ Conversation Locals
 \end_layout
 
 \begin_layout Standard
-Tags that aren't any of the above tags will be assumed to be conversation
- locals (see the 
-\begin_inset CommandInset href
-LatexCommand href
-name "API documentation"
-target "../api/"
+Tags that aren't any of the above tags will be assumed to be conversation.locals
+ (see the API 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../api/|conversation-locals"
 
 \end_inset
 
@@ -5828,6 +6035,13 @@ The ``application'' service is a good place to store shared state for the
 
 \begin_layout Paragraph
 application.globals, application.getGlobal
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|application-globals"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5861,6 +6075,13 @@ Available only in configuration scripts.
 
 \begin_layout Paragraph
 application.application
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|application-application"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5876,15 +6097,21 @@ For more information, refer to the Restlet API documentation.
 
 \begin_layout Paragraph
 application.logger
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|application-logger"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 Use the logger to print messages in the log files.
- The messages are prefixed by the applicationLoggerName 
-\begin_inset CommandInset href
-LatexCommand href
-name "setting"
-target "../application/"
+ The messages are prefixed by the applicationLoggerName setting 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../application/|application-logger-name"
 
 \end_inset
 
@@ -5898,10 +6125,9 @@ By default, all log messages from all applications will be sent to prudence.log,
 
 \begin_layout Standard
 For more information, see 
-\begin_inset CommandInset href
-LatexCommand href
-name "logging"
-target "../logging/"
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../logging/|logging-conf"
 
 \end_inset
 
@@ -5919,10 +6145,9 @@ Uses a logger that inherits the application.logger configuration by default.
 
 \begin_layout Standard
 For more information, see 
-\begin_inset CommandInset href
-LatexCommand href
-name "logging"
-target "../logging/"
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../logging/|logging-conf"
 
 \end_inset
 
@@ -5939,11 +6164,10 @@ Utility to get a media type from a MIME type name or filename extension.
 
 \begin_layout Standard
 Note that each application has its own mappings.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "application configuration"
-target "../application/"
+ See ``Prudence Applications'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../application/|default-file"
 
 \end_inset
 
@@ -5992,10 +6216,9 @@ This
 Many of these attributes have to do with caching.
  Caching is your best tool to make sure your application can scale well.
  Read more about it in 
-\begin_inset CommandInset href
-LatexCommand href
-name "Scaling Tips"
-target "../../scaling/"
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../../scaling/"
 
 \end_inset
 
@@ -6004,6 +6227,13 @@ target "../../scaling/"
 
 \begin_layout Paragraph
 document.cacheDuration
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-cache-duration"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6022,6 +6252,20 @@ acheKey (see below).
 
 \begin_layout Paragraph
 document.cacheKey
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-cache-key"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "../manual/api/|document-cache-key"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6037,11 +6281,10 @@ Not that this is not necessarily the key itself
 \emph default
 , but instead a template that can contain variables that are set dynamically,
  and can also include values from conversation.locals.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "routing"
-target "../routing/"
+ See ``Routing'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../routing/"
 
 \end_inset
 
@@ -6090,11 +6333,10 @@ Of course, you do not have to use Prudence's templating system, and can
 
 \begin_layout Quote
 Rule of thumb: Set document.cacheKey to be as short as you possibly can.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "Scaling Tips"
-target "../../scaling/"
+ See ``Scaling Tips'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../../scaling/"
 
 \end_inset
 
@@ -6108,6 +6350,20 @@ kets.prudence.GeneratedTextResource.defaultCharacterSet'' application global.
 
 \begin_layout Paragraph
 document.cacheTags
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-cache-tags"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "../manual/api/|document-cache-tags"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6159,11 +6415,10 @@ Prudence's default cache backend is an in-process memory cache chained before
 \end_layout
 
 \begin_layout Standard
-See 
-\begin_inset CommandInset href
-LatexCommand href
-name "instance configuration"
-target "../instance/"
+See ``The Prudence Instance'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../instance/|component-file"
 
 \end_inset
 
@@ -6196,11 +6451,10 @@ A common use case is to invalidate display pages when a user posts new data.
 \end_layout
 
 \begin_layout Standard
-See 
-\begin_inset CommandInset href
-LatexCommand href
-name "Scaling Tips"
-target "../../scaling/"
+See ``Scaling Tips'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../../scaling/"
 
 \end_inset
 
@@ -6318,6 +6572,13 @@ Scriptlets in the fragments can include re-usable code, such as function
 
 \begin_layout Paragraph
 document.execute
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-execute"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6458,6 +6719,20 @@ The defrosting mechanism uses document.internal to load resources.
 
 \begin_layout Paragraph
 document.external
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-external"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "../manual/api/|document-external"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6465,22 +6740,6 @@ Creates a proxy for a resource.
  You can perform all the usual REST verbs via the proxy: GET, PUT, POST,
  DELETE, etc.
  For more information, refer to the Restlet API documentation for ClientResource.
-\end_layout
-
-\begin_layout Standard
-This is a good place to remind you that REST is not just HTTP.
- By default, Prudence supports http: and file: scheme URIs for document.external,
- and you can add more protocols via your /instance/clients.* configuration
- script.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "instance configuration"
-target "../instance/"
-
-\end_inset
-
- for more information.
 \end_layout
 
 \begin_layout Standard
@@ -6507,6 +6766,51 @@ There are many, many use cases for document.external, and they keep growing
  databases, archives, geolocation services, social networking applications,
  etc.
  Perhaps, with Prudence, you will create the next one.
+\end_layout
+
+\begin_layout Standard
+This is a good place to remind you that REST is not just HTTP.
+ By default, Prudence supports http: and file: scheme URIs for document.external,
+ and you can add more protocols via your /instance/clients.* configuration
+ script.
+ See ``The Prudence Instance'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../instance/|clients-file"
+
+\end_inset
+
+ for more information.
+\end_layout
+
+\begin_layout Standard
+Here's an example of using document.external to read a JSON representation
+ from the filesystem:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+fixture =
+\end_layout
+
+\begin_layout Plain Layout
+
+	document.external('file:///myfiles/fixture.json',
+\end_layout
+
+\begin_layout Plain Layout
+
+	'application/json').get()); 
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Paragraph
@@ -6696,6 +7000,13 @@ Refer to the Restlet API documentation for more details.
 
 \begin_layout Paragraph
 conversation.pathToBase
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-path-to-base"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6706,11 +7017,10 @@ This is a URI path relative to the base URI, which is usually the application
 \begin_layout Standard
 This is very useful to allow for relative references in HTML.
  It's especially sueful in fragments that you might include at various parts
- of your application, and for captured URIs (see 
-\begin_inset CommandInset href
-LatexCommand href
-name "routing"
-target "../routing/"
+ of your application, and for captured URIs (see ``Routing'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../routing/|capturing"
 
 \end_inset
 
@@ -7001,11 +7311,11 @@ conversation.mediaTypeExtension is the media type as the default filename
  For example, ``txt'' is equivalent to MIME ``text/plain,'' and ``xml''
  is equivalent to ``application/xml.'' Each application has its own mappings
  of filename extensions to media types.
- See also application.getMediaType, above, and 
-\begin_inset CommandInset href
-LatexCommand href
-name "application configuration"
-target "../application/"
+ See also application.getMediaType, above, and ``Prudence Applications''
+ 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../application/|default-file"
 
 \end_inset
 
@@ -7027,11 +7337,10 @@ ediaType().
 In /web/dynamic/ and /web/static/, if the client request does not contain
  any data representation, for example in a ``GET'' request, then the media
  type's default value will be set according to the filename extension.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "routing"
-target "../routing/"
+ See ``Routing'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../routing/|extensions-mime-types"
 
 \end_inset
 
@@ -7062,11 +7371,10 @@ conversation.characterSetShortName is a shortcut name for the character set.
  Shortcuts include ``ascii,'' ``utf8,'' and ``win'' (for the Windows 1252
  character set).
  Restlet handles shortcuts names together with filename extension mappings.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "application configuration"
-target "../application/"
+ See ``Prudence Applications'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../application/|default-file"
 
 \end_inset
 
@@ -7183,16 +7491,22 @@ ding().
 
 \begin_layout Subsubsection
 Response Attributes for Resources
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|response-attributes-resources"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 Note that modificationTimestamp, expirationTimestamp and maxAge are set
  indirectly for /web/dynamic/, via document.cacheDuration.
- See the dynamicWebClientCachingMode 
-\begin_inset CommandInset href
-LatexCommand href
-name "application setting"
-target "../application/"
+ See the dynamicWebClientCachingMode setting 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../application/|dynamic-web-client-caching-mode"
 
 \end_inset
 
@@ -7270,11 +7584,10 @@ The maximum number of seconds for which clients would cache the response,
 \end_layout
 
 \begin_layout Standard
-See 
-\begin_inset CommandInset href
-LatexCommand href
-name "caching"
-target "../caching/"
+See the dynamicWebClientCachingMode setting 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../application/|dynamic-web-client-caching-mode"
 
 \end_inset
 
@@ -7323,11 +7636,10 @@ The document.internal API (see above).
 \end_layout
 
 \begin_layout Enumerate
-URI capturing (see 
-\begin_inset CommandInset href
-LatexCommand href
-name "routing"
-target "../routing/"
+URI capturing (see ``Routing'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../routing/|capturing"
 
 \end_inset
 
@@ -7336,6 +7648,13 @@ target "../routing/"
 
 \begin_layout Paragraph
 conversation.locals
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-locals"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -7957,11 +8276,10 @@ To share state for deferred conversations (see conversation.defer, above).
 \end_layout
 
 \begin_layout Enumerate
-URI segments are stored here (see 
-\begin_inset CommandInset href
-LatexCommand href
-name "routing"
-target "../routing/"
+URI segments are stored here (see ``Routing'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../routing/|capturing"
 
 \end_inset
 
@@ -7970,6 +8288,13 @@ target "../routing/"
 
 \begin_layout Section
 Debugging
+\begin_inset CommandInset label
+LatexCommand label
+name "../debugging/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -7977,14 +8302,14 @@ Logging
 \end_layout
 
 \begin_layout Standard
-\begin_inset CommandInset href
-LatexCommand href
-name "Logging"
-target "../logging/"
+Logging (
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../logging/"
 
 \end_inset
 
- is the developer's best friend.
+) is the developer's best friend.
  Use it wisely, and you'll be able to clearly analyze the flows of control,
  code and data.
 \end_layout
@@ -8001,22 +8326,20 @@ The debug page is returned as a response whenever an un-handled exception
 \begin_layout Quote
 Though very useful during development, you'd probably want to turn it off
  for production systems.
- Simply set the showDebugOnError 
-\begin_inset CommandInset href
-LatexCommand href
-name "setting"
-target "../application/"
+ Simply set the showDebugOnError setting (see 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../application/|show-debug-on-error"
 
 \end_inset
 
- to false.
+) to false.
  Note that in that case, you might want to capture errors, sending them
  to a friendly, apologetic page for the users.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "routing"
-target "../routing/"
+ See ``Routing'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../routing/|capturing-errors"
 
 \end_inset
 
@@ -8091,7 +8414,7 @@ Prudence supports live viewing of source code in /web/dynamic/ and /resources/,
 \begin_inset CommandInset href
 LatexCommand href
 name "Jygments"
-target "http://jygments.tigris.org/"
+target "http://code.google.com/p/jygments/"
 
 \end_inset
 
@@ -8101,12 +8424,11 @@ target "http://jygments.tigris.org/"
 \end_layout
 
 \begin_layout Itemize
-Prefixing URIs with ``/sourcecode/'' (you can change this via showSourceCodeURL
+Prefixing URIs with ``/sourcecode/'' (see the showSourceCodeURL setting
  
-\begin_inset CommandInset href
-LatexCommand href
-name "setting"
-target "../application/"
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../application/|show-source-code-url"
 
 \end_inset
 
@@ -8143,6 +8465,13 @@ As of Prudence version 1.0, you cannot set breakpoints in your code, unless
 
 \begin_layout Section
 Logging
+\begin_inset CommandInset label
+LatexCommand label
+name "../logging/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8181,21 +8510,19 @@ The Base Logger
 \end_layout
 
 \begin_layout Standard
-Use application.logger (see 
-\begin_inset CommandInset href
-LatexCommand href
-name "API"
-target "../api/"
+Use application.logger (see the API documentation 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../api/|application-logger"
 
 \end_inset
 
- documentation) to send text messages to the log.
+) to send text messages to the log.
  The logger name defaults to your application's subdirectory name, but can
- be configured via applicationLoggerName in 
-\begin_inset CommandInset href
-LatexCommand href
-name "settings"
-target "../application/"
+ be configured via the applicationLoggerName setting 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../application/|application-logger-name"
 
 \end_inset
 
@@ -8278,6 +8605,13 @@ application.logger.finest: Lowest of the low!
 
 \begin_layout Subsection
 /configuration/logging.conf
+\begin_inset CommandInset label
+LatexCommand label
+name "../logging/|logging-conf"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8594,6 +8928,13 @@ logs/web.log
 
 \begin_layout Section
 Administration
+\begin_inset CommandInset label
+LatexCommand label
+name "../administration/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8765,6 +9106,13 @@ applicationInstance.inboundRoot = authenticator;
 
 \begin_layout Section
 Prudence As a Daemon
+\begin_inset CommandInset label
+LatexCommand label
+name "../daemon/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8975,6 +9323,13 @@ d to set it to route to Prudence as a reverse proxy.
 
 \begin_layout Section
 Prudence As a Restlet Container
+\begin_inset CommandInset label
+LatexCommand label
+name "../restlet-container/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8994,39 +9349,35 @@ Why use Prudence for a Restlet application that already works?
 \end_layout
 
 \begin_layout Standard
-Prudence makes it easy to handle the bootstrapping and 
-\begin_inset CommandInset href
-LatexCommand href
-name "routing"
-target "../routing/"
+Prudence makes it easy to handle the bootstrapping and routing (see 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../application/|routing-file"
 
 \end_inset
 
- of your applications, and the 
-\begin_inset CommandInset href
-LatexCommand href
-name "Prudence administration application"
-target "../prudence-admin/"
+) of your applications, and the Administration Application (see 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../administration/"
 
 \end_inset
 
-, 
-\begin_inset CommandInset href
-LatexCommand href
-name "debugging"
-target "../debugging/"
+), debugging (see 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../debugging/"
 
 \end_inset
 
- and 
-\begin_inset CommandInset href
-LatexCommand href
-name "logging"
-target "../logging/"
+) and logging (see 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../logging/"
 
 \end_inset
 
- features make it easier to deploy and manage multiple applications together.
+) features make it easier to deploy and manage multiple applications together.
  These issues have more to do with your application's configuration, rather
  than its functionality, and it can be useful to handle them outside of
  the Java build process, using live, dynamic languages in simple text source
@@ -9047,22 +9398,21 @@ This need is also fulfilled by servlet and Java Enterprise Edition (JEE)
 \begin_layout Standard
 Some people also look to JEE containers for their support of Java Server
  Pages (JSP).
- We urge you to take a good look at Prudence's 
-\begin_inset CommandInset href
-LatexCommand href
-name "dynamic web"
-target "../generating-html/"
+ We urge you to take a good look at Prudence's dynamic web (see 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../generating-html/"
 
 \end_inset
 
- support.
+) support.
  It may likely surpass JSP for your purposes.
  In particular, it is based on Restlet, which you already know and love,
- with the entire Restlet API at your fingertips.
+ giving you the entire Restlet API at your fingertips.
  It also lets you use many wonderful languages other than Java for scriptlets.
- For example, we at Three Crickets, are mad about Clojure.
- And, of course, Velocity and Succinct are built in.
- 
+ For example, we at Three Crickets are mad about Clojure.
+ For simpler templating, Velocity and Succinct are built in and immediately
+ ready to use.
 \end_layout
 
 \begin_layout Subsection
@@ -9552,17 +9902,19 @@ JavaScript is an under-appreciated language.
  Though not as feature-rich as Python or Ruby, it's still very powerful.
  Its straightforward closure/prototype mechanisms allow it to support object-ori
 entation, namespaces and other paradigms.
- Likewise,JavaScript has been the target of much un-deserved angst due to
- the fickleness of client-side development.
+ Unfortunately, it has been the target of much undeserved angst due to the
+ fickleness of client-side development.
  Working with the browser DOM, testing with cross-browser HTML rendering
  quirks---these are the not the fault of the language itself.
  They are also not relevant to server-side development with Prudence.
+ If you've been burned by JavaScript on the client, try it on the server
+ via Prudence: you might be pleasantly surprised.
 \end_layout
 
 \begin_layout Standard
 JavaScript does not have its own core libraries, making it the most minimal
  Prudence flavor.
- Instead, it uses the excellent JVM core.
+ Instead, it relies on the excellent JVM core.
 \end_layout
 
 \begin_layout Subsection
@@ -9638,6 +9990,20 @@ target "http://groovy.codehaus.org/"
 
 \begin_layout Section
 The Case for REST
+\begin_inset CommandInset label
+LatexCommand label
+name "../../rest/"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "../rest/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -10165,15 +10531,15 @@ It's important to note a dependency and possible limitation of HTTP: it
 g, at least, to be more generic.
  There are definitely use cases for non-HTTP, and even non-TCP/IP addressing
  schemes.
- In Prudence, you'll see that it's possible to 
-\begin_inset CommandInset href
-LatexCommand href
-name "address internal resources with non-URL kinds of URIs"
-target "../manual/resources/"
+ In Prudence, you'll see that it's possible to address internal resources
+ with non-URL kinds of URIs (see document.external 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../manual/api/|document-external"
 
 \end_inset
 
-.
+).
  
 \end_layout
 
@@ -10295,11 +10661,10 @@ Prudence
 \begin_layout Standard
 Convinced? The best way to understand REST is to experiment with it.
  You've come to the right place.
- Start with the 
-\begin_inset CommandInset href
-LatexCommand href
-name "Prudence tutorial"
-target "../manual/tutorial/"
+ Start with the tutorial 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../manual/tutorial/"
 
 \end_inset
 
@@ -10313,6 +10678,20 @@ target "../manual/tutorial/"
 
 \begin_layout Section
 Scaling Tips
+\begin_inset CommandInset label
+LatexCommand label
+name "../../scaling/"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "../scaling/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -10620,11 +10999,10 @@ Ignore the buzzwords, and instead make sure you're choosing technology that
 \end_layout
 
 \begin_layout Standard
-We discuss this topic some more in 
-\begin_inset CommandInset href
-LatexCommand href
-name "Making the Case for REST"
-target "../rest/"
+We discuss this topic some more in ``Making the Case for Rest'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../rest/"
 
 \end_inset
 
@@ -10663,20 +11041,34 @@ In your plan for fine-grained caching, take special care to isolate those
 \end_layout
 
 \begin_layout Standard
-Make sure to change Prudence's cacheKey to fit the lowest common denominator:
- you want as many possible requests to use the already-cached data, rather
- than generating new data.
- Note that, by default, Prudence includes the request URI in the cacheKey.
+Make sure to change Prudence's cache key (see the API documentation 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../manual/api/|document-cache-key"
+
+\end_inset
+
+) to fit the lowest common denominator: you want as many possible requests
+ to use the already-cached data, rather than generating new data.
+ Note that, by default, Prudence includes the request URI in the cache key
+ .
  Fragments, though, may very well appear identically in many different URIs.
- You would thus not want the URI as part of their cacheKey.
+ You would thus not want the URI as part of their cache key.
 \end_layout
 
 \begin_layout Standard
 Cache aggressively, but also take cache validation seriously.
- Make good use of Prudence's cacheTags to allow you to invalidate portions
- of the cache that should be updated as data changes.
+ Make good use of Prudence's cache tags (see 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../manual/api/|document-cache-tags"
+
+\end_inset
+
+) to allow you to invalidate portions of the cache that should be updated
+ as data changes.
  Note, though, that every time you invalidate you will lose caching benefits.
- If possible, make sure that your cacheTags don't include too many pages.
+ If possible, make sure that your cache tags don't cover too many pages.
  Invalidate only those entries that really need to be invalidated.
 \end_layout
 
@@ -11069,11 +11461,10 @@ You can also turn on ``offline caching'' mode, in which the client will
  until their local cache expires, which can take up to a week! It's important
  that you you understand the implications before using this mode.
  Read more about the dynamicWebClientCachingMode application setting in
- the 
-\begin_inset CommandInset href
-LatexCommand href
-name "manual"
-target "../manual/application/"
+ the manual 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../manual/application/|dynamic-web-client-caching-mode"
 
 \end_inset
 
@@ -11088,11 +11479,10 @@ It's generally safer to apply offline caching to your static resources,
  a new URL, and have all your HTML refer to the new version.
  Because clients cache according to URL, their cached for the old version
  will simply not be ignored.
- See how to use the CacheControlFilter in the 
-\begin_inset CommandInset href
-LatexCommand href
-name "manual"
-target "../manual/static-web/"
+ See how to use the CacheControlFilter in the manual 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../manual/static-web/|cache-control-filter"
 
 \end_inset
 
@@ -11905,6 +12295,21 @@ target "http://couchdb.apache.org/"
  desktops or mobile devices, and to distribute it to partners.
  It also supports a REST interface which you can easily access via Prudence's
  document.external.
+ And, both MongoDB and CouchDB use JavaScript extensively, making it natural
+ to use with Prudence's JavaScript flavor.
+\end_layout
+
+\begin_layout Quote
+We've started a project 
+\begin_inset CommandInset href
+LatexCommand href
+name "to better integrate Prudence JavaScript with MongoDB"
+target "http://code.google.com/p/mongodb-rhino/"
+
+\end_inset
+
+.
+ Check it out!
 \end_layout
 
 \begin_layout Subsubsection
@@ -12258,7 +12663,7 @@ For Prudence's debug mode, we wanted good syntax highlighting for viewing
 \begin_inset CommandInset href
 LatexCommand href
 name "Jygments"
-target "https://code.google.com/p/jygments/"
+target "http://code.google.com/p/jygments/"
 
 \end_inset
 
@@ -12457,23 +12862,21 @@ I heard REST is very scalable.
 
 \begin_layout Standard
 Yes, if you know what you're doing.
- See ``
-\begin_inset CommandInset href
-LatexCommand href
-name "The Case for REST"
-target "../rest/"
+ See ``The Case for REST'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../rest/"
 
 \end_inset
 
-'' and ``
-\begin_inset CommandInset href
-LatexCommand href
-name "Scaling Tips"
-target "../scaling/"
+ and ``Scaling Tips'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../scaling/"
 
 \end_inset
 
-'' for in-depth discussions.
+ for in-depth discussions.
 \end_layout
 
 \begin_layout Standard
@@ -12509,11 +12912,10 @@ How well does Prudence perform? How well does it scale?
 First, recognize that there are two common uses for the term ``scale.'' REST
  is often referred to as an inherently scalable architecture, but that has
  more to do with project management than technical performance.
- This difference is address in the 
-\begin_inset CommandInset href
-LatexCommand href
-name "Making the Case for REST"
-target "../rest/"
+ This difference is address in the ``The Case for REST'' 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../rest/"
 
 \end_inset
 
@@ -12543,11 +12945,10 @@ target "https://grizzly.dev.java.net/"
 , an HTTP server based on the JVM's non-blocking I/O API.
  Grizzly handles concurrent HTTP requests very well, and serves static files
  at scales comparable to popular HTTP servers.
- See the 
-\begin_inset CommandInset href
-LatexCommand href
-name "tutorial"
-target "../manual/tutorial/"
+ See the tutorial 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../manual/tutorial/"
 
 \end_inset
 
@@ -12601,11 +13002,10 @@ while
  For example, to increase caching duration during heavy loads, to decrease
  it during periods where data changes often, or to stream in the case of
  an expected large output.
- See the 
-\begin_inset CommandInset href
-LatexCommand href
-name "tutorial"
-target "../manual/tutorial/"
+ See the tutorial 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "../manual/tutorial/"
 
 \end_inset
 
