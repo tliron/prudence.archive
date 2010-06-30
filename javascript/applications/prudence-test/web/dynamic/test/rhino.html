@@ -11,19 +11,19 @@
 // Defer this page
 //
 
-if(conversation.query.get('defer') == 'true') if(conversation.defer()) conversation.stop();
+if(conversation.query.get('defer') == 'true') if(conversation.defer()) conversation.stop()
 
 //
 // Cache this page 
 //
 
-document.cacheDuration = 5000;
+document.cacheDuration = 5000
 
 //
 // Calling Java
 //
 
-print('<p>This page was dynamically generated at ' + java.lang.System.currentTimeMillis() + '</p>');
+print('<p>This page was dynamically generated at ' + java.lang.System.currentTimeMillis() + '</p>')
 
 //
 // An example of a function
@@ -36,11 +36,11 @@ function printAdapter(adapter) {
 	<i>Language:</i> <%= adapter.attributes.get('language.name') %> version <%= adapter.attributes.get('language.version') %><br />
 	<i>Tags:</i> 
 <%
-	var tags = adapter.attributes.get('tags').toArray();
+	var tags = adapter.attributes.get('tags').toArray()
 	for(var i = 0; i < tags.length; i++) {
-		print(tags[i]);
+		print(tags[i])
 		if(i < tags.length - 1) {
-			print(', ');
+			print(', ')
 		}
 	}
 %>
@@ -50,13 +50,13 @@ function printAdapter(adapter) {
 %>
 <h3>Language used:</h3>
 <%
-printAdapter(executable.context.adapter);
+printAdapter(executable.context.adapter)
 %>
 <h3>Available languages:</h3>
 <%
-var adapters = executable.manager.adapters.toArray();
+var adapters = executable.manager.adapters.toArray()
 for(var i = 0; i < adapters.length; i++) {
-	printAdapter(adapters[i]);
+	printAdapter(adapters[i])
 }
 %>
 </td><td>
@@ -71,7 +71,7 @@ for(var i = 0; i < adapters.length; i++) {
 //
 // This is identical to:
 //
-//   document.include('path');
+//   document.include('path')
 //
 
 %>
@@ -82,7 +82,7 @@ for(var i = 0; i < 10; i++) {
 %>
 A multiple of three:
 <%
-	printTriple(i);
+	printTriple(i)
 %>
 <br />
 <%

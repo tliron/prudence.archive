@@ -1,26 +1,26 @@
 importClass(
 	org.restlet.data.MediaType,
-	org.restlet.representation.Variant);
+	org.restlet.representation.Variant)
 
 // Include the JSON library
-document.execute('json2/');
+document.execute('json2/')
 
 function handleInit() {
-	prudence.variants.add(new Variant(MediaType.TEXT_PLAIN));
-	prudence.variants.add(new Variant(MediaType.APPLICATION_JSON));
+	prudence.variants.add(new Variant(MediaType.TEXT_PLAIN))
+	prudence.variants.add(new Variant(MediaType.APPLICATION_JSON))
 }
 
 function handleGet() {
-	var component = prudence.resource.context.attributes.get('component');
-	var hosts = component.hosts;
+	var component = prudence.resource.context.attributes.get('component')
+	var hosts = component.hosts
 
-	var r = [];
+	var r = []
 	for(var i = 0; i < hosts.size(); i++) {
-		var host = hosts.get(i);
-		var routes= host.routes;
-		var s = [];
+		var host = hosts.get(i)
+		var routes= host.routes
+		var s = []
 		for(var ii = 0; ii < routes.size(); ii++) {
-			s.push(String(routes.get(ii)));
+			s.push(String(routes.get(ii)))
 		}
 		r.push({
 			localHost: {
@@ -42,8 +42,8 @@ function handleGet() {
 				port: String(host.resourcePort)
 			},
 			routes: s
-		});
+		})
 	}
 
-	return JSON.stringify(r);
+	return JSON.stringify(r)
 }

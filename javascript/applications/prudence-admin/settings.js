@@ -2,15 +2,15 @@
 // Prudence Admin Settings
 //
 
-document.execute('defaults/application/settings/');
+document.execute('defaults/application/settings/')
 
-applicationName = 'Prudence Admin';
-applicationDescription = 'Runtime management of Prudence';
-applicationAuthor = 'Tal Liron';
-applicationOwner = 'Three Crickets';
-applicationHomeURL = 'http://threecrickets.com/prudence/';
-applicationContactEmail = 'prudence@threecrickets.com';
+applicationName = 'Prudence Admin'
+applicationDescription = 'Runtime management of Prudence'
+applicationAuthor = 'Tal Liron'
+applicationOwner = 'Three Crickets'
+applicationHomeURL = 'http://threecrickets.com/prudence/'
+applicationContactEmail = 'prudence@threecrickets.com'
 
-hosts = [[component.defaultHost, '/'], [mysiteHost, '/']];
+hosts = [[component.defaultHost, '/'], [mysiteHost, '/']]
 
-showDebugOnError = true;
+showDebugOnError = true

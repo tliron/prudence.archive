@@ -3,6 +3,10 @@
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+\usepackage{prettyref}
+\newrefformat{}{section~\ref{#1}}
+\end_preamble
 \use_default_options true
 \language english
 \inputencoding auto
@@ -744,7 +748,7 @@ Dynamically generating HTML and other text is very powerful.
  For example, if your cache duration is 1 second, it means that your scriptlets
  would only be run once every second.
  In computing terms, that's a very long time! Imagine that your popular
- web site is getting 1000 hits per second...
+ web site is getting 1000 hits per second\SpecialChar \ldots{}
  
 \end_layout
 
@@ -2304,13 +2308,17 @@ router.capture('data/schedule/{id}/'), 'data/schedule/');
 \end_layout
 
 \begin_layout Standard
-More about configuring applications 
+See 
+\bar under
+configuring applications (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../application/"
 
 \end_inset
 
+)
+\bar default
 .
 \end_layout
 
@@ -2483,6 +2491,13 @@ If there are no applications, Prudence quits
 
 \begin_layout Subsubsection
 /instance/hosts.*
+\begin_inset CommandInset label
+LatexCommand label
+name "../instance/|hosts-file"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2491,14 +2506,18 @@ Virtual hosting allows you to serve multiple web sites from a single component.
  and to have different base URLs on each of these hosts.
  Prudence allows you to create virtual hosts for multiple domain names and
  HTTP ports, using simple expressions and wildcards.
- See ``Virtual Hosts'' 
+ See 
+\bar under
+virtual hosts (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../routing/|virtual-hosts"
 
 \end_inset
 
- for more information.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -2534,6 +2553,13 @@ Sets it as the component's default host
 
 \begin_layout Subsubsection
 /instance/servers.*
+\begin_inset CommandInset label
+LatexCommand label
+name "../instance/|servers-file"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2577,14 +2603,18 @@ You can create as many servers as you need to listen on multiple ports.
  all ports.
  To limit applications to specific ports, you will need to create additional
  virtual hosts.
- See ``Virtual Hosts'' 
+ See 
+\bar under
+virtual hosts (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../routing/|virtual-hosts"
 
 \end_inset
 
- for more information.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -2616,16 +2646,18 @@ These shell scripts start up the Prudence instance.
 \end_layout
 
 \begin_layout Quote
-In production environments, it's best to run Prudence as a daemon in Unix-like
- systems or a service in Windows, via a lightweight wrapper.
- See 
+In production environments, it's best to run 
+\bar under
+Prudence as a daemon (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../daemon/"
 
 \end_inset
 
-.
+)
+\bar default
+ in Unix-like systems or a service in Windows, via a lightweight wrapper.
 \end_layout
 
 \begin_layout Standard
@@ -2664,13 +2696,17 @@ This is where your rolling logs will appear.
 \end_layout
 
 \begin_layout Standard
-More on logging 
+See 
+\bar under
+logging (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../logging/"
 
 \end_inset
 
+)
+\bar default
 .
 \end_layout
 
@@ -2680,14 +2716,18 @@ reference "../logging/"
 
 \begin_layout Standard
 There are a few essential configuration files here.
- Most important is logging.conf (described 
+ Most important is 
+\bar under
+logging.conf (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../logging/|logging-conf"
 
 \end_inset
 
-), but you will also find some optional files to help you configure Prudence
+)
+\bar default
+, but you will also find some optional files to help you configure Prudence
  to run as a daemon, configure Velocity, Hazelcast, etc.
 \end_layout
 
@@ -2767,27 +2807,35 @@ This is where you'll put your dynamic HTML files.
  request can potentially produce a different, cacheable result.
  Prudence has a powerful framework for embedding programming language code
  into HTML as ``scriptlets.'' (Actually, it supports textual formats other
- than HTML, such as XML, RSS, JSON, etc.) See ``Generating HTML'' 
+ than HTML, such as XML, RSS, JSON, etc.) See 
+\bar under
+generating HTML (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../generating-html/"
 
 \end_inset
 
- for a complete guide.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
 The names of the files and subdirectories under /web/dynamic/ attach to
  URLs, with simple intelligence to make it easy for you to create sensible,
  pretty URL schemes.
- See ``Pretty URIs'' 
+ See 
+\bar under
+pretty URIs (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../routing/|pretty-uris"
 
 \end_inset
 
+)
+\bar default
  for more information.
 \end_layout
 
@@ -2812,15 +2860,19 @@ Like many web servers, MIME types for HTTP headers are automatically assigned
 
 \begin_layout Standard
 The static web subdirectory will likely ``just work'' for you as is.
- See ``Static Web'' 
+ See 
+\bar under
+static web (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../static-web/"
 
 \end_inset
 
- for details on configuring it, for example, in order to add/change filename-ext
-ension-to-MIME-type mappings.
+)
+\bar default
+ for extras, such as adding filename-extension-to-MIME-type mappings and
+ compressing JavaScript/CSS.
 \end_layout
 
 \begin_layout Subsection
@@ -2838,14 +2890,18 @@ Your dynamic pages in /web/dynamic/ can include any page fragments from
 Fragments allow you to compose complex pages out of basic building blocks.
  Another important use is for fine-grained caching: each fragment has its
  own caching behavior.
- See ``Generating HTML'' 
+ See 
+\bar under
+generating HTML (page
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../generating-html/"
 
 \end_inset
 
- for a complete guide.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsection
@@ -2868,14 +2924,18 @@ From the perspective of web development, consider that if /web/dynamic/
 \end_layout
 
 \begin_layout Standard
-See ``Resources'' 
+See 
+\bar under
+resources (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../resources/"
 
 \end_inset
 
- for a complete guide.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsection
@@ -2891,15 +2951,18 @@ All your code, whether it's in /resources/ or in scriptlets embedded in
 Use whatever mechanism is appropriate for your language: ``import'' for
  Python or Ruby, ``use'' for Clojure, etc.
  For languages that don't have inclusion mechanisms---Groovy, JavaScript---you
- can use Prudence's inclusion mechanism, document.execute (see the API documentat
-ion 
+ can use Prudence's inclusion mechanism, 
+\bar under
+document.execute (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../api/|document-execute"
 
 \end_inset
 
-).
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsection
@@ -2911,15 +2974,18 @@ The application's configuration scripts are in its base subdirectory.
 \end_layout
 
 \begin_layout Standard
-Make sure you read this ``Configuration by Script'' 
+Make sure you read 
+\bar under
+configuration by script (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../instance/|configuration-by-script"
 
 \end_inset
 
-.
- Application configuration follows the same guidelines.
+)
+\bar default
+ for general guidelines.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3003,24 +3069,32 @@ target "http://restlet.org/"
 \end_inset
 
  for its resource routing.
- More on integrating custom restlets 
+ See the section on 
+\bar under
+integrating custom restlets (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../restlet-container/"
 
 \end_inset
 
+)
+\bar default
 .
 \end_layout
 
 \begin_layout Standard
-Routing is explained in depth 
+See 
+\bar under
+routing (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../routing/"
 
 \end_inset
 
+)
+\bar default
 .
 \end_layout
 
@@ -3032,13 +3106,17 @@ reference "../routing/"
 Use this to install non-Prudence Restlet applications into Prudence.
  By default, Prudence creates a basic Restlet application, but you can override
  that creation in this file.
- More on this topic 
+ See the section on 
+\bar under
+integrating Restlets (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../restlet-container/"
 
 \end_inset
 
+)
+\bar default
 .
 \end_layout
 
@@ -3069,15 +3147,18 @@ These are for administrative purposes, such as the Prudence administration
 \end_layout
 
 \begin_layout Standard
-They are directly available at runtime via application.application (see the
- API documentation 
+They are directly available at runtime via 
+\bar under
+application.application (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../api/|application-application"
 
 \end_inset
 
-).
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -3125,13 +3206,17 @@ name "../application/|show-debug-on-error"
 
 \begin_layout Standard
 Set to true to show debug information on error.
- See ``Debugging'' 
+ See 
+\bar under
+debugging (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../debugging/"
 
 \end_inset
 
+)
+\bar default
 .
 \end_layout
 
@@ -3176,6 +3261,13 @@ Hosts
 
 \begin_layout Paragraph
 hosts
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|hosts"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3183,6 +3275,10 @@ This is a vector of vectors of two elements: the first is the virtual host
  to which our application will be attached, the second is the base URLs
  on the hosts.
  Specify null for the URL to default to the application's directory name.
+\end_layout
+
+\begin_layout Standard
+TODO
 \end_layout
 
 \begin_layout Subsubsection
@@ -3199,6 +3295,13 @@ Sets up a directory under which you can place script files that implement
 
 \begin_layout Paragraph
 resourcesBaseURL
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|resources-base-url"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Paragraph
@@ -3333,15 +3436,18 @@ name "../manual/application/|dynamic-web-client-caching-mode"
 \end_layout
 
 \begin_layout Standard
-If you set server-side caching with document.cacheDuration (see the API documenta
-tion 
+If you set server-side caching with 
+\bar under
+document.cacheDuration (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../api/|document-cache-duration"
 
 \end_inset
 
-), then you can use this setting to define if client-side caching should
+)
+\bar default
+, then you can use this setting to define if client-side caching should
  be enabled, too.
  The default mode is 1:
 \end_layout
@@ -3372,24 +3478,31 @@ reference "../api/|document-cache-duration"
 \begin_layout Quote
 It's generally safer to apply offline caching for some of your /web/static/
  resources, such as graphics and other resources.
- See how to use the CacheControlFilter in ``Static Web'' 
+ See 
+\bar under
+CacheControlFilter (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../static-web/|cache-control-filter"
 
 \end_inset
 
+)
+\bar default
 .
- For /resources/, you have precise control over each header (see conversation.mod
-ificationDate, conversation.expirationDate and conversation.tag in the API
- documentation 
+ For /resources/, you have precise control over each headerl; see 
+\bar under
+conversation.modificationDate, conversation.expirationDate and conversation.tag
+ (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../api/|response-attributes-resources"
 
 \end_inset
 
-).
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3452,15 +3565,18 @@ Predefined Globals
 \end_layout
 
 \begin_layout Standard
-Values set here will be available in application.globals at runtime.
- See the API documentation 
+Values set here will be available in 
+\bar under
+application.globals (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../api/|application-globals"
 
 \end_inset
 
- for more information.
+)
+\bar default
+ at runtime.
 \end_layout
 
 \begin_layout Section
@@ -3480,13 +3596,17 @@ ng language code in it.
  Despite some unique and useful features, Prudence is not so much different
  in this than other platforms that support dynamic HTML generation.
  Where Prudence stands out is in its support for REST resources, which we'll
- deal with in ``Resources'' 
+ deal with in 
+\bar under
+resources (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../resources/"
 
 \end_inset
 
+)
+\bar default
 .
  Go ahead and skip to there if HTML generation bores you!
 \end_layout
@@ -3794,13 +3914,17 @@ Mapping and Changing MIME Types
 \end_layout
 
 \begin_layout Standard
-See ``Prudence Applications'' 
+See 
+\bar under
+prudence applications (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../application/|default-file"
 
 \end_inset
 
+)
+\bar default
 .
 \end_layout
 
@@ -4280,20 +4404,20 @@ name "../routing/"
 
 \begin_layout Standard
 ``Routing'' refers to the decision-making process by which an incoming client
- request reaches its handler.
+ request reaches its server handler.
  Usually, it's information in the request itself that is used to make the
- decision, such as the URI, cookies, the client type, capabilities, and
- geolocation.
- But routing can also take server-side and external circumstances into account.
+ decision, such as the URI, cookies, the client type, capabilities and geolocati
+on.
+ But routing can also take server-side and other circumstances into account.
  For example, a round-robin load-balancing router might send each incoming
- request to a different destination in arbitrary sequence.
+ request to a different destination in sequence.
 \end_layout
 
 \begin_layout Standard
-A request normally goes through many routers before reaching your handler.
- Filters along the way can change information in the request, which would
+A request normally goes through many routers before reaching its handler.
+ Filters along the way can change information in the request, which could
  also affect routing.
- Filtering can thus also be seen as a tool to route requests.
+ Filtering is thus also a routing tool.
 \end_layout
 
 \begin_layout Standard
@@ -4301,19 +4425,16 @@ This abstract, flexible routing mechanism is one of Prudence's most powerful
  features, but it's important to understand its basic structure.
  A common misconception is that routing is based on the hierarchical structure
  of URIs.
- While it's possible to route by base URI in Prudence, routing is primarily
- to be understood as a matter of routing 
-\emph on
-order
-\emph default
-.
+ While it's possible to route by parent URI in Prudence, routing is primarily
+ to be understood in terms of the order of routers and filters along the
+ way.
 \end_layout
 
 \begin_layout Standard
 In writing applications for Prudence, you will mostly be interested in applicati
 on-level routing, which we will cover in-depth below.
  However, to give you a better understanding of how Prudence routing works,
- we'll follow the journey of a request, starting with routing at the instance
+ let's follow the journey of a request, starting with routing at the instance
  level.
 \end_layout
 
@@ -4341,7 +4462,18 @@ Requests come in from servers.
 \end_layout
 
 \begin_layout Standard
-You can configure your servers in /instance/servers.*.
+You can configure your servers in 
+\bar under
+/instance/servers.* (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|dynamic-web-client-caching-mode"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4372,8 +4504,8 @@ name "../routing/|virtual-hosts"
 The component's router decides which virtual host should receive the request.
  The decision is often made according the domain name in the URL, but can
  also take into account which server it came from.
- Virtual hosting is a powerful tool to host multiple sites on the same Prudence
- instance.
+ Nominally, virtual hosting is a tool to let you host multiple sites on
+ the same Prudence instance, but it can do all kinds of subtle routing.
 \end_layout
 
 \begin_layout Standard
@@ -4385,7 +4517,18 @@ At the minimum you must have one virtual host.
 \end_layout
 
 \begin_layout Standard
-You can configure your virtual hosts in /instance/hosts.*.
+You can configure your virtual hosts in 
+\bar under
+/instance/hosts.* (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/|hosts-file"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4393,8 +4536,19 @@ Step 4: Applications
 \end_layout
 
 \begin_layout Standard
-In your application's /settings.*, you can configure which virtual hosts
- your application will be attached to, and the base URI for each.
+Using 
+\bar under
+``hosts'' your application's /settings.* (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|hosts"
+
+\end_inset
+
+)
+\bar default
+, you can configure which virtual hosts your application will be attached
+ to, and the base URI for each.
  An application can thus be accepting requests from several virtual hosts
  at once.
 \end_layout
@@ -4402,13 +4556,10 @@ In your application's /settings.*, you can configure which virtual hosts
 \begin_layout Standard
 Note that you can create a ``nested'' URI scheme for your applications.
  For example, one application might be attached at the root URI at a certain
- virtual host, ``/'', while other applications would be at different URIs
- beneath the root.
+ virtual host, ``/'', while other applications might be at different URIs
+ beneath the root, ``/wackywiki'' and ``/wackywiki/support/forum''.
  The root application will not ``steal'' requests from the other applications,
- because the request is first routed at the virtual host.
- In fact, any kind of overlaps would work here.
- For example, if one application is attached at ``/wackywiki'', another
- application can be attached at ``/wackywiki/support/forum''.
+ because the request is routed to the right application by the virtual host.
  The fact that the latter URI is the hierarchical descendent of the former
  makes no difference to the virtual host router.
 \end_layout
@@ -4424,17 +4575,15 @@ rg/wackywicki/support/forum/thread/12/.''
 
 \begin_layout Standard
 Our machine has two network interfaces, one facing the internet and one
- facing the intranet, so we create two servers to listen on each.
+ facing the intranet, and we have two servers to listen on each.
  This particular request has come in through the external server.
- Since all requests reach the component's router, that's where this one
- goes.
+ The request reachers the component's router.
 \end_layout
 
 \begin_layout Standard
-Let's say that we've created a few virtual hosts.
- We have one to handle ``www.wacky.org'', our organization's main site, and
- another to handle ``support.wacky.org'', a secure site where paying customers
- can open support tickets.
+We have a few virtual hosts: one to handle ``www.wacky.org'', our organization's
+ main site, and another to handle ``support.wacky.org'', a secure site where
+ paying customers can open support tickets.
 \end_layout
 
 \begin_layout Standard
@@ -4467,67 +4616,40 @@ Prudence applications come with default support for three kinds of handlers:
  subdirectory).
  By default, all three handlers are attached at the root URI, ``/'', of
  the application (which may vary per virtual host).
- However, it is possible to change this in your application's /settings.*.
+ However, it is possible to change this in your application's /settings.*,
+ see 
+\bar under
+resourcesBaseURL, dynamicWebBaseURL and staticWebBaseURL (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|resources-base-url"
+
+\end_inset
+
+)
+\bar default
+.
  For example, you may want your resources to be routed under ``/rest-interface/'
 '.
 \end_layout
 
 \begin_layout Standard
 You may ask, for any given request, how can the application's router know
- which handler to send it to, if all handlers assume the same ``/'' URI?
- The answer is that it doesn't.
+ which handler to send it to, if all handlers by default assume the same
+ ``/'' base URL? The answer is that it doesn't.
  It tries each handler in sequence, and if one handler cannot handle the
  request, it falls back to the next one.
- For example, a ``style/main.css'' URI will first be tried as a resource.
- That resource doesn't exist, so it will be tried as a dynamic web page.
- There, too, there is no such file.
- Finally, the static web handler finds this file and handles it by sending
- it to the client.
+ For example, a ``style/main.css'' URI will be tried first as a resource.
+ If that resource doesn't exist, it will be tried as a dynamic web page.
+ Finally, it will be sent to the static web handler.
 \end_layout
 
 \begin_layout Standard
-This system does allow for previous handlers in the sequence to take precedent
- over later handlers.
- Thus, you should be careful to maintain your three subdirectory structures
- such that URIs do not overlap.
-\end_layout
-
-\begin_layout Standard
-Prudence's default handlers cover many uses.
- However, you can customize application routing, via its /routing.*, for
- the following common use cases, which will be covered in more depth below
- and elsewhere in the Prudence manual:
-\end_layout
-
-\begin_layout Enumerate
-You can redirect URIs, temporarily or permanently, to internal or external
- URIs.
-\end_layout
-
-\begin_layout Enumerate
-You can ``capture'' URIs internally, allowing you to use a single internal
- URI to represent many external URIs.
-\end_layout
-
-\begin_layout Enumerate
-You can add filters before each handler, or before the application's router
- itself.
- For example, a ChallengeAuthenticator filter would require users to enter
- a password before letting requests go through.
-\end_layout
-
-\begin_layout Enumerate
-You can add more instances of the basic handlers.
- For example, you can add a static web handler so you that you can host
- files located in places other than /web/static/.
- Although, note that you can also use symbolic links in /web/dynamic/ to
- do this.
-\end_layout
-
-\begin_layout Enumerate
-You can add create custom resources in Java and attach them here.
- This allows for clean, routing-based integration of Restlet Java code into
- Prudence.
+Be careful: this system allows for previous handlers in the sequence to
+ supersede later handlers.
+ For example, if you decide to remove scriptlets from a file named /dynamic/web/
+about.html and move it to /static/web/about.html, make sure to delete the
+ former, or else the latter will not be reached.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4535,16 +4657,25 @@ Subdirectories and Filenames As URI Segments
 \end_layout
 
 \begin_layout Standard
-The three kinds of application handlers---resources, dynamic web pages and
- static web resources---are all routed by mapping the filesystem structure
- to a URI.
+The three application handlers---resources, dynamic web pages and static
+ web resources---are all routed by mapping the filesystem structure to a
+ URI.
  Each subdirectory path or filename is directly translated into a URI segment.
 \end_layout
 
 \begin_layout Standard
 This is exactly the scheme used by most static web servers, and it has the
  benefit of using a readily-available, easy-to-use hierarchical structure---the
- filesystem---as a transparent way of configuring URIs.
+ filesystem---as a striaghtforward way for creating URIs.
+\end_layout
+
+\begin_layout Standard
+There's one deficiency to this scheme: by directly mapping filenames, it
+ can allow for ``ugly'' URIs that include filename extensions.
+ For example, you're probably used to seeing many web sites with URLs that
+ end in ``.html'', ``.php'' and ``.jsp''.
+ While these extensions are meaningful to the site developer, they complicate
+ the URIs and expose internal implementation details to outsiders.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4559,16 +4690,17 @@ name "../routing/|pretty-uris"
 \end_layout
 
 \begin_layout Standard
-There's one deficiency to this common scheme, though: by directly mapping
- filenames, it can allow for ``ugly'' URIs that include filename extensions.
- For example, you're probably used to seeing many web sites with URLs that
- end in ``.html'', ``.php'' and ``.jsp''.
- While these extensions are meaningful to the site developer, they complicate
- the URIs and expose internal implementation details to outsiders.
+To allow for prettier URIs, Prudence does a few things:
+\end_layout
+
+\begin_layout Paragraph
+Filename Extension Hiding
 \end_layout
 
 \begin_layout Standard
-To allow for prettier URIs, Prudence does a few things:
+Prudence ignores filename extensions for the purpose of mapping to URIs.
+ For example, the file ``/web/dynamic/wiki/table-of-contents.html'' will
+ be mapped to the URI ``wiki/table-of-contents/''.
 \end_layout
 
 \begin_layout Paragraph
@@ -4577,21 +4709,22 @@ Default Files
 
 \begin_layout Standard
 In /web/dynamic/ and /web/static/, if a file ``index.html'' exists in a subdirect
-ory, it is mapped to the subdirectory itself.
- Thus, the file ``/web/dynamic/wiki/contributors/index.html'' will be mapped
- to the URI ``wiki/contributors/''.
- In /resources/, the same is true for files named default.*.
- The default filenames for /web/dynamic/ and /resources/ can be configured
- in your application's /settings.*.
+ory, it is mapped to the URI for the subdirectory itself.
+ In /resources/, the default file is ``default.*''.
 \end_layout
 
 \begin_layout Standard
-By using default files, you can using subdirectories instead of filenames
- as URI segments.
- In very large applications, this can help keep your files well-organized
+For example, the file ``/web/dynamic/wiki/contributors/index.html'' is mapped
+ to the URI ``wiki/contributors/''.
+ Note that another way to create the same URI is to use ``/web/dynamic/wiki/cont
+ributors.html'' (the ``.html'' is hidden by Prudence).
+\end_layout
+
+\begin_layout Standard
+Default files are simply another organizational option for you.
+ In very large applications, it can help keep your files well-organized
  without having any effect on the URIs that exposed externally.
- You can even change your scheme during development, as the numbers of files
- you have grows, without any effect on the clients.
+ You can even change your scheme as your application evolves.
 \end_layout
 
 \begin_layout Quote
@@ -4605,41 +4738,19 @@ aultName'' application attribute.
 \end_layout
 
 \begin_layout Paragraph
-Filename Extension Hiding
-\end_layout
-
-\begin_layout Standard
-You probably do not, however, want to create a subdirectory for every URI.
- For this reason, Prudence also allows you to use files while hiding their
- filename extension.
- For example, the file ``/web/dynamic/wiki/table-of-contents.html'' will
- be mapped to the URI ``wiki/table-of-contents/''.
-\end_layout
-
-\begin_layout Quote
-For this to work well in /web/dynamic/, you must avoid having more than
- one file with the same name (but different extension) in the same subdirectory.
- If you do, Prudence will simply grab the first file it finds, in arbitrary
- order.
- In /resources/, the Prudence flavor you are using will determine which
- file to use if more than one is available with different extensions.
-\end_layout
-
-\begin_layout Paragraph
 Trailing Slash Requirement
 \end_layout
 
 \begin_layout Standard
-You'll note that we used ``wiki/table-of-contents/'' for the above file,
- rather than ``wiki/table-of-contents'' (the difference is the trailing
- slash).
+You'll note that we used ``wiki/contributors/'' for the above, rather than
+ ``wiki/contributors'' (the difference is the trailing slash).
  This is because Prudence requires trailing slashes by default: trying to
  access ``wiki/table-of-contents'' would permanently redirect to ``wiki/table-of
 -contents/''.
 \end_layout
 
 \begin_layout Standard
-This is done for two main reasons:
+Prudence does this for two main reasons:
 \end_layout
 
 \begin_layout Enumerate
@@ -4648,15 +4759,14 @@ To keep the URI space consistent, whether you use subdirectories or filenames
 \end_layout
 
 \begin_layout Enumerate
-This is Prudence's way to combat to the ``trailing slash'' problem, which
- plagues the usefulness of relative URIs in web pages.
- By forcing you to have a trailing slash, Prudence can make sure that you
- don't have to code HTML/CSS for both trailing-slash and no-trailing-slash
- version.
+This is Prudence's way of fighting to the ``trailing slash'' problem, which
+ plagues the use of relative URIs in HTML and CSS.
 \end_layout
 
 \begin_layout Standard
-You can turn off the trailing slash requirement in your application's /settings.*.
+You can turn off the trailing slash requirement via the ``com.threecrickets.pruden
+ce.GeneratedTextResource.trailingSlashRequired'' and ``com.threecrickets.prudence.Del
+egatedResource.trailingSlashRequired'' application.globals.
 \end_layout
 
 \begin_layout Quote
@@ -4672,7 +4782,7 @@ Filename Extensions
 
 \begin_layout Standard
 Though Prudence hides the filename extensions from the URIs, they do have
- two important functional uses:
+ two important functions:
 \end_layout
 
 \begin_layout Paragraph
@@ -4687,22 +4797,25 @@ name "../routing/|extensions-mime-types"
 \end_layout
 
 \begin_layout Standard
-: they define the default media type for ``GET'' requests to pages in /web/dynam
-ic/ and /web/static/.
+Filename extensions define the default media type for ``GET'' requests to
+ pages in /web/dynamic/ and /web/static/.
  For example, a ``.xml'' file will be mapped to the ``application/xml'' MIME
  type.
 \end_layout
 
 \begin_layout Standard
-Every application has its own filename extension mapping table.
- See ``Prudence Applications'' 
+Every application has its own 
+\bar under
+filename extension mapping table (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
-reference "../application/"
+LatexCommand pageref
+reference "../application/|default-file"
 
 \end_inset
 
- for how to change them.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -4710,22 +4823,31 @@ Filename Extensions and Programming Languages
 \end_layout
 
 \begin_layout Standard
-In /resources/, and for configuration scripts, the filename extension tell
- Prudence which programming language to use for the source code.
- Prudence supports ``.py'', ``.rb'', ``.js'', ''.php'', ``.clj'' and ``.php''.
+In /resources/, and for configuration scripts, the filename extension tells
+ Prudence the programming language of the source code.
+ Prudence supports ``.py'', ``.rb'', ``.js'', ''.php'', ``.clj'' and ``.php''
+ files.
+\end_layout
+
+\begin_layout Paragraph
+Filename Extensions Preference
 \end_layout
 
 \begin_layout Standard
-The Prudence flavor you are using will determine which file to use if more
- than one is available with different extensions.
+In /resources/, the Prudence flavor you are using will determine which file
+ to use in the case of ambiguity.
+ For example, the Groovy flavor will prefer ``process.gv'' file even if ``process.
+js'' is present.
  This allows you to write and deploy applications that can run in multiple
  Prudence flavors.
+ The same is true for configuration scripts.
 \end_layout
 
-\begin_layout Quote
-Note that this rule works for configuration scripts, too.
- Thus an application can have both settings.py and a settings.rb files, and
- the correct one will be used depending on the flavor you are using.
+\begin_layout Standard
+However, in /web/dynamic/ there is no explicit preference, and behavior
+ is undefined if you have more than one file with the same name but different
+ extension in the same subdirectory.
+ For example, contents.html and contents.xml.
 \end_layout
 
 \begin_layout Subsection
@@ -4733,8 +4855,20 @@ Custom Routing
 \end_layout
 
 \begin_layout Standard
-The automatic routing provided by using the directories and filenames is
- useful, but you'll likely need other kinds of routing, too.
+The straightforward URI routing based on directories and filenames is useful,
+ but you'll likely need other kinds of routing, too.
+ That's what 
+\bar under
+your application's /routing.* is for (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|routing-file"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4742,8 +4876,8 @@ Hiding
 \end_layout
 
 \begin_layout Standard
-The following will make sure that the URI always returns a 404, even if
- the page or resource exists.
+The following will make sure that the given URI always returns a 404, even
+ if the page or resource exists.
  For example, in /routing.* (JavaScript flavor):
 \end_layout
 
@@ -4779,13 +4913,8 @@ name "../routing/|capturing"
 \end_layout
 
 \begin_layout Standard
-Prudence lets you ``capture'' any external URI pattern used by clients,
- forcing it to use any internal URI you wish.
- Usually the internal URI will refer to your code /resources/ and /web/dynamic/.
-\end_layout
-
-\begin_layout Standard
-Do your capturing in the application's /routing.* configuration script.
+Prudence lets you ``capture'' abitrary URI patterns into any internal URI
+ you wish, in /resources/, /web/dynamic/ or /web/static/.
 \end_layout
 
 \begin_layout Standard
@@ -4870,7 +4999,18 @@ Capturing might look like redirection, but in fact it's an
 \emph on
 internal
 \emph default
- redirection, similar to how the document.internal API works.
+ redirection, similar to how the 
+\bar under
+document.internal API works (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-internal"
+
+\end_inset
+
+)
+\bar default
+.
  The client remains entirely ignorant as to what internal URIs you might
  be using.
 \end_layout
@@ -4878,16 +5018,20 @@ internal
 \begin_layout Standard
 It's important to understand this distinction: the client might be seeing
  an entirely different URI than your internal one.
- If you're using dynamic HTML, you need to make sure that your relative
+ Thus, if you're using HTML and CSS, you need to make sure that your relative
  references reach the right place.
- This is easy in Prudence with the conversation.pathToBase API 
+ This is easy in Prudence with the 
+\bar under
+conversation.pathToBase API (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../api/|conversation-path-to-base"
 
 \end_inset
 
-, which always uses the non-captured client URI.
+)
+\bar default
+, which will use the captive client URI.
  For example:
 \end_layout
 
@@ -4936,14 +5080,13 @@ Capturing in this manner is often used in conjunction with URI hiding (see
  above).
  By hiding ``/forum/help/'', users would be able to access ``/forum/help/faq/''
  via HTTP, but not ``/forum/help/''.
- This technique lets you effectively control the URI space exposed externally,
- while still providing complete access within your application.
+ This lets you effectively control the exposed URI space.
 \end_layout
 
 \begin_layout Standard
 Another feature of internal redirection is that your code you can check
  for internal access and enforce it.
- For example, let's implement URI hiding via a scriptlet:
+ As an example, let's implement URI hiding via a scriptlet:
 \end_layout
 
 \begin_layout Standard
@@ -5047,8 +5190,8 @@ router.captureOther('/forum/help/{topic}/', 'wackyhelp', '/help/');
 \end_layout
 
 \begin_layout Standard
-In addition to parsing URI segmenets, you can use pre-defined curly-bracket-deli
-mited tags to route based on attributes of the request (see URI Templates,
+In addition to parsing URI segments, you can use pre-defined curly-bracket-delim
+ited tags to route based on attributes of the request (see URI Templates,
  below).
  For example, we can route with the ``{m}'' tag (HTTP method) to elegantly
  handle HTTP forms:
@@ -5197,8 +5340,8 @@ router.capture('data/client/', 'data/client/{emt}/');
 \end_layout
 
 \begin_layout Standard
-Because ``{emt}'' is the MIME type of data sent by the client, we can thus
- have files such as these:
+Because ``{emt}'' is the MIME type of data sent by the client, we can have
+ files such as these:
 \end_layout
 
 \begin_layout Itemize
@@ -5215,9 +5358,20 @@ Because ``{emt}'' is the MIME type of data sent by the client, we can thus
 \end_layout
 
 \begin_layout Standard
-Of course, you might prefer to check the MIME type in code your code (via
- conversation.mediaTypeName), but it's a nice example of how powerful routing
- can be with URI templates.
+Of course, you might prefer to check the MIME type in code your code via
+ 
+\bar under
+conversation.mediaTypeName (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-media-type"
+
+\end_inset
+
+)
+\bar default
+, but the above is a good example of how powerful routing can be with URI
+ templates.
 \end_layout
 
 \begin_layout Subsubsection
@@ -5233,32 +5387,38 @@ name "../routing/|capturing-errors"
 
 \begin_layout Standard
 A special case of capturing is for errors.
- ``Errors'' can be set explicitly by you: for example, we set conversation.status
-Code to 404, above.
+ ``Errors'' can be set explicitly by you: for example, we can set conversation.st
+atusCode to 404, as we did above.
  However, a 500 error occurs automatically for uncaught exceptions in your
  code.
 \end_layout
 
 \begin_layout Standard
-If you have debug mode enabled, you would see the special debug page.
- For a production site, you may instead prefer to capture the 500 error
- and provide a friendlier page.
- (You'd also want to test carefully and make sure your code never throws
- exceptions...) See ``Debugging'' 
+If you have debug mode enabled, the user would see the special debug page
+ for 500 errors; see 
+\bar under
+debugging (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../debugging/"
 
 \end_inset
 
- for more information.
+)
+\bar default
+.
+ On a production site, you may instead prefer to capture the 500 error and
+ provide a friendlier page.
+ (You'd also want to test carefully and make sure your code never throws
+ exceptions\SpecialChar \ldots{}
+)
 \end_layout
 
 \begin_layout Standard
-You can capture errors both at the application level, which takes precedence,
- or at the instance level.
+You can capture errors both at the application level or at the instance
+ level, which the former taking precedence.
  It may be a good idea to always capture at the instance level, in case
- applications don't have their own custom error pages.
+ applications don't do their own custom error pages.
 \end_layout
 
 \begin_layout Standard
@@ -5367,7 +5527,7 @@ applicationInstance.statusService.capture(404, 'wackyhelp', 'help/main/',
 \end_layout
 
 \begin_layout Standard
-Notes:
+Notes for error capturing:
 \end_layout
 
 \begin_layout Itemize
@@ -5378,21 +5538,23 @@ You always need to specify the application name (like router.captureOther).
 As with regular capturing, you can hide these pages if you don't want users
  to be able to access them directly.
  (Though, if you hide your 404 page, users would still get to it because
- it's what displayed when pages are not found! The difference is that it
- appears to uses with a 404 status, not 200 success status.)
+ it's what would be displayed for hidden pages! The difference is that it
+ would appear to users with a 404 status, not a 200 success status.)
 \end_layout
 
 \begin_layout Itemize
-The difference between capture and captureHostRoot is how the base URI is
- set, which affects the conversation.pathToBase API.
- A simple capture uses to the application's base URI on the current virtual
- host, while captureHostRoot uses to the virtual host root itself.
+The difference between statusService.capture and statusService.captureHostRoot
+ is in how the base URI is set, which affects the conversation.pathToBase
+ API.
+ statusService.capture uses to the application's base URI on the current
+ virtual host, while statusService.captureHostRoot uses to the virtual host
+ root itself.
 \end_layout
 
 \begin_layout Itemize
-It is recommended that for 500 error capturing you use a /web/static/ page,
- which has the least chance of generating an exception and causing a 500
- error again.
+For 500 error capturing, you should prefer a /web/static/ page, which has
+ the least chance of generating an exception and causing a 500 error again,
+ resulting in a loop.
 \end_layout
 
 \begin_layout Subsubsection
@@ -5400,8 +5562,8 @@ Dynamic Redirection
 \end_layout
 
 \begin_layout Standard
-You can handle redirection at either /resources/ or /web/dynamic/ with a
- URI attached to the following API:
+You can handle redirection at either /resources/ or /web/dynamic/ with the
+ following API:
 \end_layout
 
 \begin_layout Itemize
@@ -5451,19 +5613,14 @@ conversation.stop();
 \end_layout
 
 \begin_layout Standard
-Most clients will support relative URI paths for redirection.
+Note that most clients will support relative URI paths for redirection.
+ Also, they will likely ignore any data in the redirected response, so you
+ can just return null in /resources/ or empty text in /web/dynamic/ (which
+ is why we call conversation.stop in the example above).
 \end_layout
 
 \begin_layout Standard
-Note that most clients will ignore any data in the response if it contains
- any redirection status code, so you can just return null in /resources/
- or empty text in /web/dynamic/ (which is why we call conversation.stop in
- the example above).
-\end_layout
-
-\begin_layout Standard
-For other redirections in the 300 family, use the following example (JavaScript)
-:
+For other redirections in the 300 family, follow this example (JavaScript):
 \end_layout
 
 \begin_layout Standard
@@ -5492,14 +5649,22 @@ conversation.stop();
 \end_layout
 
 \begin_layout Subsubsection
+Filtering
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Subsubsection
 Attaching
 \end_layout
 
 \begin_layout Standard
 This is the lowest-level routing API.
- It allows you to attach any custom ``restlet'' (a REST conversation handler
- along the route), as well as Restlet resources (which internally use a
- Finder restlet), to a URI.
+ It allows you to route URI patterns to any custom ``restlet'' (a REST conversat
+ion handler), as well as Restlet resources (which internally use a Finder
+ restlet).
  Do your attachments in the application's /routing.* configuration script.
  Prudence offers some attachment ``sugar'' in addition the standard Restlet
  API.
@@ -5620,11 +5785,12 @@ Static Redirection
 \end_layout
 
 \begin_layout Standard
-By ``static'' here is meant that redirection is configured into the application'
-s /routing.* configuration script.
- However, because it supports URI templates (see below), it can actually
- do complex ``dynamic'' redirection.
- Redirection is handled by attaching (see above) a Redirector restlet.
+Static redirection is handled by attaching (see above) a Redirector restlet.
+ By ``static'' here is meant that redirection is configured into the application
+'s /routing.* script.
+ However, because attachment supports URI templates (see below), this method
+ can actually handle complex ``dynamic'' redirection.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -5748,20 +5914,22 @@ URI Templates
 \begin_layout Standard
 The custom routing techniques described above support URI templates, which
  are URIs with optional curly-bracket-delimited tags that are be replaced
- by actual values in runtime.
- This allows for powerful routing of URIs following complex patterns.
+ by conversation values at runtime.
 \end_layout
 
 \begin_layout Standard
-Note that the same templates are used to generate cache keys (see the the
- API 
+Note that the same templates are used to generate 
+\bar under
+cache keys (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../api/|document-cache-key"
 
 \end_inset
 
-), and that there are some tags that can only be used for cache keys.
+)
+\bar default
+, and that there are some tags that can only be used for cache keys.
  In fact, many of these tags might be more useful for cache keys than for
  routing.
 \end_layout
@@ -5830,7 +5998,7 @@ Request Attributes
 \end_layout
 
 \begin_layout Itemize
-{m}: the method (in HTTP, it would be ``get,'' ``post,'' ``put,'' ``delete,''
+{m}: the method (in HTTP, it would be ``GET,'' ``POST,'' ``PUT,'' ``DELETE,''
  etc.)
 \end_layout
 
@@ -5882,8 +6050,8 @@ We'll use a hyphen to show that you need to add one of the modifiers detailed
 \end_layout
 
 \begin_layout Itemize
-{r-}/{R-}: actual URI (the capital ``R'' here referes to the response, and
- is only valid if you're redirecting)
+{r-} or {R-}: actual URI (the capital ``R'' here referes to the response,
+ which may be different from the request if you're redirecting)
 \end_layout
 
 \begin_layout Itemize
@@ -5944,15 +6112,18 @@ Conversation Locals
 \end_layout
 
 \begin_layout Standard
-Tags that aren't any of the above tags will be assumed to be conversation.locals
- (see the API 
+Tags that aren't any of the above tags will be assumed to be 
+\bar under
+conversation.locals (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../api/|conversation-locals"
 
 \end_inset
 
-).
+)
+\bar default
+.
  You can thus inject any data you wish.
 \end_layout
 
@@ -6108,13 +6279,17 @@ name "../api/|application-logger"
 
 \begin_layout Standard
 Use the logger to print messages in the log files.
- The messages are prefixed by the applicationLoggerName setting 
+ The messages are prefixed by the 
+\bar under
+applicationLoggerName setting (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../application/|application-logger-name"
 
 \end_inset
 
+)
+\bar default
 , which defaults to the application's subdirectory name.
 \end_layout
 
@@ -6124,18 +6299,29 @@ By default, all log messages from all applications will be sent to prudence.log,
 \end_layout
 
 \begin_layout Standard
-For more information, see 
+See 
+\bar under
+logging.conf (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../logging/|logging-conf"
 
 \end_inset
 
+)
+\bar default
 .
 \end_layout
 
 \begin_layout Paragraph
 application.getSubLogger
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|application-get-sub-logger"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6144,13 +6330,17 @@ Uses a logger that inherits the application.logger configuration by default.
 \end_layout
 
 \begin_layout Standard
-For more information, see 
+See 
+\bar under
+logging.conf (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../logging/|logging-conf"
 
 \end_inset
 
+)
+\bar default
 .
 \end_layout
 
@@ -6163,14 +6353,17 @@ Utility to get a media type from a MIME type name or filename extension.
 \end_layout
 
 \begin_layout Standard
-Note that each application has its own mappings.
- See ``Prudence Applications'' 
+Note that each application has its own 
+\bar under
+mappings (page
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../application/|default-file"
 
 \end_inset
 
+)
+\bar default
 .
 \end_layout
 
@@ -6217,7 +6410,7 @@ Many of these attributes have to do with caching.
  Caching is your best tool to make sure your application can scale well.
  Read more about it in 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../../scaling/"
 
 \end_inset
@@ -6283,7 +6476,7 @@ Not that this is not necessarily the key itself
  and can also include values from conversation.locals.
  See ``Routing'' 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../routing/"
 
 \end_inset
@@ -6333,13 +6526,17 @@ Of course, you do not have to use Prudence's templating system, and can
 
 \begin_layout Quote
 Rule of thumb: Set document.cacheKey to be as short as you possibly can.
- See ``Scaling Tips'' 
+ See 
+\bar under
+``Scaling Tips'' (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../../scaling/"
 
 \end_inset
 
+)
+\bar default
  for more information on how caching can help you scale.
 \end_layout
 
@@ -6415,14 +6612,18 @@ Prudence's default cache backend is an in-process memory cache chained before
 \end_layout
 
 \begin_layout Standard
-See ``The Prudence Instance'' 
+We have an 
+\bar under
+example for configuring the cache backend (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../instance/|component-file"
 
 \end_inset
 
- for more information on configuring the cache backend.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -6451,13 +6652,17 @@ A common use case is to invalidate display pages when a user posts new data.
 \end_layout
 
 \begin_layout Standard
-See ``Scaling Tips'' 
+See 
+\bar under
+``Scaling Tips'' (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../../scaling/"
 
 \end_inset
 
+)
+\bar default
  for more information on how caching can help you scale.
 \end_layout
 
@@ -6518,22 +6723,13 @@ Prudence might compile or otherwise prepare and cache scriptlets in the
  documents when it starts.
  This is enabled by default for all documents in /web/dynamic/, and would
  affect included documents from /web/fragments/.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "application configuration"
-target "../application/"
-
-\end_inset
-
- for more information.
  What ``preparation'' actually involves depends on the language used by
  the scriptlets.
 \end_layout
 
 \begin_layout Quote
 Calling document.include is equivalent to using the include scriptlet, <%&
- ...
+ \SpecialChar \ldots{}
  %>.
  Internally, the include is turned into a regular scriptlet that called
  document.include.
@@ -6605,15 +6801,6 @@ Prudence might compile or otherwise prepare and cache code in the executed
  documents when it starts.
  This is enabled by default for all documents in /resources/, and would
  affect documents they execute from /libraries/.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "application configuration"
-target "../application/"
-
-\end_inset
-
- for more information.
  What ``preparation'' actually involves depends on the language of the source
  code.
 \end_layout
@@ -6673,6 +6860,13 @@ Use document.execute as an alternative to document.include if you prefer not
 
 \begin_layout Paragraph
 document.internal
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-internal"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6771,16 +6965,18 @@ There are many, many use cases for document.external, and they keep growing
 \begin_layout Standard
 This is a good place to remind you that REST is not just HTTP.
  By default, Prudence supports http: and file: scheme URIs for document.external,
- and you can add more protocols via your /instance/clients.* configuration
- script.
- See ``The Prudence Instance'' 
+ and you can add more protocols via your 
+\bar under
+/instance/clients.* configuration script (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../instance/|clients-file"
 
 \end_inset
 
- for more information.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -7017,14 +7213,18 @@ This is a URI path relative to the base URI, which is usually the application
 \begin_layout Standard
 This is very useful to allow for relative references in HTML.
  It's especially sueful in fragments that you might include at various parts
- of your application, and for captured URIs (see ``Routing'' 
+ of your application, and for 
+\bar under
+captured URIs (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../routing/|capturing"
 
 \end_inset
 
-).
+)
+\bar default
+.
  For example, let's say you have a contact page at /dynamic/web/contact/index.htm
 l.
  The following HTML snippet can be used anywhere in your application:
@@ -7289,6 +7489,13 @@ For new cookies, be sure to call save() on the cookie in order to send it
 
 \begin_layout Paragraph
 conversation.mediaTypeName, conversation.mediaTypeExtension, conversation.mediaType
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-media-type"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -7311,15 +7518,18 @@ conversation.mediaTypeExtension is the media type as the default filename
  For example, ``txt'' is equivalent to MIME ``text/plain,'' and ``xml''
  is equivalent to ``application/xml.'' Each application has its own mappings
  of filename extensions to media types.
- See also application.getMediaType, above, and ``Prudence Applications''
- 
+ See also application.getMediaType, above, and how to change the 
+\bar under
+mappings for your application (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../application/|default-file"
 
 \end_inset
 
- for how to change the mappings for your application.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -7335,16 +7545,19 @@ ediaType().
 
 \begin_layout Quote
 In /web/dynamic/ and /web/static/, if the client request does not contain
- any data representation, for example in a ``GET'' request, then the media
- type's default value will be set according to the filename extension.
- See ``Routing'' 
+ any data representation, for example in a ``GET'' request, then the 
+\bar under
+media type's default value will be set according to the filename extension
+ (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../routing/|extensions-mime-types"
 
 \end_inset
 
- for more information.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -7370,15 +7583,18 @@ conversation.characterSetName is ISO's UTC (Universal Character Set) name
 conversation.characterSetShortName is a shortcut name for the character set.
  Shortcuts include ``ascii,'' ``utf8,'' and ``win'' (for the Windows 1252
  character set).
- Restlet handles shortcuts names together with filename extension mappings.
- See ``Prudence Applications'' 
+ Restlet handles shortcuts names together with 
+\bar under
+filename extension mappings.(page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../application/|default-file"
 
 \end_inset
 
- for how to change the mappings for your application.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -7503,14 +7719,18 @@ name "../api/|response-attributes-resources"
 \begin_layout Standard
 Note that modificationTimestamp, expirationTimestamp and maxAge are set
  indirectly for /web/dynamic/, via document.cacheDuration.
- See the dynamicWebClientCachingMode setting 
+ See the 
+\bar under
+dynamicWebClientCachingMode setting (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../application/|dynamic-web-client-caching-mode"
 
 \end_inset
 
- for more information.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -7584,14 +7804,18 @@ The maximum number of seconds for which clients would cache the response,
 \end_layout
 
 \begin_layout Standard
-See the dynamicWebClientCachingMode setting 
+See the 
+\bar under
+dynamicWebClientCachingMode setting (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../application/|dynamic-web-client-caching-mode"
 
 \end_inset
 
- for more information.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -7632,18 +7856,20 @@ Internal requests are usually created in one of two ways:
 \end_layout
 
 \begin_layout Enumerate
-The document.internal API (see above).
+The document.internal API (see above)
 \end_layout
 
 \begin_layout Enumerate
-URI capturing (see ``Routing'' 
+
+\bar under
+URI capturing (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../routing/|capturing"
 
 \end_inset
 
-).
+)
 \end_layout
 
 \begin_layout Paragraph
@@ -8276,14 +8502,18 @@ To share state for deferred conversations (see conversation.defer, above).
 \end_layout
 
 \begin_layout Enumerate
-URI segments are stored here (see ``Routing'' 
+
+\bar under
+URI segments are stored here (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../routing/|capturing"
 
 \end_inset
 
- for more information).
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Section
@@ -8302,14 +8532,18 @@ Logging
 \end_layout
 
 \begin_layout Standard
-Logging (
+
+\bar under
+Logging (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../logging/"
 
 \end_inset
 
-) is the developer's best friend.
+)
+\bar default
+ is the developer's best friend.
  Use it wisely, and you'll be able to clearly analyze the flows of control,
  code and data.
 \end_layout
@@ -8326,24 +8560,32 @@ The debug page is returned as a response whenever an un-handled exception
 \begin_layout Quote
 Though very useful during development, you'd probably want to turn it off
  for production systems.
- Simply set the showDebugOnError setting (see 
+ Simply set the 
+\bar under
+showDebugOnError setting (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../application/|show-debug-on-error"
 
 \end_inset
 
-) to false.
+)
+\bar default
+ to false.
  Note that in that case, you might want to capture errors, sending them
  to a friendly, apologetic page for the users.
- See ``Routing'' 
+ See 
+\bar under
+error capturing (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../routing/|capturing-errors"
 
 \end_inset
 
- for more information on error capturing.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -8424,15 +8666,18 @@ target "http://code.google.com/p/jygments/"
 \end_layout
 
 \begin_layout Itemize
-Prefixing URIs with ``/sourcecode/'' (see the showSourceCodeURL setting
- 
+Prefixing URIs with ``/sourcecode/''; see the 
+\bar under
+showSourceCodeURL setting (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../application/|show-source-code-url"
 
 \end_inset
 
-).
+)
+\bar default
+.
  For example, use GET on ``/sourcecode/support/forum/'' to see the source
  code for the resource or dynamic page at ``/support/forum/''.
 \end_layout
@@ -8510,22 +8755,30 @@ The Base Logger
 \end_layout
 
 \begin_layout Standard
-Use application.logger (see the API documentation 
+Use 
+\bar under
+application.logger (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../api/|application-logger"
 
 \end_inset
 
-) to send text messages to the log.
+)
+\bar default
+ to send text messages to the log.
  The logger name defaults to your application's subdirectory name, but can
- be configured via the applicationLoggerName setting 
+ be configured via the 
+\bar under
+applicationLoggerName setting (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../application/|application-logger-name"
 
 \end_inset
 
+)
+\bar default
 .
 \end_layout
 
@@ -8535,7 +8788,18 @@ Sub-Loggers
 
 \begin_layout Standard
 Large applications might benefit from using more than one logger.
- Use application.getSubLogger with any name you wish.
+ Use 
+\bar under
+application.getSubLogger (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-get-sub-logger"
+
+\end_inset
+
+)
+\bar default
+ with any name you wish.
  This name will be appended to your base logger name with a ``.'', and will
  inherit the base logger's configuration by default.
  For example, if your base logger is named ``wackywiki'', then application.getSub
@@ -8990,17 +9254,19 @@ Requiring a Password
 \end_layout
 
 \begin_layout Standard
-As an example, we'll route the application's root router through an HTTP
- authentication filter.
- See 
-\begin_inset CommandInset href
-LatexCommand href
-name "routing"
-target "../routing/"
+As an example, we'll 
+\bar under
+route the application's root router through an HTTP authentication filter
+ (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/"
 
 \end_inset
 
- and the Restlet API documentation for more information.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -9349,35 +9615,51 @@ Why use Prudence for a Restlet application that already works?
 \end_layout
 
 \begin_layout Standard
-Prudence makes it easy to handle the bootstrapping and routing (see 
+Prudence makes it easy to handle the bootstrapping and 
+\bar under
+routing (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../application/|routing-file"
 
 \end_inset
 
-) of your applications, and the Administration Application (see 
+)
+\bar default
+ of your applications, and the 
+\bar under
+Administration Application (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../administration/"
 
 \end_inset
 
-), debugging (see 
+)
+\bar default
+, 
+\bar under
+debugging (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../debugging/"
 
 \end_inset
 
-) and logging (see 
+)
+\bar default
+ and 
+\bar under
+logging (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../logging/"
 
 \end_inset
 
-) features make it easier to deploy and manage multiple applications together.
+)
+\bar default
+ features make it easier to deploy and manage multiple applications together.
  These issues have more to do with your application's configuration, rather
  than its functionality, and it can be useful to handle them outside of
  the Java build process, using live, dynamic languages in simple text source
@@ -9398,14 +9680,18 @@ This need is also fulfilled by servlet and Java Enterprise Edition (JEE)
 \begin_layout Standard
 Some people also look to JEE containers for their support of Java Server
  Pages (JSP).
- We urge you to take a good look at Prudence's dynamic web (see 
+ We urge you to take a good look at Prudence's 
+\bar under
+dynamic web (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../generating-html/"
 
 \end_inset
 
-) support.
+)
+\bar default
+ support.
  It may likely surpass JSP for your purposes.
  In particular, it is based on Restlet, which you already know and love,
  giving you the entire Restlet API at your fingertips.
@@ -9977,12 +10263,12 @@ target "http://groovy.codehaus.org/"
  to enhance and extend Java.
  Java programmers would immediately feel at home, while gaining access to
  far less restrictive programming paradigms.
- Groovy makes Java...
+ Groovy makes Java\SpecialChar \ldots{}
  groovy!
 \end_layout
 
 \begin_layout Standard
- All the other Prudence flavors offer JVM interaction, but Groovy does it
+All the other Prudence flavors offer JVM interaction, but Groovy does it
  best.
  If you know your project will require a lot of interaction with Java libraries,
  Groovy is a terrific---and fun!---choice.
@@ -10472,11 +10758,13 @@ OK, so now we know what we need, let's go ahead and implement the infrastructure
  of components to handle our requirements.
  All we need is stacks for all supported clients, backend stacks for all
  our potential server platforms, middleware components to handle all the
- identifier routing, content negotiation, caching of data...
+ identifier routing, content negotiation, caching of data\SpecialChar \ldots{}
+
 \end_layout
 
 \begin_layout Standard
-...And thousands of man hours to develop, test, deploy, and integrate.
+\SpecialChar \ldots{}
+And thousands of man hours to develop, test, deploy, and integrate.
  Like any large-scale, enterprise architecture, even trivial requirements
  have to jump through the usual hoops set up by the sheer scale of the task.
  Behind every great architecture are the nuts and bolts of the infrastructure.
@@ -10532,14 +10820,18 @@ g, at least, to be more generic.
  There are definitely use cases for non-HTTP, and even non-TCP/IP addressing
  schemes.
  In Prudence, you'll see that it's possible to address internal resources
- with non-URL kinds of URIs (see document.external 
+ with non-URL kinds of URIs; see 
+\bar under
+document.external (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../manual/api/|document-external"
 
 \end_inset
 
-).
+)
+\bar default
+.
  
 \end_layout
 
@@ -10661,13 +10953,17 @@ Prudence
 \begin_layout Standard
 Convinced? The best way to understand REST is to experiment with it.
  You've come to the right place.
- Start with the tutorial 
+ Start with the 
+\bar under
+tutorial (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../manual/tutorial/"
 
 \end_inset
 
+)
+\bar default
 , and feel free to skip around the documentation and try things out for
  yourself.
  You'll find it easy, fun, and powerful enough for you to create large-scale
@@ -10999,13 +11295,17 @@ Ignore the buzzwords, and instead make sure you're choosing technology that
 \end_layout
 
 \begin_layout Standard
-We discuss this topic some more in ``Making the Case for Rest'' 
+We discuss this topic some more in 
+\bar under
+``Making the Case for Rest'' (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../rest/"
 
 \end_inset
 
+)
+\bar default
 .
  By building on the existing web infrastructure, Prudence can make large
  internet projects easier to manage.
@@ -11041,14 +11341,18 @@ In your plan for fine-grained caching, take special care to isolate those
 \end_layout
 
 \begin_layout Standard
-Make sure to change Prudence's cache key (see the API documentation 
+Make sure to change Prudence's 
+\bar under
+cache key (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../manual/api/|document-cache-key"
 
 \end_inset
 
-) to fit the lowest common denominator: you want as many possible requests
+)
+\bar default
+ to fit the lowest common denominator: you want as many possible requests
  to use the already-cached data, rather than generating new data.
  Note that, by default, Prudence includes the request URI in the cache key
  .
@@ -11058,14 +11362,18 @@ reference "../manual/api/|document-cache-key"
 
 \begin_layout Standard
 Cache aggressively, but also take cache validation seriously.
- Make good use of Prudence's cache tags (see 
+ Make good use of Prudence's 
+\bar under
+cache tags (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../manual/api/|document-cache-tags"
 
 \end_inset
 
-) to allow you to invalidate portions of the cache that should be updated
+)
+\bar default
+ to allow you to invalidate portions of the cache that should be updated
  as data changes.
  Note, though, that every time you invalidate you will lose caching benefits.
  If possible, make sure that your cache tags don't cover too many pages.
@@ -11460,14 +11768,17 @@ You can also turn on ``offline caching'' mode, in which the client will
  a mistake in your application, then users will not see any fix you publish
  until their local cache expires, which can take up to a week! It's important
  that you you understand the implications before using this mode.
- Read more about the dynamicWebClientCachingMode application setting in
- the manual 
+ See the 
+\bar under
+dynamicWebClientCachingMode application setting (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../manual/application/|dynamic-web-client-caching-mode"
 
 \end_inset
 
+)
+\bar default
 .
 \end_layout
 
@@ -11479,13 +11790,17 @@ It's generally safer to apply offline caching to your static resources,
  a new URL, and have all your HTML refer to the new version.
  Because clients cache according to URL, their cached for the old version
  will simply not be ignored.
- See how to use the CacheControlFilter in the manual 
+ See 
+\bar under
+CacheControlFilter (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../manual/static-web/|cache-control-filter"
 
 \end_inset
 
+)
+\bar default
 .
  There, you'll also see some more tricks Prudence offers you to help optimize
  the user experience, such as unifying/minimizing client-side JavaScript
@@ -12260,9 +12575,9 @@ tter of relational databases, requires some specialization.
 
 \begin_layout Standard
 Candidate applications include online retail, blogs, wikis, archives, newspapers
-, contact lists, calendars, photo galleries, dating profiles...
- This is a long list, but by no means exhaustive of all that is possible
- in web applications.
+, contact lists, calendars, photo galleries, dating profiles\SpecialChar \ldots{}
+ This is a long
+ list, but by no means exhaustive of all that is possible in web applications.
  Many useful applications cannot be reduced to sets of lightly interconnected
  ``documents'' without giving up a lot of useful functionality.
  For example, merely adding social networking capabilities to a dating site
@@ -12786,7 +13101,8 @@ status open
 \end_layout
 
 \begin_layout Standard
-...then the form ``/animal/cat//'' would route to our singular cat resource,
+\SpecialChar \ldots{}
+then the form ``/animal/cat//'' would route to our singular cat resource,
  which would indeed not find the cat and return the expected, debuggable
  404 error.
  From this example, we can extract a good rule of thumb: clearly separate
@@ -12862,20 +13178,28 @@ I heard REST is very scalable.
 
 \begin_layout Standard
 Yes, if you know what you're doing.
- See ``The Case for REST'' 
+ See 
+\bar under
+``The Case for REST'' (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../rest/"
 
 \end_inset
 
- and ``Scaling Tips'' 
+)
+\bar default
+ and 
+\bar under
+``Scaling Tips'' (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../scaling/"
 
 \end_inset
 
+)
+\bar default
  for in-depth discussions.
 \end_layout
 
@@ -12912,13 +13236,17 @@ How well does Prudence perform? How well does it scale?
 First, recognize that there are two common uses for the term ``scale.'' REST
  is often referred to as an inherently scalable architecture, but that has
  more to do with project management than technical performance.
- This difference is address in the ``The Case for REST'' 
+ This difference is address in the 
+\bar under
+``The Case for REST'' (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../rest/"
 
 \end_inset
 
+)
+\bar default
 .
  
 \end_layout
@@ -12945,13 +13273,17 @@ target "https://grizzly.dev.java.net/"
 , an HTTP server based on the JVM's non-blocking I/O API.
  Grizzly handles concurrent HTTP requests very well, and serves static files
  at scales comparable to popular HTTP servers.
- See the tutorial 
+ See the 
+\bar under
+tutorial (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../manual/tutorial/"
 
 \end_inset
 
+)
+\bar default
  for more information.
  
 \end_layout
@@ -13002,13 +13334,17 @@ while
  For example, to increase caching duration during heavy loads, to decrease
  it during periods where data changes often, or to stream in the case of
  an expected large output.
- See the tutorial 
+ See the 
+\bar under
+tutorial (page 
 \begin_inset CommandInset ref
-LatexCommand vpageref
+LatexCommand pageref
 reference "../manual/tutorial/"
 
 \end_inset
 
+)
+\bar default
  for more information.
  
 \end_layout

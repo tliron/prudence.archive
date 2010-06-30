@@ -1,55 +1,55 @@
 
-document.execute('../libraries/stickstick/data/');
-document.execute('../libraries/json2/');
+document.execute('../libraries/stickstick/data/')
+document.execute('../libraries/json2/')
 
 function handleInit(conversation) {
-    conversation.addMediaTypeByName('text/plain');
-    conversation.addMediaTypeByName('application/json');
+    conversation.addMediaTypeByName('text/plain')
+    conversation.addMediaTypeByName('application/json')
 }
 
 function handleGet(conversation) {
-    var fresh = conversation.query.get('fresh') == 'true';
+    var fresh = conversation.query.get('fresh') == 'true'
     
-    var maxTimestamp;
-    var boardList = [];
-    var notes;
+    var maxTimestamp
+    var boardList = []
+    var notes
 
-    var connection = getConnection(fresh);
+    var connection = getConnection(fresh)
     try {
-	    var boards = getBoards(connection);
+	    var boards = getBoards(connection)
 	    if(boards != null) {
 		    for(var i in boards) {
-		    	var board = boards[i];
-		        boardList.push(board.id);
-		        var timestamp = board.timestamp;
+		    	var board = boards[i]
+		        boardList.push(board.id)
+		        var timestamp = board.timestamp
 		        if((maxTimestamp == null) || (timestamp > maxTimestamp)) {
-		            maxTimestamp = timestamp;
+		            maxTimestamp = timestamp
 		        }
 		    }
 	    }
 	    else {
-	        return null;
+	        return null
 	    }
 	
-	    notes = getNotes(connection);
+	    notes = getNotes(connection)
     }
     finally {
-    	connection.close();
+    	connection.close()
     }
 
     if(maxTimestamp != null) {
-        conversation.modificationTimestamp = maxTimestamp;
+        conversation.modificationTimestamp = maxTimestamp
     }
-    return JSON.stringify({boards: boardList, notes: notes});
+    return JSON.stringify({boards: boardList, notes: notes})
 }
 
 function handleGetInfo(conversation) {
-    var connection = getConnection();
+    var connection = getConnection()
     try {
-    	return getBoardMaxTimestamp(connection);
+    	return getBoardMaxTimestamp(connection)
     }
     finally {
-    	connection.close();
+    	connection.close()
     }
 }
 
@@ -58,17 +58,17 @@ function handlePut(conversation) {
     // as text, and want to refer to it more than once, we should keep
     // a reference to that text.
     
-    var text = conversation.entity.text;
-    var note = JSON.parse(String(text));
+    var text = conversation.entity.text
+    var note = JSON.parse(String(text))
     
-    var connection = getConnection();
+    var connection = getConnection()
     try {
-    	addNote(note, connection);
-        updateBoardTimestamp(note, connection);
+    	addNote(note, connection)
+        updateBoardTimestamp(note, connection)
     }
     finally {
-    	connection.close();
+    	connection.close()
     }
     
-    return handleGet(conversation);
+    return handleGet(conversation)
 }

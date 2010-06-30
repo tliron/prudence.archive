@@ -3,6 +3,6 @@
 //
 
 importClass(
-	com.threecrickets.prudence.util.PrudenceApplication);
+	com.threecrickets.prudence.util.PrudenceApplication)
 
-var applicationInstance = new PrudenceApplication();
+var applicationInstance = new PrudenceApplication()

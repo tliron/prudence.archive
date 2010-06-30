@@ -15,9 +15,9 @@ importClass(
 	com.threecrickets.scripturian.document.DocumentFileSource,
 	com.threecrickets.prudence.util.PrudenceRouter,
 	com.threecrickets.prudence.util.PreheatTask,
-	com.threecrickets.prudence.util.PhpExecutionController);
+	com.threecrickets.prudence.util.PhpExecutionController)
 
-var classLoader = ClassLoader.systemClassLoader;
+var classLoader = ClassLoader.systemClassLoader
 
 //
 // Utilities
@@ -25,21 +25,21 @@ var classLoader = ClassLoader.systemClassLoader;
 
 // Makes sure we have slashes where we expect them
 function fixURL(url) {
-	url = url.replace(/\/\//g, '/'); // no doubles
+	url = url.replace(/\/\//g, '/') // no doubles
 	if(url.length > 0 && url[0] == '/') { // never at the beginning
-		url = url.slice(1);
+		url = url.slice(1)
 	}
 	if(url.length > 0 && url[url.length - 1] != '/') { // always at the end
-		url += '/';
+		url += '/'
 	}
-	return url;
+	return url
 }
 
 //
 // Internal router
 //
 
-component.internalRouter.attach('/' + applicationInternalName + '/', applicationInstance).matchingMode = Template.MODE_STARTS_WITH;
+component.internalRouter.attach('/' + applicationInternalName + '/', applicationInstance).matchingMode = Template.MODE_STARTS_WITH
 
 //
 // Hosts
@@ -48,58 +48,58 @@ component.internalRouter.attach('/' + applicationInternalName + '/', application
 // virtual host. See defaults/instance/hosts.js for more information.
 //
 
-var addTrailingSlash = new Redirector(applicationInstance.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT);
+var addTrailingSlash = new Redirector(applicationInstance.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)
 
-print(applicationInstance.name + ': ');
+print(applicationInstance.name + ': ')
 for(var i in hosts) {
-	var entry = hosts[i];
-	var host = entry[0];
-	var url = entry[1];
+	var entry = hosts[i]
+	var host = entry[0]
+	var url = entry[1]
 	if(!url) {
-		url = applicationDefaultURL;
+		url = applicationDefaultURL
 	}
-	print('"' + url + '" on ' + host.name);
-	host.attach(url, applicationInstance).matchingMode = Template.MODE_STARTS_WITH;
+	print('"' + url + '" on ' + host.name)
+	host.attach(url, applicationInstance).matchingMode = Template.MODE_STARTS_WITH
 	if(url != '/') {
 		if(url[url.length - 1] == '/') {
-			url = url.slice(0, -1);
+			url = url.slice(0, -1)
 		}
-		host.attach(url, addTrailingSlash).matchingMode = Template.MODE_EQUALS;
+		host.attach(url, addTrailingSlash).matchingMode = Template.MODE_EQUALS
 	}
 	if(i < hosts.length - 1) {
-		print(', ');
+		print(', ')
 	}
 }
-print('.\n');
+print('.\n')
 
-var attributes = applicationInstance.context.attributes;
+var attributes = applicationInstance.context.attributes
 
-attributes.put('com.threecrickets.prudence.component', component);
-var cache =  component.context.attributes.get('com.threecrickets.prudence.cache');
+attributes.put('com.threecrickets.prudence.component', component)
+var cache =  component.context.attributes.get('com.threecrickets.prudence.cache')
 if(cache) {
-	attributes.put('com.threecrickets.prudence.cache', cache);
+	attributes.put('com.threecrickets.prudence.cache', cache)
 }
 
 //
 // Inbound root
 //
 
-var router = new PrudenceRouter(applicationInstance.context);
-router.routingMode = Router.MODE_BEST_MATCH;
-applicationInstance.inboundRoot = router;
+var router = new PrudenceRouter(applicationInstance.context)
+router.routingMode = Router.MODE_BEST_MATCH
+applicationInstance.inboundRoot = router
 
 //
 // Add trailing slashes
 //
 
 for(var i in urlAddTrailingSlash) {
-	urlAddTrailingSlash[i] = fixURL(urlAddTrailingSlash[i]);
+	urlAddTrailingSlash[i] = fixURL(urlAddTrailingSlash[i])
 	if(urlAddTrailingSlash[i].length > 0) {
 		if(urlAddTrailingSlash[i][urlAddTrailingSlash[i].length - 1] == '/') {
 			// Remove trailing slash for pattern
-			urlAddTrailingSlash[i] = urlAddTrailingSlash[i].slice(0, -1);
+			urlAddTrailingSlash[i] = urlAddTrailingSlash[i].slice(0, -1)
 		}
-		router.attach(urlAddTrailingSlash[i], addTrailingSlash);
+		router.attach(urlAddTrailingSlash[i], addTrailingSlash)
 	}
 }
 
@@ -107,24 +107,24 @@ for(var i in urlAddTrailingSlash) {
 // Dynamic web
 //
 
-var languageManager = executable.manager;
-var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'js', dynamicWebMinimumTimeBetweenValidityChecks);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'javascript');
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable);
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.executionController', new PhpExecutionController()); // Adds PHP predefined variables
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.clientCachingMode', dynamicWebClientCachingMode);
+var languageManager = executable.manager
+var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'js', dynamicWebMinimumTimeBetweenValidityChecks)
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager)
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'javascript')
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument)
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource)
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable)
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.executionController', new PhpExecutionController()) // Adds PHP predefined variables
+attributes.put('com.threecrickets.prudence.GeneratedTextResource.clientCachingMode', dynamicWebClientCachingMode)
 
-var dynamicWeb = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'));
-dynamicWebBaseURL = fixURL(dynamicWebBaseURL);
-router.attachBase(dynamicWebBaseURL, dynamicWeb);
+var dynamicWeb = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
+dynamicWebBaseURL = fixURL(dynamicWebBaseURL)
+router.attachBase(dynamicWebBaseURL, dynamicWeb)
 
 if(dynamicWebDefrost) {
-	var defrostTasks = DefrostTask.forDocumentSource(dynamicWebDocumentSource, languageManager, 'javascript', true, true);
+	var defrostTasks = DefrostTask.forDocumentSource(dynamicWebDocumentSource, languageManager, 'javascript', true, true)
 	for(var i in defrostTasks) {
-		tasks.push(defrostTasks[i]);
+		tasks.push(defrostTasks[i])
 	}
 }
 
@@ -132,31 +132,31 @@ if(dynamicWebDefrost) {
 // Static web
 //
 
-var staticWeb = new Directory(applicationInstance.context, new File(applicationBasePath + staticWebBasePath).toURI().toString());
-staticWeb.listingAllowed = staticWebDirectoryListingAllowed;
-staticWeb.negotiatingContent = true;
-staticWebBaseURL = fixURL(staticWebBaseURL);
-router.attachBase(staticWebBaseURL, staticWeb);
+var staticWeb = new Directory(applicationInstance.context, new File(applicationBasePath + staticWebBasePath).toURI().toString())
+staticWeb.listingAllowed = staticWebDirectoryListingAllowed
+staticWeb.negotiatingContent = true
+staticWebBaseURL = fixURL(staticWebBaseURL)
+router.attachBase(staticWebBaseURL, staticWeb)
 
 //
 // Resources
 //
 
-var resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, 'js', resourcesMinimumTimeBetweenValidityChecks);
-attributes.put('com.threecrickets.prudence.DelegatedResource.languageManager', languageManager);
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultLanguageTag', 'javascript');
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName);
-attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource);
-attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable);
+var resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, 'js', resourcesMinimumTimeBetweenValidityChecks)
+attributes.put('com.threecrickets.prudence.DelegatedResource.languageManager', languageManager)
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultLanguageTag', 'javascript')
+attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName)
+attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource)
+attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable)
 
-resources = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'));
-resourcesBaseURL = fixURL(resourcesBaseURL);
-router.attachBase(resourcesBaseURL, resources);
+resources = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
+resourcesBaseURL = fixURL(resourcesBaseURL)
+router.attachBase(resourcesBaseURL, resources)
 
 if(resourcesDefrost) {
-	var defrostTasks = DefrostTask.forDocumentSource(resourcesDocumentSource, languageManager, 'javascript', false, true);
+	var defrostTasks = DefrostTask.forDocumentSource(resourcesDocumentSource, languageManager, 'javascript', false, true)
 	for(var i in defrostTasks) {
-		tasks.push(defrostTasks[i]);
+		tasks.push(defrostTasks[i])
 	}
 }
 
@@ -165,13 +165,13 @@ if(resourcesDefrost) {
 //
 
 if(showDebugOnError) {
-	var documentSources = new ArrayList();
-	documentSources.add(dynamicWebDocumentSource);
-	documentSources.add(resourcesDocumentSource);
-	attributes.put('com.threecrickets.prudence.SourceCodeResource.documentSources', documentSources);
-	var sourceCode = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.SourceCodeResource'));
-	showSourceCodeURL = fixURL(showSourceCodeURL);
-	router.attach(showSourceCodeURL, sourceCode).matchingMode = Template.MODE_EQUALS;
+	var documentSources = new ArrayList()
+	documentSources.add(dynamicWebDocumentSource)
+	documentSources.add(resourcesDocumentSource)
+	attributes.put('com.threecrickets.prudence.SourceCodeResource.documentSources', documentSources)
+	var sourceCode = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.SourceCodeResource'))
+	showSourceCodeURL = fixURL(showSourceCodeURL)
+	router.attach(showSourceCodeURL, sourceCode).matchingMode = Template.MODE_EQUALS
 }
 
 //
@@ -179,13 +179,13 @@ if(showDebugOnError) {
 //
 
 if(dynamicWebPreheat) {
-	var preheatTasks = PreheatTask.forDocumentSource(dynamicWebDocumentSource, component.context, applicationInternalName);
+	var preheatTasks = PreheatTask.forDocumentSource(dynamicWebDocumentSource, component.context, applicationInternalName)
 	for(var i in preheatTasks) {
-		tasks.push(preheatTasks[i]);
+		tasks.push(preheatTasks[i])
 	}
 }
 
 for(var i in preheatResources) {
-	var preheatResource = preheatResources[i];
-	tasks.push(new PreheatTask(component.context, applicationInternalName, preheatResource));
+	var preheatResource = preheatResources[i]
+	tasks.push(new PreheatTask(component.context, applicationInternalName, preheatResource))
 }

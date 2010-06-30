@@ -5,56 +5,56 @@
 importClass(
 	org.restlet.data.Reference,
 	org.restlet.data.MediaType,
-	com.threecrickets.prudence.util.DelegatedStatusService);
+	com.threecrickets.prudence.util.DelegatedStatusService)
 
 //
 // Settings
 //
 
-executeOrDefault(applicationBasePath + '/settings/', 'defaults/application/settings/');
+executeOrDefault(applicationBasePath + '/settings/', 'defaults/application/settings/')
 
 //
 // Application
 //
 
-executeOrDefault(applicationBasePath + '/application/', 'defaults/application/application/');
+executeOrDefault(applicationBasePath + '/application/', 'defaults/application/application/')
 
-applicationInstance.name = applicationName;
-applicationInstance.description = applicationDescription;
-applicationInstance.author = applicationAuthor;
-applicationInstance.owner = applicationOwner;
+applicationInstance.name = applicationName
+applicationInstance.description = applicationDescription
+applicationInstance.author = applicationAuthor
+applicationInstance.owner = applicationOwner
 
 //
 // StatusService
 //
 
-applicationInstance.statusService = new DelegatedStatusService(showDebugOnError ? showSourceCodeURL : null);
-applicationInstance.statusService.debugging = showDebugOnError;
-applicationInstance.statusService.homeRef = new Reference(applicationHomeURL);
-applicationInstance.statusService.contactEmail = applicationContactEmail;
+applicationInstance.statusService = new DelegatedStatusService(showDebugOnError ? showSourceCodeURL : null)
+applicationInstance.statusService.debugging = showDebugOnError
+applicationInstance.statusService.homeRef = new Reference(applicationHomeURL)
+applicationInstance.statusService.contactEmail = applicationContactEmail
 
 //
 // MetaData
 //
 
-applicationInstance.metadataService.addExtension('php', MediaType.TEXT_HTML);
+applicationInstance.metadataService.addExtension('php', MediaType.TEXT_HTML)
 
 //
 // Routing
 //
 
-executeOrDefault(applicationBasePath + '/routing/', 'defaults/application/routing/');
+executeOrDefault(applicationBasePath + '/routing/', 'defaults/application/routing/')
 
 //
 // Logging
 //
 
-applicationInstance.context.setLogger(applicationLoggerName);
+applicationInstance.context.setLogger(applicationLoggerName)
 
 //
 // Predefined Globals
 //
 
 for(var key in predefinedGlobals) {
-	attributes.put(key, predefinedGlobals[key]);
+	attributes.put(key, predefinedGlobals[key])
 }

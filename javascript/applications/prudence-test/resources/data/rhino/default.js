@@ -12,13 +12,13 @@
 
 importClass(
 	java.util.concurrent.locks.ReentrantReadWriteLock,
-	org.restlet.ext.json.JsonRepresentation);
+	org.restlet.ext.json.JsonRepresentation)
 
 // Include the context library
-document.execute('rhino/context/');
+document.execute('rhino/context/')
 
 // Include the JSON library
-document.execute('rhino/json2/');
+document.execute('rhino/json2/')
 
 // State
 //
@@ -27,18 +27,18 @@ document.execute('rhino/json2/');
 
 function getStateLock(conversation) {
 	return getContextAttribute(conversation, 'rhino.stateLock', function() {
-		return new ReentrantReadWriteLock();
-	});
+		return new ReentrantReadWriteLock()
+	})
 }
 
 function getState(conversation) {
 	return getContextAttribute(conversation, 'rhino.state', function() {
-		return {name: 'Coraline', media: 'Film', rating: 'A+', characters: ['Coraline', 'Wybie', 'Mom', 'Dad']};
-	});
+		return {name: 'Coraline', media: 'Film', rating: 'A+', characters: ['Coraline', 'Wybie', 'Mom', 'Dad']}
+	})
 }
 
 function setState(conversation, value) {
-	conversation.resource.context.attributes.put('rhino.state', value); 
+	conversation.resource.context.attributes.put('rhino.state', value) 
 }
 
 // This function is called when the resource is initialized. We will use it to set
@@ -50,8 +50,8 @@ function handleInit(conversation) {
 	// "Accept" attribute of their request header, specifying that any media type
 	// will do, in which case the first one we add will be used.
 	
-    conversation.addMediaTypeByName('application/json');
-    conversation.addMediaTypeByName('text/plain');
+    conversation.addMediaTypeByName('application/json')
+    conversation.addMediaTypeByName('text/plain')
 }
 
 // This function is called for the GET verb, which is expected to behave as a
@@ -69,26 +69,26 @@ function handleInit(conversation) {
 // list of supported languages and encoding.
 
 function handleGet(conversation) {
-	var r;
-	var stateLock = getStateLock(conversation);
-	var state = getState(conversation);
+	var r
+	var stateLock = getStateLock(conversation)
+	var state = getState(conversation)
 	
-	stateLock.readLock().lock();
+	stateLock.readLock().lock()
 	try {
-		r = JSON.stringify(state);
+		r = JSON.stringify(state)
 	}
 	finally {
-		stateLock.readLock().unlock();
+		stateLock.readLock().unlock()
 	}
 	
 	// Return a representation appropriate for the requested media type
 	// of the possible options we created in handleInit()
 
 	if(conversation.mediaTypeName == 'application/json') {
-		r = new JsonRepresentation(r);
+		r = new JsonRepresentation(r)
 	}
 	
-	return r;
+	return r
 }
 
 // This function is called for the POST verb, which is expected to behave as a
@@ -111,21 +111,21 @@ function handlePost(conversation) {
 	// in this case the JSON library specifically expects a JavaScript string
 	// object.
 	
-	var update = JSON.parse(String(conversation.entity.text));
-	var stateLock = getStateLock(conversation);
-	var state = getState(conversation);
+	var update = JSON.parse(String(conversation.entity.text))
+	var stateLock = getStateLock(conversation)
+	var state = getState(conversation)
 	
-	stateLock.writeLock().lock();
+	stateLock.writeLock().lock()
 	try {
 		for(var key in update) {
-			state[key] = update[key];
+			state[key] = update[key]
 		}
 	}
 	finally {
-		stateLock.writeLock().unlock();
+		stateLock.writeLock().unlock()
 	}
 	
-	return handleGet(conversation);
+	return handleGet(conversation)
 }
 
 // This function is called for the PUT verb, which is expected to behave as a
@@ -143,10 +143,10 @@ function handlePost(conversation) {
 function handlePut(conversation) {
 	// See comment in handlePost()
 
-	var update = JSON.parse(String(conversation.entity.text));
-	setState(conversation, update);
+	var update = JSON.parse(String(conversation.entity.text))
+	setState(conversation, update)
 	
-	return handleGet(conversation);
+	return handleGet(conversation)
 }
 
 // This function is called for the DELETE verb, which is expected to behave as a
@@ -158,7 +158,7 @@ function handlePut(conversation) {
 
 function handleDelete(conversation) {
 
-	setState(conversation, {});
+	setState(conversation, {})
 	
-	return null;
+	return null
 }
