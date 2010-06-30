@@ -10,7 +10,7 @@
 //
 
 importClass(
-	org.restlet.routing.VirtualHost);
+	org.restlet.routing.VirtualHost)
 
 //
 // All
@@ -18,10 +18,10 @@ importClass(
 // Our "all" host will accept all incoming requests.
 //
 
-var allHost = new VirtualHost(component.context);
-allHost.name = 'all hosts';
+var allHost = new VirtualHost(component.context)
+allHost.name = 'all hosts'
 
-component.hosts.add(allHost);
+component.hosts.add(allHost)
 
 //
 // mysite.org
@@ -30,13 +30,13 @@ component.hosts.add(allHost);
 // a specific set of domains.
 //
 
-var mysiteHost = new VirtualHost(component.context);
-mysiteHost.name = 'mysite.org';
-mysiteHost.hostScheme = 'http';
-mysiteHost.hostDomain = 'mysite.org|www.mysite.org';
-mysiteHost.hostPort = '80';
+var mysiteHost = new VirtualHost(component.context)
+mysiteHost.name = 'mysite.org'
+mysiteHost.hostScheme = 'http'
+mysiteHost.hostDomain = 'mysite.org|www.mysite.org'
+mysiteHost.hostPort = '80'
 
-component.hosts.add(mysiteHost);
+component.hosts.add(mysiteHost)
 
 //
 // Default Host
@@ -46,4 +46,4 @@ component.hosts.add(mysiteHost);
 // routing.js.
 //
 
-component.defaultHost = allHost;
+component.defaultHost = allHost

@@ -16,7 +16,7 @@
 
 importClass(
 	org.restlet.Server,
-	org.restlet.data.Protocol);
+	org.restlet.data.Protocol)
 
 //
 // Default HTTP server
@@ -24,14 +24,14 @@ importClass(
 // Binds to the machine's default IP address.
 //
 
-var defaultServer = new Server(Protocol.HTTP, 8080);
-defaultServer.name = 'default';
-component.servers.add(defaultServer);
+var defaultServer = new Server(Protocol.HTTP, 8080)
+defaultServer.name = 'default'
+component.servers.add(defaultServer)
 
 // Add support for the X-FORWARDED-FOR header used by proxies, such as Apache's
 // mod_proxy. This guarantees that request.clientInfo.upstreamAddress returns
 // the upstream address behind the proxy.
-defaultServer.context.parameters.add('useForwardedForHeader', 'true');
+defaultServer.context.parameters.add('useForwardedForHeader', 'true')
 
 //
 // HTTP server bound to a specific IP address
@@ -41,27 +41,27 @@ defaultServer.context.parameters.add('useForwardedForHeader', 'true');
 // that it's the interface open to the Internet at large.
 //
 
-//var worldServer = new Server(Protocol.HTTP, '192.168.1.2', 80);
-//worldServer.name = 'world';
-//component.servers.add(worldServer);
+//var worldServer = new Server(Protocol.HTTP, '192.168.1.2', 80)
+//worldServer.name = 'world'
+//component.servers.add(worldServer)
 
 //
 // Welcome
 //
 
 for(var i = 0; i < component.servers.size(); i++) {
-	var server = component.servers.get(i);
+	var server = component.servers.get(i)
 	if(server.address) {
-		print('Listening on ' + server.address + ' port ' + server.port + ' for ');
+		print('Listening on ' + server.address + ' port ' + server.port + ' for ')
 	} else {
-		print('Listening on port ' + server.port + ' for ');
+		print('Listening on port ' + server.port + ' for ')
 	}
 	for(var j = 0; j < server.protocols.size(); j++) {
-		protocol = server.protocols.get(j);
+		var protocol = server.protocols.get(j)
 		if(j < server.protocols.size() - 1) {
-			print(', ');
+			print(', ')
 		}
-		print(protocol);
+		print(protocol)
 	}
-	print('.\n');
+	print('.\n')
 }
