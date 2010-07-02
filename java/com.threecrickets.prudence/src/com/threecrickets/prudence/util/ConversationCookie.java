@@ -125,7 +125,7 @@ public class ConversationCookie extends Cookie
 		originalCookie = null;
 		this.cookieSettings = cookieSettings;
 		changed = true;
-		setName( name );
+		super.setName( name );
 	}
 
 	//
@@ -256,7 +256,7 @@ public class ConversationCookie extends Cookie
 	 * Sets the cookie for deletion if it already exists (equivalent to saving
 	 * with maxAge=0), or cancels a new cookie.
 	 */
-	public void delete()
+	public void remove()
 	{
 		if( originalCookie != null )
 		{

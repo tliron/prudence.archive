@@ -4776,6 +4776,31 @@ In Prudence 1.0, the filename extension hiding and trailing slash requirement
  A future version of Prudence may extend these features to all resources.
 \end_layout
 
+\begin_layout Paragraph
+Overriding Pretty URIs
+\end_layout
+
+\begin_layout Standard
+You can override all the automatic prettifying techniques mentioned above
+ by explicitly capturing URIs (capturing is explained below).
+ For example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+router.capture('sitemap.xml', 'sitemap/')
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection
 Filename Extensions
 \end_layout
@@ -5101,17 +5126,12 @@ status open
 
 \begin_layout Plain Layout
 
-if(!conversation.internal){
+if(!conversation.internal) {
 \end_layout
 
 \begin_layout Plain Layout
 
-	conversation.statusCode = 404; // resource not found
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.stop();
+	conversation.statusCode = 404 // resource not found
 \end_layout
 
 \begin_layout Plain Layout
@@ -5181,7 +5201,7 @@ document.execute('defaults/application/routing/');
 
 \begin_layout Plain Layout
 
-router.captureOther('/forum/help/{topic}/', 'wackyhelp', '/help/');
+router.captureOther('/forum/help/{topic}/', 'wackyhelp', '/help/')
 \end_layout
 
 \end_inset
@@ -5204,7 +5224,7 @@ status open
 
 \begin_layout Plain Layout
 
-router.capture('message/', 'message/{m}/');
+router.capture('message/', 'message/{m}/')
 \end_layout
 
 \end_inset
@@ -5331,7 +5351,7 @@ status open
 
 \begin_layout Plain Layout
 
-router.capture('data/client/', 'data/client/{emt}/');
+router.capture('data/client/', 'data/client/{emt}/')
 \end_layout
 
 \end_inset
@@ -5437,7 +5457,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/instance/routing/');
+document.execute('defaults/instance/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -5456,7 +5476,7 @@ component.statusService.capture(404, 'wackyhelp', 'help/main/',
 
 \begin_layout Plain Layout
 
-	component.context);
+	component.context)
 \end_layout
 
 \begin_layout Plain Layout
@@ -5475,7 +5495,7 @@ component.statusService.captureHostRoot(500, 'wackywiki', 'oops/',
 
 \begin_layout Plain Layout
 
-	component.context);
+	component.context)
 \end_layout
 
 \end_inset
@@ -5499,7 +5519,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/');
+document.execute('defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -5518,7 +5538,7 @@ applicationInstance.statusService.capture(404, 'wackyhelp', 'help/main/',
 
 \begin_layout Plain Layout
 
-	applicationInstance.context);
+	applicationInstance.context)
 \end_layout
 
 \end_inset
@@ -5594,12 +5614,12 @@ status open
 
 \begin_layout Plain Layout
 
-conversation.response.redirectSeeOther('../contact-us/');
+conversation.response.redirectSeeOther('../contact-us/')
 \end_layout
 
 \begin_layout Plain Layout
 
-conversation.stop();
+conversation.stop()
 \end_layout
 
 \begin_layout Plain Layout
@@ -5630,17 +5650,17 @@ status open
 
 \begin_layout Plain Layout
 
-conversation.response.locationRef = 'http://wackywiki.org/report-a-bug/';
+conversation.response.locationRef = 'http://wackywiki.org/report-a-bug/'
 \end_layout
 
 \begin_layout Plain Layout
 
-conversation.statusCode = 302;
+conversation.statusCode = 302
 \end_layout
 
 \begin_layout Plain Layout
 
-conversation.stop();
+conversation.stop()
 \end_layout
 
 \end_inset
@@ -5686,7 +5706,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/');
+document.execute('defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -5700,7 +5720,7 @@ document.execute('defaults/application/routing/');
 
 \begin_layout Plain Layout
 
-importClass(org.restlet.resource.Directory);
+importClass(org.restlet.resource.Directory)
 \end_layout
 
 \begin_layout Plain Layout
@@ -5720,7 +5740,7 @@ router.attach('forum/info/',
 
 \begin_layout Plain Layout
 
-	.matchingMode = Template.MODE_STARTS_WITH;
+	.matchingMode = Template.MODE_STARTS_WITH
 \end_layout
 
 \begin_layout Plain Layout
@@ -5744,7 +5764,7 @@ router.attachBase('forum/help/',
 
 \begin_layout Plain Layout
 
-	'file:///user/data/files/'));
+	'file:///user/data/files/'))
 \end_layout
 
 \begin_layout Plain Layout
@@ -5758,7 +5778,7 @@ router.attachBase('forum/help/',
 
 \begin_layout Plain Layout
 
-router.attach('forum/help/{topic}/', 'org.wackywiki.HelpAccessResource');
+router.attach('forum/help/{topic}/', 'org.wackywiki.HelpAccessResource')
 \end_layout
 
 \begin_layout Plain Layout
@@ -5772,7 +5792,7 @@ router.attach('forum/help/{topic}/', 'org.wackywiki.HelpAccessResource');
 
 \begin_layout Plain Layout
 
-router.detach(staticWeb);
+router.detach(staticWeb)
 \end_layout
 
 \end_inset
@@ -5809,7 +5829,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/');
+document.execute('defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -5818,7 +5838,7 @@ document.execute('defaults/application/routing/');
 
 \begin_layout Plain Layout
 
-importClass(org.restlet.routing.Redirector);
+importClass(org.restlet.routing.Redirector)
 \end_layout
 
 \begin_layout Plain Layout
@@ -5842,7 +5862,7 @@ router.attach('bug/',
 
 \begin_layout Plain Layout
 
-'http://wackywiki.org/contact-us/bug/'));
+'http://wackywiki.org/contact-us/bug/'))
 \end_layout
 
 \begin_layout Plain Layout
@@ -5871,7 +5891,7 @@ router.attach('forum/',
 
 \begin_layout Plain Layout
 
-	.matchingMode = Template.MODE_STARTS_WITH;
+	.matchingMode = Template.MODE_STARTS_WITH
 \end_layout
 
 \begin_layout Plain Layout
@@ -5895,7 +5915,7 @@ router.attach('contact/{reason}/',
 
 \begin_layout Plain Layout
 
-	'http://wackywiki.org/contact-us/{reason}'));
+	'http://wackywiki.org/contact-us/{reason}'))
 \end_layout
 
 \end_inset
@@ -7397,9 +7417,9 @@ This is initialized as a list (not a map) of cookies sent from the client.
 \begin_layout Standard
 If you want to ask the client to change any of them, be sure to call save()
  on the cookie in order to send it in the response.
- You can also call delete() to ask the client to delete the cookie (no need
+ You can also call remove() to ask the client to delete the cookie (no need
  to call save in that case; internally sets maxAge to zero).
- Note that you can call save() and delete() as many times as you like, and
+ Note that you can call save() and remove() as many times as you like, and
  that only the last changes will be sent in the response.
 \end_layout
 
@@ -7468,6 +7488,14 @@ ated connections (defaults to false)
 
 \begin_layout Itemize
 cookie.comment: some clients store this, some discard it
+\end_layout
+
+\begin_layout Paragraph
+conversation.getCookie
+\end_layout
+
+\begin_layout Standard
+Gets a cookie by its name, or returns null if it doesn't exist.
 \end_layout
 
 \begin_layout Paragraph

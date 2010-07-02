@@ -90,7 +90,11 @@ public class ConversationServiceBase<R extends ServerResource>
 	 */
 	public Reference getReference()
 	{
-		return resource.getReference();
+		Request request = resource.getRequest();
+		Reference reference = CaptiveRedirector.getCaptiveReference( request );
+		if( reference == null )
+			reference = request.getResourceRef();
+		return reference;
 	}
 
 	/**
@@ -105,6 +109,19 @@ public class ConversationServiceBase<R extends ServerResource>
 		if( conversationCookies == null )
 			conversationCookies = ConversationCookie.wrapCookies( resource );
 		return conversationCookies;
+	}
+
+	/**
+	 * Gets a conversation cookie by name.
+	 * 
+	 * @return The conversation cookie or null
+	 */
+	public ConversationCookie getCookie( String name )
+	{
+		for( ConversationCookie cookie : getCookies() )
+			if( cookie.getName().equals( name ) )
+				return cookie;
+		return null;
 	}
 
 	/**
