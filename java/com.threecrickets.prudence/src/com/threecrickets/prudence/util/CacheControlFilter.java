@@ -93,7 +93,7 @@ public class CacheControlFilter extends Filter
 	//
 
 	/**
-	 * @return A map of media types to its max age, in seconds, or a negative
+	 * @return A map of media types to their max age, in seconds, or a negative
 	 *         number to signify "no-cache"
 	 */
 	public Map<MediaType, Number> getMaxAgeForMediaType()

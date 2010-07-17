@@ -187,7 +187,7 @@
 	</target>
 
 	<target name="javadoc-unless" description="Create Prudence API docs" unless="javadoc-present">
-		<javadoc access="protected" author="true" excludepackagenames="**.internal.*,**.test.*" destdir="${tmp}/api" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" sourcepath="${java-src}" splitindex="true" use="true" version="true" windowtitle="Prudence 1.0-${revision.max}" doctitle="Prudence 1.0-${revision.max}" verbose="true">
+		<javadoc sourcepath="${java-src}" source="1.5" excludepackagenames="**.internal.*,**.test.*" destdir="${tmp}/api" stylesheetfile="${documentation}/soft-cricket-api.css" windowtitle="Prudence 1.0-${revision.max}" doctitle="Prudence 1.0-${revision.max}" access="protected" author="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" splitindex="true" use="true" version="true" verbose="true">
 			<link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
 			<link href="http://java.sun.com/javase/6/docs/api/" />
 			<link href="http://threecrickets.com/scripturian/api/" />

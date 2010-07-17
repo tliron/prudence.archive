@@ -21,9 +21,9 @@ import org.restlet.resource.ServerResource;
 import org.restlet.util.Series;
 
 /**
- * A modifiable extensions of a regular cookie. Tracks modifications, and upon
- * calling {@link #save()} stores them as a cookie setting, likely in the
- * {@link Response}. Also supports cookie deletion via {@link #delete()}.
+ * A modifiable extension of a regular {@link Cookie}. Tracks modifications, and
+ * upon calling {@link #save()} stores them as a {@link CookieSetting}, likely
+ * in the {@link Response}. Also supports cookie deletion via {@link #remove()}.
  * 
  * @author Tal Liron
  */
