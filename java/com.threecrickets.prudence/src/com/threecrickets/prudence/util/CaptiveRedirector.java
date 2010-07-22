@@ -125,8 +125,16 @@ public class CaptiveRedirector extends Redirector
 			captiveReference = new Reference( hostRef, request.getResourceRef() );
 		}
 		else
-			captiveReference = new Reference( request.getRootRef(), request.getResourceRef() );
+		{
+			Reference baseRef = request.getRootRef();
+			if( baseRef == null )
+				// The root reference could be null (in RIAP)
+				baseRef = request.getOriginalRef();
+			captiveReference = new Reference( baseRef, request.getResourceRef() );
+		}
+
 		setCaptiveReference( request, captiveReference );
+
 		super.handle( request, response );
 	}
 

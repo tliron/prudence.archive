@@ -20,7 +20,7 @@ log4j				1.2.15
 mysqlconnector		5.1.8
 pygments			1.1.1
 quercus				4.0.3
-restlet (JSE)		2.0 (Revision 6720)
+restlet (JSE)		2.0.0
 rhino				1.7R2
 servlet (tomcat)	6.0.26
 scripturian			1.0 (Revision 214)
