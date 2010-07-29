@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.io.SequenceInputStream;
 import java.util.Arrays;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.restlet.Context;
 import org.restlet.Request;
@@ -200,15 +201,11 @@ public abstract class UnifyMinifyFilter extends Filter
 			if( validate )
 			{
 				long now = System.currentTimeMillis();
-				long lastValidityCheck = this.lastValidityCheck;
+				long lastValidityCheck = this.lastValidityCheck.get();
 				if( lastValidityCheck == 0 || ( now - lastValidityCheck > minimumTimeBetweenValidityChecks ) )
 				{
-					// Another thread might have already changed
-					// this.lastValidityCheck, but there's no harm in changing
-					// again
-					this.lastValidityCheck = now;
-
-					unify( new File( sourceDirectory, path ).getParentFile(), minify );
+					if( this.lastValidityCheck.compareAndSet( lastValidityCheck, now ) )
+						unify( new File( sourceDirectory, path ).getParentFile(), minify );
 				}
 			}
 		}
@@ -271,7 +268,7 @@ public abstract class UnifyMinifyFilter extends Filter
 	/**
 	 * See {@link #getMinimumTimeBetweenValidityChecks()}
 	 */
-	private volatile long lastValidityCheck;
+	private final AtomicLong lastValidityCheck = new AtomicLong();
 
 	/**
 	 * Filename filter for source files.
