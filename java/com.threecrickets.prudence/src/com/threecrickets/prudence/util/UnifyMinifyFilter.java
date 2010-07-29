@@ -203,6 +203,9 @@ public abstract class UnifyMinifyFilter extends Filter
 				long lastValidityCheck = this.lastValidityCheck;
 				if( lastValidityCheck == 0 || ( now - lastValidityCheck > minimumTimeBetweenValidityChecks ) )
 				{
+					// Another thread might have already changed
+					// this.lastValidityCheck, but there's no harm in changing
+					// again
 					this.lastValidityCheck = now;
 
 					unify( new File( sourceDirectory, path ).getParentFile(), minify );
