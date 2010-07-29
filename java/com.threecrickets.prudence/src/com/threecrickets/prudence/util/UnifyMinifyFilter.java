@@ -21,7 +21,6 @@ import java.io.OutputStream;
 import java.io.SequenceInputStream;
 import java.util.Arrays;
 import java.util.Vector;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.restlet.Context;
 import org.restlet.Request;
@@ -30,7 +29,6 @@ import org.restlet.Restlet;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.routing.Filter;
-
 
 /**
  * A {@link Filter} that automatically unifies and/or minifies source files,
@@ -79,7 +77,7 @@ public abstract class UnifyMinifyFilter extends Filter
 		this.unifiedFilename = unifiedFilename + this.sourceExtension;
 		this.unifiedMinifiedFilename = unifiedFilename + this.minifiedSourceExtension + this.sourceExtension;
 		this.sourceDirectory = sourceDirectory;
-		this.minimumTimeBetweenValidityChecks.set( minimumTimeBetweenValidityChecks );
+		this.minimumTimeBetweenValidityChecks = minimumTimeBetweenValidityChecks;
 	}
 
 	//
@@ -94,7 +92,7 @@ public abstract class UnifyMinifyFilter extends Filter
 	 */
 	public long getMinimumTimeBetweenValidityChecks()
 	{
-		return minimumTimeBetweenValidityChecks.get();
+		return minimumTimeBetweenValidityChecks;
 	}
 
 	/**
@@ -103,7 +101,7 @@ public abstract class UnifyMinifyFilter extends Filter
 	 */
 	public void setMinimumTimeBetweenValidityChecks( long minimumTimeBetweenValidityChecks )
 	{
-		this.minimumTimeBetweenValidityChecks.set( minimumTimeBetweenValidityChecks );
+		this.minimumTimeBetweenValidityChecks = minimumTimeBetweenValidityChecks;
 	}
 
 	//
@@ -202,10 +200,10 @@ public abstract class UnifyMinifyFilter extends Filter
 			if( validate )
 			{
 				long now = System.currentTimeMillis();
-				long lastValidityCheck = this.lastValidityCheck.get();
-				if( lastValidityCheck == 0 || ( now - lastValidityCheck > minimumTimeBetweenValidityChecks.get() ) )
+				long lastValidityCheck = this.lastValidityCheck;
+				if( lastValidityCheck == 0 || ( now - lastValidityCheck > minimumTimeBetweenValidityChecks ) )
 				{
-					this.lastValidityCheck.set( now );
+					this.lastValidityCheck = now;
 
 					unify( new File( sourceDirectory, path ).getParentFile(), minify );
 				}
@@ -265,12 +263,12 @@ public abstract class UnifyMinifyFilter extends Filter
 	/**
 	 * See {@link #getMinimumTimeBetweenValidityChecks()}
 	 */
-	private final AtomicLong minimumTimeBetweenValidityChecks = new AtomicLong();
+	private volatile long minimumTimeBetweenValidityChecks;
 
 	/**
 	 * See {@link #getMinimumTimeBetweenValidityChecks()}
 	 */
-	private final AtomicLong lastValidityCheck = new AtomicLong();
+	private volatile long lastValidityCheck;
 
 	/**
 	 * Filename filter for source files.
