@@ -1,4 +1,4 @@
-#LyX 1.6.6 created this file. For more info see http://www.lyx.org/
+#LyX 1.6.7 created this file. For more info see http://www.lyx.org/
 \lyxformat 345
 \begin_document
 \begin_header
@@ -9626,16 +9626,19 @@ name "../restlet-container/"
 
 \end_layout
 
+\begin_layout Subsection
+Why Prudence?
+\end_layout
+
 \begin_layout Standard
-Prudence brings the power of REST and the JVM to programmers in other languages,
- but has a lot to offer to Java/Restlet developers.
+Prudence brings the power of REST and the JVM to programmers in six dynamic
+ languages, but also has a lot to offer to Java/Restlet developers.
 \end_layout
 
 \begin_layout Standard
 Though applications can be written in Prudence without a single line of
  Java code, Prudence also acts as a useful container for existing Restlet
- applications, Restlet resources or just restlets, written in Java or other
- JVM languages.
+ applications, Restlet resources or restlets written in Java.
 \end_layout
 
 \begin_layout Standard
@@ -9693,7 +9696,7 @@ reference "../logging/"
  the Java build process, using live, dynamic languages in simple text source
  that you can modify on-the-fly.
  Deploying your Restlet application to a Prudence instance can be as simple
- as plopping in your jar.
+ as copying a zip file to a Prudence container.
 \end_layout
 
 \begin_layout Standard
@@ -9701,7 +9704,7 @@ This need is also fulfilled by servlet and Java Enterprise Edition (JEE)
  containers, such as Tomcat, Resin and JBoss.
  Indeed, Restlet has a JEE edition, and good support for servlets.
  However, if all you need is a deployment container, Prudence can serve
- as a straightforward, pure REST alternative.
+ as a straightforward, pure REST alternative to JEE.
  
 \end_layout
 
@@ -9720,12 +9723,11 @@ reference "../generating-html/"
 )
 \bar default
  support.
- It may likely surpass JSP for your purposes.
+ It may surpass JSP for your purposes.
  In particular, it is based on Restlet, which you already know and love,
  giving you the entire Restlet API at your fingertips.
  It also lets you use many wonderful languages other than Java for scriptlets.
- For example, we at Three Crickets are mad about Clojure.
- For simpler templating, Velocity and Succinct are built in and immediately
+ For simpler templating, Velocity and Succinct are also built in and immediately
  ready to use.
 \end_layout
 
@@ -9744,8 +9746,8 @@ Easy deployment
 
 \begin_deeper
 \begin_layout Enumerate
-Boot scripts: avoid weird configuration formats and start your Restlet component
- exactly as you want (your choice among 6 languages)
+Boot scripts: avoid weird (XML) configuration formats and start your Restlet
+ component exactly as you want (your choice from six languages)
 \end_layout
 
 \begin_layout Enumerate
@@ -9799,8 +9801,8 @@ Powerful HTML generation platform, like JSP/ASP/PHP (again, 100% Restlet-based)
 
 \begin_deeper
 \begin_layout Enumerate
-Your choice among 6 languages, including mixing languages and template engines
- (Velocity, Succinct) on one page
+Your choice from six languages, including mixing languages and template
+ engines (Velocity, Succinct) on one page
 \end_layout
 
 \begin_layout Enumerate
@@ -10048,6 +10050,18 @@ application.useTransactions = true;
 How to Choose a Flavor?
 \end_layout
 
+\begin_layout Standard
+Prudence was designed around a strong belief in the power of the JVM coupled
+ with the acknowledgment that the Java language does not suit every development
+ project.
+ Thus, Prudence is available in six mouthwatering flavors.
+ Pick the one that works best 
+\emph on
+for you
+\emph default
+!
+\end_layout
+
 \begin_layout Subsection
 Python (Succulent!)
 \end_layout
@@ -10062,8 +10076,8 @@ target "http://www.python.org/"
 
  is a powerful object-oriented language, far richer in features than JavaScript
  and PHP, with many high-quality core and 3rd party libraries.
- Python has already proven itself as a web programming language with many
- excellent platforms.
+ Python has already proven itself as a web programming language, and has
+ many excellent web platforms that make good use of its strengths.
 \end_layout
 
 \begin_layout Standard
@@ -10151,7 +10165,7 @@ Clojure (Scrumptious!)
 \begin_layout Standard
 Prudence's only functional flavor is a Lisp designed from the ground up
  for high concurrency.
- If you're serious about scaling, 
+ If you're serious about multithreading, 
 \begin_inset CommandInset href
 LatexCommand href
 name "Clojure"
@@ -10161,15 +10175,15 @@ target "http://clojure.org/"
 
  is the way to go.
  Though new, Clojure is based on one of the oldest programming languages
- around, and enjoys a rich tradition of elegant solutions for tough programming
- challenges.
+ around, and enjoys a long, rich tradition of elegant solutions for tough
+ programming challenges.
 \end_layout
 
 \begin_layout Standard
 Clojure embraces the JVM, but also has a growing collection of nifty ``contrib''
- libraries---all included in Prudence.
+ libraries---all included in Prudence---that make the JVM core more lispy.
  In the included example application, we show how to use Clojure's SQL library
- to access a data backend.
+ to elegantly access a data backend.
 \end_layout
 
 \begin_layout Subsection
@@ -10196,8 +10210,6 @@ target "http://www.ecmascript.org/"
  because it's the same language used by web browsers and other client platforms.
  Web developers are already proficient in JavaScript, and can quickly be
  brought on board to a server-side project.
- JavaScript lets you to write server-side and client-side code in the same
- language, and have both sides share code.
  Couple it with 
 \begin_inset CommandInset href
 LatexCommand href
@@ -10206,20 +10218,20 @@ target "http://www.json.org/"
 
 \end_inset
 
-, and you're on solid ground for rapid development.
+ and JSON-based document databases, and you're on solid, consistent ground
+ for rapid development.
  Of all the web programming languages, it's the one most widely deployed
  and with the most secure future.
 \end_layout
 
 \begin_layout Standard
-JavaScript is an under-appreciated language.
+It's also an under-appreciated language, and the object of undeserved scorn.
  Though not as feature-rich as Python or Ruby, it's still very powerful.
  Its straightforward closure/prototype mechanisms allow it to support object-ori
 entation, namespaces and other paradigms.
- Unfortunately, it has been the target of much undeserved angst due to the
- fickleness of client-side development.
- Working with the browser DOM, testing with cross-browser HTML rendering
- quirks---these are the not the fault of the language itself.
+ Unfortunately, client environments have proven painfully fickle: working
+ with the browser DOM, testing with cross-browser HTML rendering quirks---but
+ these are the not the fault of the language itself.
  They are also not relevant to server-side development with Prudence.
  If you've been burned by JavaScript on the client, try it on the server
  via Prudence: you might be pleasantly surprised.
@@ -10243,7 +10255,7 @@ target "http://www.php.net/"
 
 \end_inset
 
- is, of course, ubiquitous.
+ is ubiquitous.
  It's a simple language with the most mature libraries of any web programming
  language, and programmers are available with years of experience.
  It's also designed from the ground up as a programming language for the
@@ -10323,7 +10335,7 @@ name "../rest/"
 \begin_layout Standard
 There's a lot of buzz about REST, but also a lot confusion about what it
  is and what it's good for.
- The essay attempts to convey its simple essence.
+ This essay attempts to convey REST's simple essence.
 \end_layout
 
 \begin_layout Standard
@@ -10332,7 +10344,7 @@ Let's start, then, not at REST, but at an attempt to create a new architecture
  Our goals are for it to be minimal, straightforward, and still have enough
  features to be productive.
  We want to learn some lessons from the failures of other, more elaborate
- and ``complete'' architectures.
+ and complete architectures.
 \end_layout
 
 \begin_layout Standard
@@ -10347,9 +10359,10 @@ Resources
 Our base unit is a ``resource,'' which, like an object in object-oriented
  architectures, encapsulates data with some functionality.
  However, we've learned from object-orientation that implementing arbitrary
- interfaces is a recipe for enormous complexity.
- Instead, then, we'll keep it simple and define a limited interface that
- would still be useful enough.
+ interfaces is a recipe for complexity: proxy generation, support for arbitrary
+ types, marshalling, etc.
+ Instead, then, we'll keep it simple and define a limited, unified interface
+ that would be just useful enough.
 \end_layout
 
 \begin_layout Standard
@@ -10366,7 +10379,7 @@ Identifiers
 \end_layout
 
 \begin_layout Standard
-First, let's start with a way of discriminating our resources.
+First, let's start with a way of identifying our resources.
  We'll define a name-based address space where our resources live.
  Each resource is ``attached'' to one or more addresses.
  We'll allow for ``/'' as a customary separator to allow for hierarchical
@@ -10378,6 +10391,11 @@ First, let's start with a way of discriminating our resources.
 \begin_inset listings
 inline false
 status open
+
+\begin_layout Plain Layout
+
+/animal/dog/3
+\end_layout
 
 \begin_layout Plain Layout
 
@@ -10403,7 +10421,10 @@ status open
 In the above, we've allowed for different kinds of animals, a way of referencing
  individual animals, and a way of referencing specific aspects of these
  animals.
- Let's now go over CRUD operations in order of complexity.
+\end_layout
+
+\begin_layout Standard
+Let's now go over CRUD operations in increasing order of complexity.
 \end_layout
 
 \begin_layout Subsection
@@ -10413,15 +10434,15 @@ Delete
 \begin_layout Standard
 ``Delete'' is the most trivial operation.
  After sending ``delete'' to an identifier, we expect it to not exist anymore.
- Whether or not sub-resources in our hierarchy can exist or not, we'd leave
- up to individual implementations.
+ Whether sub-resources in our hierarchy can exist or not, we'll leave up
+ to individual implementations.
  For example, deleting ``/animal/cat/12/image'' may or may not delete ``/animal/
 cat/12/image/large''.
 \end_layout
 
 \begin_layout Standard
 Note that we don't care about atomicity here, because we don't expect anything
- after our ``delete'' operation.
+ to happen after our ``delete'' operation.
  A million changes can happen to our cat before our command is processed,
  but they're all forgotten after ``delete.'' (See ``update,'' below, for
  a small caveat.)
@@ -10432,16 +10453,16 @@ Read
 \end_layout
 
 \begin_layout Standard
-``Read'' is a bit more complicated than ``delete.'' Since we expect our resource
- to change, we want to make sure that there's some kind of way to mark which
- version we are reading.
+``Read'' is a bit more complicated than ``delete.'' Since our resource might
+ be changed by other clients, we want to make sure that there's some kind
+ of way to mark which version we are reading.
  This will allow us to avoid unnecessary reads if there hasn't been any
  change.
 \end_layout
 
 \begin_layout Standard
-We'll need our resource-oriented architecture to support some kind of version
- tagging feature.
+Thus, we'll need our resource-oriented architecture to support some kind
+ of version tagging feature.
 \end_layout
 
 \begin_layout Subsection
@@ -10464,8 +10485,8 @@ Actually, we've oversimplified our earlier definition of ``delete.'' In some
 \end_layout
 
 \begin_layout Standard
-We'll need our resource-oriented architecture to support a ``conditional''
- feature.
+So, we'll need our resource-oriented architecture to support a ``conditional''
+ operation feature.
  
 \end_layout
 
@@ -10475,7 +10496,8 @@ Create
 
 \begin_layout Standard
 This is our most complex operation.
- Our first problem is that our identifier might not exist yet.
+ Our first problem is that our identifier might not exist yet, or might
+ already be attached to a resource.
  One approach could be to try identifiers in sequence:
 \end_layout
 
@@ -10551,12 +10573,12 @@ Create: /animal/cat/15 -> Success!
 \end_layout
 
 \begin_layout Standard
-Of course, we can also have ``/animal/cat/next'' return IDs that are never
- used and avoid duplications.
+Of course, we can also have ``/animal/cat/next'' return unique IDs (such
+ as GUIDs) to avoid duplications.
  If we never create our cat, they will be wasted, though.
  The main problem with this approach is that it requires two calls per creation:
  a ``read,'' and then a ``create.'' We can handle this in one call by allowing
- for ``partial'' creation:
+ for ``partial'' creation, a ``create'' linked with an intrinsic ``read'':
 \end_layout
 
 \begin_layout Standard
@@ -10567,7 +10589,7 @@ status open
 \begin_layout Plain Layout
 
 Create: /animal/cat -> We send the data for the cat without the ID, and
- get back the ID
+ get back the same cat with an ID
 \end_layout
 
 \end_inset
@@ -10578,10 +10600,10 @@ Create: /animal/cat -> We send the data for the cat without the ID, and
 \begin_layout Standard
 Other solutions exist, too.
  The point of this discussion is to show you that ``create'' is not trivial,
- but also that solutions to ``create'' exist within the resource-oriented
- architecture we've defined.
- ``Create,'' though complex, does not demand any new features.
- 
+ but also that solutions to ``create'' already exist within the resource-oriente
+d architecture we've defined.
+ ``Create,'' though programmatically complex, does not require any new architect
+ural features.
 \end_layout
 
 \begin_layout Subsection
@@ -10634,14 +10656,14 @@ status open
 \end_layout
 
 \begin_layout Standard
-The above would return no more than 100 cats: from the 100th, to the 200th.
+We can define the above to return no more than 100 cats: from the 100th,
+ to the 200th.
  There's a slight problem in this solution: the burden is on whatever component
  in our system handles mapping identifiers to resources.
  This is not terrible, but if we want our system to be more generic, it
  could help if things like ``100 to 200'' could be handled by our resource
  more directly.
- For this convenience, let's implement a simple parameter system for all
- commands:
+ For convenience, let's implement a simple parameter system for all commands:
 \end_layout
 
 \begin_layout Standard
@@ -10660,8 +10682,8 @@ Read(100, 200): /animal/cats
 \end_layout
 
 \begin_layout Standard
-In the above, our mapping component only needs to know ``/animal/cats''.
- It can be very dumb, and easy to implement.
+In the above, our mapping component only needs to know about ``/animal/cats''.
+ The dumber our mapping component is, the easier it is to implement.
  
 \end_layout
 
@@ -10692,17 +10714,17 @@ Read(UTF-8, Russian): /animal/cat/13
 
 \begin_layout Standard
 This would give us a Russian, Unicode UTF-8 encoded version of our cat.
- Looks good, except that there is a potential problem.
- The client might prefer certain formats, but actually be able to handle
- others.
- We would not want a series of wasteful operations to happen until one succeeds.
+ Looks good, except that there is a potential problem: the client might
+ prefer certain formats, but actually be able to handle others.
+ It's more a matter of preference than any precision.
  Of course, we can have another resource where all available formats are
  listed, but this would require an extra call, and also introduce the problem
- of atomicity.
- A better solution would be to have the client associate certain preferences
- per command, have our resource emit its capabilities, with mapping component
- in between ``negotiating'' these two lists, via a simple algorithm, and
- choose the best mutually preferable format.
+ of atomicity---what if the cat changes between these calls? A better solution
+ would be to have the client associate certain preferences per command,
+ have our resource emit its capabilities, with the mapping component in
+ between ``negotiating'' these two lists.
+ This ``negotiation'' is a rather simple algorithm to choose the best mutually
+ preferable format.
 \end_layout
 
 \begin_layout Standard
@@ -10717,7 +10739,7 @@ Shared State
 \end_layout
 
 \begin_layout Standard
-Shared state between the client and server is very useful for managing sessions,
+Shared state between the client and server is very useful for managing sessions
  and implementing basic security.
  Of course, it's quite easy to abuse shared state, too, by treating it as
  a cache for data.
@@ -10756,6 +10778,11 @@ We need a way to map identifiers to resources.
 This list is very easy to implement.
  It requires very little computing power, and no support for generic, arbitrary
  additions.
+\end_layout
+
+\begin_layout Subsection
+Transactions\SpecialChar \ldots{}
+ Not!
 \end_layout
 
 \begin_layout Standard
@@ -10830,12 +10857,12 @@ Most importantly, the infrastructure for HTTP is already fully deployed
  proxies, caches, filters, etc., are stable consumer components; certificate
  authorities, national laws, international agreements are already in place
  to support the complex inter-business interaction.
- Importantly, this infrastructure is successfully maintained, with minimal
- down-time, by highly-skilled independent technicians, organizations and
- component vendors across the world.
+ Best of all, this available infrastructure is successfully maintained,
+ with minimal down-time, by highly-skilled independent technicians, organization
+s and component vendors across the world.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Quote
 It's important to note a dependency and possible limitation of HTTP: it
  is bound to TCP/IP.
  Indeed, all identifiers are URLs: Uniform Resource Locators.
@@ -10868,8 +10895,8 @@ It's All About Infrastructure
 \end_layout
 
 \begin_layout Standard
-The most important lesson to take from this experience is the importance
- of infrastructure.
+The most important lesson to take is the importance of infrastructure, something
+ easily forgotten when planning architecture in ideal, abstract terms.
  This is why, I believe, Roy Fielding named 
 \begin_inset CommandInset href
 LatexCommand href
@@ -10878,12 +10905,12 @@ target "http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm"
 
 \end_inset
 
- ``Representational State Transfer'' rather than, say, ``resource-oriented
- architecture,'' as we have here.
+ ``Representational State Transfer (REST)'' rather than, say, ``resource-oriente
+d architecture,'' as we have here.
  Fielding, one of the authors of the HTTP protocol, was intimately familiar
- with its challenges, and the name is intended to point out the key characterist
-ic of its infrastructure: it's all about the transfer of lightly annotated
- data representations.
+ with its challenges, and the name ``REST'' is intended to point out the
+ key characteristic of its infrastructure: HTTP and similar protocols are
+ designed for transfering lightly annotated data representations.
  ``Resources'' are merely logical encapsulations of these representations,
  depending on a contract between client and server.
  The infrastructure does not, in itself, do anything in particular to maintain,
@@ -10895,8 +10922,8 @@ ic of its infrastructure: it's all about the transfer of lightly annotated
 \end_layout
 
 \begin_layout Standard
-To put it succinctly, a resource-oriented architecture requires a REST infrastru
-cture.
+To come back to where we started: a resource-oriented architecture requires
+ a REST infrastructure.
  Practically, the two terms become interchangeable.
 \end_layout
 
@@ -10907,7 +10934,7 @@ The principles of resource-orientation can and are applied in many systems.
  But other core internet systems, such as email (SMTP, POP, IMAP), file
  transfer (FTP, WebDAV) also implement some subset of REST.
  Your application can do this, too, and enjoy the same potential for scalability
- as the above.
+ as these global, open implementations.
  
 \end_layout
 
@@ -10925,19 +10952,24 @@ Consider that there are two uses of the term ``scalable'':
 \end_layout
 
 \begin_layout Standard
-First, it's the ability to respond to a growing number of user requests
- without degradation in response time, by ``simply'' adding hardware (horizontal
- scaling) or replacing it with more powerful hardware (vertical scaling).
+First, it's 
+\series bold
+the ability to respond to a growing number of user requests without degradation
+ in response time
+\series default
+, by ``simply'' adding hardware (horizontal scaling) or replacing it with
+ more powerful hardware (vertical scaling).
  This is the aspect of scalability that engineers care about.
  The simple answer is that REST can help, but it doesn't stand out.
- SOAP can also do it pretty well.
+ SOAP, for example, can also do it pretty well.
  REST aficionados sometimes point out that REST is ``stateless,'' or ``session-l
 ess,'' both characteristics that would definitely help scale.
  But, this is misleading.
  Protocols might be stateless, but architectures built on top of them don't
  have to be.
- For example, we've specifically talked about sessions here.
- And, you can easily make poorly scalable REST.
+ For example, we've specifically talked about sessions here, and many web
+ frameworks manage sessions via cookies.
+ Likewise, you can easily make poorly scalable REST.
  The bottom line is that there's nothing in REST that guarantees scalability
  in 
 \emph on
@@ -10951,8 +10983,12 @@ this
 \begin_layout Standard
 The second use of ``scalability'' comes from the realm of enterprise and
  project management.
- It's the ability of your project to grow in complexity without degradation
- in your ability to manage it.
+ It's 
+\series bold
+the ability of your project to grow in complexity without degradation in
+ your ability to manage it
+\series default
+.
  And that's REST's beauty---you already have the infrastructure, which is
  the hardest thing to scale in a project.
  You don't need to deploy client stacks.
@@ -10961,8 +10997,8 @@ g languages used in your enterprise.
  You don't need to deploy incompatible middleware by three different vendors
  and spend weeks trying to force them to play well together.
  Why would engineers care about REST? Precisely because they don't have
- to: they can focus on engineering, rather than get bogged down by infrastructur
-e management.
+ to: they can focus on application engineering, rather than get bogged down
+ by infrastructure management.
 \end_layout
 
 \begin_layout Standard
@@ -10970,7 +11006,7 @@ That said, a ``resource-oriented architecture'' as we defined here is not
  a bad start for (engineering-wise) scalable systems.
  Keep your extras lightweight, minimize or eliminate shared state, and encapsula
 te your resources according to use cases, and you won't, at least, create
- any obstacles to scaling.
+ any immediate obstacles to scaling.
  
 \end_layout
 
