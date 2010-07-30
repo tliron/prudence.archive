@@ -966,7 +966,7 @@ public class GeneratedTextResource extends ServerResource
 			try
 			{
 				// Execute and represent output
-				representation = documentService.include( documentName );
+				representation = documentService.include( documentName, false );
 
 				switch( getClientCachingMode() )
 				{

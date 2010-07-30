@@ -182,6 +182,27 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	 */
 	public Representation include( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
 	{
+		return include( documentName, true );
+	}
+
+	/**
+	 * Includes a text document into the current location. The document may be a
+	 * "text-with-scriptlets" executable, in which case its output could be
+	 * dynamically generated.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @param allowFragments
+	 *        Whether to allow documents in the fragments directory
+	 * @return A representation of the document's output
+	 * @throws ParsingException
+	 * @throws ExecutionException
+	 * @throws DocumentException
+	 * @throws IOException
+	 * @see GeneratedTextResource#getFragmentDirectory()
+	 */
+	public Representation include( String documentName, boolean allowFragments ) throws ParsingException, ExecutionException, DocumentException, IOException
+	{
 		documentName = resource.validateDocumentName( documentName );
 
 		DocumentDescriptor<Executable> documentDescriptor;
@@ -191,11 +212,16 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 		}
 		catch( DocumentNotFoundException x )
 		{
-			// Try the fragment directory
-			File fragmentDirectory = resource.getFragmentDirectoryRelative();
-			if( fragmentDirectory != null )
-				documentDescriptor = Executable.createOnce( fragmentDirectory.getPath() + "/" + documentName, resource.getDocumentSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource
-					.isPrepare() );
+			if( allowFragments )
+			{
+				// Try the fragment directory
+				File fragmentDirectory = resource.getFragmentDirectoryRelative();
+				if( fragmentDirectory != null )
+					documentDescriptor = Executable.createOnce( fragmentDirectory.getPath() + "/" + documentName, resource.getDocumentSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
+						resource.isPrepare() );
+				else
+					throw x;
+			}
 			else
 				throw x;
 		}
