@@ -488,7 +488,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 					// Note that this will cause the executable to execute
 					// again!
 					GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this );
-					return new GeneratedTextDeferredRepresentation( documentService.resource, executable, executionContext, documentService, documentService.conversationService );
+					return new GeneratedTextDeferredRepresentation( documentService.resource, executable, documentService.executionContext, documentService, documentService.conversationService );
 				}
 
 				if( conversationService.isDeferred )
@@ -539,7 +539,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 
 					// Note that this will cause the executable to run again!
 					GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this );
-					return new GeneratedTextDeferredRepresentation( documentService.resource, executable, executionContext, documentService, documentService.conversationService );
+					return new GeneratedTextDeferredRepresentation( documentService.resource, executable, documentService.executionContext, documentService, documentService.conversationService );
 				}
 				else
 					throw x;

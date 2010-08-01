@@ -60,8 +60,12 @@ Main text written by Tal Liron
 
 \begin_layout Standard
 \noindent
+\align center
 Copyright 2009-2010 by Three Crickets LLC.
- This work is licensed under a 
+\begin_inset Newline newline
+\end_inset
+
+This work is licensed under a 
 \begin_inset CommandInset href
 LatexCommand href
 name "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License"
@@ -87,6 +91,996 @@ LatexCommand tableofcontents
 \end_inset
 
 
+\end_layout
+
+\begin_layout Section
+The Case for REST
+\begin_inset CommandInset label
+LatexCommand label
+name "../../rest/"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "../rest/"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There's a lot of buzz about REST, but also a lot confusion about what it
+ is and what it's good for.
+ This essay attempts to convey REST's simple essence.
+\end_layout
+
+\begin_layout Standard
+Let's start, then, not at REST, but at an attempt to create a new architecture
+ for building scalable applications.
+ Our goals are for it to be minimal, straightforward, and still have enough
+ features to be productive.
+ We want to learn some lessons from the failures of other, more elaborate
+ and complete architectures.
+\end_layout
+
+\begin_layout Standard
+Let's call ours a ``resource-oriented architecture.''
+\end_layout
+
+\begin_layout Subsection
+Resources
+\end_layout
+
+\begin_layout Standard
+Our base unit is a ``resource,'' which, like an object in object-oriented
+ architectures, encapsulates data with some functionality.
+ However, we've learned from object-orientation that implementing arbitrary
+ interfaces is a recipe for complexity: proxy generation, support for arbitrary
+ types, marshalling, etc.
+ Instead, then, we'll keep it simple and define a limited, unified interface
+ that would be just useful enough.
+\end_layout
+
+\begin_layout Standard
+From our experience with relational databases, we've learned that a tremendous
+ amount of power can be found in ``CRUD'': Create, Read, Update and Delete.
+ If we support just these operations, our resources will already be very
+ powerful, enjoying the accumulated wisdom and design patterns from the
+ database world.
+ 
+\end_layout
+
+\begin_layout Subsection
+Identifiers
+\end_layout
+
+\begin_layout Standard
+First, let's start with a way of identifying our resources.
+ We'll define a name-based address space where our resources live.
+ Each resource is ``attached'' to one or more addresses.
+ We'll allow for ``/'' as a customary separator to allow for hierarchical
+ addressing schemes.
+ For example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+/animal/dog/3
+\end_layout
+
+\begin_layout Plain Layout
+
+/animal/cat/12/image
+\end_layout
+
+\begin_layout Plain Layout
+
+/animal/cat/12/image/large
+\end_layout
+
+\begin_layout Plain Layout
+
+/animal/cat/12/specs
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the above, we've allowed for different kinds of animals, a way of referencing
+ individual animals, and a way of referencing specific aspects of these
+ animals.
+\end_layout
+
+\begin_layout Standard
+Let's now go over CRUD operations in increasing order of complexity.
+\end_layout
+
+\begin_layout Subsection
+Delete
+\end_layout
+
+\begin_layout Standard
+``Delete'' is the most trivial operation.
+ After sending ``delete'' to an identifier, we expect it to not exist anymore.
+ Whether sub-resources in our hierarchy can exist or not, we'll leave up
+ to individual implementations.
+ For example, deleting ``/animal/cat/12/image'' may or may not delete ``/animal/
+cat/12/image/large''.
+\end_layout
+
+\begin_layout Standard
+Note that we don't care about atomicity here, because we don't expect anything
+ to happen after our ``delete'' operation.
+ A million changes can happen to our cat before our command is processed,
+ but they're all forgotten after ``delete.'' (See ``update,'' below, for
+ a small caveat.)
+\end_layout
+
+\begin_layout Subsection
+Read
+\end_layout
+
+\begin_layout Standard
+``Read'' is a bit more complicated than ``delete.'' Since our resource might
+ be changed by other clients, we want to make sure that there's some kind
+ of way to mark which version we are reading.
+ This will allow us to avoid unnecessary reads if there hasn't been any
+ change.
+\end_layout
+
+\begin_layout Standard
+Thus, we'll need our resource-oriented architecture to support some kind
+ of version tagging feature.
+\end_layout
+
+\begin_layout Subsection
+Update
+\end_layout
+
+\begin_layout Standard
+The problem with ``update'' is that it always references a certain version
+ that we have ``read'' before.
+ In some cases, though not all, we need some way to make sure that the data
+ we expect to be there hasn't changed since we've last ``read'' it.
+ Let's call this a ``conditional update.''
+\end_layout
+
+\begin_layout Standard
+Actually, we've oversimplified our earlier definition of ``delete.'' In some
+ cases, we'd want a ``conditional delete'' to depend on certain expectations
+ about the data.
+ We might not want the resource deleted in some cases.
+\end_layout
+
+\begin_layout Standard
+So, we'll need our resource-oriented architecture to support a ``conditional''
+ operation feature.
+ 
+\end_layout
+
+\begin_layout Subsection
+Create
+\end_layout
+
+\begin_layout Standard
+This is our most complex operation.
+ Our first problem is that our identifier might not exist yet, or might
+ already be attached to a resource.
+ One approach could be to try identifiers in sequence:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Create: /animal/cat/13 -> Error, already exists
+\end_layout
+
+\begin_layout Plain Layout
+
+Create: /animal/cat/14 -> Error, already exists
+\end_layout
+
+\begin_layout Plain Layout
+
+Create: /animal/cat/15 -> Error, already exists
+\end_layout
+
+\begin_layout Plain Layout
+
+...
+\end_layout
+
+\begin_layout Plain Layout
+
+Create: /animal/cat/302041 -> Success!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Obviously, this is not a scalable solution.
+ Another approach could be to have a helper resource which provides us with
+ the necessary ID:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Read: /animal/cat/next -> 14
+\end_layout
+
+\begin_layout Plain Layout
+
+Create: /animal/cat/14 -> Oops, someone else beat us to 14!
+\end_layout
+
+\begin_layout Plain Layout
+
+Read: /animal/cat/next -> 15
+\end_layout
+
+\begin_layout Plain Layout
+
+Create: /animal/cat/15 -> Success!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Of course, we can also have ``/animal/cat/next'' return unique IDs (such
+ as GUIDs) to avoid duplications.
+ If we never create our cat, they will be wasted, though.
+ The main problem with this approach is that it requires two calls per creation:
+ a ``read,'' and then a ``create.'' We can handle this in one call by allowing
+ for ``partial'' creation, a ``create'' linked with an intrinsic ``read'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Create: /animal/cat -> We send the data for the cat without the ID, and
+ get back the same cat with an ID
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Other solutions exist, too.
+ The point of this discussion is to show you that ``create'' is not trivial,
+ but also that solutions to ``create'' already exist within the resource-oriente
+d architecture we've defined.
+ ``Create,'' though programmatically complex, does not require any new architect
+ural features.
+\end_layout
+
+\begin_layout Subsection
+Aggregate Resources
+\end_layout
+
+\begin_layout Standard
+At first glance, handling the problem of getting lots of resources at the
+ same time, thus saving on the number of calls, can trivially be handled
+ by the features we've listed so far.
+ A common solution is to define a ``plural'' version of the ``singular''
+ resource:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+/animal/cats
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A ``read'' would give us all cats.
+ But what if there are ten million cats? We can support paging.
+ Again, we have a solution within our current feature set, using identifiers
+ for each subset of cats:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+/animal/cats/100/200
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can define the above to return no more than 100 cats: from the 100th,
+ to the 200th.
+ There's a slight problem in this solution: the burden is on whatever component
+ in our system handles mapping identifiers to resources.
+ This is not terrible, but if we want our system to be more generic, it
+ could help if things like ``100 to 200'' could be handled by our resource
+ more directly.
+ For convenience, let's implement a simple parameter system for all commands:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Read(100, 200): /animal/cats
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the above, our mapping component only needs to know about ``/animal/cats''.
+ The dumber our mapping component is, the easier it is to implement.
+ 
+\end_layout
+
+\begin_layout Subsection
+Formats
+\end_layout
+
+\begin_layout Standard
+The problem of supporting multiple formats seems similar, at first glance,
+ to that of aggregate resources.
+ Again, we could potentially solve it with command parameters:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Read(UTF-8, Russian): /animal/cat/13
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This would give us a Russian, Unicode UTF-8 encoded version of our cat.
+ Looks good, except that there is a potential problem: the client might
+ prefer certain formats, but actually be able to handle others.
+ It's more a matter of preference than any precision.
+ Of course, we can have another resource where all available formats are
+ listed, but this would require an extra call, and also introduce the problem
+ of atomicity---what if the cat changes between these calls? A better solution
+ would be to have the client associate certain preferences per command,
+ have our resource emit its capabilities, with the mapping component in
+ between ``negotiating'' these two lists.
+ This ``negotiation'' is a rather simple algorithm to choose the best mutually
+ preferable format.
+\end_layout
+
+\begin_layout Standard
+This would be a simple feature to add to our resource-oriented architecture,
+ which could greatly help to decouple its support for multiple formats from
+ its addressing scheme.
+ 
+\end_layout
+
+\begin_layout Subsection
+Shared State
+\end_layout
+
+\begin_layout Standard
+Shared state between the client and server is very useful for managing sessions
+ and implementing basic security.
+ Of course, it's quite easy to abuse shared state, too, by treating it as
+ a cache for data.
+ We don't want to encourage that.
+ Instead, we just want a very simple shared state system.
+\end_layout
+
+\begin_layout Standard
+We'll allow for this by attaching small, named, shared state objects to
+ every request and response to a command.
+ Nothing fancy or elaborate.
+ There is a potential security breach here, so we have to trust that all
+ components along the way honor the relationship between client and server,
+ and don't allow other servers access to our shared state.
+ 
+\end_layout
+
+\begin_layout Subsection
+Summary of Features
+\end_layout
+
+\begin_layout Standard
+So, what do we need?
+\end_layout
+
+\begin_layout Standard
+We need a way to map identifiers to resources.
+ We need support for the four CRUD operations.
+ We need support for ``conditional'' updates and deletes.
+ We need all operations to support ``parameters.'' We need ``negotiation''
+ of formats.
+ And, we need a simple shared state attachment feature.
+\end_layout
+
+\begin_layout Standard
+This list is very easy to implement.
+ It requires very little computing power, and no support for generic, arbitrary
+ additions.
+\end_layout
+
+\begin_layout Subsection
+Transactions\SpecialChar \ldots{}
+ Not!
+\end_layout
+
+\begin_layout Standard
+Before we go on, it's worth mentioning one important feature which we did
+ not require: transactions.
+ Transactions are optional, and sometimes core features in many databases
+ and distributed object systems.
+ They can be extremely powerful, as they allow atomicity across an arbitrary
+ number of commands.
+ They are also, however, heavy to implement, as they require considerable
+ shared state between client and server.
+ Powerful as they are, it is possible to live without them.
+ It's possible, for example, to implement this atomicity within a single
+ resource.
+ This would require us to define special resources per type of transaction
+ which we want to support, but it does remove the heavy burden of supporting
+ arbitrary transactions from our architecture.
+ With some small reluctance, then, we'll do without transactions.
+ 
+\end_layout
+
+\begin_layout Subsection
+Let's Do It!
+\end_layout
+
+\begin_layout Standard
+OK, so now we know what we need, let's go ahead and implement the infrastructure
+ of components to handle our requirements.
+ All we need is stacks for all supported clients, backend stacks for all
+ our potential server platforms, middleware components to handle all the
+ identifier routing, content negotiation, caching of data\SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout Standard
+\SpecialChar \ldots{}
+And thousands of man hours to develop, test, deploy, and integrate.
+ Like any large-scale, enterprise architecture, even trivial requirements
+ have to jump through the usual hoops set up by the sheer scale of the task.
+ Behind every great architecture are the nuts and bolts of the infrastructure.
+\end_layout
+
+\begin_layout Standard
+Wouldn't it be great if the infrastructure already existed?
+\end_layout
+
+\begin_layout Subsection
+The Punchline
+\end_layout
+
+\begin_layout Standard
+Well, duh.
+ All the requirements for our resource-oriented architecture are already
+ supported by HTTP:
+\end_layout
+
+\begin_layout Standard
+Our resource identifiers are simple URLs.
+ The CRUD operations are in the four HTTP verbs: PUT, GET, POST and DELETE.
+ ``Conditional'' and ``negotiated'' modes are handled by headers, as are
+ ``cookies'' for shared state.
+ Version stamps are e-tags.
+ Command parameters are query matrixes appended to URLs.
+ It's all there.
+\end_layout
+
+\begin_layout Standard
+Most importantly, the infrastructure for HTTP is already fully deployed
+ world-wide.
+ TCP/IP stacks are part of practically every operating system; wiring, switching
+ and routing are part and parcel; HTTP gateways, firewalls, load balancers,
+ proxies, caches, filters, etc., are stable consumer components; certificate
+ authorities, national laws, international agreements are already in place
+ to support the complex inter-business interaction.
+ Best of all, this available infrastructure is successfully maintained,
+ with minimal down-time, by highly-skilled independent technicians, organization
+s and component vendors across the world.
+\end_layout
+
+\begin_layout Quote
+It's important to note a dependency and possible limitation of HTTP: it
+ is bound to TCP/IP.
+ Indeed, all identifiers are URLs: Uniform Resource Locators.
+ In URLs, the first segment is reserved for the domain, either an IP address
+ or a domain name translatable to an IP address.
+ Compare this with the more general URIs (Uniform Resource Identifiers),
+ which do not have this requirement.
+ Though we'll often be tied to HTTP in REST, you'll see the literature attemptin
+g, at least, to be more generic.
+ There are definitely use cases for non-HTTP, and even non-TCP/IP addressing
+ schemes.
+ In Prudence, you'll see that it's possible to address internal resources
+ with non-URL kinds of URIs; see 
+\bar under
+document.external (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../manual/api/|document-external"
+
+\end_inset
+
+)
+\bar default
+.
+ 
+\end_layout
+
+\begin_layout Subsection
+It's All About Infrastructure
+\end_layout
+
+\begin_layout Standard
+The most important lesson to take is the importance of infrastructure, something
+ easily forgotten when planning architecture in ideal, abstract terms.
+ This is why, I believe, Roy Fielding named 
+\begin_inset CommandInset href
+LatexCommand href
+name "Chapter 5 of his 2000 dissertation"
+target "http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm"
+
+\end_inset
+
+ ``Representational State Transfer (REST)'' rather than, say, ``resource-oriente
+d architecture,'' as we have here.
+ Fielding, one of the authors of the HTTP protocol, was intimately familiar
+ with its challenges, and the name ``REST'' is intended to point out the
+ key characteristic of its infrastructure: HTTP and similar protocols are
+ designed for transfering lightly annotated data representations.
+ ``Resources'' are merely logical encapsulations of these representations,
+ depending on a contract between client and server.
+ The infrastructure does not, in itself, do anything in particular to maintain,
+ say, a sensible hierarchy of addresses, the atomicity of CRUD operations,
+ etc.
+ That's up to your implementation.
+ But, representational state transfer---REST---is the mundane, underlying
+ magic that makes it all possible.
+\end_layout
+
+\begin_layout Standard
+To come back to where we started: a resource-oriented architecture requires
+ a REST infrastructure.
+ Practically, the two terms become interchangeable.
+\end_layout
+
+\begin_layout Standard
+The principles of resource-orientation can and are applied in many systems.
+ The word wide web, of course, with its ecology of web browsers, web servers,
+ certificate authorities, etc., is the most obvious model.
+ But other core internet systems, such as email (SMTP, POP, IMAP), file
+ transfer (FTP, WebDAV) also implement some subset of REST.
+ Your application can do this, too, and enjoy the same potential for scalability
+ as these global, open implementations.
+ 
+\end_layout
+
+\begin_layout Subsection
+Does REST Scale?
+\end_layout
+
+\begin_layout Standard
+Part of the buzz about REST is that it's an inherently scalable architecture.
+ This is true, but perhaps not in the way that you think.
+\end_layout
+
+\begin_layout Standard
+Consider that there are two uses of the term ``scalable'':
+\end_layout
+
+\begin_layout Standard
+First, it's 
+\series bold
+the ability to respond to a growing number of user requests without degradation
+ in response time
+\series default
+, by ``simply'' adding hardware (horizontal scaling) or replacing it with
+ more powerful hardware (vertical scaling).
+ This is the aspect of scalability that engineers care about.
+ The simple answer is that REST can help, but it doesn't stand out.
+ SOAP, for example, can also do it pretty well.
+ REST aficionados sometimes point out that REST is ``stateless,'' or ``session-l
+ess,'' both characteristics that would definitely help scale.
+ But, this is misleading.
+ Protocols might be stateless, but architectures built on top of them don't
+ have to be.
+ For example, we've specifically talked about sessions here, and many web
+ frameworks manage sessions via cookies.
+ Likewise, you can easily make poorly scalable REST.
+ The bottom line is that there's nothing in REST that guarantees scalability
+ in 
+\emph on
+this
+\emph default
+ respect.
+ Indeed, engineers coming to REST due to this false lure end up wondering
+ what the big deal is.
+\end_layout
+
+\begin_layout Standard
+The second use of ``scalability'' comes from the realm of enterprise and
+ project management.
+ It's 
+\series bold
+the ability of your project to grow in complexity without degradation in
+ your ability to manage it
+\series default
+.
+ And that's REST's beauty---you already have the infrastructure, which is
+ the hardest thing to scale in a project.
+ You don't need to deploy client stacks.
+ You don't need to create and update proxy objects for five different programmin
+g languages used in your enterprise.
+ You don't need to deploy incompatible middleware by three different vendors
+ and spend weeks trying to force them to play well together.
+ Why would engineers care about REST? Precisely because they don't have
+ to: they can focus on application engineering, rather than get bogged down
+ by infrastructure management.
+\end_layout
+
+\begin_layout Standard
+That said, a ``resource-oriented architecture'' as we defined here is not
+ a bad start for (engineering-wise) scalable systems.
+ Keep your extras lightweight, minimize or eliminate shared state, and encapsula
+te your resources according to use cases, and you won't, at least, create
+ any immediate obstacles to scaling.
+ 
+\end_layout
+
+\begin_layout Subsection
+Prudence
+\end_layout
+
+\begin_layout Standard
+Convinced? The best way to understand REST is to experiment with it.
+ You've come to the right place.
+ Start with the 
+\bar under
+tutorial (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../manual/tutorial/"
+
+\end_inset
+
+)
+\bar default
+, and feel free to skip around the documentation and try things out for
+ yourself.
+ You'll find it easy, fun, and powerful enough for you to create large-scale
+ applications that take full advantage of the inherently scalable infrastructure
+ of REST.
+ Happy RESTing! 
+\end_layout
+
+\begin_layout Section
+How to Choose a Flavor?
+\end_layout
+
+\begin_layout Standard
+Prudence was designed around a strong belief in the power of the JVM coupled
+ with the acknowledgment that the Java language does not suit every development
+ project.
+ Thus, Prudence is available in six mouthwatering flavors.
+ Pick the one that works best 
+\emph on
+for you
+\emph default
+!
+\end_layout
+
+\begin_layout Subsection
+Python (Succulent!)
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "Python"
+target "http://www.python.org/"
+
+\end_inset
+
+ is a powerful object-oriented language, far richer in features than JavaScript
+ and PHP, with many high-quality core and 3rd party libraries.
+ Python has already proven itself as a web programming language, and has
+ many excellent web platforms that make good use of its strengths.
+\end_layout
+
+\begin_layout Standard
+Python presents a unique challenge in a scriptlet environment, due to its
+ reliance on indentation.
+ However, because HTML is loose with whitespace, it's possible to force
+ the whole file to adhere to Python's scheme.
+ In fact, as many Python enthusiasts would argue, forcing your code to adhere
+ to Python's indentation requirements can go a long way towards making it
+ more readable and manageable.
+\end_layout
+
+\begin_layout Standard
+In the included example application we show how to use 
+\begin_inset CommandInset href
+LatexCommand href
+name "SQLAlchemy"
+target "http://www.sqlalchemy.org/"
+
+\end_inset
+
+ as a data backend for Prudence.
+\end_layout
+
+\begin_layout Quote
+Note: Prudence for Python was built primarily around 
+\begin_inset CommandInset href
+LatexCommand href
+name "Jython"
+target "http://www.jython.org/"
+
+\end_inset
+
+, but also offers limited support for 
+\begin_inset CommandInset href
+LatexCommand href
+name "Jepp"
+target "http://jepp.sourceforge.net/"
+
+\end_inset
+
+ if it's installed.
+ For those cases where you need access to a natively-built Python library
+ that won't work on Jython, Jepp lets you run code on the CPython platform.
+\end_layout
+
+\begin_layout Subsection
+Ruby (Delectable!)
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "Ruby"
+target "http://www.ruby-lang.org/"
+
+\end_inset
+
+ can do most of what Python can do and more.
+ A true chameleon, it can adapt to many styles of code and programming.
+ If something can be possible, Ruby allows it and supports it.
+ Unlike Python, it has a very loose and forgiving syntax, which is perfect
+ for scriptlets.
+\end_layout
+
+\begin_layout Standard
+Ruby's 
+\begin_inset CommandInset href
+LatexCommand href
+name "Rails"
+target "http://rubyonrails.org/"
+
+\end_inset
+
+ platform has revolutionized web programming by offering elegant, powerful
+ alternatives to working directly with HTTP.
+ We hope Ruby web programmers will find in Prudence a refreshing alternative
+ to Rails: elegantly embracing HTTP, instead of avoiding it.
+\end_layout
+
+\begin_layout Subsection
+Clojure (Scrumptious!)
+\end_layout
+
+\begin_layout Standard
+Prudence's only functional flavor is a Lisp designed from the ground up
+ for high concurrency.
+ If you're serious about multithreading, 
+\begin_inset CommandInset href
+LatexCommand href
+name "Clojure"
+target "http://clojure.org/"
+
+\end_inset
+
+ is the way to go.
+ Though new, Clojure is based on one of the oldest programming languages
+ around, and enjoys a long, rich tradition of elegant solutions for tough
+ programming challenges.
+\end_layout
+
+\begin_layout Standard
+Clojure embraces the JVM, but also has a growing collection of nifty ``contrib''
+ libraries---all included in Prudence---that make the JVM core more lispy.
+ In the included example application, we show how to use Clojure's SQL library
+ to elegantly access a data backend.
+\end_layout
+
+\begin_layout Subsection
+JavaScript (Savory!)
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "JavaScript"
+target "https://developer.mozilla.org/en/JavaScript"
+
+\end_inset
+
+ (a dialect of 
+\begin_inset CommandInset href
+LatexCommand href
+name "ECMAScript"
+target "http://www.ecmascript.org/"
+
+\end_inset
+
+) is a sensible choice for ``AJAX'' and other rich web client applications,
+ because it's the same language used by web browsers and other client platforms.
+ Web developers are already proficient in JavaScript, and can quickly be
+ brought on board to a server-side project.
+ Couple it with 
+\begin_inset CommandInset href
+LatexCommand href
+name "JSON"
+target "http://www.json.org/"
+
+\end_inset
+
+ and JSON-based document databases, and you're on solid, consistent ground
+ for rapid development.
+ Of all the web programming languages, it's the one most widely deployed
+ and with the most secure future.
+\end_layout
+
+\begin_layout Standard
+It's also an under-appreciated language, and the object of undeserved scorn.
+ Though not as feature-rich as Python or Ruby, it's still very powerful.
+ Its straightforward closure/prototype mechanisms allow it to support object-ori
+entation, namespaces and other paradigms.
+ Unfortunately, client environments have proven painfully fickle: working
+ with the browser DOM, testing with cross-browser HTML rendering quirks---but
+ these are the not the fault of the language itself.
+ They are also not relevant to server-side development with Prudence.
+ If you've been burned by JavaScript on the client, try it on the server
+ via Prudence: you might be pleasantly surprised.
+\end_layout
+
+\begin_layout Standard
+JavaScript does not have its own core libraries, making it the most minimal
+ Prudence flavor.
+ Instead, it relies on the excellent JVM core.
+\end_layout
+
+\begin_layout Subsection
+PHP (Ambrosial!)
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "PHP"
+target "http://www.php.net/"
+
+\end_inset
+
+ is ubiquitous.
+ It's a simple language with the most mature libraries of any web programming
+ language, and programmers are available with years of experience.
+ It's also designed from the ground up as a programming language for the
+ web.
+\end_layout
+
+\begin_layout Standard
+Prudence allows a smooth transition from traditional PHP HTML generation
+ to REST resources.
+ It supports PHP ``superglobals'' such as $_GET, $_POST, $_COOKIE and $_FILE
+ (but not $_SESSION) to make you feel right at home.
+ It also adds many new features to conventional HTML generation: fine-grained
+ caching, high-performance templating languages, and more.
+\end_layout
+
+\begin_layout Quote
+Note: Prudence PHP was built around the open source edition of 
+\begin_inset CommandInset href
+LatexCommand href
+name "Quercus"
+target "http://quercus.caucho.com/Quercus"
+
+\end_inset
+
+, which does not feature JVM bytecode compilation as is available in the
+ non-free professional edition.
+ Nevertheless, we found the ``non-pro'' Quercus to be an excellent performer!
+\end_layout
+
+\begin_layout Subsection
+Groovy (Luscious!)
+\end_layout
+
+\begin_layout Standard
+In some ways, 
+\begin_inset CommandInset href
+LatexCommand href
+name "Groovy"
+target "http://groovy.codehaus.org/"
+
+\end_inset
+
+ is the best of this bunch.
+ It has all the flexibility of Ruby, but is designed from the ground up
+ to enhance and extend Java.
+ Java programmers would immediately feel at home, while gaining access to
+ far less restrictive programming paradigms.
+ Groovy makes Java\SpecialChar \ldots{}
+ groovy!
+\end_layout
+
+\begin_layout Standard
+All the other Prudence flavors offer JVM interaction, but Groovy does it
+ best.
+ If you know your project will require a lot of interaction with Java libraries,
+ Groovy is a terrific---and fun!---choice.
 \end_layout
 
 \begin_layout Section
@@ -3100,6 +4094,13 @@ reference "../routing/"
 
 \begin_layout Subsubsection
 /application.*
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|application-file"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4170,7 +5171,7 @@ status open
 
 \begin_layout Plain Layout
 
-importClass(org.restlet.resource.ClientResource);
+importClass(org.restlet.resource.ClientResource)
 \end_layout
 
 \begin_layout Plain Layout
@@ -4184,12 +5185,12 @@ importClass(org.restlet.resource.ClientResource);
 
 \begin_layout Plain Layout
 
-var r = new ClientResource('http://threecrickets/prudence/data/rhino');
+var r = new ClientResource('http://threecrickets/prudence/data/rhino')
 \end_layout
 
 \begin_layout Plain Layout
 
-print(r.get().text);
+print(r.get().text)
 \end_layout
 
 \end_inset
@@ -4209,7 +5210,7 @@ status open
 
 \begin_layout Plain Layout
 
-component.clients.add(Protocol.HTTP);
+component.clients.add(Protocol.HTTP)
 \end_layout
 
 \end_inset
@@ -4385,10 +5386,115 @@ staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.APPLICATION_JAVASCR
 
 \begin_layout Subsection
 JavaScriptUnifyMinifyFilter
+\begin_inset CommandInset label
+LatexCommand label
+name "../static-web/|javascript-unify-minify-filter"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+importClass(com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+router.detach(staticWeb)
+\end_layout
+
+\begin_layout Plain Layout
+
+router.attach(
+\end_layout
+
+\begin_layout Plain Layout
+
+	staticWebBaseURL,
+\end_layout
+
+\begin_layout Plain Layout
+
+	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applica
+tionBasePath + staticWebBasePath)))
+\end_layout
+
+\begin_layout Plain Layout
+
+	.matchingMode = Template.MODE_STARTS_WITH
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
 CssUnifyMinifyFilter
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+importClass(com.threecrickets.prudence.util.CssUnifyMinifyFilter)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+router.detach(staticWeb)
+\end_layout
+
+\begin_layout Plain Layout
+
+router.attach(
+\end_layout
+
+\begin_layout Plain Layout
+
+	staticWebBaseURL,
+\end_layout
+
+\begin_layout Plain Layout
+
+	new CssScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicat
+ionBasePath + staticWebBasePath)))
+\end_layout
+
+\begin_layout Plain Layout
+
+	.matchingMode = Template.MODE_STARTS_WITH
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -5669,14 +6775,6 @@ conversation.stop()
 \end_layout
 
 \begin_layout Subsubsection
-Filtering
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Subsubsection
 Attaching
 \end_layout
 
@@ -5793,6 +6891,72 @@ router.attach('forum/help/{topic}/', 'org.wackywiki.HelpAccessResource')
 \begin_layout Plain Layout
 
 router.detach(staticWeb)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Filtering
+\end_layout
+
+\begin_layout Standard
+Instances of filters, which wrap instances of other restlets, can be attached
+ directly to URIs.
+ In this example, we'll use Prudence's 
+\bar under
+JavaScript unifier/minifier (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../static-web/|javascript-unify-minify-filter"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+importClass(com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+router.detach(staticWeb)
+\end_layout
+
+\begin_layout Plain Layout
+
+router.attach(
+\end_layout
+
+\begin_layout Plain Layout
+
+	staticWebBaseURL,
+\end_layout
+
+\begin_layout Plain Layout
+
+	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applica
+tionBasePath + staticWebBasePath)))
+\end_layout
+
+\begin_layout Plain Layout
+
+	.matchingMode = Template.MODE_STARTS_WITH
 \end_layout
 
 \end_inset
@@ -6601,6 +7765,14 @@ ges'') or dynamically generate them using code (for example: ``blog-comments-for
 document.cacheTags is ignored if document.cacheDuration is zero.
 \end_layout
 
+\begin_layout Quote
+Important! Using document.include (see blow) will cause the cache tags of
+ the included document to be applied to the current document, recursively.
+ In other words, cache tags effect the inclusion tree moving backwards.
+ This should be expected: if an included fragment is invalidated, the containing
+ document should also be invalidated.
+\end_layout
+
 \begin_layout Paragraph
 document.cache
 \end_layout
@@ -7021,7 +8193,7 @@ fixture =
 
 \begin_layout Plain Layout
 
-	'application/json').get()); 
+	'application/json').get()
 \end_layout
 
 \end_inset
@@ -7958,12 +9130,12 @@ status open
 
 \begin_layout Plain Layout
 
-if(conversation.defer()){
+if(conversation.defer()) {
 \end_layout
 
 \begin_layout Plain Layout
 
-	conversation.stop();
+	conversation.stop()
 \end_layout
 
 \begin_layout Plain Layout
@@ -8175,7 +9347,7 @@ Note for Clojure flavor: Though Clojure goes a long way towards simplifying
 \end_layout
 
 \begin_layout Standard
-For example, this code is broken:
+For example, this code (Python flavor) is broken:
 \end_layout
 
 \begin_layout Standard
@@ -8679,8 +9851,8 @@ Live Viewing of Source Code
 \end_layout
 
 \begin_layout Standard
-Prudence supports live viewing of source code in /web/dynamic/ and /resources/,
- with syntax coloring provided by 
+With debug mode enabled, Prudence supports live viewing of source code in
+ /web/dynamic/ and /resources/, with syntax coloring provided by 
 \begin_inset CommandInset href
 LatexCommand href
 name "Jygments"
@@ -9269,7 +10441,7 @@ status open
 
 \begin_layout Plain Layout
 
-hosts = [[component.defaultHost, '/admin/'], [myHost, '/prudence/admin/']];
+hosts = [[component.defaultHost, '/admin/'], [myHost, '/prudence/admin/']]
 \end_layout
 
 \end_inset
@@ -9313,7 +10485,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/');
+document.execute('defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -9351,12 +10523,12 @@ importClass(
 
 \begin_layout Plain Layout
 
-var verifier = new MapVerifier();
+var verifier = new MapVerifier()
 \end_layout
 
 \begin_layout Plain Layout
 
-verifier.localSecrets.put('admin', new java.lang.String('opensesame').toCharArray());
+verifier.localSecrets.put('admin', new java.lang.String('opensesame').toCharArray())
 \end_layout
 
 \begin_layout Plain Layout
@@ -9366,12 +10538,12 @@ var authenticator = new ChallengeAuthenticator(applicationInstance.context,
 
 \begin_layout Plain Layout
 
-	ChallengeScheme.HTTP_BASIC, 'Prudence Administration');
+	ChallengeScheme.HTTP_BASIC, 'Prudence Administration')
 \end_layout
 
 \begin_layout Plain Layout
 
-authenticator.verifier = verifier;
+authenticator.verifier = verifier
 \end_layout
 
 \begin_layout Plain Layout
@@ -9385,12 +10557,12 @@ authenticator.verifier = verifier;
 
 \begin_layout Plain Layout
 
-authenticator.next = applicationInstance.inboundRoot;
+authenticator.next = applicationInstance.inboundRoot
 \end_layout
 
 \begin_layout Plain Layout
 
-applicationInstance.inboundRoot = authenticator;
+applicationInstance.inboundRoot = authenticator
 \end_layout
 
 \end_inset
@@ -9431,8 +10603,8 @@ While Prudence comes with the necessary configuration files for this, it
 \begin_layout Quote
 History lesson: The copyright for JSW is held by its original developer,
  Tanuki Software.
- For the first few versions Tanuki released JSW under a very permissive
- license, making it popular in many open source projects.
+ For the first few versions Tanuki released JSW under a permissive license,
+ making it popular in many open source projects.
  However, since version 3.2 it has been distributed under the GPL 2.0 (and
  also via a commercial license).
  We applaud Tanuki's commitment to open source, and are big fans of the
@@ -9555,8 +10727,8 @@ Perlbal
 
 \begin_layout Standard
 You can run many instances of Prudence behind a load balancer.
- This offers fault tolerance, maintenance options, and the possibility to
- dramatically scale up the number of requests you can support.
+ This offers fault tolerance, maintenance options, and the possibility of
+ dramatically scaling up the number of requests you can support.
  Your application can tolerate failure of any number of instances, as long
  as you have one running, because load balancers will automatically route
  to working instances.
@@ -9576,6 +10748,18 @@ Scaling up can be straightforward: simply add more and more instances behind
  room, one pool handles file downloads), geography (one pool handles England,
  one pool handles France), or other clever ways to keep the whole system
  efficient and responsive.
+ See 
+\bar under
+Scaling Tips (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../scaling/"
+
+\end_inset
+
+) 
+\bar default
+for an in-depth treatment.
 \end_layout
 
 \begin_layout Standard
@@ -9588,6 +10772,412 @@ target "http://www.danga.com/perlbal/"
 \end_inset
 
 .
+ Here's a sample perlbal.conf in which we use Perlbal to handle secure (SSL)
+ connections for us:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+CREATE POOL pool
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET nodefile = /etc/perlbal/nodes
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+CREATE POOL secure_pool
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET nodefile = /etc/perlbal/secure_nodes
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+# HTTP
+\end_layout
+
+\begin_layout Plain Layout
+
+CREATE SERVICE balancer
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET listen          = 0.0.0.0:80
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET role            = reverse_proxy
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET pool            = pool
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET verify_backend  = on
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+# HTTPS
+\end_layout
+
+\begin_layout Plain Layout
+
+CREATE SERVICE secure_balancer
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET listen          = 0.0.0.0:443
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET role            = reverse_proxy
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET pool            = secure_pool
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET verify_backend  = on
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET enable_ssl      = on
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET ssl_key_file    = /etc/perlbal/server.key
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET ssl_cert_file   = /etc/perlbal/server.crt
+\end_layout
+
+\begin_layout Plain Layout
+
+  # This is recommended to workaround a bug in older versions of IE
+\end_layout
+
+\begin_layout Plain Layout
+
+  # (the default is ALL:!LOW:!EXP)
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET ssl_cipher_list = ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EX
+P:+eNULL
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+# Internal management port
+\end_layout
+
+\begin_layout Plain Layout
+
+CREATE SERVICE mgmt
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET role   = management
+\end_layout
+
+\begin_layout Plain Layout
+
+  SET listen = 127.0.0.1:60000
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+ENABLE balancer
+\end_layout
+
+\begin_layout Plain Layout
+
+ENABLE secure_balancer
+\end_layout
+
+\begin_layout Plain Layout
+
+ENABLE mgmt
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The nodes file is a list of IP addresses (not hostnames!) with ports.
+ We'll add three Prudence instances running at the default server port:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+192.168.1.10:8080
+\end_layout
+
+\begin_layout Plain Layout
+
+192.168.1.11:8080
+\end_layout
+
+\begin_layout Plain Layout
+
+192.168.1.12:8080
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The secure_nodes file is the same for SSL connections.
+ Let's have our Prudence instances run a separate server at port 8081 for
+ secure requests:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+192.168.1.10:8081
+\end_layout
+
+\begin_layout Plain Layout
+
+192.168.1.11:8081
+\end_layout
+
+\begin_layout Plain Layout
+
+192.168.1.12:8081
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In our Prudence instances, we'll use 
+\bar under
+/instance/servers.* (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/|servers-file"
+
+\end_inset
+
+)
+\bar default
+ to create a server at port 8081 (JavaScript flavor):
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+document.execute('defaults/instance/servers/')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+var secureServer = new Server(Protocol.HTTP, 8081)
+\end_layout
+
+\begin_layout Plain Layout
+
+secureServer.name = 'secure'
+\end_layout
+
+\begin_layout Plain Layout
+
+component.servers.add(secureServer)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And we'll use 
+\bar under
+/instance/hosts.* (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/|hosts-file"
+
+\end_inset
+
+)
+\bar default
+ to create separate virtual hosts for each port:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+importClass(org.restlet.routing.VirtualHost)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+var host = new VirtualHost(component.context)
+\end_layout
+
+\begin_layout Plain Layout
+
+host.name = 'default'
+\end_layout
+
+\begin_layout Plain Layout
+
+host.hostPort = '8080'
+\end_layout
+
+\begin_layout Plain Layout
+
+component.hosts.add(host)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+var secureHost = new VirtualHost(component.context)
+\end_layout
+
+\begin_layout Plain Layout
+
+secureHost.name = 'secure'
+\end_layout
+
+\begin_layout Plain Layout
+
+secureHost.hostPort = '8081'
+\end_layout
+
+\begin_layout Plain Layout
+
+component.hosts.add(secureHost)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+component.defaultHost = host
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+By default, an application would bind to the default host.
+ To bind an application to the secure virtual host, set the 
+\bar under
+hosts settings (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|hosts"
+
+\end_inset
+
+)
+\bar default
+ in its /settings.*:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+hosts = [[secureHost, '/myapp/']]
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -9605,14 +11195,111 @@ target "http://httpd.apache.org/"
  is often called the ``Swiss army knife of the Internet'' for how well it
  manipulates URLs and routes HTTP requests.
  Prudence already does powerful URI-based routing, including virtual hosting,
- meaning that you probably won't need Apache for that feature.
+ meaning that you probably won't need Apache for that.
 \end_layout
 
 \begin_layout Standard
 Where you might want to use Apache is as a container environment for other
  application platforms, such as mod_php and mod_wsgi.
  If you have no choice but to run Apache as your front end, it is straightforwar
-d to set it to route to Prudence as a reverse proxy.
+d to set it to route to Prudence via reverse proxy.
+\end_layout
+
+\begin_layout Standard
+Here's a sample Apache configuration that proxies all URLs beginning with
+ ``/prudence/'' to a local Prudence instance running at the default server
+ port.
+ For demonstration, we'll also explicitly block proxying of ``/prudence/images/'
+' URLs so that Apache would handle serving them (from directory /var/www/prudenc
+e/images) instead of Prudence.
+ Apache's mod_proxy and mod_proxy_http must be enabled.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<VirtualHost *:80>
+\end_layout
+
+\begin_layout Plain Layout
+
+	DocumentRoot /var/www
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	<Proxy *>
+\end_layout
+
+\begin_layout Plain Layout
+
+		Order deny,allow
+\end_layout
+
+\begin_layout Plain Layout
+
+		Allow from all
+\end_layout
+
+\begin_layout Plain Layout
+
+	</Proxy>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	ProxyRequests Off
+\end_layout
+
+\begin_layout Plain Layout
+
+	ProxyPreserveHost On
+\end_layout
+
+\begin_layout Plain Layout
+
+	ProxyStatus On
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	# Note that the order of ProxyPass statements matters
+\end_layout
+
+\begin_layout Plain Layout
+
+	ProxyPass /prudence/images/ !
+\end_layout
+
+\begin_layout Plain Layout
+
+	ProxyPass /prudence/ http://localhost:8080/ retry=0 
+\end_layout
+
+\begin_layout Plain Layout
+
+</VirtualHost>
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -9626,7 +11313,7 @@ name "../restlet-container/"
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Standard
 Why Prudence?
 \end_layout
 
@@ -9877,13 +11564,23 @@ Filter to selectively add CacheControl (to Directory, for example)
 
 \end_deeper
 \begin_layout Subsection
-Custom Resources
+Custom Resources and Restlets
 \end_layout
 
 \begin_layout Standard
-Use your application's routing file to attach your resources, or otherwise
- manage routing.
- Example:
+Use your application's 
+\bar under
+/routing.* (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|routing-file"
+
+\end_inset
+
+)
+\bar default
+ to attach your resources, or otherwise manage routing.
+ Example (JavaScript flavor):
 \end_layout
 
 \begin_layout Standard
@@ -9898,7 +11595,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/');
+document.execute('defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -9912,12 +11609,12 @@ document.execute('defaults/application/routing/');
 
 \begin_layout Plain Layout
 
-router.attach('data/item/{id}', classLoader.loadClass('org.myorg.ItemResource'));
+router.attach('data/item/{id}', classLoader.loadClass('org.myorg.ItemResource'))
 \end_layout
 
 \begin_layout Plain Layout
 
-router.attach('data/items', classLoader.loadClass('org.myorg.ItemsResource'));
+router.attach('data/items', classLoader.loadClass('org.myorg.ItemsResource'))
 \end_layout
 
 \end_inset
@@ -9937,17 +11634,16 @@ status open
 
 \begin_layout Plain Layout
 
-// Wrap static web in JavaScript minifying filter
+importClass(com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter)
 \end_layout
 
 \begin_layout Plain Layout
 
-importClass(org.myorg.JavaScriptMinifyFilter);
 \end_layout
 
 \begin_layout Plain Layout
 
-router.detach(staticWeb);
+router.detach(staticWeb)
 \end_layout
 
 \begin_layout Plain Layout
@@ -9962,13 +11658,13 @@ router.attach(
 
 \begin_layout Plain Layout
 
-	new JavaScriptMinifyFilter(application.context, staticWeb, File(applicationBaseP
-ath + staticWebBasePath)))
+	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applica
+tionBasePath + staticWebBasePath)))
 \end_layout
 
 \begin_layout Plain Layout
 
-	.matchingMode = Template.MODE_STARTS_WITH;
+	.matchingMode = Template.MODE_STARTS_WITH
 \end_layout
 
 \end_inset
@@ -9983,8 +11679,18 @@ Custom Application
 \begin_layout Standard
 By default, Prudence creates an instance of the standard Restlet Application
  class.
- Use your application's application file to override this, and create and
- configure your own application.
+ Use your application's 
+\bar under
+/application.* (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|application-file"
+
+\end_inset
+
+)
+\bar default
+ to override this, and create and configure your own application.
  Example:
 \end_layout
 
@@ -9995,12 +11701,17 @@ status open
 
 \begin_layout Plain Layout
 
-// MyOrgApplication importClass(org.myorg.MyOrgApplication);
+// MyOrgApplication
 \end_layout
 
 \begin_layout Plain Layout
 
-var application = new MyOrgApplication();
+importClass(org.myorg.MyOrgApplication)
+\end_layout
+
+\begin_layout Plain Layout
+
+var application = new MyOrgApplication()
 \end_layout
 
 \begin_layout Plain Layout
@@ -10014,12 +11725,12 @@ var application = new MyOrgApplication();
 
 \begin_layout Plain Layout
 
-importClass(org.myorg.MyOrgTunnelService);
+importClass(org.myorg.MyOrgTunnelService)
 \end_layout
 
 \begin_layout Plain Layout
 
-application.tunnelService = new MyOrgTunnelService(MyOrgTunnelService.MODE_QUERY);
+application.tunnelService = new MyOrgTunnelService(MyOrgTunnelService.MODE_QUERY)
 \end_layout
 
 \begin_layout Plain Layout
@@ -10028,1012 +11739,22 @@ application.tunnelService = new MyOrgTunnelService(MyOrgTunnelService.MODE_QUERY
 
 \begin_layout Plain Layout
 
-// These attributes are specific to MyOrgApplication
+// These attributes are specific to the MyOrgApplication class
 \end_layout
 
 \begin_layout Plain Layout
 
-application.databaseURI = 'mysql://localhost/myorg';
+application.databaseURI = 'mysql://localhost/myorg'
 \end_layout
 
 \begin_layout Plain Layout
 
-application.useTransactions = true;
+application.useTransactions = true
 \end_layout
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Section
-How to Choose a Flavor?
-\end_layout
-
-\begin_layout Standard
-Prudence was designed around a strong belief in the power of the JVM coupled
- with the acknowledgment that the Java language does not suit every development
- project.
- Thus, Prudence is available in six mouthwatering flavors.
- Pick the one that works best 
-\emph on
-for you
-\emph default
-!
-\end_layout
-
-\begin_layout Subsection
-Python (Succulent!)
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset href
-LatexCommand href
-name "Python"
-target "http://www.python.org/"
-
-\end_inset
-
- is a powerful object-oriented language, far richer in features than JavaScript
- and PHP, with many high-quality core and 3rd party libraries.
- Python has already proven itself as a web programming language, and has
- many excellent web platforms that make good use of its strengths.
-\end_layout
-
-\begin_layout Standard
-Python presents a unique challenge in a scriptlet environment, due to its
- reliance on indentation.
- However, because HTML is loose with whitespace, it's possible to force
- the whole file to adhere to Python's scheme.
- In fact, as many Python enthusiasts would argue, forcing your code to adhere
- to Python's indentation requirements can go a long way towards making it
- more readable and manageable.
-\end_layout
-
-\begin_layout Standard
-In the included example application we show how to use 
-\begin_inset CommandInset href
-LatexCommand href
-name "SQLAlchemy"
-target "http://www.sqlalchemy.org/"
-
-\end_inset
-
- as a data backend for Prudence.
-\end_layout
-
-\begin_layout Quote
-Note: Prudence for Python was built primarily around 
-\begin_inset CommandInset href
-LatexCommand href
-name "Jython"
-target "http://www.jython.org/"
-
-\end_inset
-
-, but also offers limited support for 
-\begin_inset CommandInset href
-LatexCommand href
-name "Jepp"
-target "http://jepp.sourceforge.net/"
-
-\end_inset
-
- if it's installed.
- For those cases where you need access to a natively-built Python library
- that won't work on Jython, Jepp lets you run code on the CPython platform.
-\end_layout
-
-\begin_layout Subsection
-Ruby (Delectable!)
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset href
-LatexCommand href
-name "Ruby"
-target "http://www.ruby-lang.org/"
-
-\end_inset
-
- can do most of what Python can do and more.
- A true chameleon, it can adapt to many styles of code and programming.
- If something can be possible, Ruby allows it and supports it.
- Unlike Python, it has a very loose and forgiving syntax, which is perfect
- for scriptlets.
-\end_layout
-
-\begin_layout Standard
-Ruby's 
-\begin_inset CommandInset href
-LatexCommand href
-name "Rails"
-target "http://rubyonrails.org/"
-
-\end_inset
-
- platform has revolutionized web programming by offering elegant, powerful
- alternatives to working directly with HTTP.
- We hope Ruby web programmers will find in Prudence a refreshing alternative
- to Rails: elegantly embracing HTTP, instead of avoiding it.
-\end_layout
-
-\begin_layout Subsection
-Clojure (Scrumptious!)
-\end_layout
-
-\begin_layout Standard
-Prudence's only functional flavor is a Lisp designed from the ground up
- for high concurrency.
- If you're serious about multithreading, 
-\begin_inset CommandInset href
-LatexCommand href
-name "Clojure"
-target "http://clojure.org/"
-
-\end_inset
-
- is the way to go.
- Though new, Clojure is based on one of the oldest programming languages
- around, and enjoys a long, rich tradition of elegant solutions for tough
- programming challenges.
-\end_layout
-
-\begin_layout Standard
-Clojure embraces the JVM, but also has a growing collection of nifty ``contrib''
- libraries---all included in Prudence---that make the JVM core more lispy.
- In the included example application, we show how to use Clojure's SQL library
- to elegantly access a data backend.
-\end_layout
-
-\begin_layout Subsection
-JavaScript (Savory!)
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset href
-LatexCommand href
-name "JavaScript"
-target "https://developer.mozilla.org/en/JavaScript"
-
-\end_inset
-
- (a dialect of 
-\begin_inset CommandInset href
-LatexCommand href
-name "ECMAScript"
-target "http://www.ecmascript.org/"
-
-\end_inset
-
-) is a sensible choice for ``AJAX'' and other rich web client applications,
- because it's the same language used by web browsers and other client platforms.
- Web developers are already proficient in JavaScript, and can quickly be
- brought on board to a server-side project.
- Couple it with 
-\begin_inset CommandInset href
-LatexCommand href
-name "JSON"
-target "http://www.json.org/"
-
-\end_inset
-
- and JSON-based document databases, and you're on solid, consistent ground
- for rapid development.
- Of all the web programming languages, it's the one most widely deployed
- and with the most secure future.
-\end_layout
-
-\begin_layout Standard
-It's also an under-appreciated language, and the object of undeserved scorn.
- Though not as feature-rich as Python or Ruby, it's still very powerful.
- Its straightforward closure/prototype mechanisms allow it to support object-ori
-entation, namespaces and other paradigms.
- Unfortunately, client environments have proven painfully fickle: working
- with the browser DOM, testing with cross-browser HTML rendering quirks---but
- these are the not the fault of the language itself.
- They are also not relevant to server-side development with Prudence.
- If you've been burned by JavaScript on the client, try it on the server
- via Prudence: you might be pleasantly surprised.
-\end_layout
-
-\begin_layout Standard
-JavaScript does not have its own core libraries, making it the most minimal
- Prudence flavor.
- Instead, it relies on the excellent JVM core.
-\end_layout
-
-\begin_layout Subsection
-PHP (Ambrosial!)
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset href
-LatexCommand href
-name "PHP"
-target "http://www.php.net/"
-
-\end_inset
-
- is ubiquitous.
- It's a simple language with the most mature libraries of any web programming
- language, and programmers are available with years of experience.
- It's also designed from the ground up as a programming language for the
- web.
-\end_layout
-
-\begin_layout Standard
-Prudence allows a smooth transition from traditional PHP HTML generation
- to REST resources.
- It supports PHP ``superglobals'' such as $_GET, $_POST, $_COOKIE and $_FILE
- (but not $_SESSION) to make you feel right at home.
- It also adds many new features to conventional HTML generation: fine-grained
- caching, high-performance templating languages, and more.
-\end_layout
-
-\begin_layout Quote
-Note: Prudence PHP was built around the open source edition of 
-\begin_inset CommandInset href
-LatexCommand href
-name "Quercus"
-target "http://quercus.caucho.com/Quercus"
-
-\end_inset
-
-, which does not feature JVM bytecode compilation as is available in the
- non-free professional edition.
- Nevertheless, we found the ``non-pro'' Quercus to be an excellent performer!
-\end_layout
-
-\begin_layout Subsection
-Groovy (Luscious!)
-\end_layout
-
-\begin_layout Standard
-In some ways, 
-\begin_inset CommandInset href
-LatexCommand href
-name "Groovy"
-target "http://groovy.codehaus.org/"
-
-\end_inset
-
- is the best of this bunch.
- It has all the flexibility of Ruby, but is designed from the ground up
- to enhance and extend Java.
- Java programmers would immediately feel at home, while gaining access to
- far less restrictive programming paradigms.
- Groovy makes Java\SpecialChar \ldots{}
- groovy!
-\end_layout
-
-\begin_layout Standard
-All the other Prudence flavors offer JVM interaction, but Groovy does it
- best.
- If you know your project will require a lot of interaction with Java libraries,
- Groovy is a terrific---and fun!---choice.
-\end_layout
-
-\begin_layout Section
-The Case for REST
-\begin_inset CommandInset label
-LatexCommand label
-name "../../rest/"
-
-\end_inset
-
-
-\begin_inset CommandInset label
-LatexCommand label
-name "../rest/"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-There's a lot of buzz about REST, but also a lot confusion about what it
- is and what it's good for.
- This essay attempts to convey REST's simple essence.
-\end_layout
-
-\begin_layout Standard
-Let's start, then, not at REST, but at an attempt to create a new architecture
- for building scalable applications.
- Our goals are for it to be minimal, straightforward, and still have enough
- features to be productive.
- We want to learn some lessons from the failures of other, more elaborate
- and complete architectures.
-\end_layout
-
-\begin_layout Standard
-Let's call ours a ``resource-oriented architecture.''
-\end_layout
-
-\begin_layout Subsection
-Resources
-\end_layout
-
-\begin_layout Standard
-Our base unit is a ``resource,'' which, like an object in object-oriented
- architectures, encapsulates data with some functionality.
- However, we've learned from object-orientation that implementing arbitrary
- interfaces is a recipe for complexity: proxy generation, support for arbitrary
- types, marshalling, etc.
- Instead, then, we'll keep it simple and define a limited, unified interface
- that would be just useful enough.
-\end_layout
-
-\begin_layout Standard
-From our experience with relational databases, we've learned that a tremendous
- amount of power can be found in ``CRUD'': Create, Read, Update and Delete.
- If we support just these operations, our resources will already be very
- powerful, enjoying the accumulated wisdom and design patterns from the
- database world.
- 
-\end_layout
-
-\begin_layout Subsection
-Identifiers
-\end_layout
-
-\begin_layout Standard
-First, let's start with a way of identifying our resources.
- We'll define a name-based address space where our resources live.
- Each resource is ``attached'' to one or more addresses.
- We'll allow for ``/'' as a customary separator to allow for hierarchical
- addressing schemes.
- For example:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-/animal/dog/3
-\end_layout
-
-\begin_layout Plain Layout
-
-/animal/cat/12/image
-\end_layout
-
-\begin_layout Plain Layout
-
-/animal/cat/12/image/large
-\end_layout
-
-\begin_layout Plain Layout
-
-/animal/cat/12/specs
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-In the above, we've allowed for different kinds of animals, a way of referencing
- individual animals, and a way of referencing specific aspects of these
- animals.
-\end_layout
-
-\begin_layout Standard
-Let's now go over CRUD operations in increasing order of complexity.
-\end_layout
-
-\begin_layout Subsection
-Delete
-\end_layout
-
-\begin_layout Standard
-``Delete'' is the most trivial operation.
- After sending ``delete'' to an identifier, we expect it to not exist anymore.
- Whether sub-resources in our hierarchy can exist or not, we'll leave up
- to individual implementations.
- For example, deleting ``/animal/cat/12/image'' may or may not delete ``/animal/
-cat/12/image/large''.
-\end_layout
-
-\begin_layout Standard
-Note that we don't care about atomicity here, because we don't expect anything
- to happen after our ``delete'' operation.
- A million changes can happen to our cat before our command is processed,
- but they're all forgotten after ``delete.'' (See ``update,'' below, for
- a small caveat.)
-\end_layout
-
-\begin_layout Subsection
-Read
-\end_layout
-
-\begin_layout Standard
-``Read'' is a bit more complicated than ``delete.'' Since our resource might
- be changed by other clients, we want to make sure that there's some kind
- of way to mark which version we are reading.
- This will allow us to avoid unnecessary reads if there hasn't been any
- change.
-\end_layout
-
-\begin_layout Standard
-Thus, we'll need our resource-oriented architecture to support some kind
- of version tagging feature.
-\end_layout
-
-\begin_layout Subsection
-Update
-\end_layout
-
-\begin_layout Standard
-The problem with ``update'' is that it always references a certain version
- that we have ``read'' before.
- In some cases, though not all, we need some way to make sure that the data
- we expect to be there hasn't changed since we've last ``read'' it.
- Let's call this a ``conditional update.''
-\end_layout
-
-\begin_layout Standard
-Actually, we've oversimplified our earlier definition of ``delete.'' In some
- cases, we'd want a ``conditional delete'' to depend on certain expectations
- about the data.
- We might not want the resource deleted in some cases.
-\end_layout
-
-\begin_layout Standard
-So, we'll need our resource-oriented architecture to support a ``conditional''
- operation feature.
- 
-\end_layout
-
-\begin_layout Subsection
-Create
-\end_layout
-
-\begin_layout Standard
-This is our most complex operation.
- Our first problem is that our identifier might not exist yet, or might
- already be attached to a resource.
- One approach could be to try identifiers in sequence:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-Create: /animal/cat/13 -> Error, already exists
-\end_layout
-
-\begin_layout Plain Layout
-
-Create: /animal/cat/14 -> Error, already exists
-\end_layout
-
-\begin_layout Plain Layout
-
-Create: /animal/cat/15 -> Error, already exists
-\end_layout
-
-\begin_layout Plain Layout
-
-...
-\end_layout
-
-\begin_layout Plain Layout
-
-Create: /animal/cat/302041 -> Success!
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Obviously, this is not a scalable solution.
- Another approach could be to have a helper resource which provides us with
- the necessary ID:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-Read: /animal/cat/next -> 14
-\end_layout
-
-\begin_layout Plain Layout
-
-Create: /animal/cat/14 -> Oops, someone else beat us to 14!
-\end_layout
-
-\begin_layout Plain Layout
-
-Read: /animal/cat/next -> 15
-\end_layout
-
-\begin_layout Plain Layout
-
-Create: /animal/cat/15 -> Success!
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Of course, we can also have ``/animal/cat/next'' return unique IDs (such
- as GUIDs) to avoid duplications.
- If we never create our cat, they will be wasted, though.
- The main problem with this approach is that it requires two calls per creation:
- a ``read,'' and then a ``create.'' We can handle this in one call by allowing
- for ``partial'' creation, a ``create'' linked with an intrinsic ``read'':
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-Create: /animal/cat -> We send the data for the cat without the ID, and
- get back the same cat with an ID
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Other solutions exist, too.
- The point of this discussion is to show you that ``create'' is not trivial,
- but also that solutions to ``create'' already exist within the resource-oriente
-d architecture we've defined.
- ``Create,'' though programmatically complex, does not require any new architect
-ural features.
-\end_layout
-
-\begin_layout Subsection
-Aggregate Resources
-\end_layout
-
-\begin_layout Standard
-At first glance, handling the problem of getting lots of resources at the
- same time, thus saving on the number of calls, can trivially be handled
- by the features we've listed so far.
- A common solution is to define a ``plural'' version of the ``singular''
- resource:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-/animal/cats
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-A ``read'' would give us all cats.
- But what if there are ten million cats? We can support paging.
- Again, we have a solution within our current feature set, using identifiers
- for each subset of cats:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-/animal/cats/100/200
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-We can define the above to return no more than 100 cats: from the 100th,
- to the 200th.
- There's a slight problem in this solution: the burden is on whatever component
- in our system handles mapping identifiers to resources.
- This is not terrible, but if we want our system to be more generic, it
- could help if things like ``100 to 200'' could be handled by our resource
- more directly.
- For convenience, let's implement a simple parameter system for all commands:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-Read(100, 200): /animal/cats
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-In the above, our mapping component only needs to know about ``/animal/cats''.
- The dumber our mapping component is, the easier it is to implement.
- 
-\end_layout
-
-\begin_layout Subsection
-Formats
-\end_layout
-
-\begin_layout Standard
-The problem of supporting multiple formats seems similar, at first glance,
- to that of aggregate resources.
- Again, we could potentially solve it with command parameters:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-Read(UTF-8, Russian): /animal/cat/13
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-This would give us a Russian, Unicode UTF-8 encoded version of our cat.
- Looks good, except that there is a potential problem: the client might
- prefer certain formats, but actually be able to handle others.
- It's more a matter of preference than any precision.
- Of course, we can have another resource where all available formats are
- listed, but this would require an extra call, and also introduce the problem
- of atomicity---what if the cat changes between these calls? A better solution
- would be to have the client associate certain preferences per command,
- have our resource emit its capabilities, with the mapping component in
- between ``negotiating'' these two lists.
- This ``negotiation'' is a rather simple algorithm to choose the best mutually
- preferable format.
-\end_layout
-
-\begin_layout Standard
-This would be a simple feature to add to our resource-oriented architecture,
- which could greatly help to decouple its support for multiple formats from
- its addressing scheme.
- 
-\end_layout
-
-\begin_layout Subsection
-Shared State
-\end_layout
-
-\begin_layout Standard
-Shared state between the client and server is very useful for managing sessions
- and implementing basic security.
- Of course, it's quite easy to abuse shared state, too, by treating it as
- a cache for data.
- We don't want to encourage that.
- Instead, we just want a very simple shared state system.
-\end_layout
-
-\begin_layout Standard
-We'll allow for this by attaching small, named, shared state objects to
- every request and response to a command.
- Nothing fancy or elaborate.
- There is a potential security breach here, so we have to trust that all
- components along the way honor the relationship between client and server,
- and don't allow other servers access to our shared state.
- 
-\end_layout
-
-\begin_layout Subsection
-Summary of Features
-\end_layout
-
-\begin_layout Standard
-So, what do we need?
-\end_layout
-
-\begin_layout Standard
-We need a way to map identifiers to resources.
- We need support for the four CRUD operations.
- We need support for ``conditional'' updates and deletes.
- We need all operations to support ``parameters.'' We need ``negotiation''
- of formats.
- And, we need a simple shared state attachment feature.
-\end_layout
-
-\begin_layout Standard
-This list is very easy to implement.
- It requires very little computing power, and no support for generic, arbitrary
- additions.
-\end_layout
-
-\begin_layout Subsection
-Transactions\SpecialChar \ldots{}
- Not!
-\end_layout
-
-\begin_layout Standard
-Before we go on, it's worth mentioning one important feature which we did
- not require: transactions.
- Transactions are optional, and sometimes core features in many databases
- and distributed object systems.
- They can be extremely powerful, as they allow atomicity across an arbitrary
- number of commands.
- They are also, however, heavy to implement, as they require considerable
- shared state between client and server.
- Powerful as they are, it is possible to live without them.
- It's possible, for example, to implement this atomicity within a single
- resource.
- This would require us to define special resources per type of transaction
- which we want to support, but it does remove the heavy burden of supporting
- arbitrary transactions from our architecture.
- With some small reluctance, then, we'll do without transactions.
- 
-\end_layout
-
-\begin_layout Subsection
-Let's Do It!
-\end_layout
-
-\begin_layout Standard
-OK, so now we know what we need, let's go ahead and implement the infrastructure
- of components to handle our requirements.
- All we need is stacks for all supported clients, backend stacks for all
- our potential server platforms, middleware components to handle all the
- identifier routing, content negotiation, caching of data\SpecialChar \ldots{}
-
-\end_layout
-
-\begin_layout Standard
-\SpecialChar \ldots{}
-And thousands of man hours to develop, test, deploy, and integrate.
- Like any large-scale, enterprise architecture, even trivial requirements
- have to jump through the usual hoops set up by the sheer scale of the task.
- Behind every great architecture are the nuts and bolts of the infrastructure.
-\end_layout
-
-\begin_layout Standard
-Wouldn't it be great if the infrastructure already existed?
-\end_layout
-
-\begin_layout Subsection
-The Punchline
-\end_layout
-
-\begin_layout Standard
-Well, duh.
- All the requirements for our resource-oriented architecture are already
- supported by HTTP:
-\end_layout
-
-\begin_layout Standard
-Our resource identifiers are simple URLs.
- The CRUD operations are in the four HTTP verbs: PUT, GET, POST and DELETE.
- ``Conditional'' and ``negotiated'' modes are handled by headers, as are
- ``cookies'' for shared state.
- Version stamps are e-tags.
- Command parameters are query matrixes appended to URLs.
- It's all there.
-\end_layout
-
-\begin_layout Standard
-Most importantly, the infrastructure for HTTP is already fully deployed
- world-wide.
- TCP/IP stacks are part of practically every operating system; wiring, switching
- and routing are part and parcel; HTTP gateways, firewalls, load balancers,
- proxies, caches, filters, etc., are stable consumer components; certificate
- authorities, national laws, international agreements are already in place
- to support the complex inter-business interaction.
- Best of all, this available infrastructure is successfully maintained,
- with minimal down-time, by highly-skilled independent technicians, organization
-s and component vendors across the world.
-\end_layout
-
-\begin_layout Quote
-It's important to note a dependency and possible limitation of HTTP: it
- is bound to TCP/IP.
- Indeed, all identifiers are URLs: Uniform Resource Locators.
- In URLs, the first segment is reserved for the domain, either an IP address
- or a domain name translatable to an IP address.
- Compare this with the more general URIs (Uniform Resource Identifiers),
- which do not have this requirement.
- Though we'll often be tied to HTTP in REST, you'll see the literature attemptin
-g, at least, to be more generic.
- There are definitely use cases for non-HTTP, and even non-TCP/IP addressing
- schemes.
- In Prudence, you'll see that it's possible to address internal resources
- with non-URL kinds of URIs; see 
-\bar under
-document.external (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../manual/api/|document-external"
-
-\end_inset
-
-)
-\bar default
-.
- 
-\end_layout
-
-\begin_layout Subsection
-It's All About Infrastructure
-\end_layout
-
-\begin_layout Standard
-The most important lesson to take is the importance of infrastructure, something
- easily forgotten when planning architecture in ideal, abstract terms.
- This is why, I believe, Roy Fielding named 
-\begin_inset CommandInset href
-LatexCommand href
-name "Chapter 5 of his 2000 dissertation"
-target "http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm"
-
-\end_inset
-
- ``Representational State Transfer (REST)'' rather than, say, ``resource-oriente
-d architecture,'' as we have here.
- Fielding, one of the authors of the HTTP protocol, was intimately familiar
- with its challenges, and the name ``REST'' is intended to point out the
- key characteristic of its infrastructure: HTTP and similar protocols are
- designed for transfering lightly annotated data representations.
- ``Resources'' are merely logical encapsulations of these representations,
- depending on a contract between client and server.
- The infrastructure does not, in itself, do anything in particular to maintain,
- say, a sensible hierarchy of addresses, the atomicity of CRUD operations,
- etc.
- That's up to your implementation.
- But, representational state transfer---REST---is the mundane, underlying
- magic that makes it all possible.
-\end_layout
-
-\begin_layout Standard
-To come back to where we started: a resource-oriented architecture requires
- a REST infrastructure.
- Practically, the two terms become interchangeable.
-\end_layout
-
-\begin_layout Standard
-The principles of resource-orientation can and are applied in many systems.
- The word wide web, of course, with its ecology of web browsers, web servers,
- certificate authorities, etc., is the most obvious model.
- But other core internet systems, such as email (SMTP, POP, IMAP), file
- transfer (FTP, WebDAV) also implement some subset of REST.
- Your application can do this, too, and enjoy the same potential for scalability
- as these global, open implementations.
- 
-\end_layout
-
-\begin_layout Subsection
-Does REST Scale?
-\end_layout
-
-\begin_layout Standard
-Part of the buzz about REST is that it's an inherently scalable architecture.
- This is true, but perhaps not in the way that you think.
-\end_layout
-
-\begin_layout Standard
-Consider that there are two uses of the term ``scalable'':
-\end_layout
-
-\begin_layout Standard
-First, it's 
-\series bold
-the ability to respond to a growing number of user requests without degradation
- in response time
-\series default
-, by ``simply'' adding hardware (horizontal scaling) or replacing it with
- more powerful hardware (vertical scaling).
- This is the aspect of scalability that engineers care about.
- The simple answer is that REST can help, but it doesn't stand out.
- SOAP, for example, can also do it pretty well.
- REST aficionados sometimes point out that REST is ``stateless,'' or ``session-l
-ess,'' both characteristics that would definitely help scale.
- But, this is misleading.
- Protocols might be stateless, but architectures built on top of them don't
- have to be.
- For example, we've specifically talked about sessions here, and many web
- frameworks manage sessions via cookies.
- Likewise, you can easily make poorly scalable REST.
- The bottom line is that there's nothing in REST that guarantees scalability
- in 
-\emph on
-this
-\emph default
- respect.
- Indeed, engineers coming to REST due to this false lure end up wondering
- what the big deal is.
-\end_layout
-
-\begin_layout Standard
-The second use of ``scalability'' comes from the realm of enterprise and
- project management.
- It's 
-\series bold
-the ability of your project to grow in complexity without degradation in
- your ability to manage it
-\series default
-.
- And that's REST's beauty---you already have the infrastructure, which is
- the hardest thing to scale in a project.
- You don't need to deploy client stacks.
- You don't need to create and update proxy objects for five different programmin
-g languages used in your enterprise.
- You don't need to deploy incompatible middleware by three different vendors
- and spend weeks trying to force them to play well together.
- Why would engineers care about REST? Precisely because they don't have
- to: they can focus on application engineering, rather than get bogged down
- by infrastructure management.
-\end_layout
-
-\begin_layout Standard
-That said, a ``resource-oriented architecture'' as we defined here is not
- a bad start for (engineering-wise) scalable systems.
- Keep your extras lightweight, minimize or eliminate shared state, and encapsula
-te your resources according to use cases, and you won't, at least, create
- any immediate obstacles to scaling.
- 
-\end_layout
-
-\begin_layout Subsection
-Prudence
-\end_layout
-
-\begin_layout Standard
-Convinced? The best way to understand REST is to experiment with it.
- You've come to the right place.
- Start with the 
-\bar under
-tutorial (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../manual/tutorial/"
-
-\end_inset
-
-)
-\bar default
-, and feel free to skip around the documentation and try things out for
- yourself.
- You'll find it easy, fun, and powerful enough for you to create large-scale
- applications that take full advantage of the inherently scalable infrastructure
- of REST.
- Happy RESTing! 
 \end_layout
 
 \begin_layout Section
