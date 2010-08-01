@@ -16,8 +16,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 import org.restlet.data.Reference;
@@ -78,7 +78,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	{
 		super( documentService.resource, documentService.resource.getDocumentSource() );
 		conversationService = documentService.conversationService;
-		currentExecutable = documentService.currentExecutable;
+		pushExecutable( documentService.getCurrentExecutable() );
 		executionContext = new ExecutionContext();
 
 		// Initialize execution context
@@ -102,7 +102,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	 */
 	public long getCacheDuration()
 	{
-		Long cacheDuration = (Long) currentExecutable.getAttributes().get( CACHE_DURATION_ATTRIBUTE );
+		Long cacheDuration = (Long) getCurrentExecutable().getAttributes().get( CACHE_DURATION_ATTRIBUTE );
 		return cacheDuration == null ? 0 : cacheDuration;
 	}
 
@@ -113,7 +113,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	 */
 	public void setCacheDuration( long cacheDuration )
 	{
-		currentExecutable.getAttributes().put( CACHE_DURATION_ATTRIBUTE, cacheDuration );
+		getCurrentExecutable().getAttributes().put( CACHE_DURATION_ATTRIBUTE, cacheDuration );
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	 */
 	public String getCacheKey()
 	{
-		return (String) currentExecutable.getAttributes().get( CACHE_KEY_ATTRIBUTE );
+		return (String) getCurrentExecutable().getAttributes().get( CACHE_KEY_ATTRIBUTE );
 	}
 
 	/**
@@ -132,25 +132,15 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	 */
 	public void setCacheKey( String cacheKey )
 	{
-		currentExecutable.getAttributes().put( CACHE_KEY_ATTRIBUTE, cacheKey );
+		getCurrentExecutable().getAttributes().put( CACHE_KEY_ATTRIBUTE, cacheKey );
 	}
 
 	/**
 	 * @return The cache tags
 	 */
-	@SuppressWarnings("unchecked")
 	public Set<String> getCacheTags()
 	{
-		Set<String> cacheTags = (Set<String>) currentExecutable.getAttributes().get( CACHE_TAGS_ATTRIBUTE );
-		if( cacheTags == null )
-		{
-			cacheTags = new HashSet<String>();
-			Set<String> existing = (Set<String>) currentExecutable.getAttributes().putIfAbsent( CACHE_TAGS_ATTRIBUTE, cacheTags );
-			if( existing != null )
-				cacheTags = existing;
-
-		}
-		return cacheTags;
+		return getCacheTags( getCurrentExecutable(), true );
 	}
 
 	/**
@@ -297,12 +287,41 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	/**
 	 * The currently executing executable.
 	 */
-	private Executable currentExecutable;
+	private LinkedList<Executable> executableStack = new LinkedList<Executable>();
 
 	/**
-	 * Buffer used for caching mode.
+	 * Buffer used for caching.
 	 */
 	private StringBuffer writerBuffer;
+
+	/**
+	 * The currently executing executable (the one at the top of the stack).
+	 * 
+	 * @return The current executable
+	 */
+	private Executable getCurrentExecutable()
+	{
+		return executableStack.getLast();
+	}
+
+	/**
+	 * Add an executable to the top of stack.
+	 * 
+	 * @param executable
+	 *        The executable
+	 */
+	private void pushExecutable( Executable executable )
+	{
+		executableStack.add( executable );
+	}
+
+	/**
+	 * Remove the top executable from the stack.
+	 */
+	private Executable popExecutable()
+	{
+		return executableStack.removeLast();
+	}
 
 	/**
 	 * @return The cache key for the executable
@@ -317,7 +336,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 			Template template = new Template( cacheKey );
 
 			// Our additional template variable: {dn}
-			template.getVariables().put( DOCUMENT_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, currentExecutable.getDocumentName(), true, true ) );
+			template.getVariables().put( DOCUMENT_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, getCurrentExecutable().getDocumentName(), true, true ) );
 
 			// Use captive reference as the resource reference
 			Reference captiveReference = CaptiveRedirector.getCaptiveReference( resource.getRequest() );
@@ -335,6 +354,40 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	}
 
 	/**
+	 * @param executable
+	 *        The executable
+	 * @param create
+	 *        Whether to create a cache tag set if it doesn't exist
+	 * @return The cache tags or null
+	 */
+	@SuppressWarnings("unchecked")
+	private Set<String> getCacheTags( Executable executable, boolean create )
+	{
+		Set<String> cacheTags = (Set<String>) executable.getAttributes().get( CACHE_TAGS_ATTRIBUTE );
+		if( cacheTags == null && create )
+		{
+			cacheTags = new HashSet<String>();
+			Set<String> existing = (Set<String>) executable.getAttributes().putIfAbsent( CACHE_TAGS_ATTRIBUTE, cacheTags );
+			if( existing != null )
+				cacheTags = existing;
+
+		}
+		return cacheTags;
+	}
+
+	/**
+	 * Copies the cache tags for the current executable, if it has any, to the
+	 * entire executable stack.
+	 */
+	private void propagateCacheTags( Set<String> cacheTags )
+	{
+		Executable currentExecutable = popExecutable();
+		for( Executable executable : executableStack )
+			getCacheTags( executable, true ).addAll( cacheTags );
+		pushExecutable( currentExecutable );
+	}
+
+	/**
 	 * @return The cache expiration timestamp for the executable
 	 */
 	private long getExpiration()
@@ -343,7 +396,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 		if( cacheDuration <= 0 )
 			return 0;
 		else
-			return currentExecutable.getLastExecutedTimestamp() + cacheDuration;
+			return getCurrentExecutable().getLastExecutedTimestamp() + cacheDuration;
 	}
 
 	/**
@@ -357,140 +410,149 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	 */
 	private Representation execute( Executable executable ) throws IOException, ParsingException, ExecutionException
 	{
-		Executable previousExecutable = currentExecutable;
-		currentExecutable = executable;
-
-		Writer writer = executionContext.getWriter();
-
-		// Optimized handling for pure text
-		String pureText = currentExecutable.getAsPureLiteral();
-		if( pureText != null )
-		{
-			// We want to write this, too, for includes
-			if( writer != null )
-				writer.write( pureText );
-
-			return new CacheEntry( pureText, conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), getExpiration() ).represent();
-		}
-
-		int startPosition = 0;
-
-		// Make sure we have a valid writer for caching mode
-		if( !conversationService.isDeferred )
-		{
-			if( writer == null )
-			{
-				StringWriter stringWriter = new StringWriter();
-				writerBuffer = stringWriter.getBuffer();
-				writer = new BufferedWriter( stringWriter );
-				executionContext.setWriter( writer );
-			}
-			else
-			{
-				writer.flush();
-				startPosition = writerBuffer.length();
-			}
-
-			// Attempt to use cache
-			String cacheKey = castCacheKeyPattern();
-			if( cacheKey != null )
-			{
-				Cache cache = resource.getCache();
-				if( cache != null )
-				{
-					CacheEntry cacheEntry = cache.fetch( cacheKey );
-					if( cacheEntry != null )
-					{
-						// We want to write this, too, for includes
-						if( writer != null )
-							writer.write( cacheEntry.getString() );
-
-						return cacheEntry.represent();
-					}
-				}
-			}
-		}
-
-		setCacheDuration( 0 );
-		setCacheKey( resource.getDefaultCacheKey() );
-		getCacheTags().clear();
+		pushExecutable( executable );
 
 		try
 		{
-			executionContext.setWriter( writer );
-			executionContext.getServices().put( resource.getDocumentServiceName(), this );
-			executionContext.getServices().put( resource.getApplicationServiceName(), applicationService );
-			executionContext.getServices().put( resource.getConversationServiceName(), conversationService );
 
-			// Execute!
-			executable.execute( executionContext, this, resource.getExecutionController() );
-			currentExecutable = executable;
+			Writer writer = executionContext.getWriter();
 
-			// Did the executable ask us to defer?
-			if( conversationService.defer )
+			// Optimized handling for pure text
+			String pureText = executable.getAsPureLiteral();
+			if( pureText != null )
 			{
-				conversationService.defer = false;
+				// We want to write this, too, for includes
+				if( writer != null )
+					writer.write( pureText );
 
-				// Note that this will cause the executable to execute again!
-				GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this );
-				return new GeneratedTextDeferredRepresentation( documentService.resource, documentService.currentExecutable, documentService.executionContext, documentService, documentService.conversationService );
+				return new CacheEntry( pureText, conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), getExpiration() ).represent();
 			}
 
-			if( conversationService.isDeferred )
-			{
-				// Nothing to return in deferred mode
-				return null;
-			}
-			else
-			{
-				writer.flush();
+			int startPosition = 0;
 
-				// Get the buffer from when we executed the executable
-				CacheEntry cacheEntry = new CacheEntry( writerBuffer.substring( startPosition ), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(),
-					getExpiration() );
+			// Make sure we have a valid writer for caching mode
+			if( !conversationService.isDeferred )
+			{
+				if( writer == null )
+				{
+					StringWriter stringWriter = new StringWriter();
+					writerBuffer = stringWriter.getBuffer();
+					writer = new BufferedWriter( stringWriter );
+					executionContext.setWriter( writer );
+				}
+				else
+				{
+					writer.flush();
+					startPosition = writerBuffer.length();
+				}
 
-				// Cache if enabled
+				// Attempt to use cache
 				String cacheKey = castCacheKeyPattern();
-				Collection<String> cacheTags = getCacheTags();
-				if( ( cacheKey != null ) && ( cacheEntry.getExpirationDate() != null ) )
+				if( cacheKey != null )
 				{
 					Cache cache = resource.getCache();
 					if( cache != null )
-						cache.store( cacheKey, cacheTags, cacheEntry );
+					{
+						CacheEntry cacheEntry = cache.fetch( cacheKey );
+						if( cacheEntry != null )
+						{
+							// We want to write this, too, for includes
+							if( writer != null )
+								writer.write( cacheEntry.getString() );
+
+							return cacheEntry.represent();
+						}
+					}
+				}
+			}
+
+			setCacheDuration( 0 );
+			setCacheKey( resource.getDefaultCacheKey() );
+			getCacheTags().clear();
+
+			try
+			{
+				executionContext.setWriter( writer );
+				executionContext.getServices().put( resource.getDocumentServiceName(), this );
+				executionContext.getServices().put( resource.getApplicationServiceName(), applicationService );
+				executionContext.getServices().put( resource.getConversationServiceName(), conversationService );
+
+				// Execute!
+				executable.execute( executionContext, this, resource.getExecutionController() );
+
+				// Did the executable ask us to defer?
+				if( conversationService.defer )
+				{
+					conversationService.defer = false;
+
+					// Note that this will cause the executable to execute
+					// again!
+					GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this );
+					return new GeneratedTextDeferredRepresentation( documentService.resource, executable, executionContext, documentService, documentService.conversationService );
 				}
 
-				// Return a representation of the entire buffer
-				if( startPosition == 0 )
-					return cacheEntry.represent();
+				if( conversationService.isDeferred )
+				{
+					// Nothing to return in deferred mode
+					return null;
+				}
 				else
-					return new CacheEntry( writerBuffer.toString(), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), getExpiration() ).represent();
+				{
+					writer.flush();
+
+					// Get the buffer from when we executed the executable
+					CacheEntry cacheEntry = new CacheEntry( writerBuffer.substring( startPosition ), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(),
+						getExpiration() );
+
+					// Cache if enabled
+					String cacheKey = castCacheKeyPattern();
+					Set<String> cacheTags = getCacheTags( executable, false );
+					if( ( cacheKey != null ) && ( cacheEntry.getExpirationDate() != null ) )
+					{
+						Cache cache = resource.getCache();
+						if( cache != null )
+							cache.store( cacheKey, cacheTags, cacheEntry );
+					}
+
+					// Propagate cache tags up stack
+					if( cacheTags != null && !cacheTags.isEmpty() )
+						propagateCacheTags( cacheTags );
+
+					// Return a representation of the entire buffer
+					if( startPosition == 0 )
+						return cacheEntry.represent();
+					else
+						return new CacheEntry( writerBuffer.toString(), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), getExpiration() ).represent();
+				}
 			}
-		}
-		catch( ExecutionException x )
-		{
-			// Did the executable ask us to defer?
-			if( conversationService.defer )
+			catch( ExecutionException x )
 			{
-				// Note that we will allow exceptions in an executable that ask
-				// us to defer! In fact, throwing an exception is a good way for
-				// the executable to signal that it's done and is ready to
-				// defer.
+				// Did the executable ask us to defer?
+				if( conversationService.defer )
+				{
+					// Note that we will allow exceptions in an executable that
+					// ask us to defer! In fact, throwing an exception is a good
+					// way for the executable to signal that it's done and is
+					// ready to defer.
 
-				conversationService.defer = false;
+					conversationService.defer = false;
 
-				// Note that this will cause the executable to run again!
-				GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this );
-				return new GeneratedTextDeferredRepresentation( documentService.resource, documentService.currentExecutable, documentService.executionContext, documentService, documentService.conversationService );
+					// Note that this will cause the executable to run again!
+					GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this );
+					return new GeneratedTextDeferredRepresentation( documentService.resource, executable, executionContext, documentService, documentService.conversationService );
+				}
+				else
+					throw x;
 			}
-			else
-				throw x;
+			finally
+			{
+				writer.flush();
+				executionContext.getErrorWriterOrDefault().flush();
+			}
 		}
 		finally
 		{
-			writer.flush();
-			executionContext.getErrorWriterOrDefault().flush();
-
-			currentExecutable = previousExecutable;
+			popExecutable();
 		}
 	}
 }

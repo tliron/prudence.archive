@@ -38,7 +38,7 @@ public interface Cache
 	 * @param key
 	 *        A key unique to the cache
 	 * @param tags
-	 *        An optional list of tags to which this entry is associated
+	 *        An optional list of tags associated with this entry
 	 * @param entry
 	 *        The entry
 	 */
