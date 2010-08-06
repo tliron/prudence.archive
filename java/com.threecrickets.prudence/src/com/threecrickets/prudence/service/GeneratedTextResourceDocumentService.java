@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -378,13 +379,37 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 	/**
 	 * Copies the cache tags for the current executable, if it has any, to the
 	 * entire executable stack.
+	 * 
+	 * @param cacheTags
+	 *        The cache tags
+	 * @return The cleaned cache tags
 	 */
-	private void propagateCacheTags( Set<String> cacheTags )
+	private Set<String> propagateCacheTags( Set<String> cacheTags )
 	{
-		Executable currentExecutable = popExecutable();
-		for( Executable executable : executableStack )
-			getCacheTags( executable, true ).addAll( cacheTags );
-		pushExecutable( currentExecutable );
+		ArrayList<String> propagatedCacheTags = new ArrayList<String>( cacheTags.size() );
+		Set<String> cleanedCacheTags = new HashSet<String>( cacheTags.size() );
+
+		for( String cacheTag : cacheTags )
+		{
+			// Don't propagate underscored cache tags
+			if( cacheTag.startsWith( "_" ) )
+				cleanedCacheTags.add( cacheTag.substring( 1 ) );
+			else
+			{
+				propagatedCacheTags.add( cacheTag );
+				cleanedCacheTags.add( cacheTag );
+			}
+		}
+
+		if( !propagatedCacheTags.isEmpty() )
+		{
+			Executable currentExecutable = popExecutable();
+			for( Executable executable : executableStack )
+				getCacheTags( executable, true ).addAll( propagatedCacheTags );
+			pushExecutable( currentExecutable );
+		}
+
+		return cleanedCacheTags;
 	}
 
 	/**
@@ -506,17 +531,18 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 
 					// Cache if enabled
 					String cacheKey = castCacheKeyPattern();
-					Set<String> cacheTags = getCacheTags( executable, false );
 					if( ( cacheKey != null ) && ( cacheEntry.getExpirationDate() != null ) )
 					{
+						Set<String> cacheTags = getCacheTags( executable, false );
+
+						// Propagate cache tags up the stack
+						if( ( cacheTags != null ) && !cacheTags.isEmpty() )
+							cacheTags = propagateCacheTags( cacheTags );
+
 						Cache cache = resource.getCache();
 						if( cache != null )
 							cache.store( cacheKey, cacheTags, cacheEntry );
 					}
-
-					// Propagate cache tags up stack
-					if( cacheTags != null && !cacheTags.isEmpty() )
-						propagateCacheTags( cacheTags );
 
 					// Return a representation of the entire buffer
 					if( startPosition == 0 )
