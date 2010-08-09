@@ -5,6 +5,7 @@
 import org.restlet.data.Reference
 import org.restlet.data.MediaType
 import com.threecrickets.prudence.util.DelegatedStatusService
+import com.threecrickets.prudence.util.PrudenceTaskCollector
 
 #
 # Settings
@@ -57,3 +58,11 @@ $application_instance.context.set_logger $application_logger_name
 for key in $predefined_globals.keys
 	$attributes[key] = $predefined_globals[key]
 end
+
+#
+# Tasks
+#
+
+$scheduler_document_source = DocumentFileSource.new($application_base_path + $tasks_base_path, $tasks_default_document, 'rb', $tasks_minimum_time_between_validity_checks)
+$task_collector = PrudenceTaskCollector.new(File.new($application_base_path + '/crontab'), $scheduler_document_source, $language_manager, 'ruby', true, $application_instance->context)
+$scheduler.add_task_collector $task_collector

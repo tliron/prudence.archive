@@ -5,6 +5,7 @@
 import org.restlet.data.Reference
 import org.restlet.data.MediaType
 import com.threecrickets.prudence.util.DelegatedStatusService
+import com.threecrickets.prudence.util.PrudenceTaskCollector
 
 //
 // Settings
@@ -57,3 +58,11 @@ applicationInstance.context.setLogger(applicationLoggerName)
 predefinedGlobals.each() { key, value ->
 	attributes[key] = value
 }
+
+//
+// Tasks
+//
+
+var schedulerDocumentSource = new DocumentFileSource(applicationBasePath + tasksBasePath, tasksDefaultDocument, 'gv', tasksMinimumTimeBetweenValidityChecks)
+var taskCollector = new PrudenceTaskCollector(new File(applicationBasePath + '/crontab'), schedulerDocumentSource, languageManager, 'groovy', true, applicationInstance.context)
+scheduler.addTaskCollector(taskCollector)

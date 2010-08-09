@@ -6,6 +6,7 @@ require 'java'
 import java.lang.System
 import java.util.logging.LogManager
 import com.threecrickets.scripturian.exception.DocumentNotFoundException
+import it.sauronsoftware.cron4j.Scheduler
 
 def execute_or_default(name, default=nil)
 	begin
@@ -19,6 +20,7 @@ def execute_or_default(name, default=nil)
 end
 
 $tasks = []
+$scheduler = Scheduler.new
 
 #
 # Version
@@ -104,6 +106,12 @@ execute_or_default 'instance/servers/'
 #
 
 $component.start
+
+#
+# Scheduler
+#
+
+$scheduler.start
 
 #
 # Tasks

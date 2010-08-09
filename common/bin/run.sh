@@ -20,9 +20,11 @@ libraries/com.sun.script.velocity.jar:\
 libraries/com.threecrickets.jygments.jar:\
 libraries/com.threecrickets.prudence.jar:\
 libraries/com.threecrickets.scripturian.jar:\
+libraries/it.sauronsoftware.cron4j.jar:\
 libraries/javax.script.jar:\
 libraries/javax.servlet.jar:\
 libraries/jep.jar:\
+libraries/net.spy.memcached.jar:\
 libraries/org.apache.log4j.jar:\
 libraries/org.apache.velocity.jar:\
 libraries/org.codehaus.groovy.jar:\

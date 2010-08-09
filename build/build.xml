@@ -162,6 +162,7 @@
 				<fileset dir="${lib}/commons-dbcp/lib" />
 				<fileset dir="${lib}/commons-fileupload/lib" />
 				<fileset dir="${lib}/commons-pool/lib" />
+				<fileset dir="${lib}/cron4j/lib" />
 				<fileset dir="${lib}/groboutils/lib" />
 				<fileset dir="${lib}/hazelcast/lib" />
 				<fileset dir="${lib}/h2/lib" />
@@ -193,6 +194,7 @@
 			<link href="http://threecrickets.com/scripturian/api/" />
 			<link href="http://www.restlet.org/documentation/2.0/jse/api/" />
 			<link href="http://commons.apache.org/fileupload/apidocs/" />
+			<link href="http://www.sauronsoftware.it/projects/cron4j/api/" />
 			<classpath>
 				<fileset dir="${lib}/restlet/lib" />
 				<fileset dir="${lib}/jsr223/lib" />
@@ -248,6 +250,7 @@
 	<fetch-library dist="${dist-kitchensink}" library="commons-fileupload" />
 	<fetch-library dist="${dist-kitchensink}" library="commons-io" />
 	<fetch-library dist="${dist-kitchensink}" library="commons-pool" />
+	<fetch-library dist="${dist-kitchensink}" library="cron4j" />
 	<fetch-library dist="${dist-kitchensink}" library="grizzly" />
 	<fetch-library dist="${dist-kitchensink}" library="groboutils" />
 	<fetch-library dist="${dist-kitchensink}" library="groovy" />
@@ -376,6 +379,7 @@
 	<fetch-library dist="${dist-javascript}" library="commons-fileupload" />
 	<fetch-library dist="${dist-javascript}" library="commons-io" />
 	<fetch-library dist="${dist-javascript}" library="commons-pool" />
+	<fetch-library dist="${dist-javascript}" library="cron4j" />
 	<fetch-library dist="${dist-javascript}" library="grizzly" />
 	<fetch-library dist="${dist-javascript}" library="h2" />
 	<fetch-library dist="${dist-javascript}" library="hazelcast" />
@@ -419,6 +423,7 @@
 	<fetch-library dist="${dist-python}" library="commons-fileupload" />
 	<fetch-library dist="${dist-python}" library="commons-io" />
 	<fetch-library dist="${dist-python}" library="commons-pool" />
+	<fetch-library dist="${dist-python}" library="cron4j" />
 	<fetch-library dist="${dist-python}" library="grizzly" />
 	<fetch-library dist="${dist-python}" library="h2" />
 	<fetch-library dist="${dist-python}" library="hazelcast" />
@@ -468,6 +473,7 @@
 	<fetch-library dist="${dist-clojure}" library="commons-fileupload" />
 	<fetch-library dist="${dist-clojure}" library="commons-io" />
 	<fetch-library dist="${dist-clojure}" library="commons-pool" />
+	<fetch-library dist="${dist-clojure}" library="cron4j" />
 	<fetch-library dist="${dist-clojure}" library="grizzly" />
 	<fetch-library dist="${dist-clojure}" library="h2" />
 	<fetch-library dist="${dist-clojure}" library="hazelcast" />
@@ -512,6 +518,7 @@
 	<fetch-library dist="${dist-groovy}" library="commons-fileupload" />
 	<fetch-library dist="${dist-groovy}" library="commons-io" />
 	<fetch-library dist="${dist-groovy}" library="commons-pool" />
+	<fetch-library dist="${dist-groovy}" library="cron4j" />
 	<fetch-library dist="${dist-groovy}" library="grizzly" />
 	<fetch-library dist="${dist-groovy}" library="groovy" />
 	<fetch-library dist="${dist-groovy}" library="h2" />
@@ -557,6 +564,7 @@
 	<fetch-library dist="${dist-ruby}" library="commons-fileupload" />
 	<fetch-library dist="${dist-ruby}" library="commons-io" />
 	<fetch-library dist="${dist-ruby}" library="commons-pool" />
+	<fetch-library dist="${dist-ruby}" library="cron4j" />
 	<fetch-library dist="${dist-ruby}" library="grizzly" />
 	<fetch-library dist="${dist-ruby}" library="h2" />
 	<fetch-library dist="${dist-ruby}" library="hazelcast" />
@@ -602,6 +610,7 @@
 	<fetch-library dist="${dist-php}" library="commons-fileupload" />
 	<fetch-library dist="${dist-php}" library="commons-io" />
 	<fetch-library dist="${dist-php}" library="commons-pool" />
+	<fetch-library dist="${dist-php}" library="cron4j" />
 	<fetch-library dist="${dist-php}" library="grizzly" />
 	<fetch-library dist="${dist-php}" library="h2" />
 	<fetch-library dist="${dist-php}" library="hazelcast" />

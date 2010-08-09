@@ -5,7 +5,8 @@
 importClass(
 	org.restlet.data.Reference,
 	org.restlet.data.MediaType,
-	com.threecrickets.prudence.util.DelegatedStatusService)
+	com.threecrickets.prudence.util.DelegatedStatusService,
+	com.threecrickets.prudence.util.PrudenceTaskCollector)
 
 //
 // Settings
@@ -58,3 +59,11 @@ applicationInstance.context.setLogger(applicationLoggerName)
 for(var key in predefinedGlobals) {
 	attributes.put(key, predefinedGlobals[key])
 }
+
+//
+// Tasks
+//
+
+var schedulerDocumentSource = new DocumentFileSource(applicationBasePath + tasksBasePath, tasksDefaultDocument, 'js', tasksMinimumTimeBetweenValidityChecks)
+var taskCollector = new PrudenceTaskCollector(new File(applicationBasePath + '/crontab'), schedulerDocumentSource, languageManager, 'javascript', true, applicationInstance.context)
+scheduler.addTaskCollector(taskCollector)

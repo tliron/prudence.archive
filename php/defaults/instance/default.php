@@ -3,11 +3,12 @@
 // Prudence Component
 //
 
-global $tasks, $component, $prudence_version, $prudence_revision, $prudence_flavor;
+global $tasks, $scheduler, $component, $prudence_version, $prudence_revision, $prudence_flavor;
 
 import java.lang.System;
 import java.util.logging.LogManager;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
+import it.sauronsoftware.cron4j.Scheduler;
 
 function execute_or_default($name, $def=NULL) {
 	global $document;
@@ -23,6 +24,7 @@ function execute_or_default($name, $def=NULL) {
 }
 
 $tasks = array();
+$scheduler = new Scheduler();
 
 //
 // Version
@@ -107,6 +109,12 @@ execute_or_default('instance/servers/');
 //
 
 $component->start();
+
+//
+// Scheduler
+//
+
+$scheduler->start();
 
 //
 // Tasks

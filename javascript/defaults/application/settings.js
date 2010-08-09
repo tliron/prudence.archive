@@ -142,6 +142,29 @@ var staticWebBasePath = '/web/static/'
 var staticWebDirectoryListingAllowed = true
 
 //
+// Tasks
+//
+// Sets up a directory where you can place script files schedule to run
+// according to the application's crontab file.
+//
+
+var tasksBasePath = '/tasks/'
+
+// If the task name points to a directory rather than a file, and that directory
+// contains a file with this name, then it will be used. This allows
+// you to use the directory structure to create nice URLs without relying
+// on filenames.
+
+var tasksDefaultDocument = 'default'
+
+// This is the time (in milliseconds) allowed to pass until a script file
+// is tested to see if it was changed. During development, you'd want this
+// to be low, but during production, it should be high in order to avoid
+// unnecessary hits on the filesystem.
+
+var tasksMinimumTimeBetweenValidityChecks = 1000
+
+//
 // Preheater
 //
 // List resources here that you want heated up as soon as Prudence starts.

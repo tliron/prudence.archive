@@ -5,7 +5,7 @@
 from java.lang import System
 from java.util.logging import LogManager
 from com.threecrickets.scripturian.exception import DocumentNotFoundException
-
+from it.sauronsoftware.cron4j import Scheduler
 
 def execute_or_default(name, default=None):
 	try:
@@ -16,6 +16,7 @@ def execute_or_default(name, default=None):
 		document.execute(default)
 
 tasks = []
+scheduler = Scheduler()
 
 #
 # Version
@@ -99,8 +100,13 @@ execute_or_default('instance/servers/')
 # Start
 #
 
-component.context.attributes['applications'] = applications
 component.start()
+
+#
+# Scheduler
+#
+
+scheduler.start()
 
 #
 # Tasks

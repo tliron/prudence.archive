@@ -9,6 +9,7 @@ libraries/com.threecrickets.jygments.jar;^
 libraries/com.threecrickets.prudence.jar;^
 libraries/com.threecrickets.scripturian.jar;^
 libraries/com.threecrickets.succinct.jar;^
+libraries/it.sauronsoftware.cron4j.jar;^
 libraries/javax.servlet.jar;^
 libraries/net.spy.memcached.jar;^
 libraries/org.apache.commons.dbcp.jar;^

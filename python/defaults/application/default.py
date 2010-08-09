@@ -3,7 +3,7 @@
 #
 
 from org.restlet.data import Reference, MediaType
-from com.threecrickets.prudence.util import DelegatedStatusService
+from com.threecrickets.prudence.util import DelegatedStatusService, PrudenceTaskCollector
 
 #
 # Settings
@@ -54,3 +54,11 @@ application_instance.context.setLogger(application_logger_name)
 #
 
 attributes.putAll(predefined_globals)
+
+#
+# Tasks
+#
+
+scheduler_document_source = DocumentFileSource(application_base_path + tasks_base_path, tasks_default_document, 'py', tasks_minimum_time_between_validity_checks)
+task_collector = PrudenceTaskCollector(File(application_base_path + '/crontab'), scheduler_document_source, language_manager, 'python', True, application_instance.context)
+scheduler.addTaskCollector(task_collector)

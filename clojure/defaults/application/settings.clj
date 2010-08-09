@@ -141,6 +141,29 @@
 (def static-web-directory-listing-allowed true)
 
 ;
+; Tasks
+;
+; Sets up a directory where you can place script files schedule to run
+; according to the application's crontab file.
+;
+
+(def tasks-base-path "/tasks/")
+
+; If the task name points to a directory rather than a file, and that directory
+; contains a file with this name, then it will be used. This allows
+; you to use the directory structure to create nice URLs without relying
+; on filenames.
+
+(def tasks-default-document "default")
+
+; This is the time (in milliseconds) allowed to pass until a script file
+; is tested to see if it was changed. During development, you'd want this
+; to be low, but during production, it should be high in order to avoid
+; unnecessary hits on the filesystem.
+
+(def tasks-minimum-time-between-validity-checks 1000)
+
+;
 ; Preheater
 ;
 ; List resources here that you want heated up as soon as Prudence starts.

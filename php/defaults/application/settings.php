@@ -11,6 +11,7 @@ global $hosts;
 global $resources_base_url, $resources_base_path, $resources_default_name, $resources_defrost, $resources_source_viewable, $resources_minimum_time_between_validity_checks;
 global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_source_viewable, $dynamic_web_minimum_time_between_validity_checks, $dynamic_web_client_caching_mode;
 global $static_web_base_url, $static_web_base_path, $static_web_directory_listing_allowed;
+global $tasks_base_path, $tasks_default_document, $tasks_minimum_time_between_validity_checks;
 global $preheat_resources;
 global $url_add_trailing_slash;
 global $predefined_globals;
@@ -32,11 +33,11 @@ $application_contact_email = 'prudence@threecrickets.com';
 // Debugging
 //
 
-// Set to true to show debug information on error.
+// Set to TRUE to show debug information on error.
 
-$show_debug_on_error = false;
+$show_debug_on_error = FALSE;
 
-// The base URL for showing source code (only relevant when showDebugOnError is true). 
+// The base URL for showing source code (only relevant when showDebugOnError is TRUE). 
 
 $show_source_code_url = '/sourcecode/';
 
@@ -78,15 +79,15 @@ $resources_base_path = '/resources/';
 
 $resources_default_name = 'default';
 
-// Set this to true if you want to start to load and compile your
+// Set this to TRUE if you want to start to load and compile your
 // resources as soon as Prudence starts.
 
-$resources_defrost = true;
+$resources_defrost = TRUE;
 
-// This is so we can see the source code for scripts by adding ?source=true
+// This is so we can see the source code for scripts by adding ?source=TRUE
 // to the URL. You probably wouldn't want this for most applications.
 
-$resources_source_viewable = true;
+$resources_source_viewable = TRUE;
 
 // This is the time (in milliseconds) allowed to pass until a script file
 // is tested to see if it was changed. During development, you'd want this
@@ -112,20 +113,20 @@ $dynamic_web_base_path = '/web/dynamic/';
 
 $dynamic_web_default_document = 'index';
 
-// Set this to true if you want to compile your scriptlets as soon as Prudence
+// Set this to TRUE if you want to compile your scriptlets as soon as Prudence
 // starts.
 
-$dynamic_web_defrost = true;
+$dynamic_web_defrost = TRUE;
 
-// Set this to true if you want to load all your dynamic web documents as soon
+// Set this to TRUE if you want to load all your dynamic web documents as soon
 // as Prudence starts.
 
-$dynamic_web_preheat = true;
+$dynamic_web_preheat = TRUE;
 
-// This is so we can see the source code for scripts by adding ?source=true
+// This is so we can see the source code for scripts by adding ?source=TRUE
 // to the URL. You probably wouldn't want this for most applications.
 
-$dynamic_web_source_viewable = true;
+$dynamic_web_source_viewable = TRUE;
 
 // This is the time (in milliseconds) allowed to pass until a script file
 // is tested to see if it was changed. During development, you'd want this
@@ -152,7 +153,30 @@ $static_web_base_path = '/web/static/';
 // If the URL points to a directory rather than a file, then this will allow
 // automatic creation of an HTML page with a directory listing.
 
-$static_web_directory_listing_allowed = true;
+$static_web_directory_listing_allowed = TRUE;
+
+//
+// Tasks
+//
+// Sets up a directory where you can place script files schedule to run
+// according to the application's crontab file.
+//
+
+$tasks_base_path = '/tasks/';
+
+// If the task name points to a directory rather than a file, and that directory
+// contains a file with this name, then it will be used. This allows
+// you to use the directory structure to create nice URLs without relying
+// on filenames.
+
+$tasks_default_document = 'default';
+
+// This is the time (in milliseconds) allowed to pass until a script file
+// is tested to see if it was changed. During development, you'd want this
+// to be low, but during production, it should be high in order to avoid
+// unnecessary hits on the filesystem.
+
+$tasks_minimum_time_between_validity_checks = 1000;
 
 //
 // Preheater
