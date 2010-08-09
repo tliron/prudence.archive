@@ -41,6 +41,12 @@ $executor = Executors::newFixedThreadPool(Runtime::getRuntime()->availableProces
 $component->context->attributes['com.threecrickets.prudence.executor'] = $executor;
 
 //
+// Scheduler
+//
+
+$component->context->attributes['com.threecrickets.prudence.scheduler'] = $scheduler;
+
+//
 // Cache
 //
 

@@ -39,6 +39,12 @@ $executor = Executors.new_fixed_thread_pool(Runtime::runtime.available_processor
 $component.context.attributes['com.threecrickets.prudence.executor'] = $executor
 
 #
+# Scheduler
+#
+
+$component.context.attributes['com.threecrickets.prudence.scheduler'] = $scheduler
+
+#
 # Cache
 #
 

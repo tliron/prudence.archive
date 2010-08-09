@@ -14,7 +14,7 @@ global $scheduler;
 import org.restlet.data.Reference;
 import org.restlet.data.MediaType;
 import com.threecrickets.prudence.util.DelegatedStatusService;
-import com.threecrickets.prudence.util.PrudenceTaskCollector;
+import com.threecrickets.prudence.util.PrudenceCronTaskCollector;
 
 //
 // Settings
@@ -73,6 +73,6 @@ foreach($predefined_globals as $key => $value) {
 //
 
 $scheduler_document_source = new DocumentFileSource($application_base_path . $tasks_base_path, $tasks_default_document, 'php', $tasks_minimum_time_between_validity_checks);
-$task_collector = new PrudenceTaskCollector(new File($application_base_path . '/crontab'), $scheduler_document_source, $language_manager, 'php', TRUE, $application_instance->context);
+$task_collector = new PrudenceCronTaskCollector(new File($application_base_path . '/crontab'), $scheduler_document_source, $language_manager, 'php', TRUE, $application_instance->context);
 $scheduler->addTaskCollector($task_collector);
 ?>

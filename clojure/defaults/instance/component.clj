@@ -38,6 +38,12 @@
 (.. component getContext getAttributes (put "com.threecrickets.prudence.executor" executor))
 
 ;
+; Scheduler
+;
+
+(.. component getContext getAttributes (put "com.threecrickets.prudence.scheduler" scheduler))
+
+;
 ; Cache
 ;
 

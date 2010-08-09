@@ -32,13 +32,13 @@ import com.threecrickets.scripturian.exception.ParsingException;
 /**
  * @author Tal Liron
  */
-public class PrudenceTaskCollector implements TaskCollector
+public class PrudenceCronTaskCollector implements TaskCollector
 {
 	//
 	// Construction
 	//
 
-	public PrudenceTaskCollector( File crontab, DocumentSource<Executable> documentSource, LanguageManager languageManager, String defaultLanguageTag, boolean prepare, Context context )
+	public PrudenceCronTaskCollector( File crontab, DocumentSource<Executable> documentSource, LanguageManager languageManager, String defaultLanguageTag, boolean prepare, Context context )
 	{
 		this.crontab = crontab;
 		this.documentSource = documentSource;

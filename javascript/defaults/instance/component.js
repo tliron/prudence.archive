@@ -39,6 +39,12 @@ var executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors(
 component.context.attributes.put('com.threecrickets.prudence.executor', executor)
 
 //
+// Scheduler
+//
+
+component.context.attributes.put('com.threecrickets.prudence.scheduler', scheduler)
+
+//
 // Cache
 //
 
