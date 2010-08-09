@@ -45,7 +45,7 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * 
  * @author Tal Liron
  */
-public class GeneratedTextResourceDocumentService extends DocumentServiceBase<GeneratedTextResource>
+public class GeneratedTextResourceDocumentService extends ResourceDocumentServiceBase<GeneratedTextResource>
 {
 	//
 	// Construction
@@ -223,6 +223,10 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 
 		return execute( documentDescriptor.getDocument() );
 	}
+
+	//
+	// ResourceDocumentService
+	//
 
 	/**
 	 * Executes a source code document. The language of the source code will be

@@ -169,7 +169,7 @@ $tasks_base_path = '/tasks/';
 // you to use the directory structure to create nice URLs without relying
 // on filenames.
 
-$tasks_default_document = 'default';
+$tasks_default_name = 'default';
 
 // This is the time (in milliseconds) allowed to pass until a script file
 // is tested to see if it was changed. During development, you'd want this

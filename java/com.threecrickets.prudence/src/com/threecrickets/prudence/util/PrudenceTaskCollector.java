@@ -21,31 +21,36 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.restlet.Context;
+import org.restlet.Application;
 
-import com.threecrickets.scripturian.Executable;
-import com.threecrickets.scripturian.LanguageManager;
-import com.threecrickets.scripturian.document.DocumentSource;
+import com.threecrickets.prudence.ApplicationTask;
+import com.threecrickets.prudence.internal.ApplicationCronTask;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
+ * A <a href="http://www.sauronsoftware.it/projects/cron4j/">cron4j</a>
+ * {@link TaskCollector} designed to poll a crontab-like file every minute.
+ * <p>
+ * The syntax of the crontab-like file is simple. Each line starts with a
+ * {@link SchedulingPattern}, and after whitespace is a document name. This line
+ * becomes a {@link ApplicationTask}, which executes that document.
+ * <p>
+ * Empty lines and comment lines (beginning with a "#") are ignored.
+ * 
  * @author Tal Liron
+ * @see ApplicationTask
  */
-public class PrudenceCronTaskCollector implements TaskCollector
+public class PrudenceTaskCollector implements TaskCollector
 {
 	//
 	// Construction
 	//
 
-	public PrudenceCronTaskCollector( File crontab, DocumentSource<Executable> documentSource, LanguageManager languageManager, String defaultLanguageTag, boolean prepare, Context context )
+	public PrudenceTaskCollector( File crontab, Application application )
 	{
 		this.crontab = crontab;
-		this.documentSource = documentSource;
-		this.languageManager = languageManager;
-		this.defaultLanguageTag = defaultLanguageTag;
-		this.prepare = prepare;
-		this.context = context;
+		this.application = application;
 	}
 
 	//
@@ -54,13 +59,34 @@ public class PrudenceCronTaskCollector implements TaskCollector
 
 	public TaskTable getTasks()
 	{
-		TaskTable taskTable = new TaskTable();
+		long lastModified = crontab.lastModified();
+
+		if( lastModified == 0 )
+		{
+			// No crontab
+
+			if( ( taskTable == null ) || ( taskTable.size() > 0 ) )
+				taskTable = new TaskTable();
+
+			return taskTable;
+		}
+		else if( lastModified <= lastParsed )
+		{
+			// No changes since we last parsed
+
+			if( taskTable == null )
+				taskTable = new TaskTable();
+
+			return taskTable;
+		}
 
 		try
 		{
 			BufferedReader reader = new BufferedReader( new FileReader( crontab ) );
 			try
 			{
+				taskTable = new TaskTable();
+
 				while( true )
 				{
 					String line = reader.readLine();
@@ -96,8 +122,7 @@ public class PrudenceCronTaskCollector implements TaskCollector
 						continue;
 
 					// Add the task
-					Executable executable = Executable.createOnce( documentName, documentSource, false, languageManager, defaultLanguageTag, prepare ).getDocument();
-					taskTable.add( pattern, new PrudenceCronTask( executable ) );
+					taskTable.add( pattern, new ApplicationCronTask( application, documentName ) );
 				}
 			}
 			catch( IOException x )
@@ -126,7 +151,9 @@ public class PrudenceCronTaskCollector implements TaskCollector
 		}
 		catch( FileNotFoundException x )
 		{
-			// No crontab -- that's alright!
+			// No crontab
+			if( ( taskTable == null ) || ( taskTable.size() > 0 ) )
+				taskTable = new TaskTable();
 		}
 
 		return taskTable;
@@ -137,13 +164,9 @@ public class PrudenceCronTaskCollector implements TaskCollector
 
 	private final File crontab;
 
-	private final DocumentSource<Executable> documentSource;
+	private final Application application;
 
-	private final LanguageManager languageManager;
+	private TaskTable taskTable;
 
-	private final String defaultLanguageTag;
-
-	private final boolean prepare;
-
-	private final Context context;
+	private long lastParsed;
 }

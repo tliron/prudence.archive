@@ -30,6 +30,31 @@ import com.threecrickets.prudence.GeneratedTextResource;
 public class ApplicationService
 {
 	//
+	// Construction
+	//
+
+	/**
+	 * Construction using the current application.
+	 * 
+	 * @see Application#getCurrent()
+	 */
+	public ApplicationService()
+	{
+		this( Application.getCurrent() );
+	}
+
+	/**
+	 * Construction.
+	 * 
+	 * @param application
+	 *        The application
+	 */
+	public ApplicationService( Application application )
+	{
+		this.application = application;
+	}
+
+	//
 	// Attributes
 	//
 
@@ -74,7 +99,7 @@ public class ApplicationService
 	 */
 	public Application getApplication()
 	{
-		return Application.getCurrent();
+		return application;
 	}
 
 	/**
@@ -116,4 +141,12 @@ public class ApplicationService
 			mediaType = getApplication().getMetadataService().getMediaType( name );
 		return mediaType;
 	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	/**
+	 * The application.
+	 */
+	private final Application application;
 }

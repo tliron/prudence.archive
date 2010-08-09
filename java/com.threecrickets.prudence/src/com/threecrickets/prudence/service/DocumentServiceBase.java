@@ -16,7 +16,6 @@ import java.io.IOException;
 import org.restlet.data.LocalReference;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
-import org.restlet.resource.ServerResource;
 
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentSource;
@@ -28,9 +27,8 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * Document service exposed to executables.
  * 
  * @author Tal Liron
- * @param <R>
  */
-public abstract class DocumentServiceBase<R extends ServerResource>
+public abstract class DocumentServiceBase
 {
 	//
 	// Construction
@@ -39,14 +37,11 @@ public abstract class DocumentServiceBase<R extends ServerResource>
 	/**
 	 * Construction.
 	 * 
-	 * @param resource
-	 *        The resource
 	 * @param documentSource
 	 *        The document source
 	 */
-	public DocumentServiceBase( R resource, DocumentSource<Executable> documentSource )
+	public DocumentServiceBase( DocumentSource<Executable> documentSource )
 	{
-		this.resource = resource;
 		this.documentSource = documentSource;
 	}
 
@@ -124,14 +119,6 @@ public abstract class DocumentServiceBase<R extends ServerResource>
 	{
 		return new ClientResource( uri );
 	}
-
-	// //////////////////////////////////////////////////////////////////////////
-	// Protected
-
-	/**
-	 * The resource.
-	 */
-	protected final R resource;
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private

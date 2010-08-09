@@ -29,7 +29,7 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * @author Tal Liron
  * @see DelegatedResource
  */
-public class DelegatedResourceDocumentService extends DocumentServiceBase<DelegatedResource>
+public class DelegatedResourceDocumentService extends ResourceDocumentServiceBase<DelegatedResource>
 {
 	//
 	// Construction
@@ -47,7 +47,7 @@ public class DelegatedResourceDocumentService extends DocumentServiceBase<Delega
 	}
 
 	//
-	// Operations
+	// ResourceDocumentService
 	//
 
 	/**

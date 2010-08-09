@@ -609,7 +609,7 @@ public class DelegatedResource extends ServerResource
 			documentSource = (DocumentSource<Executable>) attributes.get( "com.threecrickets.prudence.DelegatedResource.documentSource" );
 
 			if( documentSource == null )
-				throw new RuntimeException( "Attribute com.threecrickets.prudence.DelegatedResource.documentSource must be set in context to use ScriptResource" );
+				throw new RuntimeException( "Attribute com.threecrickets.prudence.DelegatedResource.documentSource must be set in context to use DelegatedResource" );
 		}
 
 		return documentSource;

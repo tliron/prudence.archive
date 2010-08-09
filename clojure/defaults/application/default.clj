@@ -6,7 +6,7 @@
 	'org.restlet.data.Reference
 	'org.restlet.data.MediaType
 	'com.threecrickets.prudence.util.DelegatedStatusService
- 'com.threecrickets.prudence.util.PrudenceCronTaskCollector)
+ 'com.threecrickets.prudence.util.PrudenceTaskCollector)
 
 ;
 ; Settings
@@ -61,6 +61,9 @@
 ; Tasks
 ;
 
-(def scheduler-document-source (DocumentFileSource. (str application-base-path tasks_base_path) tasks-default-document "clj" tasks-minimum-time-between-validity-checks))
-(def task-collector (PrudenceCronTaskCollector. (File. (str application-base-path "/crontab")) scheduler-document-source language-manager 'clojure' true (.getContent application-instance)))
-(.addTaskCollector scheduler task-collector)
+(def tasks-document-source (DocumentFileSource. (str application-base-path tasks_base_path) tasks-default-name "clj" tasks-minimum-time-between-validity-checks))
+(.put attributes "com.threecrickets.prudence.ApplicationTask.languageManager" language-manager)
+(.put attributes "com.threecrickets.prudence.ApplicationTask.defaultLanguageTag" "clojure")
+(.put attributes "com.threecrickets.prudence.ApplicationTask.defaultName" tasks-default-name)
+(.put attributes "com.threecrickets.prudence.ApplicationTask.documentSource" tasks-document-source)
+(.addTaskCollector scheduler (PrudenceTaskCollector. (File. (str application-base-path "/crontab")) application-instance))

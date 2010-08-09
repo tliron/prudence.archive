@@ -154,7 +154,7 @@
 ; you to use the directory structure to create nice URLs without relying
 ; on filenames.
 
-(def tasks-default-document "default")
+(def tasks-default-name "default")
 
 ; This is the time (in milliseconds) allowed to pass until a script file
 ; is tested to see if it was changed. During development, you'd want this

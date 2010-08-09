@@ -5,7 +5,7 @@
 import org.restlet.data.Reference
 import org.restlet.data.MediaType
 import com.threecrickets.prudence.util.DelegatedStatusService
-import com.threecrickets.prudence.util.PrudenceCronTaskCollector
+import com.threecrickets.prudence.util.PrudenceTaskCollector
 
 #
 # Settings
@@ -63,6 +63,9 @@ end
 # Tasks
 #
 
-$scheduler_document_source = DocumentFileSource.new($application_base_path + $tasks_base_path, $tasks_default_document, 'rb', $tasks_minimum_time_between_validity_checks)
-$task_collector = PrudenceCronTaskCollector.new(File.new($application_base_path + '/crontab'), $scheduler_document_source, $language_manager, 'ruby', true, $application_instance->context)
-$scheduler.add_task_collector $task_collector
+$tasks_document_source = DocumentFileSource.new($application_base_path + $tasks_base_path, $tasks_default_name, 'rb', $tasks_minimum_time_between_validity_checks)
+$attributes['com.threecrickets.prudence.ApplicationTask.languageManager'] = $language_manager
+$attributes['com.threecrickets.prudence.ApplicationTask.defaultLanguageTag'] = 'ruby'
+$attributes['com.threecrickets.prudence.ApplicationTask.defaultName'] = $tasks_default_name
+$attributes['com.threecrickets.prudence.ApplicationTask.documentSource'] = $tasks_document_source
+$scheduler.add_task_collector PrudenceTaskCollector.new(File.new($application_base_path + '/crontab'), $application_instance))

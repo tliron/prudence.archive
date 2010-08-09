@@ -5,16 +5,16 @@
 
 global $application_instance, $application_base_path, $attributes;
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
-global $tasks_base_path, $tasks_default_document, $tasks_minimum_time_between_validity_checks;
+global $tasks_base_path, $tasks_default_name, $tasks_minimum_time_between_validity_checks;
 global $show_debug_on_error, $show_source_code_url;
 global $application_logger_name, $application_base_path;
 global $predefined_globals;
-global $scheduler;
+global $scheduler, $language_manager;
 
 import org.restlet.data.Reference;
 import org.restlet.data.MediaType;
 import com.threecrickets.prudence.util.DelegatedStatusService;
-import com.threecrickets.prudence.util.PrudenceCronTaskCollector;
+import com.threecrickets.prudence.util.PrudenceTaskCollector;
 
 //
 // Settings
@@ -72,7 +72,10 @@ foreach($predefined_globals as $key => $value) {
 // Tasks
 //
 
-$scheduler_document_source = new DocumentFileSource($application_base_path . $tasks_base_path, $tasks_default_document, 'php', $tasks_minimum_time_between_validity_checks);
-$task_collector = new PrudenceCronTaskCollector(new File($application_base_path . '/crontab'), $scheduler_document_source, $language_manager, 'php', TRUE, $application_instance->context);
-$scheduler->addTaskCollector($task_collector);
+$tasks_document_source = new DocumentFileSource($application_base_path . $tasks_base_path, $tasks_default_name, 'php', $tasks_minimum_time_between_validity_checks);
+$attributes['com.threecrickets.prudence.ApplicationTask.languageManager'] = $language_manager;
+$attributes['com.threecrickets.prudence.ApplicationTask.defaultLanguageTag'] = 'php';
+$attributes['com.threecrickets.prudence.ApplicationTask.defaultName'] = $tasks_default_name;
+$attributes['com.threecrickets.prudence.ApplicationTask.documentSource'] = $tasks_document_source;
+$scheduler->addTaskCollector(new PrudenceTaskCollector(new File($application_base_path . '/crontab'), $application_instance));
 ?>
