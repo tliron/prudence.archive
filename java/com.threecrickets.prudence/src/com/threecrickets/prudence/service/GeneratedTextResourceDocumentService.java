@@ -393,6 +393,7 @@ public class GeneratedTextResourceDocumentService extends DocumentServiceBase<Ge
 		{
 			// Don't propagate underscored cache tags
 			if( cacheTag.startsWith( "_" ) )
+				// But remove the underscore...
 				cleanedCacheTags.add( cacheTag.substring( 1 ) );
 			else
 			{

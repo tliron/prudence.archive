@@ -7766,11 +7766,15 @@ document.cacheTags is ignored if document.cacheDuration is zero.
 \end_layout
 
 \begin_layout Quote
-Important! Using document.include (see blow) will cause the cache tags of
+Important! Using document.include (see below) will cause the cache tags of
  the included document to be applied to the current document, recursively.
  In other words, cache tags effect the inclusion tree moving backwards.
  This should be expected: if an included fragment is invalidated, the containing
  document should also be invalidated.
+ If you wish to disable propagation, prefix the cache tag with an underscore
+ when adding it to document.cacheTags.
+ The tag is not stored with the underscore, and so should be referenced
+ without the underscore when calling document.cache.invalidate.
 \end_layout
 
 \begin_layout Paragraph
