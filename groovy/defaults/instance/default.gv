@@ -5,7 +5,6 @@
 import java.lang.System
 import java.util.logging.LogManager
 import com.threecrickets.scripturian.exception.DocumentNotFoundException
-import it.sauronsoftware.cron4j.Scheduler
 
 executeOrDefault = { name, deflt = null ->
 	try {
@@ -17,9 +16,6 @@ executeOrDefault = { name, deflt = null ->
 		document.execute(deflt)
 	}
 }
-
-tasks = []
-scheduler = new Scheduler()
 
 //
 // Version

@@ -5,8 +5,7 @@
 importClass(
 	java.lang.System,
 	java.util.logging.LogManager,
-	com.threecrickets.scripturian.exception.DocumentNotFoundException,
-	Packages.it.sauronsoftware.cron4j.Scheduler)
+	com.threecrickets.scripturian.exception.DocumentNotFoundException)
 
 function executeOrDefault(name, def) {
 	try {
@@ -18,9 +17,6 @@ function executeOrDefault(name, def) {
 		document.execute(def)
 	}
 }
-
-var tasks = []
-var scheduler = new Scheduler()
 
 //
 // Version

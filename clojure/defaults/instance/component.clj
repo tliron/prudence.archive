@@ -6,7 +6,8 @@
 	'java.util.concurrent.Executors
 	'org.restlet.Component
 	'com.threecrickets.prudence.util.DelegatedStatusService
-	'com.threecrickets.prudence.cache.InProcessMemoryCache)
+	'com.threecrickets.prudence.cache.InProcessMemoryCache
+  'it.sauronsoftware.cron4j.Scheduler)
 
 ;
 ; Component
@@ -36,11 +37,13 @@
 
 (def executor (Executors/newFixedThreadPool (+ (* (.. Runtime getRuntime (availableProcessors)) 2) 1)))
 (.. component getContext getAttributes (put "com.threecrickets.prudence.executor" executor))
+(def tasks [])
 
 ;
 ; Scheduler
 ;
 
+(def scheduler (Scheduler.))
 (.. component getContext getAttributes (put "com.threecrickets.prudence.scheduler" scheduler))
 
 ;

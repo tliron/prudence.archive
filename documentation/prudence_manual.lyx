@@ -5227,6 +5227,133 @@ MIME Types
 \end_layout
 
 \begin_layout Section
+Tasks
+\end_layout
+
+\begin_layout Standard
+Your Prudence code runs in one of three different contexts:
+\end_layout
+
+\begin_layout Itemize
+Configuration scripts
+\end_layout
+
+\begin_layout Itemize
+Conversations (in response to a external user request via HTTP)
+\end_layout
+
+\begin_layout Itemize
+Tasks
+\end_layout
+
+\begin_layout Standard
+Tasks are straightforward scripts placed in the application's /tasks/ subdirecto
+ry.
+ They are straightforward in that, upon execution, the code is simply run.
+ There is no particular entry point as with /resources/.
+ Tasks are part of an application, and have access to the same ``application'',
+ ``document'' and ``executable'' API services as other application code.
+ Likewise, you can access any code in /libraries/ via document.execute or
+ via your language's usual inclusion facility.
+ Unlike /resources/ and /web/dynamic/ code, there is no ``conversation''
+ service in /tasks/.
+\end_layout
+
+\begin_layout Standard
+Tasks can be set to run on arbitrary threads, and thus can be considered
+ ``asynchronous.'' The usual concurrency concerns apply to them.
+\end_layout
+
+\begin_layout Standard
+Prudence provides two facilities for scheduling tasks:
+\end_layout
+
+\begin_layout Subsection
+crontab
+\end_layout
+
+\begin_layout Standard
+This facility lets you schedule tasks to run at specific (Gregorian) calendrical
+ times.
+\end_layout
+
+\begin_layout Standard
+If you place a file with this name in your application's base subdirectory,
+ it will be checked for changes and parsed once per minute.
+ This means that you can edit this file and have your scheduling change
+ on the fly without restarting Prudence.
+\end_layout
+
+\begin_layout Standard
+The format is purposely very similar to that of the crontab found in many
+ Unix-like operating system: each line starts with scheduling pattern and
+ ends with the task name.
+ The scheduling pattern is a series of five whitespace-separated settings.
+ Any of these settings can be ``*'', signifying that any value would match.
+ Use a slash to match only numbers that divide equally by the number after
+ the slash (can also be used on ``*'').
+ Ranges (inclusive) are possible, separated by hyphens.
+ Multiple settings are possible, separated by commas.
+ Multiple patterns are possible, separated by pipes.
+\end_layout
+
+\begin_layout Enumerate
+Minutes of the hour, 0-59.
+\end_layout
+
+\begin_layout Enumerate
+Hour of the day, 0-23.
+\end_layout
+
+\begin_layout Enumerate
+Day of the month, 1-31.
+ The special setting ``L'' signifies the last day of the month, which varies
+ per month and year.
+\end_layout
+
+\begin_layout Enumerate
+Month of the year, 1-12.
+ Three-letter English month names can also be used: ``jan'', ``feb'', ``mar'',
+ etc.
+\end_layout
+
+\begin_layout Enumerate
+Day of the week, 0-6.
+ Three-letter English day names can also be used: ``sun'', ``mon'', ``tue'',
+ etc.
+\end_layout
+
+\begin_layout Standard
+Example patterns:
+\end_layout
+
+\begin_layout Itemize
+Every minute: * * * * *
+\end_layout
+
+\begin_layout Itemize
+11:59pm every Tuesday and Friday: 59 23 * * 2,5
+\end_layout
+
+\begin_layout Itemize
+Every 5 minutes in the morning, between 5 to 8am, otherwise every 30 minutes:
+ */5 5-7 * * *|*/30 0-4,8-23 * * *
+\end_layout
+
+\begin_layout Itemize
+The same as above, but with one added to all minutes of the hour: 1,6,11,16,21,2
+6,31,36,41,46,51,56 5-7 * * *|1,31 0-4,8-23 * * *
+\end_layout
+
+\begin_layout Subsection
+TaskService
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Section
 Static Web
 \begin_inset CommandInset label
 LatexCommand label

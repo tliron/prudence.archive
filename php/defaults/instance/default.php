@@ -8,7 +8,6 @@ global $tasks, $scheduler, $component, $prudence_version, $prudence_revision, $p
 import java.lang.System;
 import java.util.logging.LogManager;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
-import it.sauronsoftware.cron4j.Scheduler;
 
 function execute_or_default($name, $def=NULL) {
 	global $document;
@@ -22,9 +21,6 @@ function execute_or_default($name, $def=NULL) {
 		$document->execute($def);
 	}
 }
-
-$tasks = array();
-$scheduler = new Scheduler();
 
 //
 // Version

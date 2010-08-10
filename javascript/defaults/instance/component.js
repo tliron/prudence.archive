@@ -7,7 +7,8 @@ importClass(
 	java.util.concurrent.Executors,
 	org.restlet.Component,
 	com.threecrickets.prudence.util.DelegatedStatusService,
-	com.threecrickets.prudence.cache.InProcessMemoryCache)
+	com.threecrickets.prudence.cache.InProcessMemoryCache,
+	Packages.it.sauronsoftware.cron4j.Scheduler)
 
 //
 // Component
@@ -37,11 +38,13 @@ component.statusService = new DelegatedStatusService()
 
 var executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors() * 2 + 1)
 component.context.attributes.put('com.threecrickets.prudence.executor', executor)
+var tasks = []
 
 //
 // Scheduler
 //
 
+var scheduler = new Scheduler()
 component.context.attributes.put('com.threecrickets.prudence.scheduler', scheduler)
 
 //

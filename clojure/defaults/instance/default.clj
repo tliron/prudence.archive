@@ -4,8 +4,7 @@
 
 (import
 	'java.util.logging.LogManager
-	'com.threecrickets.scripturian.exception.DocumentNotFoundException
- 'it.sauronsoftware.cron4j.Scheduler)
+	'com.threecrickets.scripturian.exception.DocumentNotFoundException)
 
 (defn execute-or-default
 	([name default]
@@ -18,9 +17,6 @@
 						default)))))
 	([name]
 		(execute-or-default name nil)))
-
-(def tasks [])
-(def scheduler (Scheduler.))
 
 ;
 ; Version
