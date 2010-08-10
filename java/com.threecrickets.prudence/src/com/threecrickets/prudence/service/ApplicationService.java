@@ -209,7 +209,7 @@ public class ApplicationService
 	 * @param repeatEvery
 	 *        Repeat delay in milliseconds, or zero for no repetition
 	 * @param fixedRepeat
-	 *        Whether repetitions are it fixed times, or if the repeat delay
+	 *        Whether repetitions are at fixed times, or if the repeat delay
 	 *        begins when the task ends
 	 * @return A future for the task
 	 * @throws ParsingException
