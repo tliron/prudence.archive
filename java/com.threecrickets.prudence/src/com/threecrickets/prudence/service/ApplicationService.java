@@ -219,7 +219,7 @@ public class ApplicationService
 	public Future<?> task( String documentName, int delay, int repeatEvery, boolean fixedRepeat ) throws ParsingException, DocumentException
 	{
 		ExecutorService executor = getGlobalExecutor();
-		if( delay > 0 )
+		if( ( delay > 0 ) || ( repeatEvery > 0 ) )
 		{
 			if( !( executor instanceof ScheduledExecutorService ) )
 				throw new RuntimeException( "Global executor must implement the ScheduledExecutorService interface to allow for delayed tasks" );
