@@ -12,13 +12,23 @@
 package com.threecrickets.prudence.service;
 
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.restlet.Application;
+import org.restlet.Component;
+import org.restlet.Context;
 import org.restlet.data.MediaType;
 
+import com.threecrickets.prudence.ApplicationTask;
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.prudence.GeneratedTextResource;
+import com.threecrickets.scripturian.exception.DocumentException;
+import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
  * Application service exposed to executables.
@@ -142,6 +152,93 @@ public class ApplicationService
 		return mediaType;
 	}
 
+	/**
+	 * Gets the executor service for the component, creating one if it doesn't
+	 * exist.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.executor</code> in the component's
+	 * {@link Context}.
+	 * 
+	 * @return The executor service
+	 */
+	public ExecutorService getGlobalExecutor()
+	{
+		if( globalExecutor == null )
+		{
+			Application application = Application.getCurrent();
+			ConcurrentMap<String, Object> attributes = application.getContext().getAttributes();
+			Component component = (Component) attributes.get( "com.threecrickets.prudence.component" );
+
+			if( component == null )
+			{
+				globalExecutor = application.getTaskService();
+			}
+			else
+			{
+				attributes = component.getContext().getAttributes();
+
+				globalExecutor = (ExecutorService) attributes.get( "com.threecrickets.prudence.executor" );
+
+				if( globalExecutor == null )
+				{
+					globalExecutor = Executors.newScheduledThreadPool( Runtime.getRuntime().availableProcessors() * 2 + 1 );
+
+					ExecutorService existing = (ExecutorService) attributes.putIfAbsent( "com.threecrickets.prudence.executor", globalExecutor );
+					if( existing != null )
+						globalExecutor = existing;
+				}
+			}
+		}
+
+		return globalExecutor;
+	}
+
+	//
+	// Operations
+	//
+
+	/**
+	 * Submits or schedules an {@link ApplicationTask} on the the component's
+	 * executor service.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @param delay
+	 *        Initial delay in milliseconds, or zero for ASAP
+	 * @param repeatEvery
+	 *        Repeat delay in milliseconds, or zero for no repetition
+	 * @param fixedRepeat
+	 *        Whether repetitions are it fixed times, or if the repeat delay
+	 *        begins when the task ends
+	 * @return A future for the task
+	 * @throws ParsingException
+	 * @throws DocumentException
+	 * @see #getGlobalExecutor()
+	 */
+	public Future<?> task( String documentName, int delay, int repeatEvery, boolean fixedRepeat ) throws ParsingException, DocumentException
+	{
+		ExecutorService executor = getGlobalExecutor();
+		if( delay > 0 )
+		{
+			if( !( executor instanceof ScheduledExecutorService ) )
+				throw new RuntimeException( "Global executor must implement the ScheduledExecutorService interface to allow for delayed tasks" );
+
+			ScheduledExecutorService scheduledExecutor = (ScheduledExecutorService) executor;
+			if( repeatEvery > 0 )
+			{
+				if( fixedRepeat )
+					return scheduledExecutor.scheduleAtFixedRate( new ApplicationTask( documentName ), delay, repeatEvery, TimeUnit.MILLISECONDS );
+				else
+					return scheduledExecutor.scheduleWithFixedDelay( new ApplicationTask( documentName ), delay, repeatEvery, TimeUnit.MILLISECONDS );
+			}
+			else
+				return scheduledExecutor.schedule( new ApplicationTask( documentName ), delay, TimeUnit.MILLISECONDS );
+		}
+		else
+			return executor.submit( new ApplicationTask( documentName ) );
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
@@ -149,4 +246,9 @@ public class ApplicationService
 	 * The application.
 	 */
 	private final Application application;
+
+	/**
+	 * The executor service.
+	 */
+	private ExecutorService globalExecutor;
 }

@@ -36,7 +36,7 @@ $component.status_service = DelegatedStatusService.new
 # Executor
 #
 
-$executor = Executors.new_fixed_thread_pool(Runtime::runtime.available_processors * 2 + 1)
+$executor = Executors.new_scheduled_thread_pool(Runtime::runtime.available_processors * 2 + 1)
 $component.context.attributes['com.threecrickets.prudence.executor'] = $executor
 $tasks = []
 

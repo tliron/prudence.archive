@@ -35,7 +35,7 @@
 ; Executor
 ;
 
-(def executor (Executors/newFixedThreadPool (+ (* (.. Runtime getRuntime (availableProcessors)) 2) 1)))
+(def executor (Executors/newScheduledThreadPool (+ (* (.. Runtime getRuntime (availableProcessors)) 2) 1)))
 (.. component getContext getAttributes (put "com.threecrickets.prudence.executor" executor))
 (def tasks [])
 

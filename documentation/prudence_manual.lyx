@@ -5228,6 +5228,13 @@ MIME Types
 
 \begin_layout Section
 Tasks
+\begin_inset CommandInset label
+LatexCommand label
+name "../tasks/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5269,6 +5276,26 @@ Prudence provides two facilities for scheduling tasks:
 \end_layout
 
 \begin_layout Subsection
+application.task
+\end_layout
+
+\begin_layout Standard
+Lets you programmatically spawn or schedule a task.
+ For a complete reference, see the API documention for 
+\bar under
+application.task (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-task"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Subsection
 crontab
 \end_layout
 
@@ -5278,16 +5305,16 @@ This facility lets you schedule tasks to run at specific (Gregorian) calendrical
 \end_layout
 
 \begin_layout Standard
-If you place a file with this name in your application's base subdirectory,
- it will be checked for changes and parsed once per minute.
+If you place a file with the name ``crontab'' in your application's base
+ subdirectory, it will be checked for changes and parsed once per minute.
  This means that you can edit this file and have your scheduling change
  on the fly without restarting Prudence.
 \end_layout
 
 \begin_layout Standard
-The format is purposely very similar to that of the crontab found in many
- Unix-like operating system: each line starts with scheduling pattern and
- ends with the task name.
+The format is purposely very similar to that of the crontab configuration
+ file found in many Unix-like operating system: each line starts with scheduling
+ pattern and ends with the task name.
  The scheduling pattern is a series of five whitespace-separated settings.
  Any of these settings can be ``*'', signifying that any value would match.
  Use a slash to match only numbers that divide equally by the number after
@@ -5313,14 +5340,14 @@ Day of the month, 1-31.
 
 \begin_layout Enumerate
 Month of the year, 1-12.
- Three-letter English month names can also be used: ``jan'', ``feb'', ``mar'',
- etc.
+ Three-letter English month names may be used instead of numbers: ``jan'',
+ ``feb'', ``mar'', etc.
 \end_layout
 
 \begin_layout Enumerate
 Day of the week, 0-6.
- Three-letter English day names can also be used: ``sun'', ``mon'', ``tue'',
- etc.
+ Three-letter English day names may be used instead of numbers: ``sun'',
+ ``mon'', ``tue'', etc.
 \end_layout
 
 \begin_layout Standard
@@ -5332,7 +5359,7 @@ Every minute: * * * * *
 \end_layout
 
 \begin_layout Itemize
-11:59pm every Tuesday and Friday: 59 23 * * 2,5
+11:59pm every Tuesday and Friday: 59 23 * * tue,fri
 \end_layout
 
 \begin_layout Itemize
@@ -5345,12 +5372,17 @@ The same as above, but with one added to all minutes of the hour: 1,6,11,16,21,2
 6,31,36,41,46,51,56 5-7 * * *|1,31 0-4,8-23 * * *
 \end_layout
 
-\begin_layout Subsection
-TaskService
-\end_layout
-
 \begin_layout Standard
-TODO
+Note that you can schedule the same task on multiple lines, which is 
+\emph on
+not
+\emph default
+ equivalent to using the pipe: multiple lines means that the same task might
+ be spawned multiple times at the same time if it matches more than one
+ line.
+ Also note that the scheduler does not check to see if a task finished running,
+ so that even if a task is not done yet, but it's time for it to be spawned
+ again, you'll have multiple instances of the task running at the same time.
 \end_layout
 
 \begin_layout Section
@@ -7676,6 +7708,36 @@ reference "../application/|default-file"
 )
 \bar default
 .
+\end_layout
+
+\begin_layout Paragraph
+application.task
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|application-task"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+tasks (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../tasks/"
+
+\end_inset
+
+)
+\bar default
+ for more information.
 \end_layout
 
 \begin_layout Subsection

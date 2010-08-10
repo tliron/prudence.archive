@@ -38,7 +38,7 @@ $component->statusService = new DelegatedStatusService();
 // Executor
 //
 
-$executor = Executors::newFixedThreadPool(Runtime::getRuntime()->availableProcessors() * 2 + 1);
+$executor = Executors::newScheduledThreadPool(Runtime::getRuntime()->availableProcessors() * 2 + 1);
 $component->context->attributes['com.threecrickets.prudence.executor'] = $executor;
 $tasks = array();
 

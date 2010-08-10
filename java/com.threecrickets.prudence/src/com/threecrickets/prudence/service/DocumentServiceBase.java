@@ -12,18 +12,11 @@
 package com.threecrickets.prudence.service;
 
 import java.io.IOException;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-import org.restlet.Application;
-import org.restlet.Context;
 import org.restlet.data.LocalReference;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 
-import com.threecrickets.prudence.ApplicationTask;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
@@ -84,23 +77,6 @@ public abstract class DocumentServiceBase
 	public abstract Representation execute( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException;
 
 	/**
-	 * Submits an {@link ApplicationTask} on the the component's executor
-	 * service.
-	 * 
-	 * @param documentName
-	 *        The document name
-	 * @return A future for the task
-	 * @throws ParsingException
-	 * @throws DocumentException
-	 * @see #getExecutorService()
-	 */
-	public Future<?> task( String documentName ) throws ParsingException, DocumentException
-	{
-		ExecutorService executorService = getExecutorService();
-		return executorService.submit( new ApplicationTask( documentName ) );
-	}
-
-	/**
 	 * Access a resource internal to the current application.
 	 * 
 	 * @param resourceUri
@@ -151,40 +127,4 @@ public abstract class DocumentServiceBase
 	 * The document source.
 	 */
 	private final DocumentSource<Executable> documentSource;
-
-	/**
-	 * The executor service.
-	 */
-	private ExecutorService executorService;
-
-	/**
-	 * Gets the executor service for the component, creating one if it doesn't
-	 * exist.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.executor</code> in the component's
-	 * {@link Context}.
-	 * 
-	 * @return The executor service
-	 */
-	private ExecutorService getExecutorService()
-	{
-		if( executorService == null )
-		{
-			Application application = Application.getCurrent();
-			ConcurrentMap<String, Object> attributes = application.getContext().getAttributes();
-			executorService = (ExecutorService) attributes.get( "com.threecrickets.prudence.executor" );
-
-			if( executorService == null )
-			{
-				executorService = Executors.newFixedThreadPool( Runtime.getRuntime().availableProcessors() * 2 + 1 );
-
-				ExecutorService existing = (ExecutorService) attributes.putIfAbsent( "com.threecrickets.prudence.executor", executorService );
-				if( existing != null )
-					executorService = existing;
-			}
-		}
-
-		return executorService;
-	}
 }

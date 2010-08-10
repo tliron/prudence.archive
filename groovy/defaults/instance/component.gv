@@ -35,7 +35,7 @@ componentInstance.statusService = new DelegatedStatusService()
 // Executor
 //
 
-executor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors() * 2 + 1)
+executor = Executors.newScheduledThreadPool(Runtime.runtime.availableProcessors() * 2 + 1)
 componentInstance.context.attributes['com.threecrickets.prudence.executor'] = executor
 tasks = []
 
