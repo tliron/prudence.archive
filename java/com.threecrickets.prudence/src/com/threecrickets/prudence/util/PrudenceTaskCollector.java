@@ -102,8 +102,9 @@ public class PrudenceTaskCollector implements TaskCollector
 
 					// Find the pattern
 					SchedulingPattern pattern = null;
-					int patternEnd = 0;
-					for( ; patternEnd < length; patternEnd++ )
+					int patternEnd = length;
+					// In reverse, because pipes may allow multiple patterns
+					for( ; patternEnd > 0; patternEnd-- )
 					{
 						String section = line.substring( 0, patternEnd );
 						if( SchedulingPattern.validate( section ) )

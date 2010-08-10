@@ -21,6 +21,7 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import com.threecrickets.prudence.service.ApplicationService;
+import com.threecrickets.prudence.service.ApplicationTaskDocumentService;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.LanguageManager;
@@ -39,6 +40,20 @@ public class ApplicationTask implements Runnable
 	//
 	// Construction
 	//
+
+	/**
+	 * Construction using current application.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @throws ParsingException
+	 * @throws DocumentException
+	 * @see Application#getCurrent()
+	 */
+	public ApplicationTask( String documentName ) throws ParsingException, DocumentException
+	{
+		this( Application.getCurrent(), documentName );
+	}
 
 	/**
 	 * Construction.
@@ -60,6 +75,30 @@ public class ApplicationTask implements Runnable
 	//
 	// Attributes
 	//
+
+	/**
+	 * The name of the global variable with which to access the document
+	 * service. Defaults to "document".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.ApplicationTask.documentServiceName</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The document service name
+	 */
+	public String getDocumentServiceName()
+	{
+		if( documentServiceName == null )
+		{
+			ConcurrentMap<String, Object> attributes = application.getContext().getAttributes();
+			documentServiceName = (String) attributes.get( "com.threecrickets.prudence.ApplicationTask.documentServiceName" );
+
+			if( documentServiceName == null )
+				documentServiceName = "document";
+		}
+
+		return documentServiceName;
+	}
 
 	/**
 	 * The name of the global variable with which to access the application
@@ -341,6 +380,12 @@ public class ApplicationTask implements Runnable
 			Application.setCurrent( application );
 
 			ExecutionContext executionContext = new ExecutionContext();
+
+			File libraryDirectory = getLibraryDirectory();
+			if( libraryDirectory != null )
+				executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
+
+			executionContext.getServices().put( getDocumentServiceName(), new ApplicationTaskDocumentService( this, getDocumentSource() ) );
 			executionContext.getServices().put( getApplicationServiceName(), new ApplicationService( application ) );
 
 			try
@@ -380,9 +425,12 @@ public class ApplicationTask implements Runnable
 	private final Application application;
 
 	/**
-	 * The application service name or null.
-	 * 
-	 * @see #getApplicationServiceName()
+	 * The document service name.
+	 */
+	private String documentServiceName;
+
+	/**
+	 * The application service name.
 	 */
 	private String applicationServiceName;
 
