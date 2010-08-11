@@ -25,7 +25,7 @@ var showDebugOnError = false
 
 // The base URL for showing source code (only relevant when showDebugOnError is true). 
 
-showSourceCodeURL = '/sourcecode/'
+var showSourceCodeURL = '/sourcecode/'
 
 //
 // Logging

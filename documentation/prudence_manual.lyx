@@ -3104,6 +3104,11 @@ Advanced representations.
 The Prudence Instance
 \end_layout
 
+\begin_layout Standard
+Here we'll describe the directory and file structure of a Prudence instance,
+ and how to configure it.
+\end_layout
+
 \begin_layout Subsection
 Configuration by Script
 \begin_inset CommandInset label
@@ -3116,16 +3121,18 @@ name "../instance/|configuration-by-script"
 \end_layout
 
 \begin_layout Standard
-In Purdence, most instance and application configuration files are written
+In Prudence, most instance and application configuration files are written
  in programming language code, rather than XML or other configuration formats.
  This method is sometimes called ``bootstrapping'' or just ``scripting.''
+ So, rather than referring to them as ``configuration files,'' we'll call
+ them ``configuration scripts.''
 \end_layout
 
 \begin_layout Standard
 Scripting is powerful.
  It lets your configuration be dynamic, such that the same configuration
- script can do different things depending on the actual deployment environment
- and runtime circumstances.
+ script might configure things differently depending on the actual deployment
+ environment and runtime circumstances.
  For example, you can deploy the same instance to a development environment,
  in which case your instance would start various debugging processes and
  logs, and a production environment, in which case it would optimize for
@@ -3139,16 +3146,30 @@ Scripting is powerful.
 \end_layout
 
 \begin_layout Standard
-The default scripts are designed to fall back on other default scripts,
+But you can do more with configuration scripts: anything, in fact, that
+ the language and its libraries allow you.
+ You can start external services, log startup errors, notify monitoring
+ daemons, etc.
+\end_layout
+
+\begin_layout Standard
+Prudence's configuration scripts are designed to fall back on default scripts,
  which are all in the /defaults/ subdirectory.
- The common way to override any default script is to create your own version,
+ These idea is for these scripts to handle configuration sensibly, as would
+ be appropriate, or good enough, for most common use cases.
+ You can do a lot with Prudence without changing any of these default scripts!
+\end_layout
+
+\begin_layout Standard
+The common way to override any default script is to create your own version,
  execute the default script first, and then apply your overrides.
  You can also 
 \emph on
 not 
 \emph default
 execute the default script, and instead handle things your own way.
- Or, you can edit the defaults directly to apply changes across the board.
+ You can edit the defaults directly to apply changes across the board: they
+ are all simple, straightforward scripts.
 \end_layout
 
 \begin_layout Standard
@@ -3164,36 +3185,39 @@ unless
 \end_layout
 
 \begin_layout Quote
-For changes in your configuration scripts to take effect, you will need
- to restart the Prudence instance.
- This is true for Prudence 1.0: we plan to support runtime configuration
+Another disadvantage, for now, is that you will need to restart the Prudence
+ instance for changes in your configuration scripts to take effect.
+ This is true for Prudence 1.0: we plan to support ``hot'' configuration
  in a future version of Prudence.
 \end_layout
 
 \begin_layout Standard
-For the purposes of this manual, we'll use ``filename.*'' for script names.
- Replace the ``*'' with the filename extension appropriate for your Prudence
- flavor: ``js'' for JavaScript, ``rb'' for Ruby, ``py'' for Python, etc.
+For the purposes of this manual, we'll use the ``filename.*'' for configuration
+ script names.
+ To get the actual script file name, replace the ``*'' with the filename
+ extension appropriate for your Prudence flavor: ``js'' for JavaScript,
+ ``rb'' for Ruby, ``py'' for Python, etc.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 /defaults/
 \end_layout
 
 \begin_layout Standard
 Here you'll find the default scripts used in /instance/ and /applications/.
- Generally, you won't want edit the /defaults/ scripts directly, but instead
- override them there.
+ Generally, you won't want to edit the /defaults/ scripts directly, but
+ instead override them there.
  Prudence tries to make configuration easy by implementing sensible default
  behavior with a straightforward override mechanism: simply execute the
  /defaults/ script and then apply your own code.
- It's always a good idea to at least look at the /defaults/ scripts so you
- can clearly understand what you're overriding.
+ It's always a good idea to at least look at the code in the /defaults/
+ scripts so you can precisely understand what you're overriding.
 \end_layout
 
 \begin_layout Standard
-For an example in the JavaScript flavor, to override the default cache installed
- in the component, we would create an ``/instance/component.js'' script:
+Here's an overriding example in the JavaScript flavor.
+ We'll override the default cache installed in the component by creating
+ a ``/instance/component.js'' script:
 \end_layout
 
 \begin_layout Standard
@@ -3208,7 +3232,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/instance/component/');
+document.execute('defaults/instance/component/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -3222,7 +3246,7 @@ document.execute('defaults/instance/component/');
 
 \begin_layout Plain Layout
 
-importClass(com.threecrickets.prudence.cache.HazelcastCache);
+importClass(com.threecrickets.prudence.cache.HazelcastCache)
 \end_layout
 
 \begin_layout Plain Layout
@@ -3232,7 +3256,7 @@ component.context.attributes.put('com.threecrickets.prudence.cache',
 
 \begin_layout Plain Layout
 
-	new HazelcastCache());
+	new HazelcastCache())
 \end_layout
 
 \end_inset
@@ -3245,78 +3269,7 @@ Rather than explain the role of individual /defaults/ scripts here, we will
  refer to them as they are used in the sections below.
 \end_layout
 
-\begin_layout Subsection
-/applications/
-\end_layout
-
-\begin_layout Standard
-This is where you deploy your applications, each occupying a subdirectory.
- Your application's subdirectory name serves as a useful default name for
- your application.
- It is also the default base URL, and the default logging name.
- You can change any of these defaults easily.
- For example:
-\end_layout
-
-\begin_layout Standard
-Here's an example for configuring an application's routing:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-// Implement defaults
-\end_layout
-
-\begin_layout Plain Layout
-
-document.execute('defaults/application/routing/');
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-// Capture URLs
-\end_layout
-
-\begin_layout Plain Layout
-
-router.capture('profile/{id}/'), 'profile/');
-\end_layout
-
-\begin_layout Plain Layout
-
-router.capture('data/schedule/{id}/'), 'data/schedule/');
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-See 
-\bar under
-configuring applications (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../application/"
-
-\end_inset
-
-)
-\bar default
-.
-\end_layout
-
-\begin_layout Subsection
+\begin_layout Subsubsection
 /instance/
 \end_layout
 
@@ -3331,14 +3284,16 @@ This is where the Prudence instance gets initialized.
 \end_layout
 
 \begin_layout Standard
-This is the only required instance configuration script.
- It simply executes /defaults/instance/, which bootstraps the Prudence instance.
+This is the only required instance configuration script, and is the entry
+ point for Prudence.
+ Usually, all it does is simply execute /defaults/instance/, which bootstraps
+ the Prudence instance.
 \end_layout
 
 \begin_layout Standard
-You'll usually prefer to override the other configuration scripts.
- Override default.* if you want to do things after everything else in the
- instance has been initialized.
+You'd likely prefer to override the other configuration scripts.
+ Override /instance/default.* if you want to do things after everything else
+ in the instance has been initialized.
 \end_layout
 
 \begin_layout Standard
@@ -3390,9 +3345,9 @@ name "../instance/|component-file"
 
 \begin_layout Standard
 The ``component'' in REST terminology refers to the highest-level communication
- abstraction: it's all ``components'' communicating with other ``components.''
- Every Prudence instance is in essence a single component, which can include
- multiple servers and clients.
+ abstraction: the network is made of ``components'' communicating with other
+ ``components.'' Every Prudence instance is in essence a single component,
+ which can include multiple servers and clients.
 \end_layout
 
 \begin_layout Standard
@@ -3417,14 +3372,29 @@ Sets its statusService to be a DelegatedStatusService
 \end_layout
 
 \begin_layout Enumerate
-Creates a global, fixed-thread-pool executor (accessible as ``com.threecrickets.pr
-udence.executor'' in the component's context)
+Creates a global, thread pool executor, which is used for 
+\bar under
+application.task (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-task"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
-Creates an InProcessMemoryCache backend (accessible as ``com.threecrickets.prudenc
-e.cache'' in the component's context); see above for an example on how to
- configure it
+Creates an InProcessMemoryCache backend, which is used for 
+\bar under
+document.cache (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Subsubsection
@@ -3444,15 +3414,9 @@ Override this script to add more clients to your component.
 
 \begin_layout Standard
 The default script adds file and HTTP clients.
-\end_layout
-
-\begin_layout Standard
-The file client is required for static web support, and also for you to
+ The file client is required for static web support, and also for you to
  access files on your filesystem as REST resources.
-\end_layout
-
-\begin_layout Standard
-The HTTP client is required for you to access external REST resources on
+ The HTTP client is required for you to access external REST resources on
  the web.
 \end_layout
 
@@ -3480,7 +3444,7 @@ Initializes all applications in /applications/ (this list is accessible
 \end_layout
 
 \begin_layout Enumerate
-If there are no applications, Prudence quits
+If there are no applications, the Prudence instance is terminated
 \end_layout
 
 \begin_layout Subsubsection
@@ -3622,11 +3586,42 @@ The default script does the following:
 
 \begin_layout Enumerate
 Creates an HTTP server on port 8080, with support for the X-FORWARDED-FOR
- used by proxies
+ header used by proxies
 \end_layout
 
 \begin_layout Enumerate
 Prints out information about this server
+\end_layout
+
+\begin_layout Subsection
+/applications/
+\end_layout
+
+\begin_layout Standard
+This is where you deploy your applications, each occupying a subdirectory.
+ Your application's subdirectory name serves as a useful default name for
+ your application.
+ It is also the default base URL, and the default logging name.
+\end_layout
+
+\begin_layout Standard
+The /applications/ subdirectory is ``zip-aware,'' meaning that zip archives
+ placed here will be automatically expanded.
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+configuring applications (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/"
+
+\end_inset
+
+)
+\bar default
+ for a complete reference.
 \end_layout
 
 \begin_layout Subsection
@@ -3674,7 +3669,8 @@ Delegate to your /instance/ script
 Note that if you're using JVM version 6 or above, you can use wildcards
  for specifying the classpath in run.sh and run.bat, instead of having to
  list individual JAR files.
- So, you can just use ``/libraries/*.jar''!
+ So, you can just use ``/libraries/*.jar''! Since Prudence supports JVMs
+ from version 5, all JARs are explicitly listed.
 \end_layout
 
 \begin_layout Subsection
@@ -3731,8 +3727,9 @@ reference "../logging/|logging-conf"
 
 \begin_layout Standard
 Here you will find Prudence's main libraries as well as support libraries.
- The main subdirectory is for Java archives (JARs), but you may find subdirector
-ies for libraries in other languages, such as Python.
+ The main /libraries/ subdirectory is for Java archives (JARs), but you
+ may find subdirectories for libraries in other languages, such as /libraries/py
+thon/ for Python.
 \end_layout
 
 \begin_layout Standard
@@ -3741,8 +3738,8 @@ If you add your own JARs, make sure to edit the scripts in /bin/ to accommodate
 \end_layout
 
 \begin_layout Quote
-We've named or renamed all Prudence libraries according to their main Java
- package prefix, but you do not have to follow this convention.
+We've named or renamed all Prudence JARs according to their main Java package
+ prefix, but you do not have to follow this convention.
 \end_layout
 
 \begin_layout Section
@@ -3757,10 +3754,12 @@ name "../application/"
 \end_layout
 
 \begin_layout Standard
-Prudence applications live in the /applications/ directory, with one subdirector
-y per application.
+Prudence applications live in the /applications/ subdirectory, with one
+ subdirectory per application.
  The subdirectories mentioned below should all be considered as subdirectories
  of an application subdirectory.
+ Deploying an application to a Prudence instance involves nothing more than
+ creating a subdirectory here with the application files.
 \end_layout
 
 \begin_layout Subsection
@@ -3768,12 +3767,22 @@ Deploy by Zip
 \end_layout
 
 \begin_layout Standard
-The /applications/ directory is ``zip-aware,'' meaning that any file placed
- here with the .zip extension will automatically be unzipped when Prudence
- starts up.
- Prudence will only unzip the file again if its modification date changes
- (it creates an ``applications.properties'' file to keep track of that).
- Zips can contain pre-packaged single applications, groups of applications,
+The /applications/ subdirectory is ``zip-aware,'' meaning that any archive
+ file with the .zip extension placed here will automatically be unzipped
+ when Prudence starts up.
+\end_layout
+
+\begin_layout Standard
+There's no reason to delete the archive: Prudence will only unzip the file
+ again if its modification date changes (it creates an ``applications.properties'
+' file to keep track of that).
+ In fact, a good way to restore an application to its defaults, if you've
+ made modifications, is to delete the subdirectory.
+ The next time Prudence is started, it will unzip the archive again.
+\end_layout
+
+\begin_layout Standard
+Zips can contain pre-packaged single applications, groups of applications,
  and even patches for individual applications.
  Zip-awareness makes it very easy to package, deploy and upgrade applications,
  and even entire sites containing many applications.
@@ -3797,7 +3806,7 @@ We encourage you to follow our convention and name your deployable zips
 
 \begin_layout Standard
 This is where you'll put your dynamic HTML files.
- By ``dynamic'' is meant that they are generated on-demand, such that each
+ By ``dynamic'' is meant that they are generated on demand, such that each
  request can potentially produce a different, cacheable result.
  Prudence has a powerful framework for embedding programming language code
  into HTML as ``scriptlets.'' (Actually, it supports textual formats other
@@ -3877,11 +3886,13 @@ reference "../static-web/"
 Your dynamic pages in /web/dynamic/ can include any page fragments from
  here.
  The advantage of putting them here rather than there is that here they
- will not be attached to URLs and be available to users.
+ will not be attached to URLs.
+ Fragments are normally hidden from users, visible only if they're included
+ into a page in /web/dynamic/.
 \end_layout
 
 \begin_layout Standard
-Fragments allow you to compose complex pages out of basic building blocks.
+Fragments allow you to compose complex pages out of reusable building blocks.
  Another important use is for fine-grained caching: each fragment has its
  own caching behavior.
  See 
@@ -3903,11 +3914,11 @@ reference "../generating-html/"
 \end_layout
 
 \begin_layout Standard
-Whereas the /web/dynamic/ subdirectory has HTML files with embedded programming
- language code, /resources/ is pure code.
+Whereas the /web/dynamic/ subdirectory has HTML (or other textual) files
+ with embedded programming language code, /resources/ is pure code.
  This is Prudence's most flexible development feature: files here are attached
- as REST resources, capable of handling all HTTP verbs and responding with
- appropriate representations in any format.
+ to URLs as REST resources, capable of handling all HTTP verbs and responding
+ with appropriate representations in any format.
 \end_layout
 
 \begin_layout Standard
@@ -3937,8 +3948,8 @@ reference "../resources/"
 \end_layout
 
 \begin_layout Standard
-All your code, whether it's in /resources/ or in scriptlets embedded in
- /web/dynamic/ and /fragments/, can include code from /libraries/.
+All your code, whether it's in /resources/, /tasks/ or in scriptlets embedded
+ in /web/dynamic/ and /fragments/, can include code from /libraries/.
 \end_layout
 
 \begin_layout Standard
@@ -4121,6 +4132,27 @@ reference "../restlet-container/"
 .
 \end_layout
 
+\begin_layout Subsubsection
+/crontab
+\end_layout
+
+\begin_layout Standard
+This is the configuration file that not a script.
+ It lets you schedule tasks to run at certain Calendrical times.
+ See 
+\bar under
+tasks (
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../tasks/|crontab"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
 \begin_layout Subsection
 Settings
 \end_layout
@@ -4174,20 +4206,48 @@ Defaults to the application's subdirectory name.
 applicationDescription
 \end_layout
 
+\begin_layout Standard
+A short description to help explain what the application is, in case the
+ application name is too obscure.
+\end_layout
+
 \begin_layout Paragraph
 applicationAuthor
+\end_layout
+
+\begin_layout Standard
+The entity (person, corporation) that created the application.
 \end_layout
 
 \begin_layout Paragraph
 applicationOwner
 \end_layout
 
+\begin_layout Standard
+The entity (person, corporation) that owns the rights to the application.
+\end_layout
+
 \begin_layout Paragraph
 applicationHomeURL
 \end_layout
 
+\begin_layout Standard
+The URL (internet or intranet) of the application.
+ This may be displayed in certain default error messages, as a way to contact
+ the application administrators or technical support.
+ Note that there is only one home URL, even if the application is attached
+ to multiple virtual hosts.
+ In fact, the home URL does not have to be service by this Prudence instance,
+ and can lead to a different site.
+\end_layout
+
 \begin_layout Paragraph
 applicationContactEmail
+\end_layout
+
+\begin_layout Standard
+This may be displayed in certain default error messages, as a way to contact
+ the application administrators or technical support.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4272,14 +4332,88 @@ name "../application/|hosts"
 \end_layout
 
 \begin_layout Standard
-This is a vector of vectors of two elements: the first is the virtual host
+This is a array of array of two elements: the first is the virtual host
  to which our application will be attached, the second is the base URLs
  on the hosts.
- Specify null for the URL to default to the application's directory name.
+ This lets you attach the application to multiple virtual hosts with a different
+ base URL per host.
 \end_layout
 
 \begin_layout Standard
-TODO
+Specify null for the URL to default to the application's subdirectory name.
+ Use ``component.defaultHost'' for the default virtual host, as defined by
+ the 
+\bar under
+``hosts'' configuration script (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/|hosts-file"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+If not ``hosts'' setting is specified, it defaults to attach to the default
+ virtual host via the application's subdirectory name.
+ This is equivalent to:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+hosts = [[component.defaultHost, null]]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here's an example of a more complex ``hosts'' setting:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+hosts = [[myorgHost, null], [intranetServiceHost, '/'], [b2bHost, '/b2b/service/
+']]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that URLs in the virtual host may overlap as far as hierarchy is concerned.
+ Thus, an application at ``/b2b/'' can have its own URLs, such as ``/b2b/access/
+'', and this would not interfere with the application at ``/b2b/service/''.
+ The application is routed before URLs internal to the application.
+ See 
+\bar under
+routing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/"
+
+\end_inset
+
+)
+\bar default
+ for a full explanation on how URLs reach their destinations in Prudence.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4307,6 +4441,11 @@ name "../application/|resources-base-url"
 
 \begin_layout Paragraph
 resourcesBasePath
+\end_layout
+
+\begin_layout Standard
+Relative to the application's subdirectory.
+ Defaults to ``/resources/''.
 \end_layout
 
 \begin_layout Paragraph
@@ -4358,14 +4497,48 @@ Dynamic Web
 Sets up a directory under which you can place text files that support embedded
  scriptlets.
  Note that the generated result can be cached for better performance.
+ See 
+\bar under
+generating HTML (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
 dynamicWebBaseURL
 \end_layout
 
+\begin_layout Standard
+Defaults to the root (``/''), meaning that the directory and file structure
+ maps directly to URLs at the application's base URL on the virtual host.
+ See 
+\bar under
+routing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/"
+
+\end_inset
+
+)
+\bar default
+ for more information.
+\end_layout
+
 \begin_layout Paragraph
 dynamicWebBasePath
+\end_layout
+
+\begin_layout Standard
+Relative to the application's subdirectory.
+ Defaults to ``/web/dynamic/''.
 \end_layout
 
 \begin_layout Paragraph
@@ -4512,6 +4685,18 @@ Static Web
 
 \begin_layout Standard
 Sets up a directory under which you can place static files of any type.
+ See 
+\bar under
+static web (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../static-web/"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -4523,8 +4708,30 @@ Servers like Grizzly and Jetty can use non-blocking I/O to stream static
 staticWebBaseURL
 \end_layout
 
+\begin_layout Standard
+Defaults to the root (``/''), meaning that the directory and file structure
+ maps directly to URLs at the application's base URL on the virtual host.
+ See 
+\bar under
+routing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/"
+
+\end_inset
+
+)
+\bar default
+ for more information.
+\end_layout
+
 \begin_layout Paragraph
 staticWebBasePath
+\end_layout
+
+\begin_layout Standard
+Relative to the application's subdirectory.
+ Defaults to ``/web/static/''.
 \end_layout
 
 \begin_layout Paragraph
@@ -4533,7 +4740,43 @@ staticWebDirectoryListingAllowed
 
 \begin_layout Standard
 If the URL points to a directory rather than a file, then this will allow
- automatic creation of an HTML page with a directory listing.
+ automatic creation of a simple HTML page with a directory listing.
+ Defaults to ``true.''
+\end_layout
+
+\begin_layout Subsubsection
+Tasks
+\end_layout
+
+\begin_layout Paragraph
+tasksBasePath
+\end_layout
+
+\begin_layout Standard
+Relative to the application's subdirectory.
+ Defaults to ``/tasks/''.
+\end_layout
+
+\begin_layout Paragraph
+tasksDefaultName
+\end_layout
+
+\begin_layout Standard
+If the task name points to a directory rather than a file, and that directory
+ contains a file with this name, then it will be used.
+ This allows you to use the directory structure to create nice names without
+ relying on filenames.
+\end_layout
+
+\begin_layout Paragraph
+tasksMinimumTimeBetweenValidityChecks
+\end_layout
+
+\begin_layout Standard
+This is the time (in milliseconds) allowed to pass until a script file is
+ tested to see if it was changed.
+ During development, you'd want this to be low, but during production, it
+ should be high in order to avoid unnecessary hits on the filesystem.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4548,17 +4791,48 @@ preheatResources
 List resources here that you want heated up as soon as Prudence starts.
 \end_layout
 
+\begin_layout Standard
+TODO
+\end_layout
+
 \begin_layout Subsubsection
 URL Manipulation
 \end_layout
 
 \begin_layout Paragraph
 urlAddTrailingSlash
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|url-add-trailing-slash"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 The URLs in this array will automatically be redirected to have a trailing
  slash added to them if it's missing.
+\end_layout
+
+\begin_layout Quote
+By default, URLs in /dynamic/web/ and /resources/ have trailing slash 
+\emph on
+required
+\emph default
+.
+ See 
+\bar under
+the trailing slash requirement for routing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|trailing-slash-requirement"
+
+\end_inset
+
+)
+\bar default
+ if you wish to disable this.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4578,6 +4852,9 @@ reference "../api/|application-globals"
 )
 \bar default
  at runtime.
+ This is useful for custom configuration of your application.
+ For example, you can set resource IP addresses, service usernames and passwords
+, etc.
 \end_layout
 
 \begin_layout Section
@@ -5238,55 +5515,34 @@ name "../tasks/"
 \end_layout
 
 \begin_layout Standard
-Your Prudence code runs in one of three different contexts:
-\end_layout
-
-\begin_layout Itemize
-Configuration scripts
-\end_layout
-
-\begin_layout Itemize
-Conversations (in response to a external user request via HTTP)
-\end_layout
-
-\begin_layout Itemize
-Tasks
-\end_layout
-
-\begin_layout Standard
 Tasks are straightforward scripts placed in the application's /tasks/ subdirecto
 ry.
- They are straightforward in that, upon execution, the code is simply run.
+ They are straightforward in that, upon execution, the code is simply run
+ as is.
  There is no particular entry point as with /resources/.
- Tasks are part of an application, and have access to the same ``application'',
+\end_layout
+
+\begin_layout Standard
+Tasks are part of an application, and have access to the same ``application'',
  ``document'' and ``executable'' API services as other application code.
- Likewise, you can access any code in /libraries/ via document.execute or
- via your language's usual inclusion facility.
- Unlike /resources/ and /web/dynamic/ code, there is no ``conversation''
- service in /tasks/.
-\end_layout
-
-\begin_layout Standard
-Tasks can be set to run on arbitrary threads, and thus can be considered
- ``asynchronous.'' The usual concurrency concerns apply to them.
-\end_layout
-
-\begin_layout Standard
-Prudence provides two facilities for scheduling tasks:
-\end_layout
-
-\begin_layout Subsection
-application.task
-\end_layout
-
-\begin_layout Standard
-Lets you programmatically spawn or schedule a task.
- For a complete reference, see the API documention for 
+ Likewise, you can access any code in /libraries/ via 
 \bar under
-application.task (page 
+document.execute (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|application-task"
+reference "../api/|document-execute"
+
+\end_inset
+
+)
+\bar default
+ or via your language's usual inclusion facility.
+ Unlike /resources/ and /web/dynamic/ code, /tasks/ code has no 
+\bar under
+``conversation'' API service (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation"
 
 \end_inset
 
@@ -5295,24 +5551,126 @@ reference "../api/|application-task"
 .
 \end_layout
 
+\begin_layout Standard
+Tasks run in theor own global thread pool, which is separate from that of
+ the HTTP threads.
+ Thus, they can be considered ``asynchronous'' in regards to HTTP requests.
+ The usual concurrency concerns apply to them.
+\end_layout
+
+\begin_layout Standard
+Prudence provides two facilities for scheduling tasks:
+\end_layout
+
+\begin_layout Subsection
+On Demand
+\end_layout
+
+\begin_layout Standard
+Use 
+\bar under
+application.task
+\bar default
+ 
+\bar under
+(page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-task"
+
+\end_inset
+
+)
+\bar default
+ to spawn or schedule tasks on demand from your /resources/ or /web/dynamic/
+ code.
+ You might want to store a flag in 
+\bar under
+application.globals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-globals"
+
+\end_inset
+
+)
+\bar default
+ to mark that the task has already been scheduled.
+\end_layout
+
+\begin_layout Subsection
+At Startup
+\end_layout
+
+\begin_layout Standard
+Use 
+\bar under
+application.task
+\bar default
+ 
+\bar under
+(page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-task"
+
+\end_inset
+
+)
+\bar default
+ to schedule general tasks in any of the 
+\bar under
+application's configuration scripts (page 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "../application/"
+
+\end_inset
+
+)
+\bar default
+.
+ This is especially useful for repeating tasks, such as those that do general
+ maintenance, monitor resource availability, send out email reminders, etc.
+\end_layout
+
 \begin_layout Subsection
 crontab
+\begin_inset CommandInset label
+LatexCommand label
+name "../tasks/|crontab"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 This facility lets you schedule tasks to run at specific (Gregorian) calendrical
  times.
+ It is similar to calling 
+\bar under
+application.task
+\bar default
+ 
+\bar under
+(page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-task"
+
+\end_inset
+
+) 
+\bar default
+in the application's configuration scripts, but allows for more succint,
+ calendrical repetition patterns.
 \end_layout
 
 \begin_layout Standard
-If you place a file with the name ``crontab'' in your application's base
- subdirectory, it will be checked for changes and parsed once per minute.
- This means that you can edit this file and have your scheduling change
- on the fly without restarting Prudence.
-\end_layout
-
-\begin_layout Standard
-The format is purposely very similar to that of the crontab configuration
+To use this facility, place a file with the name ``crontab'' in your application
+'s base subdirectory.
+ Its format is purposely very similar to that of the crontab configuration
  file found in many Unix-like operating system: each line starts with scheduling
  pattern and ends with the task name.
  The scheduling pattern is a series of five whitespace-separated settings.
@@ -5373,16 +5731,46 @@ The same as above, but with one added to all minutes of the hour: 1,6,11,16,21,2
 \end_layout
 
 \begin_layout Standard
-Note that you can schedule the same task on multiple lines, which is 
+Notes:
+\end_layout
+
+\begin_layout Enumerate
+``crontab'' will be checked for changes and parsed once per minute.
+ This means that you can edit this file and have your task scheduling change
+ on the fly without restarting Prudence.
+\end_layout
+
+\begin_layout Enumerate
+You can schedule the same task on multiple lines, which is 
 \emph on
 not
 \emph default
- equivalent to using the pipe: multiple lines means that the same task might
- be spawned multiple times at the same time if it matches more than one
- line.
- Also note that the scheduler does not check to see if a task finished running,
- so that even if a task is not done yet, but it's time for it to be spawned
- again, you'll have multiple instances of the task running at the same time.
+ equivalent to using the pipe: multiple lines means that multiple task instances
+ might be spawned simultaneously if matched on more than one line.
+ Contrarily, using the pipe counts as a single match.
+\end_layout
+
+\begin_layout Enumerate
+The scheduler does not check to see if a task finished running before swapning
+ a new instance of it, so that even if a task is not done yet, but it's
+ time for it to be spawned again, you'll have multiple instances of the
+ task running at the same time.
+ If this is problematic, consider using 
+\bar under
+application.task
+\bar default
+ 
+\bar under
+(page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-task"
+
+\end_inset
+
+)
+\bar default
+ in your confuguration scripts instead, with ``false'' as the last argument.
 \end_layout
 
 \begin_layout Section
@@ -6004,6 +6392,13 @@ aultName'' application attribute.
 
 \begin_layout Paragraph
 Trailing Slash Requirement
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|trailing-slash-requirement"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6036,9 +6431,25 @@ egatedResource.trailingSlashRequired'' application.globals.
 
 \begin_layout Quote
 In Prudence 1.0, the filename extension hiding and trailing slash requirement
- work only for resources and dynamic web pages.
- Static web resources still map full filenames.
+ work only for /resources/ and /web/dynamic/ URLs.
+ /web/static/ URLs still map full filenames.
  A future version of Prudence may extend these features to all resources.
+\end_layout
+
+\begin_layout Standard
+If you'd like a specific non-trailing-slash URL to automatically redirect
+ to the trailing-slash equivalent, use the 
+\bar under
+application's ``urlAddTrailingSlash'' setting (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|url-add-trailing-slash"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -7497,8 +7908,8 @@ API
 
 \begin_layout Standard
 Prudence exposes its API as a set of services to your source code.
- These services are available in scriptlets in /web/dynamic/, complete source
- code in /resources/, and in your configuration scripts.
+ These services are available in scriptlets in /web/dynamic/, source code
+ in /resources/ and /tasks/, and in your configuration scripts.
 \end_layout
 
 \begin_layout Quote
@@ -7722,11 +8133,9 @@ name "../api/|application-task"
 \end_layout
 
 \begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Standard
-See 
+Allows spawning and scheduling of asynchronous tasks from the application's
+ /tasks/ subdirectory.
+ See 
 \bar under
 tasks (page 
 \begin_inset CommandInset ref
@@ -7738,6 +8147,120 @@ reference "../tasks/"
 )
 \bar default
  for more information.
+\end_layout
+
+\begin_layout Standard
+There are four arguments:
+\end_layout
+
+\begin_layout Enumerate
+The document name.
+\end_layout
+
+\begin_layout Enumerate
+Initial delay in milliseconds, or zero for ASAP.
+\end_layout
+
+\begin_layout Enumerate
+Repeat delay in milliseconds, or zero for no repetition.
+\end_layout
+
+\begin_layout Enumerate
+Whether repetitions are at fixed times (true), or if the repeat delay begins
+ when the task ends (false).
+ This value matters only if the repeat delay is greater than zero.
+ Note that ``true'' may cause a new instance of the task to be spawned again
+ before the previous one completes.
+\end_layout
+
+\begin_layout Standard
+For example, to schedule a task to run exactly very 10 minutes, starting
+ now:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+application.task('email/reminders/', 0, 10 * 60 * 1000, true)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that even if the task is set to run ASAP, with no repetition, it is
+ executed asynchronously on a different thread.
+ If you want to block until that task is completed, use the fact that this
+ method returns a ``future'' object.
+ Calling get() on this object will block until done.
+ For example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+application.task('database/cleanup/', 0, 0, false).get()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You can also store this ``future'' object, and check (without blocking)
+ to see if the task was completed:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+var cleanup = application.globals.get('myapp.task.cleanup')
+\end_layout
+
+\begin_layout Plain Layout
+
+if(cleanup && cleanup.done) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	application.logger.info('Database already clean!')
+\end_layout
+
+\begin_layout Plain Layout
+
+} else {
+\end_layout
+
+\begin_layout Plain Layout
+
+	application.globals.put('myapp.task.cleanup', application.task('database/cleanup/',
+ 0, 0, false))
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -7968,6 +8491,13 @@ Important! Using document.include (see below) will cause the cache tags of
 
 \begin_layout Paragraph
 document.cache
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-cache"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8442,7 +8972,7 @@ executable.globals, executable.getGlobal
 \end_layout
 
 \begin_layout Standard
-There are similar in use to application.globals, but are shared by all applicatio
+These are similar in use to application.globals, but are shared by all applicatio
 ns on the VM.
  See Sharing State, below, for more information.
 \end_layout
@@ -8504,6 +9034,13 @@ For example, ``document.include'' is the same as ``executable.container.include'
 
 \begin_layout Subsection
 conversation
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8526,6 +9063,7 @@ Note that in /web/dynamic/ and /web/fragments/, ``conversation'' is available
  In /resources/, it is sent to the handling entry points (functions, closures,
  etc.) as an argument.
  Usage is otherwise identical.
+ ``conversation'' is not available in configuration scripts or in /tasks/.
 \end_layout
 
 \begin_layout Subsubsection
