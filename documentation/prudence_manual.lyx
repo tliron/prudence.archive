@@ -9238,6 +9238,20 @@ Click <a href="<%= conversation.pathToBase %>/contact/">here</a> to contact
 
 \begin_layout Paragraph
 conversation.form, conversation.formAll
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-form"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "../manual/api/|conversation-form"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -9259,6 +9273,10 @@ conversation.formAll is a list of parameters.
 \begin_layout Standard
 A value is often a simple string, but in the case of file uploads, it could
  be a FileParameter instance, with the following attributes:
+\end_layout
+
+\begin_layout Itemize
+data: the raw data as an array of bytes
 \end_layout
 
 \begin_layout Itemize

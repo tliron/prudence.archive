@@ -90,10 +90,16 @@ public class FormWithFiles extends Form
 					{
 						if( fileItem instanceof DiskFileItem )
 						{
-							DiskFileItem diskFileItem = (DiskFileItem) fileItem;
-							parameter = new FileParameter( fileItem.getFieldName(), diskFileItem.getStoreLocation(), fileItem.getContentType(), fileItem.getSize() );
+							File file = ( (DiskFileItem) fileItem ).getStoreLocation();
+							if( file == null )
+								// In memory
+								parameter = new FileParameter( fileItem.getFieldName(), fileItem.get(), fileItem.getContentType(), fileItem.getSize() );
+							else
+								// On disk
+								parameter = new FileParameter( fileItem.getFieldName(), file, fileItem.getContentType(), fileItem.getSize() );
 						}
 						else
+							// Non-file form item
 							parameter = new Parameter( fileItem.getFieldName(), fileItem.getString() );
 					}
 

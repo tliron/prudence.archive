@@ -33,6 +33,27 @@ public class FileParameter extends Parameter
 	 * 
 	 * @param name
 	 *        The parameter name
+	 * @param data
+	 *        The data
+	 * @param mediaTypeName
+	 *        The file media type name
+	 * @param size
+	 *        The file size
+	 */
+	public FileParameter( String name, byte[] data, String mediaTypeName, long size )
+	{
+		super( name, null );
+		this.data = data;
+		file = null;
+		this.mediaTypeName = mediaTypeName;
+		this.size = size;
+	}
+
+	/**
+	 * Construction.
+	 * 
+	 * @param name
+	 *        The parameter name
 	 * @param file
 	 *        The file
 	 * @param mediaTypeName
@@ -43,6 +64,7 @@ public class FileParameter extends Parameter
 	public FileParameter( String name, File file, String mediaTypeName, long size )
 	{
 		super( name, null );
+		data = null;
 		this.file = file;
 		this.mediaTypeName = mediaTypeName;
 		this.size = size;
@@ -53,9 +75,19 @@ public class FileParameter extends Parameter
 	//
 
 	/**
-	 * The file.
+	 * The data. If this is null, use {@link #getFile()} instead.
 	 * 
-	 * @return The file
+	 * @return The data or null
+	 */
+	public byte[] getData()
+	{
+		return data;
+	}
+
+	/**
+	 * The file. If this is null, use {@link #getData()} instead.
+	 * 
+	 * @return The file or null
 	 */
 	public File getFile()
 	{
@@ -96,6 +128,11 @@ public class FileParameter extends Parameter
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
+
+	/**
+	 * The data.
+	 */
+	private final byte[] data;
 
 	/**
 	 * The file.
