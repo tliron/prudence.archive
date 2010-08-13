@@ -43,7 +43,7 @@ public class GeneratedTextResourceConversationService extends ConversationServic
 	 */
 	public GeneratedTextResourceConversationService( GeneratedTextResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
 	{
-		super( resource, entity, variant, defaultCharacterSet );
+		super( resource, entity, variant, defaultCharacterSet, resource.getFileUploadSizeThreshold(), resource.getFileUploadDirectory() );
 	}
 
 	//

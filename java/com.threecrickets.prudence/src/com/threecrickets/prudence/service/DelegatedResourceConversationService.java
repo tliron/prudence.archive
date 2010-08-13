@@ -50,7 +50,7 @@ public class DelegatedResourceConversationService extends ConversationServiceBas
 	 */
 	public DelegatedResourceConversationService( DelegatedResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
 	{
-		super( resource, entity, variant, defaultCharacterSet );
+		super( resource, entity, variant, defaultCharacterSet, resource.getFileUploadSizeThreshold(), resource.getFileUploadDirectory() );
 	}
 
 	/**

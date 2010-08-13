@@ -551,6 +551,66 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
+	 * The directory in which to place uploaded files. If the
+	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
+	 * will default to the {@link DocumentFileSource#getBasePath()} plus
+	 * "../../uploads/".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.fileUploadDirectory</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The file upload directory or null
+	 */
+	public File getFileUploadDirectory()
+	{
+		if( fileUploadDirectory == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			fileUploadDirectory = (File) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.fileUploadDirectory" );
+
+			if( fileUploadDirectory == null )
+			{
+				DocumentSource<Executable> documentSource = getDocumentSource();
+				if( documentSource instanceof DocumentFileSource<?> )
+				{
+					fileUploadDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../uploads/" );
+
+					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.fileUploadDirectory", fileUploadDirectory );
+					if( existing != null )
+						fileUploadDirectory = existing;
+				}
+			}
+		}
+
+		return fileUploadDirectory;
+	}
+
+	/**
+	 * The size in bytes beyond which uploaded files will be stored to disk.
+	 * Defaults to zero, meaning that all uploaded files will be stored to disk.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The file upload size threshold
+	 */
+	public int getFileUploadSizeThreshold()
+	{
+		if( fileUploadSizeThreshold == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			fileUploadSizeThreshold = (Integer) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold" );
+
+			if( fileUploadSizeThreshold == null )
+				fileUploadSizeThreshold = 0;
+		}
+
+		return fileUploadSizeThreshold;
+	}
+
+	/**
 	 * Whether or not trailing slashes are required. Defaults to true.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
@@ -830,6 +890,16 @@ public class GeneratedTextResource extends ServerResource
 	 * Executables might use this directory for importing libraries.
 	 */
 	private volatile File libraryDirectory;
+
+	/**
+	 * The directory in which to place uploaded files.
+	 */
+	private volatile File fileUploadDirectory;
+
+	/**
+	 * The size in bytes beyond which uploaded files will be stored to disk.
+	 */
+	private volatile Integer fileUploadSizeThreshold;
 
 	/**
 	 * If the URL points to a directory rather than a file, and that directory

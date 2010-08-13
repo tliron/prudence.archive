@@ -5512,6 +5512,13 @@ name "../tasks/"
 \end_inset
 
 
+\begin_inset CommandInset label
+LatexCommand label
+name "../manual/tasks/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5773,6 +5780,43 @@ reference "../api/|application-task"
  in your confuguration scripts instead, with ``false'' as the last argument.
 \end_layout
 
+\begin_layout Standard
+You can also setup a special crontab to run arbitrary Java static methods
+ and even non-JVM system processes.
+ Internally, Prudence uses the flexible 
+\begin_inset CommandInset href
+LatexCommand href
+name "cron4j"
+target "http://www.sauronsoftware.it/projects/cron4j/"
+
+\end_inset
+
+ library.
+ See its documentation for more information.
+ Here's an example application's /default.js configuration script to set
+ up a ``crontab-system'' file:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+document.execute('defaults/application/')
+\end_layout
+
+\begin_layout Plain Layout
+
+scheduler.scheduleFile(new File(applicationBasePath + '/crontab-system'))
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Static Web
 \begin_inset CommandInset label
@@ -5813,6 +5857,10 @@ Mapping MIME Types
 \end_layout
 
 \begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Standard
 \begin_inset listings
 inline false
 status open
@@ -5829,6 +5877,10 @@ application.metadataService.addExtension('php', MediaType.TEXT_HTML)
 
 \begin_layout Subsection
 Replacing Grizzly
+\end_layout
+
+\begin_layout Standard
+TODO
 \end_layout
 
 \begin_layout Standard
@@ -7912,33 +7964,52 @@ Prudence exposes its API as a set of services to your source code.
  in /resources/ and /tasks/, and in your configuration scripts.
 \end_layout
 
-\begin_layout Quote
-Note for Python flavor: If you're using the Jepp engine, not the default
- Jython engine, you will need to use get- and set- notation to access attributes.
- For example, use application.getArguments() to access application.arguments.
+\begin_layout Standard
+Some notes for API use in different Prudence flavors:
 \end_layout
 
-\begin_layout Quote
-Note for Ruby flavor: Our Ruby engine, JRuby, conveniently lets you use
- the Ruby code convention.
- For example, you can use $application.get_global rather than $application.getGlob
-al.
+\begin_layout Paragraph
+Python
 \end_layout
 
-\begin_layout Quote
-Note for JavaScript flavor: Our JavaScript engine, Rhino, does not provide
- dictionary access to maps, so you must use get- and put- notation to access
- map attributes.
+\begin_layout Standard
+If you're using the Jepp engine, rather than the default Jython engine,
+ you will need to use get- and set- notation to access attributes.
+ For example, use application.getArguments() to access application.arguments
+ in Jepp.
+\end_layout
+
+\begin_layout Paragraph
+Ruby
+\end_layout
+
+\begin_layout Standard
+Our Ruby engine, JRuby, conveniently lets you use the Ruby naming style
+ for API calls.
+ For example, you can use $application.get_global instead of $application.getGloba
+l.
+\end_layout
+
+\begin_layout Paragraph
+JavaScript
+\end_layout
+
+\begin_layout Standard
+Our JavaScript engine, Rhino, does not provide dictionary access to maps,
+ so you must use get- and put- notation to access map attributes.
  For example, use application.globals.get('myapp.data.name') rather than application.
 globals['myapp.data.name'].
 \end_layout
 
-\begin_layout Quote
-Note for Clojure flavor: Clojure does not support bean attributes, so you
- will need to use get- and set- notation to access them.
+\begin_layout Paragraph
+Clojure
+\end_layout
+
+\begin_layout Standard
+You will need to use get- and set- notation to access attributes.
  For example, use (.getArguments application) to access application.arguments.
- You can, though, use Clojure's bean function to create a read-only representati
-on of Prudence services.
+ You can use Clojure's bean form, for example (bean application), to create
+ a read-only representation of Prudence services.
 \end_layout
 
 \begin_layout Subsection
@@ -8951,8 +9022,15 @@ The ``executable'' is the low-level equivalent of ``this document'' (see
  Here you can explore which languages are installed in your Prudence instance,
  and gain access to their implementation mechanism.
  You'll likely never need to do any of this in your Prudence application.
- For more information on executables, see Scripturian, the library that
- handles code execution for Prudence.
+ For more information on executables, see 
+\begin_inset CommandInset href
+LatexCommand href
+name "Scripturian"
+target "http://threecrickets.com/scripturian/"
+
+\end_inset
+
+, the library that handles code execution for Prudence.
 \end_layout
 
 \begin_layout Standard
@@ -8961,10 +9039,6 @@ A feature that you might want to use here is the executable globals.
  are global to the entire Prudence instance (in fact, to the virtual machine).
  It's a good place to store state that you want shared between Prudence
  applications.
-\end_layout
-
-\begin_layout Standard
-For more information, refer to the Scripturian API documentation.
 \end_layout
 
 \begin_layout Paragraph
@@ -8988,8 +9062,8 @@ The context is used for communication between the Prudence container and
 
 \begin_layout Itemize
 executable.context.writer: direct access to the output writer (writes to a
- memory buffer in /web/dynamic/, and to standard output in /resources/ and
- configuration scripts)
+ memory buffer in /web/dynamic/, and to standard output in /resources/,
+ /tasks/ and configuration scripts)
 \end_layout
 
 \begin_layout Itemize
@@ -9001,20 +9075,14 @@ executable.context.exposedVariables: Prudence services are here (application,
 executable.context.attributes: for use by the language engines
 \end_layout
 
-\begin_layout Quote
-Note: The Python flavor, when using Jython, does not redirect its standard
- output, sys.stdout, to executable.context.writer.
- You must use executable.context.writer directly.
-\end_layout
-
 \begin_layout Paragraph
 executable.manager
 \end_layout
 
 \begin_layout Standard
-This is the language manager used to create executable in many languages.
+This is the language manager used to create executables in many languages.
  Here you can query which languages are supported by the current Prudence
- instance (executable.manager.adapters).
+ instance: executable.manager.adapters.
 \end_layout
 
 \begin_layout Paragraph
@@ -9023,13 +9091,12 @@ executable.container
 
 \begin_layout Standard
 This is identical to the ``document'' service detailed above.
+ For example, ``document.include'' is the same as ``executable.container.include''.
 \end_layout
 
 \begin_layout Standard
-For example, ``document.include'' is the same as ``executable.container.include''.
- Internally, Prudence uses this equivalence to hook the include scriptlet,
- a Scripturian feature, into document.include, Prudence's implementation
- of this feature.
+(Internally, Prudence uses this equivalence to hook the include scriptlet,
+ a Scripturian feature, into Prudence's document.include.)
 \end_layout
 
 \begin_layout Subsection
@@ -9046,8 +9113,9 @@ name "../api/|conversation"
 \begin_layout Standard
 The ``conversation'' represents the request received from the user as well
  your response to it, hence it's a ``conversation.'' Because Prudence is
- RESTful, conversations encapsulate only a single request and its response.
- Higher level ``session'' management is up to you.
+ RESTful, conversations encapsulate exactly a single request and its response.
+ Higher level ``session'' management, covering an arbitrary number of conversati
+ons, is up to you.
 \end_layout
 
 \begin_layout Standard
@@ -9058,8 +9126,7 @@ Here you can access various aspects of the request: the URI, formatting
 \end_layout
 
 \begin_layout Quote
-Note that in /web/dynamic/ and /web/fragments/, ``conversation'' is available
- as a global variable.
+Note that in /web/dynamic/ ``conversation'' is available as a global variable.
  In /resources/, it is sent to the handling entry points (functions, closures,
  etc.) as an argument.
  Usage is otherwise identical.
@@ -9175,7 +9242,7 @@ conversation.form, conversation.formAll
 
 \begin_layout Standard
 Use these to access data sent via HTML forms, or any other request with
- data of the ``application/x-www-form-urlencoded'' MIME type.
+ a data entity of the ``application/x-www-form-urlencoded'' MIME type.
 \end_layout
 
 \begin_layout Standard
@@ -9187,6 +9254,32 @@ conversation.form is a map of form names to values.
 \begin_layout Standard
 conversation.formAll is a list of parameters.
  Use this if you need to support multiple values for the same name.
+\end_layout
+
+\begin_layout Standard
+A value is often a simple string, but in the case of file uploads, it could
+ be a FileParameter instance, with the following attributes:
+\end_layout
+
+\begin_layout Itemize
+file: a JVM File instance; the file is located in a temporary location,
+ see fileUploadPath (page )
+\end_layout
+
+\begin_layout Itemize
+size: in bytes
+\end_layout
+
+\begin_layout Itemize
+mediaTypeName: the MIME type set by the client, such as ``image/jpeg''
+\end_layout
+
+\begin_layout Itemize
+mediaType: the Restlet MediaType equivalent to the above, if available
+\end_layout
+
+\begin_layout Standard
+TODO
 \end_layout
 
 \begin_layout Paragraph
@@ -9827,6 +9920,13 @@ See Sharing State, below, for more information.
 
 \begin_layout Paragraph
 conversation.defer
+\begin_inset CommandInset label
+LatexCommand label
+name "../manual/api/|conversation-defer"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -13503,8 +13603,22 @@ Before you decide on deferring a task, think carefully of the user experience:
  necessary?
 \end_layout
 
-\begin_layout Quote
-Prudence comes with 
+\begin_layout Standard
+Prudence lets you easily defer work internally via 
+\bar under
+tasks (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../manual/tasks/"
+
+\end_inset
+
+)
+\bar default
+.
+ In particular, you can spawn a task dynamically to do work without tying
+ up the current thread.
+ Also, Prudence comes with 
 \begin_inset CommandInset href
 LatexCommand href
 name "Hazelcast"
@@ -13513,8 +13627,7 @@ target "http://www.hazelcast.com/"
 \end_inset
 
 , which is nominally used for an optional distributed cache backend (see
- above), but can also be perfect for handling task queues.
- Give it a try!
+ above), but can also be perfect for distributed handling of task queues.
 \end_layout
 
 \begin_layout Subsubsection
@@ -13622,9 +13735,20 @@ And so, after this lengthy discussion, it turns out that there aren't that
  Caching is far more useful.
 \end_layout
 
-\begin_layout Quote
+\begin_layout Standard
 As of version 1.0, Prudence has limited support for asynchronous processing,
- via conversation.defer.
+ via 
+\bar under
+conversation.defer (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../manual/api/|conversation-defer"
+
+\end_inset
+
+)
+\bar default
+.
  Better support is planned for a future version.
 \end_layout
 

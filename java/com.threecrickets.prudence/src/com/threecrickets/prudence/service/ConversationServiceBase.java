@@ -11,6 +11,7 @@
 
 package com.threecrickets.prudence.service;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,10 +57,15 @@ public class ConversationServiceBase<R extends ServerResource>
 	 *        The entity or null
 	 * @param variant
 	 *        The variant or null
+	 * @param fileUploadSizeThreshold
+	 *        The size in bytes beyond which uploaded files will be stored to
+	 *        disk
+	 * @param fileUploadDirectory
+	 *        The directory in which to place uploaded files
 	 * @param defaultCharacterSet
 	 *        The character set to use if unspecified by variant
 	 */
-	public ConversationServiceBase( R resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
+	public ConversationServiceBase( R resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet, int fileUploadSizeThreshold, File fileUploadDirectory )
 	{
 		this.resource = resource;
 		this.entity = entity;
@@ -77,6 +83,9 @@ public class ConversationServiceBase<R extends ServerResource>
 
 		if( characterSet == null )
 			characterSet = defaultCharacterSet;
+
+		this.fileUploadSizeThreshold = fileUploadSizeThreshold;
+		this.fileUploadDirectory = fileUploadDirectory;
 	}
 
 	//
@@ -532,7 +541,7 @@ public class ConversationServiceBase<R extends ServerResource>
 		if( formAll == null )
 		{
 			if( resource.getRequest().isEntityAvailable() )
-				formAll = new FormWithFiles( resource.getRequestEntity() );
+				formAll = new FormWithFiles( resource.getRequestEntity(), fileUploadSizeThreshold, fileUploadDirectory );
 			else
 				formAll = new Form();
 		}
@@ -591,6 +600,16 @@ public class ConversationServiceBase<R extends ServerResource>
 	 * The entity.
 	 */
 	private final Representation entity;
+
+	/**
+	 * The size in bytes beyond which uploaded files will be stored to disk.
+	 */
+	private final int fileUploadSizeThreshold;
+
+	/**
+	 * The directory in which to place uploaded files.
+	 */
+	private final File fileUploadDirectory;
 
 	/**
 	 * The character set.
