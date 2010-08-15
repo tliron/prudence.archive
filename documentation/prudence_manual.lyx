@@ -4010,11 +4010,28 @@ You'll rarely need to do it, but you can also override Prudence's default
 \end_layout
 
 \begin_layout Standard
-Here you can modify an application's media type mappings.
+Here you can modify an application's filename extensions to media type mappings.
+ An example default.js:
 \end_layout
 
 \begin_layout Standard
-TODO
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+document.execute('defaults/application/')
+\end_layout
+
+\begin_layout Plain Layout
+
+applicationInstance.metadataService.addExtension('jsp', MediaType.TEXT_HTML)
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -4664,7 +4681,7 @@ reference "../static-web/|cache-control-filter"
 )
 \bar default
 .
- For /resources/, you have precise control over each headerl; see 
+ For /resources/, you have precise control over each header; see 
 \bar under
 conversation.modificationDate, conversation.expirationDate and conversation.tag
  (page 
@@ -4745,6 +4762,38 @@ If the URL points to a directory rather than a file, then this will allow
 \end_layout
 
 \begin_layout Subsubsection
+File Uploads
+\end_layout
+
+\begin_layout Paragraph
+fileUploadSizeThreshold
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|file-upload-size-threshold"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The size in bytes beyond which uploaded files will be stored to disk.
+ Defaults to zero, meaning that all uploaded files will be stored to disk.
+ See 
+\bar under
+conversation.form (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-form"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Subsubsection
 Tasks
 \end_layout
 
@@ -4783,16 +4832,34 @@ This is the time (in milliseconds) allowed to pass until a script file is
 Preheater
 \end_layout
 
+\begin_layout Standard
+``Heating up'' means that an internal GET verb is sent to them, with the
+ result discarded.
+ This is a good way to ensure that resources, such as database connection
+ pools, are initialized and ready to service user requests as soon as possible.
+ 
+\end_layout
+
 \begin_layout Paragraph
 preheatResources
 \end_layout
 
 \begin_layout Standard
-List resources here that you want heated up as soon as Prudence starts.
-\end_layout
+Note that all /resources/ and /web/dynamic/ files are automatically preheated.
+ List additional, custom URLs here that you want heated up as soon as Prudence
+ starts.
+ This is most useful in conjunction with 
+\bar under
+custom routing, such as capturing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing"
 
-\begin_layout Standard
-TODO
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -5629,7 +5696,7 @@ reference "../api/|application-task"
 \bar under
 application's configuration scripts (page 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand pageref
 reference "../application/"
 
 \end_inset
@@ -8180,7 +8247,7 @@ Utility to get a media type from a MIME type name or filename extension.
 \begin_layout Standard
 Note that each application has its own 
 \bar under
-mappings (page
+mappings (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../application/|default-file"
@@ -9276,12 +9343,12 @@ A value is often a simple string, but in the case of file uploads, it could
 \end_layout
 
 \begin_layout Itemize
-data: the raw data as an array of bytes
+data: the raw data as an array of bytes, for uploaded files stored in memory
 \end_layout
 
 \begin_layout Itemize
-file: a JVM File instance; the file is located in a temporary location,
- see fileUploadPath (page )
+file: a JVM File instance, for files stored on disk; uploaded files are
+ stored in the application's /uploads/ subdirectory
 \end_layout
 
 \begin_layout Itemize
@@ -9297,7 +9364,24 @@ mediaType: the Restlet MediaType equivalent to the above, if available
 \end_layout
 
 \begin_layout Standard
-TODO
+Prudence supports keeping smaller files in memory.
+ See the 
+\bar under
+fileUploadSizeThreshold setting (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|file-upload-size-threshold"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+Note that either ``data'' or ``file'' are valid, but not both.
+ One will always be null.
 \end_layout
 
 \begin_layout Paragraph

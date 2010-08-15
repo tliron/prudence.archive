@@ -721,7 +721,7 @@ public class DelegatedResource extends ServerResource
 		if( fileUploadSizeThreshold == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			fileUploadSizeThreshold = (Integer) attributes.get( "com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold" );
+			fileUploadSizeThreshold = ( (Number) attributes.get( "com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold" ) ).intValue();
 
 			if( fileUploadSizeThreshold == null )
 				fileUploadSizeThreshold = 0;

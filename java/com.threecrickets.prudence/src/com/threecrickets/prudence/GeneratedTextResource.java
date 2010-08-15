@@ -601,7 +601,7 @@ public class GeneratedTextResource extends ServerResource
 		if( fileUploadSizeThreshold == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			fileUploadSizeThreshold = (Integer) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold" );
+			fileUploadSizeThreshold = ( (Number) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold" ) ).intValue();
 
 			if( fileUploadSizeThreshold == null )
 				fileUploadSizeThreshold = 0;
