@@ -13644,8 +13644,8 @@ target "http://www.hazelcast.com/"
 
 \end_inset
 
-, which is nominally used for an optional distributed cache backend (see
- above), but can also be perfect for distributed handling of task queues.
+, which is used for an optional distributed cache backend (see above), but
+ also has excellent support for handling distributed task queues.
 \end_layout
 
 \begin_layout Subsubsection
@@ -13662,13 +13662,25 @@ These are potentially very long requests that you cannot break into smaller
 Fortunately, Prudence handles client requests via non-blocking I/O, meaning
  that large file uploads will not hold on to a single thread for the duration
  of the upload.
+ See 
+\bar under
+conversation.form (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../manual/api/|conversation-form"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
 Unfortunately, many concurrent uploads will still saturate your threads.
- If your application relies on file uploads, you are advised to handle such
- requests on separate Prudence instances, so that uploads won't stop your
- application from handling other web requests.
+ If your application relies on frequent file uploads, you are advised to
+ handle such requests on separate Prudence instances, so that uploads won't
+ stop your application from handling other web requests.
  You may also consider using a third-party service specializing in file
  storage and web uploads.
 \end_layout

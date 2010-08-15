@@ -141,6 +141,15 @@ static_web_base_path = '/web/static/'
 static_web_directory_listing_allowed = True
 
 #
+# File Uploads
+#
+
+# The size in bytes beyond which uploaded files will be stored to disk.
+# Defaults to zero, meaning that all uploaded files will be stored to disk.
+
+file_upload_size_threshold = 0
+
+#
 # Tasks
 #
 # Sets up a directory where you can place script files schedule to run

@@ -97,6 +97,7 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = 
 attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
 attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController() # Adds PHP predefined variables
 attributes['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamic_web_client_caching_mode
+attributes['com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold'] = file_upload_size_threshold
 
 dynamic_web = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 dynamic_web_base_url = fix_url(dynamic_web_base_url)
@@ -126,6 +127,7 @@ attributes['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 
 attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resources_default_name
 attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = resources_document_source
 attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resources_source_viewable
+attributes['com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold'] = file_upload_size_threshold
 
 resources = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 resources_base_url = fix_url(resources_base_url)

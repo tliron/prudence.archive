@@ -103,6 +103,7 @@
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" dynamic-web-source-viewable)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.executionController" (PhpExecutionController.)) ; Adds PHP predefined variables
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.clientCachingMode" dynamic-web-client-caching-mode)
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold" file-upload-size-threshold)
 
 (def dynamic-web (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.GeneratedTextResource")))
 (def dynamic-web-base-url (fix-url dynamic-web-base-url))
@@ -132,6 +133,7 @@
 (.put attributes "com.threecrickets.prudence.DelegatedResource.defaultName" resources-default-name)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.documentSource" resources-document-source)
 (.put attributes "com.threecrickets.prudence.DelegatedResource.sourceViewable" resources-source-viewable)
+(.put attributes "com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold" file-upload-size-threshold)
 
 (def resources (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
 (def resources-base-url (fix-url resources-base-url))

@@ -25,6 +25,7 @@ global $hosts;
 global $resources_base_url, $resources_base_path, $resources_default_name, $resources_defrost, $resources_source_viewable, $resources_minimum_time_between_validity_checks;
 global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_source_viewable, $dynamic_web_minimum_time_between_validity_checks, $dynamic_web_client_caching_mode;
 global $static_web_base_url, $static_web_base_path, $static_web_directory_listing_allowed;
+global $file_upload_size_threshold;
 global $preheat_resources;
 global $url_add_trailing_slash;
 global $predefined_globals;
@@ -131,6 +132,7 @@ $attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] =
 $attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = $dynamic_web_source_viewable;
 $attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController(); // Adds PHP predefined variables
 $attributes['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode;
+$attributes['com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold'] = $file_upload_size_threshold;
 
 $dynamic_web = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.GeneratedTextResource'));
 $dynamic_web_base_url = fix_url(dynamic_web_base_url);
@@ -163,6 +165,7 @@ $attributes['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] =
 $attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = $resources_default_name;
 $attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = $resources_document_source;
 $attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = $resources_source_viewable;
+$attributes['com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold'] = $file_upload_size_threshold;
 
 $resources = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.DelegatedResource'));
 $resources_base_url = fix_url(resources_base_url);

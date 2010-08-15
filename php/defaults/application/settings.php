@@ -11,6 +11,7 @@ global $hosts;
 global $resources_base_url, $resources_base_path, $resources_default_name, $resources_defrost, $resources_source_viewable, $resources_minimum_time_between_validity_checks;
 global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_source_viewable, $dynamic_web_minimum_time_between_validity_checks, $dynamic_web_client_caching_mode;
 global $static_web_base_url, $static_web_base_path, $static_web_directory_listing_allowed;
+global $file_upload_size_threshold;
 global $tasks_base_path, $tasks_default_document, $tasks_minimum_time_between_validity_checks;
 global $preheat_resources;
 global $url_add_trailing_slash;
@@ -154,6 +155,15 @@ $static_web_base_path = '/web/static/';
 // automatic creation of an HTML page with a directory listing.
 
 $static_web_directory_listing_allowed = TRUE;
+
+//
+// File Uploads
+//
+
+// The size in bytes beyond which uploaded files will be stored to disk.
+// Defaults to zero, meaning that all uploaded files will be stored to disk.
+
+$file_upload_size_threshold = 0;
 
 //
 // Tasks
