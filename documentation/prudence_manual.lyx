@@ -10,7 +10,7 @@
 \use_default_options true
 \language english
 \inputencoding auto
-\font_roman default
+\font_roman newcent
 \font_sans default
 \font_typewriter default
 \font_default_family default
@@ -5735,9 +5735,9 @@ reference "../api/|application-task"
 
 \end_inset
 
-) 
+)
 \bar default
-in the application's configuration scripts, but allows for more succint,
+ in the application's configuration scripts, but allows for more succint,
  calendrical repetition patterns.
 \end_layout
 
@@ -5920,34 +5920,31 @@ Our recommendation is to take that route only if those web servers offer
 \end_layout
 
 \begin_layout Subsection
-Mapping MIME Types
+Mapping Files to MIME Types
 \end_layout
 
 \begin_layout Standard
-TODO
+Files are sent to clients with a MIME type determined according to the filename'
+s extension.
 \end_layout
 
 \begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-application.metadataService.addExtension('php', MediaType.TEXT_HTML)
-\end_layout
+See 
+\bar under
+application configuration (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|default-file"
 
 \end_inset
 
-
+)
+\bar default
+ for instructions on how to configure this mapping.
 \end_layout
 
 \begin_layout Subsection
 Replacing Grizzly
-\end_layout
-
-\begin_layout Standard
-TODO
 \end_layout
 
 \begin_layout Standard
@@ -5968,7 +5965,7 @@ target "http://www.mortbay.org/jetty/"
 
 \end_inset
 
-, which offers similar performance, but with many more features.
+, which offers similar performance and many more features.
  Or, use any other connector supported by 
 \begin_inset CommandInset href
 LatexCommand href
@@ -5978,7 +5975,10 @@ target "http://www.restlet.org/"
 \end_inset
 
 .
- 
+\end_layout
+
+\begin_layout Standard
+See the Restlet documentation for instructions.
 \end_layout
 
 \begin_layout Subsection
@@ -6000,6 +6000,86 @@ name "../manual/static-web/|cache-control-filter"
 \end_layout
 
 \begin_layout Standard
+Prudence handles conditional HTTP automatically: when clients request a
+ new file, they tell Prudence which version they have cached, and Prudence
+ makes sure not to send them the file if they already have the most recent
+ version.
+ Unfortunately, this still does require a short round-trip HTTP request
+ between client and server.
+\end_layout
+
+\begin_layout Standard
+To avoid even these short requests, Prudence comes with a handy 
+\bar under
+filter (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|filtering"
+
+\end_inset
+
+)
+\bar default
+ that can selectively set cache control headers according to file type.
+ By default, the filter sets the max age cache header to the ``far future''
+ (ten years) for all files.
+ For most web browsers, and many other clients that support local caching,
+ this effectively causes the files to be cached ``forever.'' Thus, the client
+ would only request the file again if the cache entry is deleted due to
+ the cache being full, or if the cache is manually reset.
+\end_layout
+
+\begin_layout Standard
+This can allow for faster page rendering in web browsers, save you in bandwidth
+ costs, and help you scale.
+ Sounds perfect? Unfortunately, it also affects your ability to make changes
+ to files.
+ Ten years means ten years: the client does not expect the file to change
+ in that time.
+ Since you likely cannot ask your users to reset their browser caches every
+ time you make a change, what you can do instead is rename the file on your
+ end: because clients cache files according to their URLs, and filenames
+ are mapped to URLs, the client would consider it a fresh file.
+ Of course, you would also have to update references to the URL in HTML
+ and CSS.
+\end_layout
+
+\begin_layout Standard
+Another trick to force clients to re-request an updated file is to add query
+ strings to the URL.
+ For example, consider this HTML code:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<img src="images/logo.png?_=128799073903458">
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The query string is ignored by Prudence's static web handler, but since
+ it does signify a new URL, the client will use a separate cache entry for
+ it.
+ This lets you keep your filenames, but does require you to alter URLs.
+\end_layout
+
+\begin_layout Standard
+Since the above techniques require considerable discipline on the application
+ maintainers, the cache control filter is not enabled by default in Prudence.
+ The following is an example on how to enable it in an application's /routing.js,
+ while disabling it for file types that are frequently updated:
+\end_layout
+
+\begin_layout Standard
 \begin_inset listings
 inline false
 status open
@@ -6016,33 +6096,51 @@ importClass(
 
 \begin_layout Plain Layout
 
-	com.threecrickets.prudence.util.CacheControlFilter);
+	com.threecrickets.prudence.util.CacheControlFilter)
 \end_layout
 
 \begin_layout Plain Layout
 
-\end_layout
-
-\begin_layout Plain Layout
-
-// Cache static file types
 \end_layout
 
 \begin_layout Plain Layout
 
 var staticWebCacheControlFilter = new CacheControlFilter(router.context,
- staticWeb);
+ staticWeb)
 \end_layout
 
 \begin_layout Plain Layout
 
-staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.TEXT_CSS, -1);
+\end_layout
+
+\begin_layout Plain Layout
+
+// Disable caching for CSS and JavaScript files
+\end_layout
+
+\begin_layout Plain Layout
+
+staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.TEXT_CSS, -1)
 \end_layout
 
 \begin_layout Plain Layout
 
 staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.APPLICATION_JAVASCRIPT
-, -1); 
+, -1)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+router.detach(staticWeb)
+\end_layout
+
+\begin_layout Plain Layout
+
+router.attach(staticWebBaseURL, staticWebCacheControlFilter)
 \end_layout
 
 \end_inset
@@ -6062,7 +6160,45 @@ name "../static-web/|javascript-unify-minify-filter"
 \end_layout
 
 \begin_layout Standard
-TODO
+When writing JavaScript code, you likely want to use a lot of spacing, indentati
+on and comments to keep the code clear and manageable.
+ You would likely also want to divide your code into multiple files.
+ However, if this code is meant to be run on the client, this could mean
+ sending several overly large files to it.
+\end_layout
+
+\begin_layout Standard
+Prudence comes with a handy 
+\bar under
+filter (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|filtering"
+
+\end_inset
+
+)
+\bar default
+ that lets you ``unify'' several JavaScript files into one, and to ``minify''
+ it so that superfluous comments and whitespace are removed.
+ Bandwidth savings can be significant.
+\end_layout
+
+\begin_layout Standard
+The filter works by detecting a user request for a file named ``all.min.js''
+ in a directory which contains ``.js'' files.
+ If the file does not exist, it collects all the JavaScript files in the
+ directory, unifies them in alphabetical order, and minifies the result
+ into a file called ``all.min.js''.
+ The filter picks up your changes on the fly, and will only regenerate ``all.min.j
+s'' if you've made a change to any of the base files.
+ You can control the minimum time required to pass between these checks
+ via a constructor argument (see example below).
+\end_layout
+
+\begin_layout Standard
+If order of source files within the unified file is important, make sure
+ to name so that an alphabetical sort would put them in the right order.
 \end_layout
 
 \begin_layout Standard
@@ -6086,7 +6222,7 @@ router.detach(staticWeb)
 
 \begin_layout Plain Layout
 
-router.attach(
+router.attachBase(
 \end_layout
 
 \begin_layout Plain Layout
@@ -6097,12 +6233,51 @@ router.attach(
 \begin_layout Plain Layout
 
 	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applica
-tionBasePath + staticWebBasePath)))
+tionBasePath + staticWebBasePath),
 \end_layout
 
 \begin_layout Plain Layout
 
-	.matchingMode = Template.MODE_STARTS_WITH
+		dynamicWebMinimumTimeBetweenValidityChecks))
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+An example of loading the unified-minified file from HTML:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<head>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<script type="text/javascript" src="script/all.min.js"></script>
+\end_layout
+
+\begin_layout Plain Layout
+
+</head>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
 \end_layout
 
 \end_inset
@@ -6115,7 +6290,9 @@ CssUnifyMinifyFilter
 \end_layout
 
 \begin_layout Standard
-TODO
+This filter does for CSS what the JavaScriptUnifyMinify filter, above, does
+ for JavaScript.
+ Example:
 \end_layout
 
 \begin_layout Standard
@@ -6139,7 +6316,7 @@ router.detach(staticWeb)
 
 \begin_layout Plain Layout
 
-router.attach(
+router.attachBase(
 \end_layout
 
 \begin_layout Plain Layout
@@ -6150,17 +6327,23 @@ router.attach(
 \begin_layout Plain Layout
 
 	new CssScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicat
-ionBasePath + staticWebBasePath)))
+ionBasePath + staticWebBasePath),
 \end_layout
 
 \begin_layout Plain Layout
 
-	.matchingMode = Template.MODE_STARTS_WITH
+		dynamicWebMinimumTimeBetweenValidityChecks))
 \end_layout
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+You can definitely use JavaScriptUnifyMinifyFilter and CssUnifyMinifyFilter
+ together.
+ The order of filtering should not matter.
 \end_layout
 
 \begin_layout Section
@@ -7536,7 +7719,7 @@ router.attach('forum/info/',
 
 \begin_layout Plain Layout
 
-// Or, you can use Prudence sugar to use MODE_STARTS_WITH
+// Or, you can use Prudence sugar (equivalent to MODE_STARTS_WITH)
 \end_layout
 
 \begin_layout Plain Layout
@@ -7589,6 +7772,13 @@ router.detach(staticWeb)
 
 \begin_layout Subsubsection
 Filtering
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|filtering"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -7629,7 +7819,7 @@ router.detach(staticWeb)
 
 \begin_layout Plain Layout
 
-router.attach(
+router.attachBase(
 \end_layout
 
 \begin_layout Plain Layout
@@ -7640,12 +7830,12 @@ router.attach(
 \begin_layout Plain Layout
 
 	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applica
-tionBasePath + staticWebBasePath)))
+tionBasePath + staticWebBasePath),
 \end_layout
 
 \begin_layout Plain Layout
 
-	.matchingMode = Template.MODE_STARTS_WITH
+		dynamicWebMinimumTimeBetweenValidityChecks))
 \end_layout
 
 \end_inset
@@ -7729,7 +7919,7 @@ router.attach('bug/',
 
 \begin_layout Plain Layout
 
-router.attach('forum/',
+router.attachBase('forum/',
 \end_layout
 
 \begin_layout Plain Layout
@@ -7740,11 +7930,6 @@ router.attach('forum/',
 \begin_layout Plain Layout
 
 	'{rp}?debug=true'))
-\end_layout
-
-\begin_layout Plain Layout
-
-	.matchingMode = Template.MODE_STARTS_WITH
 \end_layout
 
 \begin_layout Plain Layout
@@ -12581,7 +12766,7 @@ router.detach(staticWeb)
 
 \begin_layout Plain Layout
 
-router.attach(
+router.attachBase(
 \end_layout
 
 \begin_layout Plain Layout
@@ -12592,12 +12777,12 @@ router.attach(
 \begin_layout Plain Layout
 
 	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applica
-tionBasePath + staticWebBasePath)))
+tionBasePath + staticWebBasePath),
 \end_layout
 
 \begin_layout Plain Layout
 
-	.matchingMode = Template.MODE_STARTS_WITH
+		10000))
 \end_layout
 
 \end_inset

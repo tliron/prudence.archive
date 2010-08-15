@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2010-08-14">
+<meta name="create-date" content="2010-08-15">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -277,7 +277,7 @@ Table of Contents
 </div><div class="tocindent">
 
 <div class="toc">
-<a class="Link" href="#toc-Subsection-67">Subsection: Mapping MIME Types</a>
+<a class="Link" href="#toc-Subsection-67">Subsection: Mapping Files to MIME Types</a>
 </div>
 <div class="toc">
 <a class="Link" href="#toc-Subsection-68">Subsection: Replacing Grizzly</a>
@@ -2638,7 +2638,7 @@ Use <u>application.task</u> <u>(page <a class="Reference" href="#../api/|applica
 <a class="toc" name="toc-Subsection-66"></a>crontab<a class="Label" name="../tasks/|crontab"> </a>
 </h2>
 <div class="Unindented">
-This facility lets you schedule tasks to run at specific (Gregorian) calendrical times. It is similar to calling <u>application.task</u> <u>(page <a class="Reference" href="#../api/|application-task">↓</a>) </u>in the application’s configuration scripts, but allows for more succint, calendrical repetition patterns.
+This facility lets you schedule tasks to run at specific (Gregorian) calendrical times. It is similar to calling <u>application.task</u> <u>(page <a class="Reference" href="#../api/|application-task">↓</a>)</u> in the application’s configuration scripts, but allows for more succint, calendrical repetition patterns.
 </div>
 <div class="Indented">
 To use this facility, place a file with the name ‘‘crontab’’ in your application’s base subdirectory. Its format is purposely very similar to that of the crontab configuration file found in many Unix-like operating system: each line starts with scheduling pattern and ends with the task name. The scheduling pattern is a series of five whitespace-separated settings. Any of these settings can be ‘‘*’’, signifying that any value would match. Use a slash to match only numbers that divide equally by the number after the slash (can also be used on ‘‘*’’). Ranges (inclusive) are possible, separated by hyphens. Multiple settings are possible, separated by commas. Multiple patterns are possible, separated by pipes.
@@ -2721,46 +2721,71 @@ You’re likely, though, wondering if /web/static/ is merely a convenience, and 
 Our recommendation is to take that route only if those web servers offer important features that you won’t find in Prudence. Remember that Prudence has many powerful features, including URL redirecting, rewriting and routing, and that Prudence’s non-blocking I/O actually does a great job at serving files. You will likely not see many performance or scalability gains replacing /web/static/ with standard Apache.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-67"></a>Mapping MIME Types
+<a class="toc" name="toc-Subsection-67"></a>Mapping Files to MIME Types
 </h2>
 <div class="Unindented">
-TODO
+Files are sent to clients with a MIME type determined according to the filename’s extension.
+</div>
+<div class="Indented">
+See <u>application configuration (page <a class="Reference" href="#../application/|default-file">↑</a>)</u> for instructions on how to configure this mapping.
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-68"></a>Replacing Grizzly
+</h2>
+<div class="Unindented">
+Grizzly can be replaced with <a class="URL" href="http://jboss.org/netty">Netty</a>, a non-blocking I/O HTTP server with slightly different performance characteristics, and <a class="URL" href="http://www.mortbay.org/jetty/">Jetty</a>, which offers similar performance and many more features. Or, use any other connector supported by <a class="URL" href="http://www.restlet.org/">Restlet</a>.
+</div>
+<div class="Indented">
+See the Restlet documentation for instructions.
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-69"></a>CacheControlFilter<a class="Label" name="../static-web/|cache-control-filter"> </a><a class="Label" name="../manual/static-web/|cache-control-filter"> </a>
+</h2>
+<div class="Unindented">
+Prudence handles conditional HTTP automatically: when clients request a new file, they tell Prudence which version they have cached, and Prudence makes sure not to send them the file if they already have the most recent version. Unfortunately, this still does require a short round-trip HTTP request between client and server.
+</div>
+<div class="Indented">
+To avoid even these short requests, Prudence comes with a handy <u>filter (page <a class="Reference" href="#../routing/|filtering">↓</a>)</u> that can selectively set cache control headers according to file type. By default, the filter sets the max age cache header to the ‘‘far future’’ (ten years) for all files. For most web browsers, and many other clients that support local caching, this effectively causes the files to be cached ‘‘forever.’’ Thus, the client would only request the file again if the cache entry is deleted due to the cache being full, or if the cache is manually reset.
+</div>
+<div class="Indented">
+This can allow for faster page rendering in web browsers, save you in bandwidth costs, and help you scale. Sounds perfect? Unfortunately, it also affects your ability to make changes to files. Ten years means ten years: the client does not expect the file to change in that time. Since you likely cannot ask your users to reset their browser caches every time you make a change, what you can do instead is rename the file on your end: because clients cache files according to their URLs, and filenames are mapped to URLs, the client would consider it a fresh file. Of course, you would also have to update references to the URL in HTML and CSS.
+</div>
+<div class="Indented">
+Another trick to force clients to re-request an updated file is to add query strings to the URL. For example, consider this HTML code:
 </div>
 <div class="Indented">
 
 <div class="float">
 
 <div class="listing">
-<code class="listing">application.metadataService.addExtension(’php’, MediaType.TEXT_HTML)
+<code class="listing">&lt;img src="images/logo.png?_=128799073903458"&gt;
 </code>
 </div>
 </div>
 </div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-68"></a>Replacing Grizzly
-</h2>
-<div class="Unindented">
-TODO
+<div class="Indented">
+The query string is ignored by Prudence’s static web handler, but since it does signify a new URL, the client will use a separate cache entry for it. This lets you keep your filenames, but does require you to alter URLs.
 </div>
 <div class="Indented">
-Grizzly can be replaced with <a class="URL" href="http://jboss.org/netty">Netty</a>, a non-blocking I/O HTTP server with slightly different performance characteristics, and <a class="URL" href="http://www.mortbay.org/jetty/">Jetty</a>, which offers similar performance, but with many more features. Or, use any other connector supported by <a class="URL" href="http://www.restlet.org/">Restlet</a>. 
+Since the above techniques require considerable discipline on the application maintainers, the cache control filter is not enabled by default in Prudence. The following is an example on how to enable it in an application’s /routing.js, while disabling it for file types that are frequently updated:
 </div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-69"></a>CacheControlFilter<a class="Label" name="../static-web/|cache-control-filter"> </a><a class="Label" name="../manual/static-web/|cache-control-filter"> </a>
-</h2>
-<div class="Unindented">
+<div class="Indented">
 
 <div class="float">
 
 <div class="listing">
 <code class="listing">importClass(
 	org.restlet.data.MediaType,
-	com.threecrickets.prudence.util.CacheControlFilter);
+	com.threecrickets.prudence.util.CacheControlFilter)
 ​
-// Cache static file types
-var staticWebCacheControlFilter = new CacheControlFilter(router.context, staticWeb);
-staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.TEXT_CSS, -1);
-staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.APPLICATION_JAVASCRIPT, -1); 
+var staticWebCacheControlFilter = new CacheControlFilter(router.context, staticWeb)
+​
+// Disable caching for CSS and JavaScript files
+staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.TEXT_CSS, -1)
+staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.APPLICATION_JAVASCRIPT, -1)
+​
+router.detach(staticWeb)
+router.attach(staticWebBaseURL, staticWebCacheControlFilter)
 </code>
 </div>
 </div>
@@ -2769,7 +2794,16 @@ staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.APPLICATION_JAVASCR
 <a class="toc" name="toc-Subsection-70"></a>JavaScriptUnifyMinifyFilter<a class="Label" name="../static-web/|javascript-unify-minify-filter"> </a>
 </h2>
 <div class="Unindented">
-TODO
+When writing JavaScript code, you likely want to use a lot of spacing, indentation and comments to keep the code clear and manageable. You would likely also want to divide your code into multiple files. However, if this code is meant to be run on the client, this could mean sending several overly large files to it.
+</div>
+<div class="Indented">
+Prudence comes with a handy <u>filter (page <a class="Reference" href="#../routing/|filtering">↓</a>)</u> that lets you ‘‘unify’’ several JavaScript files into one, and to ‘‘minify’’ it so that superfluous comments and whitespace are removed. Bandwidth savings can be significant.
+</div>
+<div class="Indented">
+The filter works by detecting a user request for a file named ‘‘all.min.js’’ in a directory which contains ‘‘.js’’ files. If the file does not exist, it collects all the JavaScript files in the directory, unifies them in alphabetical order, and minifies the result into a file called ‘‘all.min.js’’. The filter picks up your changes on the fly, and will only regenerate ‘‘all.min.js’’ if you’ve made a change to any of the base files. You can control the minimum time required to pass between these checks via a constructor argument (see example below).
+</div>
+<div class="Indented">
+If order of source files within the unified file is important, make sure to name so that an alphabetical sort would put them in the right order.
 </div>
 <div class="Indented">
 
@@ -2779,10 +2813,27 @@ TODO
 <code class="listing">importClass(com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter)
 ​
 router.detach(staticWeb)
-router.attach(
+router.attachBase(
 	staticWebBaseURL,
-	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicationBasePath + staticWebBasePath)))
-	.matchingMode = Template.MODE_STARTS_WITH
+	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicationBasePath + staticWebBasePath),
+		dynamicWebMinimumTimeBetweenValidityChecks))
+</code>
+</div>
+</div>
+</div>
+<div class="Indented">
+An example of loading the unified-minified file from HTML:
+</div>
+<div class="Indented">
+
+<div class="float">
+
+<div class="listing">
+<code class="listing">&lt;html&gt;
+&lt;head&gt;
+	&lt;script type="text/javascript" src="script/all.min.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;/html&gt;
 </code>
 </div>
 </div>
@@ -2791,7 +2842,7 @@ router.attach(
 <a class="toc" name="toc-Subsection-71"></a>CssUnifyMinifyFilter
 </h2>
 <div class="Unindented">
-TODO
+This filter does for CSS what the JavaScriptUnifyMinify filter, above, does for JavaScript. Example:
 </div>
 <div class="Indented">
 
@@ -2801,13 +2852,16 @@ TODO
 <code class="listing">importClass(com.threecrickets.prudence.util.CssUnifyMinifyFilter)
 ​
 router.detach(staticWeb)
-router.attach(
+router.attachBase(
 	staticWebBaseURL,
-	new CssScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicationBasePath + staticWebBasePath)))
-	.matchingMode = Template.MODE_STARTS_WITH
+	new CssScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicationBasePath + staticWebBasePath),
+		dynamicWebMinimumTimeBetweenValidityChecks))
 </code>
 </div>
 </div>
+</div>
+<div class="Indented">
+You can definitely use JavaScriptUnifyMinifyFilter and CssUnifyMinifyFilter together. The order of filtering should not matter.
 </div>
 <h1 class="Section">
 <a class="toc" name="toc-Section-10"></a>Routing<a class="Label" name="../routing/"> </a>
@@ -3370,7 +3424,7 @@ router.attach(’forum/info/’,
 	’file:///user/info/files/’))
 	.matchingMode = Template.MODE_STARTS_WITH
 ​
-// Or, you can use Prudence sugar to use MODE_STARTS_WITH
+// Or, you can use Prudence sugar (equivalent to MODE_STARTS_WITH)
 router.attachBase(’forum/help/’,
 	new Directory(applicationInstance.context,
 	’file:///user/data/files/’))
@@ -3385,7 +3439,7 @@ router.detach(staticWeb)
 </div>
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-46"></a>Filtering
+<a class="toc" name="toc-Subsubsection-46"></a>Filtering<a class="Label" name="../routing/|filtering"> </a>
 </h3>
 <div class="Unindented">
 Instances of filters, which wrap instances of other restlets, can be attached directly to URIs. In this example, we’ll use Prudence’s <u>JavaScript unifier/minifier (page <a class="Reference" href="#../static-web/|javascript-unify-minify-filter">↑</a>)</u>.
@@ -3398,10 +3452,10 @@ Instances of filters, which wrap instances of other restlets, can be attached di
 <code class="listing">importClass(com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter)
 ​
 router.detach(staticWeb)
-router.attach(
+router.attachBase(
 	staticWebBaseURL,
-	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicationBasePath + staticWebBasePath)))
-	.matchingMode = Template.MODE_STARTS_WITH
+	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicationBasePath + staticWebBasePath),
+		dynamicWebMinimumTimeBetweenValidityChecks))
 </code>
 </div>
 </div>
@@ -3431,10 +3485,9 @@ router.attach(’bug/’,
 ’http://wackywiki.org/contact-us/bug/’))
 ​
 // With a URI template
-router.attach(’forum/’,
+router.attachBase(’forum/’,
 	new Redirector(applicationInstance.context,
 	’{rp}?debug=true’))
-	.matchingMode = Template.MODE_STARTS_WITH
 ​
 // A URI template with URI segments
 router.attach(’contact/{reason}/’,
@@ -5524,10 +5577,10 @@ You can also change Prudence’s default routing by detaching and re-attaching r
 <code class="listing">importClass(com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter)
 ​
 router.detach(staticWeb)
-router.attach(
+router.attachBase(
 	staticWebBaseURL,
-	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicationBasePath + staticWebBasePath)))
-	.matchingMode = Template.MODE_STARTS_WITH
+	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicationBasePath + staticWebBasePath),
+		10000))
 </code>
 </div>
 </div>
