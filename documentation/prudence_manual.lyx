@@ -5884,6 +5884,23 @@ scheduler.scheduleFile(new File(applicationBasePath + '/crontab-system'))
 
 \end_layout
 
+\begin_layout Subsection
+Distributed Tasks
+\end_layout
+
+\begin_layout Standard
+Prudence comes with 
+\begin_inset CommandInset href
+LatexCommand href
+name "Hazelcast"
+target "http://www.hazelcast.com/"
+
+\end_inset
+
+, which has excellent support for handling distributed task queues.
+ See the Hazelcast documentation for more information.
+\end_layout
+
 \begin_layout Section
 Static Web
 \begin_inset CommandInset label
