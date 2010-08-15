@@ -116,12 +116,13 @@ $scheduler->start();
 // Tasks
 //
 
+$fixed_executor = Executors::newFixedThreadPool(Runtime::getRuntime()->availableProcessors() * 2 + 1);
 if(count($tasks) > 0) {
 	$futures = array();
 	$start_time = System::currentTimeMillis();
 	print 'Executing ' . count($tasks) . " tasks...\n";
 	foreach($tasks as $task) {
-		$futures[] = $executor->submit($task);
+		$futures[] = $fixed_executor->submit($task);
 	}
 	foreach($futures as $future) {
 		$future->get();

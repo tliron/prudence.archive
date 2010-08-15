@@ -110,9 +110,10 @@
 ; Tasks
 ;
 
+(def fixed-executor (Executors/newFixedThreadPool (+ (* (.. Runtime getRuntime (availableProcessors)) 2) 1)))
 (if-not (empty? tasks)
 	(let [start-time (System/currentTimeMillis)]
 		(println "Executing" (count tasks) "tasks...")
-		(let [futures (for [task tasks] (.submit executor task))]
+		(let [futures (for [task tasks] (.submit fixed-executor task))]
 			(dorun (for [future futures] (.get future)))
 			(println "Finished tasks in" (/ (- (System/currentTimeMillis) start-time) 1000.0) "seconds."))))

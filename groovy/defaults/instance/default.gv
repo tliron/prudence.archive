@@ -111,13 +111,14 @@ scheduler.start()
 // Tasks
 //
 
+fixedExecutor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors() * 2 + 1)
 if(tasks.size() > 0) {
 	futures = []
 	startTime = System.currentTimeMillis()
 	println('Executing ' + tasks.size() + ' tasks...')
 	out.flush()
 	for(task in tasks) {
-		futures.add(executor.submit(task))
+		futures.add(fixedExecutor.submit(task))
 	}
 	for(future in futures) {
 		future.get()

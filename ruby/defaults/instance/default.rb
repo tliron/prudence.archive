@@ -113,12 +113,13 @@ $scheduler.start
 # Tasks
 #
 
+$fixed_executor = Executors::new_fixed_thread_pool(Runtime::runtime.available_processors * 2 + 1)
 if $tasks.length > 0
 	futures = []
 	start_time = System.current_time_millis
 	print 'Executing ', $tasks.length, ' tasks...'
 	for task in $tasks
-		futures << $executor.submit(task)
+		futures << $fixed_executor.submit(task)
 	end
 	for future in futures
 		future.get

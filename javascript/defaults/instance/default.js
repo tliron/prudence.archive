@@ -111,13 +111,14 @@ scheduler.start()
 // Tasks
 //
 
+var fixedExecutor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors() * 2 + 1)
 if(tasks.length > 0) {
 	var futures = []
 	var startTime = System.currentTimeMillis()
 	print('Executing ' + tasks.length + ' tasks...\n')
 	for(var i in tasks) {
 		var task = tasks[i]
-		futures.push(executor.submit(task))
+		futures.push(fixedExecutor.submit(task))
 	}
 	for(var i in futures) {
 		var future = futures[i]

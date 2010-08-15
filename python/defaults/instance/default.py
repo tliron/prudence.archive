@@ -108,12 +108,13 @@ scheduler.start()
 # Tasks
 #
 
+fixed_executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2 + 1)
 if len(tasks) > 0:
 	futures = []
 	start_time = System.currentTimeMillis()
 	print 'Executing %s tasks...' % len(tasks)
 	for task in tasks:
-	    futures.append(executor.submit(task))
+	    futures.append(fixed_executor.submit(task))
 	for future in futures:
 		future.get()
 	print 'Finished tasks in %s seconds.' % ((System.currentTimeMillis() - start_time) / 1000.0)
