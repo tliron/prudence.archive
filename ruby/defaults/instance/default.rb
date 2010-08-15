@@ -9,9 +9,21 @@ import com.threecrickets.scripturian.exception.DocumentNotFoundException
 
 def execute_or_default(name, default=nil)
 	begin
-		$document.execute name
-	rescue DocumentNotFoundException
-		if !default
+		begin
+			$document.execute name
+			
+			# Note: a bug in JRuby 1.5.1 causes the begin/rescue block to throw a
+			# "assigning non-exception to $!" exception, which is why we are wrapping
+			# this block in yet another begin/rescue block.
+			
+		rescue DocumentNotFoundException
+			if default.nil?
+				default = 'defaults/' + name
+			end
+			$document.execute default
+		end
+	rescue
+		if default.nil?
 			default = 'defaults/' + name
 		end
 		$document.execute default
@@ -42,7 +54,7 @@ puts 'Prudence ' + $prudence_version + $prudence_revision + ' for ' + $prudence_
 # log4j: This is our actual logging engine
 begin
 	import org.apache.log4j.PropertyConfigurator
-	PropertyConfigurator.configure 'configuration/logging.conf'
+	PropertyConfigurator::configure 'configuration/logging.conf'
 rescue
 end
 
@@ -116,13 +128,13 @@ $scheduler.start
 $fixed_executor = Executors::new_fixed_thread_pool(Runtime::runtime.available_processors * 2 + 1)
 if $tasks.length > 0
 	futures = []
-	start_time = System.current_time_millis
-	print 'Executing ', $tasks.length, ' tasks...'
+	start_time = System::current_time_millis
+	print 'Executing ', $tasks.length, " tasks...\n"
 	for task in $tasks
 		futures << $fixed_executor.submit(task)
 	end
 	for future in futures
 		future.get
 	end
-	print 'Finished tasks in ', (System.current_time_millis - start_time) / 1000.0, ' seconds.'
+	print 'Finished tasks in ', (System::current_time_millis - start_time) / 1000.0, " seconds.\n"
 end

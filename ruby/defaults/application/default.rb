@@ -68,4 +68,4 @@ $attributes['com.threecrickets.prudence.ApplicationTask.languageManager'] = $lan
 $attributes['com.threecrickets.prudence.ApplicationTask.defaultLanguageTag'] = 'ruby'
 $attributes['com.threecrickets.prudence.ApplicationTask.defaultName'] = $tasks_default_name
 $attributes['com.threecrickets.prudence.ApplicationTask.documentSource'] = $tasks_document_source
-$scheduler.add_task_collector PrudenceTaskCollector.new(File.new($application_base_path + '/crontab'), $application_instance))
+$scheduler.add_task_collector PrudenceTaskCollector.new(java.io.File.new($application_base_path + '/crontab'), $application_instance)

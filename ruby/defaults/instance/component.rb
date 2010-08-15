@@ -8,7 +8,7 @@ import java.util.concurrent.Executors
 import org.restlet.Component
 import com.threecrickets.prudence.util.DelegatedStatusService
 import com.threecrickets.prudence.cache.InProcessMemoryCache
-import it.sauronsoftware.cron4j.Scheduler
+import 'it.sauronsoftware.cron4j.Scheduler'
 
 #
 # Component

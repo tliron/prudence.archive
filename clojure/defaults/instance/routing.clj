@@ -13,7 +13,6 @@
 ; Applications
 
 (def applications []) 
-(.. component getContext getAttributes (put "com.threecrickets.prudence.applications" applications))
 (def applications-dir (File. "applications"))
 
 (def properties-file (File. applications-dir "applications.properties"))
@@ -40,6 +39,8 @@
 	(def application-instance nil) ; otherwise the below would create it in a different namespace
   (execute-or-default application-base-path "defaults/application/")
   (def applications (conj applications application-instance)))
+
+(.. component getContext getAttributes (put "com.threecrickets.prudence.applications" applications))
 
 (if (empty? applications) (do
  		(print "No applications found. Exiting.\n")

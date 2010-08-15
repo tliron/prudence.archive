@@ -3,13 +3,13 @@
 // Prudence Application
 //
 
-global $application_instance, $application_base_path, $attributes;
+global $application_instance, $application_base_path, $attributes, $language_manager;
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $tasks_base_path, $tasks_default_name, $tasks_minimum_time_between_validity_checks;
 global $show_debug_on_error, $show_source_code_url;
 global $application_logger_name, $application_base_path;
 global $predefined_globals;
-global $scheduler, $language_manager;
+global $scheduler;
 
 import org.restlet.data.Reference;
 import org.restlet.data.MediaType;

@@ -17,7 +17,7 @@ import com.threecrickets.prudence.util.PrudenceRouter;
 import com.threecrickets.prudence.util.PreheatTask;
 import com.threecrickets.prudence.util.PhpExecutionController;
 
-global $executable, $component, $tasks, $application_instance, $attributes;
+global $executable, $component, $tasks, $application_instance, $attributes, $language_manager;
 global $application_internal_name, $application_logger_name, $application_base_path, $application_default_url;
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $show_debug_on_error, $show_source_code_url;
@@ -135,7 +135,7 @@ $attributes['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'
 $attributes['com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold'] = $file_upload_size_threshold;
 
 $dynamic_web = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.GeneratedTextResource'));
-$dynamic_web_base_url = fix_url(dynamic_web_base_url);
+$dynamic_web_base_url = fix_url($dynamic_web_base_url);
 $router->attachBase($dynamic_web_base_url, $dynamic_web);
 
 if($dynamic_web_defrost) {
@@ -152,7 +152,7 @@ if($dynamic_web_defrost) {
 $static_web = new Directory($application_instance->context, new File($application_base_path . $static_web_base_path)->toURI()->toString());
 $static_web->listingAllowed = $static_web_directory_listing_allowed;
 $static_web->negotiatingContent = true;
-$static_web_base_url = fix_url(static_web_base_url);
+$static_web_base_url = fix_url($static_web_base_url);
 $router->attachBase($static_web_base_url, $static_web);
 
 //
@@ -168,7 +168,7 @@ $attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = $re
 $attributes['com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold'] = $file_upload_size_threshold;
 
 $resources = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.DelegatedResource'));
-$resources_base_url = fix_url(resources_base_url);
+$resources_base_url = fix_url($resources_base_url);
 $router->attachBase($resources_base_url, $resources);
 
 if($resources_defrost) {
@@ -188,7 +188,7 @@ if($show_debug_on_error) {
 	$document_sources->add($resources_document_source);
 	$attributes['com.threecrickets.prudence.SourceCodeResource.documentSources'] = $document_sources;
 	$source_code = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.SourceCodeResource'));
-	$show_source_code_url = fix_url(show_source_code_url);
+	$show_source_code_url = fix_url($show_source_code_url);
 	$router->attach($show_source_code_url, $source_code)->matchingMode = Template::MODE_EQUALS;
 }
 

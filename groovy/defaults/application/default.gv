@@ -4,6 +4,7 @@
 
 import org.restlet.data.Reference
 import org.restlet.data.MediaType
+import com.threecrickets.scripturian.document.DocumentFileSource
 import com.threecrickets.prudence.util.DelegatedStatusService
 import com.threecrickets.prudence.util.PrudenceTaskCollector
 
@@ -63,7 +64,7 @@ predefinedGlobals.each() { key, value ->
 // Tasks
 //
 
-var tasksDocumentSource = new DocumentFileSource(applicationBasePath + tasksBasePath, tasksDefaultName, 'gv', tasksMinimumTimeBetweenValidityChecks)
+tasksDocumentSource = new DocumentFileSource(applicationBasePath + tasksBasePath, tasksDefaultName, 'gv', tasksMinimumTimeBetweenValidityChecks)
 attributes['com.threecrickets.prudence.ApplicationTask.languageManager'] = languageManager
 attributes['com.threecrickets.prudence.ApplicationTask.defaultLanguageTag'] = 'groovy'
 attributes['com.threecrickets.prudence.ApplicationTask.defaultName'] = tasksDefaultName
