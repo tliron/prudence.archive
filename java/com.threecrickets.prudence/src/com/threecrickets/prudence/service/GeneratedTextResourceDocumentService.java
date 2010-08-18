@@ -18,8 +18,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.restlet.data.Reference;
@@ -250,23 +248,28 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	{
 		documentName = resource.validateDocumentName( documentName );
 
-		Executable executable;
+		DocumentDescriptor<Executable> documentDescriptor;
 		try
 		{
-			executable = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() ).getDocument();
+			documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
 		}
 		catch( DocumentNotFoundException x )
 		{
 			File libraryDirectory = resource.getLibraryDirectoryRelative();
 			if( libraryDirectory != null )
 				// Try the library directory
-				executable = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
-					resource.isPrepare() ).getDocument();
+				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
+					resource.isPrepare() );
 			else
 				throw x;
 		}
 
-		return execute( executable );
+		// Add ourselves to dependents
+		Executable executable = getCurrentExecutable();
+		if( executable != null )
+			documentDescriptor.getDependents().add( executable.getDocumentName() );
+
+		return execute( documentDescriptor.getDocument() );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -296,50 +299,9 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	private final ExecutionContext executionContext;
 
 	/**
-	 * The currently executing executable.
-	 */
-	private LinkedList<Executable> executableStack = new LinkedList<Executable>();
-
-	/**
 	 * Buffer used for caching.
 	 */
 	private StringBuffer writerBuffer;
-
-	/**
-	 * The currently executing executable (the one at the top of the stack).
-	 * 
-	 * @return The current executable or null
-	 */
-	private Executable getCurrentExecutable()
-	{
-		try
-		{
-			return executableStack.getLast();
-		}
-		catch( NoSuchElementException x )
-		{
-			return null;
-		}
-	}
-
-	/**
-	 * Add an executable to the top of stack.
-	 * 
-	 * @param executable
-	 *        The executable
-	 */
-	private void pushExecutable( Executable executable )
-	{
-		executableStack.add( executable );
-	}
-
-	/**
-	 * Remove the top executable from the stack.
-	 */
-	private Executable popExecutable()
-	{
-		return executableStack.removeLast();
-	}
 
 	/**
 	 * @return The cache key for the executable

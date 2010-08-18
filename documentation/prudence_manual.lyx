@@ -4599,6 +4599,13 @@ This is so we can see the source code for scripts by adding ?source=true
 
 \begin_layout Paragraph
 dynamicWebMinimumTimeBetweenValidityChecks
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|dynamic-web-minimum-time-between-validity-checks"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8965,21 +8972,19 @@ Executes another document ``in place,'' meaning that its output is appended
 The included path is an internal URI, not the external URL visible to the
  world.
  The URI can be relative to either /web/dynamic/ or to /web/fragments/.
- The difference is that the former is open to the world, while the latter
- isn't.
 \end_layout
 
 \begin_layout Standard
 Prudence might compile or otherwise prepare and cache scriptlets in the
  included document.
+ What ``preparation'' actually involves depends on the language of the source
+ code.
  This means that the first time it is included it would be delayed, but
  subsequent includes would be much faster.
  To avoid that first-time wait, Prudence supports ``defrosting'' of your
  documents when it starts.
  This is enabled by default for all documents in /web/dynamic/, and would
  affect included documents from /web/fragments/.
- What ``preparation'' actually involves depends on the language used by
- the scriptlets.
 \end_layout
 
 \begin_layout Quote
@@ -9050,14 +9055,36 @@ The included path is an internal URI, not the external URL visible to the
 \begin_layout Standard
 Prudence might compile or otherwise prepare and cache code in the executed
  document.
+ What ``preparation'' actually involves depends on the language of the source
+ code.
  This means that the first time it is executed it would be delayed, but
  subsequent execution would be much faster.
  To avoid that first-time wait, Prudence supports ``defrosting'' of your
  documents when it starts.
  This is enabled by default for all documents in /resources/, and would
  affect documents they execute from /libraries/.
- What ``preparation'' actually involves depends on the language of the source
- code.
+\end_layout
+
+\begin_layout Standard
+Executed documents, just like documents exposed at URLs, are reloaded and
+ re-prepared on-the-fly if the file changes, within the limits of the 
+\bar under
+dynamicWebMinimumTimeBetweenValidityChecks setting (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|dynamic-web-minimum-time-between-validity-checks"
+
+\end_inset
+
+)
+\bar default
+.
+ Moreover, executing a document will link the current document to the executed
+ document for this purpose, such that if the executed document changes,
+ the current document would be reloaded when accessed.
+ This is necessary, because the execution document may contain code that
+ affects the preparation of the current document.
+ This effect extends recursively to any depth of execution.
 \end_layout
 
 \begin_layout Quote

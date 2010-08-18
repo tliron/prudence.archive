@@ -18,6 +18,7 @@ import org.restlet.representation.Representation;
 
 import com.threecrickets.prudence.ApplicationTask;
 import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
@@ -48,24 +49,39 @@ public class ApplicationTaskDocumentService extends DocumentServiceBase
 	{
 		documentName = applicationTask.validateDocumentName( documentName );
 
-		Executable executable;
+		DocumentDescriptor<Executable> documentDescriptor;
 		try
 		{
-			executable = Executable.createOnce( documentName, applicationTask.getDocumentSource(), false, applicationTask.getLanguageManager(), applicationTask.getDefaultLanguageTag(), applicationTask.isPrepare() )
-				.getDocument();
+			documentDescriptor = Executable.createOnce( documentName, applicationTask.getDocumentSource(), false, applicationTask.getLanguageManager(), applicationTask.getDefaultLanguageTag(),
+				applicationTask.isPrepare() );
 		}
 		catch( DocumentNotFoundException x )
 		{
 			// Try the library directory
 			File libraryDirectory = applicationTask.getLibraryDirectoryRelative();
 			if( libraryDirectory != null )
-				executable = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, applicationTask.getDocumentSource(), false, applicationTask.getLanguageManager(),
-					applicationTask.getDefaultLanguageTag(), applicationTask.isPrepare() ).getDocument();
+				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, applicationTask.getDocumentSource(), false, applicationTask.getLanguageManager(),
+					applicationTask.getDefaultLanguageTag(), applicationTask.isPrepare() );
 			else
 				throw x;
 		}
 
-		executable.execute();
+		// Add ourselves to dependents
+		Executable executable = getCurrentExecutable();
+		if( executable != null )
+			documentDescriptor.getDependents().add( executable.getDocumentName() );
+
+		// Execute
+		executable = documentDescriptor.getDocument();
+		pushExecutable( executable );
+		try
+		{
+			executable.execute();
+		}
+		finally
+		{
+			popExecutable();
+		}
 
 		return null;
 	}

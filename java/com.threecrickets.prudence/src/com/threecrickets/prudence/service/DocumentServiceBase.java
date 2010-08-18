@@ -12,6 +12,8 @@
 package com.threecrickets.prudence.service;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 import org.restlet.data.LocalReference;
 import org.restlet.representation.Representation;
@@ -118,6 +120,50 @@ public abstract class DocumentServiceBase
 	public ClientResource external( String uri, String mediaType )
 	{
 		return new ClientResource( uri );
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Protected
+
+	/**
+	 * The currently executing executable.
+	 */
+	protected LinkedList<Executable> executableStack = new LinkedList<Executable>();
+
+	/**
+	 * The currently executing executable (the one at the top of the stack).
+	 * 
+	 * @return The current executable or null
+	 */
+	protected Executable getCurrentExecutable()
+	{
+		try
+		{
+			return executableStack.getLast();
+		}
+		catch( NoSuchElementException x )
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Add an executable to the top of stack.
+	 * 
+	 * @param executable
+	 *        The executable
+	 */
+	protected void pushExecutable( Executable executable )
+	{
+		executableStack.add( executable );
+	}
+
+	/**
+	 * Remove the top executable from the stack.
+	 */
+	protected Executable popExecutable()
+	{
+		return executableStack.removeLast();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

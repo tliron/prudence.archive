@@ -18,6 +18,7 @@ import org.restlet.representation.Representation;
 
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
@@ -66,23 +67,38 @@ public class DelegatedResourceDocumentService extends ResourceDocumentServiceBas
 	{
 		documentName = resource.validateDocumentName( documentName );
 
-		Executable executable;
+		DocumentDescriptor<Executable> documentDescriptor;
 		try
 		{
-			executable = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() ).getDocument();
+			documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
 		}
 		catch( DocumentNotFoundException x )
 		{
 			// Try the library directory
 			File libraryDirectory = resource.getLibraryDirectoryRelative();
 			if( libraryDirectory != null )
-				executable = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
-					resource.isPrepare() ).getDocument();
+				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
+					resource.isPrepare() );
 			else
 				throw x;
 		}
 
-		executable.execute();
+		// Add ourselves to dependents
+		Executable executable = getCurrentExecutable();
+		if( executable != null )
+			documentDescriptor.getDependents().add( executable.getDocumentName() );
+
+		// Execute
+		executable = documentDescriptor.getDocument();
+		pushExecutable( executable );
+		try
+		{
+			executable.execute();
+		}
+		finally
+		{
+			popExecutable();
+		}
 
 		return null;
 	}
