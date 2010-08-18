@@ -19,6 +19,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.restlet.data.Reference;
@@ -217,6 +218,11 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				throw x;
 		}
 
+		// Add ourselves to dependents
+		Executable executable = getCurrentExecutable();
+		if( executable != null )
+			documentDescriptor.getDependents().add( executable.getDocumentName() );
+
 		if( conversationService.getMediaType() == null )
 			// Set initial media type according to the document's tag
 			conversationService.setMediaTypeExtension( documentDescriptor.getTag() );
@@ -302,11 +308,18 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	/**
 	 * The currently executing executable (the one at the top of the stack).
 	 * 
-	 * @return The current executable
+	 * @return The current executable or null
 	 */
 	private Executable getCurrentExecutable()
 	{
-		return executableStack.getLast();
+		try
+		{
+			return executableStack.getLast();
+		}
+		catch( NoSuchElementException x )
+		{
+			return null;
+		}
 	}
 
 	/**
