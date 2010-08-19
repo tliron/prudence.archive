@@ -20,6 +20,7 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 
 import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.ExecutionException;
@@ -126,20 +127,20 @@ public abstract class DocumentServiceBase
 	// Protected
 
 	/**
-	 * The currently executing executable.
+	 * The document stack.
 	 */
-	protected LinkedList<Executable> executableStack = new LinkedList<Executable>();
+	protected LinkedList<DocumentDescriptor<Executable>> documentDescriptorStack = new LinkedList<DocumentDescriptor<Executable>>();
 
 	/**
-	 * The currently executing executable (the one at the top of the stack).
+	 * The currently executing document (the one at the top of the stack).
 	 * 
-	 * @return The current executable or null
+	 * @return The current document or null
 	 */
-	protected Executable getCurrentExecutable()
+	protected DocumentDescriptor<Executable> getCurrentDocumentDescriptor()
 	{
 		try
 		{
-			return executableStack.getLast();
+			return documentDescriptorStack.getLast();
 		}
 		catch( NoSuchElementException x )
 		{
@@ -148,22 +149,22 @@ public abstract class DocumentServiceBase
 	}
 
 	/**
-	 * Add an executable to the top of stack.
+	 * Add a document to the top of stack.
 	 * 
-	 * @param executable
-	 *        The executable
+	 * @param documentDescriptor
+	 *        The document descriptor
 	 */
-	protected void pushExecutable( Executable executable )
+	protected void pushDocumentDescriptor( DocumentDescriptor<Executable> documentDescriptor )
 	{
-		executableStack.add( executable );
+		documentDescriptorStack.add( documentDescriptor );
 	}
 
 	/**
-	 * Remove the top executable from the stack.
+	 * Remove the top document from the stack.
 	 */
-	protected Executable popExecutable()
+	protected DocumentDescriptor<Executable> popDocumentDescriptor()
 	{
-		return executableStack.removeLast();
+		return documentDescriptorStack.removeLast();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
