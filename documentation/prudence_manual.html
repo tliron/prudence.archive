@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2010-08-15">
+<meta name="create-date" content="2010-08-19">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -2218,7 +2218,7 @@ Set this to true if you want to load all your dynamic web documents as soon as P
 This is so we can see the source code for scripts by adding ?source=true to the URL. You probably wouldn’t want this for most applications.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-23"></a>dynamicWebMinimumTimeBetweenValidityChecks
+<a class="toc" name="toc-Paragraph-23"></a>dynamicWebMinimumTimeBetweenValidityChecks<a class="Label" name="../application/|dynamic-web-minimum-time-between-validity-checks"> </a>
 </div>
 <div class="Unindented">
 This is the time (in milliseconds) allowed to pass until a script file is tested to see if it was changed. During development, you’d want this to be low, but during production, it should be high in order to avoid unnecessary hits on the filesystem.
@@ -3956,10 +3956,10 @@ Scripturian is Prudence’s mechanism for loading, caching and executing source 
 Executes another document ‘‘in place,’’ meaning that its output is appended at the location in the document where you call document.include. Global variables, function definitions, class definitions, etc., in the other document would be made available locally.
 </div>
 <div class="Indented">
-The included path is an internal URI, not the external URL visible to the world. The URI can be relative to either /web/dynamic/ or to /web/fragments/. The difference is that the former is open to the world, while the latter isn’t.
+The included path is an internal URI, not the external URL visible to the world. The URI can be relative to either /web/dynamic/ or to /web/fragments/.
 </div>
 <div class="Indented">
-Prudence might compile or otherwise prepare and cache scriptlets in the included document. This means that the first time it is included it would be delayed, but subsequent includes would be much faster. To avoid that first-time wait, Prudence supports ‘‘defrosting’’ of your documents when it starts. This is enabled by default for all documents in /web/dynamic/, and would affect included documents from /web/fragments/. What ‘‘preparation’’ actually involves depends on the language used by the scriptlets.
+Prudence might compile or otherwise prepare and cache scriptlets in the included document. What ‘‘preparation’’ actually involves depends on the language of the source code. This means that the first time it is included it would be delayed, but subsequent includes would be much faster. To avoid that first-time wait, Prudence supports ‘‘defrosting’’ of your documents when it starts. This is enabled by default for all documents in /web/dynamic/, and would affect included documents from /web/fragments/.
 </div>
 <blockquote class="Quote">
 Calling document.include is equivalent to using the include scriptlet, &lt;%&amp; … %&gt;. Internally, the include is turned into a regular scriptlet that called document.include.
@@ -3989,7 +3989,10 @@ Executes a program defined by source code in another document. Global variables,
 The included path is an internal URI, not the external URL visible to the world. The URI can be relative to either /web/dynamic/ in the case of scriptlets, /resources/ in the case of resources, or to /libraries/ in either case. The /libraries/ subdirectory is indeed the best place to put code usable by all parts of your application.
 </div>
 <div class="Indented">
-Prudence might compile or otherwise prepare and cache code in the executed document. This means that the first time it is executed it would be delayed, but subsequent execution would be much faster. To avoid that first-time wait, Prudence supports ‘‘defrosting’’ of your documents when it starts. This is enabled by default for all documents in /resources/, and would affect documents they execute from /libraries/. What ‘‘preparation’’ actually involves depends on the language of the source code.
+Prudence might compile or otherwise prepare and cache code in the executed document. What ‘‘preparation’’ actually involves depends on the language of the source code. This means that the first time it is executed it would be delayed, but subsequent execution would be much faster. To avoid that first-time wait, Prudence supports ‘‘defrosting’’ of your documents when it starts. This is enabled by default for all documents in /resources/, and would affect documents they execute from /libraries/.
+</div>
+<div class="Indented">
+Executed documents, just like documents exposed at URLs, are reloaded and re-prepared on-the-fly if the file changes, within the limits of the <u>dynamicWebMinimumTimeBetweenValidityChecks setting (page <a class="Reference" href="#../application/|dynamic-web-minimum-time-between-validity-checks">↑</a>)</u>. Moreover, executing a document will link the current document to the executed document for this purpose, such that if the executed document changes, the current document would be reloaded when accessed. This is necessary, because the execution document may contain code that affects the preparation of the current document. This effect extends recursively to any depth of execution.
 </div>
 <blockquote class="Quote">
 The main difference between document.include and document.execute is that the former expects ‘‘text-with-scriptlets’’ documents, while the latter uses plain source code.

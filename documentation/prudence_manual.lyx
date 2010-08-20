@@ -8652,12 +8652,16 @@ This
 Many of these attributes have to do with caching.
  Caching is your best tool to make sure your application can scale well.
  Read more about it in 
+\bar under
+``Scaling Tips'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../../scaling/"
 
 \end_inset
 
+)
+\bar default
 .
 \end_layout
 
@@ -8717,13 +8721,17 @@ Not that this is not necessarily the key itself
 \emph default
 , but instead a template that can contain variables that are set dynamically,
  and can also include values from conversation.locals.
- See ``Routing'' 
+ See 
+\bar under
+routing (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../routing/"
 
 \end_inset
 
+)
+\bar default
  for a complete list of Prudence's URI templating variables.
 \end_layout
 

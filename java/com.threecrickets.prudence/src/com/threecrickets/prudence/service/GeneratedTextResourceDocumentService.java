@@ -295,11 +295,13 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 	private static final String DOCUMENT_NAME_VARIABLE = "dn";
 
-	private static final String CACHE_DURATION_ATTRIBUTE = "prudence.cacheDuration";
+	private static final String CACHE_DURATION_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheDuration";
 
-	private static final String CACHE_KEY_ATTRIBUTE = "prudence.cacheKey";
+	private static final String CACHE_KEY_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheKey";
 
-	private static final String CACHE_TAGS_ATTRIBUTE = "prudence.cacheTags";
+	private static final String CACHE_TAGS_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheTags";
+
+	private static final String CACHED_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cached";
 
 	/**
 	 * The conversation service.
@@ -464,21 +466,24 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				startPosition = writerBuffer.length();
 			}
 
-			// Attempt to use cache
-			String cacheKey = castCacheKeyPattern();
-			if( cacheKey != null )
+			// Attempt to use cache, if executable is branded as cached
+			if( executable.getAttributes().containsKey( CACHED_ATTRIBUTE ) )
 			{
-				Cache cache = resource.getCache();
-				if( cache != null )
+				String cacheKey = castCacheKeyPattern();
+				if( cacheKey != null )
 				{
-					CacheEntry cacheEntry = cache.fetch( cacheKey );
-					if( cacheEntry != null )
+					Cache cache = resource.getCache();
+					if( cache != null )
 					{
-						// We want to write this, too, for includes
-						if( writer != null )
-							writer.write( cacheEntry.getString() );
+						CacheEntry cacheEntry = cache.fetch( cacheKey );
+						if( cacheEntry != null )
+						{
+							// We want to write this, too, for includes
+							if( writer != null )
+								writer.write( cacheEntry.getString() );
 
-						return cacheEntry.represent();
+							return cacheEntry.represent();
+						}
 					}
 				}
 			}
@@ -534,7 +539,15 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 					Cache cache = resource.getCache();
 					if( cache != null )
+					{
+						// Cache!
 						cache.store( cacheKey, cacheTags, cacheEntry );
+
+						// We're branding the executable as cached; if the
+						// executable is regenerated for some reason, it would
+						// no longer have this brand
+						executable.getAttributes().put( CACHED_ATTRIBUTE, true );
+					}
 				}
 
 				// Return a representation of the entire buffer
