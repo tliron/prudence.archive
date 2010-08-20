@@ -121,5 +121,8 @@ public class GeneratedTextResourceConversationService extends ConversationServic
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * The document service.
+	 */
 	private final GeneratedTextResourceDocumentService documentService;
 }
