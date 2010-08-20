@@ -479,9 +479,7 @@ public class ConversationServiceBase<R extends ServerResource>
 			reference = request.getResourceRef();
 
 		// Reverse relative reference
-		String relative = reference.getBaseRef().getRelativeRef( reference ).getPath();
-
-		return relative;
+		return reference.getBaseRef().getRelativeRef( reference ).getPath();
 	}
 
 	//

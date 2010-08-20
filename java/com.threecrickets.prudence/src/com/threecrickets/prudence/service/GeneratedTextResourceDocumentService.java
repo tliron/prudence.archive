@@ -295,6 +295,16 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 	private static final String DOCUMENT_NAME_VARIABLE = "dn";
 
+	private static final String DOCUMENT_NAME_VARIABLE_FULL = "{" + DOCUMENT_NAME_VARIABLE + "}";
+
+	private static final String APPLICATION_NAME_VARIABLE = "an";
+
+	private static final String APPLICATION_NAME_VARIABLE_FULL = "{" + APPLICATION_NAME_VARIABLE + "}";
+
+	private static final String PATH_TO_BASE_VARIABLE = "ptb";
+
+	private static final String PATH_TO_BASE_VARIABLE_FULL = "{" + PATH_TO_BASE_VARIABLE + "}";
+
 	private static final String CACHE_DURATION_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheDuration";
 
 	private static final String CACHE_KEY_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheKey";
@@ -335,17 +345,31 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		{
 			Template template = new Template( cacheKey );
 
-			// Our additional template variable: {dn}
-			template.getVariables().put( DOCUMENT_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, getCurrentDocumentDescriptor().getDefaultName(), true, true ) );
-
-			// Use captive reference as the resource reference
 			Reference captiveReference = CaptiveRedirector.getCaptiveReference( resource.getRequest() );
 			Reference resourceReference = resource.getRequest().getResourceRef();
+
+			// Our additional template variables: {dn}, {an} and {ptb}
+
+			if( cacheKey.contains( DOCUMENT_NAME_VARIABLE_FULL ) )
+				template.getVariables().put( DOCUMENT_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, getCurrentDocumentDescriptor().getDefaultName(), true, true ) );
+
+			if( cacheKey.contains( APPLICATION_NAME_VARIABLE_FULL ) )
+				template.getVariables().put( APPLICATION_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, resource.getApplication().getName(), true, true ) );
+
+			if( cacheKey.contains( PATH_TO_BASE_VARIABLE_FULL ) )
+			{
+				Reference reference = captiveReference != null ? captiveReference : resourceReference;
+				String pathToBase = reference.getBaseRef().getRelativeRef( reference ).getPath();
+				template.getVariables().put( PATH_TO_BASE_VARIABLE, new Variable( Variable.TYPE_ALL, pathToBase, true, true ) );
+			}
+
+			// Use captive reference as the resource reference
 			if( captiveReference != null )
 				resource.getRequest().setResourceRef( captiveReference );
 
 			String cast = template.format( resource.getRequest(), resource.getResponse() );
 
+			// Return regular reference
 			if( captiveReference != null )
 				resource.getRequest().setResourceRef( resourceReference );
 

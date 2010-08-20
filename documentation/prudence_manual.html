@@ -3667,6 +3667,12 @@ The following tags are only available for generating cache keys, not for routing
 <li>
 {dn}: the document name (full path from the Prudence instance root)
 </li>
+<li>
+{an}: the application name
+</li>
+<li>
+{ptb}: the path to the base, identical to <u>conversation.pathToBase (page <a class="Reference" href="#../api/|conversation-path-to-base">↓</a>)</u>
+</li>
 </ul>
 <h1 class="Section">
 <a class="toc" name="toc-Section-11"></a>API
@@ -3875,10 +3881,10 @@ document.cacheKey is ignored if document.cacheDuration is zero.
 Cache key templating is a very powerful feature that lets you easily create different cached versions of documents for different kinds of users and requests, but it’s not always trivial to determine the best cache key for every situation. It depends strongly on how you use and cache your fragments.
 </div>
 <div class="Indented">
-The default cache key template is ‘‘{ri}|{dn}’’, which is a string containing the request identifier (the URI), a pipe character (‘‘|’’), and then the document name. An actual key could thus be: ‘‘http://mysite.org/wackywiki/main|/common/header.html’’. This default is sensible, because it makes sure that included fragments are chached invidually. For example, only using ‘‘{ri}’’ would have each included fragment use the same key and override others.
+The default cache key template is ‘‘{ri}|{dn}’’, which is a string containing the request identifier (the URI), a pipe character (‘‘|’’), and then the document name. An actual key could thus be: ‘‘http://mysite.org/wackywiki/main|/common/header.html’’. This default is sensible, because it makes sure that included fragments are cached invidually. For example, only using ‘‘{ri}’’ would have each included fragment use the same key and override others.
 </div>
 <div class="Indented">
-However, though sensible, the default cache key template may not be the most efficient. For example, if the header fragment used in the example above never changes per page, then it’s wasteful to cache it separately per URI. It would make more sense to set document.cacheKey = ‘‘{dn}’’ in a scriptlet in header.html.
+However, though sensible, the default cache key template may not be the most efficient. For example, if the header fragment used in the example above never changes per page, then it’s wasteful to cache it separately per URI. It would make more sense to set document.cacheKey = ‘‘{an}|{dn}’’ in a scriptlet in header.html.
 </div>
 <div class="Indented">
 Of course, you do not have to use Prudence’s templating system, and can create your cacheKeys explicitly using your own scheme. Just make sure not to use ‘‘{’’ and ‘‘}’’, which are reserved for template tags.
@@ -4214,6 +4220,9 @@ This is very useful to allow for relative references in HTML. It’s especially 
 </div>
 </div>
 </div>
+<blockquote class="Quote">
+Warning: If you are caching a document that relies on conversation.pathToBase, you likely also want to include ‘‘{ptb}’’ or some other path reference in the document.cacheKey (see above).
+</blockquote>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-69"></a>conversation.form, conversation.formAll<a class="Label" name="../api/|conversation-form"> </a><a class="Label" name="../manual/api/|conversation-form"> </a>
 </div>

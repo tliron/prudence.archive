@@ -8230,6 +8230,23 @@ The following tags are only available for generating cache keys, not for
 {dn}: the document name (full path from the Prudence instance root)
 \end_layout
 
+\begin_layout Itemize
+{an}: the application name
+\end_layout
+
+\begin_layout Itemize
+{ptb}: the path to the base, identical to 
+\bar under
+conversation.pathToBase (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-path-to-base"
+
+\end_inset
+
+)
+\end_layout
+
 \begin_layout Section
 API
 \end_layout
@@ -8754,7 +8771,7 @@ The default cache key template is ``{ri}|{dn}'', which is a string containing
  An actual key could thus be: ``http://mysite.org/wackywiki/main|/common/header.ht
 ml''.
  This default is sensible, because it makes sure that included fragments
- are chached invidually.
+ are cached invidually.
  For example, only using ``{ri}'' would have each included fragment use
  the same key and override others.
 \end_layout
@@ -8764,7 +8781,7 @@ However, though sensible, the default cache key template may not be the
  most efficient.
  For example, if the header fragment used in the example above never changes
  per page, then it's wasteful to cache it separately per URI.
- It would make more sense to set document.cacheKey = ``{dn}'' in a scriptlet
+ It would make more sense to set document.cacheKey = ``{an}|{dn}'' in a scriptlet
  in header.html.
 \end_layout
 
@@ -9538,6 +9555,12 @@ Click <a href="<%= conversation.pathToBase %>/contact/">here</a> to contact
 \end_inset
 
 
+\end_layout
+
+\begin_layout Quote
+Warning: If you are caching a document that relies on conversation.pathToBase,
+ you likely also want to include ``{ptb}'' or some other path reference
+ in the document.cacheKey (see above).
 \end_layout
 
 \begin_layout Paragraph
