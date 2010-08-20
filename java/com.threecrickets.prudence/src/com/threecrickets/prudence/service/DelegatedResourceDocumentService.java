@@ -86,7 +86,7 @@ public class DelegatedResourceDocumentService extends ResourceDocumentServiceBas
 		// Add dependency
 		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
 		if( currentDocumentDescriptor != null )
-			currentDocumentDescriptor.getDependencies().add( documentDescriptor.getDefaultName() );
+			currentDocumentDescriptor.getDependencies().add( documentDescriptor );
 
 		// Execute
 		pushDocumentDescriptor( documentDescriptor );

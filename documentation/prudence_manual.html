@@ -3516,7 +3516,7 @@ See the Restlet API documentation of Redirector for more information.
 The custom routing techniques described above support URI templates, which are URIs with optional curly-bracket-delimited tags that are be replaced by conversation values at runtime.
 </div>
 <div class="Indented">
-Note that the same templates are used to generate <u>cache keys (page <a class="Reference" href="#../api/|document-cache-key">↓</a>)</u>, and that there are some tags that can only be used for cache keys. In fact, many of these tags might be more useful for cache keys than for routing.
+Note that the same templates are used to generate <u>cache keys (page <a class="Reference" href="#../api/|document-cache-key-pattern">↓</a>)</u>, and that there are some tags that can only be used for cache keys. In fact, many of these tags might be more useful for cache keys than for routing.
 </div>
 <div class="Indented">
 For more information, see the <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/org/restlet/util/Resolver.html#createResolver(org.restlet.Request,%20org.restlet.Response)">Restlet documentation</a>.
@@ -3863,43 +3863,49 @@ Many of these attributes have to do with caching. Caching is your best tool to m
 (only available in /web/dynamic/ and /web/fragments/)
 </div>
 <div class="Indented">
-The duration in milleseconds for which the output of this document will be cached. If this value is zero, the default, then caching is disabled. So, you must explicitly set this to a greater than zero value to enable caching. The key used to store and retrieve the cached output is determined by <u>document.cacheKey (page <a class="Reference" href="#../api/|document-cache-key">↓</a>)</u>.
+The duration in milleseconds for which the output of this document will be cached. If this value is zero, the default, then caching is disabled. So, you must explicitly set this to a greater than zero value to enable caching. The key used to store and retrieve the cached output is determined by <u>document.cacheKeyPattern (page <a class="Reference" href="#../api/|document-cache-key-pattern">↓</a>)</u>.
 </div>
 <blockquote class="Quote">
 Note that if you edit the source file such as that it would be reloaded, within the limits defined by the <u>dynamicWebMinimumTimeBetweenValidityChecks setting (page <a class="Reference" href="#../application/|dynamic-web-minimum-time-between-validity-checks">↑</a>)</u>, then any cache entries would not be used for the next request. This feature lets you see your changes on the fly, even if the document has been cached. Note, too, that updates to documents executed by your source file will also trigger this feature. See <u>document.execute (page <a class="Reference" href="#../api/|document-execute">↓</a>)</u>.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-53"></a>document.cacheKey<a class="Label" name="../api/|document-cache-key"> </a><a class="Label" name="../manual/api/|document-cache-key"> </a>
+<a class="toc" name="toc-Paragraph-53"></a>document.cacheKeyPattern<a class="Label" name="../api/|document-cache-key-pattern"> </a><a class="Label" name="../manual/api/|document-cache-key-pattern"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
 </div>
 <div class="Indented">
-This lets you control the key that is used to store and retrieve the cached output of the current document. <i>Note that this is not necessarily the key itself</i>, but instead a template that can contain variables that are set dynamically, and can also include values from conversation.locals. See <u>URI templates (page <a class="Reference" href="#../routing/|uri-templates">↑</a>)</u> for a complete list of template variables. For debugging purposes, you might use <u>conversation.cacheKey (page <a class="Reference" href="#../api/|conversation-cache-key">↓</a>)</u> to output the actual cache key used in the current conversation.
+This lets you control the key that is used to store and retrieve the cached output of the current document. <i>Note that this is not necessarily the key itself</i>, but instead a pattern that can contain variables that are set dynamically, and can also include values from conversation.locals. See <u>URI templates (page <a class="Reference" href="#../routing/|uri-templates">↑</a>)</u> for a complete list of template variables. For debugging purposes, you might use <u>document.cacheKey (page <a class="Reference" href="#../api/|document-cache-key">↓</a>)</u> to output the actual cache key used in the current conversation.
 </div>
 <div class="Indented">
-document.cacheKey is ignored if document.cacheDuration is zero.
+document.cacheKeyPattern is ignored if document.cacheDuration is zero.
 </div>
 <div class="Indented">
-Cache key templating is a very powerful feature that lets you easily create different cached versions of documents for different kinds of users and requests, but it’s not always trivial to determine the best cache key for every situation. It depends strongly on how you use and cache your fragments.
+Cache key templating is a very powerful feature that lets you easily create different cached versions of documents for different kinds of users and requests, but it’s not always trivial to determine the best cache key pattern for every situation. It depends strongly on how you use and cache your fragments.
 </div>
 <div class="Indented">
-The default cache key template is ‘‘{ri}|{dn}’’, which is a string containing the request identifier (the URI), a pipe character (‘‘|’’), and then the document name. An actual key could thus be: ‘‘http://mysite.org/wackywiki/main|/common/header.html’’. This default is sensible, because it makes sure that included fragments are cached invidually. For example, only using ‘‘{ri}’’ would have each included fragment use the same key and override others.
+The default cache key pattern is ‘‘{ri}|{dn}’’, which is a string containing the request identifier (the URI), a pipe character (‘‘|’’), and then the document name. An actual key could thus be: ‘‘http://mysite.org/wackywiki/main|/common/header.html’’. This default is sensible, because it makes sure that included fragments are cached invidually. For example, only using ‘‘{ri}’’ would have each included fragment use the same key and override others.
 </div>
 <div class="Indented">
-However, though sensible, the default cache key template may not be the most efficient. For example, if the header fragment used in the example above never changes per page, then it’s wasteful to cache it separately per URI. It would be more efficient to set document.cacheKey = ‘‘{an}|{dn}’’ or ‘‘{an}|{ptb}|{dn}’’ in a scriptlet in header.html.
+However, though sensible, the default cache key pattern may not be the most efficient. For example, if the header fragment used in the example above never changes per page, then it’s wasteful to cache it separately per URI. It would be more efficient to set document.cacheKeyPattern = ‘‘{an}|{dn}’’ or ‘‘{an}|{ptb}|{dn}’’ in a scriptlet in header.html.
 </div>
 <div class="Indented">
-Of course, you do not have to use Prudence’s templating system, and can create your cacheKeys explicitly using your own scheme. Just make sure not to use ‘‘{’’ and ‘‘}’’, which are reserved for template tags.
+Of course, you do not have to use Prudence’s templating system, and can create your cache keys explicitly using your own scheme. Just make sure not to use ‘‘{’’ and ‘‘}’’, which are reserved for template tags.
 </div>
 <blockquote class="Quote">
-Rule of thumb: Set document.cacheKey to be as short as you possibly can. See <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../../scaling/|caching">↓</a>)</u> for more information on how caching can help you scale.
+Rule of thumb: Set document.cacheKeyPattern to be as short as you possibly can. See <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../../scaling/|caching">↓</a>)</u> for more information on how caching can help you scale.
 </blockquote>
 <div class="Unindented">
-Note the default cache key template can be changed by setting the ‘‘com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey’’ application global.
+Note the default cache key pattern can be changed by setting the ‘‘com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern’’ application global.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-54"></a>document.cacheTags<a class="Label" name="../api/|document-cache-tags"> </a><a class="Label" name="../manual/api/|document-cache-tags"> </a>
+<a class="toc" name="toc-Paragraph-54"></a>document.cacheKey<a class="Label" name="../api/|document-cache-key"> </a>
+</div>
+<div class="Unindented">
+This is the actual cache key, set by <u>document.cacheKeyPattern (page <a class="Reference" href="#../manual/api/|document-cache-key-pattern">↑</a>)</u>, cast for the current conversation. This value is read-only, and made available mostly for debugging purposes.
+</div>
+<div class="Paragraph">
+<a class="toc" name="toc-Paragraph-55"></a>document.cacheTags<a class="Label" name="../api/|document-cache-tags"> </a><a class="Label" name="../manual/api/|document-cache-tags"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
@@ -3914,7 +3920,7 @@ document.cacheTags is ignored if document.cacheDuration is zero.
 Important! Using <u>document.include (page <a class="Reference" href="#../api/|document-include">↓</a>)</u> will cause the cache tags of the included document to be applied to the current document, recursively. In other words, cache tags effect the inclusion tree moving backwards. This should be expected: if an included fragment is invalidated, the containing document should also be invalidated. If you wish to disable propagation, prefix the cache tag with an underscore when adding it to document.cacheTags. The tag is not stored with the underscore, and so should be referenced without the underscore when calling document.cache.invalidate.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-55"></a>document.cache<a class="Label" name="../api/|document-cache"> </a>
+<a class="toc" name="toc-Paragraph-56"></a>document.cache<a class="Label" name="../api/|document-cache"> </a>
 </div>
 <div class="Unindented">
 (note that the same cache is accessible in both /web/dynamic/ and /resources/)
@@ -3932,7 +3938,7 @@ Prudence’s default cache backend is an in-process memory cache chained before 
 We have an <u>example for configuring the cache backend (page <a class="Reference" href="#../instance/|component-file">↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-56"></a>document.cache.invalidate<a class="Label" name="../api/|document-cache-invalidate"> </a>
+<a class="toc" name="toc-Paragraph-57"></a>document.cache.invalidate<a class="Label" name="../api/|document-cache-invalidate"> </a>
 </div>
 <div class="Unindented">
 This lets you remove entries, zero or many, from your cache at once. It is useful for when your application state changes in such a way that certain pages must be regenerated. The argument is a cache tag, as defined by <u>document.cacheTags (page <a class="Reference" href="#../api/|document-cache-tags">↑</a>)</u>.
@@ -3944,7 +3950,7 @@ A common use case is to invalidate display pages when a user posts new data. For
 See <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../../scaling/|caching">↓</a>)</u> for more information on how caching can help you scale.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-57"></a>document.source
+<a class="toc" name="toc-Paragraph-58"></a>document.source
 </div>
 <div class="Unindented">
 This provides access to the underlying Scripturian DocumentSource instance used for this document.
@@ -3956,7 +3962,7 @@ Scripturian is Prudence’s mechanism for loading, caching and executing source 
 <a class="toc" name="toc-Subsubsection-55"></a><i>Other</i> Documents
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-58"></a>document.include<a class="Label" name="../api/|document-include"> </a>
+<a class="toc" name="toc-Paragraph-59"></a>document.include<a class="Label" name="../api/|document-include"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
@@ -3989,7 +3995,7 @@ Scriptlets in the fragments can include re-usable code, such as function and cla
 </li>
 </ol>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-59"></a>document.execute<a class="Label" name="../api/|document-execute"> </a>
+<a class="toc" name="toc-Paragraph-60"></a>document.execute<a class="Label" name="../api/|document-execute"> </a>
 </div>
 <div class="Unindented">
 Executes a program defined by source code in another document. Global variables, function definitions, class definitions, etc., in the other document would be made available locally.
@@ -4031,7 +4037,7 @@ Use document.execute as an alternative to document.include if you prefer not to 
 </li>
 </ol>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-60"></a>document.internal<a class="Label" name="../api/|document-internal"> </a>
+<a class="toc" name="toc-Paragraph-61"></a>document.internal<a class="Label" name="../api/|document-internal"> </a>
 </div>
 <div class="Unindented">
 Creates a proxy for a resource in the current application, or in other applications in your component. You can perform all the usual REST verbs via the proxy: GET, PUT, POST, DELETE, etc. For more information, refer to the Restlet API documentation for ClientResource.
@@ -4055,7 +4061,7 @@ The defrosting mechanism uses document.internal to load resources.
 </li>
 </ol>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-61"></a>document.external<a class="Label" name="../api/|document-external"> </a><a class="Label" name="../manual/api/|document-external"> </a>
+<a class="toc" name="toc-Paragraph-62"></a>document.external<a class="Label" name="../api/|document-external"> </a><a class="Label" name="../manual/api/|document-external"> </a>
 </div>
 <div class="Unindented">
 Creates a proxy for a resource. You can perform all the usual REST verbs via the proxy: GET, PUT, POST, DELETE, etc. For more information, refer to the Restlet API documentation for ClientResource.
@@ -4094,7 +4100,7 @@ Here’s an example of using document.external to read a JSON representation fro
 </div>
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-62"></a>document.preferredExtension
+<a class="toc" name="toc-Paragraph-63"></a>document.preferredExtension
 </div>
 <div class="Unindented">
 (only available in configuration scripts)
@@ -4115,13 +4121,13 @@ The ‘‘executable’’ is the low-level equivalent of <u>‘‘this document
 A feature that you might want to use here is the executable globals. These are similar to the <u>application globals (page <a class="Reference" href="#../api/|application-globals">↑</a>)</u>, except that they are global to the entire Prudence instance (in fact, to the virtual machine). It’s a good place to store state that you want shared between Prudence applications.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-63"></a>executable.globals, executable.getGlobal
+<a class="toc" name="toc-Paragraph-64"></a>executable.globals, executable.getGlobal
 </div>
 <div class="Unindented">
 These are similar in use to application.globals, but are shared by all applications on the VM. See <u>‘‘sharing state’’ (page <a class="Reference" href="#../api/|sharing-state">↓</a>)</u> for more information.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-64"></a>executable.context
+<a class="toc" name="toc-Paragraph-65"></a>executable.context
 </div>
 <div class="Unindented">
 The context is used for communication between the Prudence container and the executable.
@@ -4139,13 +4145,13 @@ executable.context.attributes: for use by the language engines
 </li>
 </ul>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-65"></a>executable.manager
+<a class="toc" name="toc-Paragraph-66"></a>executable.manager
 </div>
 <div class="Unindented">
 This is the language manager used to create executables in many languages. Here you can query which languages are supported by the current Prudence instance: executable.manager.adapters.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-66"></a>executable.container
+<a class="toc" name="toc-Paragraph-67"></a>executable.container
 </div>
 <div class="Unindented">
 This is identical to the <u>‘‘document’’ service (page <a class="Reference" href="#../api/|document">↑</a>)</u>. For example, ‘‘document.include’’ is the same as ‘‘executable.container.include’’.
@@ -4169,7 +4175,7 @@ Note that in /web/dynamic/ ‘‘conversation’’ is available as a global var
 <a class="toc" name="toc-Subsubsection-56"></a>Request Attributes
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-67"></a>conversation.reference
+<a class="toc" name="toc-Paragraph-68"></a>conversation.reference
 </div>
 <div class="Unindented">
 This is the URI used by the client.
@@ -4205,7 +4211,7 @@ conversation.reference.relativeRef: a new reference relative to the base URI (us
 Refer to the Restlet API documentation for more details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-68"></a>conversation.pathToBase<a class="Label" name="../api/|conversation-path-to-base"> </a>
+<a class="toc" name="toc-Paragraph-69"></a>conversation.pathToBase<a class="Label" name="../api/|conversation-path-to-base"> </a>
 </div>
 <div class="Unindented">
 This is a URI path relative to the base URI, which is usually the application root URI on the current virtual host.
@@ -4224,10 +4230,10 @@ This is very useful to allow for relative references in HTML. It’s especially 
 </div>
 </div>
 <blockquote class="Quote">
-Warning: If you are caching a document that relies on conversation.pathToBase, you likely also want to include ‘‘{ptb}’’ or some other path reference in the <u>document.cacheKey (page <a class="Reference" href="#../api/|document-cache-key">↑</a>)</u>.
+Warning: If you are caching a document that relies on conversation.pathToBase, you likely also want to include ‘‘{ptb}’’ or some other path reference in the <u>document.cacheKeyPattern (page <a class="Reference" href="#../api/|document-cache-key-pattern">↑</a>)</u>.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-69"></a>conversation.form, conversation.formAll<a class="Label" name="../api/|conversation-form"> </a><a class="Label" name="../manual/api/|conversation-form"> </a>
+<a class="toc" name="toc-Paragraph-70"></a>conversation.form, conversation.formAll<a class="Label" name="../api/|conversation-form"> </a><a class="Label" name="../manual/api/|conversation-form"> </a>
 </div>
 <div class="Unindented">
 Use these to access data sent via HTML forms, or any other request with a data entity of the ‘‘application/x-www-form-urlencoded’’ MIME type.
@@ -4266,7 +4272,7 @@ Prudence supports keeping smaller files in memory. See the <u>fileUploadSizeThre
 Note that either ‘‘data’’ or ‘‘file’’ are valid, but not both. One will always be null.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-70"></a>conversation.query, conversation.queryAll<a class="Label" name="../api/|conversation-query"> </a>
+<a class="toc" name="toc-Paragraph-71"></a>conversation.query, conversation.queryAll<a class="Label" name="../api/|conversation-query"> </a>
 </div>
 <div class="Unindented">
 Use these to access data sent via the URI query.
@@ -4278,7 +4284,7 @@ conversation.query is a map of query parameter names to values. In case the URI 
 conversation.queryAll is a list of parameters. Use this if you need to support multiple values for the same name.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-71"></a>conversation.entity
+<a class="toc" name="toc-Paragraph-72"></a>conversation.entity
 </div>
 <div class="Unindented">
 This is data sent by the client. For more information, refer to the Restlet API documentation for Representation.
@@ -4308,19 +4314,13 @@ conversation.entity.size: the size of the data in bytes, or -1 if unknown
 Note: Client data is provided as a stream that can only be ‘‘consumed’’ once. Attributes that cause consumption are marked with a ‘‘*’’ above. <i>Note that conversation.entity.text is one of them! </i>If you want to access conversation.entity.text more than once, save it to a variable first.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-72"></a>conversation.variant
+<a class="toc" name="toc-Paragraph-73"></a>conversation.variant
 </div>
 <div class="Unindented">
 This allows low-level access to the Restlet Variant instance sent by the client. In negotiated HTTP mode, the ‘‘variant’’ encapsulates a set of preferences the client might have for returned representations. You usually don’t have to access the variant: Prudence expands these via conversation.mediaType, conversation.characterSet, conversation.encoding, and conversation.language. Refer to the Restlet API documentation for details.
 </div>
 <div class="Indented">
 Note that in non-negotiated HTTP mode, Prudence ‘‘passes through’’ the client entity as a variant.
-</div>
-<div class="Paragraph">
-<a class="toc" name="toc-Paragraph-73"></a>conversation.cacheKey<a class="Label" name="../api/|conversation-cache-key"> </a>
-</div>
-<div class="Unindented">
-This is the actual cache key pattern, set by <u>document.cacheKey (page <a class="Reference" href="#../manual/api/|document-cache-key">↑</a>)</u>, cast for the current conversation. This value is read-only, and made available mostly for debugging purposes.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-57"></a>Request and Response Attributes
@@ -4581,10 +4581,7 @@ The <u>document.internal API (page <a class="Reference" href="#../api/|document-
 </li>
 </ol>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-89"></a>
-</div>
-<div class="Paragraph">
-<a class="toc" name="toc-Paragraph-90"></a>conversation.locals<a class="Label" name="../api/|conversation-locals"> </a>
+<a class="toc" name="toc-Paragraph-89"></a>conversation.locals<a class="Label" name="../api/|conversation-locals"> </a>
 </div>
 <div class="Unindented">
 A map of general purpose attributes that is destroyed at the end of the conversation. Importantly, conversation.locals are maintained even if the conversation has been deferred via <u>conversation.defer (page <a class="Reference" href="#../api/|conversation-defer">↓</a>)</u>.
@@ -4593,7 +4590,7 @@ A map of general purpose attributes that is destroyed at the end of the conversa
 See <u>‘‘sharing state’’ (page <a class="Reference" href="#../api/|sharing-state">↓</a>)</u> for more information.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-91"></a>conversation.defer<a class="Label" name="../api/|conversation-defer"> </a><a class="Label" name="../manual/api/|conversation-defer"> </a>
+<a class="toc" name="toc-Paragraph-90"></a>conversation.defer<a class="Label" name="../api/|conversation-defer"> </a><a class="Label" name="../manual/api/|conversation-defer"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
@@ -4623,7 +4620,7 @@ Note that calling conversation.defer does not stop the current execution. You’
 This is an experimental feature in Prudence 1.0. The use of a separate thread pool is only supported when using the internal Restlet connector. For other connectors (such as Grizzly, the default), a successful call to defer will cause the page to be executed again in the same thread.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-92"></a>conversation.deferred<a class="Label" name="../api/|conversation-deferred"> </a>
+<a class="toc" name="toc-Paragraph-91"></a>conversation.deferred<a class="Label" name="../api/|conversation-deferred"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
@@ -4641,19 +4638,19 @@ Use these to access the Restlet instances underlying the conversation. This is u
 For more information, refer to Prudence’s Java API documentation and also Restlet’s API documentation.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-93"></a>conversation.resource
+<a class="toc" name="toc-Paragraph-92"></a>conversation.resource
 </div>
 <div class="Unindented">
 The Restlet resource. In the case of /web/dynamic/, this will be Prudence’s GeneratedTextResource. In the case of /resources/, this will be DelegatedResource.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-94"></a>conversation.request
+<a class="toc" name="toc-Paragraph-93"></a>conversation.request
 </div>
 <div class="Unindented">
 Equivalent to conversation.resource.request.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-95"></a>conversation.response
+<a class="toc" name="toc-Paragraph-94"></a>conversation.response
 </div>
 <div class="Unindented">
 Equivalent to conversation.resource.response.
@@ -4758,7 +4755,7 @@ Use this code instead:
 The getGlobal call is an atomic compare-and-set operation. It guarantees that the returned value is the unique one.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-96"></a>Optimizing for Performance
+<a class="toc" name="toc-Paragraph-95"></a>Optimizing for Performance
 </div>
 <div class="Unindented">
 You may have noticed, in the code above, that if another thread had already set the global value, then our created data source would be discarded. If data source creation is heavy and slow, then this could significantly affect our performance. The only way to guarantee that this would not happen would be to make the entire operation atomic, by synchronizing it with a lock:
@@ -5765,7 +5762,7 @@ Caching, however, is only effective is there’s something in the cache. It’s 
 In your plan for fine-grained caching, take special care to isolate those fragments that cannot be cached, and cache everything around them.
 </div>
 <div class="Indented">
-Make sure to change Prudence’s <u>cache key (page <a class="Reference" href="#../manual/api/|document-cache-key">↑</a>)</u> to fit the lowest common denominator: you want as many possible requests to use the already-cached data, rather than generating new data. Note that, by default, Prudence includes the request URI in the cache key . Fragments, though, may very well appear identically in many different URIs. You would thus not want the URI as part of their cache key.
+Make sure to change Prudence’s <u>cache key (page <a class="Reference" href="#../manual/api/|document-cache-key-pattern">↑</a>)</u> to fit the lowest common denominator: you want as many possible requests to use the already-cached data, rather than generating new data. Note that, by default, Prudence includes the request URI in the cache key . Fragments, though, may very well appear identically in many different URIs. You would thus not want the URI as part of their cache key.
 </div>
 <div class="Indented">
 Cache aggressively, but also take cache validation seriously. Make good use of Prudence’s <u>cache tags (page <a class="Reference" href="#../manual/api/|document-cache-tags">↑</a>)</u> to allow you to invalidate portions of the cache that should be updated as data changes. Note, though, that every time you invalidate you will lose caching benefits. If possible, make sure that your cache tags don’t cover too many pages. Invalidate only those entries that really need to be invalidated.
@@ -6427,13 +6424,13 @@ First, recognize that there are two common uses for the term ‘‘scale.’’ 
 From the perspective of the ability to respond to user requests, there are three aspects to consider: 
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-97"></a>1. Serving HTTP
+<a class="toc" name="toc-Paragraph-96"></a>1. Serving HTTP
 </div>
 <div class="Unindented">
 Prudence comes with <a class="URL" href="https://grizzly.dev.java.net/">Grizzly</a>, an HTTP server based on the JVM’s non-blocking I/O API. Grizzly handles concurrent HTTP requests very well, and serves static files at scales comparable to popular HTTP servers. See the <u>tutorial (page <a class="Reference" href="#../manual/tutorial/">↑</a>)</u> for more information. 
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-98"></a>2. Generating HTML
+<a class="toc" name="toc-Paragraph-97"></a>2. Generating HTML
 </div>
 <div class="Unindented">
 Prudence supports two modes for generating HTML (and other textual formats), each with its own performance characteristics:
@@ -6451,7 +6448,7 @@ Deferred mode:
 Output is sent to the client <i>while</i> the document runs. This is recommended for documents that need to output a very large amount of text, which might take a long time, or that might otherwise encounter slow-downs while running. In either case, you want the client to receive ongoing output. The output of the document is not cached.  Scriptlets can switch between modes according to changing circumstances. For example, to increase caching duration during heavy loads, to decrease it during periods where data changes often, or to stream in the case of an expected large output. See the <u>tutorial (page <a class="Reference" href="#../manual/tutorial/">↑</a>)</u> for more information. 
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-99"></a>3. Running code
+<a class="toc" name="toc-Paragraph-98"></a>3. Running code
 </div>
 <div class="Unindented">
 There may be a delay when starting up a specific language engine in Prudence for the first time in an application, as it loads and initializes itself. Then, there may be a delay when accessing a dynamic web page or resource for the first time, or after it has been changed, as it might require compilation. Once it’s up and running, though, your code performs and scale very well---as well as you’ve written it. You need to understand concurrency and make sure you make good choices to handle coordination between threads accessing the same data. If all is good, your code will actually perform better throughout the life of the application. The JVM learns and adapts as it runs, and performance can improve the more the application is used.

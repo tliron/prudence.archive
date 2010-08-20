@@ -34,6 +34,10 @@ public class ApplicationTaskDocumentService extends DocumentServiceBase
 	// Construction
 	//
 
+	/**
+	 * @param applicationTask
+	 * @param documentSource
+	 */
 	public ApplicationTaskDocumentService( ApplicationTask applicationTask, DocumentSource<Executable> documentSource )
 	{
 		super( documentSource );
@@ -69,7 +73,7 @@ public class ApplicationTaskDocumentService extends DocumentServiceBase
 		// Add dependency
 		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
 		if( currentDocumentDescriptor != null )
-			currentDocumentDescriptor.getDependencies().add( documentDescriptor.getDefaultName() );
+			currentDocumentDescriptor.getDependencies().add( documentDescriptor );
 
 		// Execute
 		pushDocumentDescriptor( documentDescriptor );
@@ -88,5 +92,8 @@ public class ApplicationTaskDocumentService extends DocumentServiceBase
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * The task.
+	 */
 	private final ApplicationTask applicationTask;
 }

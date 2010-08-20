@@ -19,6 +19,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.restlet.data.Reference;
 import org.restlet.representation.Representation;
@@ -64,7 +65,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	{
 		super( resource, resource.getDocumentSource() );
 		this.executionContext = executionContext;
-		conversationService = new GeneratedTextResourceConversationService( resource, this, entity, variant, resource.getDefaultCharacterSet() );
+		conversationService = new GeneratedTextResourceConversationService( resource, entity, variant, resource.getDefaultCharacterSet() );
 	}
 
 	/**
@@ -118,21 +119,67 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 	/**
 	 * @return The cache key pattern
-	 * @see #setCacheKey(String)
+	 * @see #setCacheKeyPattern(String)
 	 */
-	public String getCacheKey()
+	public String getCacheKeyPattern()
 	{
-		return (String) getCurrentDocumentDescriptor().getDocument().getAttributes().get( CACHE_KEY_ATTRIBUTE );
+		return (String) getCurrentDocumentDescriptor().getDocument().getAttributes().get( CACHE_KEY_PATTERN_ATTRIBUTE );
 	}
 
 	/**
-	 * @param cacheKey
+	 * @param cacheKeyPattern
 	 *        The cache key pattern
-	 * @see #getCacheKey()
+	 * @see #getCacheKeyPattern()
 	 */
-	public void setCacheKey( String cacheKey )
+	public void setCacheKeyPattern( String cacheKeyPattern )
 	{
-		getCurrentDocumentDescriptor().getDocument().getAttributes().put( CACHE_KEY_ATTRIBUTE, cacheKey );
+		getCurrentDocumentDescriptor().getDocument().getAttributes().put( CACHE_KEY_PATTERN_ATTRIBUTE, cacheKeyPattern );
+	}
+
+	/**
+	 * Casts the cache key pattern for the current executable.
+	 * 
+	 * @return The cache key for the current executable
+	 */
+	public String getCacheKey()
+	{
+		String cacheKeyPattern = getCacheKeyPattern();
+		if( cacheKeyPattern == null )
+			return null;
+		else
+		{
+			Template template = new Template( cacheKeyPattern );
+
+			Reference captiveReference = CaptiveRedirector.getCaptiveReference( resource.getRequest() );
+			Reference resourceReference = resource.getRequest().getResourceRef();
+
+			// Our additional template variables: {dn}, {an} and {ptb}
+
+			if( cacheKeyPattern.contains( DOCUMENT_NAME_VARIABLE_FULL ) )
+				template.getVariables().put( DOCUMENT_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, getCurrentDocumentDescriptor().getDefaultName(), true, true ) );
+
+			if( cacheKeyPattern.contains( APPLICATION_NAME_VARIABLE_FULL ) )
+				template.getVariables().put( APPLICATION_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, resource.getApplication().getName(), true, true ) );
+
+			if( cacheKeyPattern.contains( PATH_TO_BASE_VARIABLE_FULL ) )
+			{
+				Reference reference = captiveReference != null ? captiveReference : resourceReference;
+				String pathToBase = reference.getBaseRef().getRelativeRef( reference ).getPath();
+				template.getVariables().put( PATH_TO_BASE_VARIABLE, new Variable( Variable.TYPE_ALL, pathToBase, true, true ) );
+			}
+
+			// Use captive reference as the resource reference
+			if( captiveReference != null )
+				resource.getRequest().setResourceRef( captiveReference );
+
+			String cacheKey = template.format( resource.getRequest(), resource.getResponse() );
+
+			// Return regular reference
+			if( captiveReference != null )
+				resource.getRequest().setResourceRef( resourceReference );
+
+			return cacheKey;
+		}
 	}
 
 	/**
@@ -219,7 +266,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		// Add dependency
 		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
 		if( currentDocumentDescriptor != null )
-			currentDocumentDescriptor.getDependencies().add( documentDescriptor.getDefaultName() );
+			currentDocumentDescriptor.getDependencies().add( documentDescriptor );
 
 		if( conversationService.getMediaType() == null )
 			// Set initial media type according to the document's tag
@@ -276,7 +323,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		// Add dependency
 		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
 		if( currentDocumentDescriptor != null )
-			currentDocumentDescriptor.getDependencies().add( documentDescriptor.getDefaultName() );
+			currentDocumentDescriptor.getDependencies().add( documentDescriptor );
 
 		// Execute
 		pushDocumentDescriptor( documentDescriptor );
@@ -287,56 +334,6 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		finally
 		{
 			popDocumentDescriptor();
-		}
-	}
-
-	// //////////////////////////////////////////////////////////////////////////
-	// Protected
-
-	/**
-	 * Casts the cache key pattern for the current executable.
-	 * 
-	 * @return The cache key for the current executable
-	 * @see GeneratedTextResourceConversationService#getCacheKey()
-	 */
-	protected String castCacheKeyPattern()
-	{
-		String cacheKey = getCacheKey();
-		if( cacheKey == null )
-			return null;
-		else
-		{
-			Template template = new Template( cacheKey );
-
-			Reference captiveReference = CaptiveRedirector.getCaptiveReference( resource.getRequest() );
-			Reference resourceReference = resource.getRequest().getResourceRef();
-
-			// Our additional template variables: {dn}, {an} and {ptb}
-
-			if( cacheKey.contains( DOCUMENT_NAME_VARIABLE_FULL ) )
-				template.getVariables().put( DOCUMENT_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, getCurrentDocumentDescriptor().getDefaultName(), true, true ) );
-
-			if( cacheKey.contains( APPLICATION_NAME_VARIABLE_FULL ) )
-				template.getVariables().put( APPLICATION_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, resource.getApplication().getName(), true, true ) );
-
-			if( cacheKey.contains( PATH_TO_BASE_VARIABLE_FULL ) )
-			{
-				Reference reference = captiveReference != null ? captiveReference : resourceReference;
-				String pathToBase = reference.getBaseRef().getRelativeRef( reference ).getPath();
-				template.getVariables().put( PATH_TO_BASE_VARIABLE, new Variable( Variable.TYPE_ALL, pathToBase, true, true ) );
-			}
-
-			// Use captive reference as the resource reference
-			if( captiveReference != null )
-				resource.getRequest().setResourceRef( captiveReference );
-
-			String cast = template.format( resource.getRequest(), resource.getResponse() );
-
-			// Return regular reference
-			if( captiveReference != null )
-				resource.getRequest().setResourceRef( resourceReference );
-
-			return cast;
 		}
 	}
 
@@ -357,11 +354,11 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 	private static final String CACHE_DURATION_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheDuration";
 
-	private static final String CACHE_KEY_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheKey";
+	private static final String CACHE_KEY_PATTERN_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheKeyPattern";
 
 	private static final String CACHE_TAGS_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheTags";
 
-	private static final String CACHED_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cached";
+	private static final String CACHE_KEYS_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheKeys";
 
 	/**
 	 * The conversation service.
@@ -396,8 +393,30 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		Set<String> cacheTags = (Set<String>) executable.getAttributes().get( CACHE_TAGS_ATTRIBUTE );
 		if( cacheTags == null && create )
 		{
-			cacheTags = new HashSet<String>();
+			cacheTags = new CopyOnWriteArraySet<String>();
 			Set<String> existing = (Set<String>) executable.getAttributes().putIfAbsent( CACHE_TAGS_ATTRIBUTE, cacheTags );
+			if( existing != null )
+				cacheTags = existing;
+
+		}
+		return cacheTags;
+	}
+
+	/**
+	 * @param executable
+	 *        The executable
+	 * @param create
+	 *        Whether to create a cache keys set if it doesn't exist
+	 * @return The cache keys or null
+	 */
+	@SuppressWarnings("unchecked")
+	private Set<String> getCacheKeys( Executable executable, boolean create )
+	{
+		Set<String> cacheTags = (Set<String>) executable.getAttributes().get( CACHE_KEYS_ATTRIBUTE );
+		if( cacheTags == null && create )
+		{
+			cacheTags = new CopyOnWriteArraySet<String>();
+			Set<String> existing = (Set<String>) executable.getAttributes().putIfAbsent( CACHE_KEYS_ATTRIBUTE, cacheTags );
 			if( existing != null )
 				cacheTags = existing;
 
@@ -457,6 +476,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	/**
 	 * The actual execution of an executable.
 	 * 
+	 * @param executable
+	 *        The executable
 	 * @return A representation, either generated by the executable or fetched
 	 *         from the cache
 	 * @throws IOException
@@ -496,11 +517,13 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				startPosition = writerBuffer.length();
 			}
 
-			// Attempt to use cache, if executable is branded as cached
-			if( executable.getAttributes().containsKey( CACHED_ATTRIBUTE ) )
+			// Attempt to use cache, if executable is branded as cached for our
+			// key
+			Set<String> cacheKeys = getCacheKeys( executable, false );
+			if( cacheKeys != null )
 			{
-				String cacheKey = castCacheKeyPattern();
-				if( cacheKey != null )
+				String cacheKey = getCacheKey();
+				if( ( cacheKey != null ) && cacheKeys.contains( cacheKey ) )
 				{
 					Cache cache = resource.getCache();
 					if( cache != null )
@@ -520,7 +543,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		}
 
 		setCacheDuration( 0 );
-		setCacheKey( resource.getDefaultCacheKey() );
+		setCacheKeyPattern( resource.getDefaultCacheKeyPattern() );
 		getCacheTags().clear();
 
 		try
@@ -558,7 +581,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 					getExpiration() );
 
 				// Cache if enabled
-				String cacheKey = castCacheKeyPattern();
+				String cacheKey = getCacheKey();
 				if( ( cacheKey != null ) && ( cacheEntry.getExpirationDate() != null ) )
 				{
 					Set<String> cacheTags = getCacheTags( executable, false );
@@ -576,7 +599,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 						// We're branding the executable as cached; if the
 						// executable is regenerated for some reason, it would
 						// no longer have this brand
-						executable.getAttributes().put( CACHED_ATTRIBUTE, true );
+						Set<String> cacheKeys = getCacheKeys( executable, true );
+						cacheKeys.add( cacheKey );
 					}
 				}
 

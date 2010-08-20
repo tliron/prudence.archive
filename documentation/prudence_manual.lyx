@@ -8116,7 +8116,7 @@ Note that the same templates are used to generate
 cache keys (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|document-cache-key"
+reference "../api/|document-cache-key-pattern"
 
 \end_inset
 
@@ -8852,10 +8852,10 @@ The duration in milleseconds for which the output of this document will
  caching.
  The key used to store and retrieve the cached output is determined by 
 \bar under
-document.cacheKey (page 
+document.cacheKeyPattern (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|document-cache-key"
+reference "../api/|document-cache-key-pattern"
 
 \end_inset
 
@@ -8897,17 +8897,17 @@ reference "../api/|document-execute"
 \end_layout
 
 \begin_layout Paragraph
-document.cacheKey
+document.cacheKeyPattern
 \begin_inset CommandInset label
 LatexCommand label
-name "../api/|document-cache-key"
+name "../api/|document-cache-key-pattern"
 
 \end_inset
 
 
 \begin_inset CommandInset label
 LatexCommand label
-name "../manual/api/|document-cache-key"
+name "../manual/api/|document-cache-key-pattern"
 
 \end_inset
 
@@ -8925,7 +8925,7 @@ This lets you control the key that is used to store and retrieve the cached
 \emph on
 Note that this is not necessarily the key itself
 \emph default
-, but instead a template that can contain variables that are set dynamically,
+, but instead a pattern that can contain variables that are set dynamically,
  and can also include values from conversation.locals.
  See 
 \bar under
@@ -8941,10 +8941,10 @@ reference "../routing/|uri-templates"
  for a complete list of template variables.
  For debugging purposes, you might use 
 \bar under
-conversation.cacheKey (page 
+document.cacheKey (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|conversation-cache-key"
+reference "../api/|document-cache-key"
 
 \end_inset
 
@@ -8954,19 +8954,19 @@ reference "../api/|conversation-cache-key"
 \end_layout
 
 \begin_layout Standard
-document.cacheKey is ignored if document.cacheDuration is zero.
+document.cacheKeyPattern is ignored if document.cacheDuration is zero.
 \end_layout
 
 \begin_layout Standard
 Cache key templating is a very powerful feature that lets you easily create
  different cached versions of documents for different kinds of users and
- requests, but it's not always trivial to determine the best cache key for
- every situation.
+ requests, but it's not always trivial to determine the best cache key pattern
+ for every situation.
  It depends strongly on how you use and cache your fragments.
 \end_layout
 
 \begin_layout Standard
-The default cache key template is ``{ri}|{dn}'', which is a string containing
+The default cache key pattern is ``{ri}|{dn}'', which is a string containing
  the request identifier (the URI), a pipe character (``|''), and then the
  document name.
  An actual key could thus be: ``http://mysite.org/wackywiki/main|/common/header.ht
@@ -8978,23 +8978,24 @@ ml''.
 \end_layout
 
 \begin_layout Standard
-However, though sensible, the default cache key template may not be the
- most efficient.
+However, though sensible, the default cache key pattern may not be the most
+ efficient.
  For example, if the header fragment used in the example above never changes
  per page, then it's wasteful to cache it separately per URI.
- It would be more efficient to set document.cacheKey = ``{an}|{dn}'' or ``{an}|{p
-tb}|{dn}'' in a scriptlet in header.html.
+ It would be more efficient to set document.cacheKeyPattern = ``{an}|{dn}''
+ or ``{an}|{ptb}|{dn}'' in a scriptlet in header.html.
 \end_layout
 
 \begin_layout Standard
 Of course, you do not have to use Prudence's templating system, and can
- create your cacheKeys explicitly using your own scheme.
+ create your cache keys explicitly using your own scheme.
  Just make sure not to use ``{'' and ``}'', which are reserved for template
  tags.
 \end_layout
 
 \begin_layout Quote
-Rule of thumb: Set document.cacheKey to be as short as you possibly can.
+Rule of thumb: Set document.cacheKeyPattern to be as short as you possibly
+ can.
  See 
 \bar under
 ``Scaling Tips'' (page 
@@ -9010,8 +9011,35 @@ reference "../../scaling/|caching"
 \end_layout
 
 \begin_layout Standard
-Note the default cache key template can be changed by setting the ``com.threecric
-kets.prudence.GeneratedTextResource.defaultCacheKey'' application global.
+Note the default cache key pattern can be changed by setting the ``com.threecrick
+ets.prudence.GeneratedTextResource.defaultCacheKeyPattern'' application global.
+\end_layout
+
+\begin_layout Paragraph
+document.cacheKey
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-cache-key"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is the actual cache key, set by 
+\bar under
+document.cacheKeyPattern (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../manual/api/|document-cache-key-pattern"
+
+\end_inset
+
+)
+\bar default
+, cast for the current conversation.
+ This value is read-only, and made available mostly for debugging purposes.
 \end_layout
 
 \begin_layout Paragraph
@@ -9884,10 +9912,10 @@ Warning: If you are caching a document that relies on conversation.pathToBase,
  you likely also want to include ``{ptb}'' or some other path reference
  in the 
 \bar under
-document.cacheKey (page 
+document.cacheKeyPattern (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|document-cache-key"
+reference "../api/|document-cache-key-pattern"
 
 \end_inset
 
@@ -10074,33 +10102,6 @@ This allows low-level access to the Restlet Variant instance sent by the
 \begin_layout Standard
 Note that in non-negotiated HTTP mode, Prudence ``passes through'' the client
  entity as a variant.
-\end_layout
-
-\begin_layout Paragraph
-conversation.cacheKey
-\begin_inset CommandInset label
-LatexCommand label
-name "../api/|conversation-cache-key"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-This is the actual cache key pattern, set by 
-\bar under
-document.cacheKey (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../manual/api/|document-cache-key"
-
-\end_inset
-
-)
-\bar default
-, cast for the current conversation.
- This value is read-only, and made available mostly for debugging purposes.
 \end_layout
 
 \begin_layout Subsubsection
@@ -10658,10 +10659,6 @@ reference "../routing/|capturing"
 \end_inset
 
 )
-\end_layout
-
-\begin_layout Paragraph
-
 \end_layout
 
 \begin_layout Paragraph
@@ -13842,7 +13839,7 @@ Make sure to change Prudence's
 cache key (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../manual/api/|document-cache-key"
+reference "../manual/api/|document-cache-key-pattern"
 
 \end_inset
 

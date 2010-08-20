@@ -99,7 +99,8 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * {@link #getConversationServiceName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey:</code>
- * {@link String}, defaults to "{ri}|{dn}". See {@link #getDefaultCacheKey()}.</li>
+ * {@link String}, defaults to "{ri}|{dn}". See
+ * {@link #getDefaultCacheKeyPattern()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
@@ -340,27 +341,27 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
-	 * The default cache key to use if the executable doesn't specify one.
-	 * Defaults to "{ri}|{dn}".
+	 * The default cache key pattern to use if the executable doesn't specify
+	 * one. Defaults to "{ri}|{dn}".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey</code>
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern</code>
 	 * in the application's {@link Context}.
 	 * 
 	 * @return The default cache key
 	 */
-	public String getDefaultCacheKey()
+	public String getDefaultCacheKeyPattern()
 	{
-		if( defaultCacheKey == null )
+		if( defaultCacheKeyPattern == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			defaultCacheKey = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey" );
+			defaultCacheKeyPattern = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern" );
 
-			if( defaultCacheKey == null )
-				defaultCacheKey = "{ri}|{dn}";
+			if( defaultCacheKeyPattern == null )
+				defaultCacheKeyPattern = "{ri}|{dn}";
 		}
 
-		return defaultCacheKey;
+		return defaultCacheKeyPattern;
 	}
 
 	/**
@@ -914,9 +915,10 @@ public class GeneratedTextResource extends ServerResource
 	private volatile String defaultLanguageTag;
 
 	/**
-	 * The default cache key to use if the executable doesn't specify one.
+	 * The default cache key pattern to use if the executable doesn't specify
+	 * one.
 	 */
-	private volatile String defaultCacheKey;
+	private volatile String defaultCacheKeyPattern;
 
 	/**
 	 * The default character set to be used if the client does not specify it.
