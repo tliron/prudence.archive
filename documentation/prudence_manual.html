@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2010-08-19">
+<meta name="create-date" content="2010-08-20">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -3865,6 +3865,9 @@ Many of these attributes have to do with caching. Caching is your best tool to m
 <div class="Indented">
 The duration in milleseconds for which the output of this document will be cached. If this value is zero, the default, then caching is disabled. So, you must explicitly set this to a greater than zero value to enable caching. The key used to store and retrieve the cached output is determined by <u>document.cacheKey (page <a class="Reference" href="#../api/|document-cache-key">↓</a>)</u>.
 </div>
+<blockquote class="Quote">
+Note that if you edit the source file such as that it would be reloaded, within the limits defined by the <u>dynamicWebMinimumTimeBetweenValidityChecks setting (page <a class="Reference" href="#../application/|dynamic-web-minimum-time-between-validity-checks">↑</a>)</u>, then any cache entries would not be used for the next request. This feature lets you see your changes on the fly, even if the document has been cached. Note, too, that updates to documents executed by your source file will also trigger this feature. See <u>document.execute (page <a class="Reference" href="#../api/|document-execute">↓</a>)</u>.
+</blockquote>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-53"></a>document.cacheKey<a class="Label" name="../api/|document-cache-key"> </a><a class="Label" name="../manual/api/|document-cache-key"> </a>
 </div>
@@ -3872,7 +3875,7 @@ The duration in milleseconds for which the output of this document will be cache
 (only available in /web/dynamic/ and /web/fragments/)
 </div>
 <div class="Indented">
-This lets you control the key that is used to store and retrieve the cached output of the current document. <i>Note that this is not necessarily the key itself</i>, but instead a template that can contain variables that are set dynamically, and can also include values from conversation.locals. See <u>URI templates (page <a class="Reference" href="#../routing/|uri-templates">↑</a>)</u> for a complete list of template variables.
+This lets you control the key that is used to store and retrieve the cached output of the current document. <i>Note that this is not necessarily the key itself</i>, but instead a template that can contain variables that are set dynamically, and can also include values from conversation.locals. See <u>URI templates (page <a class="Reference" href="#../routing/|uri-templates">↑</a>)</u> for a complete list of template variables. For debugging purposes, you might use <u>conversation.cacheKey (page <a class="Reference" href="#../api/|conversation-cache-key">↓</a>)</u> to output the actual cache key used in the current conversation.
 </div>
 <div class="Indented">
 document.cacheKey is ignored if document.cacheDuration is zero.
@@ -3884,7 +3887,7 @@ Cache key templating is a very powerful feature that lets you easily create diff
 The default cache key template is ‘‘{ri}|{dn}’’, which is a string containing the request identifier (the URI), a pipe character (‘‘|’’), and then the document name. An actual key could thus be: ‘‘http://mysite.org/wackywiki/main|/common/header.html’’. This default is sensible, because it makes sure that included fragments are cached invidually. For example, only using ‘‘{ri}’’ would have each included fragment use the same key and override others.
 </div>
 <div class="Indented">
-However, though sensible, the default cache key template may not be the most efficient. For example, if the header fragment used in the example above never changes per page, then it’s wasteful to cache it separately per URI. It would make more sense to set document.cacheKey = ‘‘{an}|{dn}’’ in a scriptlet in header.html.
+However, though sensible, the default cache key template may not be the most efficient. For example, if the header fragment used in the example above never changes per page, then it’s wasteful to cache it separately per URI. It would be more efficient to set document.cacheKey = ‘‘{an}|{dn}’’ or ‘‘{an}|{ptb}|{dn}’’ in a scriptlet in header.html.
 </div>
 <div class="Indented">
 Of course, you do not have to use Prudence’s templating system, and can create your cacheKeys explicitly using your own scheme. Just make sure not to use ‘‘{’’ and ‘‘}’’, which are reserved for template tags.
@@ -3998,7 +4001,7 @@ The included path is an internal URI, not the external URL visible to the world.
 Prudence might compile or otherwise prepare and cache code in the executed document. What ‘‘preparation’’ actually involves depends on the language of the source code. This means that the first time it is executed it would be delayed, but subsequent execution would be much faster. To avoid that first-time wait, Prudence supports ‘‘defrosting’’ of your documents when it starts. This is enabled by default for all documents in /resources/, and would affect documents they execute from /libraries/.
 </div>
 <div class="Indented">
-Executed documents, just like documents exposed at URLs, are reloaded and re-prepared on-the-fly if the file changes, within the limits of the <u>dynamicWebMinimumTimeBetweenValidityChecks setting (page <a class="Reference" href="#../application/|dynamic-web-minimum-time-between-validity-checks">↑</a>)</u>. Moreover, executing a document will link the current document to the executed document for this purpose, such that if the executed document changes, the current document would be reloaded when accessed. This is necessary, because the execution document may contain code that affects the preparation of the current document. This effect extends recursively to any depth of execution.
+Executed documents, just like documents exposed at URLs, are reloaded and re-prepared on-the-fly if the file changes, within the limits of the <u>dynamicWebMinimumTimeBetweenValidityChecks setting (page <a class="Reference" href="#../application/|dynamic-web-minimum-time-between-validity-checks">↑</a>)</u>. Moreover, executing a document will link the current document to the executed document for this purpose, such that if the executed document changes, the current document would be reloaded when accessed. This is necessary, because the execution document may contain code that affects the preparation of the current document. This effect cascades to any depth of execution.
 </div>
 <blockquote class="Quote">
 The main difference between document.include and document.execute is that the former expects ‘‘text-with-scriptlets’’ documents, while the latter uses plain source code.
@@ -4313,6 +4316,12 @@ This allows low-level access to the Restlet Variant instance sent by the client.
 <div class="Indented">
 Note that in non-negotiated HTTP mode, Prudence ‘‘passes through’’ the client entity as a variant.
 </div>
+<div class="Paragraph">
+<a class="toc" name="toc-Paragraph-73"></a>conversation.cacheKey<a class="Label" name="../api/|conversation-cache-key"> </a>
+</div>
+<div class="Unindented">
+This is the actual cache key pattern, set by <u>document.cacheKey (page <a class="Reference" href="#../manual/api/|document-cache-key">↑</a>)</u>, cast for the current conversation. This value is read-only, and made available mostly for debugging purposes.
+</div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-57"></a>Request and Response Attributes
 </h3>
@@ -4326,7 +4335,7 @@ The one exception to this rule is HTML forms. The data comes from the client as 
 Note that in /resources/ you always have the option of explicitly returning a Representation instance to the client, in which case none of these attributes will be used for the response.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-73"></a>conversation.cookies
+<a class="toc" name="toc-Paragraph-74"></a>conversation.cookies
 </div>
 <div class="Unindented">
 This is initialized as a list (not a map) of cookies sent from the client.
@@ -4377,13 +4386,13 @@ cookie.comment: some clients store this, some discard it
 </li>
 </ul>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-74"></a>conversation.getCookie
+<a class="toc" name="toc-Paragraph-75"></a>conversation.getCookie
 </div>
 <div class="Unindented">
 Gets a cookie by its name, or returns null if it doesn’t exist.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-75"></a>conversation.createCookie
+<a class="toc" name="toc-Paragraph-76"></a>conversation.createCookie
 </div>
 <div class="Unindented">
 You must provide the cookie name as an argument. Returns a new cookie instance if the cookie doesn’t exist yet, or the existing cookie if it does.
@@ -4392,7 +4401,7 @@ You must provide the cookie name as an argument. Returns a new cookie instance i
 For new cookies, be sure to call save() on the cookie in order to send it in the response, thus asking the client to create it, or delete() if you want to cancel the creation (in which case nothing will be sent in the response).
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-76"></a>conversation.mediaTypeName, conversation.mediaTypeExtension, conversation.mediaType<a class="Label" name="../api/|conversation-media-type"> </a>
+<a class="toc" name="toc-Paragraph-77"></a>conversation.mediaTypeName, conversation.mediaTypeExtension, conversation.mediaType<a class="Label" name="../api/|conversation-media-type"> </a>
 </div>
 <div class="Unindented">
 These three variants all represent the same value, letting you access the value in different ways.
@@ -4413,7 +4422,7 @@ To find out which media types the client accepts and prefers, use conversation.r
 In /web/dynamic/ and /web/static/, if the client request does not contain any data representation, for example in a ‘‘GET’’ request, then the <u>media type’s default value will be set according to the filename extension (page <a class="Reference" href="#../routing/|extensions-mime-types">↑</a>)</u>.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-77"></a>conversation.characterSetName, conversation.characterSetShortName, conversation.characterSet
+<a class="toc" name="toc-Paragraph-78"></a>conversation.characterSetName, conversation.characterSetShortName, conversation.characterSet
 </div>
 <div class="Unindented">
 These three variants all represent the same value, letting you access the value in different ways.
@@ -4437,7 +4446,7 @@ If the client request does not specificy a character set, then the character set
 <a class="toc" name="toc-Subsubsection-58"></a>Response Attributes
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-78"></a>conversation.statusCode, conversation.status
+<a class="toc" name="toc-Paragraph-79"></a>conversation.statusCode, conversation.status
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -4449,7 +4458,7 @@ conversation.statusCode is an HTTP status code as an integer.
 conversation.status is the underlying Restlet Status instance. Refer to the Restlet API documentation for details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-79"></a>conversation.languageName, conversation.language
+<a class="toc" name="toc-Paragraph-80"></a>conversation.languageName, conversation.language
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -4467,7 +4476,7 @@ To find out which languages the client accepts and prefers, use conversation.req
 Note that the language can be a null value. Responses do not have to specify a language.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-80"></a>conversation.encodingName, conversation.encoding
+<a class="toc" name="toc-Paragraph-81"></a>conversation.encodingName, conversation.encoding
 </div>
 <blockquote class="Quote">
 This value is currently not being used by Prudence.
@@ -4491,7 +4500,7 @@ To find out which encodings the client accepts and prefers, use conversation.req
 Note that modificationTimestamp, expirationTimestamp and maxAge are set indirectly for /web/dynamic/, via document.cacheDuration. See the <u>dynamicWebClientCachingMode setting (page <a class="Reference" href="#../application/|dynamic-web-client-caching-mode">↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-81"></a>conversation.modificationTimestamp, conversation.modificationDate
+<a class="toc" name="toc-Paragraph-82"></a>conversation.modificationTimestamp, conversation.modificationDate
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -4503,7 +4512,7 @@ conversation.modificationTimestamp is a long integer value representing the numb
 conversation.modificationDate is the underlying JVM Date instance. Refer to the Java API documentation for details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-82"></a>conversation.expirationTimestamp, conversation.expirationDate
+<a class="toc" name="toc-Paragraph-83"></a>conversation.expirationTimestamp, conversation.expirationDate
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -4515,7 +4524,7 @@ conversation.expirationTimestamp is a long integer value representing the number
 conversation.expirationDate is the underlying JVM Date instance. Refer to the Java API documentation for details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-83"></a>conversation.httpTag, conversation.tag
+<a class="toc" name="toc-Paragraph-84"></a>conversation.httpTag, conversation.tag
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -4527,7 +4536,7 @@ conversation.httpTag is an HTTP ETag string.
 conversation.tag is the underlying Restlet Tag instance. Refer to the Restlet API documentation for details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-84"></a>conversation.maxAge
+<a class="toc" name="toc-Paragraph-85"></a>conversation.maxAge
 </div>
 <div class="Unindented">
 The maximum number of seconds for which clients would cache the response, if they support caching. Defaults to zero.
@@ -4536,7 +4545,7 @@ The maximum number of seconds for which clients would cache the response, if the
 See the <u>dynamicWebClientCachingMode setting (page <a class="Reference" href="#../application/|dynamic-web-client-caching-mode">↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-85"></a>conversation.addMediaTypeByName, conversation.addMediaTypeByExtension, conversation.addMediaType
+<a class="toc" name="toc-Paragraph-86"></a>conversation.addMediaTypeByName, conversation.addMediaTypeByExtension, conversation.addMediaType
 </div>
 <div class="Unindented">
 (only available in /resources/)
@@ -4548,13 +4557,13 @@ TODO
 <a class="toc" name="toc-Subsubsection-60"></a>Conversation Flow
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-86"></a>conversation.stop
+<a class="toc" name="toc-Paragraph-87"></a>conversation.stop
 </div>
 <div class="Unindented">
 Throws an exception, thereby ending execution of your code, and hence the conversation---unless you have deferred it: see <u>conversation.defer (page <a class="Reference" href="#../api/|conversation-defer">↓</a>)</u>. Note that the client will still get a response, so you can set attributes (conversation.statusCode, conversation.expirationTimestamp, etc.) before calling conversation.stop.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-87"></a>conversation.internal
+<a class="toc" name="toc-Paragraph-88"></a>conversation.internal
 </div>
 <div class="Unindented">
 True if the client’s request was internal, false if it was external.
@@ -4572,7 +4581,10 @@ The <u>document.internal API (page <a class="Reference" href="#../api/|document-
 </li>
 </ol>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-88"></a>conversation.locals<a class="Label" name="../api/|conversation-locals"> </a>
+<a class="toc" name="toc-Paragraph-89"></a>
+</div>
+<div class="Paragraph">
+<a class="toc" name="toc-Paragraph-90"></a>conversation.locals<a class="Label" name="../api/|conversation-locals"> </a>
 </div>
 <div class="Unindented">
 A map of general purpose attributes that is destroyed at the end of the conversation. Importantly, conversation.locals are maintained even if the conversation has been deferred via <u>conversation.defer (page <a class="Reference" href="#../api/|conversation-defer">↓</a>)</u>.
@@ -4581,7 +4593,7 @@ A map of general purpose attributes that is destroyed at the end of the conversa
 See <u>‘‘sharing state’’ (page <a class="Reference" href="#../api/|sharing-state">↓</a>)</u> for more information.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-89"></a>conversation.defer<a class="Label" name="../api/|conversation-defer"> </a><a class="Label" name="../manual/api/|conversation-defer"> </a>
+<a class="toc" name="toc-Paragraph-91"></a>conversation.defer<a class="Label" name="../api/|conversation-defer"> </a><a class="Label" name="../manual/api/|conversation-defer"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
@@ -4611,7 +4623,7 @@ Note that calling conversation.defer does not stop the current execution. You’
 This is an experimental feature in Prudence 1.0. The use of a separate thread pool is only supported when using the internal Restlet connector. For other connectors (such as Grizzly, the default), a successful call to defer will cause the page to be executed again in the same thread.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-90"></a>conversation.deferred<a class="Label" name="../api/|conversation-deferred"> </a>
+<a class="toc" name="toc-Paragraph-92"></a>conversation.deferred<a class="Label" name="../api/|conversation-deferred"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
@@ -4629,19 +4641,19 @@ Use these to access the Restlet instances underlying the conversation. This is u
 For more information, refer to Prudence’s Java API documentation and also Restlet’s API documentation.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-91"></a>conversation.resource
+<a class="toc" name="toc-Paragraph-93"></a>conversation.resource
 </div>
 <div class="Unindented">
 The Restlet resource. In the case of /web/dynamic/, this will be Prudence’s GeneratedTextResource. In the case of /resources/, this will be DelegatedResource.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-92"></a>conversation.request
+<a class="toc" name="toc-Paragraph-94"></a>conversation.request
 </div>
 <div class="Unindented">
 Equivalent to conversation.resource.request.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-93"></a>conversation.response
+<a class="toc" name="toc-Paragraph-95"></a>conversation.response
 </div>
 <div class="Unindented">
 Equivalent to conversation.resource.response.
@@ -4746,7 +4758,7 @@ Use this code instead:
 The getGlobal call is an atomic compare-and-set operation. It guarantees that the returned value is the unique one.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-94"></a>Optimizing for Performance
+<a class="toc" name="toc-Paragraph-96"></a>Optimizing for Performance
 </div>
 <div class="Unindented">
 You may have noticed, in the code above, that if another thread had already set the global value, then our created data source would be discarded. If data source creation is heavy and slow, then this could significantly affect our performance. The only way to guarantee that this would not happen would be to make the entire operation atomic, by synchronizing it with a lock:
@@ -6415,13 +6427,13 @@ First, recognize that there are two common uses for the term ‘‘scale.’’ 
 From the perspective of the ability to respond to user requests, there are three aspects to consider: 
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-95"></a>1. Serving HTTP
+<a class="toc" name="toc-Paragraph-97"></a>1. Serving HTTP
 </div>
 <div class="Unindented">
 Prudence comes with <a class="URL" href="https://grizzly.dev.java.net/">Grizzly</a>, an HTTP server based on the JVM’s non-blocking I/O API. Grizzly handles concurrent HTTP requests very well, and serves static files at scales comparable to popular HTTP servers. See the <u>tutorial (page <a class="Reference" href="#../manual/tutorial/">↑</a>)</u> for more information. 
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-96"></a>2. Generating HTML
+<a class="toc" name="toc-Paragraph-98"></a>2. Generating HTML
 </div>
 <div class="Unindented">
 Prudence supports two modes for generating HTML (and other textual formats), each with its own performance characteristics:
@@ -6439,7 +6451,7 @@ Deferred mode:
 Output is sent to the client <i>while</i> the document runs. This is recommended for documents that need to output a very large amount of text, which might take a long time, or that might otherwise encounter slow-downs while running. In either case, you want the client to receive ongoing output. The output of the document is not cached.  Scriptlets can switch between modes according to changing circumstances. For example, to increase caching duration during heavy loads, to decrease it during periods where data changes often, or to stream in the case of an expected large output. See the <u>tutorial (page <a class="Reference" href="#../manual/tutorial/">↑</a>)</u> for more information. 
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-97"></a>3. Running code
+<a class="toc" name="toc-Paragraph-99"></a>3. Running code
 </div>
 <div class="Unindented">
 There may be a delay when starting up a specific language engine in Prudence for the first time in an application, as it loads and initializes itself. Then, there may be a delay when accessing a dynamic web page or resource for the first time, or after it has been changed, as it might require compilation. Once it’s up and running, though, your code performs and scale very well---as well as you’ve written it. You need to understand concurrency and make sure you make good choices to handle coordination between threads accessing the same data. If all is good, your code will actually perform better throughout the life of the application. The JVM learns and adapts as it runs, and performance can improve the more the application is used.

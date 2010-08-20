@@ -34,6 +34,8 @@ public class GeneratedTextResourceConversationService extends ConversationServic
 	 * 
 	 * @param resource
 	 *        The resource
+	 * @param documentService
+	 *        The document service
 	 * @param entity
 	 *        The entity or null
 	 * @param variant
@@ -41,14 +43,26 @@ public class GeneratedTextResourceConversationService extends ConversationServic
 	 * @param defaultCharacterSet
 	 *        The character set to use if unspecified by variant
 	 */
-	public GeneratedTextResourceConversationService( GeneratedTextResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
+	public GeneratedTextResourceConversationService( GeneratedTextResource resource, GeneratedTextResourceDocumentService documentService, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
 	{
 		super( resource, entity, variant, defaultCharacterSet, resource.getFileUploadSizeThreshold(), resource.getFileUploadDirectory() );
+		this.documentService = documentService;
 	}
 
 	//
 	// Attributes
 	//
+
+	/**
+	 * The cache key pattern for the current executable.
+	 * 
+	 * @return The cast cache key
+	 * @see GeneratedTextResourceDocumentService#castCacheKeyPattern()
+	 */
+	public String getCacheKey()
+	{
+		return documentService.castCacheKeyPattern();
+	}
 
 	/**
 	 * This boolean is true when the writer is in deferred mode.
@@ -103,4 +117,9 @@ public class GeneratedTextResourceConversationService extends ConversationServic
 	 * This boolean is true when the writer is in deferred mode.
 	 */
 	protected boolean isDeferred;
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	private final GeneratedTextResourceDocumentService documentService;
 }

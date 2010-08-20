@@ -8864,6 +8864,38 @@ reference "../api/|document-cache-key"
 .
 \end_layout
 
+\begin_layout Quote
+Note that if you edit the source file such as that it would be reloaded,
+ within the limits defined by the 
+\bar under
+dynamicWebMinimumTimeBetweenValidityChecks setting (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|dynamic-web-minimum-time-between-validity-checks"
+
+\end_inset
+
+)
+\bar default
+, then any cache entries would not be used for the next request.
+ This feature lets you see your changes on the fly, even if the document
+ has been cached.
+ Note, too, that updates to documents executed by your source file will
+ also trigger this feature.
+ See 
+\bar under
+document.execute (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-execute"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
 \begin_layout Paragraph
 document.cacheKey
 \begin_inset CommandInset label
@@ -8907,6 +8939,18 @@ reference "../routing/|uri-templates"
 )
 \bar default
  for a complete list of template variables.
+ For debugging purposes, you might use 
+\bar under
+conversation.cacheKey (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-cache-key"
+
+\end_inset
+
+)
+\bar default
+ to output the actual cache key used in the current conversation.
 \end_layout
 
 \begin_layout Standard
@@ -8938,8 +8982,8 @@ However, though sensible, the default cache key template may not be the
  most efficient.
  For example, if the header fragment used in the example above never changes
  per page, then it's wasteful to cache it separately per URI.
- It would make more sense to set document.cacheKey = ``{an}|{dn}'' in a scriptlet
- in header.html.
+ It would be more efficient to set document.cacheKey = ``{an}|{dn}'' or ``{an}|{p
+tb}|{dn}'' in a scriptlet in header.html.
 \end_layout
 
 \begin_layout Standard
@@ -9323,7 +9367,7 @@ reference "../application/|dynamic-web-minimum-time-between-validity-checks"
  the current document would be reloaded when accessed.
  This is necessary, because the execution document may contain code that
  affects the preparation of the current document.
- This effect extends recursively to any depth of execution.
+ This effect cascades to any depth of execution.
 \end_layout
 
 \begin_layout Quote
@@ -10032,6 +10076,33 @@ Note that in non-negotiated HTTP mode, Prudence ``passes through'' the client
  entity as a variant.
 \end_layout
 
+\begin_layout Paragraph
+conversation.cacheKey
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-cache-key"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is the actual cache key pattern, set by 
+\bar under
+document.cacheKey (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../manual/api/|document-cache-key"
+
+\end_inset
+
+)
+\bar default
+, cast for the current conversation.
+ This value is read-only, and made available mostly for debugging purposes.
+\end_layout
+
 \begin_layout Subsubsection
 Request and Response Attributes
 \end_layout
@@ -10587,6 +10658,10 @@ reference "../routing/|capturing"
 \end_inset
 
 )
+\end_layout
+
+\begin_layout Paragraph
+
 \end_layout
 
 \begin_layout Paragraph

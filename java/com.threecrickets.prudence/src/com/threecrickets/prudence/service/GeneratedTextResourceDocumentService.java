@@ -64,7 +64,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	{
 		super( resource, resource.getDocumentSource() );
 		this.executionContext = executionContext;
-		conversationService = new GeneratedTextResourceConversationService( resource, entity, variant, resource.getDefaultCharacterSet() );
+		conversationService = new GeneratedTextResourceConversationService( resource, this, entity, variant, resource.getDefaultCharacterSet() );
 	}
 
 	/**
@@ -291,6 +291,56 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
+	// Protected
+
+	/**
+	 * Casts the cache key pattern for the current executable.
+	 * 
+	 * @return The cache key for the current executable
+	 * @see GeneratedTextResourceConversationService#getCacheKey()
+	 */
+	protected String castCacheKeyPattern()
+	{
+		String cacheKey = getCacheKey();
+		if( cacheKey == null )
+			return null;
+		else
+		{
+			Template template = new Template( cacheKey );
+
+			Reference captiveReference = CaptiveRedirector.getCaptiveReference( resource.getRequest() );
+			Reference resourceReference = resource.getRequest().getResourceRef();
+
+			// Our additional template variables: {dn}, {an} and {ptb}
+
+			if( cacheKey.contains( DOCUMENT_NAME_VARIABLE_FULL ) )
+				template.getVariables().put( DOCUMENT_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, getCurrentDocumentDescriptor().getDefaultName(), true, true ) );
+
+			if( cacheKey.contains( APPLICATION_NAME_VARIABLE_FULL ) )
+				template.getVariables().put( APPLICATION_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, resource.getApplication().getName(), true, true ) );
+
+			if( cacheKey.contains( PATH_TO_BASE_VARIABLE_FULL ) )
+			{
+				Reference reference = captiveReference != null ? captiveReference : resourceReference;
+				String pathToBase = reference.getBaseRef().getRelativeRef( reference ).getPath();
+				template.getVariables().put( PATH_TO_BASE_VARIABLE, new Variable( Variable.TYPE_ALL, pathToBase, true, true ) );
+			}
+
+			// Use captive reference as the resource reference
+			if( captiveReference != null )
+				resource.getRequest().setResourceRef( captiveReference );
+
+			String cast = template.format( resource.getRequest(), resource.getResponse() );
+
+			// Return regular reference
+			if( captiveReference != null )
+				resource.getRequest().setResourceRef( resourceReference );
+
+			return cast;
+		}
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
 	private static final String DOCUMENT_NAME_VARIABLE = "dn";
@@ -332,50 +382,6 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 * Buffer used for caching.
 	 */
 	private StringBuffer writerBuffer;
-
-	/**
-	 * @return The cache key for the executable
-	 */
-	private String castCacheKeyPattern()
-	{
-		String cacheKey = getCacheKey();
-		if( cacheKey == null )
-			return null;
-		else
-		{
-			Template template = new Template( cacheKey );
-
-			Reference captiveReference = CaptiveRedirector.getCaptiveReference( resource.getRequest() );
-			Reference resourceReference = resource.getRequest().getResourceRef();
-
-			// Our additional template variables: {dn}, {an} and {ptb}
-
-			if( cacheKey.contains( DOCUMENT_NAME_VARIABLE_FULL ) )
-				template.getVariables().put( DOCUMENT_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, getCurrentDocumentDescriptor().getDefaultName(), true, true ) );
-
-			if( cacheKey.contains( APPLICATION_NAME_VARIABLE_FULL ) )
-				template.getVariables().put( APPLICATION_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, resource.getApplication().getName(), true, true ) );
-
-			if( cacheKey.contains( PATH_TO_BASE_VARIABLE_FULL ) )
-			{
-				Reference reference = captiveReference != null ? captiveReference : resourceReference;
-				String pathToBase = reference.getBaseRef().getRelativeRef( reference ).getPath();
-				template.getVariables().put( PATH_TO_BASE_VARIABLE, new Variable( Variable.TYPE_ALL, pathToBase, true, true ) );
-			}
-
-			// Use captive reference as the resource reference
-			if( captiveReference != null )
-				resource.getRequest().setResourceRef( captiveReference );
-
-			String cast = template.format( resource.getRequest(), resource.getResponse() );
-
-			// Return regular reference
-			if( captiveReference != null )
-				resource.getRequest().setResourceRef( resourceReference );
-
-			return cast;
-		}
-	}
 
 	/**
 	 * @param executable
