@@ -1,32 +1,48 @@
 /**********************
- *  Soft Cricket 1.3  *
+ *  Soft Cricket 1.5  *
  *                    *
  *    By Tal Liron    *
  **********************/
 
 body {
-	sbackground-color: #e0ffe0;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	__background-color: #e0ffe0;
 	background: url(../images/background.png); /* From: http://www.eosdev.com/Backgrounds/Back_Tilework/EosTilework2h.htm */
 	font-family: 'Lucida Sans Unicode', 'Lucida Grande', Verdana, Arial, sans-serif;
 	font-size: 12px;
 }
 
+div#main {
+	padding-left: 22px;
+	padding-right: 22px;
+	_background-image: url(../../images/background-footer.png);
+	background-color: #ffd8d0;
+}
+div#main-content {
+	background-color: #ffe0d9;
+	padding: 4px 28px 18px 28px;
+}
+
 h1 {
 	font-family: Georgia, Palatino, 'Times New Roman', serif;
-	font-size: 18px;
+	font-size: 28px;
 }
 h2 {
 	font-family: Georgia, Palatino, 'Times New Roman', serif;
-	font-size: 14px;
-	font-style: italic;
-	line-height: 180%;
+	font-size: 22px;
+	margin-top: 42px;
 }
 h3 {
 	font-family: Georgia, Palatino, 'Times New Roman', serif;
-	font-size: 14px;
 	font-style: italic;
-	font-weight: normal;
-	line-height: 180%;
+	font-size: 14px;
+	margin-top: 28px;
+}
+div.Paragraph {
+	font-weight: bold;
+	margin-top: 24px;
+	margin-bottom: 6px;
 }
 
 p, li, div.Indented, div.Unindented, blockquote.Quote {
@@ -36,6 +52,7 @@ p, li, div.Indented, div.Unindented, blockquote.Quote {
 div.Indented + div.Indented, div.Unindented + div.Indented, div.Indented + div.Unindented, div.Unindented + div.Unindented {
 	margin-top: 14px;
 }
+
 
 ul {
 	font-size: 12px;
@@ -54,26 +71,22 @@ div.hr hr {
   display: none;
 }
 
-pre {
+pre, div.listing {
 	border: 1px dashed black;
-	padding: 10px 10px 10px 10px;
-}
-div.listing {
-	border: 1px dashed black;
-	padding: 0px 15px 0px 15px;
+	background-color: #ffffff;
+	padding: 0px 16px 0px 16px;
 	white-space: pre;
-	line-height: 130%;
+	line-height: 140%;
+}
+pre {
+	padding: 16px 16px 16px 16px;
 }
 
-.note {
-	border: 1px dotted black;
-	padding: 3px 10px 3px 10px;
-}
-
-.tutorial, blockquote.Quote {
-	border: 1px solid black;
-	padding: 3px 10px 3px 10px;
-	margin: 14px 0px 14px 0px;
+.note, .tutorial, blockquote.Quote {
+	border: 1px dashed black;
+	background-color: #ffd8d0;
+	padding: 16px 16px 16px 16px;
+	margin: 22px 0px 22px 0px;
 }
 
 
