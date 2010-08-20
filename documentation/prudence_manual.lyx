@@ -4050,8 +4050,18 @@ You can also add your own runtime settings for your code to use, such as
 \end_layout
 
 \begin_layout Standard
-See the Settings section, below, for full detail on overrides and default
- settings.
+See the 
+\bar under
+settings section (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|settings"
+
+\end_inset
+
+)
+\bar default
+ for full detail on overrides and default settings.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4172,6 +4182,13 @@ reference "../tasks/|crontab"
 
 \begin_layout Subsection
 Settings
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|settings"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6784,7 +6801,18 @@ Overriding Pretty URIs
 
 \begin_layout Standard
 You can override all the automatic prettifying techniques mentioned above
- by explicitly capturing URIs (capturing is explained below).
+ by explicitly 
+\bar under
+capturing URIs (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing"
+
+\end_inset
+
+)
+\bar default
+.
  For example:
 \end_layout
 
@@ -6900,6 +6928,13 @@ reference "../application/|routing-file"
 
 \begin_layout Subsubsection
 Hiding
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|hiding"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6924,8 +6959,29 @@ router.hide('administration/');
 \end_layout
 
 \begin_layout Standard
-The resource will still be available internally, via document.internal, and
- for capturing (see below).
+The resource will still be available internally, via 
+\bar under
+document.internal (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-internal"
+
+\end_inset
+
+)
+\bar default
+, and for 
+\bar under
+capturing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -7103,8 +7159,18 @@ status open
 \end_layout
 
 \begin_layout Standard
-Capturing in this manner is often used in conjunction with URI hiding (see
- above).
+Capturing in this manner is often used in conjunction with 
+\bar under
+URI hiding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|hiding"
+
+\end_inset
+
+)
+\bar default
+.
  By hiding ``/forum/help/'', users would be able to access ``/forum/help/faq/''
  via HTTP, but not ``/forum/help/''.
  This lets you effectively control the exposed URI space.
@@ -7213,8 +7279,18 @@ router.captureOther('/forum/help/{topic}/', 'wackyhelp', '/help/')
 
 \begin_layout Standard
 In addition to parsing URI segments, you can use pre-defined curly-bracket-delim
-ited tags to route based on attributes of the request (see URI Templates,
- below).
+ited tags to route based on attributes of the request, via 
+\bar under
+URI templates (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|uri-templates"
+
+\end_inset
+
+)
+\bar default
+.
  For example, we can route with the ``{m}'' tag (HTTP method) to elegantly
  handle HTTP forms:
 \end_layout
@@ -7672,6 +7748,13 @@ conversation.stop()
 
 \begin_layout Subsubsection
 Attaching
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|attaching"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -7872,11 +7955,32 @@ Static Redirection
 \end_layout
 
 \begin_layout Standard
-Static redirection is handled by attaching (see above) a Redirector restlet.
+Static redirection is handled by 
+\bar under
+attaching (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|attaching"
+
+\end_inset
+
+)
+\bar default
+ a Redirector restlet.
  By ``static'' here is meant that redirection is configured into the application
 's /routing.* script.
- However, because attachment supports URI templates (see below), this method
- can actually handle complex ``dynamic'' redirection.
+ However, because attachment supports 
+\bar under
+URI templates (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|uri-templates"
+
+\end_inset
+
+)
+\bar default
+, this method can actually handle complex ``dynamic'' redirection.
  
 \end_layout
 
@@ -7991,6 +8095,13 @@ See the Restlet API documentation of Redirector for more information.
 
 \begin_layout Subsection
 URI Templates
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|uri-templates"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8210,7 +8321,18 @@ reference "../api/|conversation-locals"
 \end_layout
 
 \begin_layout Standard
-Note that URI capturing (see above) parses URIs 
+Note that 
+\bar under
+URI capturing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing"
+
+\end_inset
+
+)
+\bar default
+ parses URIs 
 \emph on
 into 
 \emph default
@@ -8349,7 +8471,18 @@ Names can be any string, but the convention is to use ``.'' paths to allow
 \begin_layout Quote
 Though application.globals is thread safe, it's important to understand how
  to use it properly.
- Make sure you read the section on concurrency in Sharing State, below.
+ Make sure you read the 
+\bar under
+section on concurrency in ``sharing state'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|concurrency"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -8464,6 +8597,13 @@ reference "../logging/|logging-conf"
 
 \begin_layout Paragraph
 application.getMediaType
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|application-get-media-type"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8629,6 +8769,13 @@ if(cleanup && cleanup.done) {
 
 \begin_layout Subsection
 document
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8673,7 +8820,7 @@ Many of these attributes have to do with caching.
 ``Scaling Tips'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../../scaling/"
+reference "../../scaling/|caching"
 
 \end_inset
 
@@ -8703,8 +8850,18 @@ The duration in milleseconds for which the output of this document will
  If this value is zero, the default, then caching is disabled.
  So, you must explicitly set this to a greater than zero value to enable
  caching.
- The key used to store and retrieve the cached output is determined by document.c
-acheKey (see below).
+ The key used to store and retrieve the cached output is determined by 
+\bar under
+document.cacheKey (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-key"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -8734,22 +8891,22 @@ This lets you control the key that is used to store and retrieve the cached
  output of the current document.
  
 \emph on
-Not that this is not necessarily the key itself
+Note that this is not necessarily the key itself
 \emph default
 , but instead a template that can contain variables that are set dynamically,
  and can also include values from conversation.locals.
  See 
 \bar under
-routing (page 
+URI templates (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/"
+reference "../routing/|uri-templates"
 
 \end_inset
 
 )
 \bar default
- for a complete list of Prudence's URI templating variables.
+ for a complete list of template variables.
 \end_layout
 
 \begin_layout Standard
@@ -8799,7 +8956,7 @@ Rule of thumb: Set document.cacheKey to be as short as you possibly can.
 ``Scaling Tips'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../../scaling/"
+reference "../../scaling/|caching"
 
 \end_inset
 
@@ -8810,7 +8967,7 @@ reference "../../scaling/"
 
 \begin_layout Standard
 Note the default cache key template can be changed by setting the ``com.threecric
-kets.prudence.GeneratedTextResource.defaultCharacterSet'' application global.
+kets.prudence.GeneratedTextResource.defaultCacheKey'' application global.
 \end_layout
 
 \begin_layout Paragraph
@@ -8839,7 +8996,18 @@ name "../manual/api/|document-cache-tags"
 This is a list of one or more strings that will be attached to the cached
  output of the page.
  Any number of tags can be associated with a cache entry.
- Cache tags are used for document.cache.invalidate (see below).
+ Cache tags are used for 
+\bar under
+document.cache.invalidate (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-invalidate"
+
+\end_inset
+
+)
+\bar default
+.
  Note that you can set cache tags to hardcoded strings (for example: ``browse-pa
 ges'') or dynamically generate them using code (for example: ``blog-comments-for
 -entry-'' + blogId).
@@ -8850,8 +9018,19 @@ document.cacheTags is ignored if document.cacheDuration is zero.
 \end_layout
 
 \begin_layout Quote
-Important! Using document.include (see below) will cause the cache tags of
- the included document to be applied to the current document, recursively.
+Important! Using 
+\bar under
+document.include (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-include"
+
+\end_inset
+
+)
+\bar default
+ will cause the cache tags of the included document to be applied to the
+ current document, recursively.
  In other words, cache tags effect the inclusion tree moving backwards.
  This should be expected: if an included fragment is invalidated, the containing
  document should also be invalidated.
@@ -8915,13 +9094,31 @@ reference "../instance/|component-file"
 
 \begin_layout Paragraph
 document.cache.invalidate
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-cache-invalidate"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 This lets you remove entries, zero or many, from your cache at once.
  It is useful for when your application state changes in such a way that
  certain pages must be regenerated.
- The argument is a cache tag, as defined by document.cacheTags, above.
+ The argument is a cache tag, as defined by 
+\bar under
+document.cacheTags (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-tags"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -8944,7 +9141,7 @@ See
 ``Scaling Tips'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../../scaling/"
+reference "../../scaling/|caching"
 
 \end_inset
 
@@ -8980,6 +9177,13 @@ Other
 
 \begin_layout Paragraph
 document.include
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-include"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -9046,8 +9250,18 @@ tion will override all others.
 Scriptlets in the fragments can include re-usable code, such as function
  and class definitions.
  You can thus use document.include to include code libraries.
- You might want to consider, though, using document.execute instead (see
- below), as it will let you use regular source code documents and not have
+ You might want to consider, though, using 
+\bar under
+document.execute (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-execute"
+
+\end_inset
+
+)
+\bar default
+ instead, as it will let you use regular source code documents and not have
  to use scriptlets.
 \end_layout
 
@@ -9203,8 +9417,18 @@ By letting you use your RESTful resources both internally and externally,
  A unified API would minimize the possibility of bugs and add coherence
  to your code, by enforcing a RESTful architecture all around.
  A second advantage is that you could trivially make your API remote by
- running it on a different Prudence instance, and using document.external
- instead (see below).
+ running it on a different Prudence instance, and using 
+\bar under
+document.external (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-external"
+
+\end_inset
+
+)
+\bar default
+ instead.
  This could allow for an easy way to run your application in a cluster,
  behind a load balancer.
 \end_layout
@@ -9338,8 +9562,18 @@ executable
 \end_layout
 
 \begin_layout Standard
-The ``executable'' is the low-level equivalent of ``this document'' (see
- above).
+The ``executable'' is the low-level equivalent of 
+\bar under
+``this document'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document"
+
+\end_inset
+
+)
+\bar default
+.
  Here you can explore which languages are installed in your Prudence instance,
  and gain access to their implementation mechanism.
  You'll likely never need to do any of this in your Prudence application.
@@ -9356,8 +9590,19 @@ target "http://threecrickets.com/scripturian/"
 
 \begin_layout Standard
 A feature that you might want to use here is the executable globals.
- These are similar to the application globals (see above), except that they
- are global to the entire Prudence instance (in fact, to the virtual machine).
+ These are similar to the 
+\bar under
+application globals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-globals"
+
+\end_inset
+
+)
+\bar default
+, except that they are global to the entire Prudence instance (in fact,
+ to the virtual machine).
  It's a good place to store state that you want shared between Prudence
  applications.
 \end_layout
@@ -9369,7 +9614,18 @@ executable.globals, executable.getGlobal
 \begin_layout Standard
 These are similar in use to application.globals, but are shared by all applicatio
 ns on the VM.
- See Sharing State, below, for more information.
+ See 
+\bar under
+``sharing state'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|sharing-state"
+
+\end_inset
+
+)
+\bar default
+ for more information.
 \end_layout
 
 \begin_layout Paragraph
@@ -9411,7 +9667,18 @@ executable.container
 \end_layout
 
 \begin_layout Standard
-This is identical to the ``document'' service detailed above.
+This is identical to the 
+\bar under
+``document'' service (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document"
+
+\end_inset
+
+)
+\bar default
+.
  For example, ``document.include'' is the same as ``executable.container.include''.
 \end_layout
 
@@ -9493,7 +9760,18 @@ conversation.reference.fragment: the URI fragment (whatever follows ``#'')
 
 \begin_layout Itemize
 conversation.reference.query: the URI query (whatever follows ``?''); you
- might prefer to use conversation.query, instead (see below)
+ might prefer to use 
+\bar under
+conversation.query (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-query"
+
+\end_inset
+
+)
+\bar default
+ instead
 \end_layout
 
 \begin_layout Itemize
@@ -9560,7 +9838,18 @@ Click <a href="<%= conversation.pathToBase %>/contact/">here</a> to contact
 \begin_layout Quote
 Warning: If you are caching a document that relies on conversation.pathToBase,
  you likely also want to include ``{ptb}'' or some other path reference
- in the document.cacheKey (see above).
+ in the 
+\bar under
+document.cacheKey (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-key"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -9646,6 +9935,13 @@ Note that either ``data'' or ``file'' are valid, but not both.
 
 \begin_layout Paragraph
 conversation.query, conversation.queryAll
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-query"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -9716,7 +10012,7 @@ If you want to access conversation.entity.text more than once, save it to
  a variable first.
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Paragraph
 conversation.variant
 \end_layout
 
@@ -9904,7 +10200,18 @@ conversation.mediaTypeExtension is the media type as the default filename
  For example, ``txt'' is equivalent to MIME ``text/plain,'' and ``xml''
  is equivalent to ``application/xml.'' Each application has its own mappings
  of filename extensions to media types.
- See also application.getMediaType, above, and how to change the 
+ See also 
+\bar under
+application.getMediaType (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-get-media-type"
+
+\end_inset
+
+)
+\bar default
+, and how to change the 
 \bar under
 mappings for your application (page 
 \begin_inset CommandInset ref
@@ -10064,7 +10371,7 @@ conversation.encodingName, conversation.encoding
 \end_layout
 
 \begin_layout Quote
-This value is currently not being used.
+This value is currently not being used by Prudence.
 \end_layout
 
 \begin_layout Standard
@@ -10210,6 +10517,10 @@ n.addMediaType
 \end_layout
 
 \begin_layout Standard
+(only available in /resources/)
+\end_layout
+
+\begin_layout Standard
 TODO
 \end_layout
 
@@ -10223,7 +10534,18 @@ conversation.stop
 
 \begin_layout Standard
 Throws an exception, thereby ending execution of your code, and hence the
- conversation (unless you have deferred it: see conversation.defer, below).
+ conversation---unless you have deferred it: see 
+\bar under
+conversation.defer (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-defer"
+
+\end_inset
+
+)
+\bar default
+.
  Note that the client will still get a response, so you can set attributes
  (conversation.statusCode, conversation.expirationTimestamp, etc.) before calling
  conversation.stop.
@@ -10242,7 +10564,16 @@ Internal requests are usually created in one of two ways:
 \end_layout
 
 \begin_layout Enumerate
-The document.internal API (see above)
+The 
+\bar under
+document.internal API (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-internal"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
@@ -10273,15 +10604,44 @@ name "../api/|conversation-locals"
 A map of general purpose attributes that is destroyed at the end of the
  conversation.
  Importantly, conversation.locals are maintained even if the conversation
- has been deferred via conversation.defer (see below).
+ has been deferred via 
+\bar under
+conversation.defer (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-defer"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
-See Sharing State, below, for more information.
+See 
+\bar under
+``sharing state'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|sharing-state"
+
+\end_inset
+
+)
+\bar default
+ for more information.
 \end_layout
 
 \begin_layout Paragraph
 conversation.defer
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-defer"
+
+\end_inset
+
+
 \begin_inset CommandInset label
 LatexCommand label
 name "../manual/api/|conversation-defer"
@@ -10299,8 +10659,18 @@ name "../manual/api/|conversation-defer"
 Releases the current conversation thread, and queues handling of this conversati
 on on a separate thread pool.
  When the conversation turn comes to be handled, it will cause the page
- to be executed again, but with conversation.deferred (see below) set to
- true.
+ to be executed again, but with 
+\bar under
+conversation.deferred (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-deferred"
+
+\end_inset
+
+)
+\bar default
+ set to true.
  Use conversation.locals if you want to pass state for the deferred execution.
 \end_layout
 
@@ -10351,6 +10721,13 @@ This is an experimental feature in Prudence 1.0.
 
 \begin_layout Paragraph
 conversation.deferred
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-deferred"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -10358,8 +10735,18 @@ conversation.deferred
 \end_layout
 
 \begin_layout Standard
-True if the conversation has been deferred via a call to conversation.defer
- (see above).
+True if the conversation has been deferred via a call to 
+\bar under
+conversation.defer (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-defer"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -10404,6 +10791,13 @@ Equivalent to conversation.resource.response.
 
 \begin_layout Subsection
 Sharing State
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|sharing-state"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -10525,6 +10919,13 @@ Note for Clojure flavor: All Clojure vars are VM-wide globals equivalent
 
 \begin_layout Subsubsection
 Concurrency
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|concurrency"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -10891,7 +11292,18 @@ To easily share conversation-scope state between scriptlets written in different
 \end_layout
 
 \begin_layout Enumerate
-To share state for deferred conversations (see conversation.defer, above).
+To share state for deferred conversations--see 
+\bar under
+conversation.defer (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-defer"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Enumerate
@@ -10986,8 +11398,18 @@ The debug page shows you the following information about the conversation:
 \end_layout
 
 \begin_layout Itemize
-A stack trace of the exception, with a link to a view of the source code
- (see below).
+A stack trace of the exception, with a link to 
+\bar under
+a view of the source code (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../debugging/|source-code"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Itemize
@@ -11041,6 +11463,13 @@ Underlying JVM stack trace.
 
 \begin_layout Subsection
 Live Viewing of Source Code
+\begin_inset CommandInset label
+LatexCommand label
+name "../debugging/|source-code"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -13291,6 +13720,20 @@ reference "../rest/"
 
 \begin_layout Subsection
 Caching
+\begin_inset CommandInset label
+LatexCommand label
+name "../scaling/|caching"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "../../scaling/|caching"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -13367,8 +13810,18 @@ reference "../manual/api/|document-cache-tags"
 \end_layout
 
 \begin_layout Standard
-If you're using a deferred task handler (see below), you might want to invalidat
-e tagged cache entries when tasks are done.
+If you're using a 
+\bar under
+deferred task handler (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../scaling/|deferrable-tasks"
+
+\end_inset
+
+)
+\bar default
+, you might want to invalidate tagged cache entries when tasks are done.
  Consider creating a special internal API that lets the task handler call
  back to your application to do this.
 \end_layout
@@ -13416,7 +13869,18 @@ A ``cold'' cache is not only useless, but it can also lead indirectly to
 There are two strategies to deal with cold caches.
  The first is to allow your cache to be persistent, so that if you restart
  the cache system it retains the same warmth it had before.
- This happens automatically with database-backed caches (see below).
+ This happens automatically with 
+\bar under
+database-backed caches (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../scaling/|cache-backends"
+
+\end_inset
+
+)
+\bar default
+.
  The second strategy is to deliberately warm up the cache in preparation
  for user requests.
 \end_layout
@@ -13601,6 +14065,13 @@ target "http://threecrickets.com/diligenceandprudence/"
 
 \begin_layout Subsubsection
 Cache Backends
+\begin_inset CommandInset label
+LatexCommand label
+name "../scaling/|cache-backends"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -13617,7 +14088,18 @@ Before you start worrying about this, consider that it's a rare problem
 tabase-backed cache, such as Prudence's SqlCache implementations, could
  handle this just fine.
  A key/value table is the most trivial workload for relational databases,
- and it's also easy to shard (see backend partitioning, below).
+ and it's also easy to 
+\bar under
+shard (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../scaling/|by-section"
+
+\end_inset
+
+)
+\bar default
+.
  Relational database are usually very good at caching these tables in their
  memory and responding optimally to read requests.
  Prudence even lets you chain caches together to create tiers: an in-process
@@ -13684,7 +14166,18 @@ Actually, Hazelcast offers fail-safe, live backups.
  for your needs.
  And memcached has various plugins that allow for real database persistence,
  though using them would require you to deal with the scalability challenges
- of database backends, which we will deal with below.
+ of 
+\bar under
+database backends (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../scaling/|data-backends"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -13853,7 +14346,18 @@ Filtering actually implements a kind of partitioning, but one that is vertical
  ability to control the capacity of the caching layer.
  It's embedded inside your frontend, rather than being another cluster of
  servers.
- (More on backend partitioning below.)
+ We'll delve into 
+\bar under
+backend partitioning (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../scaling/|backend-partitioning"
+
+\end_inset
+
+)
+\bar default
+ below.
 \end_layout
 
 \begin_layout Standard
@@ -13933,6 +14437,13 @@ Implementing a handling service is by no means trivial.
 
 \begin_layout Subsubsection
 Deferrable Tasks
+\begin_inset CommandInset label
+LatexCommand label
+name "../scaling/|deferrable-tasks"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -13988,8 +14499,18 @@ target "http://www.hazelcast.com/"
 
 \end_inset
 
-, which is used for an optional distributed cache backend (see above), but
- also has excellent support for handling distributed task queues.
+, which is used for an optional 
+\bar under
+distributed cache backend (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../scaling/|cache-backends"
+
+\end_inset
+
+)
+\bar default
+, but also has excellent support for handling distributed task queues.
 \end_layout
 
 \begin_layout Subsubsection
@@ -14128,6 +14649,13 @@ reference "../manual/api/|conversation-defer"
 
 \begin_layout Subsection
 Backend Partitioning
+\begin_inset CommandInset label
+LatexCommand label
+name "../scaling/|backend-partitioning"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -14263,13 +14791,30 @@ Partitioning by feature is terrific in that it lets you partition other
 \end_layout
 
 \begin_layout Standard
-Also consider that some features might be candidates for using a ``NoSQL''
- database (see below).
+Also consider that some features might be candidates for using a 
+\bar under
+``NoSQL'' database (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../scaling/|data-backends"
+
+\end_inset
+
+)
+\bar default
+.
  Choose the best backend per feature.
 \end_layout
 
 \begin_layout Subsubsection
 By Section
+\begin_inset CommandInset label
+LatexCommand label
+name "../scaling/|by-section"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -14475,6 +15020,13 @@ y, rather than by ``object'' encapsulation, will let you apply all kinds
 
 \begin_layout Subsection
 Data Backends
+\begin_inset CommandInset label
+LatexCommand label
+name "../scaling/|data-backends"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -14727,7 +15279,18 @@ Best of All Worlds
 Of course, consider that it's very possible to use both SQL and ``NoSQL''
  (graph, document, column) databases together for different parts of your
  application.
- See backend partitioning, above.
+ See 
+\bar under
+backend partitioning (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../scaling/|backend-partitioning"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Section

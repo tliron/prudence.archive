@@ -1988,7 +1988,7 @@ Here you can override some of Prudence’s defaults for your application, such a
 You can also add your own runtime settings for your code to use, such as database usernames and passwords.
 </div>
 <div class="Indented">
-See the Settings section, below, for full detail on overrides and default settings.
+See the <u>settings section (page <a class="Reference" href="#../application/|settings">↓</a>)</u> for full detail on overrides and default settings.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-17"></a>/routing.*<a class="Label" name="../application/|routing-file"> </a>
@@ -2018,7 +2018,7 @@ Use this to install non-Prudence Restlet applications into Prudence. By default,
 This is the configuration file that not a script. It lets you schedule tasks to run at certain Calendrical times. See <u>tasks (<a class="Reference" href="#../tasks/|crontab">↓</a>)</u>.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-43"></a>Settings
+<a class="toc" name="toc-Subsection-43"></a>Settings<a class="Label" name="../application/|settings"> </a>
 </h2>
 <div class="Unindented">
 Each application’s subdirectory name under the /applications/ directory is used as a default for many settings.
@@ -3032,7 +3032,7 @@ If you’d like a specific non-trailing-slash URL to automatically redirect to t
 <a class="toc" name="toc-Paragraph-37"></a>Overriding Pretty URIs
 </div>
 <div class="Unindented">
-You can override all the automatic prettifying techniques mentioned above by explicitly capturing URIs (capturing is explained below). For example:
+You can override all the automatic prettifying techniques mentioned above by explicitly <u>capturing URIs (page <a class="Reference" href="#../routing/|capturing">↓</a>)</u>. For example:
 </div>
 <div class="Indented">
 
@@ -3081,7 +3081,7 @@ However, in /web/dynamic/ there is no explicit preference, and behavior is undef
 The straightforward URI routing based on directories and filenames is useful, but you’ll likely need other kinds of routing, too. That’s what <u>your application’s /routing.* is for (page <a class="Reference" href="#../application/|routing-file">↑</a>)</u>.
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-41"></a>Hiding
+<a class="toc" name="toc-Subsubsection-41"></a>Hiding<a class="Label" name="../routing/|hiding"> </a>
 </h3>
 <div class="Unindented">
 The following will make sure that the given URI always returns a 404, even if the page or resource exists. For example, in /routing.* (JavaScript flavor):
@@ -3097,7 +3097,7 @@ The following will make sure that the given URI always returns a 404, even if th
 </div>
 </div>
 <div class="Indented">
-The resource will still be available internally, via document.internal, and for capturing (see below).
+The resource will still be available internally, via <u>document.internal (page <a class="Reference" href="#../api/|document-internal">↓</a>)</u>, and for <u>capturing (page <a class="Reference" href="#../routing/|capturing">↓</a>)</u>.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-42"></a>Capturing<a class="Label" name="../routing/|capturing"> </a>
@@ -3163,7 +3163,7 @@ It’s important to understand this distinction: the client might be seeing an e
 </div>
 </div>
 <div class="Indented">
-Capturing in this manner is often used in conjunction with URI hiding (see above). By hiding ‘‘/forum/help/’’, users would be able to access ‘‘/forum/help/faq/’’ via HTTP, but not ‘‘/forum/help/’’. This lets you effectively control the exposed URI space.
+Capturing in this manner is often used in conjunction with <u>URI hiding (page <a class="Reference" href="#../routing/|hiding">↑</a>)</u>. By hiding ‘‘/forum/help/’’, users would be able to access ‘‘/forum/help/faq/’’ via HTTP, but not ‘‘/forum/help/’’. This lets you effectively control the exposed URI space.
 </div>
 <div class="Indented">
 Another feature of internal redirection is that your code you can check for internal access and enforce it. As an example, let’s implement URI hiding via a scriptlet:
@@ -3204,7 +3204,7 @@ router.captureOther(’/forum/help/{topic}/’, ’wackyhelp’, ’/help/’)
 </div>
 </div>
 <div class="Indented">
-In addition to parsing URI segments, you can use pre-defined curly-bracket-delimited tags to route based on attributes of the request (see URI Templates, below). For example, we can route with the ‘‘{m}’’ tag (HTTP method) to elegantly handle HTTP forms:
+In addition to parsing URI segments, you can use pre-defined curly-bracket-delimited tags to route based on attributes of the request, via <u>URI templates (page <a class="Reference" href="#../routing/|uri-templates">↓</a>)</u>. For example, we can route with the ‘‘{m}’’ tag (HTTP method) to elegantly handle HTTP forms:
 </div>
 <div class="Indented">
 
@@ -3410,7 +3410,7 @@ conversation.stop()
 </div>
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-45"></a>Attaching
+<a class="toc" name="toc-Subsubsection-45"></a>Attaching<a class="Label" name="../routing/|attaching"> </a>
 </h3>
 <div class="Unindented">
 This is the lowest-level routing API. It allows you to route URI patterns to any custom ‘‘restlet’’ (a REST conversation handler), as well as Restlet resources (which internally use a Finder restlet). Do your attachments in the application’s /routing.* configuration script. Prudence offers some attachment ‘‘sugar’’ in addition the standard Restlet API.
@@ -3473,7 +3473,7 @@ router.attachBase(
 <a class="toc" name="toc-Subsubsection-47"></a>Static Redirection
 </h3>
 <div class="Unindented">
-Static redirection is handled by attaching (see above) a Redirector restlet. By ‘‘static’’ here is meant that redirection is configured into the application’s /routing.* script. However, because attachment supports URI templates (see below), this method can actually handle complex ‘‘dynamic’’ redirection. 
+Static redirection is handled by <u>attaching (page <a class="Reference" href="#../routing/|attaching">↑</a>)</u> a Redirector restlet. By ‘‘static’’ here is meant that redirection is configured into the application’s /routing.* script. However, because attachment supports <u>URI templates (page <a class="Reference" href="#../routing/|uri-templates">↓</a>)</u>, this method can actually handle complex ‘‘dynamic’’ redirection. 
 </div>
 <div class="Indented">
 Here are a few examples (JavaScript):
@@ -3510,7 +3510,7 @@ router.attach(’contact/{reason}/’,
 See the Restlet API documentation of Redirector for more information.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-76"></a>URI Templates
+<a class="toc" name="toc-Subsection-76"></a>URI Templates<a class="Label" name="../routing/|uri-templates"> </a>
 </h2>
 <div class="Unindented">
 The custom routing techniques described above support URI templates, which are URIs with optional curly-bracket-delimited tags that are be replaced by conversation values at runtime.
@@ -3654,7 +3654,7 @@ Every URI also has a ‘‘base’’ URI, accessed via the ‘‘b’’ modifi
 Tags that aren’t any of the above tags will be assumed to be <u>conversation.locals (page <a class="Reference" href="#../api/|conversation-locals">↓</a>)</u>. You can thus inject any data you wish.
 </div>
 <div class="Indented">
-Note that URI capturing (see above) parses URIs <i>into </i>conversation.locals.
+Note that <u>URI capturing (page <a class="Reference" href="#../routing/|capturing">↑</a>)</u> parses URIs <i>into </i>conversation.locals.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-53"></a>Cache Key Tags
@@ -3726,7 +3726,7 @@ Application globals are general purpose attributes accessible by any code in the
 Names can be any string, but the convention is to use ‘‘.’’ paths to allow for unique ‘‘namespaces’’ that would not overlap with future extensions, expansions or third-party libraries. For example, use ‘‘myapp.data.sourceName’’ rather than ‘‘dataSourceName’’ to avoid conflict.
 </div>
 <blockquote class="Quote">
-Though application.globals is thread safe, it’s important to understand how to use it properly. Make sure you read the section on concurrency in Sharing State, below.
+Though application.globals is thread safe, it’s important to understand how to use it properly. Make sure you read the <u>section on concurrency in ‘‘sharing state’’ (page <a class="Reference" href="#../api/|concurrency">↓</a>)</u>.
 </blockquote>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-46"></a>application.arguments
@@ -3765,7 +3765,7 @@ Uses a logger that inherits the application.logger configuration by default. The
 See <u>logging.conf (page <a class="Reference" href="#../logging/|logging-conf">↓</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-50"></a>application.getMediaType
+<a class="toc" name="toc-Paragraph-50"></a>application.getMediaType<a class="Label" name="../api/|application-get-media-type"> </a>
 </div>
 <div class="Unindented">
 Utility to get a media type from a MIME type name or filename extension.
@@ -3842,7 +3842,7 @@ if(cleanup &amp;&amp; cleanup.done) {
 </div>
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-78"></a>document
+<a class="toc" name="toc-Subsection-78"></a>document<a class="Label" name="../api/|document"> </a>
 </h2>
 <div class="Unindented">
 The ‘‘document’’ service has two distinct uses: first, it represents the file you are in: <i>this</i> document. This is where you can access the document’s attributes and possibly change them. The second use of this service is for accessing <i>other</i> documents. Prudence combines these two uses into one service, but they functionally separate.
@@ -3854,7 +3854,7 @@ In the case of /resources/ and the configuration scripts, ‘‘this document’
 <a class="toc" name="toc-Subsubsection-54"></a><i>This</i> Document
 </h3>
 <div class="Unindented">
-Many of these attributes have to do with caching. Caching is your best tool to make sure your application can scale well. Read more about it in <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../../scaling/">↓</a>)</u>.
+Many of these attributes have to do with caching. Caching is your best tool to make sure your application can scale well. Read more about it in <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../../scaling/|caching">↓</a>)</u>.
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-52"></a>document.cacheDuration<a class="Label" name="../api/|document-cache-duration"> </a>
@@ -3863,7 +3863,7 @@ Many of these attributes have to do with caching. Caching is your best tool to m
 (only available in /web/dynamic/ and /web/fragments/)
 </div>
 <div class="Indented">
-The duration in milleseconds for which the output of this document will be cached. If this value is zero, the default, then caching is disabled. So, you must explicitly set this to a greater than zero value to enable caching. The key used to store and retrieve the cached output is determined by document.cacheKey (see below).
+The duration in milleseconds for which the output of this document will be cached. If this value is zero, the default, then caching is disabled. So, you must explicitly set this to a greater than zero value to enable caching. The key used to store and retrieve the cached output is determined by <u>document.cacheKey (page <a class="Reference" href="#../api/|document-cache-key">↓</a>)</u>.
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-53"></a>document.cacheKey<a class="Label" name="../api/|document-cache-key"> </a><a class="Label" name="../manual/api/|document-cache-key"> </a>
@@ -3872,7 +3872,7 @@ The duration in milleseconds for which the output of this document will be cache
 (only available in /web/dynamic/ and /web/fragments/)
 </div>
 <div class="Indented">
-This lets you control the key that is used to store and retrieve the cached output of the current document. <i>Not that this is not necessarily the key itself</i>, but instead a template that can contain variables that are set dynamically, and can also include values from conversation.locals. See <u>routing (page <a class="Reference" href="#../routing/">↑</a>)</u> for a complete list of Prudence’s URI templating variables.
+This lets you control the key that is used to store and retrieve the cached output of the current document. <i>Note that this is not necessarily the key itself</i>, but instead a template that can contain variables that are set dynamically, and can also include values from conversation.locals. See <u>URI templates (page <a class="Reference" href="#../routing/|uri-templates">↑</a>)</u> for a complete list of template variables.
 </div>
 <div class="Indented">
 document.cacheKey is ignored if document.cacheDuration is zero.
@@ -3890,10 +3890,10 @@ However, though sensible, the default cache key template may not be the most eff
 Of course, you do not have to use Prudence’s templating system, and can create your cacheKeys explicitly using your own scheme. Just make sure not to use ‘‘{’’ and ‘‘}’’, which are reserved for template tags.
 </div>
 <blockquote class="Quote">
-Rule of thumb: Set document.cacheKey to be as short as you possibly can. See <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../../scaling/">↓</a>)</u> for more information on how caching can help you scale.
+Rule of thumb: Set document.cacheKey to be as short as you possibly can. See <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../../scaling/|caching">↓</a>)</u> for more information on how caching can help you scale.
 </blockquote>
 <div class="Unindented">
-Note the default cache key template can be changed by setting the ‘‘com.threecrickets.prudence.GeneratedTextResource.defaultCharacterSet’’ application global.
+Note the default cache key template can be changed by setting the ‘‘com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey’’ application global.
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-54"></a>document.cacheTags<a class="Label" name="../api/|document-cache-tags"> </a><a class="Label" name="../manual/api/|document-cache-tags"> </a>
@@ -3902,13 +3902,13 @@ Note the default cache key template can be changed by setting the ‘‘com.thre
 (only available in /web/dynamic/ and /web/fragments/)
 </div>
 <div class="Indented">
-This is a list of one or more strings that will be attached to the cached output of the page. Any number of tags can be associated with a cache entry. Cache tags are used for document.cache.invalidate (see below). Note that you can set cache tags to hardcoded strings (for example: ‘‘browse-pages’’) or dynamically generate them using code (for example: ‘‘blog-comments-for-entry-’’ + blogId).
+This is a list of one or more strings that will be attached to the cached output of the page. Any number of tags can be associated with a cache entry. Cache tags are used for <u>document.cache.invalidate (page <a class="Reference" href="#../api/|document-cache-invalidate">↓</a>)</u>. Note that you can set cache tags to hardcoded strings (for example: ‘‘browse-pages’’) or dynamically generate them using code (for example: ‘‘blog-comments-for-entry-’’ + blogId).
 </div>
 <div class="Indented">
 document.cacheTags is ignored if document.cacheDuration is zero.
 </div>
 <blockquote class="Quote">
-Important! Using document.include (see below) will cause the cache tags of the included document to be applied to the current document, recursively. In other words, cache tags effect the inclusion tree moving backwards. This should be expected: if an included fragment is invalidated, the containing document should also be invalidated. If you wish to disable propagation, prefix the cache tag with an underscore when adding it to document.cacheTags. The tag is not stored with the underscore, and so should be referenced without the underscore when calling document.cache.invalidate.
+Important! Using <u>document.include (page <a class="Reference" href="#../api/|document-include">↓</a>)</u> will cause the cache tags of the included document to be applied to the current document, recursively. In other words, cache tags effect the inclusion tree moving backwards. This should be expected: if an included fragment is invalidated, the containing document should also be invalidated. If you wish to disable propagation, prefix the cache tag with an underscore when adding it to document.cacheTags. The tag is not stored with the underscore, and so should be referenced without the underscore when calling document.cache.invalidate.
 </blockquote>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-55"></a>document.cache<a class="Label" name="../api/|document-cache"> </a>
@@ -3929,16 +3929,16 @@ Prudence’s default cache backend is an in-process memory cache chained before 
 We have an <u>example for configuring the cache backend (page <a class="Reference" href="#../instance/|component-file">↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-56"></a>document.cache.invalidate
+<a class="toc" name="toc-Paragraph-56"></a>document.cache.invalidate<a class="Label" name="../api/|document-cache-invalidate"> </a>
 </div>
 <div class="Unindented">
-This lets you remove entries, zero or many, from your cache at once. It is useful for when your application state changes in such a way that certain pages must be regenerated. The argument is a cache tag, as defined by document.cacheTags, above.
+This lets you remove entries, zero or many, from your cache at once. It is useful for when your application state changes in such a way that certain pages must be regenerated. The argument is a cache tag, as defined by <u>document.cacheTags (page <a class="Reference" href="#../api/|document-cache-tags">↑</a>)</u>.
 </div>
 <div class="Indented">
 A common use case is to invalidate display pages when a user posts new data. For a detailed example, consider a forum hosting site. The home page has a section showing ‘‘recent posts in our forums’’ and additionally each forum has its own front page showing ‘‘forum highlights’’. Both of these query the data backend in order to generate the last, and have a 24-hour cache. You can associate each forum with cache tag ‘‘forum-X’’, where X is the forum number, and associate the home page with all these cache tags. When a user posts a new forum thread in forum X, you just need to call document.cache.invalidate(‘‘forum-X’’) to make sure all associated pages will be regenerated on the next user request.
 </div>
 <div class="Indented">
-See <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../../scaling/">↓</a>)</u> for more information on how caching can help you scale.
+See <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../../scaling/|caching">↓</a>)</u> for more information on how caching can help you scale.
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-57"></a>document.source
@@ -3953,7 +3953,7 @@ Scripturian is Prudence’s mechanism for loading, caching and executing source 
 <a class="toc" name="toc-Subsubsection-55"></a><i>Other</i> Documents
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-58"></a>document.include
+<a class="toc" name="toc-Paragraph-58"></a>document.include<a class="Label" name="../api/|document-include"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
@@ -3982,7 +3982,7 @@ This mechanism allows you to divide your documents into fragments that you can r
 Because each document fragment can have its own caching properties, fragmentation is also an important strategy for fine-grained caching. It’s important to keep in mind, though, that the outermost document’s cacheDuration will override all others. If a cached version of a document is used, then it is not executed, which means that document.include calls in it are not executed, too.
 </li>
 <li>
-Scriptlets in the fragments can include re-usable code, such as function and class definitions. You can thus use document.include to include code libraries. You might want to consider, though, using document.execute instead (see below), as it will let you use regular source code documents and not have to use scriptlets.
+Scriptlets in the fragments can include re-usable code, such as function and class definitions. You can thus use document.include to include code libraries. You might want to consider, though, using <u>document.execute (page <a class="Reference" href="#../api/|document-execute">↓</a>)</u> instead, as it will let you use regular source code documents and not have to use scriptlets.
 </li>
 </ol>
 <div class="Paragraph">
@@ -4042,7 +4042,7 @@ Common use cases:
 <ol>
 
 <li>
-By letting you use your RESTful resources both internally and externally, document.internal lets you create unified resource API. document.internal directly accesses the resource (not via HTTP), so it is just about as fast as a simple function call, and is definitely scalable. Thus, there may be no need to create a separate set of functions for you to use internally and HTTP resources for external clients to use. A unified API would minimize the possibility of bugs and add coherence to your code, by enforcing a RESTful architecture all around. A second advantage is that you could trivially make your API remote by running it on a different Prudence instance, and using document.external instead (see below). This could allow for an easy way to run your application in a cluster, behind a load balancer.
+By letting you use your RESTful resources both internally and externally, document.internal lets you create unified resource API. document.internal directly accesses the resource (not via HTTP), so it is just about as fast as a simple function call, and is definitely scalable. Thus, there may be no need to create a separate set of functions for you to use internally and HTTP resources for external clients to use. A unified API would minimize the possibility of bugs and add coherence to your code, by enforcing a RESTful architecture all around. A second advantage is that you could trivially make your API remote by running it on a different Prudence instance, and using <u>document.external (page <a class="Reference" href="#../api/|document-external">↓</a>)</u> instead. This could allow for an easy way to run your application in a cluster, behind a load balancer.
 </li>
 <li>
 You can create unit tests for your resources without having to start an HTTP server.
@@ -4106,16 +4106,16 @@ This value is set automatically according the Prudence flavor you are using.
 <a class="toc" name="toc-Subsection-79"></a>executable
 </h2>
 <div class="Unindented">
-The ‘‘executable’’ is the low-level equivalent of ‘‘this document’’ (see above). Here you can explore which languages are installed in your Prudence instance, and gain access to their implementation mechanism. You’ll likely never need to do any of this in your Prudence application. For more information on executables, see <a class="URL" href="http://threecrickets.com/scripturian/">Scripturian</a>, the library that handles code execution for Prudence.
+The ‘‘executable’’ is the low-level equivalent of <u>‘‘this document’’ (page <a class="Reference" href="#../api/|document">↑</a>)</u>. Here you can explore which languages are installed in your Prudence instance, and gain access to their implementation mechanism. You’ll likely never need to do any of this in your Prudence application. For more information on executables, see <a class="URL" href="http://threecrickets.com/scripturian/">Scripturian</a>, the library that handles code execution for Prudence.
 </div>
 <div class="Indented">
-A feature that you might want to use here is the executable globals. These are similar to the application globals (see above), except that they are global to the entire Prudence instance (in fact, to the virtual machine). It’s a good place to store state that you want shared between Prudence applications.
+A feature that you might want to use here is the executable globals. These are similar to the <u>application globals (page <a class="Reference" href="#../api/|application-globals">↑</a>)</u>, except that they are global to the entire Prudence instance (in fact, to the virtual machine). It’s a good place to store state that you want shared between Prudence applications.
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-63"></a>executable.globals, executable.getGlobal
 </div>
 <div class="Unindented">
-These are similar in use to application.globals, but are shared by all applications on the VM. See Sharing State, below, for more information.
+These are similar in use to application.globals, but are shared by all applications on the VM. See <u>‘‘sharing state’’ (page <a class="Reference" href="#../api/|sharing-state">↓</a>)</u> for more information.
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-64"></a>executable.context
@@ -4145,7 +4145,7 @@ This is the language manager used to create executables in many languages. Here 
 <a class="toc" name="toc-Paragraph-66"></a>executable.container
 </div>
 <div class="Unindented">
-This is identical to the ‘‘document’’ service detailed above. For example, ‘‘document.include’’ is the same as ‘‘executable.container.include’’.
+This is identical to the <u>‘‘document’’ service (page <a class="Reference" href="#../api/|document">↑</a>)</u>. For example, ‘‘document.include’’ is the same as ‘‘executable.container.include’’.
 </div>
 <div class="Indented">
 (Internally, Prudence uses this equivalence to hook the include scriptlet, a Scripturian feature, into Prudence’s document.include.)
@@ -4192,7 +4192,7 @@ conversation.reference.lastSegment: the last segment in the URI path
 conversation.reference.fragment: the URI fragment (whatever follows ‘‘#’’)
 </li>
 <li>
-conversation.reference.query: the URI query (whatever follows ‘‘?’’); you might prefer to use conversation.query, instead (see below)
+conversation.reference.query: the URI query (whatever follows ‘‘?’’); you might prefer to use <u>conversation.query (page <a class="Reference" href="#../api/|conversation-query">↓</a>)</u> instead
 </li>
 <li>
 conversation.reference.relativeRef: a new reference relative to the base URI (usually the application root URI on the current virtual host)
@@ -4221,7 +4221,7 @@ This is very useful to allow for relative references in HTML. It’s especially 
 </div>
 </div>
 <blockquote class="Quote">
-Warning: If you are caching a document that relies on conversation.pathToBase, you likely also want to include ‘‘{ptb}’’ or some other path reference in the document.cacheKey (see above).
+Warning: If you are caching a document that relies on conversation.pathToBase, you likely also want to include ‘‘{ptb}’’ or some other path reference in the <u>document.cacheKey (page <a class="Reference" href="#../api/|document-cache-key">↑</a>)</u>.
 </blockquote>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-69"></a>conversation.form, conversation.formAll<a class="Label" name="../api/|conversation-form"> </a><a class="Label" name="../manual/api/|conversation-form"> </a>
@@ -4263,7 +4263,7 @@ Prudence supports keeping smaller files in memory. See the <u>fileUploadSizeThre
 Note that either ‘‘data’’ or ‘‘file’’ are valid, but not both. One will always be null.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-70"></a>conversation.query, conversation.queryAll
+<a class="toc" name="toc-Paragraph-70"></a>conversation.query, conversation.queryAll<a class="Label" name="../api/|conversation-query"> </a>
 </div>
 <div class="Unindented">
 Use these to access data sent via the URI query.
@@ -4304,8 +4304,8 @@ conversation.entity.size: the size of the data in bytes, or -1 if unknown
 <blockquote class="Quote">
 Note: Client data is provided as a stream that can only be ‘‘consumed’’ once. Attributes that cause consumption are marked with a ‘‘*’’ above. <i>Note that conversation.entity.text is one of them! </i>If you want to access conversation.entity.text more than once, save it to a variable first.
 </blockquote>
-<div class="Paragraph-">
-<a class="toc" name="toc-Paragraph*-1"></a>conversation.variant
+<div class="Paragraph">
+<a class="toc" name="toc-Paragraph-72"></a>conversation.variant
 </div>
 <div class="Unindented">
 This allows low-level access to the Restlet Variant instance sent by the client. In negotiated HTTP mode, the ‘‘variant’’ encapsulates a set of preferences the client might have for returned representations. You usually don’t have to access the variant: Prudence expands these via conversation.mediaType, conversation.characterSet, conversation.encoding, and conversation.language. Refer to the Restlet API documentation for details.
@@ -4326,7 +4326,7 @@ The one exception to this rule is HTML forms. The data comes from the client as 
 Note that in /resources/ you always have the option of explicitly returning a Representation instance to the client, in which case none of these attributes will be used for the response.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-72"></a>conversation.cookies
+<a class="toc" name="toc-Paragraph-73"></a>conversation.cookies
 </div>
 <div class="Unindented">
 This is initialized as a list (not a map) of cookies sent from the client.
@@ -4377,13 +4377,13 @@ cookie.comment: some clients store this, some discard it
 </li>
 </ul>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-73"></a>conversation.getCookie
+<a class="toc" name="toc-Paragraph-74"></a>conversation.getCookie
 </div>
 <div class="Unindented">
 Gets a cookie by its name, or returns null if it doesn’t exist.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-74"></a>conversation.createCookie
+<a class="toc" name="toc-Paragraph-75"></a>conversation.createCookie
 </div>
 <div class="Unindented">
 You must provide the cookie name as an argument. Returns a new cookie instance if the cookie doesn’t exist yet, or the existing cookie if it does.
@@ -4392,7 +4392,7 @@ You must provide the cookie name as an argument. Returns a new cookie instance i
 For new cookies, be sure to call save() on the cookie in order to send it in the response, thus asking the client to create it, or delete() if you want to cancel the creation (in which case nothing will be sent in the response).
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-75"></a>conversation.mediaTypeName, conversation.mediaTypeExtension, conversation.mediaType<a class="Label" name="../api/|conversation-media-type"> </a>
+<a class="toc" name="toc-Paragraph-76"></a>conversation.mediaTypeName, conversation.mediaTypeExtension, conversation.mediaType<a class="Label" name="../api/|conversation-media-type"> </a>
 </div>
 <div class="Unindented">
 These three variants all represent the same value, letting you access the value in different ways.
@@ -4401,7 +4401,7 @@ These three variants all represent the same value, letting you access the value 
 conversation.mediaTypeName is the MIME representing the media type. MIME (Multipurpose Internet Mail Extensions) is an established web standard for specifying media types. Examples include: ‘‘text/plain,’’ ‘‘text/html,’’ ‘‘application/json,’’ and ‘‘application/x-www-form-urlencoded.’’ The exact list of supported MIME types depends on the underlying Restlet implementation.
 </div>
 <div class="Indented">
-conversation.mediaTypeExtension is the media type as the default filename extension for the media type. For example, ‘‘txt’’ is equivalent to MIME ‘‘text/plain,’’ and ‘‘xml’’ is equivalent to ‘‘application/xml.’’ Each application has its own mappings of filename extensions to media types. See also application.getMediaType, above, and how to change the <u>mappings for your application (page <a class="Reference" href="#../application/|default-file">↑</a>)</u>.
+conversation.mediaTypeExtension is the media type as the default filename extension for the media type. For example, ‘‘txt’’ is equivalent to MIME ‘‘text/plain,’’ and ‘‘xml’’ is equivalent to ‘‘application/xml.’’ Each application has its own mappings of filename extensions to media types. See also <u>application.getMediaType (page <a class="Reference" href="#../api/|application-get-media-type">↑</a>)</u>, and how to change the <u>mappings for your application (page <a class="Reference" href="#../application/|default-file">↑</a>)</u>.
 </div>
 <div class="Indented">
 conversation.mediaType is the underlying Restlet MediaType instance. Refer to the Restlet API documentation for details.
@@ -4413,7 +4413,7 @@ To find out which media types the client accepts and prefers, use conversation.r
 In /web/dynamic/ and /web/static/, if the client request does not contain any data representation, for example in a ‘‘GET’’ request, then the <u>media type’s default value will be set according to the filename extension (page <a class="Reference" href="#../routing/|extensions-mime-types">↑</a>)</u>.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-76"></a>conversation.characterSetName, conversation.characterSetShortName, conversation.characterSet
+<a class="toc" name="toc-Paragraph-77"></a>conversation.characterSetName, conversation.characterSetShortName, conversation.characterSet
 </div>
 <div class="Unindented">
 These three variants all represent the same value, letting you access the value in different ways.
@@ -4437,7 +4437,7 @@ If the client request does not specificy a character set, then the character set
 <a class="toc" name="toc-Subsubsection-58"></a>Response Attributes
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-77"></a>conversation.statusCode, conversation.status
+<a class="toc" name="toc-Paragraph-78"></a>conversation.statusCode, conversation.status
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -4449,7 +4449,7 @@ conversation.statusCode is an HTTP status code as an integer.
 conversation.status is the underlying Restlet Status instance. Refer to the Restlet API documentation for details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-78"></a>conversation.languageName, conversation.language
+<a class="toc" name="toc-Paragraph-79"></a>conversation.languageName, conversation.language
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -4467,10 +4467,10 @@ To find out which languages the client accepts and prefers, use conversation.req
 Note that the language can be a null value. Responses do not have to specify a language.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-79"></a>conversation.encodingName, conversation.encoding
+<a class="toc" name="toc-Paragraph-80"></a>conversation.encodingName, conversation.encoding
 </div>
 <blockquote class="Quote">
-This value is currently not being used.
+This value is currently not being used by Prudence.
 </blockquote>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -4491,7 +4491,7 @@ To find out which encodings the client accepts and prefers, use conversation.req
 Note that modificationTimestamp, expirationTimestamp and maxAge are set indirectly for /web/dynamic/, via document.cacheDuration. See the <u>dynamicWebClientCachingMode setting (page <a class="Reference" href="#../application/|dynamic-web-client-caching-mode">↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-80"></a>conversation.modificationTimestamp, conversation.modificationDate
+<a class="toc" name="toc-Paragraph-81"></a>conversation.modificationTimestamp, conversation.modificationDate
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -4503,7 +4503,7 @@ conversation.modificationTimestamp is a long integer value representing the numb
 conversation.modificationDate is the underlying JVM Date instance. Refer to the Java API documentation for details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-81"></a>conversation.expirationTimestamp, conversation.expirationDate
+<a class="toc" name="toc-Paragraph-82"></a>conversation.expirationTimestamp, conversation.expirationDate
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -4515,7 +4515,7 @@ conversation.expirationTimestamp is a long integer value representing the number
 conversation.expirationDate is the underlying JVM Date instance. Refer to the Java API documentation for details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-82"></a>conversation.httpTag, conversation.tag
+<a class="toc" name="toc-Paragraph-83"></a>conversation.httpTag, conversation.tag
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -4527,7 +4527,7 @@ conversation.httpTag is an HTTP ETag string.
 conversation.tag is the underlying Restlet Tag instance. Refer to the Restlet API documentation for details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-83"></a>conversation.maxAge
+<a class="toc" name="toc-Paragraph-84"></a>conversation.maxAge
 </div>
 <div class="Unindented">
 The maximum number of seconds for which clients would cache the response, if they support caching. Defaults to zero.
@@ -4536,22 +4536,25 @@ The maximum number of seconds for which clients would cache the response, if the
 See the <u>dynamicWebClientCachingMode setting (page <a class="Reference" href="#../application/|dynamic-web-client-caching-mode">↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-84"></a>conversation.addMediaTypeByName, conversation.addMediaTypeByExtension, conversation.addMediaType
+<a class="toc" name="toc-Paragraph-85"></a>conversation.addMediaTypeByName, conversation.addMediaTypeByExtension, conversation.addMediaType
 </div>
 <div class="Unindented">
+(only available in /resources/)
+</div>
+<div class="Indented">
 TODO
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-60"></a>Conversation Flow
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-85"></a>conversation.stop
+<a class="toc" name="toc-Paragraph-86"></a>conversation.stop
 </div>
 <div class="Unindented">
-Throws an exception, thereby ending execution of your code, and hence the conversation (unless you have deferred it: see conversation.defer, below). Note that the client will still get a response, so you can set attributes (conversation.statusCode, conversation.expirationTimestamp, etc.) before calling conversation.stop.
+Throws an exception, thereby ending execution of your code, and hence the conversation---unless you have deferred it: see <u>conversation.defer (page <a class="Reference" href="#../api/|conversation-defer">↓</a>)</u>. Note that the client will still get a response, so you can set attributes (conversation.statusCode, conversation.expirationTimestamp, etc.) before calling conversation.stop.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-86"></a>conversation.internal
+<a class="toc" name="toc-Paragraph-87"></a>conversation.internal
 </div>
 <div class="Unindented">
 True if the client’s request was internal, false if it was external.
@@ -4562,29 +4565,29 @@ Internal requests are usually created in one of two ways:
 <ol>
 
 <li>
-The document.internal API (see above)
+The <u>document.internal API (page <a class="Reference" href="#../api/|document-internal">↑</a>)</u>
 </li>
 <li>
 <u>URI capturing (page <a class="Reference" href="#../routing/|capturing">↑</a>)</u>
 </li>
 </ol>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-87"></a>conversation.locals<a class="Label" name="../api/|conversation-locals"> </a>
+<a class="toc" name="toc-Paragraph-88"></a>conversation.locals<a class="Label" name="../api/|conversation-locals"> </a>
 </div>
 <div class="Unindented">
-A map of general purpose attributes that is destroyed at the end of the conversation. Importantly, conversation.locals are maintained even if the conversation has been deferred via conversation.defer (see below).
+A map of general purpose attributes that is destroyed at the end of the conversation. Importantly, conversation.locals are maintained even if the conversation has been deferred via <u>conversation.defer (page <a class="Reference" href="#../api/|conversation-defer">↓</a>)</u>.
 </div>
 <div class="Indented">
-See Sharing State, below, for more information.
+See <u>‘‘sharing state’’ (page <a class="Reference" href="#../api/|sharing-state">↓</a>)</u> for more information.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-88"></a>conversation.defer<a class="Label" name="../manual/api/|conversation-defer"> </a>
+<a class="toc" name="toc-Paragraph-89"></a>conversation.defer<a class="Label" name="../api/|conversation-defer"> </a><a class="Label" name="../manual/api/|conversation-defer"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
 </div>
 <div class="Indented">
-Releases the current conversation thread, and queues handling of this conversation on a separate thread pool. When the conversation turn comes to be handled, it will cause the page to be executed again, but with conversation.deferred (see below) set to true. Use conversation.locals if you want to pass state for the deferred execution.
+Releases the current conversation thread, and queues handling of this conversation on a separate thread pool. When the conversation turn comes to be handled, it will cause the page to be executed again, but with <u>conversation.deferred (page <a class="Reference" href="#../api/|conversation-deferred">↓</a>)</u> set to true. Use conversation.locals if you want to pass state for the deferred execution.
 </div>
 <div class="Indented">
 Returns true if indeed the conversation has been successfully deferred. Will return false if the conversation is already deferred.
@@ -4608,13 +4611,13 @@ Note that calling conversation.defer does not stop the current execution. You’
 This is an experimental feature in Prudence 1.0. The use of a separate thread pool is only supported when using the internal Restlet connector. For other connectors (such as Grizzly, the default), a successful call to defer will cause the page to be executed again in the same thread.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-89"></a>conversation.deferred
+<a class="toc" name="toc-Paragraph-90"></a>conversation.deferred<a class="Label" name="../api/|conversation-deferred"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
 </div>
 <div class="Indented">
-True if the conversation has been deferred via a call to conversation.defer (see above).
+True if the conversation has been deferred via a call to <u>conversation.defer (page <a class="Reference" href="#../api/|conversation-defer">↑</a>)</u>.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-61"></a>Low-level Access
@@ -4626,25 +4629,25 @@ Use these to access the Restlet instances underlying the conversation. This is u
 For more information, refer to Prudence’s Java API documentation and also Restlet’s API documentation.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-90"></a>conversation.resource
+<a class="toc" name="toc-Paragraph-91"></a>conversation.resource
 </div>
 <div class="Unindented">
 The Restlet resource. In the case of /web/dynamic/, this will be Prudence’s GeneratedTextResource. In the case of /resources/, this will be DelegatedResource.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-91"></a>conversation.request
+<a class="toc" name="toc-Paragraph-92"></a>conversation.request
 </div>
 <div class="Unindented">
 Equivalent to conversation.resource.request.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-92"></a>conversation.response
+<a class="toc" name="toc-Paragraph-93"></a>conversation.response
 </div>
 <div class="Unindented">
 Equivalent to conversation.resource.response.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-81"></a>Sharing State
+<a class="toc" name="toc-Subsection-81"></a>Sharing State<a class="Label" name="../api/|sharing-state"> </a>
 </h2>
 <div class="Unindented">
 Prudence is designed to allow massive concurrency and scalability while at the same time shielding you from the gorier details. However, when it comes to sharing state between different parts of your code, it’s critical that you understand Prudence’s state services.
@@ -4689,7 +4692,7 @@ Generally, if you find yourself having to rely on executable.globals, ask yourse
 Note for Clojure flavor: All Clojure vars are VM-wide globals equivalent in scope to executable.globals. You usually work with namespaces that Prudence creates on-the-fly, so they do not persist beyond the execution. However, if you explicitly define a namespace, then you use it as a place for shared state. It will then be up to you to make sure that your namescape doesn’t collide with that of another application installed in the Prudence insstance. Though this approach might seem to break our rule of thumb here, of preferring application.globals to executable.globals, it is more idiomatic to Clojure and Lisps more generally.
 </blockquote>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-64"></a>Concurrency
+<a class="toc" name="toc-Subsubsection-64"></a>Concurrency<a class="Label" name="../api/|concurrency"> </a>
 </h3>
 <div class="Unindented">
 Though application.globals and executable.globals are thread safe, it’s important to understand how to use them properly.
@@ -4743,7 +4746,7 @@ Use this code instead:
 The getGlobal call is an atomic compare-and-set operation. It guarantees that the returned value is the unique one.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-93"></a>Optimizing for Performance
+<a class="toc" name="toc-Paragraph-94"></a>Optimizing for Performance
 </div>
 <div class="Unindented">
 You may have noticed, in the code above, that if another thread had already set the global value, then our created data source would be discarded. If data source creation is heavy and slow, then this could significantly affect our performance. The only way to guarantee that this would not happen would be to make the entire operation atomic, by synchronizing it with a lock:
@@ -4829,7 +4832,7 @@ You may ask, then, why you wouldn’t want to just use your language globals, wh
 To easily share conversation-scope state between scriptlets written in different languages.
 </li>
 <li>
-To share state for deferred conversations (see conversation.defer, above).
+To share state for deferred conversations--see <u>conversation.defer (page <a class="Reference" href="#../api/|conversation-defer">↑</a>)</u>.
 </li>
 <li>
 <u>URI segments are stored here (page <a class="Reference" href="#../routing/|capturing">↑</a>)</u>.
@@ -4859,7 +4862,7 @@ The debug page shows you the following information about the conversation:
 <ul>
 
 <li>
-A stack trace of the exception, with a link to a view of the source code (see below).
+A stack trace of the exception, with a link to <u>a view of the source code (page <a class="Reference" href="#../debugging/|source-code">↓</a>)</u>.
 </li>
 <li>
 The reference (URI) used by the client, including the application’s root reference, the virtual host reference, the original version of the reference (it might have been altered by filters along the route), and whether it was captured.
@@ -4896,7 +4899,7 @@ Underlying JVM stack trace.
 </li>
 </ul>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-84"></a>Live Viewing of Source Code
+<a class="toc" name="toc-Subsection-84"></a>Live Viewing of Source Code<a class="Label" name="../debugging/|source-code"> </a>
 </h2>
 <div class="Unindented">
 With debug mode enabled, Prudence supports live viewing of source code in /web/dynamic/ and /resources/, with syntax coloring provided by <a class="URL" href="http://code.google.com/p/jygments/">Jygments</a>. Links to source code are provided by the debug page, but you can also GET source code directly via:
@@ -5738,7 +5741,7 @@ Ignore the buzzwords, and instead make sure you’re choosing technology that yo
 We discuss this topic some more in <u>‘‘Making the Case for Rest’’ (page <a class="Reference" href="#../rest/">↑</a>)</u>. By building on the existing web infrastructure, Prudence can make large internet projects easier to manage.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-100"></a>Caching
+<a class="toc" name="toc-Subsection-100"></a>Caching<a class="Label" name="../scaling/|caching"> </a><a class="Label" name="../../scaling/|caching"> </a>
 </h2>
 <div class="Unindented">
 Retrieving from a cache can be orders of magnitude faster than dynamically processing a request. It’s your most powerful tool for increasing concurrency.
@@ -5759,7 +5762,7 @@ Cache aggressively, but also take cache validation seriously. Make good use of P
 (It’s sad that many popular web sites do cache validation so poorly. Users have come to expect that sometimes they see wrong, outdated data on a page, sometimes mixed with up-to-date data. The problem is usually solved within minutes, or after a few browser refreshes, but please do strive for a better user experience in your web site!)
 </div>
 <div class="Indented">
-If you’re using a deferred task handler (see below), you might want to invalidate tagged cache entries when tasks are done. Consider creating a special internal API that lets the task handler call back to your application to do this.
+If you’re using a <u>deferred task handler (page <a class="Reference" href="#../scaling/|deferrable-tasks">↓</a>)</u>, you might want to invalidate tagged cache entries when tasks are done. Consider creating a special internal API that lets the task handler call back to your application to do this.
 </div>
 <div class="Indented">
 How long should you cache? As long as the user can bear! In a perfect world, of limitless computing resources, all pages would always be generated freshly per request. In a great many cases, however, there is no harm at all if users see some data that’s a few hours or a few days old.
@@ -5777,7 +5780,7 @@ Caches work best when they are ‘‘warm,’’ meaning that they are full of d
 A ‘‘cold’’ cache is not only useless, but it can also lead indirectly to a serious problem. If your site has been optimized for a warm cache, starting from cold could significantly strain your performance, as your application servers struggle to generate all pages and fragments from scratch. Users would be getting slow response times until the cache is significantly warm. Worse, your system could crash under the sudden extra load.
 </div>
 <div class="Indented">
-There are two strategies to deal with cold caches. The first is to allow your cache to be persistent, so that if you restart the cache system it retains the same warmth it had before. This happens automatically with database-backed caches (see below). The second strategy is to deliberately warm up the cache in preparation for user requests.
+There are two strategies to deal with cold caches. The first is to allow your cache to be persistent, so that if you restart the cache system it retains the same warmth it had before. This happens automatically with <u>database-backed caches (page <a class="Reference" href="#../scaling/|cache-backends">↓</a>)</u>. The second strategy is to deliberately warm up the cache in preparation for user requests.
 </div>
 <div class="Indented">
 Consider creating a special external process or processes to do so. Here are some tips:
@@ -5840,13 +5843,13 @@ By all means, cache your data structures if you can’t easily cache your output
 Prudence’s sister project, Diligence, is designed specifically to solve this problem. It not only caches your data structures, but it validates them in memory using your coded logic, instead of invalidating them and forcing them to be re-fetched from the database. It supports data structures commonly used with relational databases, pluggable storage technologies, high-performance resource pooling and throttling, and natural integration with Prudence. Together, <a class="URL" href="http://threecrickets.com/diligenceandprudence/">Diligence and Prudence</a> form a solid platform for building scalable, data-backed web applications. At the time of this writing, Diligence is still under development. We hope to release it as open source soon, so stay tuned!
 </blockquote>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-79"></a>Cache Backends
+<a class="toc" name="toc-Subsubsection-79"></a>Cache Backends<a class="Label" name="../scaling/|cache-backends"> </a>
 </h3>
 <div class="Unindented">
 Your cache backend can become a bottleneck to scalability if 1) it can’t handle the amount of data you are storing, or 2) it can’t respond quickly enough to cache fetching. 
 </div>
 <div class="Indented">
-Before you start worrying about this, consider that it’s a rare problem to have. Even if you are caching millions of pages and fragments, a simple relational-database-backed cache, such as Prudence’s SqlCache implementations, could handle this just fine. A key/value table is the most trivial workload for relational databases, and it’s also easy to shard (see backend partitioning, below). Relational database are usually very good at caching these tables in their memory and responding optimally to read requests. Prudence even lets you chain caches together to create tiers: an in-process memory cache in front of a SQL cache would ensure that many requests don’t even reach the SQL backend.
+Before you start worrying about this, consider that it’s a rare problem to have. Even if you are caching millions of pages and fragments, a simple relational-database-backed cache, such as Prudence’s SqlCache implementations, could handle this just fine. A key/value table is the most trivial workload for relational databases, and it’s also easy to <u>shard (page <a class="Reference" href="#../scaling/|by-section">↓</a>)</u>. Relational database are usually very good at caching these tables in their memory and responding optimally to read requests. Prudence even lets you chain caches together to create tiers: an in-process memory cache in front of a SQL cache would ensure that many requests don’t even reach the SQL backend.
 </div>
 <div class="Indented">
 High concurrency can also be handled very well by this solution. Despite any limits to the number of concurrent connections you can maintain to the database, each request is handled very quickly, and it would require <i>very </i>high loads to saturate. The math is straightforward: with a 10ms average retrieval time (very pessimistic!) and a maximum of 10 concurrent database connections (again, pessimistic!) you can handle 1,000 cache hits per second. A real environment would likely provide results orders of magnitude better.
@@ -5858,7 +5861,7 @@ The nice thing about this solution is that it uses the infrastructure you alread
 But, what if you need to handle <i>millions</i> of cache hits per second? First, let us congratulate you for your global popularity. Second, there is a simple solution: distributed memory caches. Prudence comes with <a class="URL" href="http://www.hazelcast.com/">Hazelcast</a> and support for <a class="URL" href="http://memcached.org/">memcached</a>, which both offer much better scalability than database backends. Because the cache is in memory, you lose the ability to easily persist your cache and keep it warm: restarting your cache nodes will effectively reset them. There are workarounds---for example, parts of the cache can be persisted to a second database-backed cache tier---but this is a significant feature to lose.
 </div>
 <blockquote class="Quote">
-Actually, Hazelcast offers fail-safe, live backups. While it’s not quite as permanent as a database, it might be good enough for your needs. And memcached has various plugins that allow for real database persistence, though using them would require you to deal with the scalability challenges of database backends, which we will deal with below.
+Actually, Hazelcast offers fail-safe, live backups. While it’s not quite as permanent as a database, it might be good enough for your needs. And memcached has various plugins that allow for real database persistence, though using them would require you to deal with the scalability challenges of <u>database backends (page <a class="Reference" href="#../scaling/|data-backends">↓</a>)</u>.
 </blockquote>
 <div class="Unindented">
 You’ll see many web frameworks out there that support a distributed memory cache (usually memcached) and recommend you use it (‘‘it’s fast!’’ they claim, except that it can be slower per request than optimized databases, and that anyway performance does not equal scalability). We’d urge you to consider that advice carefully: keeping your cache warm is a challenge made much easier if you can store it in a persistent backend, and database backends can take you very far in scale without adding a new infrastructure to your deployment. It’s good to know, though, that Prudence’s support for Hazelcast and memcached is there to help you in case you reach the popularity levels of LiveJournal, Facebook, YouTube, Twitter, etc.
@@ -5902,7 +5905,7 @@ They are problematic in two ways:
 Decoupling caching logic from your application means losing many features. For example, invalidating portions of the cache is difficult if not impossible. It’s because of upstream caching, indeed, that so many web sites do a poor job at showing up-to-date information.
 </li>
 <li>
-Filtering actually implements a kind of partitioning, but one that is vertical rather than horizontal. In horizontal partitioning, a ‘‘switch’’ decides to send requests to one cluster of servers or another. Within each cluster, you can control capacity and scale. But in vertical partitioning, the ‘‘filter’’ handles requests internally. Not only is the ‘‘filter’’ more complex and vulnerable than a ‘‘switch’’ as a frontend connector to the world, but you’ve also complicated your ability to control the capacity of the caching layer. It’s embedded inside your frontend, rather than being another cluster of servers. (More on backend partitioning below.)
+Filtering actually implements a kind of partitioning, but one that is vertical rather than horizontal. In horizontal partitioning, a ‘‘switch’’ decides to send requests to one cluster of servers or another. Within each cluster, you can control capacity and scale. But in vertical partitioning, the ‘‘filter’’ handles requests internally. Not only is the ‘‘filter’’ more complex and vulnerable than a ‘‘switch’’ as a frontend connector to the world, but you’ve also complicated your ability to control the capacity of the caching layer. It’s embedded inside your frontend, rather than being another cluster of servers. We’ll delve into <u>backend partitioning (page <a class="Reference" href="#../scaling/|backend-partitioning">↓</a>)</u> below.
 </li>
 </ol>
 <div class="Unindented">
@@ -5936,7 +5939,7 @@ If not, you should queue the task on a handling service and return a ‘‘pleas
 Implementing a handling service is by no means trivial. It adds a new component to your architecture, one that also has to be made to scale. One can also argue that it adversely affects user experience by adding overhead, delaying the time it takes for the task to complete. The bottom line, though, is you’re vastly increasing concurrency and your ability to scale. And, you’re actually improving the user experience: they would get a feedback on what’s going on rather than having their browsers spin, waiting for their requests to complete.
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-83"></a>Deferrable Tasks
+<a class="toc" name="toc-Subsubsection-83"></a>Deferrable Tasks<a class="Label" name="../scaling/|deferrable-tasks"> </a>
 </h3>
 <div class="Unindented">
 <i>It’s OK if the task occurs later.</i>
@@ -5951,7 +5954,7 @@ Deferring tasks does present a challenge to the user experience: What do you do 
 Before you decide on deferring a task, think carefully of the user experience: for example, users might be constantly refreshing a web page waiting to see the results of their operation. Perhaps the task you thought you can defer should actually be considered necessary?
 </div>
 <div class="Indented">
-Prudence lets you easily defer work internally via <u>tasks (page <a class="Reference" href="#../manual/tasks/">↑</a>)</u>. In particular, you can spawn a task dynamically to do work without tying up the current thread. Also, Prudence comes with <a class="URL" href="http://www.hazelcast.com/">Hazelcast</a>, which is used for an optional distributed cache backend (see above), but also has excellent support for handling distributed task queues.
+Prudence lets you easily defer work internally via <u>tasks (page <a class="Reference" href="#../manual/tasks/">↑</a>)</u>. In particular, you can spawn a task dynamically to do work without tying up the current thread. Also, Prudence comes with <a class="URL" href="http://www.hazelcast.com/">Hazelcast</a>, which is used for an optional <u>distributed cache backend (page <a class="Reference" href="#../scaling/|cache-backends">↑</a>)</u>, but also has excellent support for handling distributed task queues.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-84"></a>File Uploads
@@ -6002,7 +6005,7 @@ And so, after this lengthy discussion, it turns out that there aren’t that man
 As of version 1.0, Prudence has limited support for asynchronous processing, via <u>conversation.defer (page <a class="Reference" href="#../manual/api/|conversation-defer">↑</a>)</u>. Better support is planned for a future version.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-102"></a>Backend Partitioning
+<a class="toc" name="toc-Subsection-102"></a>Backend Partitioning<a class="Label" name="../scaling/|backend-partitioning"> </a>
 </h2>
 <div class="Unindented">
 You can keeping adding more nodes behind a load balancer insofar as each request does not have to access shared state. Useful web applications, however, are likely data-driven, requiring considerable state.
@@ -6059,10 +6062,10 @@ If your database system doesn’t let you synchronize individual tables, then yo
 Partitioning by feature is terrific in that it lets you partition other parts of the stack, too. For example, you can also use a different set of web servers for each feature.
 </div>
 <div class="Indented">
-Also consider that some features might be candidates for using a ‘‘NoSQL’’ database (see below). Choose the best backend per feature.
+Also consider that some features might be candidates for using a <u>‘‘NoSQL’’ database (page <a class="Reference" href="#../scaling/|data-backends">↓</a>)</u>. Choose the best backend per feature.
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-88"></a>By Section
+<a class="toc" name="toc-Subsubsection-88"></a>By Section<a class="Label" name="../scaling/|by-section"> </a>
 </h3>
 <div class="Unindented">
 Another kind of partitioning is sometimes called ‘‘sharding.’’ It involves splitting up tables into sections that can be placed in different databases. Some databases support sharding as part of their synchronization strategy, but you can also implement it in your code. The great thing about sharding is that it lets you create as many shards (and clusters) as you want. It’s the key to the truly large scale.
@@ -6135,7 +6138,7 @@ Object oriented design is also problematic in a more general sense. The first pr
 Even more generally speaking, organizing code together by mechanism or technology, rather than by ‘‘object’’ encapsulation, will let you apply all kinds of re-factorizations more easily, especially if you manage to decouple your application’s data structures from any library-specific data structures.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-103"></a>Data Backends
+<a class="toc" name="toc-Subsection-103"></a>Data Backends<a class="Label" name="../scaling/|data-backends"> </a>
 </h2>
 <div class="Unindented">
 Relational (SQL) databases such as MySQL were, for decades, the backbone of the web. They were originally developed as minimal alternatives to enterprise database servers such as Oracle Database and IBM’s DB2. Their modest feature set allowed for better performance, smaller footprints, and low investment costs---perfect for web applications. The free software LAMP stack (Linux, Apache, MySQL and PHP) <i>was</i> the web.
@@ -6198,7 +6201,7 @@ Though you can run your own column database via open source projects like <a cla
 <a class="toc" name="toc-Subsubsection-92"></a>Best of All Worlds
 </h3>
 <div class="Unindented">
-Of course, consider that it’s very possible to use both SQL and ‘‘NoSQL’’ (graph, document, column) databases together for different parts of your application. See backend partitioning, above.
+Of course, consider that it’s very possible to use both SQL and ‘‘NoSQL’’ (graph, document, column) databases together for different parts of your application. See <u>backend partitioning (page <a class="Reference" href="#../scaling/|backend-partitioning">↑</a>)</u>.
 </div>
 <h1 class="Section">
 <a class="toc" name="toc-Section-19"></a>Under the Hood
@@ -6412,13 +6415,13 @@ First, recognize that there are two common uses for the term ‘‘scale.’’ 
 From the perspective of the ability to respond to user requests, there are three aspects to consider: 
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-94"></a>1. Serving HTTP
+<a class="toc" name="toc-Paragraph-95"></a>1. Serving HTTP
 </div>
 <div class="Unindented">
 Prudence comes with <a class="URL" href="https://grizzly.dev.java.net/">Grizzly</a>, an HTTP server based on the JVM’s non-blocking I/O API. Grizzly handles concurrent HTTP requests very well, and serves static files at scales comparable to popular HTTP servers. See the <u>tutorial (page <a class="Reference" href="#../manual/tutorial/">↑</a>)</u> for more information. 
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-95"></a>2. Generating HTML
+<a class="toc" name="toc-Paragraph-96"></a>2. Generating HTML
 </div>
 <div class="Unindented">
 Prudence supports two modes for generating HTML (and other textual formats), each with its own performance characteristics:
@@ -6436,7 +6439,7 @@ Deferred mode:
 Output is sent to the client <i>while</i> the document runs. This is recommended for documents that need to output a very large amount of text, which might take a long time, or that might otherwise encounter slow-downs while running. In either case, you want the client to receive ongoing output. The output of the document is not cached.  Scriptlets can switch between modes according to changing circumstances. For example, to increase caching duration during heavy loads, to decrease it during periods where data changes often, or to stream in the case of an expected large output. See the <u>tutorial (page <a class="Reference" href="#../manual/tutorial/">↑</a>)</u> for more information. 
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-96"></a>3. Running code
+<a class="toc" name="toc-Paragraph-97"></a>3. Running code
 </div>
 <div class="Unindented">
 There may be a delay when starting up a specific language engine in Prudence for the first time in an application, as it loads and initializes itself. Then, there may be a delay when accessing a dynamic web page or resource for the first time, or after it has been changed, as it might require compilation. Once it’s up and running, though, your code performs and scale very well---as well as you’ve written it. You need to understand concurrency and make sure you make good choices to handle coordination between threads accessing the same data. If all is good, your code will actually perform better throughout the life of the application. The JVM learns and adapts as it runs, and performance can improve the more the application is used.

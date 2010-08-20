@@ -209,6 +209,7 @@
 
 <target name="documentation">
 	<delete file="${documentation}/prudence_manual.pdf" />
+	<delete file="${documentation}/prudence_manual.html" />
 	<exec executable="lyx" failifexecutionfails="false">
 		<arg value="--export" />
 		<arg value="pdf" />
