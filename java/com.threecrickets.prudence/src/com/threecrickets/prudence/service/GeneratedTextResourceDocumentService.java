@@ -139,7 +139,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	/**
 	 * Casts the cache key pattern for the current executable.
 	 * 
-	 * @return The cache key for the current executable
+	 * @return The cache key for the current executable or null
 	 */
 	public String getCacheKey()
 	{
@@ -171,14 +171,17 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			// Use captive reference as the resource reference
 			if( captiveReference != null )
 				resource.getRequest().setResourceRef( captiveReference );
-
-			String cacheKey = template.format( resource.getRequest(), resource.getResponse() );
-
-			// Return regular reference
-			if( captiveReference != null )
-				resource.getRequest().setResourceRef( resourceReference );
-
-			return cacheKey;
+			try
+			{
+				// Cast it
+				return template.format( resource.getRequest(), resource.getResponse() );
+			}
+			finally
+			{
+				// Return regular reference
+				if( captiveReference != null )
+					resource.getRequest().setResourceRef( resourceReference );
+			}
 		}
 	}
 
@@ -358,8 +361,6 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 	private static final String CACHE_TAGS_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheTags";
 
-	private static final String CACHE_KEYS_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheKeys";
-
 	/**
 	 * The conversation service.
 	 */
@@ -388,7 +389,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 * @return The cache tags or null
 	 */
 	@SuppressWarnings("unchecked")
-	private Set<String> getCacheTags( Executable executable, boolean create )
+	private static Set<String> getCacheTags( Executable executable, boolean create )
 	{
 		Set<String> cacheTags = (Set<String>) executable.getAttributes().get( CACHE_TAGS_ATTRIBUTE );
 		if( cacheTags == null && create )
@@ -403,25 +404,16 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	}
 
 	/**
-	 * @param executable
-	 *        The executable
-	 * @param create
-	 *        Whether to create a cache keys set if it doesn't exist
-	 * @return The cache keys or null
+	 * @return The cache expiration timestamp for the executable
 	 */
-	@SuppressWarnings("unchecked")
-	private Set<String> getCacheKeys( Executable executable, boolean create )
+	private static long getExpirationTimestamp( Executable executable )
 	{
-		Set<String> cacheTags = (Set<String>) executable.getAttributes().get( CACHE_KEYS_ATTRIBUTE );
-		if( cacheTags == null && create )
-		{
-			cacheTags = new CopyOnWriteArraySet<String>();
-			Set<String> existing = (Set<String>) executable.getAttributes().putIfAbsent( CACHE_KEYS_ATTRIBUTE, cacheTags );
-			if( existing != null )
-				cacheTags = existing;
-
-		}
-		return cacheTags;
+		Long cacheDurationLong = (Long) executable.getAttributes().get( CACHE_DURATION_ATTRIBUTE );
+		long cacheDuration = cacheDurationLong == null ? 0 : cacheDurationLong;
+		if( cacheDuration <= 0 )
+			return 0;
+		else
+			return executable.getLastExecutedTimestamp() + cacheDuration;
 	}
 
 	/**
@@ -462,18 +454,6 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	}
 
 	/**
-	 * @return The cache expiration timestamp for the executable
-	 */
-	private long getExpiration()
-	{
-		long cacheDuration = getCacheDuration();
-		if( cacheDuration <= 0 )
-			return 0;
-		else
-			return getCurrentDocumentDescriptor().getDocument().getLastExecutedTimestamp() + cacheDuration;
-	}
-
-	/**
 	 * The actual execution of an executable.
 	 * 
 	 * @param executable
@@ -496,7 +476,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			if( writer != null )
 				writer.write( pureText );
 
-			return new CacheEntry( pureText, conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), getExpiration() ).represent();
+			return new CacheEntry( pureText, conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), executable.getDocumentTimestamp(),
+				getExpirationTimestamp( executable ) ).represent();
 		}
 
 		int startPosition = 0;
@@ -517,19 +498,19 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				startPosition = writerBuffer.length();
 			}
 
-			// Attempt to use cache, if executable is branded as cached for our
-			// key
-			Set<String> cacheKeys = getCacheKeys( executable, false );
-			if( cacheKeys != null )
+			// Attempt to use cache
+			String cacheKey = getCacheKey();
+			if( cacheKey != null )
 			{
-				String cacheKey = getCacheKey();
-				if( ( cacheKey != null ) && cacheKeys.contains( cacheKey ) )
+				Cache cache = resource.getCache();
+				if( cache != null )
 				{
-					Cache cache = resource.getCache();
-					if( cache != null )
+					CacheEntry cacheEntry = cache.fetch( cacheKey );
+					if( cacheEntry != null )
 					{
-						CacheEntry cacheEntry = cache.fetch( cacheKey );
-						if( cacheEntry != null )
+						// Make sure the document is not newer than the cache
+						// entry
+						if( executable.getDocumentTimestamp() <= cacheEntry.getDocumentModificationDate().getTime() )
 						{
 							// We want to write this, too, for includes
 							if( writer != null )
@@ -578,7 +559,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 				// Get the buffer from when we executed the executable
 				CacheEntry cacheEntry = new CacheEntry( writerBuffer.substring( startPosition ), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(),
-					getExpiration() );
+					executable.getDocumentTimestamp(), getExpirationTimestamp( executable ) );
 
 				// Cache if enabled
 				String cacheKey = getCacheKey();
@@ -595,12 +576,6 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 					{
 						// Cache!
 						cache.store( cacheKey, cacheTags, cacheEntry );
-
-						// We're branding the executable as cached; if the
-						// executable is regenerated for some reason, it would
-						// no longer have this brand
-						Set<String> cacheKeys = getCacheKeys( executable, true );
-						cacheKeys.add( cacheKey );
 					}
 				}
 
@@ -608,7 +583,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				if( startPosition == 0 )
 					return cacheEntry.represent();
 				else
-					return new CacheEntry( writerBuffer.toString(), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), getExpiration() ).represent();
+					return new CacheEntry( writerBuffer.toString(), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), executable.getDocumentTimestamp(),
+						getExpirationTimestamp( executable ) ).represent();
 			}
 		}
 		catch( ExecutionException x )

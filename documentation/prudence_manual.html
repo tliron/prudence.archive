@@ -1857,11 +1857,26 @@ This is where your rolling logs will appear. Prudence logs are highly configurab
 See <u>logging (page <a class="Reference" href="#../logging/">↓</a>)</u>.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-34"></a>/configuration/
+<a class="toc" name="toc-Subsection-34"></a>/configuration/<a class="Label" name="../application/|configuration"> </a>
 </h2>
 <div class="Unindented">
-There are a few essential configuration files here. Most important is <u>logging.conf (page <a class="Reference" href="#../logging/|logging-conf">↓</a>)</u>, but you will also find some optional files to help you configure Prudence to run as a daemon, configure Velocity, Hazelcast, etc.
+There are a few essential configuration files here.
 </div>
+<ul>
+
+<li>
+logging.conf: see <u>logging (page <a class="Reference" href="#../logging/|logging-conf">↓</a>)</u>
+</li>
+<li>
+wrapper.conf, yajsw.conf: see <u>‘‘Prudence As a Daemon’’ (page <a class="Reference" href="#../daemon/">↓</a>)</u>
+</li>
+<li>
+velocity.conf: for <a class="URL" href="http://velocity.apache.org/">Velocity</a>, see <u>‘‘Generating HTML’’ (page <a class="Reference" href="#../generating-html/">↓</a>)</u>
+</li>
+<li>
+hazelcast.conf: for <a class="URL" href="http://www.hazelcast.com/">Hazelcast</a>, see <u>document.cache (page <a class="Reference" href="#../api/|document-cache">↓</a>)</u>
+</li>
+</ul>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-35"></a>/libraries/
 </h2>
@@ -3896,13 +3911,13 @@ Of course, you do not have to use Prudence’s templating system, and can create
 Rule of thumb: Set document.cacheKeyPattern to be as short as you possibly can. See <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../../scaling/|caching">↓</a>)</u> for more information on how caching can help you scale.
 </blockquote>
 <div class="Unindented">
-Note the default cache key pattern can be changed by setting the ‘‘com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern’’ application global.
+The default cache key pattern can be changed by setting the ‘‘com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern’’ application global.
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-54"></a>document.cacheKey<a class="Label" name="../api/|document-cache-key"> </a>
 </div>
 <div class="Unindented">
-This is the actual cache key, set by <u>document.cacheKeyPattern (page <a class="Reference" href="#../manual/api/|document-cache-key-pattern">↑</a>)</u>, cast for the current conversation. This value is read-only, and made available mostly for debugging purposes.
+This is the actual cache key: <u>document.cacheKeyPattern (page <a class="Reference" href="#../manual/api/|document-cache-key-pattern">↑</a>)</u>, cast for the current conversation. The value is read-only, and made available mostly for debugging purposes.
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-55"></a>document.cacheTags<a class="Label" name="../api/|document-cache-tags"> </a><a class="Label" name="../manual/api/|document-cache-tags"> </a>
@@ -3932,10 +3947,52 @@ Provides access to the cache implementation used by this document. Prudence supp
 Though Prudence automatically caches the output of dynamic HTML and fragments, you can use the cache as you please. Cache entries are instances of CacheEntry, which embeds various formatting attributes that you are free to ignore if you don’t need them.
 </div>
 <div class="Indented">
-Prudence’s default cache backend is an in-process memory cache chained before an H2 database cache. The memory cache ensures extremely fast retrieval times, while the database cache makes sure entries will persist even if you restart Prudence.
+Prudence’s default cache backend is an in-process memory cache, but this can be configured. Here’s an example of chaining an H2 database cache after the default cache, via the <u>/component.* configuration script (page <a class="Reference" href="#../instance/|component-file">↑</a>)</u>. The memory cache ensures extremely fast retrieval times, while the database cache makes sure entries will persist even if you restart Prudence:
 </div>
 <div class="Indented">
-We have an <u>example for configuring the cache backend (page <a class="Reference" href="#../instance/|component-file">↑</a>)</u>.
+
+<div class="float">
+
+<div class="listing">
+<code class="listing">// Implement defaults
+document.execute(’defaults/instance/component/’)
+​
+// Create an H2-database-backed cache chained after the default in-memory cache
+importClass(
+	com.threecrickets.prudence.cache.H2Cache,
+	com.threecrickets.prudence.cache.ChainCache)
+​
+var defaultCache = component.context.attributes.get(’com.threecrickets.prudence.cache’)
+var chainCache = new ChainCache()
+chainCache.caches.add(defaultCache)
+chainCache.caches.add(new H2Cache(’cache/prudence/prudence’)) 
+component.context.attributes.put(’com.threecrickets.prudence.cache’, chainCache)
+</code>
+</div>
+</div>
+</div>
+<div class="Indented">
+Prudence also comes with <a class="URL" href="http://memcached.org/">memcached</a> and <a class="URL" href="http://www.hazelcast.com/">Hazelcast</a> cache backends, which can similarly be chained together. There’s a full reference in the Java API documentation, but here are simple examples:
+</div>
+<div class="Indented">
+
+<div class="float">
+
+<div class="listing">
+<code class="listing">importClass(
+	com.threecrickets.prudence.cache.MemcachedCache,
+	com.threecrickets.prudence.cache.HazelcastCache)
+​
+// memcached: The constructor accepts a list of nodes (ports required)
+component.context.attributes.put(’com.threecrickets.prudence.cache’,
+	new MemcachedCache("127.0.0.1:11211, 192.168.1.12:11211"))
+​
+// Hazelcast: The configuration is in /configuration/hazelcast.conf
+component.context.attributes.put(’com.threecrickets.prudence.cache’,
+	new HazelcastCache())
+</code>
+</div>
+</div>
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-57"></a>document.cache.invalidate<a class="Label" name="../api/|document-cache-invalidate"> </a>
@@ -4479,7 +4536,7 @@ Note that the language can be a null value. Responses do not have to specify a l
 <a class="toc" name="toc-Paragraph-81"></a>conversation.encodingName, conversation.encoding
 </div>
 <blockquote class="Quote">
-This value is currently not being used by Prudence.
+This value is currently not being used by Prudence, but will be supported in the future.
 </blockquote>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -4497,7 +4554,7 @@ To find out which encodings the client accepts and prefers, use conversation.req
 <a class="toc" name="toc-Subsubsection-59"></a>Response Attributes for Resources<a class="Label" name="../api/|response-attributes-resources"> </a>
 </h3>
 <div class="Unindented">
-Note that modificationTimestamp, expirationTimestamp and maxAge are set indirectly for /web/dynamic/, via document.cacheDuration. See the <u>dynamicWebClientCachingMode setting (page <a class="Reference" href="#../application/|dynamic-web-client-caching-mode">↑</a>)</u>.
+Note that modificationTimestamp, expirationTimestamp and maxAge are set indirectly for /web/dynamic/, via <u>document.cacheDuration (page <a class="Reference" href="#../api/|document-cache-duration">↑</a>)</u>. To control how this is set, see the <u>dynamicWebClientCachingMode setting (page <a class="Reference" href="#../application/|dynamic-web-client-caching-mode">↑</a>)</u>.
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-82"></a>conversation.modificationTimestamp, conversation.modificationDate
@@ -5684,7 +5741,7 @@ Get it? Performance does not equal scalability.
 This is an important mantra for two reasons:
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-74"></a>1. Opposite Results
+<a class="toc" name="toc-Subsubsection-74"></a>1. Performant Can Mean Less Scalable
 </h3>
 <div class="Unindented">
 Optimizing for performance can adversely affect your scalability. The reason is contextual: when you optimize for performance, you often work in an isolated context, specifically so you can accurately measure response times and fine-tune them. For example, making sure that a specific SQL query is fast would involve just running that query. A full-blown experiment involving millions of users doing various operations on your application would make it very hard to accurately measure and optimize the query. Unfortunately, by working in an isolated context you cannot easily see how your efforts would affect other parts of an application. To do so would require a lot of experience and imagination. To continue our example, in order to optimize your one SQL query you might create an index. That index might need to be synchronized with many servers in your cluster. And that synchronization overhead, in turn, could seriously affect your ability to scale. Congratulations! You’ve made one query run fast in a situation that never happens in real life, and you’ve brought your web site to a halt.

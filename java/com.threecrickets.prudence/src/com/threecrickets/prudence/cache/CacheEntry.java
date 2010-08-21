@@ -26,6 +26,8 @@ import org.restlet.representation.StringRepresentation;
 /**
  * A serializable, cacheable set of parameters from which
  * {@link StringRepresentation} instances can be created.
+ * <p>
+ * Instances are not thread safe.
  * 
  * @author Tal Liron
  * @see Cache
@@ -55,15 +57,18 @@ public class CacheEntry implements Externalizable
 	 *        The language
 	 * @param characterSet
 	 *        The character set
+	 * @param documentModificationDate
+	 *        The document modification date
 	 * @param expirationDate
 	 *        The expiration date
 	 */
-	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, Date expirationDate )
+	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, Date documentModificationDate, Date expirationDate )
 	{
 		this.string = string;
 		this.mediaType = mediaType;
 		this.language = language;
 		this.characterSet = characterSet;
+		this.documentModificationDate = documentModificationDate;
 		this.expirationDate = expirationDate;
 	}
 
@@ -78,12 +83,14 @@ public class CacheEntry implements Externalizable
 	 *        The language
 	 * @param characterSet
 	 *        The character set
-	 * @param expiration
-	 *        Expiration timestamp or 0
+	 * @param docmuentModificationTimestamp
+	 *        The document modification timestamp
+	 * @param expirationTimestamp
+	 *        The expiration timestamp or 0 for no expiration
 	 */
-	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, long expiration )
+	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, long docmuentModificationTimestamp, long expirationTimestamp )
 	{
-		this( string, mediaType, language, characterSet, expiration > 0 ? new Date( expiration ) : null );
+		this( string, mediaType, language, characterSet, new Date( docmuentModificationTimestamp ), expirationTimestamp > 0 ? new Date( expirationTimestamp ) : null );
 	}
 
 	//
@@ -123,7 +130,15 @@ public class CacheEntry implements Externalizable
 	}
 
 	/**
-	 * @return The modification date
+	 * @return The document modification date
+	 */
+	public Date getDocumentModificationDate()
+	{
+		return documentModificationDate;
+	}
+
+	/**
+	 * @return The entry modification date
 	 */
 	public Date getModificationDate()
 	{
@@ -165,6 +180,7 @@ public class CacheEntry implements Externalizable
 		mediaType = MediaType.valueOf( in.readUTF() );
 		language = Language.valueOf( in.readUTF() );
 		characterSet = CharacterSet.valueOf( in.readUTF() );
+		documentModificationDate = new Date( in.readLong() );
 		modificationDate = new Date( in.readLong() );
 		expirationDate = new Date( in.readLong() );
 	}
@@ -175,6 +191,7 @@ public class CacheEntry implements Externalizable
 		out.writeUTF( nonNull( mediaType ) );
 		out.writeUTF( nonNull( language ) );
 		out.writeUTF( nonNull( characterSet ) );
+		out.writeLong( documentModificationDate.getTime() );
 		out.writeLong( modificationDate.getTime() );
 		out.writeLong( expirationDate.getTime() );
 	}
@@ -203,7 +220,12 @@ public class CacheEntry implements Externalizable
 	private CharacterSet characterSet;
 
 	/**
-	 * The modification date.
+	 * The document modification date.
+	 */
+	private Date documentModificationDate;
+
+	/**
+	 * The entry modification date.
 	 */
 	private Date modificationDate = new Date();
 
