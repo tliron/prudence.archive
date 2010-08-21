@@ -287,26 +287,12 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		}
 	}
 
-	//
-	// ResourceDocumentService
-	//
+	// //////////////////////////////////////////////////////////////////////////
+	// Protected
 
-	/**
-	 * Executes a source code document. The language of the source code will be
-	 * determined by the document tag, which is usually the filename extension.
-	 * 
-	 * @param documentName
-	 *        The document name
-	 * @throws ParsingException
-	 * @throws ExecutionException
-	 * @throws DocumentException
-	 * @throws IOException
-	 */
 	@Override
-	public Representation execute( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
+	protected DocumentDescriptor<Executable> getDocumentDescriptor( String documentName ) throws ParsingException, DocumentException
 	{
-		documentName = resource.validateDocumentName( documentName );
-
 		DocumentDescriptor<Executable> documentDescriptor;
 		try
 		{
@@ -323,21 +309,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				throw x;
 		}
 
-		// Add dependency
-		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
-		if( currentDocumentDescriptor != null )
-			currentDocumentDescriptor.getDependencies().add( documentDescriptor );
-
-		// Execute
-		pushDocumentDescriptor( documentDescriptor );
-		try
-		{
-			return execute( documentDescriptor.getDocument() );
-		}
-		finally
-		{
-			popDocumentDescriptor();
-		}
+		return documentDescriptor;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

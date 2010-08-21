@@ -8988,7 +8988,18 @@ This lets you control the key that is used to store and retrieve the cached
 Note that this is not necessarily the key itself
 \emph default
 , but instead a pattern that can contain variables that are set dynamically,
- and can also include values from conversation.locals.
+ and can also include values from 
+\bar under
+conversation.locals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-locals"
+
+\end_inset
+
+)
+\bar default
+.
  See 
 \bar under
 URI templates (page 
@@ -9001,7 +9012,7 @@ reference "../routing/|uri-templates"
 )
 \bar default
  for a complete list of template variables.
- For debugging purposes, you might use 
+ For debugging purposes, you can use 
 \bar under
 document.cacheKey (page 
 \begin_inset CommandInset ref
@@ -9016,7 +9027,18 @@ reference "../api/|document-cache-key"
 \end_layout
 
 \begin_layout Standard
-document.cacheKeyPattern is ignored if document.cacheDuration is zero.
+document.cacheKeyPattern is ignored if 
+\bar under
+document.cacheDuration (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-duration"
+
+\end_inset
+
+)
+\bar default
+ is zero.
 \end_layout
 
 \begin_layout Standard
@@ -9049,15 +9071,15 @@ However, though sensible, the default cache key pattern may not be the most
 \end_layout
 
 \begin_layout Standard
-Of course, you do not have to use Prudence's templating system, and can
- create your cache keys explicitly using your own scheme.
+You do not have to use Prudence's templating system, and can create your
+ cache keys explicitly using your own scheme.
  Just make sure not to use ``{'' and ``}'', which are reserved for template
  tags.
 \end_layout
 
 \begin_layout Quote
 Rule of thumb: Set document.cacheKeyPattern to be as short as you possibly
- can.
+ can, but not too short that it won't differentiate between different views.
  See 
 \bar under
 ``Scaling Tips'' (page 
@@ -9148,7 +9170,18 @@ ges'') or dynamically generate them using code (for example: ``blog-comments-for
 \end_layout
 
 \begin_layout Standard
-document.cacheTags is ignored if document.cacheDuration is zero.
+document.cacheTags is ignored if 
+\bar under
+document.cacheDuration (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-duration"
+
+\end_inset
+
+)
+\bar default
+ is zero.
 \end_layout
 
 \begin_layout Quote
@@ -9163,15 +9196,34 @@ reference "../api/|document-include"
 
 )
 \bar default
- will cause the cache tags of the included document to be applied to the
- current document, recursively.
- In other words, cache tags effect the inclusion tree moving backwards.
- This should be expected: if an included fragment is invalidated, the containing
- document should also be invalidated.
- If you wish to disable propagation, prefix the cache tag with an underscore
- when adding it to document.cacheTags.
- The tag is not stored with the underscore, and so should be referenced
- without the underscore when calling document.cache.invalidate.
+, or the <%& ..
+ %> inclusion scriptlet, will cause the cache tags of the included document
+ to be applied to the current document, and to documents that have included
+ the current document, and so on.
+ This is a useful feature: if a fragment included somewhere down the line
+ is invalidated, you likely want the containing document to also be invalidated.
+ If you wish to disable cache tag propagation, prefix the cache tag with
+ an underscore when adding it to document.cacheTags.
+ The tag is 
+\emph on
+not 
+\emph default
+stored with the underscore, and so should be referenced 
+\emph on
+without
+\emph default
+ the underscore when calling 
+\bar under
+document.cache.invalidate (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-invalidate"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -9186,11 +9238,12 @@ name "../api/|document-cache"
 \end_layout
 
 \begin_layout Standard
-(note that the same cache is accessible in both /web/dynamic/ and /resources/)
+(note that the same cache instance is accessible in both /web/dynamic/ and
+ /resources/)
 \end_layout
 
 \begin_layout Standard
-Provides access to the cache implementation used by this document.
+Provides access to the cache backend used by this document.
  Prudence supports a pluggable cache backend mechanism, allowing you to
  use RAM, disk, database, distributed and other cache systems.
  It also allows for chaining of various backends together for improved performan
@@ -9199,13 +9252,13 @@ ce and reliability.
 
 \begin_layout Standard
 Though Prudence automatically caches the output of dynamic HTML and fragments,
- you can use the cache as you please.
+ you can use the cache directly for your own purposes.
  Cache entries are instances of CacheEntry, which embeds various formatting
  attributes that you are free to ignore if you don't need them.
 \end_layout
 
 \begin_layout Standard
-Prudence's default cache backend is an in-process memory cache, but this
+Prudence's default cache backend is a 1MB in-process memory cache, but this
  can be configured.
  Here's an example of chaining an H2 database cache after the default cache,
  via the 
@@ -9347,6 +9400,36 @@ importClass(
 
 \begin_layout Plain Layout
 
+// The constructor accepts a max size in bytes (defaults to 1MB)
+\end_layout
+
+\begin_layout Plain Layout
+
+// (Note that you have to make sure that the JVM has been started with a
+ heap
+\end_layout
+
+\begin_layout Plain Layout
+
+// size large enough for your cache)
+\end_layout
+
+\begin_layout Plain Layout
+
+component.context.attributes.put('com.threecrickets.prudence.cache',
+\end_layout
+
+\begin_layout Plain Layout
+
+	new InProcessMemoryCache(1024 * 1024 * 1024 * 1024) // 1GB
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
 // memcached: The constructor accepts a list of nodes (ports required)
 \end_layout
 
@@ -9457,6 +9540,18 @@ Scripturian is Prudence's mechanism for loading, caching and executing source
  By default, Prudence uses a FileDocumentSource.
  From here, you can access attributes of it, for example: document.source.basePath
  and document.source.minimumTimeBetweenValidityChecks.
+\end_layout
+
+\begin_layout Standard
+Refer to 
+\begin_inset CommandInset href
+LatexCommand href
+name "Scripturian"
+target "http://threecrickets.com/scripturian/"
+
+\end_inset
+
+'s documentation for a complete reference.
 \end_layout
 
 \begin_layout Subsubsection
@@ -9610,12 +9705,20 @@ reference "../application/|dynamic-web-minimum-time-between-validity-checks"
 )
 \bar default
 .
- Moreover, executing a document will link the current document to the executed
- document for this purpose, such that if the executed document changes,
- the current document would be reloaded when accessed.
- This is necessary, because the execution document may contain code that
- affects the preparation of the current document.
- This effect cascades to any depth of execution.
+ Also, executed documents are automatically added as dependencies, so that
+ if they are reloaded, so will the current document.
+ See 
+\bar under
+document.addDependency (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-add-dependency"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Quote
@@ -9669,6 +9772,37 @@ Use document.execute as an alternative to document.include if you prefer not
  to use scriptlets.
  For example, executing mylibrary.js might be more readable than including
  a fragment called mylibrary.html that is all just one JavaScript scriptlet.
+\end_layout
+
+\begin_layout Paragraph
+document.addDependency
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-add-dependency"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Explicitly adds a dependency to this document.
+\end_layout
+
+\begin_layout Standard
+If the dependency changes, the current document would be reloaded when accessed.
+ This effect cascades to documents that the dependency depends on.
+ This is useful, because the execution document may contain code that affects
+ the preparation of the current document.
+\end_layout
+
+\begin_layout Standard
+Note that document.execute (page ) automatically adds the executed document
+ as dependency.
+ You would want to call document.addDependency explicitly only if you are
+ not using document.execute.
+ For example, if you are using your language's built-in library inclusion
+ mechanisms.
 \end_layout
 
 \begin_layout Paragraph

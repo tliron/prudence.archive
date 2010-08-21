@@ -77,7 +77,41 @@ public abstract class DocumentServiceBase
 	 * @throws DocumentException
 	 * @throws IOException
 	 */
-	public abstract Representation execute( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException;
+	public Representation execute( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
+	{
+		DocumentDescriptor<Executable> documentDescriptor = getDocumentDescriptor( documentName );
+
+		// Execute
+		pushDocumentDescriptor( documentDescriptor );
+		try
+		{
+			documentDescriptor.getDocument().execute();
+		}
+		finally
+		{
+			popDocumentDescriptor();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Explicitly add a dependency to this document.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @throws DocumentException
+	 * @throws ParsingException
+	 */
+	public void addDependency( String documentName ) throws ParsingException, DocumentException
+	{
+		DocumentDescriptor<Executable> documentDescriptor = getDocumentDescriptor( documentName );
+
+		// Add dependency
+		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
+		if( currentDocumentDescriptor != null )
+			currentDocumentDescriptor.getDependencies().add( documentDescriptor );
+	}
 
 	/**
 	 * Access a resource internal to the current application.
@@ -130,6 +164,17 @@ public abstract class DocumentServiceBase
 	 * The document stack.
 	 */
 	protected LinkedList<DocumentDescriptor<Executable>> documentDescriptorStack = new LinkedList<DocumentDescriptor<Executable>>();
+
+	/**
+	 * Gets a document descriptor.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @return The document descriptor
+	 * @throws ParsingException
+	 * @throws DocumentException
+	 */
+	protected abstract DocumentDescriptor<Executable> getDocumentDescriptor( String documentName ) throws ParsingException, DocumentException;
 
 	/**
 	 * The currently executing document (the one at the top of the stack).

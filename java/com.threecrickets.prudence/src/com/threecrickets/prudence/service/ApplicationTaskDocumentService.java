@@ -12,9 +12,6 @@
 package com.threecrickets.prudence.service;
 
 import java.io.File;
-import java.io.IOException;
-
-import org.restlet.representation.Representation;
 
 import com.threecrickets.prudence.ApplicationTask;
 import com.threecrickets.scripturian.Executable;
@@ -22,7 +19,6 @@ import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
-import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
@@ -44,12 +40,15 @@ public class ApplicationTaskDocumentService extends DocumentServiceBase
 		this.applicationTask = applicationTask;
 	}
 
+	// //////////////////////////////////////////////////////////////////////////
+	// Protected
+
 	//
 	// DocumentServiceBase
 	//
 
 	@Override
-	public Representation execute( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
+	protected DocumentDescriptor<Executable> getDocumentDescriptor( String documentName ) throws ParsingException, DocumentException
 	{
 		documentName = applicationTask.validateDocumentName( documentName );
 
@@ -70,23 +69,7 @@ public class ApplicationTaskDocumentService extends DocumentServiceBase
 				throw x;
 		}
 
-		// Add dependency
-		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
-		if( currentDocumentDescriptor != null )
-			currentDocumentDescriptor.getDependencies().add( documentDescriptor );
-
-		// Execute
-		pushDocumentDescriptor( documentDescriptor );
-		try
-		{
-			documentDescriptor.getDocument().execute();
-		}
-		finally
-		{
-			popDocumentDescriptor();
-		}
-
-		return null;
+		return documentDescriptor;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
