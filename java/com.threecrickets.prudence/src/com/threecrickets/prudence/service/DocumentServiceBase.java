@@ -81,6 +81,11 @@ public abstract class DocumentServiceBase
 	{
 		DocumentDescriptor<Executable> documentDescriptor = getDocumentDescriptor( documentName );
 
+		// Add dependency
+		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
+		if( currentDocumentDescriptor != null )
+			currentDocumentDescriptor.getDependencies().add( documentDescriptor );
+
 		// Execute
 		pushDocumentDescriptor( documentDescriptor );
 		try

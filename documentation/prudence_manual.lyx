@@ -9797,8 +9797,18 @@ If the dependency changes, the current document would be reloaded when accessed.
 \end_layout
 
 \begin_layout Standard
-Note that document.execute (page ) automatically adds the executed document
- as dependency.
+Note that 
+\bar under
+document.execute (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-execute"
+
+\end_inset
+
+)
+\bar default
+ automatically adds the executed document as dependency.
  You would want to call document.addDependency explicitly only if you are
  not using document.execute.
  For example, if you are using your language's built-in library inclusion
