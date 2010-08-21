@@ -58,15 +58,14 @@ public class DelegatedResourceDocumentService extends ResourceDocumentServiceBas
 		DocumentDescriptor<Executable> documentDescriptor;
 		try
 		{
-			documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
+			documentDescriptor = Executable.createOnce( documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
 		}
 		catch( DocumentNotFoundException x )
 		{
 			// Try the library directory
 			File libraryDirectory = resource.getLibraryDirectoryRelative();
 			if( libraryDirectory != null )
-				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
-					resource.isPrepare() );
+				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
 			else
 				throw x;
 		}

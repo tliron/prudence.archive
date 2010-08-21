@@ -21,6 +21,7 @@ import org.restlet.resource.ClientResource;
 
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
+import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.ExecutionException;
@@ -110,12 +111,51 @@ public abstract class DocumentServiceBase
 	 */
 	public void addDependency( String documentName ) throws ParsingException, DocumentException
 	{
-		DocumentDescriptor<Executable> documentDescriptor = getDocumentDescriptor( documentName );
-
 		// Add dependency
 		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
 		if( currentDocumentDescriptor != null )
-			currentDocumentDescriptor.getDependencies().add( documentDescriptor );
+			currentDocumentDescriptor.getDependencies().add( getDocumentDescriptor( documentName ) );
+	}
+
+	/**
+	 * Explicitly add a dependency to this document. Unlike
+	 * {@link #addDependency(String)}, any file can be added here. The contents
+	 * of the file are never read.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @throws ParsingException
+	 * @throws DocumentException
+	 */
+	public void addFileDependency( String documentName ) throws ParsingException, DocumentException
+	{
+		// Add dependency
+		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
+		if( currentDocumentDescriptor != null )
+			currentDocumentDescriptor.getDependencies().add( getFileDocumentDescriptor( documentName ) );
+	}
+
+	/**
+	 * Invalidates a document, which can affect documents that depend on it.
+	 * 
+	 * @throws DocumentException
+	 * @throws ParsingException
+	 */
+	public void invalidate( String documentName ) throws ParsingException, DocumentException
+	{
+		DocumentDescriptor<Executable> documentDescriptor = getDocumentDescriptor( documentName );
+		documentDescriptor.invalidate();
+	}
+
+	/**
+	 * Invalidates the current document, which can affect documents that depend
+	 * on it.
+	 */
+	public void invalidateCurrent()
+	{
+		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
+		if( currentDocumentDescriptor != null )
+			currentDocumentDescriptor.invalidate();
 	}
 
 	/**
@@ -224,4 +264,25 @@ public abstract class DocumentServiceBase
 	 * The document source.
 	 */
 	private final DocumentSource<Executable> documentSource;
+
+	/**
+	 * Gets a document descriptor without reading the contents of the file. Only
+	 * supported for {@link DocumentFileSource}.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @return The document descriptor
+	 * @throws ParsingException
+	 * @throws DocumentException
+	 */
+	private DocumentDescriptor<Executable> getFileDocumentDescriptor( String documentName ) throws ParsingException, DocumentException
+	{
+		if( documentSource instanceof DocumentFileSource<?> )
+		{
+			DocumentFileSource<Executable> documentFileSource = (DocumentFileSource<Executable>) documentSource;
+			return documentFileSource.getDocument( documentName, false );
+		}
+		else
+			throw new DocumentException( "File document descriptors only available for DocumentFileSource" );
+	}
 }

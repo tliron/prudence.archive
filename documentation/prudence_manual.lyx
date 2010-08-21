@@ -6176,7 +6176,7 @@ The query string is ignored by Prudence's static web handler, but since
 \end_layout
 
 \begin_layout Standard
-Since the above techniques require considerable discipline on the application
+Since the above techniques require considerable discipline from the application
  maintainers, the cache control filter is not enabled by default in Prudence.
  The following is an example on how to enable it in an application's /routing.js,
  while disabling it for file types that are frequently updated:
@@ -9527,6 +9527,13 @@ reference "../../scaling/|caching"
 
 \begin_layout Paragraph
 document.source
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-source"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -9552,6 +9559,45 @@ target "http://threecrickets.com/scripturian/"
 \end_inset
 
 's documentation for a complete reference.
+\end_layout
+
+\begin_layout Paragraph
+document.invalidateCurrent
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-invalidate-current"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Forces the current document to be marked as invalid, which would trigger
+ the current and dependent documents to be refreshed.
+ See 
+\bar under
+document.addDependency (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-add-dependency"
+
+\end_inset
+
+)
+\bar default
+ and 
+\bar under
+document.invalidate (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-invalidate"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -9787,6 +9833,19 @@ name "../api/|document-add-dependency"
 
 \begin_layout Standard
 Explicitly adds a dependency to this document.
+ The dependency is an internal document URI, identical to what would be
+ used in 
+\bar under
+document.execute (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-execute"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -9813,6 +9872,80 @@ reference "../api/|document-execute"
  not using document.execute.
  For example, if you are using your language's built-in library inclusion
  mechanisms.
+\end_layout
+
+\begin_layout Paragraph
+document.addFileDependency
+\end_layout
+
+\begin_layout Standard
+Like 
+\bar under
+document.addDependency (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-add-dependency"
+
+\end_inset
+
+)
+\bar default
+, except that any file path can be added as a dependency.
+ The contents of such files is ignored.
+\end_layout
+
+\begin_layout Standard
+For constructing the file path, you may want to use 
+\bar under
+document.source.basePath (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-source"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Paragraph
+document.invalidate
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-invalidate"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Forces the provided document to be marked as invalid, which would trigger
+ the document and dependent documents to be refreshed.
+ See 
+\bar under
+document.addDependency (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-add-dependency"
+
+\end_inset
+
+)
+\bar default
+ and 
+\bar under
+document.invalidateCurrent (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-invalidate-current"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -16170,6 +16303,51 @@ Can languages call each others' functions?
 
 \begin_layout Standard
 TODO
+\end_layout
+
+\begin_layout Subsubsection
+How to avoid the ``Adapter not available for language: xml'' parsing exception
+ for XML files?
+\end_layout
+
+\begin_layout Standard
+The problem is that the XML header confuses Scripturian, Prudence's langauge
+ parser, which considers the ``<?'' a possible scriptlet delimeter:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<?xml version='1.0' encoding='UTF-8'?>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The simple solution is to force Scripturian to use the ``<%'' for the page
+ via an empty scriptlet, ignoring all ``<?'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<% %><?xml version='1.0' encoding='UTF-8'?>
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection

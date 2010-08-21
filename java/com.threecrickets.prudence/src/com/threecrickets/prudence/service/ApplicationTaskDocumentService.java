@@ -55,16 +55,15 @@ public class ApplicationTaskDocumentService extends DocumentServiceBase
 		DocumentDescriptor<Executable> documentDescriptor;
 		try
 		{
-			documentDescriptor = Executable.createOnce( documentName, applicationTask.getDocumentSource(), false, applicationTask.getLanguageManager(), applicationTask.getDefaultLanguageTag(),
-				applicationTask.isPrepare() );
+			documentDescriptor = Executable.createOnce( documentName, getSource(), false, applicationTask.getLanguageManager(), applicationTask.getDefaultLanguageTag(), applicationTask.isPrepare() );
 		}
 		catch( DocumentNotFoundException x )
 		{
 			// Try the library directory
 			File libraryDirectory = applicationTask.getLibraryDirectoryRelative();
 			if( libraryDirectory != null )
-				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, applicationTask.getDocumentSource(), false, applicationTask.getLanguageManager(),
-					applicationTask.getDefaultLanguageTag(), applicationTask.isPrepare() );
+				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, applicationTask.getLanguageManager(), applicationTask.getDefaultLanguageTag(),
+					applicationTask.isPrepare() );
 			else
 				throw x;
 		}

@@ -248,7 +248,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		DocumentDescriptor<Executable> documentDescriptor;
 		try
 		{
-			documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
+			documentDescriptor = Executable.createOnce( documentName, getSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
 		}
 		catch( DocumentNotFoundException x )
 		{
@@ -257,8 +257,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				// Try the fragment directory
 				File fragmentDirectory = resource.getFragmentDirectoryRelative();
 				if( fragmentDirectory != null )
-					documentDescriptor = Executable.createOnce( fragmentDirectory.getPath() + "/" + documentName, resource.getDocumentSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
-						resource.isPrepare() );
+					documentDescriptor = Executable.createOnce( fragmentDirectory.getPath() + "/" + documentName, getSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
 				else
 					throw x;
 			}
@@ -296,15 +295,14 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		DocumentDescriptor<Executable> documentDescriptor;
 		try
 		{
-			documentDescriptor = Executable.createOnce( documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
+			documentDescriptor = Executable.createOnce( documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
 		}
 		catch( DocumentNotFoundException x )
 		{
 			File libraryDirectory = resource.getLibraryDirectoryRelative();
 			if( libraryDirectory != null )
 				// Try the library directory
-				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, resource.getDocumentSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
-					resource.isPrepare() );
+				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
 			else
 				throw x;
 		}
