@@ -98,6 +98,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	//
 
 	/**
+	 * The cache duration.
+	 * 
 	 * @return The cache duration in milliseconds
 	 * @see #setCacheDuration(long)
 	 */
@@ -118,12 +120,14 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	}
 
 	/**
+	 * The cache key pattern.
+	 * 
 	 * @return The cache key pattern
 	 * @see #setCacheKeyPattern(String)
 	 */
 	public String getCacheKeyPattern()
 	{
-		return (String) getCurrentDocumentDescriptor().getDocument().getAttributes().get( CACHE_KEY_PATTERN_ATTRIBUTE );
+		return getCacheKeyPattern( getCurrentDocumentDescriptor().getDocument() );
 	}
 
 	/**
@@ -143,46 +147,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public String getCacheKey()
 	{
-		String cacheKeyPattern = getCacheKeyPattern();
-		if( cacheKeyPattern == null )
-			return null;
-		else
-		{
-			Template template = new Template( cacheKeyPattern );
-
-			Reference captiveReference = CaptiveRedirector.getCaptiveReference( resource.getRequest() );
-			Reference resourceReference = resource.getRequest().getResourceRef();
-
-			// Our additional template variables: {dn}, {an} and {ptb}
-
-			if( cacheKeyPattern.contains( DOCUMENT_NAME_VARIABLE_FULL ) )
-				template.getVariables().put( DOCUMENT_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, getCurrentDocumentDescriptor().getDefaultName(), true, true ) );
-
-			if( cacheKeyPattern.contains( APPLICATION_NAME_VARIABLE_FULL ) )
-				template.getVariables().put( APPLICATION_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, resource.getApplication().getName(), true, true ) );
-
-			if( cacheKeyPattern.contains( PATH_TO_BASE_VARIABLE_FULL ) )
-			{
-				Reference reference = captiveReference != null ? captiveReference : resourceReference;
-				String pathToBase = reference.getBaseRef().getRelativeRef( reference ).getPath();
-				template.getVariables().put( PATH_TO_BASE_VARIABLE, new Variable( Variable.TYPE_ALL, pathToBase, true, true ) );
-			}
-
-			// Use captive reference as the resource reference
-			if( captiveReference != null )
-				resource.getRequest().setResourceRef( captiveReference );
-			try
-			{
-				// Cast it
-				return template.format( resource.getRequest(), resource.getResponse() );
-			}
-			finally
-			{
-				// Return regular reference
-				if( captiveReference != null )
-					resource.getRequest().setResourceRef( resourceReference );
-			}
-		}
+		return getCacheKey( getCurrentDocumentDescriptor() );
 	}
 
 	/**
@@ -241,28 +206,37 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 * @throws IOException
 	 * @see GeneratedTextResource#getFragmentDirectory()
 	 */
+	@SuppressWarnings("unchecked")
 	public Representation include( String documentName, boolean allowFragments ) throws ParsingException, ExecutionException, DocumentException, IOException
 	{
 		documentName = resource.validateDocumentName( documentName );
 
 		DocumentDescriptor<Executable> documentDescriptor;
-		try
+
+		// See if a document descriptor is cached in the request
+		documentDescriptor = (DocumentDescriptor<Executable>) resource.getRequest().getAttributes().remove( "com.threecrickets.prudence.GeneratedTextResource.documentDescriptor" );
+
+		if( documentDescriptor == null )
 		{
-			documentDescriptor = Executable.createOnce( documentName, getSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
-		}
-		catch( DocumentNotFoundException x )
-		{
-			if( allowFragments )
+			try
 			{
-				// Try the fragment directory
-				File fragmentDirectory = resource.getFragmentDirectoryRelative();
-				if( fragmentDirectory != null )
-					documentDescriptor = Executable.createOnce( fragmentDirectory.getPath() + "/" + documentName, getSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
+				documentDescriptor = Executable.createOnce( documentName, getSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
+			}
+			catch( DocumentNotFoundException x )
+			{
+				if( allowFragments )
+				{
+					// Try the fragment directory
+					File fragmentDirectory = resource.getFragmentDirectoryRelative();
+					if( fragmentDirectory != null )
+						documentDescriptor = Executable.createOnce( fragmentDirectory.getPath() + "/" + documentName, getSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
+							resource.isPrepare() );
+					else
+						throw x;
+				}
 				else
 					throw x;
 			}
-			else
-				throw x;
 		}
 
 		// Add dependency
@@ -284,6 +258,50 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		{
 			popDocumentDescriptor();
 		}
+	}
+
+	/**
+	 * Gets the cache entry for a document, if it exists and is valid.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @return The cache entry
+	 * @throws ParsingException
+	 * @throws DocumentException
+	 */
+	public CacheEntry getCacheEntry( String documentName ) throws ParsingException, DocumentException
+	{
+		documentName = resource.validateDocumentName( documentName );
+
+		DocumentDescriptor<Executable> documentDescriptor;
+		documentDescriptor = Executable.createOnce( documentName, getSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
+
+		// Cache the document descriptor in the request
+		resource.getRequest().getAttributes().put( "com.threecrickets.prudence.GeneratedTextResource.documentDescriptor", documentDescriptor );
+
+		String cacheKey = getCacheKey( documentDescriptor );
+		if( cacheKey != null )
+		{
+			Cache cache = resource.getCache();
+			if( cache != null )
+			{
+				CacheEntry cacheEntry = cache.fetch( cacheKey );
+				if( cacheEntry != null )
+				{
+					// Make sure the document is not newer than the cache
+					// entry
+					if( documentDescriptor.getDocument().getDocumentTimestamp() <= cacheEntry.getDocumentModificationDate().getTime() )
+					{
+						// Cache the cache entry in the request
+						resource.getRequest().getAttributes().put( "com.threecrickets.prudence.GeneratedTextResource.cacheEntry", cacheEntry );
+
+						return cacheEntry;
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -352,6 +370,18 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	private StringBuffer writerBuffer;
 
 	/**
+	 * The cache key pattern.
+	 * 
+	 * @param executable
+	 *        The executable
+	 * @return The cache key pattern
+	 */
+	private static String getCacheKeyPattern( Executable executable )
+	{
+		return (String) executable.getAttributes().get( CACHE_KEY_PATTERN_ATTRIBUTE );
+	}
+
+	/**
 	 * @param executable
 	 *        The executable
 	 * @param create
@@ -384,6 +414,57 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			return 0;
 		else
 			return executable.getLastExecutedTimestamp() + cacheDuration;
+	}
+
+	/**
+	 * Casts the cache key pattern for an executable.
+	 * 
+	 * @param documentDescriptor
+	 *        The document descriptor
+	 * @return The cache key or null
+	 */
+	private String getCacheKey( DocumentDescriptor<Executable> documentDescriptor )
+	{
+		String cacheKeyPattern = getCacheKeyPattern( documentDescriptor.getDocument() );
+		if( cacheKeyPattern == null )
+			return null;
+		else
+		{
+			Template template = new Template( cacheKeyPattern );
+
+			Reference captiveReference = CaptiveRedirector.getCaptiveReference( resource.getRequest() );
+			Reference resourceReference = resource.getRequest().getResourceRef();
+
+			// Our additional template variables: {dn}, {an} and {ptb}
+
+			if( cacheKeyPattern.contains( DOCUMENT_NAME_VARIABLE_FULL ) )
+				template.getVariables().put( DOCUMENT_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, documentDescriptor.getDefaultName(), true, true ) );
+
+			if( cacheKeyPattern.contains( APPLICATION_NAME_VARIABLE_FULL ) )
+				template.getVariables().put( APPLICATION_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, resource.getApplication().getName(), true, true ) );
+
+			if( cacheKeyPattern.contains( PATH_TO_BASE_VARIABLE_FULL ) )
+			{
+				Reference reference = captiveReference != null ? captiveReference : resourceReference;
+				String pathToBase = reference.getBaseRef().getRelativeRef( reference ).getPath();
+				template.getVariables().put( PATH_TO_BASE_VARIABLE, new Variable( Variable.TYPE_ALL, pathToBase, true, true ) );
+			}
+
+			// Use captive reference as the resource reference
+			if( captiveReference != null )
+				resource.getRequest().setResourceRef( captiveReference );
+			try
+			{
+				// Cast it
+				return template.format( resource.getRequest(), resource.getResponse() );
+			}
+			finally
+			{
+				// Return regular reference
+				if( captiveReference != null )
+					resource.getRequest().setResourceRef( resourceReference );
+			}
+		}
 	}
 
 	/**
@@ -468,6 +549,17 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				startPosition = writerBuffer.length();
 			}
 
+			// See if a valid cache entry has already been cached in the request
+			CacheEntry cacheEntry = (CacheEntry) resource.getRequest().getAttributes().get( "com.threecrickets.prudence.GeneratedTextResource.cacheEntry" );
+			if( cacheEntry != null )
+			{
+				// We want to write this, too, for includes
+				if( writer != null )
+					writer.write( cacheEntry.getString() );
+
+				return cacheEntry.represent();
+			}
+
 			// Attempt to use cache
 			String cacheKey = getCacheKey();
 			if( cacheKey != null )
@@ -475,7 +567,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				Cache cache = resource.getCache();
 				if( cache != null )
 				{
-					CacheEntry cacheEntry = cache.fetch( cacheKey );
+					cacheEntry = cache.fetch( cacheKey );
 					if( cacheEntry != null )
 					{
 						// Make sure the document is not newer than the cache

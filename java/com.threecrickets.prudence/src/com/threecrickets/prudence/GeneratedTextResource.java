@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Context;
@@ -25,12 +26,14 @@ import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
+import org.restlet.representation.RepresentationInfo;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.cache.Cache;
+import com.threecrickets.prudence.cache.CacheEntry;
 import com.threecrickets.prudence.internal.GeneratedTextDeferredRepresentation;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.prudence.service.ApplicationService;
@@ -852,6 +855,42 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	@Override
+	public RepresentationInfo getInfo() throws ResourceException
+	{
+		return getInfo( null );
+	}
+
+	@Override
+	public RepresentationInfo getInfo( Variant variant ) throws ResourceException
+	{
+		Request request = getRequest();
+		Map<String, Object> attributes = request.getAttributes();
+		String documentName = request.getResourceRef().getRemainingPart( true, false );
+		documentName = validateDocumentName( documentName );
+
+		// Cache the document name in the request
+		attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentname", documentName );
+
+		GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this, null, null, variant );
+		try
+		{
+			CacheEntry cacheEntry = documentService.getCacheEntry( documentName );
+			if( cacheEntry != null )
+				return cacheEntry.getInfo();
+			else
+				return get( variant );
+		}
+		catch( ParsingException x )
+		{
+			throw new ResourceException( x );
+		}
+		catch( DocumentException x )
+		{
+			throw new ResourceException( x );
+		}
+	}
+
+	@Override
 	public void doRelease()
 	{
 		super.doRelease();
@@ -1001,8 +1040,15 @@ public class GeneratedTextResource extends ServerResource
 	private Representation execute( Representation entity, Variant variant ) throws ResourceException
 	{
 		Request request = getRequest();
-		String documentName = request.getResourceRef().getRemainingPart( true, false );
-		documentName = validateDocumentName( documentName );
+		Map<String, Object> attributes = request.getAttributes();
+
+		// Check for cached document name in the request
+		String documentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentname" );
+		if( documentName == null )
+		{
+			documentName = request.getResourceRef().getRemainingPart( true, false );
+			documentName = validateDocumentName( documentName );
+		}
 
 		try
 		{

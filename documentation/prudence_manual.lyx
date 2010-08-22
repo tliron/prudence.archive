@@ -710,7 +710,7 @@ To come back to where we started: a resource-oriented architecture requires
 The principles of resource-orientation can and are applied in many systems.
  The word wide web, of course, with its ecology of web browsers, web servers,
  certificate authorities, etc., is the most obvious model.
- But other core internet systems, such as email (SMTP, POP, IMAP), file
+ But other core Internet systems, such as email (SMTP, POP, IMAP), file
  transfer (FTP, WebDAV) also implement some subset of REST.
  Your application can do this, too, and enjoy the same potential for scalability
  as these global, open implementations.
@@ -3962,7 +3962,7 @@ Fragments allow you to compose complex pages out of reusable building blocks.
 generating HTML (page
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../generating-html/"
+reference "../generating-html/|includes-and-fragments"
 
 \end_inset
 
@@ -4328,7 +4328,7 @@ applicationHomeURL
 \end_layout
 
 \begin_layout Standard
-The URL (internet or intranet) of the application.
+The URL (Internet or intranet) of the application.
  This may be displayed in certain default error messages, as a way to contact
  the application administrators or technical support.
  Note that there is only one home URL, even if the application is attached
@@ -4576,6 +4576,13 @@ This is so we can see the source code for scripts by adding ?source=true
 
 \begin_layout Paragraph
 resourcesMinimumTimeBetweenValidityChecks
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|resources-minimum-time-between-validity-checks"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4932,8 +4939,7 @@ preheatResources
 
 \begin_layout Standard
 Note that all /resources/ and /web/dynamic/ files are automatically preheated.
- List additional, custom URLs here that you want heated up as soon as Prudence
- starts.
+ List additional URLs here that you want heated up as soon as Prudence starts.
  This is most useful in conjunction with 
 \bar under
 custom routing, such as capturing (page 
@@ -5028,11 +5034,6 @@ Prudence has excellent support for generating HTML by allowing you to embed
 \end_layout
 
 \begin_layout Standard
-While we're titling this section ``Generating HTML,'' all of these methods
- can be used to generate any textual format, such as XML, JSON, etc.
-\end_layout
-
-\begin_layout Standard
 Note that Prudence can also generate HTML at a ``lower'' level, via 
 \bar under
 resources (page 
@@ -5047,6 +5048,11 @@ reference "../resources/"
  that return HTML representations.
 \end_layout
 
+\begin_layout Quote
+While we're titling this section ``Generating HTML,'' all of these methods
+ can be used to generate any textual format, such as XML, JSON, etc.
+\end_layout
+
 \begin_layout Subsection
 Files
 \end_layout
@@ -5056,6 +5062,18 @@ All files under /web/dynamic/ are assumed to be text files, and are mapped
  to URLs using the directory and file path, but without the filename extension.
  For example, the file ``/web/dynamic/thread/list.html'' would map to a URL
  like ``http://mydomain.org/forum/thread/list/''.
+ You can also 
+\bar under
+``capture'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing"
+
+\end_inset
+
+)
+\bar default
+ many URLs to be handled by a single file.
 \end_layout
 
 \begin_layout Standard
@@ -5112,7 +5130,7 @@ reference "../routing/"
 
 )
 \bar default
- for an in-depth explanation.
+ for an in-depth explanation of how files become URLs.
 \end_layout
 
 \begin_layout Subsection
@@ -5256,7 +5274,7 @@ API
 \end_layout
 
 \begin_layout Standard
-Beyond what's available to your programming language, Scriptlets have access
+Beyond what's available to your programming language, scriptlets have access
  to Prudence's elaborate, powerful set of services via its 
 \bar under
 API (page 
@@ -5400,7 +5418,7 @@ data = getData()
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 Expression Scriptlets
 \begin_inset CommandInset label
 LatexCommand label
@@ -5485,7 +5503,7 @@ This is line number <%= i>5 ? '<b>' + i + '</b>' : i %> out of 10.<br/>
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 Includes and Fragments
 \begin_inset CommandInset label
 LatexCommand label
@@ -5627,10 +5645,10 @@ In Prudence, each document has its own caching characteristics, allowing
  files.
  See 
 \bar under
-document.cacheKeyPattern (page 
+caching (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|document-cache-key-pattern"
+reference "../generating-html/|caching"
 
 \end_inset
 
@@ -5650,8 +5668,8 @@ reference "../../scaling/|caching"
 .
 \end_layout
 
-\begin_layout Subsubsection
-Fragments
+\begin_layout Paragraph
+/web/fragments/
 \end_layout
 
 \begin_layout Standard
@@ -5668,8 +5686,15 @@ To avoid external exposure, put files in /web/framents/ instead of /web/dynamic/
  Files in /web/fragments/ are only available via include scriptlets.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 Mixing Languages
+\begin_inset CommandInset label
+LatexCommand label
+name "../generating-html/|mixing-languages"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5726,7 +5751,7 @@ for(var i = 0; i < 10; i++) {
 
 \begin_layout Plain Layout
 
-	print('Line ' + i + ' of 10')
+	print('Line ' + i + ' of 10<br/>')
 \end_layout
 
 \begin_layout Plain Layout
@@ -5764,12 +5789,12 @@ Python:<br/>
 
 \begin_layout Plain Layout
 
-for i in range(1..10):
+for i in range(1, 10):
 \end_layout
 
 \begin_layout Plain Layout
 
-	print 'Line %s of 10' % i
+	print 'Line %s of 10<br/>' % i
 \end_layout
 
 \begin_layout Plain Layout
@@ -5825,10 +5850,11 @@ status open
 \begin_layout Quote
 Note that scriptlets in a specific language will only work if you have the
  the appropriate language JARs under your /libraries/ directory.
- The Prudence ``Kitchen Sink'' Edition supports all languages.
+ The Prudence ``Kitchen Sink'' Edition comes with all languages supported
+ by Prudence.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 Templating Languages
 \end_layout
 
@@ -5839,8 +5865,8 @@ You might think that mixing programming languages is a bad idea in general,
 \emph on
 great
 \emph default
- idea if you consider that Prudence comes with two high-performance templating
- languages, 
+ idea if you consider that all Prudence flavors come with two high-performance
+ templating languages, 
 \begin_inset CommandInset href
 LatexCommand href
 name "Velocity"
@@ -5971,13 +5997,29 @@ Not only is the Velocity code more readable and easier to manage, but it
  Prudence lets you use the right tool for the job.
 \end_layout
 
+\begin_layout Standard
+Refer to the documentation of Velocity and Succinct to learn more about
+ these templating languages.
+\end_layout
+
 \begin_layout Subsubsection
 In-Flow Scriptlets
 \end_layout
 
 \begin_layout Standard
-One tiny hiccup to be aware when mixing languages of is that code blocks
- can no longer trivially span several scriptlets.
+One tiny hiccup to be aware of when 
+\bar under
+mixing languages (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|mixing-languages"
+
+\end_inset
+
+)
+\bar default
+ is that code blocks can not trivially span several scriptlets in multiple
+ languages.
  For example, this won't immediately work:
 \end_layout
 
@@ -6177,70 +6219,280 @@ Life
 \end_layout
 
 \begin_layout Standard
-As mentioned, files are only compiled once, when they are first requested
- by a client.
+Files and all their scriptlets are only compiled once, when they are first
+ requested by a client.
+ The compiled code is kept in a cache, under you Prudence /cache/ directory.
  From then on, each request is handled by the compiled version.
 \end_layout
 
 \begin_layout Standard
-What if you edit the file? Prudence can automatically pick up your changes
+Note that many threads might be running the same code concurrently: make
+ sure you understand the concerns of concurrent programming, as detailed
+ in 
+\bar under
+``Managing State'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|concurrency"
+
+\end_inset
+
+)
+\bar default
+.
+ Note, too, that 
+\bar under
+global variables are not kept or shared between requests (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|global-variables"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+What if you edit the file? Prudence will automatically pick up your changes
  and recompile.
  This happens on the fly, while the application is running.
  Are you worried that this check would happen for every client request?
- You can easily disable this feature for production deployments, or control
- the minimum time interval in which Prudence assumes the file is unchanged.
+ You can easily control the 
+\bar under
+minimum time interval (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|dynamic-web-minimum-time-between-validity-checks"
+
+\end_inset
+
+)
+\bar default
+ in which Prudence assumes the file is unchanged, and will not check the
+ file for validity.
 \end_layout
 
-\begin_layout Quote
-Your compiled file can be run by multiple threads concurrently.
- It is up to you to avoid race conditions and guarantee thread safety.
+\begin_layout Standard
+An updated file would also cause 
+\bar under
+cache entries (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|caching"
+
+\end_inset
+
+)
+\bar default
+ that use this file to be invalidated.
+\end_layout
+
+\begin_layout Standard
+You can use 
+\bar under
+document.addDependency (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-add-dependency"
+
+\end_inset
+
+)
+\bar default
+ to associate your own life to that of another file.
+ If a dependency is updated, it will force your file to be reloaded.
 \end_layout
 
 \begin_layout Subsection
 Caching
+\begin_inset CommandInset label
+LatexCommand label
+name "../generating-html/|caching"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-You've chosen to use dynamically-generated HTML because you want request
- to be able to have different results.
- However, sometimes you do not expect results to change very often.
+You've chosen to generate HTML dynamically because you want requests to
+ be able to have different results.
+ However, sometimes you do not expect results, or parts of the results,
+ to change very often.
  For example, a home web page might display the local temperature, but it
- would probably be good enough to update it every hour, instead of per request.
+ would probably be good enough to update it every half hour, instead of
+ per every request.
 \end_layout
 
 \begin_layout Standard
 Depending on what your scriptlets are doing, dynamically generating a web
  page can be very costly, and could be a performance and scalability bottleneck
  for your application under heavy load.
- You don't want to waste energy and resources to generate results that do
- not change.
+ You don't want to waste resources to regenerate results that have not changed.
 \end_layout
 
 \begin_layout Standard
 The solution is to cache results.
- Sometimes even caching for tiny time intervals can make a huge different
+ Sometimes caching for even tiny time intervals can make a huge different
  in the ability of your application to handle load.
- For example, let's say that in order to fetch the local temperature for
- our web page we need to query a service on the network.
+ For example, let's say that in order to fetch the current user count for
+ our home page we need to query a database on the network.
  Without caching, every client request would result in a service query.
  Let's say our web page gets 100 hits per second.
- Even just caching our home page for 5 seconds would throttle our service
+ Caching our home page for a mere 5 seconds would throttle our database
  queries down to 1 every 5 seconds, vs.
  500 every 5 seconds without caching.
- And users would get temperature readings up to 5 seconds old.
- It's a negligible usability with enormous savings.
+ And users would get a current user count to 5 seconds old.
+ It's a tolerable inaccuracy that generates enormous savings.
 \end_layout
 
 \begin_layout Standard
 This was a trivial example.
  Truly scalable software requires smart caching everywhere, from the level
  of file and database access all the way to the generated results.
+ For a full treatment of the topic, see 
+\bar under
+``Scaling Tips'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../../scaling/|caching"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
 Prudence handles caching of results.
- Every file has its own caching interval, which you can access and change
- via scriptlet:
+ Every file has its own caching interval, 
+\bar under
+document.cacheDuration (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-duration"
+
+\end_inset
+
+)
+\bar default
+, which you can access and change in scriptlets.
+ For example, here's the home page mentioned above:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+document.cacheDuration = 5 * 1000 // five seconds
+\end_layout
+
+\begin_layout Plain Layout
+
+var userCount = myDatabase.getCurrentUsers().count()
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p>This is the home page!</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p><%= userCount %> users are currently logged in.</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p><%& 'temperature/' %></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here is ``/web/fragments/temperature.html'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+document.cacheDuration = 30 * 60 * 1000 // half an hour
+\end_layout
+
+\begin_layout Plain Layout
+
+var temperature = weatherServer.fetchCurrentTemperature()
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+The current temperature is <%= temperature %> degrees.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Any file that includes the temperature fragment will use a cached result,
+ up to half an hour old.
+ The home page, however, is regenerated every 5 seconds, so that the user
+ count is up to 5 seconds old.
+ Prudence lets you finely control how caching works.
 \end_layout
 
 \begin_layout Standard
@@ -6250,83 +6502,370 @@ Note that you can change the cache interval dynamically.
  hours'' where users expect to see especially up-to-date results.
 \end_layout
 
-\begin_layout Standard
-By using includes, you can fine-tune your caching strategy even more.
- Since each file has its own caching interval, you can fragment your page
- into parts with different caching sensitivity.
- For example, you can put the temperature reading in its own fragment, with
- a high cache interval, with another fragment being a ``number of visitors
- today'' counter with no cache interval, always up-to-date.
- The home page itself could have its own interval, or none.
- This setup can help you think of caching problems independently, while
- allowing for subtle overall schemes.
+\begin_layout Subsection
+Content Negotiation
 \end_layout
 
 \begin_layout Standard
-TODO: default caching time in application context
+TODO
 \end_layout
 
 \begin_layout Subsection
-Streaming
+Handling HTML Forms
 \end_layout
 
 \begin_layout Standard
-Sometimes the client expects a slow, and long response from your application.
- For example, a list of bank account transactions for the past year might
- be hundreds of rows in length.
- The client does not want to wait until you've produced the entire result,
- but can start consuming results as they come.
+Use of HTML's <form> tag is going out of fashion, as more powerful JavaScript-ba
+sed approaches, such as ``AJAX,'' are used instead to send data from the
+ client to the server and to receive a response.
+ Prudence has excellent support for ``AJAX'' via 
+\bar under
+resources (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/"
+
+\end_inset
+
+)
+\bar default
+.
+ Nevertheless, Prudence also fully supports HTML forms, via the 
+\bar under
+conversation.form API (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-form"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
-Streaming mode lets send results to your client as you produce them.
+Let's start with a simple form:
 \end_layout
 
 \begin_layout Standard
-There are risks to streaming mode.
- If your scriptlet code fails along the way, the stream will stop and the
- client might get broken results, For example, an HTML table might not get
- its closing </table> tag, leading to a broken rendering on a web browser.
- Of course, this is a general risk, and can happen due to connection failures
- along the way.
- It's just something you need to be extra careful about in streaming mode.
- So, make sure you catch all exceptions and gracefully finish the request
- for the client in case of error.
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
 \end_layout
 
-\begin_layout Subsection
-HTML forms
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+<form name="contact" method="POST">
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p>Your message to us:</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p><textarea name="content" cols="50" rows="15"></textarea></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p>An email address for us to send you a reply:</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p><input name="email" type="text"></input></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p><button type="submit">Send</button></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+</form>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-The files in /web/dynamic/ are meant to be sent to the clients, in response
- to an HTTP GET.
- Later on, we'll look at files under /resources/, which can respond to all
- HTTP verbs.
- However, there is one case in which you might want to respond to HTTP POST
- and PUT directly in your /web/dynamic/ files: HTML form submissions.
- Though hardly ideal, HTML forms are the most universally supported technique
- of getting input from clients, and are easy to set up.
+As it stands, the above form will simply render again when the client clicks
+ ``send.'' Let's add a scriptlet to support the ``POST'' case:
 \end_layout
 
 \begin_layout Standard
-Prudence's solution is trivial: it attaches your file to HTTP POST and PUT
- in addition to HTTP GET.
- This leaves it up to you to handle each method accordingly.
- Here is an example:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+<% if(conversation.request.method == 'POST') { %>
+\end_layout
+
+\begin_layout Plain Layout
+
+Thank you for your message! You will be getting an answer to <%= conversation.for
+m.get('email') %> soon.
+\end_layout
+
+\begin_layout Plain Layout
+
+<% } else { %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<form name="contact" method="POST">
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p>Your message to us:</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p><textarea name="content" cols="50" rows="15"></textarea></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p>An email address for us to send you a reply:</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p><input name="email" type="text"></input></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p><button type="submit">Send</button></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+</form>
+\end_layout
+
+\begin_layout Plain Layout
+
+<% } %>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Handling form responses via scriplets can make your files hard to read,
- as they turn into a patchwork of various results all overlapped in one
- file.
- This can be cleaned up via includes:
+Pretty simple!
+\end_layout
+
+\begin_layout Paragraph
+Routing GET and POST
+\begin_inset CommandInset label
+LatexCommand label
+name "../generating-html/|routing-get-and-post"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Still, it might make more sense to remove all this form handling logic from
- /web/dynamic/ to /resources/.
- We'll show you an example of it in the next section.
+You might want to separate the form handler above into two fragments, one
+ for displaying the form and the other for processing it.
+ The main form could then include either fragment according to the value
+ of conversation.request.method.
+\end_layout
+
+\begin_layout Standard
+However, you can also use Prudence's 
+\bar under
+capturing of URI templates (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|uri-templates"
+
+\end_inset
+
+)
+\bar default
+ to automatically use either file without a main file to switch between
+ the two.
+ Here's an example application routing.js:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+document.execute('defaults/application/routing/')
+\end_layout
+
+\begin_layout Plain Layout
+
+router.capture('contact/', 'contact/{m}/')
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can then have two files, ``contact/GET.html'' and ``contact/PUT.html''
+ to handle each method for the same ``contact/'' URL.
+\end_layout
+
+\begin_layout Paragraph
+Handling POST with a Resource
+\end_layout
+
+\begin_layout Standard
+A hybrid solution is to direct the form to a different URL, where you use
+ a 
+\bar under
+resource (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/"
+
+\end_inset
+
+)
+\bar default
+ instead of a scriptlet to handle POST.
+ Our example form tag would thus be:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<form name="contact" method="POST" action="/send/">
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And then, under /resources/send.js:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+function handleInit(conversation) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('text/html')
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+function handlePost(conversation) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	var email = conversation.form.get('email')
+\end_layout
+
+\begin_layout Plain Layout
+
+	return '<html><body>' +
+\end_layout
+
+\begin_layout Plain Layout
+
+		'Thank you for your message! You will be getting an answer to ' + email
+ + ' soon.' +
+\end_layout
+
+\begin_layout Plain Layout
+
+		'</body></html>'
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -6341,20 +6880,1157 @@ name "../resources/"
 \end_layout
 
 \begin_layout Standard
-Resources as API.
+In Prudence, ``resources'' are encapsulated operational units similar to
+ ``objects'' in object-oriented architectures.
+ Resources, however, have a stricter structure than objects and define a
+ messaging system more suitable for distributed environments such as the
+ Internet and the World Wide Web.
+ The idea of a ``resource-oriented architecture,'' often called ``REST,''
+ is covered in depth in `
+\bar under
+`Making the Case for REST'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../../rest/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Subsection
+Files
 \end_layout
 
 \begin_layout Standard
-There's no need to maintain a separate ``internal API,'' with REST resources
- serving as an ``external API.'' Your resources are available internally,
- without having to use HTTP.
- A single, uniform API is more maintainable, and less prone to bugs.
- Additionally, the internal connectivity is an easy way to test your resources.
- See below for internal access to your resources.
+All files under /resources/ are assumed to be source code files, and are
+ mapped to URLs using the directory and file path, but without the filename
+ extension.
+ For example, the file ``/resources/thread/list.js'' would map to a URL like
+ ``http://mydomain.org/forum/thread/list/''.
+ You can also 
+\bar under
+``capture'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing"
+
+\end_inset
+
+)
+\bar default
+ many URLs to be handled by a single file.
+\end_layout
+
+\begin_layout Standard
+The filename's extension will be used to determine the language of the source
+ code.
+\end_layout
+
+\begin_layout Standard
+The above is a very brief overview; see 
+\bar under
+routing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/"
+
+\end_inset
+
+)
+\bar default
+ for an in-depth explanation of how files become URLs.
 \end_layout
 
 \begin_layout Subsection
 Life
+\end_layout
+
+\begin_layout Standard
+Files are only compiled once, when they are first requested by a client.
+ The compiled code is kept in a cache, under you Prudence /cache/ directory.
+ From then on, each request is handled by the compiled version.
+\end_layout
+
+\begin_layout Standard
+Note that many threads might be running the same code concurrently: make
+ sure you understand the concerns of concurrent programming, as detailed
+ in 
+\bar under
+``Managing State'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|concurrency"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+What if you edit the file? Prudence will automatically pick up your changes
+ and recompile.
+ This happens on the fly, while the application is running.
+ Are you worried that this check would happen for every client request?
+ You can easily control the 
+\bar under
+minimum time interval (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|resources-minimum-time-between-validity-checks"
+
+\end_inset
+
+)
+\bar default
+ in which Prudence assumes the file is unchanged, and will not check the
+ file for validity.
+\end_layout
+
+\begin_layout Standard
+You can use 
+\bar under
+document.addDependency (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-add-dependency"
+
+\end_inset
+
+)
+\bar default
+ to associate your own life to that of another file.
+ If a dependency is updated, it will force your file to be reloaded.
+\end_layout
+
+\begin_layout Standard
+Note that 
+\bar under
+global variables are not kept or shared between such file updates (page
+ 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|global-variables"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Subsection
+Source Code
+\end_layout
+
+\begin_layout Subsubsection
+Global Source Code
+\end_layout
+
+\begin_layout Standard
+The first time your source code is loaded, at the time of the first user
+ request, it is executed from start to finish.
+ That means that any code outside of the entry points is run immediately.
+\end_layout
+
+\begin_layout Standard
+Thus, global source code can be a good place to initialize various services
+ you need for handling requests.
+ Just be very careful about two things:
+\end_layout
+
+\begin_layout Itemize
+
+\bar under
+Global variables are not kept or shared between file updates (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|global-variables"
+
+\end_inset
+
+)
+\bar default
+, which cause the file to be reloaded, recompiled, and thus re-executed.
+ Use 
+\bar under
+application.globals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-globals"
+
+\end_inset
+
+)
+\bar default
+ instead.
+\end_layout
+
+\begin_layout Itemize
+The re-execution mentioned above can cause your services to be re-initialized.
+ This can be very undesirable, because the service previously initialized
+ may not have been released.
+ It can even lead to errors.
+ It's thus a good idea to first check if the service has already been initialize
+d.
+ Storing references in 
+\bar under
+application.globals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-globals"
+
+\end_inset
+
+)
+\bar default
+ is a great way to keep track of this.
+\end_layout
+
+\begin_layout Standard
+Consider using the 
+\bar under
+handleInit entry point (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|handle-init"
+
+\end_inset
+
+)
+\bar default
+ instead of global source code for service initialization.
+ Because handleInit is called for every request, you can make sure to check
+ there if the services you need are up or not.
+\end_layout
+
+\begin_layout Standard
+You may also want to run 
+\bar under
+maintenance tasks (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../tasks/"
+
+\end_inset
+
+)
+\bar default
+ occasionally to check for and clean up unused services.
+\end_layout
+
+\begin_layout Subsubsection
+API
+\end_layout
+
+\begin_layout Standard
+Beyond what's available to your programming language, resources have access
+ to Prudence's elaborate, powerful set of services via its 
+\bar under
+API (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Subsubsection
+Code Libraries
+\end_layout
+
+\begin_layout Standard
+Code files you put in your application's /libraries/ subdirectory can be
+ accesses using your language's code inclusion mechanism.
+ Here are examples in various languages.
+ Let's assume that there is a file named /libraries/util/data.*, which defines
+ a function called getData().
+\end_layout
+
+\begin_layout Itemize
+Python:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+from util.data import getData
+\end_layout
+
+\begin_layout Plain Layout
+
+data = getData()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Ruby:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+require 'util/data.rb'
+\end_layout
+
+\begin_layout Plain Layout
+
+$data = get_data
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Clojure:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+(use 'util.data)
+\end_layout
+
+\begin_layout Plain Layout
+
+(def data (get-data))
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+PHP:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+require 'util/data.php';
+\end_layout
+
+\begin_layout Plain Layout
+
+$data = get_data();
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+JavaScript and Groovy do not have a built-in code inclusion mechanism, but
+ they can use Prudence's 
+\bar under
+document.execute API (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-execute"
+
+\end_inset
+
+)
+\bar default
+:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+document.execute('util/data/')
+\end_layout
+
+\begin_layout Plain Layout
+
+data = getData()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Entry Points
+\begin_inset CommandInset label
+LatexCommand label
+name "../resources/|entry-points"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+What Are They?
+\end_layout
+
+\begin_layout Standard
+Each file is a regular source code file, but a few special ``entry points''
+ are used by Prudence to connect user requests to your resource.
+ All entry points except one (handleInit) are optional.
+ We'll document each entry point below, but first, here's what an ``entry
+ point'' means for each flavor of Prudence:
+\end_layout
+
+\begin_layout Itemize
+Python uses global functions:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def handle_get(conversation):
+\end_layout
+
+\begin_layout Plain Layout
+
+	return 'Hello, world!'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Ruby uses global methods:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def handle_get conversation
+\end_layout
+
+\begin_layout Plain Layout
+
+	return 'Hello, world!'
+\end_layout
+
+\begin_layout Plain Layout
+
+end
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Clojure uses functions in the current namespace:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+(defn handle-get [conversation]
+\end_layout
+
+\begin_layout Plain Layout
+
+	'Hello, World!')
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+JavaScript uses global functions:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+function handleGet(conversation) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	return 'Hello, world!'
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+PHP uses global functions:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+function handle_get($conversation) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	return 'Hello, World!';
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Groovy uses closures tied to global variables (there are no global methods
+ in Groovy):
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+handleGet = { conversation ->
+\end_layout
+
+\begin_layout Plain Layout
+
+	return 'Hello, World!'
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that the name of the entry point follows typical conventions for each
+ language.
+ In this documentation, we'll use ``camel case'' (handleGet), but be sure
+ to replace the names following the examples above.
+\end_layout
+
+\begin_layout Standard
+All entry points accept the 
+\bar under
+``conversation'' service (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation"
+
+\end_inset
+
+)
+\bar default
+ as the sole argument.
+ The other services (``application'', ``executable'', etc.) are available
+ as global variables.
+\end_layout
+
+\begin_layout Subsubsection
+handleInit
+\begin_inset CommandInset label
+LatexCommand label
+name "../resources/|handle-init"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is the only required entry point.
+ It is called once for every user request, and always before any of the
+ other entry points.
+\end_layout
+
+\begin_layout Standard
+The main work is to initialize supported media types via 
+\bar under
+conversation.addMediaType (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-add-media-type"
+
+\end_inset
+
+)
+\bar default
+, in order of preference.
+ For example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+function handleInit(conversation) {
+\end_layout
+
+\begin_layout Plain Layout
+
+    conversation.addMediaTypeByName('application/json')
+\end_layout
+
+\begin_layout Plain Layout
+
+    conversation.addMediaTypeByName('text/plain') 
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Prudence handles content negotiation automatically, choosing the best media
+ type according to list of acceptable and preferred formats sent by the
+ client and this list.
+\end_layout
+
+\begin_layout Quote
+You might wonder why we add these supported media types dynamically for
+ each request, since they are usually always the same.
+ The reason is that sometimes they may not be the same.
+ In handleInit, you can check for various conditions of the conversation,
+ or even external to the conversation, to decide which media types to support.
+ For example, you might not want to support XHTML for old browsers, but
+ you'd want it at the top of the list for new browsers.
+ Or, you might not be able to support PDF in case an external service is
+ down.
+ In which case, you won't want it on the list at all, in which case content
+ negotiation would choose a different format that the client supports, such
+ as DVI.
+\end_layout
+
+\begin_layout Quote
+So, this gives you a lot flexibility, at no real expense: adding media types
+ per request is extremely lightweight.
+\end_layout
+
+\begin_layout Subsubsection
+handleGet
+\begin_inset CommandInset label
+LatexCommand label
+name "../resources/|handle-get"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Handles HTTP ``GET'' requests.
+\end_layout
+
+\begin_layout Standard
+In a conventional 
+\bar under
+resource-oriented architecture (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../../rest/"
+
+\end_inset
+
+)
+\bar default
+, clients will not be expecting the resource to be altered in any way by
+ a GET operation.
+\end_layout
+
+\begin_layout Standard
+What you'll usually do here is construct a representation of the resource,
+ possibly according to specific parameters of the request, and return this
+ representation to the client.
+ See the 
+\bar under
+``conversation'' API documentation (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation"
+
+\end_inset
+
+)
+\bar default
+ for a complete reference.
+ Note especially that if you've 
+\bar under
+captured URI segments (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing"
+
+\end_inset
+
+)
+\bar default
+, they'll be available in 
+\bar under
+conversation.locals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-locals"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+The following return types are supported:
+\end_layout
+
+\begin_layout Itemize
+Numbers: Returns the number as an HTTP status code to the client, with no
+ other content.
+ Usually used for errors.
+ For example, 404 means ``not found.'' Note that 
+\bar under
+error capturing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing-errors"
+
+\end_inset
+
+)
+\bar default
+ can let you take over and return an appropriate error page to the client.
+\end_layout
+
+\begin_layout Itemize
+Restlet Representation instances: You can construct and return a Restlet
+ representation directly.
+ See the Restlet documentation for more information.
+\end_layout
+
+\begin_layout Itemize
+Anything else: Other return values are converted into strings, if they are
+ not strings already, and are returned as textual representations to the
+ client.
+\end_layout
+
+\begin_layout Standard
+To optimize for scalability, consider coupling handleGet with a 
+\bar under
+handleGetInfo entry point (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|handle-get-info"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Subsubsection
+handlePost
+\begin_inset CommandInset label
+LatexCommand label
+name "../resources/|handle-post"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Handles HTTP ``POST'' requests.
+\end_layout
+
+\begin_layout Standard
+In a conventional 
+\bar under
+resource-oriented architecture (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../../rest/"
+
+\end_inset
+
+)
+\bar default
+, POST is the ``update'' operation.
+ Clients will expect the resource to already exist for the POST operation
+ to succeed.
+ That is, a call to GET before the POST may succeed.
+ Clients expect you to return a modified representation, in the selected
+ media type, if the POST succeeded.
+ Subsequent GET operations would then return the same modified representation.
+ A failed POST should not alter the resource.
+\end_layout
+
+\begin_layout Standard
+Note that the entity sent by the client does not have to be identical in
+ format or content to what you return.
+ In fact, it's likely that the client will send smaller delta updates in
+ a POST, rather than a complete representation.
+\end_layout
+
+\begin_layout Standard
+What you'll usually do here is fetch the data, and alter it according to
+ data sent by the client.
+ See the 
+\bar under
+``conversation'' API documentation (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation"
+
+\end_inset
+
+)
+\bar default
+ for a complete reference.
+ Note especially that if you've 
+\bar under
+captured URI segments (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing"
+
+\end_inset
+
+)
+\bar default
+, they'll be available in 
+\bar under
+conversation.locals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-locals"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+handleGet (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|handle-get"
+
+\end_inset
+
+)
+\bar default
+ for supported return types.
+ In fact, you may want handlePost to share the same code path as handleGet
+ for creating the representation.
+\end_layout
+
+\begin_layout Subsubsection
+handlePut
+\begin_inset CommandInset label
+LatexCommand label
+name "../resources/|handle-put"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Handles HTTP ``PUT'' requests.
+\end_layout
+
+\begin_layout Standard
+In a conventional 
+\bar under
+resource-oriented architecture (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../../rest/"
+
+\end_inset
+
+)
+\bar default
+, PUT is the ``create'' operation.
+ Clients will expect whatever current data exists in the resource to be
+ discarded, and for you to return a representation of the new resource in
+ the selected media type.
+ A failed PUT should not alter the resource.
+\end_layout
+
+\begin_layout Standard
+Note that the entity sent by the client does not have to be identical in
+ format or content to what you return.
+ In fact, it's likely that you will return more information to the client
+ than what was sent.
+\end_layout
+
+\begin_layout Standard
+What you'll usually do here is parse and store the data sent by the client.
+ See the 
+\bar under
+``conversation'' API documentation (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation"
+
+\end_inset
+
+)
+\bar default
+ for a complete reference.
+ Note especially that if you've 
+\bar under
+captured URI segments (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing"
+
+\end_inset
+
+)
+\bar default
+, they'll be available in 
+\bar under
+conversation.locals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-locals"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+handleGet (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|handle-get"
+
+\end_inset
+
+)
+\bar default
+ for supported return types.
+ In fact, you may want handlePut to share the same code path as handleGet
+ for creating the representation.
+\end_layout
+
+\begin_layout Subsubsection
+handleDelete
+\begin_inset CommandInset label
+LatexCommand label
+name "../resources/|handle-delete"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Handles HTTP ``DELETE'' requests.
+\end_layout
+
+\begin_layout Standard
+In a conventional 
+\bar under
+resource-oriented architecture (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../../rest/"
+
+\end_inset
+
+)
+\bar default
+, clients expect subsequent GET operations to fail with a ``not found''
+ (404) code.
+ A DELETE should fail with 404 if the resource is not already there; it
+ should 
+\emph on
+not 
+\emph default
+silently succeed.
+ A failed DELETE should not alter the resource.
+\end_layout
+
+\begin_layout Standard
+What you'll usually do here is make sure the identified resource exists,
+ and if it does, remove or mark it somehow as deleted.
+ See the 
+\bar under
+``conversation'' API documentation (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation"
+
+\end_inset
+
+)
+\bar default
+ for a complete reference.
+ Note especially that if you've 
+\bar under
+captured URI segments (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing"
+
+\end_inset
+
+)
+\bar default
+, they'll be available in 
+\bar under
+conversation.locals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-locals"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+The following return types are supported:
+\end_layout
+
+\begin_layout Itemize
+Numbers: Returns the number as an HTTP status code to the client, with no
+ other content.
+ Usually used for errors.
+ For example, 404 means ``not found.'' Note that 
+\bar under
+error capturing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing-errors"
+
+\end_inset
+
+)
+\bar default
+ can let you take over and return an appropriate error page to the client.
+\end_layout
+
+\begin_layout Itemize
+Null: Signifies success.
+\end_layout
+
+\begin_layout Quote
+Note: It's good practice to always explicitly return null.
+ Some languages return null if no explicit return statement is used.
+ Others, however, return the value of the last executed operation, which
+ could be a number, which would make into a status code for the client.
+ This can lead to some very bizarre bugs!
+\end_layout
+
+\begin_layout Subsubsection
+handleGetInfo
+\begin_inset CommandInset label
+LatexCommand label
+name "../resources/|handle-get-info"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following return types are supported:
+\end_layout
+
+\begin_layout Itemize
+Numbers: Considered as Unix timestamps, and converted into the modification
+ date.
+\end_layout
+
+\begin_layout Itemize
+Java Date instances: The modification date.
+\end_layout
+
+\begin_layout Itemize
+Strings: Considered as HTTP tags.
+\end_layout
+
+\begin_layout Itemize
+Restlet Tag instances: You can construct and return your own HTTP tag.
+ See the Restlet documentation for more information.
+\end_layout
+
+\begin_layout Itemize
+Restlet RepresentationInfo instances: You can construct and return your
+ own RepresentationInfo.
+ See the Restlet documentation for more information.
+\end_layout
+
+\begin_layout Subsection
+Content Negotiation
+\end_layout
+
+\begin_layout Standard
+TODO
 \end_layout
 
 \begin_layout Subsection
@@ -6446,34 +8122,19 @@ def handleGet():
 \end_layout
 
 \begin_layout Subsection
-Implied Representation
-\end_layout
-
-\begin_layout Subsection
-Error Codes
-\end_layout
-
-\begin_layout Subsection
-Explicit Representation
-\end_layout
-
-\begin_layout Subsection
-Conditional HTTP
+Resources as API
 \end_layout
 
 \begin_layout Standard
-getInfo(), modification dates and ETags
+There's no need to maintain a separate ``internal API,'' with REST resources
+ serving as an ``external API.'' Your resources are available internally,
+ without having to use HTTP.
+ A single, uniform API is more maintainable, and less prone to bugs.
+ Additionally, the internal connectivity is an easy way to test your resources.
+ See below for internal access to your resources.
 \end_layout
 
-\begin_layout Subsection
-Concurrency Concerns
-\end_layout
-
-\begin_layout Subsection
-Mixing Languages
-\end_layout
-
-\begin_layout Subsection
+\begin_layout Subsubsection
 Accessing Resources Internally
 \end_layout
 
@@ -6608,14 +8269,6 @@ component.clients.add(Protocol.HTTP)
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsection
-Representations
-\end_layout
-
-\begin_layout Standard
-MIME Types
 \end_layout
 
 \begin_layout Section
@@ -7589,12 +9242,12 @@ A Complete Route
 \end_layout
 
 \begin_layout Standard
-Let's assume a client from the internet send a request to URI ``http://www.wacky.o
+Let's assume a client from the Internet send a request to URI ``http://www.wacky.o
 rg/wackywicki/support/forum/thread/12/.''
 \end_layout
 
 \begin_layout Standard
-Our machine has two network interfaces, one facing the internet and one
+Our machine has two network interfaces, one facing the Internet and one
  facing the intranet, and we have two servers to listen on each.
  This particular request has come in through the external server.
  The request reachers the component's router.
@@ -8375,22 +10028,12 @@ status open
 
 \begin_layout Plain Layout
 
-	Enter your message:
+	Enter your message:<br/>
 \end_layout
 
 \begin_layout Plain Layout
 
-	<p>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<textarea name="message"></textarea>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<p>
+	<textarea name="message"></textarea><br/>	
 \end_layout
 
 \begin_layout Plain Layout
@@ -8524,8 +10167,18 @@ name "../routing/|capturing-errors"
 
 \begin_layout Standard
 A special case of capturing is for errors.
- ``Errors'' can be set explicitly by you: for example, we can set conversation.st
-atusCode to 404, as we did above.
+ ``Errors'' can be set explicitly by you: for example, we can set 
+\bar under
+conversation.statusCode (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-status-code"
+
+\end_inset
+
+)
+\bar default
+ to 404, as we did above.
  However, a 500 error occurs automatically for uncaught exceptions in your
  code.
 \end_layout
@@ -9231,7 +10884,16 @@ Request Attributes
 
 \begin_layout Itemize
 {m}: the method (in HTTP, it would be ``GET,'' ``POST,'' ``PUT,'' ``DELETE,''
- etc.)
+ etc.); see 
+\bar under
+example for handling HTTP forms (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|routing-get-and-post"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Itemize
@@ -9910,6 +11572,21 @@ reference "../api/|document-cache-key-pattern"
 .
 \end_layout
 
+\begin_layout Standard
+See the 
+\bar under
+section on caching in HTML generation (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|caching"
+
+\end_inset
+
+)
+\bar default
+ for more information.
+\end_layout
+
 \begin_layout Quote
 Note that if you edit the source file such as that it would be reloaded,
  within the limits defined by the 
@@ -10064,7 +11741,18 @@ You do not have to use Prudence's templating system, and can create your
 \begin_layout Quote
 Rule of thumb: Set document.cacheKeyPattern to be as short as you possibly
  can, but not too short that it won't differentiate between different views.
- See 
+ See the 
+\bar under
+section on caching in HTML generation (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|caching"
+
+\end_inset
+
+)
+\bar default
+ and 
 \bar under
 ``Scaling Tips'' (page 
 \begin_inset CommandInset ref
@@ -10166,6 +11854,21 @@ reference "../api/|document-cache-duration"
 )
 \bar default
  is zero.
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+``Scaling Tips'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../../scaling/|caching"
+
+\end_inset
+
+)
+\bar default
+ for more information on how cache tags can be used to help you scale.
 \end_layout
 
 \begin_layout Quote
@@ -11049,7 +12752,7 @@ You can use Prudence to create an internal communication backbone for your
 
 \begin_layout Enumerate
 There are many, many use cases for document.external, and they keep growing
- as REST is adopted by service providers on the internet.
+ as REST is adopted by service providers on the Internet.
  There are online storage, publishing and content delivery systems, public
  databases, archives, geolocation services, social networking applications,
  etc.
@@ -11172,6 +12875,13 @@ reference "../api/|application-globals"
 
 \begin_layout Paragraph
 executable.globals, executable.getGlobal
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|executable-globals"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -11538,7 +13248,7 @@ In the case of an HTML form, it would be more convenient conversation.form
  Before attempting to parse entity data on your own, make sure to look through
  the Restlet API and its extensive set of plugins for tools to help you
  parse representations.
- Plugins exist for many common internet formats.
+ Plugins exist for many common Internet formats.
 \end_layout
 
 \begin_layout Standard
@@ -11877,6 +13587,13 @@ Response Attributes
 
 \begin_layout Paragraph
 conversation.statusCode, conversation.status
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-status-code"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -12089,6 +13806,13 @@ reference "../application/|dynamic-web-client-caching-mode"
 \begin_layout Paragraph
 conversation.addMediaTypeByName, conversation.addMediaTypeByExtension, conversatio
 n.addMediaType
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-add-media-type"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -12096,7 +13820,85 @@ n.addMediaType
 \end_layout
 
 \begin_layout Standard
-TODO
+These three variants all do the same thing, letting you add a media type
+ to the list of media types you can support in the response.
+ You'll want to call one or more of these in a 
+\bar under
+resource's handleInit() entry point (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|handle-init"
+
+\end_inset
+
+)
+\bar default
+.
+ Order of these calls is important, as it defines order of preference in
+ case the client supports multiple media types.
+ Prudence handles content negotiation automatically, and sets 
+\bar under
+conversation.mediaType (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-media-type"
+
+\end_inset
+
+)
+\bar default
+ according the selected media type.
+\end_layout
+
+\begin_layout Standard
+conversation.addMediaTypeByName accepts the MIME representing the media type.
+ MIME (Multipurpose Internet Mail Extensions) is an established web standard
+ for specifying media types.
+ Examples include: ``text/plain,'' ``text/html,'' ``application/json,''
+ and ``application/x-www-form-urlencoded.'' The exact list of supported MIME
+ types depends on the underlying Restlet implementation.
+\end_layout
+
+\begin_layout Standard
+conversation.addMediaTypeByExtension accept the media type as the default
+ filename extension for the media type.
+ For example, ``txt'' is equivalent to MIME ``text/plain,'' and ``xml''
+ is equivalent to ``application/xml.'' Each application has its own mappings
+ of filename extensions to media types.
+ See also 
+\bar under
+application.getMediaType (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-get-media-type"
+
+\end_inset
+
+)
+\bar default
+, and how to change the 
+\bar under
+mappings for your application (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|default-file"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+conversation.addMediaType accepts the underlying Restlet MediaType instance.
+ Refer to the Restlet API documentation for details.
+\end_layout
+
+\begin_layout Standard
+To find out which media types the client accepts and prefers, use conversation.re
+quest.clientInfo.acceptedMediaTypes and conversation.request.clientInfo.getPreferredM
+ediaType().
 \end_layout
 
 \begin_layout Subsubsection
@@ -12384,6 +14186,13 @@ Prudence is designed to allow massive concurrency and scalability while
 
 \begin_layout Subsubsection
 Global Variables
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|global-variables"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -12427,7 +14236,25 @@ might
  a single user request.
  For various reasons, however, Prudence may reset this global context.
  You should not rely on this side effect, and instead always use application.glob
-als or executable.globals.
+als (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-globals"
+
+\end_inset
+
+) or even 
+\bar under
+executable.globals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|executable-globals"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -15290,7 +17117,7 @@ reference "../rest/"
 \bar default
 .
  By building on the existing web infrastructure, Prudence can make large
- internet projects easier to manage.
+ Internet projects easier to manage.
 \end_layout
 
 \begin_layout Subsection
@@ -16698,7 +18525,7 @@ Document databases allow for straightforward distribution and very fine-grained
  replication, requiring considerably less overhead than relational and graph
  databases.
  Document databases are as scalable as data storage gets: variants are used
- by all the super-massive internet services.
+ by all the super-massive Internet services.
 \end_layout
 
 \begin_layout Standard
@@ -16896,7 +18723,7 @@ How wonderful that the best-performing, most robust, secure and widely ported
 \end_layout
 
 \begin_layout Standard
-We strongly recommend the JVM for enterprise and scalable internet applications,
+We strongly recommend the JVM for enterprise and scalable Internet applications,
  even if you're not particularly fond of Java-the-programming-language.
  Treat Java, if you will, as the low machine-level language: Java is to
  the JVM as C is to Unix.

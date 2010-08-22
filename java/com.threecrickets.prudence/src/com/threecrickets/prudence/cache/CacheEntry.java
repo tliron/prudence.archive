@@ -21,6 +21,7 @@ import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Metadata;
+import org.restlet.representation.RepresentationInfo;
 import org.restlet.representation.StringRepresentation;
 
 /**
@@ -168,6 +169,16 @@ public class CacheEntry implements Externalizable
 		representation.setModificationDate( modificationDate );
 		representation.setExpirationDate( expirationDate );
 		return representation;
+	}
+
+	/**
+	 * Create a {@link RepresentationInfo}.
+	 * 
+	 * @return A {@link RepresentationInfo}
+	 */
+	public RepresentationInfo getInfo()
+	{
+		return new RepresentationInfo( mediaType, modificationDate );
 	}
 
 	//
