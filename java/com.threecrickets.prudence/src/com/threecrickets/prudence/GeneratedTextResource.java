@@ -759,6 +759,10 @@ public class GeneratedTextResource extends ServerResource
 	 */
 	public String validateDocumentName( String documentName ) throws ResourceException
 	{
+		// Allows allow in-flow scriptlets
+		if( documentName.startsWith( Executable.IN_FLOW_PREFIX ) )
+			return documentName;
+
 		if( isTrailingSlashRequired() )
 			if( ( documentName != null ) && ( documentName.length() != 0 ) && !documentName.endsWith( "/" ) )
 				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
