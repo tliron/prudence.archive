@@ -9,3 +9,4 @@
 
 ; Required for accessing external resources
 (.. component getClients (add Protocol/HTTP))
+(.. component getClients (add Protocol/HTTPS))

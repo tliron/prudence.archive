@@ -5095,7 +5095,7 @@ reference "../application/|default-file"
 .
  Additionally, you can explicitly set the MIME type in a 
 \bar under
-scriptlet (
+scriptlet (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../generating-html/|scriptlets"
@@ -5298,7 +5298,7 @@ Code files you put in your application's /libraries/ subdirectory can be
  accesses using your language's code inclusion mechanism.
  Here are examples in various languages.
  Let's assume that there is a file named /libraries/util/data.*, which defines
- a function called getData().
+ a function called getData():
 \end_layout
 
 \begin_layout Itemize
@@ -5684,6 +5684,21 @@ To avoid external exposure, put files in /web/framents/ instead of /web/dynamic/
  Use is otherwise identical.
  For example, we'd move our file above to ``/web/fragments/lines/simple.html''.
  Files in /web/fragments/ are only available via include scriptlets.
+\end_layout
+
+\begin_layout Standard
+An alternative to using /web/fragments/ is explicit 
+\bar under
+URI hiding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|hiding"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -6503,11 +6518,54 @@ Note that you can change the cache interval dynamically.
 \end_layout
 
 \begin_layout Subsection
-Content Negotiation
+Conditional Requests
 \end_layout
 
 \begin_layout Standard
-TODO
+This topic is related to caching, but from the client's perspective.
+\end_layout
+
+\begin_layout Standard
+HTTP clients, such as web browsers, store downloaded content in their cache,
+ marking it with expiration and modification dates according to HTTP headers
+ in the response.
+ Subsequent requests to the same URL will be ``conditional,'' meaning that
+ the client will tell the server what the latest modification date it has.
+ If the server does not have new data, then it returns an empty response
+ with the 304 ``not modified'' HTTP status, lettnig the client know that
+ it is safe to use its cached version.
+ This saves both bandwidth and processing resources on the server.
+\end_layout
+
+\begin_layout Standard
+If you're using 
+\bar under
+document.cacheDuration (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-duration"
+
+\end_inset
+
+)
+\bar default
+, then conditional requests are already in effect for you.
+ Prudence automatically sets the modification and expiration dates accordingly.
+\end_layout
+
+\begin_layout Standard
+If you need explicit control of these headers, use a 
+\bar under
+resource (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|conditional-requests"
+
+\end_inset
+
+)
+\bar default
+ instead.
 \end_layout
 
 \begin_layout Subsection
@@ -8026,7 +8084,26 @@ Restlet RepresentationInfo instances: You can construct and return your
 \end_layout
 
 \begin_layout Subsection
-Content Negotiation
+Conditional Requests
+\begin_inset CommandInset label
+LatexCommand label
+name "../resources/|conditional-requests"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+HTTP clients, such as web browsers, store downloaded content in their cache,
+ marking it with expiration and modification dates according to HTTP headers
+ in the response.
+ Subsequent requests to the same URL will be ``conditional,'' meaning that
+ the client will tell the server what the latest modification date it has.
+ If the server does not have new data, then it returns an empty response
+ with the 304 ``not modified'' HTTP status, lettnig the client know that
+ it is safe to use its cached version.
+ This saves both bandwidth and processing resources on the server.
 \end_layout
 
 \begin_layout Standard
@@ -16216,10 +16293,31 @@ target "http://httpd.apache.org/"
 
 \end_inset
 
- is often called the ``Swiss army knife of the Internet'' for how well it
- manipulates URLs and routes HTTP requests.
- Prudence already does powerful URI-based routing, including virtual hosting,
- meaning that you probably won't need Apache for that.
+'s HTTP server is often called the ``Swiss army knife of the Internet''
+ for how well it manipulates URLs and routes HTTP requests.
+ Prudence already does powerful 
+\bar under
+URI-based routing (page 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "../routing/"
+
+\end_inset
+
+)
+\bar default
+, including 
+\bar under
+virtual hosting (page 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "../routing/|virtual-hosts"
+
+\end_inset
+
+)
+\bar default
+, meaning that you probably won't need Apache for that.
 \end_layout
 
 \begin_layout Standard
@@ -16233,10 +16331,23 @@ d to set it to route to Prudence via reverse proxy.
 Here's a sample Apache configuration that proxies all URLs beginning with
  ``/prudence/'' to a local Prudence instance running at the default server
  port.
- For demonstration, we'll also explicitly block proxying of ``/prudence/images/'
-' URLs so that Apache would handle serving them (from directory /var/www/prudenc
-e/images) instead of Prudence.
- Apache's mod_proxy and mod_proxy_http must be enabled.
+ For demonstration purposes, we'll also explicitly block proxying of ``/prudence
+/images/'' URLs so that Apache would handle serving them (from directory
+ /var/www/prudence/images) instead of Prudence.
+ Though, note that Prudence can 
+\bar under
+serve static files just fine (page 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "../static-web/"
+
+\end_inset
+
+)
+\bar default
+.
+ Apache's mod_proxy and mod_proxy_http must be enabled for this configuration
+ to work:
 \end_layout
 
 \begin_layout Standard

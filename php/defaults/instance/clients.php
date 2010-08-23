@@ -15,4 +15,5 @@ $component->clients->add(Protocol::valueOf('FILE'));
 
 // Required for accessing external resources
 $component->clients->add(Protocol::valueOf('HTTP'));
+$component->clients->add(Protocol::valueOf('HTTPS'));
 ?>

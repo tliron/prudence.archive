@@ -9,3 +9,4 @@ componentInstance.clients.add(Protocol.FILE)
 
 // Required for accessing external resources
 componentInstance.clients.add(Protocol.HTTP)
+componentInstance.clients.add(Protocol.HTTPS)

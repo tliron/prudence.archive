@@ -247,6 +247,7 @@
 
 <target name="libraries-kitchensink" depends="jar-kitchensink" description="Fetch libraries">
 	<fetch-library dist="${dist-kitchensink}" library="clojure" />
+	<fetch-library dist="${dist-kitchensink}" library="commons-codec" />
 	<fetch-library dist="${dist-kitchensink}" library="commons-dbcp" />
 	<fetch-library dist="${dist-kitchensink}" library="commons-fileupload" />
 	<fetch-library dist="${dist-kitchensink}" library="commons-io" />
@@ -257,7 +258,11 @@
 	<fetch-library dist="${dist-kitchensink}" library="groovy" />
 	<fetch-library dist="${dist-kitchensink}" library="h2" />
 	<fetch-library dist="${dist-kitchensink}" library="hazelcast" />
+	<fetch-library dist="${dist-kitchensink}" library="httpclient" />
+	<fetch-library dist="${dist-kitchensink}" library="httpcore" />
+	<fetch-library dist="${dist-kitchensink}" library="httpmime" />
 	<fetch-library dist="${dist-kitchensink}" library="jackson" />
+	<fetch-library dist="${dist-kitchensink}" library="jcip-annotations" />
 	<fetch-library dist="${dist-kitchensink}" library="jepp" />
 	<fetch-library dist="${dist-kitchensink}" library="jruby" />
 	<fetch-library dist="${dist-kitchensink}" library="json" />
@@ -266,6 +271,7 @@
 	<fetch-library dist="${dist-kitchensink}" library="jygments" />
 	<fetch-library dist="${dist-kitchensink}" library="jython" />
 	<fetch-library dist="${dist-kitchensink}" library="log4j" />
+	<fetch-library dist="${dist-kitchensink}" library="mime4j" />
 	<fetch-library dist="${dist-kitchensink}" library="mysqlconnector" />
 	<!-- GPL: <fetch-library dist="${dist-kitchensink}" library="quercus" /> -->
 	<fetch-library dist="${dist-kitchensink}" library="restlet" />
@@ -376,6 +382,7 @@
 </target>
 
 <target name="libraries-javascript" depends="jar-javascript" description="Fetch libraries">
+	<fetch-library dist="${dist-javascript}" library="commons-codec" />
 	<fetch-library dist="${dist-javascript}" library="commons-dbcp" />
 	<fetch-library dist="${dist-javascript}" library="commons-fileupload" />
 	<fetch-library dist="${dist-javascript}" library="commons-io" />
@@ -384,9 +391,16 @@
 	<fetch-library dist="${dist-javascript}" library="grizzly" />
 	<fetch-library dist="${dist-javascript}" library="h2" />
 	<fetch-library dist="${dist-javascript}" library="hazelcast" />
+	<fetch-library dist="${dist-javascript}" library="httpclient" />
+	<fetch-library dist="${dist-javascript}" library="httpcore" />
+	<fetch-library dist="${dist-javascript}" library="httpmime" />
+	<fetch-library dist="${dist-javascript}" library="jackson" />
+	<fetch-library dist="${dist-javascript}" library="jcip-annotations" />
 	<fetch-library dist="${dist-javascript}" library="json" />
 	<fetch-library dist="${dist-javascript}" library="jygments" />
 	<fetch-library dist="${dist-javascript}" library="log4j" />
+	<fetch-library dist="${dist-javascript}" library="mime4j" />
+	<fetch-library dist="${dist-javascript}" library="mysqlconnector" />
 	<fetch-library dist="${dist-javascript}" library="restlet" />
 	<fetch-library dist="${dist-javascript}" library="rhino" />
 	<fetch-library dist="${dist-javascript}" library="scripturian" />
@@ -420,6 +434,7 @@
 </target>
 
 <target name="libraries-python" depends="jar-python" description="Fetch libraries">
+	<fetch-library dist="${dist-python}" library="commons-codec" />
 	<fetch-library dist="${dist-python}" library="commons-dbcp" />
 	<fetch-library dist="${dist-python}" library="commons-fileupload" />
 	<fetch-library dist="${dist-python}" library="commons-io" />
@@ -428,12 +443,18 @@
 	<fetch-library dist="${dist-python}" library="grizzly" />
 	<fetch-library dist="${dist-python}" library="h2" />
 	<fetch-library dist="${dist-python}" library="hazelcast" />
+	<fetch-library dist="${dist-python}" library="httpclient" />
+	<fetch-library dist="${dist-python}" library="httpcore" />
+	<fetch-library dist="${dist-python}" library="httpmime" />
+	<fetch-library dist="${dist-python}" library="jackson" />
+	<fetch-library dist="${dist-python}" library="jcip-annotations" />
 	<fetch-library dist="${dist-python}" library="jepp" />
 	<fetch-library dist="${dist-python}" library="json" />
 	<fetch-library dist="${dist-python}" library="jsr223" />
 	<fetch-library dist="${dist-python}" library="jygments" />
 	<fetch-library dist="${dist-python}" library="jython" />
 	<fetch-library dist="${dist-python}" library="log4j" />
+	<fetch-library dist="${dist-python}" library="mime4j" />
 	<fetch-library dist="${dist-python}" library="mysqlconnector" />
 	<fetch-library dist="${dist-python}" library="restlet" />
 	<fetch-library dist="${dist-python}" library="scripturian" />
@@ -470,6 +491,7 @@
 
 <target name="libraries-clojure" depends="jar-clojure" description="Fetch libraries">
 	<fetch-library dist="${dist-clojure}" library="clojure" />
+	<fetch-library dist="${dist-clojure}" library="commons-codec" />
 	<fetch-library dist="${dist-clojure}" library="commons-dbcp" />
 	<fetch-library dist="${dist-clojure}" library="commons-fileupload" />
 	<fetch-library dist="${dist-clojure}" library="commons-io" />
@@ -478,9 +500,15 @@
 	<fetch-library dist="${dist-clojure}" library="grizzly" />
 	<fetch-library dist="${dist-clojure}" library="h2" />
 	<fetch-library dist="${dist-clojure}" library="hazelcast" />
+	<fetch-library dist="${dist-clojure}" library="httpclient" />
+	<fetch-library dist="${dist-clojure}" library="httpcore" />
+	<fetch-library dist="${dist-clojure}" library="httpmime" />
+	<fetch-library dist="${dist-clojure}" library="jackson" />
+	<fetch-library dist="${dist-clojure}" library="jcip-annotations" />
 	<fetch-library dist="${dist-clojure}" library="json" />
 	<fetch-library dist="${dist-clojure}" library="jygments" />
 	<fetch-library dist="${dist-clojure}" library="log4j" />
+	<fetch-library dist="${dist-clojure}" library="mime4j" />
 	<fetch-library dist="${dist-clojure}" library="mysqlconnector" />
 	<fetch-library dist="${dist-clojure}" library="restlet" />
 	<fetch-library dist="${dist-clojure}" library="scripturian" />
@@ -515,6 +543,7 @@
 </target>
 
 <target name="libraries-groovy" depends="jar-groovy" description="Fetch libraries">
+	<fetch-library dist="${dist-groovy}" library="commons-codec" />
 	<fetch-library dist="${dist-groovy}" library="commons-dbcp" />
 	<fetch-library dist="${dist-groovy}" library="commons-fileupload" />
 	<fetch-library dist="${dist-groovy}" library="commons-io" />
@@ -524,9 +553,15 @@
 	<fetch-library dist="${dist-groovy}" library="groovy" />
 	<fetch-library dist="${dist-groovy}" library="h2" />
 	<fetch-library dist="${dist-groovy}" library="hazelcast" />
+	<fetch-library dist="${dist-groovy}" library="httpclient" />
+	<fetch-library dist="${dist-groovy}" library="httpcore" />
+	<fetch-library dist="${dist-groovy}" library="httpmime" />
+	<fetch-library dist="${dist-groovy}" library="jackson" />
+	<fetch-library dist="${dist-groovy}" library="jcip-annotations" />
 	<fetch-library dist="${dist-groovy}" library="json" />
 	<fetch-library dist="${dist-groovy}" library="jygments" />
 	<fetch-library dist="${dist-groovy}" library="log4j" />
+	<fetch-library dist="${dist-groovy}" library="mime4j" />
 	<fetch-library dist="${dist-groovy}" library="mysqlconnector" />
 	<fetch-library dist="${dist-groovy}" library="restlet" />
 	<fetch-library dist="${dist-groovy}" library="scripturian" />
@@ -561,6 +596,7 @@
 </target>
 
 <target name="libraries-ruby" depends="jar-ruby" description="Fetch libraries">
+	<fetch-library dist="${dist-ruby}" library="commons-codec" />
 	<fetch-library dist="${dist-ruby}" library="commons-dbcp" />
 	<fetch-library dist="${dist-ruby}" library="commons-fileupload" />
 	<fetch-library dist="${dist-ruby}" library="commons-io" />
@@ -569,10 +605,16 @@
 	<fetch-library dist="${dist-ruby}" library="grizzly" />
 	<fetch-library dist="${dist-ruby}" library="h2" />
 	<fetch-library dist="${dist-ruby}" library="hazelcast" />
+	<fetch-library dist="${dist-ruby}" library="httpclient" />
+	<fetch-library dist="${dist-ruby}" library="httpcore" />
+	<fetch-library dist="${dist-ruby}" library="httpmime" />
+	<fetch-library dist="${dist-ruby}" library="jackson" />
+	<fetch-library dist="${dist-ruby}" library="jcip-annotations" />
 	<fetch-library dist="${dist-ruby}" library="jruby" />
 	<fetch-library dist="${dist-ruby}" library="json" />
 	<fetch-library dist="${dist-ruby}" library="jygments" />
 	<fetch-library dist="${dist-ruby}" library="log4j" />
+	<fetch-library dist="${dist-ruby}" library="mime4j" />
 	<fetch-library dist="${dist-ruby}" library="mysqlconnector" />
 	<fetch-library dist="${dist-ruby}" library="restlet" />
 	<fetch-library dist="${dist-ruby}" library="scripturian" />
@@ -607,6 +649,7 @@
 </target>
 
 <target name="libraries-php" depends="jar-php" description="Fetch libraries">
+	<fetch-library dist="${dist-php}" library="commons-codec" />
 	<fetch-library dist="${dist-php}" library="commons-dbcp" />
 	<fetch-library dist="${dist-php}" library="commons-fileupload" />
 	<fetch-library dist="${dist-php}" library="commons-io" />
@@ -615,9 +658,15 @@
 	<fetch-library dist="${dist-php}" library="grizzly" />
 	<fetch-library dist="${dist-php}" library="h2" />
 	<fetch-library dist="${dist-php}" library="hazelcast" />
+	<fetch-library dist="${dist-php}" library="httpclient" />
+	<fetch-library dist="${dist-php}" library="httpcore" />
+	<fetch-library dist="${dist-php}" library="httpmime" />
+	<fetch-library dist="${dist-php}" library="jackson" />
+	<fetch-library dist="${dist-php}" library="jcip-annotations" />
 	<fetch-library dist="${dist-php}" library="json" />
 	<fetch-library dist="${dist-php}" library="jygments" />
 	<fetch-library dist="${dist-php}" library="log4j" />
+	<fetch-library dist="${dist-php}" library="mime4j" />
 	<fetch-library dist="${dist-php}" library="mysqlconnector" />
 	<!-- GPL: <fetch-library dist="${dist-php}" library="quercus" /> -->
 	<fetch-library dist="${dist-php}" library="restlet" />
