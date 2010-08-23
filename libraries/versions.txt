@@ -5,7 +5,7 @@ commons-io			1.4
 commons-pool		1.5.4
 cron4j				2.2.3
 grizzly				1.9.18-k
-groboutils			5
+groboutils			5 (note: we've removed the internal log4j distribution)
 groovy				1.7.4
 hazelcast			1.8.5
 h2					1.2.140
