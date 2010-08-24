@@ -1342,18 +1342,35 @@ public class DelegatedResource extends ServerResource
 	 */
 	private RepresentationInfo getRepresentationInfo( Object object, DelegatedResourceConversationService conversationService )
 	{
+		RepresentationInfo representationInfo;
 		if( object == null )
 			return null;
 		else if( object instanceof RepresentationInfo )
 			return (RepresentationInfo) object;
 		else if( object instanceof Date )
-			return new RepresentationInfo( conversationService.getMediaType(), (Date) object );
+		{
+			representationInfo = new RepresentationInfo( conversationService.getMediaType(), (Date) object );
+			representationInfo.setTag( conversationService.getTag() );
+			return representationInfo;
+		}
 		else if( object instanceof Number )
-			return new RepresentationInfo( conversationService.getMediaType(), new Date( ( (Number) object ).longValue() ) );
+		{
+			representationInfo = new RepresentationInfo( conversationService.getMediaType(), new Date( ( (Number) object ).longValue() ) );
+			representationInfo.setTag( conversationService.getTag() );
+			return representationInfo;
+		}
 		else if( object instanceof Tag )
-			return new RepresentationInfo( conversationService.getMediaType(), (Tag) object );
+		{
+			representationInfo = new RepresentationInfo( conversationService.getMediaType(), (Tag) object );
+			representationInfo.setModificationDate( conversationService.getModificationDate() );
+			return representationInfo;
+		}
 		else if( object instanceof String )
-			return new RepresentationInfo( conversationService.getMediaType(), Tag.parse( (String) object ) );
+		{
+			representationInfo = new RepresentationInfo( conversationService.getMediaType(), Tag.parse( (String) object ) );
+			representationInfo.setModificationDate( conversationService.getModificationDate() );
+			return representationInfo;
+		}
 		else
 			throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "cannot convert " + object.getClass().toString() + " to a RepresentationInfo" );
 	}

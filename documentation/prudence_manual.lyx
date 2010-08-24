@@ -6231,13 +6231,54 @@ One last note: in-flow scriptlets to not change the scriptlet language,
 
 \begin_layout Subsection
 Life
+\begin_inset CommandInset label
+LatexCommand label
+name "../generating-html/|life"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 Files and all their scriptlets are only compiled once, when they are first
  requested by a client.
- The compiled code is kept in a cache, under you Prudence /cache/ directory.
- From then on, each request is handled by the compiled version.
+ The compiled code is kept in a cache, under your Prudence /cache/ directory.
+ From then on, each request is handled by the compiled version, which is
+ updated only if the original file changes.
+ This cache is maintained even if you restart Prudence.
+\end_layout
+
+\begin_layout Standard
+Unless a valid cache entry exists, the compiled code is executed anew for
+ each request, essentially like a script.
+ This is why 
+\bar under
+global variables are not kept or shared between requests (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|global-variables"
+
+\end_inset
+
+)
+\bar default
+.
+ Note that there's some minimal setup and cleanup involved in executing
+ the code anew.
+ It's very unlikely that it would meaningfully affect performance, especially
+ with caching in place, but you can avoid it if you use 
+\bar under
+resources, which have a more static life cycle (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|life"
+
+\end_inset
+
+)
+\bar default
+, instead of /web/dynamic/ pages.
 \end_layout
 
 \begin_layout Standard
@@ -6249,18 +6290,6 @@ Note that many threads might be running the same code concurrently: make
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../api/|concurrency"
-
-\end_inset
-
-)
-\bar default
-.
- Note, too, that 
-\bar under
-global variables are not kept or shared between requests (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|global-variables"
 
 \end_inset
 
@@ -6301,7 +6330,7 @@ reference "../generating-html/|caching"
 
 )
 \bar default
- that use this file to be invalidated.
+ produced by this file to be invalidated.
 \end_layout
 
 \begin_layout Standard
@@ -6532,7 +6561,7 @@ HTTP clients, such as web browsers, store downloaded content in their cache,
  Subsequent requests to the same URL will be ``conditional,'' meaning that
  the client will tell the server what the latest modification date it has.
  If the server does not have new data, then it returns an empty response
- with the 304 ``not modified'' HTTP status, lettnig the client know that
+ with the 304 ``not modified'' HTTP status, letting the client know that
  it is safe to use its cached version.
  This saves both bandwidth and processing resources on the server.
 \end_layout
@@ -7004,16 +7033,82 @@ reference "../routing/"
 
 \begin_layout Subsection
 Life
+\begin_inset CommandInset label
+LatexCommand label
+name "../resources/|life"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 Files are only compiled once, when they are first requested by a client.
- The compiled code is kept in a cache, under you Prudence /cache/ directory.
- From then on, each request is handled by the compiled version.
+ The compiled code is kept in a cache, under your Prudence /cache/ directory.
+ From then on, each request is handled by the compiled version, which is
+ updated only if the original file changes.
+ This cache is maintained even if you restart Prudence.
 \end_layout
 
 \begin_layout Standard
-Note that many threads might be running the same code concurrently: make
+The file itself is executed only once, like a script, upon the first request.
+ If it executes successfully, the remaining state, which contains all the
+ entry points and global variables, is kept in memory.
+ From then on the entry points are invoked in that state.
+ The file will be executed again only if it changes.
+ Note that this runtime state is 
+\emph on
+not
+\emph default
+ cached to disk, like the compiled code, so that restarting Prudence will
+ mean that all your resources will have to be executed before their entry
+ points can be invoked.
+ For this reason, 
+\bar under
+global variables are not kept or shared between such file updates (page
+ 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|global-variables"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+This, then, is the difference between ``defrosting'' and ``preheating''
+ for resources: the former involves making sure that code is compiled and
+ cached, and the latter actually executes the code, and additionally invokes
+ the 
+\bar under
+handleInit (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|handle-init"
+
+\end_inset
+
+)
+\bar default
+ and 
+\bar under
+handleGet (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|handle-get"
+
+\end_inset
+
+)
+\bar default
+ entry points.
+\end_layout
+
+\begin_layout Standard
+Note that many threads might be invoking entry points concurrently: make
  sure you understand the concerns of concurrent programming, as detailed
  in 
 \bar under
@@ -7065,22 +7160,6 @@ reference "../api/|document-add-dependency"
  If a dependency is updated, it will force your file to be reloaded.
 \end_layout
 
-\begin_layout Standard
-Note that 
-\bar under
-global variables are not kept or shared between such file updates (page
- 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|global-variables"
-
-\end_inset
-
-)
-\bar default
-.
-\end_layout
-
 \begin_layout Subsection
 Source Code
 \end_layout
@@ -7090,13 +7169,24 @@ Global Source Code
 \end_layout
 
 \begin_layout Standard
-The first time your source code is loaded, at the time of the first user
+As is explained in 
+\bar under
+resource ``life'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|life"
+
+\end_inset
+
+)
+\bar default
+, the first time your source code is loaded, at the time of the first user
  request, it is executed from start to finish.
  That means that any code outside of the entry points is run immediately.
 \end_layout
 
 \begin_layout Standard
-Thus, global source code can be a good place to initialize various services
+Global source code can thus be a good place to initialize various services
  you need for handling requests.
  Just be very careful about two things:
 \end_layout
@@ -7199,6 +7289,19 @@ reference "../api/"
 )
 \bar default
 .
+ Note that the 
+\bar under
+``conversation'' service (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation"
+
+\end_inset
+
+)
+\bar default
+ is provided to entry points as an argument, while the other services are
+ global variables.
 \end_layout
 
 \begin_layout Subsubsection
@@ -8056,6 +8159,47 @@ name "../resources/|handle-get-info"
 \end_layout
 
 \begin_layout Standard
+Handles HTTP ``GET'' requests 
+\emph on
+before
+\emph default
+ 
+\bar under
+handleGet (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|handle-get"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+This entry point, if it exists, is called before handleGet in order to provide
+ Prudence with information required for 
+\bar under
+conditional HTTP requests (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|conditional-requests"
+
+\end_inset
+
+)
+\bar default
+.
+ Only if conditions are not met---for example if our resource is newer than
+ the version the client has cached, or the tag has changed---does Prudence
+ continue to handleGet.
+ Using handleGetInfo can thus improve on the gains of conditional requests:
+ not only are you saving bandwidth, but you are also avoiding a potentially
+ costly handleGet call.
+\end_layout
+
+\begin_layout Standard
 The following return types are supported:
 \end_layout
 
@@ -8083,6 +8227,52 @@ Restlet RepresentationInfo instances: You can construct and return your
  See the Restlet documentation for more information.
 \end_layout
 
+\begin_layout Paragraph
+In the real world\SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout Standard
+You might be tempted to go ahead and provide a handleGetInfo entry point
+ for every resource you create.
+ This is not necessarily a good practice, for three reasons:
+\end_layout
+
+\begin_layout Enumerate
+It could be that you don't need this optimization.
+ Make sure, first, that you've actually identified a problem with performance
+ or scalability, and that you've traced it to handleGet on this resource.
+\end_layout
+
+\begin_layout Enumerate
+It could be that you won't gain anything from this optimization.
+ Caches and other optimizations along the route between your data and your
+ client might already be doing a great job at keeping handleGet as efficient
+ as could be.
+\end_layout
+
+\begin_layout Enumerate
+It could be that you'll even hurt your scalability! The reason is that an
+ efficient handleGetInfo implementation would need some mechanism in place
+ to track data modification, and this mechanism can introduce overhead into
+ your system.
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+``Scaling Tips'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../../scaling/"
+
+\end_inset
+
+)
+\bar default
+ for a thorough discussion of the problem of scalability.
+\end_layout
+
 \begin_layout Subsection
 Conditional Requests
 \begin_inset CommandInset label
@@ -8095,13 +8285,13 @@ name "../resources/|conditional-requests"
 \end_layout
 
 \begin_layout Standard
-HTTP clients, such as web browsers, store downloaded content in their cache,
- marking it with expiration and modification dates according to HTTP headers
- in the response.
+HTTP clients, such as web browsers, store downloaded content in their local
+ cache, marking it with expiration and modification dates according to HTTP
+ headers in the response.
  Subsequent requests to the same URL will be ``conditional,'' meaning that
  the client will tell the server what the latest modification date it has.
  If the server does not have new data, then it returns an empty response
- with the 304 ``not modified'' HTTP status, lettnig the client know that
+ with the 304 ``not modified'' HTTP status, letting the client know that
  it is safe to use its cached version.
  This saves both bandwidth and processing resources on the server.
 \end_layout
@@ -9301,6 +9491,12 @@ reference "../application/|hosts"
  to, and the base URI for each.
  An application can thus be accepting requests from several virtual hosts
  at once.
+\end_layout
+
+\begin_layout Standard
+To put it another way, there's a many-to-many relationship between virtual
+ hosts and applications: one host can have many applications, and the same
+ application can be attached to many hosts.
 \end_layout
 
 \begin_layout Standard
@@ -12865,7 +13061,7 @@ status open
 
 \begin_layout Plain Layout
 
-fixture =
+var fixture =
 \end_layout
 
 \begin_layout Plain Layout
@@ -12881,6 +13077,19 @@ fixture =
 \end_inset
 
 
+\end_layout
+
+\begin_layout Quote
+In case you're interested, Prudence internally uses 
+\begin_inset CommandInset href
+LatexCommand href
+name "Apache's HTTP client"
+target "http://hc.apache.org/httpcomponents-client/index.html"
+
+\end_inset
+
+ for high-performance access to external documents, with full support for
+ secure connections (https:).
 \end_layout
 
 \begin_layout Paragraph
