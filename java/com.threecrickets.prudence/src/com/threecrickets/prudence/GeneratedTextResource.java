@@ -884,6 +884,10 @@ public class GeneratedTextResource extends ServerResource
 		{
 			throw new ResourceException( x );
 		}
+		catch( DocumentNotFoundException x )
+		{
+			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
+		}
 		catch( DocumentException x )
 		{
 			throw new ResourceException( x );
