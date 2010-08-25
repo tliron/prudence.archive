@@ -33,9 +33,9 @@ function handleGet(conversation) {
 	var id = getId(conversation)
 	
     var note
-    var connection = getConnection()
+    var connection = new Stickstick.Connection()
     try {
-        note = getNote(id, connection)
+        note = connection.getNote(id)
         if(note == null) {
         	return 404
         }
@@ -53,9 +53,9 @@ function handleGetInfo(conversation) {
 	var id = getId(conversation)
 	
     var note
-    var connection = getConnection()
+    var connection = new Stickstick.Connection()
     try {
-        note = getNote(id, connection)
+        note = connection.getNote(id)
         if(note == null) {
         	return null
         }
@@ -77,9 +77,9 @@ function handlePost(conversation) {
     var text = conversation.entity.text
     var note = JSON.parse(String(text))
 
-    var connection = getConnection()
+    var connection = new Stickstick.Connection()
     try {
-        var existing = getNote(id, connection)
+        var existing = connection.getNote(id)
         if(existing == null) {
         	return 404
         }
@@ -91,8 +91,8 @@ function handlePost(conversation) {
         	size: merge('size', note, existing),
         	content: merge('content', note, existing)
         }
-        updateNote(note, connection)
-        updateBoardTimestamp(note, connection)
+        connection.updateNote(note)
+        connection.updateBoardTimestamp(note)
     }
     finally {
     	connection.close()
@@ -106,14 +106,14 @@ function handlePost(conversation) {
 function handleDelete(conversation) {
 	var id = getId(conversation)
 
-    var connection = getConnection()
+    var connection = new Stickstick.Connection()
     try {
-        var note = getNote(id, connection)
+        var note = connection.getNote(id)
         if(note == null) {
         	return 404
         }
-        deleteNote(note, connection)
-        updateBoardTimestamp(note, connection, System.currentTimeMillis())
+        connection.deleteNote(note)
+        connection.updateBoardTimestamp(note, System.currentTimeMillis())
     }
     finally {
     	connection.close()

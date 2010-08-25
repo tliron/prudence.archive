@@ -14,9 +14,9 @@ function handleGet(conversation) {
     var boardList = []
     var notes
 
-    var connection = getConnection(fresh)
+    var connection = new Stickstick.Connection(fresh)
     try {
-	    var boards = getBoards(connection)
+	    var boards = connection.getBoards()
 	    if(boards != null) {
 		    for(var i in boards) {
 		    	var board = boards[i]
@@ -31,7 +31,7 @@ function handleGet(conversation) {
 	        return null
 	    }
 	
-	    notes = getNotes(connection)
+	    notes = connection.getNotes()
     }
     finally {
     	connection.close()
@@ -44,9 +44,9 @@ function handleGet(conversation) {
 }
 
 function handleGetInfo(conversation) {
-    var connection = getConnection()
+    var connection = new Stickstick.Connection()
     try {
-    	return getBoardMaxTimestamp(connection)
+    	return connection.getBoardMaxTimestamp()
     }
     finally {
     	connection.close()
@@ -61,10 +61,10 @@ function handlePut(conversation) {
     var text = conversation.entity.text
     var note = JSON.parse(String(text))
     
-    var connection = getConnection()
+    var connection = new Stickstick.Connection()
     try {
-    	addNote(note, connection)
-        updateBoardTimestamp(note, connection)
+    	connection.addNote(note)
+        connection.updateBoardTimestamp(note)
     }
     finally {
     	connection.close()
