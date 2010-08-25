@@ -18,6 +18,7 @@ libraries/org.apache.commons.codec.jar;^
 libraries/org.apache.commons.dbcp.jar;^
 libraries/org.apache.commons.fileupload.jar;^
 libraries/org.apache.commons.io.jar;^
+libraries/org.apache.commons.logging.jar;^
 libraries/org.apache.commons.pool.jar;^
 libraries/org.apache.http.jar;^
 libraries/org.apache.http.client.jar;^

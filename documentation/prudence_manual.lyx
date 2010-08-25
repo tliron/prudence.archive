@@ -817,6 +817,13 @@ reference "../manual/tutorial/"
 
 \begin_layout Section
 How to Choose a Flavor?
+\begin_inset CommandInset label
+LatexCommand label
+name "../../flavors/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3360,7 +3367,15 @@ The default script does the following:
 \end_layout
 
 \begin_layout Enumerate
-Creates a Restlet component
+Creates a 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet component"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/Component.html"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -3368,7 +3383,15 @@ Configures its logService
 \end_layout
 
 \begin_layout Enumerate
-Sets its statusService to be a DelegatedStatusService
+Sets its statusService to be a 
+\begin_inset CommandInset href
+LatexCommand href
+name "DelegatedStatusService"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/util/DelegatedStatusService.html"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -3385,7 +3408,15 @@ reference "../api/|application-task"
 \end_layout
 
 \begin_layout Enumerate
-Creates an InProcessMemoryCache backend, which is used for 
+Creates an 
+\begin_inset CommandInset href
+LatexCommand href
+name "InProcessMemoryCache"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/InProcessMemoryCache.html"
+
+\end_inset
+
+ backend, which is used for 
 \bar under
 document.cache (page 
 \begin_inset CommandInset ref
@@ -3549,8 +3580,16 @@ target "http://www.jboss.org/netty"
 \end_inset
 
  and an ``internal'' connector.
- To change the HTTP server technology, you have to add it to /libraries/.
- See the Restlet documentation for more information.
+ To change the HTTP server technology, you have to adds JARs it to /libraries/.
+ See the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet documentation"
+target "http://wiki.restlet.org/docs_2.0/13-restlet/27-restlet/325-restlet/37-restlet.html"
+
+\end_inset
+
+ for more information.
 \end_layout
 
 \begin_layout Standard
@@ -3826,6 +3865,13 @@ Prudence applications live in the /applications/ subdirectory, with one
 
 \begin_layout Subsection
 Deploy by Zip
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|deploy-by-zip"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4006,6 +4052,37 @@ reference "../resources/"
 \end_layout
 
 \begin_layout Subsection
+/filters/
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Subsection
+/tasks/
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+tasks (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../tasks/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Subsection
 /libraries/
 \end_layout
 
@@ -4024,6 +4101,29 @@ document.execute (page
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../api/|document-execute"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Subsection
+/uploads/
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+conversation.form (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-form"
 
 \end_inset
 
@@ -4153,8 +4253,15 @@ In particular, this is where you install URL patterns for your resources.
 \begin_layout Standard
 This is also where you can attach your own custom (non-Prudence) resources
  to URLs.
- Actually, anything that's a ``restlet'' will do, because Prudence uses
- 
+ Actually, anything that's a ``
+\begin_inset CommandInset href
+LatexCommand href
+name "restlet"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/Restlet.html"
+
+\end_inset
+
+'' will do, because Prudence uses 
 \begin_inset CommandInset href
 LatexCommand href
 name "Restlet"
@@ -4204,9 +4311,24 @@ name "../application/|application-file"
 \end_layout
 
 \begin_layout Standard
-Use this to install non-Prudence Restlet applications into Prudence.
- By default, Prudence creates a basic Restlet application, but you can override
- that creation in this file.
+Use this to install non-Prudence 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet applications"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/Application.html"
+
+\end_inset
+
+ into Prudence.
+ By default, Prudence creates a 
+\begin_inset CommandInset href
+LatexCommand href
+name "PrudenceApplication"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/util/PrudenceApplication.html"
+
+\end_inset
+
+, but you can override that creation in this file.
  See the section on 
 \bar under
 integrating Restlets (page 
@@ -4731,9 +4853,8 @@ reference "../api/|document-cache-duration"
 
 )
 \bar default
-, then you can use this setting to define if client-side caching should
- be enabled, too.
- The default mode is 1:
+, then you can use this setting to define whether client-side caching should
+ be enabled, too:
 \end_layout
 
 \begin_layout Itemize
@@ -4742,11 +4863,23 @@ reference "../api/|document-cache-duration"
 \end_layout
 
 \begin_layout Itemize
-1: Conditional.
+1: Conditional (the default).
  The client is asked to use conditional mode HTTP to verify that the cache
  has not changed, via the modificationDate and expirationDate headers.
  This is a good default, because it generally offers most of the advantages
  of caching with no risks.
+ See 
+\bar under
+conditional requests for HTML generation (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|conditional-requests"
+
+\end_inset
+
+)
+\bar default
+ for a complete discussion.
 \end_layout
 
 \begin_layout Itemize
@@ -4761,7 +4894,8 @@ reference "../api/|document-cache-duration"
 
 \begin_layout Quote
 It's generally safer to apply offline caching for some of your /web/static/
- resources, such as graphics and other resources.
+ resources, such as graphics and other resources, which, by nature of being
+ static, do not tend to change on their own.
  See 
 \bar under
 CacheControlFilter (page 
@@ -5146,7 +5280,7 @@ name "../generating-html/|scriptlets"
 
 \begin_layout Standard
 Programming language code can be embedded in your /web/dynamic/ files, making
- them into all-powerful templates.
+ them all-powerful templates.
  Either ``<% %>'' or ``<? ?>'' delimiters can be used.
  Note, however, that you can only use one of either in the same file.
  The first type found will be the one used.
@@ -5871,6 +6005,13 @@ Note that scriptlets in a specific language will only work if you have the
 
 \begin_layout Subsubsection
 Templating Languages
+\begin_inset CommandInset label
+LatexCommand label
+name "../generating-html/|templating-languages"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6266,8 +6407,8 @@ reference "../api/|global-variables"
 .
  Note that there's some minimal setup and cleanup involved in executing
  the code anew.
- It's very unlikely that it would meaningfully affect performance, especially
- with caching in place, but you can avoid it if you use 
+ It's very unlikely that this overhead would meaningfully affect performance,
+ especially with caching in place, but you can avoid it if you use 
 \bar under
 resources, which have a more static life cycle (page 
 \begin_inset CommandInset ref
@@ -6548,6 +6689,13 @@ Note that you can change the cache interval dynamically.
 
 \begin_layout Subsection
 Conditional Requests
+\begin_inset CommandInset label
+LatexCommand label
+name "../generating-html/|conditional-requests"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6578,12 +6726,25 @@ reference "../api/|document-cache-duration"
 
 )
 \bar default
-, then conditional requests are already in effect for you.
+, then conditional requests are already in effect for you by default.
  Prudence automatically sets the modification and expiration dates accordingly.
+ You can disable this feature, and also enable offline caching, via the
+ 
+\bar under
+dynamicWebClientCachingMode setting (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|dynamic-web-client-caching-mode"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
-If you need explicit control of these headers, use a 
+For even more control of these headers, consider using a 
 \bar under
 resource (page 
 \begin_inset CommandInset ref
@@ -6816,10 +6977,10 @@ You might want to separate the form handler above into two fragments, one
 \begin_layout Standard
 However, you can also use Prudence's 
 \bar under
-capturing of URI templates (page 
+capturing of URI patterns (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|uri-templates"
+reference "../routing/|uri-patterns"
 
 \end_inset
 
@@ -6973,9 +7134,9 @@ In Prudence, ``resources'' are encapsulated operational units similar to
  messaging system more suitable for distributed environments such as the
  Internet and the World Wide Web.
  The idea of a ``resource-oriented architecture,'' often called ``REST,''
- is covered in depth in `
+ is covered in depth in 
 \bar under
-`Making the Case for REST'' (page 
+``Making the Case for REST'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../../rest/"
@@ -7696,7 +7857,11 @@ Prudence handles content negotiation automatically, choosing the best media
  client and this list.
 \end_layout
 
-\begin_layout Quote
+\begin_layout Paragraph
+But, why?
+\end_layout
+
+\begin_layout Standard
 You might wonder why we add these supported media types dynamically for
  each request, since they are usually always the same.
  The reason is that sometimes they may not be the same.
@@ -7711,7 +7876,7 @@ You might wonder why we add these supported media types dynamically for
  as DVI.
 \end_layout
 
-\begin_layout Quote
+\begin_layout Standard
 So, this gives you a lot flexibility, at no real expense: adding media types
  per request is extremely lightweight.
 \end_layout
@@ -7811,9 +7976,15 @@ reference "../routing/|capturing-errors"
 \end_layout
 
 \begin_layout Itemize
-Restlet Representation instances: You can construct and return a Restlet
- representation directly.
- See the Restlet documentation for more information.
+Representation instances: You can construct and return a 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet representation"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/representation/Representation.html"
+
+\end_inset
+
+ directly.
 \end_layout
 
 \begin_layout Itemize
@@ -7823,7 +7994,43 @@ Anything else: Other return values are converted into strings, if they are
 \end_layout
 
 \begin_layout Standard
-To optimize for scalability, consider coupling handleGet with a 
+Beyond the return value, you can affect the response sent to the client
+ by the response attributes in the ``conversation'' service (page ).
+ In particular, the 
+\bar under
+conversation.modificationDate (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-modification-date"
+
+\end_inset
+
+)
+\bar default
+ and 
+\bar under
+conversation.tag (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-modification-tag"
+
+\end_inset
+
+)
+\bar default
+ can be used to affect 
+\bar under
+conditional HTTP requests (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|conditional-requests"
+
+\end_inset
+
+)
+\bar default
+.
+ For these, you may also consider implementing the 
 \bar under
 handleGetInfo entry point (page 
 \begin_inset CommandInset ref
@@ -7834,7 +8041,7 @@ reference "../resources/|handle-get-info"
 
 )
 \bar default
-.
+ for more scalable handling of conditional requests.
 \end_layout
 
 \begin_layout Subsubsection
@@ -8140,11 +8347,13 @@ Null: Signifies success.
 \end_layout
 
 \begin_layout Quote
-Note: It's good practice to always explicitly return null.
+Note: It's good practice to always explicitly return null in handleDelete.
  Some languages return null if no explicit return statement is used.
  Others, however, return the value of the last executed operation, which
- could be a number, which would make into a status code for the client.
- This can lead to some very bizarre bugs!
+ could be a number, which would in turn become an HTTP status code for the
+ client.
+ This can lead to some very bizarre bugs, as clients receive apparently
+ random status codes!
 \end_layout
 
 \begin_layout Subsubsection
@@ -8206,25 +8415,90 @@ The following return types are supported:
 \begin_layout Itemize
 Numbers: Considered as Unix timestamps, and converted into the modification
  date.
+ See 
+\bar under
+conversation.modificationDate (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-modification-date"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Itemize
-Java Date instances: The modification date.
+JVM Date instances: The modification date.
+ Refer to the Java API documentation for details.
 \end_layout
 
 \begin_layout Itemize
 Strings: Considered as HTTP tags.
+ See 
+\bar under
+conversation.tag (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-modification-tag"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Itemize
-Restlet Tag instances: You can construct and return your own HTTP tag.
- See the Restlet documentation for more information.
+Tag instances: You can construct and return your own 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet tag"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/data/Tag.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Itemize
-Restlet RepresentationInfo instances: You can construct and return your
- own RepresentationInfo.
- See the Restlet documentation for more information.
+RepresentationInfo instances: You can construct and return your own 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet representation info"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/representation/RepresentationInfo.html"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Note that even if though you can only set either the modification date or
+ the tag by the return value, you can set the other one using 
+\bar under
+conversation.modificationDate (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-modification-date"
+
+\end_inset
+
+)
+\bar default
+ and 
+\bar under
+conversation.tag (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-modification-tag"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -8248,14 +8522,16 @@ It could be that you don't need this optimization.
 It could be that you won't gain anything from this optimization.
  Caches and other optimizations along the route between your data and your
  client might already be doing a great job at keeping handleGet as efficient
- as could be.
+ as it could be.
+ If not, improving them could offer far greater benefits overall than a
+ handleGetInfo.
 \end_layout
 
 \begin_layout Enumerate
 It could be that you'll even hurt your scalability! The reason is that an
  efficient handleGetInfo implementation would need some mechanism in place
- to track data modification, and this mechanism can introduce overhead into
- your system.
+ to track of data modification, and this mechanism can introduce overhead
+ into your system that causes it to scale worse than without your handleGetInfo.
 \end_layout
 
 \begin_layout Standard
@@ -8300,96 +8576,34 @@ HTTP clients, such as web browsers, store downloaded content in their local
 TODO
 \end_layout
 
+\begin_layout Standard
+See 
+\bar under
+handleGetInfo (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|handle-get-info"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
 \begin_layout Subsection
-CRUD
-\end_layout
-
-\begin_layout Standard
-An example of handleGet in Python:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-def handleGet():
-\end_layout
-
-\begin_layout Plain Layout
-
-	id = int(prudence.resource.request.attributes.get('id'))
-\end_layout
-
-\begin_layout Plain Layout
-
-	session = get_session()
-\end_layout
-
-\begin_layout Plain Layout
-
-	try:
-\end_layout
-
-\begin_layout Plain Layout
-
-		note = session.query(Note).filter_by(id=id).one()
-\end_layout
-
-\begin_layout Plain Layout
-
-	except NoResultFound:
-\end_layout
-
-\begin_layout Plain Layout
-
-		return 404 finally: session.close()
-\end_layout
-
-\begin_layout Plain Layout
-
-	prudence.modificationTimestamp = note.timestamp
-\end_layout
-
-\begin_layout Plain Layout
-
-	if prudence.mediaTypeName == 'application/json':
-\end_layout
-
-\begin_layout Plain Layout
-
-		return json.write(note.to_dict())
-\end_layout
-
-\begin_layout Plain Layout
-
-	elif if prudence.mediaTypeName == 'application/xml':
-\end_layout
-
-\begin_layout Plain Layout
-
-		return dict_to_xml(note.to_dict())
-\end_layout
-
-\begin_layout Plain Layout
-
-	else:
-\end_layout
-
-\begin_layout Plain Layout
-
-		return 415
-\end_layout
+Resources as API
+\begin_inset CommandInset label
+LatexCommand label
+name "../resources/|resources-as-api"
 
 \end_inset
 
 
 \end_layout
 
-\begin_layout Subsection
-Resources as API
+\begin_layout Standard
+TODO
 \end_layout
 
 \begin_layout Standard
@@ -8473,6 +8687,10 @@ var note = JSON.parse(String(r.get(MediaType.APPLICATION_JSON).text));
 
 \begin_layout Subsection
 Accessing External REST Services
+\end_layout
+
+\begin_layout Standard
+TODO
 \end_layout
 
 \begin_layout Standard
@@ -8963,7 +9181,15 @@ target "http://www.restlet.org/"
 \end_layout
 
 \begin_layout Standard
-See the Restlet documentation for instructions.
+See the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet documentation"
+target "http://wiki.restlet.org/docs_2.0/13-restlet/27-restlet/325-restlet/37-restlet.html"
+
+\end_inset
+
+ for more information.
 \end_layout
 
 \begin_layout Subsection
@@ -9131,6 +9357,22 @@ router.attach(staticWebBaseURL, staticWebCacheControlFilter)
 \end_inset
 
 
+\end_layout
+
+\begin_layout Quote
+You can use this filter for /dynamic/web/, too, but you're better off using
+ its 
+\bar under
+built-in support (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|conditional-requests"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsection
@@ -10243,20 +10485,20 @@ router.captureOther('/forum/help/{topic}/', 'wackyhelp', '/help/')
 \end_layout
 
 \begin_layout Standard
-In addition to parsing URI segments, you can use pre-defined curly-bracket-delim
-ited tags to route based on attributes of the request, via 
+In addition to parsing URI segments, you can use predefined curly-bracket-delimi
+ted variables to route based on attributes of the request, via 
 \bar under
-URI templates (page 
+URI patterns (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|uri-templates"
+reference "../routing/|uri-patterns"
 
 \end_inset
 
 )
 \bar default
 .
- For example, we can route with the ``{m}'' tag (HTTP method) to elegantly
+ For example, we can route with the ``{m}'' variable (HTTP method) to elegantly
  handle HTTP forms:
 \end_layout
 
@@ -10276,7 +10518,7 @@ router.capture('message/', 'message/{m}/')
 \end_layout
 
 \begin_layout Standard
-We can then have a dynamic web page named /message/GET.html:
+We can then have a dynamic web page named ``/message/GET.html'':
 \end_layout
 
 \begin_layout Standard
@@ -10335,7 +10577,7 @@ status open
 \end_layout
 
 \begin_layout Standard
-And one named /message/POST.html:
+and one named ``/message/POST.html'':
 \end_layout
 
 \begin_layout Standard
@@ -10374,7 +10616,7 @@ status open
 \end_layout
 
 \begin_layout Standard
-Another example of capturing with URI templates:
+Another example of capturing with URI patterns:
 \end_layout
 
 \begin_layout Standard
@@ -10424,7 +10666,7 @@ reference "../api/|conversation-media-type"
 )
 \bar default
 , but the above is a good example of how powerful routing can be with URI
- templates.
+ patterns.
 \end_layout
 
 \begin_layout Subsubsection
@@ -10724,9 +10966,31 @@ name "../routing/|attaching"
 
 \begin_layout Standard
 This is the lowest-level routing API.
- It allows you to route URI patterns to any custom ``restlet'' (a REST conversat
-ion handler), as well as Restlet resources (which internally use a Finder
- restlet).
+ It allows you to route URI patterns to any custom ``
+\begin_inset CommandInset href
+LatexCommand href
+name "restlet"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/Restlet.html"
+
+\end_inset
+
+'' (a REST conversation handler), as well as 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet resources"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/resource/ServerResource.html"
+
+\end_inset
+
+ (which internally use a 
+\begin_inset CommandInset href
+LatexCommand href
+name "Finder restlet"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/resource/Finder.html"
+
+\end_inset
+
+).
  Do your attachments in the application's /routing.* configuration script.
  Prudence offers some attachment ``sugar'' in addition the standard Restlet
  API.
@@ -10854,8 +11118,15 @@ name "../routing/|filtering"
 \end_layout
 
 \begin_layout Standard
-Instances of filters, which wrap instances of other restlets, can be attached
- directly to URIs.
+Instances of 
+\begin_inset CommandInset href
+LatexCommand href
+name "filters"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/routing/Filter.html"
+
+\end_inset
+
+, which wrap instances of other restlets, can be attached directly to URIs.
  In this example, we'll use Prudence's 
 \bar under
 JavaScript unifier/minifier (page 
@@ -10931,15 +11202,23 @@ reference "../routing/|attaching"
 
 )
 \bar default
- a Redirector restlet.
+ a 
+\begin_inset CommandInset href
+LatexCommand href
+name "Redirector restlet"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/routing/Redirector.html"
+
+\end_inset
+
+.
  By ``static'' here is meant that redirection is configured into the application
 's /routing.* script.
  However, because attachment supports 
 \bar under
-URI templates (page 
+URI patterns (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|uri-templates"
+reference "../routing/|uri-patterns"
 
 \end_inset
 
@@ -11007,7 +11286,7 @@ router.attach('bug/',
 
 \begin_layout Plain Layout
 
-// With a URI template
+// With a URI pattern
 \end_layout
 
 \begin_layout Plain Layout
@@ -11031,7 +11310,7 @@ router.attachBase('forum/',
 
 \begin_layout Plain Layout
 
-// A URI template with URI segments
+// A URI pattern with URI segments
 \end_layout
 
 \begin_layout Plain Layout
@@ -11054,15 +11333,14 @@ router.attach('contact/{reason}/',
 
 \end_layout
 
-\begin_layout Standard
-See the Restlet API documentation of Redirector for more information.
-\end_layout
-
 \begin_layout Subsection
-URI Templates
+URI 
+Pattern
+\lang english
+s
 \begin_inset CommandInset label
 LatexCommand label
-name "../routing/|uri-templates"
+name "../routing/|uri-patterns"
 
 \end_inset
 
@@ -11070,13 +11348,14 @@ name "../routing/|uri-templates"
 \end_layout
 
 \begin_layout Standard
-The custom routing techniques described above support URI templates, which
- are URIs with optional curly-bracket-delimited tags that are be replaced
- by conversation values at runtime.
+The custom routing techniques described above support URI patterns, which
+ are URIs with optional curly-bracket-delimited variable names that are
+ replaced by values per every client request.
+ The use of one pattern can thus refer to many URIs.
 \end_layout
 
 \begin_layout Standard
-Note that the same templates are used to generate 
+Note that the same system is used to generate 
 \bar under
 cache keys (page 
 \begin_inset CommandInset ref
@@ -11087,16 +11366,27 @@ reference "../api/|document-cache-key-pattern"
 
 )
 \bar default
-, and that there are some tags that can only be used for cache keys.
- In fact, many of these tags might be more useful for cache keys than for
- routing.
+, and that some variables can 
+\bar under
+only be used for cache keys (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|cache-key-variables"
+
+\end_inset
+
+)
+\bar default
+.
+ In fact, many of these variables might be more useful for cache keys than
+ for routing.
 \end_layout
 
 \begin_layout Standard
 For more information, see the 
 \begin_inset CommandInset href
 LatexCommand href
-name "Restlet documentation"
+name "Restlet Resolver documentation"
 target "http://www.restlet.org/documentation/2.0/jse/api/org/restlet/util/Resolver.html#createResolver(org.restlet.Request,%20org.restlet.Response)"
 
 \end_inset
@@ -11111,7 +11401,7 @@ Data Attributes
 \begin_layout Standard
 All these refer to the data (``entity'') sent by the client or that you
  are returning to the client.
- Lowercase is used for request values, uppercase for response values.
+ Lowercase is used for request attributes, uppercase for response attributes.
  We'll note these as pairs:
 \end_layout
 
@@ -11271,55 +11561,33 @@ Add the following modifiers to URI values above in order to access the various
 Every URI also has a ``base'' URI, accessed via the ``b'' modifier.
  Usually, this is the application's root URI on the virtual host.
  You can add the URI modifiers above to this URI.
- For example: {rbi}.
+ For example: ``{rbi}''.
 \end_layout
 
 \begin_layout Subsubsection
-Conversation Locals
+Cache Key Variables
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|cache-key-variables"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Tags that aren't any of the above tags will be assumed to be 
+The following variables are only available for 
 \bar under
-conversation.locals (page 
+cache key patterns (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|conversation-locals"
+reference "../api/|document-cache-key-pattern"
 
 \end_inset
 
 )
 \bar default
-.
- You can thus inject any data you wish.
-\end_layout
-
-\begin_layout Standard
-Note that 
-\bar under
-URI capturing (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../routing/|capturing"
-
-\end_inset
-
-)
-\bar default
- parses URIs 
-\emph on
-into 
-\emph default
-conversation.locals.
-\end_layout
-
-\begin_layout Subsubsection
-Cache Key Tags
-\end_layout
-
-\begin_layout Standard
-The following tags are only available for generating cache keys, not for
- routing:
+, not for routing:
 \end_layout
 
 \begin_layout Itemize
@@ -11341,6 +11609,64 @@ reference "../api/|conversation-path-to-base"
 \end_inset
 
 )
+\end_layout
+
+\begin_layout Subsubsection
+conversation.locals
+\end_layout
+
+\begin_layout Standard
+Variables that aren't any of the above will be assumed to be 
+\bar under
+conversation.locals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-locals"
+
+\end_inset
+
+)
+\bar default
+.
+ You can thus inject any data you wish into a pattern.
+\end_layout
+
+\begin_layout Standard
+This feature is especially useful with:
+\end_layout
+
+\begin_layout Itemize
+
+\bar under
+URI capturing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing"
+
+\end_inset
+
+)
+\bar default
+, which automatically parses URIs into
+\emph on
+ 
+\emph default
+conversation.locals
+\end_layout
+
+\begin_layout Itemize
+
+\bar under
+Cache key filters (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-key-filters"
+
+\end_inset
+
+)
+\bar default
+, which can set conversation.locals before the cache key pattern is cast
 \end_layout
 
 \begin_layout Section
@@ -11488,14 +11814,33 @@ name "../api/|application-application"
 \end_layout
 
 \begin_layout Standard
-This is a reference to the underlying Restlet application instance.
+This is a reference to the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet application instance"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/Application.html"
+
+\end_inset
+
+.
  Here you can access some information defined in /settings.*, such as application.
 application.owner, application.application.author, application.application.statusServ
 ice.contactEmail, etc.
 \end_layout
 
 \begin_layout Standard
-For more information, refer to the Restlet API documentation.
+You can configure the underlying application instance via 
+\bar under
+/application.* (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|application-file"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -11588,7 +11933,15 @@ name "../api/|application-get-media-type"
 \end_layout
 
 \begin_layout Standard
-Utility to get a media type from a MIME type name or filename extension.
+Utility to get a 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet MediaType instance"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/data/MediaType.html"
+
+\end_inset
+
+ from a MIME type name or filename extension.
 \end_layout
 
 \begin_layout Standard
@@ -11618,8 +11971,8 @@ name "../api/|application-task"
 \end_layout
 
 \begin_layout Standard
-Allows spawning and scheduling of asynchronous tasks from the application's
- /tasks/ subdirectory.
+Spawning ore schedules asynchronous tasks from the application's /tasks/
+ subdirectory.
  See 
 \bar under
 tasks (page 
@@ -11810,6 +12163,19 @@ reference "../../scaling/|caching"
 .
 \end_layout
 
+\begin_layout Quote
+Note: Passing the ``document'' global variable as an argument to a function
+ in another document will not let that other document access attributes
+ for the calling document.
+ In fact, all documents in the current thread share the same ``document''
+ service, which internally gets and sets attributes for the document in
+ which it is accessed.
+ If you do have a need for a function in one document to manipulate the
+ ``document'' attributes of another document, you will have to return the
+ values and have code in the owning document explicitly set the attributes
+ there.
+\end_layout
+
 \begin_layout Paragraph
 document.cacheDuration
 \begin_inset CommandInset label
@@ -11921,31 +12287,49 @@ This lets you control the key that is used to store and retrieve the cached
 \emph on
 Note that this is not necessarily the key itself
 \emph default
-, but instead a pattern that can contain variables that are set dynamically,
- and can also include values from 
+, but instead a pattern that can contain variables that are set dynamically.
+ See 
 \bar under
-conversation.locals (page 
+URI patterns (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|conversation-locals"
+reference "../routing/|uri-patterns"
+
+\end_inset
+
+)
+\bar default
+ for a complete list of built-in variables.
+ You can additionally set your own variables using a filter and 
+\bar under
+document.cacheKeyFilters (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-key-filters"
 
 \end_inset
 
 )
 \bar default
 .
- See 
+\end_layout
+
+\begin_layout Standard
+The cache key itself is cast from the cache key pattern for every request
+ reaching your document.
+ This cache key is checked against the 
 \bar under
-URI templates (page 
+cache (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|uri-templates"
+reference "../api/|document-cache"
 
 \end_inset
 
 )
 \bar default
- for a complete list of template variables.
+, and if a valid cache entry exists there, it is used.
+ Otherwise, your document is executed.
  For debugging purposes, you can use 
 \bar under
 document.cacheKey (page 
@@ -11957,7 +12341,7 @@ reference "../api/|document-cache-key"
 
 )
 \bar default
- to output the actual cache key used in the current conversation.
+ to output the actual cache key used for the request.
 \end_layout
 
 \begin_layout Standard
@@ -11976,7 +12360,7 @@ reference "../api/|document-cache-duration"
 \end_layout
 
 \begin_layout Standard
-Cache key templating is a very powerful feature that lets you easily create
+Cache key patterns are a very powerful feature that lets you easily create
  different cached versions of documents for different kinds of users and
  requests, but it's not always trivial to determine the best cache key pattern
  for every situation.
@@ -12002,13 +12386,6 @@ However, though sensible, the default cache key pattern may not be the most
  per page, then it's wasteful to cache it separately per URI.
  It would be more efficient to set document.cacheKeyPattern = ``{an}|{dn}''
  or ``{an}|{ptb}|{dn}'' in a scriptlet in header.html.
-\end_layout
-
-\begin_layout Standard
-You do not have to use Prudence's templating system, and can create your
- cache keys explicitly using your own scheme.
- Just make sure not to use ``{'' and ``}'', which are reserved for template
- tags.
 \end_layout
 
 \begin_layout Quote
@@ -12042,6 +12419,34 @@ reference "../../scaling/|caching"
 \begin_layout Standard
 The default cache key pattern can be changed by setting the ``com.threecrickets.pr
 udence.GeneratedTextResource.defaultCacheKeyPattern'' application global.
+\end_layout
+
+\begin_layout Paragraph
+document.cacheKeyFilters
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-cache-key-filters"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Standard
+and can also include values from 
+\bar under
+conversation.locals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-locals"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Paragraph
@@ -12930,11 +13335,18 @@ name "../api/|document-internal"
 \end_layout
 
 \begin_layout Standard
-Creates a proxy for a resource in the current application, or in other applicati
-ons in your component.
+Creates a 
+\begin_inset CommandInset href
+LatexCommand href
+name "ClientResource"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/resource/ClientResource.html"
+
+\end_inset
+
+ proxy for a resource in the current application, or in other applications
+ in your component.
  You can perform all the usual REST verbs via the proxy: GET, PUT, POST,
  DELETE, etc.
- For more information, refer to the Restlet API documentation for ClientResource.
 \end_layout
 
 \begin_layout Standard
@@ -13000,10 +13412,17 @@ name "../manual/api/|document-external"
 \end_layout
 
 \begin_layout Standard
-Creates a proxy for a resource.
+Creates a 
+\begin_inset CommandInset href
+LatexCommand href
+name "ClientResource"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/resource/ClientResource.html"
+
+\end_inset
+
+ proxy for a resource.
  You can perform all the usual REST verbs via the proxy: GET, PUT, POST,
  DELETE, etc.
- For more information, refer to the Restlet API documentation for ClientResource.
 \end_layout
 
 \begin_layout Standard
@@ -13216,7 +13635,15 @@ executable.manager
 \end_layout
 
 \begin_layout Standard
-This is the language manager used to create executables in many languages.
+This is the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Scripturian LanguageManager"
+target "http://threecrickets.com/scripturian/api/index.html?com/threecrickets/scripturian/LanguageManager.html"
+
+\end_inset
+
+ used to create executables in many languages.
  Here you can query which languages are supported by the current Prudence
  instance: executable.manager.adapters.
 \end_layout
@@ -13290,6 +13717,15 @@ conversation.reference
 
 \begin_layout Standard
 This is the URI used by the client.
+ Refer to the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet Reference documentation"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/data/Reference.html"
+
+\end_inset
+
+ for complete details.
 \end_layout
 
 \begin_layout Standard
@@ -13336,10 +13772,6 @@ reference "../api/|conversation-query"
 \begin_layout Itemize
 conversation.reference.relativeRef: a new reference relative to the base URI
  (usually the application root URI on the current virtual host)
-\end_layout
-
-\begin_layout Standard
-Refer to the Restlet API documentation for more details.
 \end_layout
 
 \begin_layout Paragraph
@@ -13447,7 +13879,15 @@ conversation.formAll is a list of parameters.
 
 \begin_layout Standard
 A value is often a simple string, but in the case of file uploads, it could
- be a FileParameter instance, with the following attributes:
+ be a 
+\begin_inset CommandInset href
+LatexCommand href
+name "FileParameter instance"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/util/FileParameter.html"
+
+\end_inset
+
+, with the following attributes:
 \end_layout
 
 \begin_layout Itemize
@@ -13468,7 +13908,15 @@ mediaTypeName: the MIME type set by the client, such as ``image/jpeg''
 \end_layout
 
 \begin_layout Itemize
-mediaType: the Restlet MediaType equivalent to the above, if available
+mediaType: the 
+\begin_inset CommandInset href
+LatexCommand href
+name "MediaType instance"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/data/MediaType.html"
+
+\end_inset
+
+ equivalent to the above, if available
 \end_layout
 
 \begin_layout Standard
@@ -13524,11 +13972,20 @@ conversation.entity
 
 \begin_layout Standard
 This is data sent by the client.
- For more information, refer to the Restlet API documentation for Representation.
 \end_layout
 
 \begin_layout Standard
-In the case of an HTML form, it would be more convenient conversation.form
+In the case of an HTML form, it would be more convenient 
+\bar under
+conversation.form (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-form"
+
+\end_inset
+
+)
+\bar default
  to access the parsed entity data.
  For other kinds of data, you have to parse the entity data yourself.
  Before attempting to parse entity data on your own, make sure to look through
@@ -13538,7 +13995,16 @@ In the case of an HTML form, it would be more convenient conversation.form
 \end_layout
 
 \begin_layout Standard
-A few useful representation attributes:
+The value is a 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet Representation instance"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/representation/Representation.html"
+
+\end_inset
+
+.
+ A few useful representation attributes:
 \end_layout
 
 \begin_layout Itemize
@@ -13576,14 +14042,63 @@ conversation.variant
 \end_layout
 
 \begin_layout Standard
-This allows low-level access to the Restlet Variant instance sent by the
- client.
+This allows low-level access to the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet Variant instance"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/representation/Variant.html"
+
+\end_inset
+
+ sent by the client.
  In negotiated HTTP mode, the ``variant'' encapsulates a set of preferences
  the client might have for returned representations.
  You usually don't have to access the variant: Prudence expands these via
- conversation.mediaType, conversation.characterSet, conversation.encoding,
- and conversation.language.
- Refer to the Restlet API documentation for details.
+ 
+\bar under
+conversation.mediaType (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-media-type"
+
+\end_inset
+
+)
+\bar default
+, 
+\bar under
+conversation.characterSet (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-character-set"
+
+\end_inset
+
+)
+\bar default
+, 
+\bar under
+conversation.encoding (
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-encoding"
+
+\end_inset
+
+)
+\bar default
+, and 
+\bar under
+conversation.language (
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-language"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -13598,7 +14113,7 @@ Request and Response Attributes
 \begin_layout Standard
 The attributes are initially set according to the client request, and by
  default are passed through as is to the response.
- For example, if a client sends you data in mediaType ``application/json,''
+ For example, if a client sends you data in media type ``application/json,''
  then the default would be for the response to be in the same format.
  Obviously, this is not always the desired outcome, and you can explicitly
  examine and change these attributes.
@@ -13648,7 +14163,14 @@ a client to change, store cookies, or for them to be used in various.
 \end_layout
 
 \begin_layout Standard
-Cookies have the following attributes:
+\begin_inset CommandInset href
+LatexCommand href
+name "Cookie instances"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/util/ConversationCookie.html"
+
+\end_inset
+
+ have the following attributes:
 \end_layout
 
 \begin_layout Itemize
@@ -13785,8 +14307,15 @@ reference "../application/|default-file"
 \end_layout
 
 \begin_layout Standard
-conversation.mediaType is the underlying Restlet MediaType instance.
- Refer to the Restlet API documentation for details.
+conversation.mediaType is the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "MediaType instance"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/data/MediaType.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -13815,6 +14344,13 @@ reference "../routing/|extensions-mime-types"
 \begin_layout Paragraph
 conversation.characterSetName, conversation.characterSetShortName, conversation.cha
 racterSet
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-character-set"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -13850,8 +14386,15 @@ reference "../application/|default-file"
 \end_layout
 
 \begin_layout Standard
-conversation.characterSet is the underlying Restlet CharacterSet instance.
- Refer to the Restlet API documentation for details.
+conversation.characterSet is the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "CharacterSet instance"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/data/CharacterSet.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -13892,12 +14435,26 @@ conversation.statusCode is an HTTP status code as an integer.
 \end_layout
 
 \begin_layout Standard
-conversation.status is the underlying Restlet Status instance.
- Refer to the Restlet API documentation for details.
+conversation.status is the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "Status instance"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/data/Status.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Paragraph
 conversation.languageName, conversation.language
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-language"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -13914,11 +14471,19 @@ conversation.languageName is the IETF locale name for the language.
 \end_layout
 
 \begin_layout Standard
-conversation.language is the underlying Restlet Language instance.
+conversation.language is the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "Language instance"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/data/Language.html"
+
+\end_inset
+
+.
  Because IETF names are hierarchical, you might prefer to use this as a
  way to test for containment.
  For example, conversation.language.includes will tell you that ``en-us''
- is included in ``en.'' Refer to the Restlet API documentation for details.
+ is included in ``en.''
 \end_layout
 
 \begin_layout Standard
@@ -13928,12 +14493,19 @@ uage().
 \end_layout
 
 \begin_layout Standard
-Note that the language can be a null value.
- Responses do not have to specify a language.
+Note that the language can be a null value, and that responses do not have
+ to specify a language.
 \end_layout
 
 \begin_layout Paragraph
 conversation.encodingName, conversation.encoding
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-encoding"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Quote
@@ -13955,8 +14527,15 @@ ion.
 \end_layout
 
 \begin_layout Standard
-conversation.encoding is the underlying Restlet Language instance.
- Refer to the Restlet API documentation for details.
+conversation.encoding is the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "Encoding instance"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/data/Encoding.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -13990,7 +14569,7 @@ reference "../api/|document-cache-duration"
 )
 \bar default
 .
- To control how this is set, see the 
+ To control how these are set, see the 
 \bar under
 dynamicWebClientCachingMode setting (page 
 \begin_inset CommandInset ref
@@ -14005,28 +14584,14 @@ reference "../application/|dynamic-web-client-caching-mode"
 \end_layout
 
 \begin_layout Paragraph
-conversation.modificationTimestamp, conversation.modificationDate
-\end_layout
-
-\begin_layout Standard
-These two variants represent the same value, letting you access the value
- in different ways.
-\end_layout
-
-\begin_layout Standard
-conversation.modificationTimestamp is a long integer value representing the
- number of milliseconds since January 1, 1970, 00:00:00 GMT (``Unix time'').
- While not too useful in itself, it's easy to compare timestamps to see
- which moment in time is before the other.
-\end_layout
-
-\begin_layout Standard
-conversation.modificationDate is the underlying JVM Date instance.
- Refer to the Java API documentation for details.
-\end_layout
-
-\begin_layout Paragraph
 conversation.expirationTimestamp, conversation.expirationDate
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-expiration-date"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -14047,7 +14612,14 @@ conversation.expirationDate is the underlying JVM Date instance.
 \end_layout
 
 \begin_layout Paragraph
-conversation.httpTag, conversation.tag
+conversation.modificationTimestamp, conversation.modificationDate
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-modification-date"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -14056,12 +14628,77 @@ These two variants represent the same value, letting you access the value
 \end_layout
 
 \begin_layout Standard
+See 
+\bar under
+conditional requests (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|conditional-requests"
+
+\end_inset
+
+)
+\bar default
+ for use cases.
+\end_layout
+
+\begin_layout Standard
+conversation.modificationTimestamp is a long integer value representing the
+ number of milliseconds since January 1, 1970, 00:00:00 GMT (``Unix time'').
+ While not too useful in itself, it's easy to compare timestamps to see
+ which moment in time is before the other.
+\end_layout
+
+\begin_layout Standard
+conversation.modificationDate is the underlying JVM Date instance.
+ Refer to the Java API documentation for details.
+\end_layout
+
+\begin_layout Paragraph
+conversation.httpTag, conversation.tag
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-modification-tag"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These two variants represent the same value, letting you access the value
+ in different ways.
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+conditional requests (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|conditional-requests"
+
+\end_inset
+
+)
+\bar default
+ for use cases.
+\end_layout
+
+\begin_layout Standard
 conversation.httpTag is an HTTP ETag string.
 \end_layout
 
 \begin_layout Standard
-conversation.tag is the underlying Restlet Tag instance.
- Refer to the Restlet API documentation for details.
+conversation.tag is the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "Tag instance"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/data/Tag.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -14177,8 +14814,15 @@ reference "../application/|default-file"
 \end_layout
 
 \begin_layout Standard
-conversation.addMediaType accepts the underlying Restlet MediaType instance.
- Refer to the Restlet API documentation for details.
+conversation.addMediaType accepts the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "MediaType instance"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/data/MediaType.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -14376,8 +15020,15 @@ if(conversation.defer()) {
 
 \begin_layout Quote
 This is an experimental feature in Prudence 1.0.
- The use of a separate thread pool is only supported when using the internal
- Restlet connector.
+ The use of a separate thread pool is only supported when using the 
+\begin_inset CommandInset href
+LatexCommand href
+name "internal Restlet connector"
+target "http://wiki.restlet.org/docs_2.0/13-restlet/27-restlet/325-restlet/37-restlet.html"
+
+\end_inset
+
+.
  For other connectors (such as Grizzly, the default), a successful call
  to defer will cause the page to be executed again in the same thread.
 \end_layout
@@ -14431,9 +15082,33 @@ conversation.resource
 \end_layout
 
 \begin_layout Standard
-The Restlet resource.
- In the case of /web/dynamic/, this will be Prudence's GeneratedTextResource.
- In the case of /resources/, this will be DelegatedResource.
+The 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet resource instance"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/resource/ServerResource.html"
+
+\end_inset
+
+.
+ In the case of /web/dynamic/, this will be 
+\begin_inset CommandInset href
+LatexCommand href
+name "Prudence's GeneratedTextResource"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/GeneratedTextResource.html"
+
+\end_inset
+
+.
+ In the case of /resources/, this will be 
+\begin_inset CommandInset href
+LatexCommand href
+name "DelegatedResource"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/DelegatedResource.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -14441,7 +15116,15 @@ conversation.request
 \end_layout
 
 \begin_layout Standard
-Equivalent to conversation.resource.request.
+Equivalent to 
+\begin_inset CommandInset href
+LatexCommand href
+name "conversation.resource.request"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/Request.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -14449,7 +15132,15 @@ conversation.response
 \end_layout
 
 \begin_layout Standard
-Equivalent to conversation.resource.response.
+Equivalent to 
+\begin_inset CommandInset href
+LatexCommand href
+name "conversation.resource.response"
+target "http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/Response.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -14496,9 +15187,53 @@ But in Prudence, you cannot expect global variables to persist beyond a
 
 \emph default
  To put it another way, you should consider every single user request as
- a separate ``program'' with its own global variables.
- If you need global variables to persist, you must use application.globals
- or executable.globals.
+ a separate ``program'' with its own global state.
+ See the ``life'' sections for 
+\bar under
+generating HTML (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|life"
+
+\end_inset
+
+)
+\bar default
+ and 
+\bar under
+resources (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|life"
+
+\end_inset
+
+)
+\bar default
+ for more information on when this global state is created and discarded.
+ If you need global variables to persist, you must use 
+\bar under
+application.globals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-globals"
+
+\end_inset
+
+)
+\bar default
+ or 
+\bar under
+executable.globals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|executable-globals"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -14521,15 +15256,18 @@ might
  memory, with the side effect that your language globals persist beyond
  a single user request.
  For various reasons, however, Prudence may reset this global context.
- You should not rely on this side effect, and instead always use application.glob
-als (page 
+ You should not rely on this side effect, and instead always use 
+\bar under
+application.globals (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../api/|application-globals"
 
 \end_inset
 
-) or even 
+)
+\bar default
+ or even 
 \bar under
 executable.globals (page 
 \begin_inset CommandInset ref
@@ -15043,6 +15781,13 @@ reference "../logging/"
 
 \begin_layout Subsection
 The Debug Page
+\begin_inset CommandInset label
+LatexCommand label
+name "../debugging/|the-debug-page"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -15598,6 +16343,13 @@ log4j.logger.wackywiki=WARN, wackywiki
 
 \begin_layout Subsection
 Analyzing /logs/web.log
+\begin_inset CommandInset label
+LatexCommand label
+name "../logging/|analyzing-web-log"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -15896,7 +16648,7 @@ In production environments, it's best to run Prudence as a daemon in Unix-like
  systems or a service in Windows, via a lightweight wrapper.
  This will provide proper process monitoring and control.
  For example, if Prudence's JVM crashes for some reason, hangs, grabs too
- much CPU or RAM, the wrapper can automatically shut down and even restart
+ much CPU or RAM, the wrapper can automatically shut it down and even restart
  it.
 \end_layout
 
@@ -16777,48 +17529,188 @@ Easy deployment
 
 \begin_deeper
 \begin_layout Enumerate
-Boot scripts: avoid weird (XML) configuration formats and start your Restlet
- component exactly as you want (your choice from six languages)
+
+\bar under
+Configuration scripts (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/|configuration-by-script"
+
+\end_inset
+
+)
+\bar default
+: avoid weird (XML) configuration formats and start your Restlet component
+ exactly as you want (your choice from six languages)
 \end_layout
 
 \begin_layout Enumerate
-The default scripts already handle virtual hosting, multiple servers and
- internal routing
+The default scripts already handle 
+\bar under
+virtual hosting (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/|hosts-file"
+
+\end_inset
+
+)
+\bar default
+, 
+\bar under
+multiple servers (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/|servers-file"
+
+\end_inset
+
+)
+\bar default
+ and 
+\bar under
+internal routing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|resources-as-api"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
-Designed from the ground-up to handle multiple apps on the same component
+Designed from the ground-up to handle multiple 
+\bar under
+applications (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/"
+
+\end_inset
+
+)
+\bar default
+ on the same component
 \end_layout
 
 \begin_layout Enumerate
-Admin app for live management of components
+
+\bar under
+Admin application (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../administration/"
+
+\end_inset
+
+)
+\bar default
+ for live management of components
 \end_layout
 
 \begin_layout Enumerate
-Logging is pre-configured and ``just works,'' including an Apache-compatible
- web log
+
+\bar under
+Logging is pre-configured (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../logging/"
+
+\end_inset
+
+)
+\bar default
+ and ``just works,'' including an 
+\bar under
+Apache-compatible web log (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../logging/|analyzing-web-log"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
-Single zip-file application deployment (like WAR files in JEE)
+
+\bar under
+Single zip-file application deployment (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|deploy-by-zip"
+
+\end_inset
+
+)
+\bar default
+ (like WAR files in JEE)
 \end_layout
 
 \end_deeper
 \begin_layout Enumerate
-Easy prototyping of REST resources
+Easy prototyping of REST 
+\bar under
+resources (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_deeper
 \begin_layout Enumerate
-Your choice among 6 languages
+Your choice among 
+\bar under
+6 languages (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../../flavors/"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
-Code is compiled, cached and loaded on-the-fly
+
+\bar under
+Code is compiled, cached and loaded on-the-fly (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|life"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
-Rich debug page shows errors and source code
+
+\bar under
+Rich debug page (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../debugging/|the-debug-page"
+
+\end_inset
+
+)
+\bar default
+ shows errors and 
+\bar under
+source code (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../debugging/|source-code"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
@@ -16827,38 +17719,145 @@ When you're happy with it, you can rewrite it as a ServerResource in Java
 
 \end_deeper
 \begin_layout Enumerate
-Powerful HTML generation platform, like JSP/ASP/PHP (again, 100% Restlet-based)
+Powerful 
+\bar under
+HTML generation (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/"
+
+\end_inset
+
+) platform
+\bar default
+, like JSP/ASP/PHP (again, 100% Restlet-based)
 \end_layout
 
 \begin_deeper
 \begin_layout Enumerate
-Your choice from six languages, including mixing languages and template
- engines (Velocity, Succinct) on one page
+Your choice from six languages, including 
+\bar under
+mixing languages (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|mixing-languages"
+
+\end_inset
+
+)
+\bar default
+ and 
+\bar under
+templating engines (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|templating-languages"
+
+\end_inset
+
+)
+\bar default
+ (Velocity, Succinct) on one page
 \end_layout
 
 \begin_layout Enumerate
-Code is compiled, cached and loaded on-the-fly
+
+\bar under
+Code is compiled, cached and loaded on-the-fly (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|life"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
-RAM/database/Hazelcast/memcached server-side caching (uses Restlet's URI
- template language for cache key generation)
+RAM/database/Hazelcast/memcached 
+\bar under
+server-side caching (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache"
+
+\end_inset
+
+)
+\bar default
+, using Restlet's URI templating language for 
+\bar under
+cache key generation (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-key-pattern"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
-Straightforward support for client-side caching
+Straightforward support for 
+\bar under
+client-side caching (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../static-web/|cache-control-filter"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
-Asynchronous output
+
+\bar under
+Asynchronous processing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-defer"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
-Easily accept uploaded files
+Easily accept 
+\bar under
+uploaded files (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-form"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
-Rich debug page shows errors and source code
+
+\bar under
+Rich debug page (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../debugging/|the-debug-page"
+
+\end_inset
+
+)
+\bar default
+ shows errors and 
+\bar under
+source code (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../debugging/|source-code"
+
+\end_inset
+
+)
 \end_layout
 
 \end_deeper
@@ -16868,42 +17867,107 @@ Restlet sugar (also available as a standalone JAR)
 
 \begin_deeper
 \begin_layout Enumerate
-Fallback router (attach multiple MODE_STARTS_WITH restlets to the same base
- URI)
+\begin_inset CommandInset href
+LatexCommand href
+name "Fallback router"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/util/FallbackRouter.html"
+
+\end_inset
+
+ (attach multiple MODE_STARTS_WITH restlets to the same base URI)
 \end_layout
 
 \begin_layout Enumerate
-URI ``capturing'' (internal redirection)
-\end_layout
 
-\begin_layout Enumerate
-JavaScript/CSS unify-and-minify filter
-\end_layout
+\bar under
+URI ``capturing'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing"
 
-\begin_layout Enumerate
-Delegated status service for diverting to custom pages (404, 500 errors,
- etc.)
-\end_layout
+\end_inset
 
-\begin_layout Enumerate
-Rich DebugRepresentation
-\end_layout
-
-\begin_layout Enumerate
-Cache backend abstraction, designed for storing StringRepresentations
-\end_layout
-
-\begin_layout Enumerate
-Easier file uploads (slightly higher-level than the Restlet FileUpload extension
 )
 \end_layout
 
 \begin_layout Enumerate
-ConversationCookie (combines Cookie and CookieSetting)
+
+\bar under
+JavaScript and CSS unify-and-minify filters (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../static-web/|javascript-unify-minify-filter"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
-Filter to selectively add CacheControl (to Directory, for example)
+\begin_inset CommandInset href
+LatexCommand href
+name "Delegated status service"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/util/DelegatedStatusService.html"
+
+\end_inset
+
+ for diverting to custom pages (404, 500 errors, etc.)
+\end_layout
+
+\begin_layout Enumerate
+Rich 
+\begin_inset CommandInset href
+LatexCommand href
+name "DebugRepresentation"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/util/DebugRepresentation.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset href
+LatexCommand href
+name "Cache backend abstraction"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/Cache.html"
+
+\end_inset
+
+, designed for storing StringRepresentations
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset href
+LatexCommand href
+name "Easier file uploads"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/util/FormWithFiles.html"
+
+\end_inset
+
+ (slightly higher-level than the Restlet FileUpload extension)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset href
+LatexCommand href
+name "ConversationCookie"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/util/ConversationCookie.html"
+
+\end_inset
+
+ (combines Cookie and CookieSetting)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset href
+LatexCommand href
+name "Filter to selectively add CacheControl"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/util/CacheControlFilter.html"
+
+\end_inset
+
+ (to Directory, for example)
 \end_layout
 
 \end_deeper
