@@ -80,7 +80,7 @@ function seeMainSource() {
 		Note that PHP cannot at this time be used for creating REST resources.
 	</p>
 </td><td width="50%">
-	<h2>Resource</h2>
+	<h3>Resource</h3>
 	<p>
 		<select id="resource">
 <% #if($executable.manager.getAdapterByTag('jython')) %>
@@ -109,14 +109,14 @@ function seeMainSource() {
 		</select>
 		<input type="button" onclick="seeMainSource()" value="Source" />
 	</p>
-	<h2>MIME to request (for Get, Post and Put)</h2>
+	<h3>MIME to request (for Get, Post and Put)</h3>
 	<p>
 		<select id="mime">
 			<option>application/json</option>
 			<option>text/plain</option>
 		</select>
 	</p>
-	<h2>JSON to send (for Post and Put)</h2>
+	<h3>JSON to send (for Post and Put)</h3>
 	<p>
 		<textarea id="content" cols="40" rows="5"></textarea>
 	</p>
@@ -133,7 +133,7 @@ function seeMainSource() {
 
 <div class="hr"><hr /></div>
 
-<h2>Result of last verb</h2>
+<h3>Result of last verb</h3>
 <p>
 	<div id="status">n/a</div>
 </p>
