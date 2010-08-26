@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Context;
@@ -1376,6 +1377,29 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
+	 * A cache for entry point validity.
+	 * 
+	 * @param executable
+	 *        The executable
+	 * @return The entry point validity cache
+	 */
+	@SuppressWarnings("unchecked")
+	private ConcurrentMap<String, Boolean> getEntryPointValidityCache( Executable executable )
+	{
+		ConcurrentMap<String, Object> attributes = executable.getAttributes();
+		ConcurrentMap<String, Boolean> entryPointValidityCache = (ConcurrentMap<String, Boolean>) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointValidityCache" );
+		if( entryPointValidityCache == null )
+		{
+			entryPointValidityCache = new ConcurrentHashMap<String, Boolean>();
+			ConcurrentMap<String, Boolean> existing = (ConcurrentMap<String, Boolean>) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.entryPointValidityCache", entryPointValidityCache );
+			if( existing != null )
+				entryPointValidityCache = existing;
+		}
+
+		return entryPointValidityCache;
+	}
+
+	/**
 	 * Enters the executable.
 	 * 
 	 * @param entryPointName
@@ -1429,8 +1453,18 @@ public class DelegatedResource extends ServerResource
 				}
 			}
 
+			// Check for validity, if cached
+			ConcurrentMap<String, Boolean> entryPointValidityCache = getEntryPointValidityCache( executable );
+			Boolean isValid = entryPointValidityCache.get( entryPointName );
+			if( ( isValid != null ) && !isValid.booleanValue() )
+				throw new NoSuchMethodException( entryPointName );
+
 			// Enter!
 			Object r = executable.enter( entryPointName, conversationService );
+
+			// We seem to be valid
+			entryPointValidityCache.put( entryPointName, true );
+
 			return r;
 		}
 		catch( DocumentNotFoundException x )
