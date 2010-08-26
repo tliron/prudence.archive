@@ -1415,6 +1415,8 @@ public class DelegatedResource extends ServerResource
 		String documentName = getRequest().getResourceRef().getRemainingPart( true, false );
 		documentName = validateDocumentName( documentName );
 
+		ConcurrentMap<String, Boolean> entryPointValidityCache = null;
+
 		try
 		{
 			DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, getDocumentSource(), false, getLanguageManager(), getDefaultLanguageTag(), isPrepare() );
@@ -1454,16 +1456,13 @@ public class DelegatedResource extends ServerResource
 			}
 
 			// Check for validity, if cached
-			ConcurrentMap<String, Boolean> entryPointValidityCache = getEntryPointValidityCache( executable );
+			entryPointValidityCache = getEntryPointValidityCache( executable );
 			Boolean isValid = entryPointValidityCache.get( entryPointName );
 			if( ( isValid != null ) && !isValid.booleanValue() )
 				throw new NoSuchMethodException( entryPointName );
 
 			// Enter!
 			Object r = executable.enter( entryPointName, conversationService );
-
-			// We seem to be valid
-			entryPointValidityCache.put( entryPointName, true );
 
 			return r;
 		}
@@ -1485,6 +1484,10 @@ public class DelegatedResource extends ServerResource
 		}
 		catch( NoSuchMethodException x )
 		{
+			// We are invalid
+			if( entryPointValidityCache != null )
+				entryPointValidityCache.put( entryPointName, false );
+
 			throw new ResourceException( x );
 		}
 		finally
