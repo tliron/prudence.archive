@@ -8757,6 +8757,25 @@ component.clients.add(Protocol.HTTP)
 \end_layout
 
 \begin_layout Section
+Filters
+\begin_inset CommandInset label
+LatexCommand label
+name "../filters/"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+/filters/
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Section
 Tasks
 \begin_inset CommandInset label
 LatexCommand label
@@ -9115,11 +9134,11 @@ You're likely, though, wondering if /web/static/ is merely a convenience,
 \begin_layout Standard
 Our recommendation is to take that route only if those web servers offer
  important features that you won't find in Prudence.
- Remember that Prudence has many powerful features, including URL redirecting,
- rewriting and routing, and that Prudence's non-blocking I/O actually does
- a great job at serving files.
- You will likely not see many performance or scalability gains replacing
- /web/static/ with standard Apache.
+ Remember that Prudence has many powerful features, including URL rewriting,
+ redirecting and routing, and that Prudence's non-blocking I/O does a great
+ job at serving files.
+ You will likely not see better performance or scalability by replacing
+ /web/static/ with standard web servers.
 \end_layout
 
 \begin_layout Subsection
@@ -9159,8 +9178,8 @@ target "http://jboss.org/netty"
 
 \end_inset
 
-, a non-blocking I/O HTTP server with slightly different performance characteris
-tics, and 
+, a non-blocking I/O HTTP server with different performance characteristics,
+ and 
 \begin_inset CommandInset href
 LatexCommand href
 name "Jetty"
@@ -9169,19 +9188,7 @@ target "http://www.mortbay.org/jetty/"
 \end_inset
 
 , which offers similar performance and many more features.
- Or, use any other connector supported by 
-\begin_inset CommandInset href
-LatexCommand href
-name "Restlet"
-target "http://www.restlet.org/"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-See the 
+ See the 
 \begin_inset CommandInset href
 LatexCommand href
 name "Restlet documentation"
@@ -9316,8 +9323,7 @@ importClass(
 
 \begin_layout Plain Layout
 
-var staticWebCacheControlFilter = new CacheControlFilter(router.context,
- staticWeb)
+var staticWebCacheControlFilter = new CacheControlFilter(null)
 \end_layout
 
 \begin_layout Plain Layout
@@ -9346,12 +9352,7 @@ staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.APPLICATION_JAVASCR
 
 \begin_layout Plain Layout
 
-router.detach(staticWeb)
-\end_layout
-
-\begin_layout Plain Layout
-
-router.attach(staticWebBaseURL, staticWebCacheControlFilter)
+router.filterBase(staticWebBaseURL, staticWebCacheControlFilter, staticWeb)
 \end_layout
 
 \end_inset
@@ -9444,12 +9445,7 @@ importClass(com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter)
 
 \begin_layout Plain Layout
 
-router.detach(staticWeb)
-\end_layout
-
-\begin_layout Plain Layout
-
-router.attachBase(
+router.filterBase(
 \end_layout
 
 \begin_layout Plain Layout
@@ -9459,13 +9455,13 @@ router.attachBase(
 
 \begin_layout Plain Layout
 
-	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applica
-tionBasePath + staticWebBasePath),
+	new JavaScriptUnifyMinifyFilter(null, new File(applicationBasePath + staticWebB
+asePath),
 \end_layout
 
 \begin_layout Plain Layout
 
-		dynamicWebMinimumTimeBetweenValidityChecks))
+		dynamicWebMinimumTimeBetweenValidityChecks), staticWeb)
 \end_layout
 
 \end_inset
@@ -9517,8 +9513,18 @@ CssUnifyMinifyFilter
 \end_layout
 
 \begin_layout Standard
-This filter does for CSS what the JavaScriptUnifyMinify filter, above, does
- for JavaScript.
+This filter does for CSS what the 
+\bar under
+JavaScriptUnifyMinifyFilter (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../static-web/|javascript-unify-minify-filter"
+
+\end_inset
+
+)
+\bar default
+ does for JavaScript.
  Example:
 \end_layout
 
@@ -9538,12 +9544,7 @@ importClass(com.threecrickets.prudence.util.CssUnifyMinifyFilter)
 
 \begin_layout Plain Layout
 
-router.detach(staticWeb)
-\end_layout
-
-\begin_layout Plain Layout
-
-router.attachBase(
+router.filterBase(
 \end_layout
 
 \begin_layout Plain Layout
@@ -9553,13 +9554,13 @@ router.attachBase(
 
 \begin_layout Plain Layout
 
-	new CssScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicat
-ionBasePath + staticWebBasePath),
+	new CssScriptUnifyMinifyFilter(null, new File(applicationBasePath + staticWebBa
+sePath),
 \end_layout
 
 \begin_layout Plain Layout
 
-		dynamicWebMinimumTimeBetweenValidityChecks))
+		dynamicWebMinimumTimeBetweenValidityChecks), staticWeb)
 \end_layout
 
 \end_inset
@@ -10209,7 +10210,18 @@ Prudence lets you ``capture'' abitrary URI patterns into any internal URI
 
 \begin_layout Standard
 You can use curly-bracket-delimited tags in the URI to parse URI segments
- and store them in conversation.locals.
+ and store them in 
+\bar under
+conversation.locals (page 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "../api/|conversation-locals"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -10246,7 +10258,7 @@ router.capture('forum/help/{topic}/', 'forum/help/');
 \end_layout
 
 \begin_layout Standard
-And then, in /web/dynamic/forum/help.html:
+And then, in ``/web/dynamic/forum/help.html'':
 \end_layout
 
 \begin_layout Standard
@@ -10920,8 +10932,19 @@ conversation.stop()
 \begin_layout Standard
 Note that most clients will support relative URI paths for redirection.
  Also, they will likely ignore any data in the redirected response, so you
- can just return null in /resources/ or empty text in /web/dynamic/ (which
- is why we call conversation.stop in the example above).
+ can just return null in /resources/ or empty text in /web/dynamic/.
+ This is the reason we call 
+\bar under
+conversation.stop (page 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "../api/|conversation-stop"
+
+\end_inset
+
+)
+\bar default
+ in the example above.
 \end_layout
 
 \begin_layout Standard
@@ -11138,7 +11161,7 @@ reference "../static-web/|javascript-unify-minify-filter"
 
 )
 \bar default
-.
+:
 \end_layout
 
 \begin_layout Standard
@@ -11153,6 +11176,52 @@ importClass(com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter)
 
 \begin_layout Plain Layout
 
+\end_layout
+
+\begin_layout Plain Layout
+
+// This will detach staticWeb and attach our filter instead with staticWeb
+ chained to it;
+\end_layout
+
+\begin_layout Plain Layout
+
+// also note that the context for staticWeb will be used for the filter
+\end_layout
+
+\begin_layout Plain Layout
+
+// (this is Prudence sugar)
+\end_layout
+
+\begin_layout Plain Layout
+
+router.filterBase(
+\end_layout
+
+\begin_layout Plain Layout
+
+	staticWebBaseURL,
+\end_layout
+
+\begin_layout Plain Layout
+
+	new JavaScriptUnifyMinifyFilter(null, new File(applicationBasePath + staticWebB
+asePath),
+\end_layout
+
+\begin_layout Plain Layout
+
+		dynamicWebMinimumTimeBetweenValidityChecks), staticWeb)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// The above is equivalent to this
 \end_layout
 
 \begin_layout Plain Layout
@@ -11172,8 +11241,8 @@ router.attachBase(
 
 \begin_layout Plain Layout
 
-	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applica
-tionBasePath + staticWebBasePath),
+	new JavaScriptUnifyMinifyFilter(staticWeb.context, staticWeb, new File(applicati
+onBasePath + staticWebBasePath),
 \end_layout
 
 \begin_layout Plain Layout
@@ -11272,12 +11341,8 @@ router.attach('bug/',
 
 \begin_layout Plain Layout
 
-	new Redirector(applicationInstance.context,
-\end_layout
-
-\begin_layout Plain Layout
-
-'http://wackywiki.org/contact-us/bug/'))
+	new Redirector(applicationInstance.context, 'http://wackywiki.org/contact-us/bug/
+'))
 \end_layout
 
 \begin_layout Plain Layout
@@ -11334,10 +11399,7 @@ router.attach('contact/{reason}/',
 \end_layout
 
 \begin_layout Subsection
-URI 
-Pattern
-\lang english
-s
+URI Patterns
 \begin_inset CommandInset label
 LatexCommand label
 name "../routing/|uri-patterns"
@@ -14837,6 +14899,13 @@ Conversation Flow
 
 \begin_layout Paragraph
 conversation.stop
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-stop"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -15718,7 +15787,7 @@ To easily share conversation-scope state between scriptlets written in different
 \end_layout
 
 \begin_layout Enumerate
-To share state for deferred conversations--see 
+To share state for deferred conversations---see 
 \bar under
 conversation.defer (page 
 \begin_inset CommandInset ref
@@ -17721,14 +17790,14 @@ When you're happy with it, you can rewrite it as a ServerResource in Java
 \begin_layout Enumerate
 Powerful 
 \bar under
-HTML generation (page 
+HTML generation platform (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../generating-html/"
 
 \end_inset
 
-) platform
+)
 \bar default
 , like JSP/ASP/PHP (again, 100% Restlet-based)
 \end_layout

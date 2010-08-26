@@ -17,6 +17,7 @@ import org.restlet.Response;
 import org.restlet.Restlet;
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
+import org.restlet.routing.Filter;
 import org.restlet.routing.Redirector;
 import org.restlet.routing.Route;
 import org.restlet.routing.Template;
@@ -122,6 +123,53 @@ public class PrudenceRouter extends FallbackRouter
 		Route route = attach( uriTemplate, target );
 		route.setMatchingMode( Template.MODE_STARTS_WITH );
 		return route;
+	}
+
+	/**
+	 * Detaches the target restlet, and attaches the filter instead with the
+	 * target chained after it.
+	 * <p>
+	 * The filter's context will be set to that of the target if it doesn't
+	 * already have a context.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param filter
+	 *        The filter
+	 * @param target
+	 *        The target Restlet to attach
+	 * @return The created route
+	 */
+	public Route filter( String uriTemplate, Filter filter, Restlet target )
+	{
+		detach( target );
+		if( filter.getContext() == null )
+			filter.setContext( target.getContext() );
+		filter.setNext( target );
+		return attach( uriTemplate, filter );
+	}
+
+	/**
+	 * As {@link #filter(String, Filter, Restlet)}, but enforces matching mode
+	 * {@link Template#MODE_STARTS_WITH}.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param filter
+	 *        The filter
+	 * @param target
+	 *        The target Restlet to attach
+	 * @return The created route
+	 */
+	public Route filterBase( String uriTemplate, Filter filter, Restlet target )
+	{
+		detach( target );
+		if( filter.getContext() == null )
+			filter.setContext( target.getContext() );
+		filter.setNext( target );
+		return attachBase( uriTemplate, filter );
 	}
 
 	/**

@@ -52,6 +52,21 @@ public class JavaScriptUnifyMinifyFilter extends UnifyMinifyFilter
 	 * 
 	 * @param context
 	 *        The context
+	 * @param scriptsDirectory
+	 *        The directory where the source scripts are found
+	 * @param minimumTimeBetweenValidityChecks
+	 *        See {@link #getMinimumTimeBetweenValidityChecks()}
+	 */
+	public JavaScriptUnifyMinifyFilter( Context context, File scriptsDirectory, long minimumTimeBetweenValidityChecks )
+	{
+		this( context, null, scriptsDirectory, minimumTimeBetweenValidityChecks );
+	}
+
+	/**
+	 * Construction.
+	 * 
+	 * @param context
+	 *        The context
 	 * @param next
 	 *        The next restlet
 	 * @param scriptsDirectory

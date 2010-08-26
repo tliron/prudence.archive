@@ -11,7 +11,7 @@ $router.capture $resources_base_url + 'data/note/{id}/', 'data/note/'
 $router.hide 'data/note/'
 
 # Wrap the static web with unify-minify filters
-$router.detach $static_web
-$wrapped_static_web = CssUnifyMinifyFilter.new($application_instance.context, $static_web, java.io.File.new($application_base_path + $static_web_base_path), $dynamic_web_minimum_time_between_validity_checks)
-$wrapped_static_web = JavaScriptUnifyMinifyFilter.new($application_instance.context, $wrapped_static_web, java.io.File.new($application_base_path + $static_web_base_path), $dynamic_web_minimum_time_between_validity_checks)
-$router.attach_base($static_web_base_url, $wrapped_static_web)
+$css_filter = CssUnifyMinifyFilter.new(nil, java.io.File.new($application_base_path + $static_web_base_path), $dynamic_web_minimum_time_between_validity_checks)
+$java_script_filter = JavaScriptUnifyMinifyFilter.new(nil, java.io.File.new($application_base_path + $static_web_base_path), $dynamic_web_minimum_time_between_validity_checks)
+$router.filter_base $static_web_base_url, $css_filter, $static_web
+$router.filter_base $static_web_base_url, $java_script_filter, $css_filter

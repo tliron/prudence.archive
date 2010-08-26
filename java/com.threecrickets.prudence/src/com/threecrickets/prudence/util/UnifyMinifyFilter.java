@@ -56,6 +56,28 @@ public abstract class UnifyMinifyFilter extends Filter
 	 * 
 	 * @param context
 	 *        The context
+	 * @param sourceDirectory
+	 *        The directory where the sources are found
+	 * @param minimumTimeBetweenValidityChecks
+	 *        See {@link #getMinimumTimeBetweenValidityChecks()}
+	 * @param sourceExtension
+	 *        The source extension
+	 * @param minifiedSourceExtension
+	 *        The minified source extension (comes before the source extension
+	 *        for minified versions)
+	 * @param unifiedFilename
+	 *        The unified filename (the source extension is appended to it)
+	 */
+	public UnifyMinifyFilter( Context context, File sourceDirectory, long minimumTimeBetweenValidityChecks, String sourceExtension, String minifiedSourceExtension, String unifiedFilename )
+	{
+		this( context, null, sourceDirectory, minimumTimeBetweenValidityChecks, sourceExtension, minifiedSourceExtension, unifiedFilename );
+	}
+
+	/**
+	 * Construction.
+	 * 
+	 * @param context
+	 *        The context
 	 * @param next
 	 *        The next restlet
 	 * @param sourceDirectory

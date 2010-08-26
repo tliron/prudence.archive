@@ -72,6 +72,20 @@ public class CacheControlFilter extends Filter
 	 * 
 	 * @param context
 	 *        The context
+	 * @param defaultMaxAge
+	 *        The default max age, in seconds, or a negative number to signify
+	 *        "no-cache"
+	 */
+	public CacheControlFilter( Context context, int defaultMaxAge )
+	{
+		this( context, null, defaultMaxAge );
+	}
+
+	/**
+	 * Construction with specific default max age.
+	 * 
+	 * @param context
+	 *        The context
 	 * @param next
 	 *        The next restlet
 	 * @param defaultMaxAge

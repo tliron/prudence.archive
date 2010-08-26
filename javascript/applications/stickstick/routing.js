@@ -12,7 +12,7 @@ router.capture(resourcesBaseURL + 'data/note/{id}/', 'data/note/')
 router.hide('data/note/')
 
 // Wrap the static web with unify-minify filters
-router.detach(staticWeb)
-var wrappedStaticWeb = new CssUnifyMinifyFilter(applicationInstance.context, staticWeb, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks)
-var wrappedStaticWeb = new JavaScriptUnifyMinifyFilter(applicationInstance.context, wrappedStaticWeb, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks)
-router.attachBase(staticWebBaseURL, wrappedStaticWeb)
+var cssFilter = new CssUnifyMinifyFilter(null, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks)
+var javaScriptFilter = new JavaScriptUnifyMinifyFilter(null, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks)
+router.filterBase(staticWebBaseURL, cssFilter, staticWeb)
+router.filterBase(staticWebBaseURL, javaScriptFilter, cssFilter)

@@ -12,7 +12,7 @@
 (.hide router "data/note/")
 
 ; Wrap the static web with unify-minify filters
-(.detach router static-web)
-(def wrapped-static-web (CssUnifyMinifyFilter. (.getContext application-instance) static-web (File. (str application-base-path static-web-base-path)) dynamic-web-minimum-time-between-validity-checks))
-(def wrapped-static-web (JavaScriptUnifyMinifyFilter. (.getContext application-instance) wrapped-static-web (File. (str application-base-path static-web-base-path)) dynamic-web-minimum-time-between-validity-checks))
-(.attachBase router static-web-base-url wrapped-static-web)
+(def css-filter (CssUnifyMinifyFilter. nil (File. (str application-base-path static-web-base-path)) dynamic-web-minimum-time-between-validity-checks))
+(def java-script-filter (JavaScriptUnifyMinifyFilter. nil (File. (str application-base-path static-web-base-path)) dynamic-web-minimum-time-between-validity-checks))
+(.filterBase router static-web-base-url css-filter static-web)
+(.filterBase router static-web-base-url java-script-filter css-filter)
