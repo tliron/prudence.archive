@@ -30,7 +30,7 @@ import com.threecrickets.prudence.DelegatedResource;
  * @author Tal Liron
  * @see DelegatedResource
  */
-public class DelegatedResourceConversationService extends ConversationServiceBase<DelegatedResource>
+public class DelegatedResourceConversationService extends ResourceConversationServiceBase<DelegatedResource>
 {
 	//
 	// Construction

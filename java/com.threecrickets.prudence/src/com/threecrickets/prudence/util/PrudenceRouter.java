@@ -23,6 +23,11 @@ import org.restlet.routing.Route;
 import org.restlet.routing.Template;
 import org.restlet.util.Resolver;
 
+import com.threecrickets.prudence.DelegatedFilter;
+import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.LanguageManager;
+import com.threecrickets.scripturian.document.DocumentSource;
+
 /**
  * A {@link FallbackRouter} with shortcut methods for common routing tasks.
  * 
@@ -151,6 +156,28 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
+	 * As {@link #filter(String, Filter, Restlet)}, but internally uses a
+	 * {@link DelegatedFilter}.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param documentName
+	 *        The filter document name
+	 * @param target
+	 *        The target Restlet to attach
+	 * @param documentSource
+	 *        The filter document source
+	 * @param languageManager
+	 *        The language manager
+	 * @return The created route
+	 */
+	public Route filter( String uriTemplate, String documentName, Restlet target, DocumentSource<Executable> documentSource, LanguageManager languageManager )
+	{
+		return filter( uriTemplate, new DelegatedFilter( null, documentName, documentSource, languageManager ), target );
+	}
+
+	/**
 	 * As {@link #filter(String, Filter, Restlet)}, but enforces matching mode
 	 * {@link Template#MODE_STARTS_WITH}.
 	 * 
@@ -170,6 +197,29 @@ public class PrudenceRouter extends FallbackRouter
 			filter.setContext( target.getContext() );
 		filter.setNext( target );
 		return attachBase( uriTemplate, filter );
+	}
+
+	/**
+	 * As
+	 * {@link #filter(String, String, Restlet, DocumentSource, LanguageManager)}
+	 * , but enforces matching mode {@link Template#MODE_STARTS_WITH}.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param documentName
+	 *        The filter document name
+	 * @param target
+	 *        The target Restlet to attach
+	 * @param documentSource
+	 *        The filter document source
+	 * @param languageManager
+	 *        The language manager
+	 * @return The created route
+	 */
+	public Route filterBase( String uriTemplate, String documentName, Restlet target, DocumentSource<Executable> documentSource, LanguageManager languageManager )
+	{
+		return filterBase( uriTemplate, new DelegatedFilter( null, documentName, documentSource, languageManager ), target );
 	}
 
 	/**

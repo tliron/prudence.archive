@@ -23,7 +23,7 @@ import com.threecrickets.prudence.GeneratedTextResource;
  * @author Tal Liron
  * @see GeneratedTextResource
  */
-public class GeneratedTextResourceConversationService extends ConversationServiceBase<GeneratedTextResource>
+public class GeneratedTextResourceConversationService extends ResourceConversationServiceBase<GeneratedTextResource>
 {
 	//
 	// Construction

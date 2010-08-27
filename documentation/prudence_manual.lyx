@@ -656,10 +656,10 @@ g, at least, to be more generic.
  In Prudence, you'll see that it's possible to address internal resources
  with non-URL kinds of URIs; see 
 \bar under
-document.external (page 
+document.internal (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../manual/api/|document-external"
+reference "../manual/api/|document-internal"
 
 \end_inset
 
@@ -727,7 +727,7 @@ Part of the buzz about REST is that it's an inherently scalable architecture.
 \end_layout
 
 \begin_layout Standard
-Consider that there are two uses of the term ``scalable'':
+Consider that there are two uses of the word ``scalable'':
 \end_layout
 
 \begin_layout Standard
@@ -850,10 +850,10 @@ target "http://www.python.org/"
 
 \end_inset
 
- is a powerful object-oriented language, far richer in features than JavaScript
- and PHP, with many high-quality core and 3rd party libraries.
- Python has already proven itself as a web programming language, and has
- many excellent web platforms that make good use of its strengths.
+ is a powerful object-oriented language with many high-quality core and
+ 3rd party libraries.
+ It has already proven itself as a capable web programming language, and
+ has many excellent web platforms that make good use of its strengths.
 \end_layout
 
 \begin_layout Standard
@@ -867,7 +867,7 @@ Python presents a unique challenge in a scriptlet environment, due to its
 \end_layout
 
 \begin_layout Standard
-In the included example application we show how to use 
+In Stickstick, the included example application we show how to use 
 \begin_inset CommandInset href
 LatexCommand href
 name "SQLAlchemy"
@@ -1001,13 +1001,14 @@ target "http://www.json.org/"
 \end_layout
 
 \begin_layout Standard
-It's also an under-appreciated language, and the object of undeserved scorn.
- Though not as feature-rich as Python or Ruby, it's still very powerful.
+It's also an under-appreciated language, and the target of undeserved scorn.
+ Though not as feature-rich as Python or Ruby, JavaScript is still very
+ powerful.
  Its straightforward closure/prototype mechanisms allow it to support object-ori
 entation, namespaces and other paradigms.
  Unfortunately, client environments have proven painfully fickle: working
- with the browser DOM, testing with cross-browser HTML rendering quirks---but
- these are the not the fault of the language itself.
+ with the browser DOM and testing with cross-browser HTML rendering quirks
+ are painful---but these are the not the fault of the language itself.
  They are also not relevant to server-side development with Prudence.
  If you've been burned by JavaScript on the client, try it on the server
  via Prudence: you might be pleasantly surprised.
@@ -3665,6 +3666,13 @@ reference "../application/"
 
 \begin_layout Subsection
 /bin/
+\begin_inset CommandInset label
+LatexCommand label
+name "../instance/|bin"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -13176,7 +13184,7 @@ Prudence might compile or otherwise prepare and cache code in the executed
 
 \begin_layout Standard
 Executed documents, just like documents exposed at URLs, are reloaded and
- re-prepared on-the-fly if the file changes, within the limits of the 
+ re-prepared on the fly if the file changes, within the limits of the 
 \bar under
 dynamicWebMinimumTimeBetweenValidityChecks setting (page 
 \begin_inset CommandInset ref
@@ -13390,6 +13398,13 @@ document.internal
 \begin_inset CommandInset label
 LatexCommand label
 name "../api/|document-internal"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "../manual/api/|document-internal"
 
 \end_inset
 
@@ -15401,7 +15416,7 @@ ly
 \begin_layout Quote
 Note for Clojure flavor: All Clojure vars are VM-wide globals equivalent
  in scope to executable.globals.
- You usually work with namespaces that Prudence creates on-the-fly, so they
+ You usually work with namespaces that Prudence creates on the fly, so they
  do not persist beyond the execution.
  However, if you explicitly define a namespace, then you use it as a place
  for shared state.
@@ -16713,40 +16728,33 @@ name "../daemon/"
 \end_layout
 
 \begin_layout Standard
-In production environments, it's best to run Prudence as a daemon in Unix-like
- systems or a service in Windows, via a lightweight wrapper.
- This will provide proper process monitoring and control.
+Though you can start Prudence via the 
+\bar under
+/bin/ scripts (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/|bin"
+
+\end_inset
+
+)
+\bar default
+, in production environments it's best to run Prudence as a daemon.
+ (Called a ``service'' in Windows).
+ A lightweight daemon wrapper can provide proper process monitoring and
+ control.
  For example, if Prudence's JVM crashes for some reason, hangs, grabs too
  much CPU or RAM, the wrapper can automatically shut it down and even restart
  it.
 \end_layout
 
 \begin_layout Standard
-While Prudence comes with the necessary configuration files for this, it
- does not include an actual wrapper, which you will need to install manually.
- Each of the two available wrappers is problematic: Tanuki's JSW uses a
- restrictive license (GPL) that will not allow us to distribute it with
- Prudence, and YAJSW is far too big a download to include in Prudence.
- You can, however, easily download and install either of them yourself.
- Just be sure to follow the distribution restrictions in the case of JSW.
-\end_layout
-
-\begin_layout Quote
-History lesson: The copyright for JSW is held by its original developer,
- Tanuki Software.
- For the first few versions Tanuki released JSW under a permissive license,
- making it popular in many open source projects.
- However, since version 3.2 it has been distributed under the GPL 2.0 (and
- also via a commercial license).
- We applaud Tanuki's commitment to open source, and are big fans of the
- GPL.
- However, the GPL makes it impossible to distribute JSW with open source
- projects using less restrictive licenses, such as Prudence.
- Many projects have kept distributing version 3.2 of JSW, which is now out
- of date and missing bug fixes.
- For less restrictive open source projects, the gap has been filled by YAJSW,
- which seeks not only to be a drop-in replacement for JSW, but to also go
- beyond it with many additional features.
+While Prudence comes with the necessary configuration files for wrappers,
+ it does not include an actual wrapper, which you will need to install separatel
+y.
+ The reason we haven't included them is different for each wrapper: Tanuki's
+ JSW uses a restrictive license (GPL) that will not allow us to distribute
+ it with Prudence, and YAJSW is just far too big.
 \end_layout
 
 \begin_layout Subsection
@@ -16767,12 +16775,12 @@ target "http://wrapper.tanukisoftware.org/"
 \end_layout
 
 \begin_layout Standard
-See /configuration/wrapper.conf for a sample JSW configuration.
- The wrapper will log to /logs/wrapper.log.
+See /configuration/wrapper.conf for a sample JSW configuration, which also
+ configures the wrapper to log to /logs/wrapper.log.
 \end_layout
 
 \begin_layout Standard
-In particular, you'll want to change:
+In particular, you'll want to set the following configuration settings:
 \end_layout
 
 \begin_layout Itemize
@@ -16793,6 +16801,24 @@ wrapper.java.maxmemory: Set this according to your deployment environment.
 \begin_layout Itemize
 wrapper.java.initmemory: A reasonably high value here can help speed up Prudence's
  startup time.
+\end_layout
+
+\begin_layout Quote
+The copyright for JSW is held by its original developer, Tanuki Software.
+ For the first few versions Tanuki released JSW under a permissive license,
+ making it popular in many open source projects.
+ However, since version 3.2 it has been distributed under the GPL 2.0 (and
+ also via a commercial license).
+ We applaud Tanuki's commitment to open source, and are big fans of the
+ GPL.
+ However, the GPL makes it impossible to distribute JSW with open source
+ projects using less restrictive licenses, such as Prudence.
+ Many projects have kept distributing version 3.2 of JSW, which is now out
+ of date and missing bug fixes.
+ Note that Prudence's license, the LGPL 3.0, has a clause allowing you to
+ upgrade it to GPL, which would allow you to distribute JSW with it.
+ Doing this would in turn require you to distribute you own product under
+ the GPL.
 \end_layout
 
 \begin_layout Subsection
@@ -17546,7 +17572,7 @@ reference "../logging/"
  These issues have more to do with your application's configuration, rather
  than its functionality, and it can be useful to handle them outside of
  the Java build process, using live, dynamic languages in simple text source
- that you can modify on-the-fly.
+ that you can modify on the fly.
  Deploying your Restlet application to a Prudence instance can be as simple
  as copying a zip file to a Prudence container.
 \end_layout
@@ -17748,7 +17774,7 @@ reference "../../flavors/"
 \begin_layout Enumerate
 
 \bar under
-Code is compiled, cached and loaded on-the-fly (page 
+Code is compiled, cached and loaded on the fly (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../resources/|life"
@@ -17832,7 +17858,7 @@ reference "../generating-html/|templating-languages"
 \begin_layout Enumerate
 
 \bar under
-Code is compiled, cached and loaded on-the-fly (page 
+Code is compiled, cached and loaded on the fly (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../generating-html/|life"
@@ -18882,7 +18908,7 @@ any, foreign keys, recursive tree structures, graphs, etc.) such that a change
  ways.
  For example, consider a calendar database, and that you're caching individual
  days with all their events.
- Weekly calendar views are then generated on-the-fly (and quickly) for users
+ Weekly calendar views are then generated on the fly (and quickly) for users
  according to what kinds of events they want to see in their personal calendars.
  What happens if a user adds a recurring event that happens every Monday?
  You'll need to make sure that all Mondays currently cached would be invalidated
@@ -20238,8 +20264,7 @@ The result is an API more abstract than JSR-223, but with a clear threading
  model.
  Under the hood, Scripturian contains many tricks and mechanisms to make
  each language work correctly and well, but you don't have to worry about
- any of it.
- Scripturian just works!
+ any of it: Scripturian just works.
 \end_layout
 
 \begin_layout Subsection
@@ -20309,8 +20334,8 @@ Restlet's super-powers are three:
 \end_layout
 
 \begin_layout Enumerate
-Clean abstraction of HTTP requests, responses and headers over best-of-breed
- engines, such as 
+It's a clean abstraction of HTTP requests, responses and headers over best-of-br
+eed HTTP engines, such as 
 \begin_inset CommandInset href
 LatexCommand href
 name "Grizzly"
@@ -20339,7 +20364,7 @@ target "http://www.jboss.org/netty"
  asynchronous request handling (which will be even better supported in Restlet
  2.1).
  Restlet transparently handles conditional requests, content negotiation,
- and other complicated HTTP labor.
+ and other complicated HTTP mechanisms.
 \end_layout
 
 \begin_layout Enumerate
@@ -20347,13 +20372,14 @@ Powerful URI routing and manipulation.
  Expose your service to users and APIs with elegance and coherence.
  Make sure the URI reaches its destination, with support for virtual hosting,
  rewriting, templating, and other useful real-world features.
- Restlet is truly the Swiss army knife of URIs!
+ Restlet is truly the Swiss army knife of URIs.
 \end_layout
 
 \begin_layout Enumerate
 Straightforward data representation and consumption through a diverse set
  of extensions.
- Expose your data using any standard format, and even convert it on-the-fly.
+ Expose your data using any standard format, and even convert it on the
+ fly.
  Easily parse data received from clients.
 \end_layout
 
@@ -20367,7 +20393,20 @@ Restlet is a great library, with a great ecosystem of extensions.
 
 \begin_layout Standard
 Prudence is meant to fill in these gaps.
- 
+\end_layout
+
+\begin_layout Standard
+Special thanks go to 
+\begin_inset CommandInset href
+LatexCommand href
+name "Noelios"
+target "http://www.noelios.com/"
+
+\end_inset
+
+, and especially Jérôme Louvel, for cultivating such a vibrant community
+ around Restlet.
+ It's a solid foundation.
 \end_layout
 
 \begin_layout Subsection
@@ -20396,7 +20435,8 @@ Jygments
 \end_layout
 
 \begin_layout Standard
-Yet another Prudence side-project!
+Yet another Prudence side-project\SpecialChar \ldots{}
+
 \end_layout
 
 \begin_layout Standard
@@ -20957,7 +20997,7 @@ The Lesser GPL used to be called the ``Library GPL,'' and was originally
 \end_layout
 
 \begin_layout Standard
-In the case of Linux, the GPL has done a wonderful job in convincing vendors
+In the case of Linux, the GPL has done a wonderful job at convincing vendors
  to open source their code in order to ship their products with Linux inside.
  It just doesn't seem likely that they would do the same for Prudence.
 \end_layout

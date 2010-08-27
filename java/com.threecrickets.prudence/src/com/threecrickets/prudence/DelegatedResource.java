@@ -1406,9 +1406,9 @@ public class DelegatedResource extends ServerResource
 	 *        Name of entry point
 	 * @param conversationService
 	 *        The conversation service
-	 * @return Result of invocation
+	 * @return The result of the entry
 	 * @throws ResourceException
-	 * @see {@link Executable#invoke(String, Object...)}
+	 * @see {@link Executable#enter(String, Object...)}
 	 */
 	private Object enter( String entryPointName, DelegatedResourceConversationService conversationService ) throws ResourceException
 	{

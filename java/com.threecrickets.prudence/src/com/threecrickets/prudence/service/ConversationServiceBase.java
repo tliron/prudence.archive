@@ -18,19 +18,12 @@ import java.util.Map;
 
 import org.restlet.Request;
 import org.restlet.Response;
-import org.restlet.data.CharacterSet;
-import org.restlet.data.Encoding;
 import org.restlet.data.Form;
-import org.restlet.data.Language;
 import org.restlet.data.LocalReference;
-import org.restlet.data.MediaType;
 import org.restlet.data.Parameter;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.representation.Variant;
-import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.util.CaptiveRedirector;
 import com.threecrickets.prudence.util.ConversationCookie;
@@ -42,7 +35,7 @@ import com.threecrickets.prudence.util.FormWithFiles;
  * 
  * @author Tal Liron
  */
-public class ConversationServiceBase<R extends ServerResource>
+public class ConversationServiceBase
 {
 	//
 	// Construction
@@ -51,39 +44,14 @@ public class ConversationServiceBase<R extends ServerResource>
 	/**
 	 * Construction.
 	 * 
-	 * @param resource
-	 *        The resource
-	 * @param entity
-	 *        The entity or null
-	 * @param variant
-	 *        The variant or null
 	 * @param fileUploadSizeThreshold
 	 *        The size in bytes beyond which uploaded files will be stored to
 	 *        disk
 	 * @param fileUploadDirectory
 	 *        The directory in which to place uploaded files
-	 * @param defaultCharacterSet
-	 *        The character set to use if unspecified by variant
 	 */
-	public ConversationServiceBase( R resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet, int fileUploadSizeThreshold, File fileUploadDirectory )
+	public ConversationServiceBase( int fileUploadSizeThreshold, File fileUploadDirectory )
 	{
-		this.resource = resource;
-		this.entity = entity;
-		this.variant = variant;
-
-		if( variant != null )
-		{
-			mediaType = variant.getMediaType();
-			characterSet = variant.getCharacterSet();
-		}
-
-		// For HTML forms, switch to HTML
-		if( entity != null && ( entity.getMediaType().equals( MediaType.APPLICATION_WWW_FORM ) ) )
-			mediaType = MediaType.TEXT_HTML;
-
-		if( characterSet == null )
-			characterSet = defaultCharacterSet;
-
 		this.fileUploadSizeThreshold = fileUploadSizeThreshold;
 		this.fileUploadDirectory = fileUploadDirectory;
 	}
@@ -99,7 +67,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	 */
 	public Reference getReference()
 	{
-		Request request = resource.getRequest();
+		Request request = getRequest();
 		Reference reference = CaptiveRedirector.getCaptiveReference( request );
 		if( reference == null )
 			reference = request.getResourceRef();
@@ -116,7 +84,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	public Collection<ConversationCookie> getCookies()
 	{
 		if( conversationCookies == null )
-			conversationCookies = ConversationCookie.wrapCookies( resource );
+			conversationCookies = ConversationCookie.wrapCookies( getRequest().getCookies(), getResponse().getCookieSettings() );
 		return conversationCookies;
 	}
 
@@ -144,205 +112,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	 */
 	public ConversationCookie createCookie( String name )
 	{
-		return ConversationCookie.createCookie( name, resource.getCookieSettings(), getCookies() );
-	}
-
-	/**
-	 * The character set.
-	 * 
-	 * @return The character set
-	 * @see #setCharacterSet(CharacterSet)
-	 */
-	public CharacterSet getCharacterSet()
-	{
-		return characterSet;
-	}
-
-	/**
-	 * @param characterSet
-	 *        The character set
-	 * @see #getCharacterSet()
-	 */
-	public void setCharacterSet( CharacterSet characterSet )
-	{
-		this.characterSet = characterSet;
-	}
-
-	/**
-	 * @return The character set name
-	 * @see #getCharacterSet()
-	 */
-	public String getCharacterSetName()
-	{
-		return characterSet != null ? characterSet.getName() : null;
-	}
-
-	/**
-	 * @param characterSetName
-	 *        The character set name
-	 * @see #setCharacterSet(CharacterSet)
-	 */
-	public void setCharacterSetName( String characterSetName )
-	{
-		characterSet = CharacterSet.valueOf( characterSetName );
-	}
-
-	/**
-	 * @return The character set short name
-	 * @see #getCharacterSet()
-	 */
-	public String getCharacterSetShortName()
-	{
-		return characterSet != null ? resource.getApplication().getMetadataService().getExtension( characterSet ) : null;
-	}
-
-	/**
-	 * @param characterSetShortName
-	 *        The character set short name
-	 * @see #setCharacterSet(CharacterSet)
-	 */
-	public void setCharacterSetShortName( String characterSetShortName )
-	{
-		characterSet = resource.getApplication().getMetadataService().getCharacterSet( characterSetShortName );
-	}
-
-	/**
-	 * The encoding.
-	 * 
-	 * @return The encoding or null if not set
-	 * @see #setEncoding(Encoding)
-	 */
-	public Encoding getEncoding()
-	{
-		return encoding;
-	}
-
-	/**
-	 * @param encoding
-	 *        The encoding or null
-	 * @see #getEncoding()
-	 */
-	public void setEncoding( Encoding encoding )
-	{
-		this.encoding = encoding;
-	}
-
-	/**
-	 * @return The encoding name
-	 * @see #getEncoding()
-	 */
-	public String getEncodingName()
-	{
-		return encoding != null ? encoding.getName() : null;
-	}
-
-	/**
-	 * @param encodingName
-	 *        The encoding name
-	 * @see #setEncoding(Encoding)
-	 */
-	public void setEncodingName( String encodingName )
-	{
-		encoding = Encoding.valueOf( encodingName );
-	}
-
-	/**
-	 * The language.
-	 * 
-	 * @return The language or null if not set
-	 * @see #setLanguage(Language)
-	 */
-	public Language getLanguage()
-	{
-		return language;
-	}
-
-	/**
-	 * @param language
-	 *        The language or null
-	 * @see #getLanguage()
-	 */
-	public void setLanguage( Language language )
-	{
-		this.language = language;
-	}
-
-	/**
-	 * @return The language name
-	 * @see #getLanguage()
-	 */
-	public String getLanguageName()
-	{
-		return language != null ? language.getName() : null;
-	}
-
-	/**
-	 * @param languageName
-	 *        The language name
-	 * @see #setLanguage(Language)
-	 */
-	public void setLanguageName( String languageName )
-	{
-		language = Language.valueOf( languageName );
-	}
-
-	/**
-	 * The media type.
-	 * 
-	 * @return The media type
-	 * @see #setMediaType(MediaType)
-	 */
-	public MediaType getMediaType()
-	{
-		return mediaType;
-	}
-
-	/**
-	 * @param mediaType
-	 *        The media type
-	 * @see #getMediaType()
-	 */
-	public void setMediaType( MediaType mediaType )
-	{
-		this.mediaType = mediaType;
-	}
-
-	/**
-	 * @return The media type name
-	 * @see #getMediaType()
-	 */
-	public String getMediaTypeName()
-	{
-		return mediaType != null ? mediaType.getName() : null;
-	}
-
-	/**
-	 * @param mediaTypeName
-	 *        The media type name
-	 * @see #setMediaType(MediaType)
-	 */
-	public void setMediaTypeName( String mediaTypeName )
-	{
-		mediaType = MediaType.valueOf( mediaTypeName );
-	}
-
-	/**
-	 * @return The media type extension
-	 * @see #getMediaType()
-	 */
-	public String getMediaTypeExtension()
-	{
-		return mediaType != null ? resource.getApplication().getMetadataService().getExtension( mediaType ) : null;
-	}
-
-	/**
-	 * @param mediaTypeExtension
-	 *        The media type extension
-	 * @see #setMediaType(MediaType)
-	 */
-	public void setMediaTypeExtension( String mediaTypeExtension )
-	{
-		mediaType = resource.getApplication().getMetadataService().getMediaType( mediaTypeExtension );
+		return ConversationCookie.createCookie( name, getResponse().getCookieSettings(), getCookies() );
 	}
 
 	/**
@@ -353,7 +123,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	 */
 	public Status getStatus()
 	{
-		return resource.getResponse().getStatus();
+		return getResponse().getStatus();
 	}
 
 	/**
@@ -365,7 +135,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	 */
 	public void setStatus( Status status )
 	{
-		resource.getResponse().setStatus( status );
+		getResponse().setStatus( status );
 	}
 
 	/**
@@ -376,7 +146,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	 */
 	public int getStatusCode()
 	{
-		return resource.getResponse().getStatus().getCode();
+		return getResponse().getStatus().getCode();
 	}
 
 	/**
@@ -388,17 +158,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	 */
 	public void setStatusCode( int statusCode )
 	{
-		resource.getResponse().setStatus( Status.valueOf( statusCode ) );
-	}
-
-	/**
-	 * The resource.
-	 * 
-	 * @return The resource
-	 */
-	public R getResource()
-	{
-		return resource;
+		getResponse().setStatus( Status.valueOf( statusCode ) );
 	}
 
 	/**
@@ -408,7 +168,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	 */
 	public Request getRequest()
 	{
-		return resource.getRequest();
+		return Request.getCurrent();
 	}
 
 	/**
@@ -418,27 +178,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	 */
 	public Response getResponse()
 	{
-		return resource.getResponse();
-	}
-
-	/**
-	 * The variant.
-	 * 
-	 * @return The variant or null if not available
-	 */
-	public Variant getVariant()
-	{
-		return variant;
-	}
-
-	/**
-	 * The entity.
-	 * 
-	 * @return The entity's representation or null if not available
-	 */
-	public Representation getEntity()
-	{
-		return entity;
+		return Response.getCurrent();
 	}
 
 	/**
@@ -449,7 +189,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	 */
 	public boolean isInternal()
 	{
-		return resource.getRequest().getResourceRef().getSchemeProtocol().equals( Protocol.RIAP );
+		return getRequest().getResourceRef().getSchemeProtocol().equals( Protocol.RIAP );
 	}
 
 	/**
@@ -473,28 +213,10 @@ public class ConversationServiceBase<R extends ServerResource>
 	 */
 	public String getPathToBase()
 	{
-		Request request = resource.getRequest();
-		Reference reference = CaptiveRedirector.getCaptiveReference( request );
-		if( reference == null )
-			reference = request.getResourceRef();
+		Reference reference = getReference();
 
 		// Reverse relative reference
 		return reference.getBaseRef().getRelativeRef( reference ).getPath();
-	}
-
-	//
-	// Operations
-	//
-
-	/**
-	 * Throws a runtime exception.
-	 * 
-	 * @return Always throws an exception, so nothing is ever returned (some
-	 *         templating languages require a return value anyway)
-	 */
-	public boolean stop()
-	{
-		throw new RuntimeException( "conversation.stop was called" );
 	}
 
 	/**
@@ -507,7 +229,7 @@ public class ConversationServiceBase<R extends ServerResource>
 	public Form getQueryAll()
 	{
 		if( queryAll == null )
-			queryAll = resource.getRequest().getResourceRef().getQueryAsForm();
+			queryAll = getRequest().getResourceRef().getQueryAsForm();
 		return queryAll;
 	}
 
@@ -538,8 +260,8 @@ public class ConversationServiceBase<R extends ServerResource>
 	{
 		if( formAll == null )
 		{
-			if( resource.getRequest().isEntityAvailable() )
-				formAll = new FormWithFiles( resource.getRequestEntity(), fileUploadSizeThreshold, fileUploadDirectory );
+			if( getRequest().isEntityAvailable() )
+				formAll = new FormWithFiles( getRequest().getEntity(), fileUploadSizeThreshold, fileUploadDirectory );
 			else
 				formAll = new Form();
 		}
@@ -578,26 +300,26 @@ public class ConversationServiceBase<R extends ServerResource>
 	 */
 	public Map<String, Object> getLocals()
 	{
-		return resource.getRequestAttributes();
+		return getRequest().getAttributes();
+	}
+
+	//
+	// Operations
+	//
+
+	/**
+	 * Throws a runtime exception.
+	 * 
+	 * @return Always throws an exception, so nothing is ever returned (some
+	 *         templating languages require a return value anyway)
+	 */
+	public boolean stop()
+	{
+		throw new RuntimeException( "conversation.stop was called" );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
-
-	/**
-	 * The resource.
-	 */
-	private final R resource;
-
-	/**
-	 * The {@link Variant} of this request.
-	 */
-	private final Variant variant;
-
-	/**
-	 * The entity.
-	 */
-	private final Representation entity;
 
 	/**
 	 * The size in bytes beyond which uploaded files will be stored to disk.
@@ -608,26 +330,6 @@ public class ConversationServiceBase<R extends ServerResource>
 	 * The directory in which to place uploaded files.
 	 */
 	private final File fileUploadDirectory;
-
-	/**
-	 * The character set.
-	 */
-	private CharacterSet characterSet;
-
-	/**
-	 * The encoding.
-	 */
-	private Encoding encoding;
-
-	/**
-	 * The language.
-	 */
-	private Language language;
-
-	/**
-	 * The media type.
-	 */
-	private MediaType mediaType;
 
 	/**
 	 * The URI query as a map.

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2010-08-25">
+<meta name="create-date" content="2010-08-26">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -247,7 +247,10 @@ Table of Contents
 </div></div>
 
 <div class="toc">
-<a class="Link" href="#toc-Section-8">Section: Tasks</a>
+<a class="Link" href="#toc-Section-8">Section: Filters</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-9">Section: Tasks</a>
 </div><div class="tocindent">
 
 <div class="toc">
@@ -264,7 +267,7 @@ Table of Contents
 </div></div>
 
 <div class="toc">
-<a class="Link" href="#toc-Section-9">Section: Static Web</a>
+<a class="Link" href="#toc-Section-10">Section: Static Web</a>
 </div><div class="tocindent">
 
 <div class="toc">
@@ -284,7 +287,7 @@ Table of Contents
 </div></div>
 
 <div class="toc">
-<a class="Link" href="#toc-Section-10">Section: Routing</a>
+<a class="Link" href="#toc-Section-11">Section: Routing</a>
 </div><div class="tocindent">
 
 <div class="toc">
@@ -301,7 +304,7 @@ Table of Contents
 </div></div>
 
 <div class="toc">
-<a class="Link" href="#toc-Section-11">Section: API</a>
+<a class="Link" href="#toc-Section-12">Section: API</a>
 </div><div class="tocindent">
 
 <div class="toc">
@@ -321,7 +324,7 @@ Table of Contents
 </div></div>
 
 <div class="toc">
-<a class="Link" href="#toc-Section-12">Section: Debugging</a>
+<a class="Link" href="#toc-Section-13">Section: Debugging</a>
 </div><div class="tocindent">
 
 <div class="toc">
@@ -338,7 +341,7 @@ Table of Contents
 </div></div>
 
 <div class="toc">
-<a class="Link" href="#toc-Section-13">Section: Logging</a>
+<a class="Link" href="#toc-Section-14">Section: Logging</a>
 </div><div class="tocindent">
 
 <div class="toc">
@@ -355,7 +358,7 @@ Table of Contents
 </div></div>
 
 <div class="toc">
-<a class="Link" href="#toc-Section-14">Section: Administration</a>
+<a class="Link" href="#toc-Section-15">Section: Administration</a>
 </div><div class="tocindent">
 
 <div class="toc">
@@ -366,7 +369,7 @@ Table of Contents
 </div></div>
 
 <div class="toc">
-<a class="Link" href="#toc-Section-15">Section: Prudence As a Daemon</a>
+<a class="Link" href="#toc-Section-16">Section: Prudence As a Daemon</a>
 </div><div class="tocindent">
 
 <div class="toc">
@@ -377,7 +380,7 @@ Table of Contents
 </div></div>
 
 <div class="toc">
-<a class="Link" href="#toc-Section-16">Section: HTTP Proxy</a>
+<a class="Link" href="#toc-Section-17">Section: HTTP Proxy</a>
 </div><div class="tocindent">
 
 <div class="toc">
@@ -388,7 +391,7 @@ Table of Contents
 </div></div>
 
 <div class="toc">
-<a class="Link" href="#toc-Section-17">Section: Prudence As a Restlet Container</a>
+<a class="Link" href="#toc-Section-18">Section: Prudence As a Restlet Container</a>
 </div><div class="tocindent">
 
 <div class="toc">
@@ -402,7 +405,7 @@ Table of Contents
 </div></div>
 
 <div class="toc">
-<a class="Link" href="#toc-Section-18">Section: Scaling Tips</a>
+<a class="Link" href="#toc-Section-19">Section: Scaling Tips</a>
 </div><div class="tocindent">
 
 <div class="toc">
@@ -422,7 +425,7 @@ Table of Contents
 </div></div>
 
 <div class="toc">
-<a class="Link" href="#toc-Section-19">Section: Under the Hood</a>
+<a class="Link" href="#toc-Section-20">Section: Under the Hood</a>
 </div><div class="tocindent">
 
 <div class="toc">
@@ -451,7 +454,7 @@ Table of Contents
 </div></div>
 
 <div class="toc">
-<a class="Link" href="#toc-Section-20">Section: FAQ</a>
+<a class="Link" href="#toc-Section-21">Section: FAQ</a>
 </div><div class="tocindent">
 
 <div class="toc">
@@ -726,7 +729,7 @@ Our resource identifiers are simple URLs. The CRUD operations are in the four HT
 Most importantly, the infrastructure for HTTP is already fully deployed world-wide. TCP/IP stacks are part of practically every operating system; wiring, switching and routing are part and parcel; HTTP gateways, firewalls, load balancers, proxies, caches, filters, etc., are stable consumer components; certificate authorities, national laws, international agreements are already in place to support the complex inter-business interaction. Best of all, this available infrastructure is successfully maintained, with minimal down-time, by highly-skilled independent technicians, organizations and component vendors across the world.
 </div>
 <blockquote class="Quote">
-It’s important to note a dependency and possible limitation of HTTP: it is bound to TCP/IP. Indeed, all identifiers are URLs: Uniform Resource Locators. In URLs, the first segment is reserved for the domain, either an IP address or a domain name translatable to an IP address. Compare this with the more general URIs (Uniform Resource Identifiers), which do not have this requirement. Though we’ll often be tied to HTTP in REST, you’ll see the literature attempting, at least, to be more generic. There are definitely use cases for non-HTTP, and even non-TCP/IP addressing schemes. In Prudence, you’ll see that it’s possible to address internal resources with non-URL kinds of URIs; see <u>document.external (page <a class="Reference" href="#../manual/api/|document-external">↓</a>)</u>. 
+It’s important to note a dependency and possible limitation of HTTP: it is bound to TCP/IP. Indeed, all identifiers are URLs: Uniform Resource Locators. In URLs, the first segment is reserved for the domain, either an IP address or a domain name translatable to an IP address. Compare this with the more general URIs (Uniform Resource Identifiers), which do not have this requirement. Though we’ll often be tied to HTTP in REST, you’ll see the literature attempting, at least, to be more generic. There are definitely use cases for non-HTTP, and even non-TCP/IP addressing schemes. In Prudence, you’ll see that it’s possible to address internal resources with non-URL kinds of URIs; see <u>document.internal (page <a class="Reference" href="#../manual/api/|document-internal">↓</a>)</u>. 
 </blockquote>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-14"></a>It’s All About Infrastructure
@@ -747,7 +750,7 @@ The principles of resource-orientation can and are applied in many systems. The 
 Part of the buzz about REST is that it’s an inherently scalable architecture. This is true, but perhaps not in the way that you think.
 </div>
 <div class="Indented">
-Consider that there are two uses of the term ‘‘scalable’’:
+Consider that there are two uses of the word ‘‘scalable’’:
 </div>
 <div class="Indented">
 First, it’s <b>the ability to respond to a growing number of user requests without degradation in response time</b>, by ‘‘simply’’ adding hardware (horizontal scaling) or replacing it with more powerful hardware (vertical scaling). This is the aspect of scalability that engineers care about. The simple answer is that REST can help, but it doesn’t stand out. SOAP, for example, can also do it pretty well. REST aficionados sometimes point out that REST is ‘‘stateless,’’ or ‘‘session-less,’’ both characteristics that would definitely help scale. But, this is misleading. Protocols might be stateless, but architectures built on top of them don’t have to be. For example, we’ve specifically talked about sessions here, and many web frameworks manage sessions via cookies. Likewise, you can easily make poorly scalable REST. The bottom line is that there’s nothing in REST that guarantees scalability in <i>this</i> respect. Indeed, engineers coming to REST due to this false lure end up wondering what the big deal is.
@@ -1809,7 +1812,7 @@ The /applications/ subdirectory is ‘‘zip-aware,’’ meaning that zip archi
 See <u>configuring applications (page <a class="Reference" href="#../application/">↓</a>)</u> for a complete reference.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-32"></a>/bin/
+<a class="toc" name="toc-Subsection-32"></a>/bin/<a class="Label" name="../instance/|bin"> </a>
 </h2>
 <div class="Unindented">
 These shell scripts start up the Prudence instance. Use run.sh for Unix-like operating systems, such as Linux, *BSD and Mac OS X, and run.bat for Windows.
@@ -3481,7 +3484,16 @@ Note that for the above to work, you need HTTP configured in your clients file:
 </div>
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-8"></a>Tasks<a class="Label" name="../tasks/"> </a><a class="Label" name="../manual/tasks/"> </a>
+<a class="toc" name="toc-Section-8"></a>Filters<a class="Label" name="../filters/"> </a>
+</h1>
+<div class="Unindented">
+/filters/
+</div>
+<div class="Indented">
+TODO
+</div>
+<h1 class="Section">
+<a class="toc" name="toc-Section-9"></a>Tasks<a class="Label" name="../tasks/"> </a><a class="Label" name="../manual/tasks/"> </a>
 </h1>
 <div class="Unindented">
 Tasks are straightforward scripts placed in the application’s /tasks/ subdirectory. They are straightforward in that, upon execution, the code is simply run as is. There is no particular entry point as with /resources/.
@@ -3588,7 +3600,7 @@ scheduler.scheduleFile(new File(applicationBasePath + ’/crontab-system’))
 Prudence comes with <a class="URL" href="http://www.hazelcast.com/">Hazelcast</a>, which has excellent support for handling distributed task queues. See the Hazelcast documentation for more information.
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-9"></a>Static Web<a class="Label" name="../static-web/"> </a>
+<a class="toc" name="toc-Section-10"></a>Static Web<a class="Label" name="../static-web/"> </a>
 </h1>
 <div class="Unindented">
 Prudence attaches your application’s /web/static/ subdirectory to URLs, making files there available via HTTP GET. In other words, /static/web/ is a ‘‘web server.’’ It’s a convenient place for storing immutable resources that your clients will need to run your application: images, styles, scripts, etc.
@@ -3597,7 +3609,7 @@ Prudence attaches your application’s /web/static/ subdirectory to URLs, making
 You’re likely, though, wondering if /web/static/ is merely a convenience, and if you’d be better off using Apache or other dedicated web servers instead of Prudence to serve your the static files.
 </div>
 <div class="Indented">
-Our recommendation is to take that route only if those web servers offer important features that you won’t find in Prudence. Remember that Prudence has many powerful features, including URL redirecting, rewriting and routing, and that Prudence’s non-blocking I/O actually does a great job at serving files. You will likely not see many performance or scalability gains replacing /web/static/ with standard Apache.
+Our recommendation is to take that route only if those web servers offer important features that you won’t find in Prudence. Remember that Prudence has many powerful features, including URL rewriting, redirecting and routing, and that Prudence’s non-blocking I/O does a great job at serving files. You will likely not see better performance or scalability by replacing /web/static/ with standard web servers.
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-64"></a>Mapping Files to MIME Types
@@ -3612,10 +3624,7 @@ See <u>application configuration (page <a class="Reference" href="#../applicatio
 <a class="toc" name="toc-Subsection-65"></a>Replacing Grizzly
 </h2>
 <div class="Unindented">
-Grizzly can be replaced with <a class="URL" href="http://jboss.org/netty">Netty</a>, a non-blocking I/O HTTP server with slightly different performance characteristics, and <a class="URL" href="http://www.mortbay.org/jetty/">Jetty</a>, which offers similar performance and many more features. Or, use any other connector supported by <a class="URL" href="http://www.restlet.org/">Restlet</a>.
-</div>
-<div class="Indented">
-See the <a class="URL" href="http://wiki.restlet.org/docs_2.0/13-restlet/27-restlet/325-restlet/37-restlet.html">Restlet documentation</a> for more information.
+Grizzly can be replaced with <a class="URL" href="http://jboss.org/netty">Netty</a>, a non-blocking I/O HTTP server with different performance characteristics, and <a class="URL" href="http://www.mortbay.org/jetty/">Jetty</a>, which offers similar performance and many more features. See the <a class="URL" href="http://wiki.restlet.org/docs_2.0/13-restlet/27-restlet/325-restlet/37-restlet.html">Restlet documentation</a> for more information.
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-66"></a>CacheControlFilter<a class="Label" name="../static-web/|cache-control-filter"> </a><a class="Label" name="../manual/static-web/|cache-control-filter"> </a>
@@ -3657,14 +3666,13 @@ Since the above techniques require considerable discipline from the application 
 	org.restlet.data.MediaType,
 	com.threecrickets.prudence.util.CacheControlFilter)
 ​
-var staticWebCacheControlFilter = new CacheControlFilter(router.context, staticWeb)
+var staticWebCacheControlFilter = new CacheControlFilter(null)
 ​
 // Disable caching for CSS and JavaScript files
 staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.TEXT_CSS, -1)
 staticWebCacheControlFilter.maxAgeForMediaType.put(MediaType.APPLICATION_JAVASCRIPT, -1)
 ​
-router.detach(staticWeb)
-router.attach(staticWebBaseURL, staticWebCacheControlFilter)
+router.filterBase(staticWebBaseURL, staticWebCacheControlFilter, staticWeb)
 </code>
 </div>
 </div>
@@ -3694,11 +3702,10 @@ If order of source files within the unified file is important, make sure to name
 <div class="listing">
 <code class="listing">importClass(com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter)
 ​
-router.detach(staticWeb)
-router.attachBase(
+router.filterBase(
 	staticWebBaseURL,
-	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicationBasePath + staticWebBasePath),
-		dynamicWebMinimumTimeBetweenValidityChecks))
+	new JavaScriptUnifyMinifyFilter(null, new File(applicationBasePath + staticWebBasePath),
+		dynamicWebMinimumTimeBetweenValidityChecks), staticWeb)
 </code>
 </div>
 </div>
@@ -3724,7 +3731,7 @@ An example of loading the unified-minified file from HTML:
 <a class="toc" name="toc-Subsection-68"></a>CssUnifyMinifyFilter
 </h2>
 <div class="Unindented">
-This filter does for CSS what the JavaScriptUnifyMinify filter, above, does for JavaScript. Example:
+This filter does for CSS what the <u>JavaScriptUnifyMinifyFilter (page <a class="Reference" href="#../static-web/|javascript-unify-minify-filter">↑</a>)</u> does for JavaScript. Example:
 </div>
 <div class="Indented">
 
@@ -3733,11 +3740,10 @@ This filter does for CSS what the JavaScriptUnifyMinify filter, above, does for 
 <div class="listing">
 <code class="listing">importClass(com.threecrickets.prudence.util.CssUnifyMinifyFilter)
 ​
-router.detach(staticWeb)
-router.attachBase(
+router.filterBase(
 	staticWebBaseURL,
-	new CssScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicationBasePath + staticWebBasePath),
-		dynamicWebMinimumTimeBetweenValidityChecks))
+	new CssScriptUnifyMinifyFilter(null, new File(applicationBasePath + staticWebBasePath),
+		dynamicWebMinimumTimeBetweenValidityChecks), staticWeb)
 </code>
 </div>
 </div>
@@ -3746,7 +3752,7 @@ router.attachBase(
 You can definitely use JavaScriptUnifyMinifyFilter and CssUnifyMinifyFilter together. The order of filtering should not matter.
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-10"></a>Routing<a class="Label" name="../routing/"> </a>
+<a class="toc" name="toc-Section-11"></a>Routing<a class="Label" name="../routing/"> </a>
 </h1>
 <div class="Unindented">
 ‘‘Routing’’ refers to the decision-making process by which an incoming client request reaches its server handler. Usually, it’s information in the request itself that is used to make the decision, such as the URI, cookies, the client type, capabilities and geolocation. But routing can also take server-side and other circumstances into account. For example, a round-robin load-balancing router might send each incoming request to a different destination in sequence.
@@ -3985,7 +3991,7 @@ The resource will still be available internally, via <u>document.internal (page 
 Prudence lets you ‘‘capture’’ abitrary URI patterns into any internal URI you wish, in /resources/, /web/dynamic/ or /web/static/.
 </div>
 <div class="Indented">
-You can use curly-bracket-delimited tags in the URI to parse URI segments and store them in conversation.locals.
+You can use curly-bracket-delimited tags in the URI to parse URI segments and store them in <u>conversation.locals (page <a class="Reference" href="#../api/|conversation-locals">↓</a>)</u>.
 </div>
 <div class="Indented">
 For example, in /routing.* (JavaScript flavor):
@@ -4004,7 +4010,7 @@ router.capture(’forum/help/{topic}/’, ’forum/help/’);
 </div>
 </div>
 <div class="Indented">
-And then, in /web/dynamic/forum/help.html:
+And then, in ‘‘/web/dynamic/forum/help.html’’:
 </div>
 <div class="Indented">
 
@@ -4269,7 +4275,7 @@ conversation.stop()
 </div>
 </div>
 <div class="Indented">
-Note that most clients will support relative URI paths for redirection. Also, they will likely ignore any data in the redirected response, so you can just return null in /resources/ or empty text in /web/dynamic/ (which is why we call conversation.stop in the example above).
+Note that most clients will support relative URI paths for redirection. Also, they will likely ignore any data in the redirected response, so you can just return null in /resources/ or empty text in /web/dynamic/. This is the reason we call <u>conversation.stop (page <a class="Reference" href="#../api/|conversation-stop">↓</a>)</u> in the example above.
 </div>
 <div class="Indented">
 For other redirections in the 300 family, follow this example (JavaScript):
@@ -4328,7 +4334,7 @@ router.detach(staticWeb)
 <a class="toc" name="toc-Subsubsection-64"></a>Filtering<a class="Label" name="../routing/|filtering"> </a>
 </h3>
 <div class="Unindented">
-Instances of <a class="URL" href="http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/routing/Filter.html">filters</a>, which wrap instances of other restlets, can be attached directly to URIs. In this example, we’ll use Prudence’s <u>JavaScript unifier/minifier (page <a class="Reference" href="#../static-web/|javascript-unify-minify-filter">↑</a>)</u>.
+Instances of <a class="URL" href="http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/routing/Filter.html">filters</a>, which wrap instances of other restlets, can be attached directly to URIs. In this example, we’ll use Prudence’s <u>JavaScript unifier/minifier (page <a class="Reference" href="#../static-web/|javascript-unify-minify-filter">↑</a>)</u>:
 </div>
 <div class="Indented">
 
@@ -4337,10 +4343,19 @@ Instances of <a class="URL" href="http://www.restlet.org/documentation/snapshot/
 <div class="listing">
 <code class="listing">importClass(com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter)
 ​
+// This will detach staticWeb and attach our filter instead with staticWeb chained to it;
+// also note that the context for staticWeb will be used for the filter
+// (this is Prudence sugar)
+router.filterBase(
+	staticWebBaseURL,
+	new JavaScriptUnifyMinifyFilter(null, new File(applicationBasePath + staticWebBasePath),
+		dynamicWebMinimumTimeBetweenValidityChecks), staticWeb)
+​
+// The above is equivalent to this
 router.detach(staticWeb)
 router.attachBase(
 	staticWebBaseURL,
-	new JavaScriptUnifyMinifyFilter(application.context, staticWeb, new File(applicationBasePath + staticWebBasePath),
+	new JavaScriptUnifyMinifyFilter(staticWeb.context, staticWeb, new File(applicationBasePath + staticWebBasePath),
 		dynamicWebMinimumTimeBetweenValidityChecks))
 </code>
 </div>
@@ -4367,8 +4382,7 @@ importClass(org.restlet.routing.Redirector)
 ​
 // Simple redirection
 router.attach(’bug/’,
-	new Redirector(applicationInstance.context,
-’http://wackywiki.org/contact-us/bug/’))
+	new Redirector(applicationInstance.context, ’http://wackywiki.org/contact-us/bug/’))
 ​
 // With a URI pattern
 router.attachBase(’forum/’,
@@ -4558,7 +4572,7 @@ This feature is especially useful with:
 </li>
 </ul>
 <h1 class="Section">
-<a class="toc" name="toc-Section-11"></a>API<a class="Label" name="../api/"> </a>
+<a class="toc" name="toc-Section-12"></a>API<a class="Label" name="../api/"> </a>
 </h1>
 <div class="Unindented">
 Prudence exposes its API as a set of services to your source code. These services are available in scriptlets in /web/dynamic/, source code in /resources/ and /tasks/, and in your configuration scripts.
@@ -4965,7 +4979,7 @@ The included path is an internal URI, not the external URL visible to the world.
 Prudence might compile or otherwise prepare and cache code in the executed document. What ‘‘preparation’’ actually involves depends on the language of the source code. This means that the first time it is executed it would be delayed, but subsequent execution would be much faster. To avoid that first-time wait, Prudence supports ‘‘defrosting’’ of your documents when it starts. This is enabled by default for all documents in /resources/, and would affect documents they execute from /libraries/.
 </div>
 <div class="Indented">
-Executed documents, just like documents exposed at URLs, are reloaded and re-prepared on-the-fly if the file changes, within the limits of the <u>dynamicWebMinimumTimeBetweenValidityChecks setting (page <a class="Reference" href="#../application/|dynamic-web-minimum-time-between-validity-checks">↑</a>)</u>. Also, executed documents are automatically added as dependencies, so that if they are reloaded, so will the current document. See <u>document.addDependency (page <a class="Reference" href="#../api/|document-add-dependency">↓</a>)</u>.
+Executed documents, just like documents exposed at URLs, are reloaded and re-prepared on the fly if the file changes, within the limits of the <u>dynamicWebMinimumTimeBetweenValidityChecks setting (page <a class="Reference" href="#../application/|dynamic-web-minimum-time-between-validity-checks">↑</a>)</u>. Also, executed documents are automatically added as dependencies, so that if they are reloaded, so will the current document. See <u>document.addDependency (page <a class="Reference" href="#../api/|document-add-dependency">↓</a>)</u>.
 </div>
 <blockquote class="Quote">
 The main difference between document.include and document.execute is that the former expects ‘‘text-with-scriptlets’’ documents, while the latter uses plain source code.
@@ -5022,7 +5036,7 @@ For constructing the file path, you may want to use <u>document.source.basePath 
 Forces the provided document to be marked as invalid, which would trigger the document and dependent documents to be refreshed. See <u>document.addDependency (page <a class="Reference" href="#../api/|document-add-dependency">↑</a>)</u> and <u>document.invalidateCurrent (page <a class="Reference" href="#../api/|document-invalidate-current">↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-71"></a>document.internal<a class="Label" name="../api/|document-internal"> </a>
+<a class="toc" name="toc-Paragraph-71"></a>document.internal<a class="Label" name="../api/|document-internal"> </a><a class="Label" name="../manual/api/|document-internal"> </a>
 </div>
 <div class="Unindented">
 Creates a <a class="URL" href="http://www.restlet.org/documentation/snapshot/jse/api/index.html?org/restlet/resource/ClientResource.html">ClientResource</a> proxy for a resource in the current application, or in other applications in your component. You can perform all the usual REST verbs via the proxy: GET, PUT, POST, DELETE, etc.
@@ -5560,7 +5574,7 @@ To find out which media types the client accepts and prefers, use conversation.r
 <a class="toc" name="toc-Subsubsection-78"></a>Conversation Flow
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-97"></a>conversation.stop
+<a class="toc" name="toc-Paragraph-97"></a>conversation.stop<a class="Label" name="../api/|conversation-stop"> </a>
 </div>
 <div class="Unindented">
 Throws an exception, thereby ending execution of your code, and hence the conversation---unless you have deferred it: see <u>conversation.defer (page <a class="Reference" href="#../api/|conversation-defer">↓</a>)</u>. Note that the client will still get a response, so you can set attributes (conversation.statusCode, conversation.expirationTimestamp, etc.) before calling conversation.stop.
@@ -5701,7 +5715,7 @@ To send messages between applications. This would be necessary if operations in 
 Generally, if you find yourself having to rely on executable.globals, ask yourself if your code would be better off encapsulated as a single application. Remember that Prudence has powerful URL routing, support for virtual hosting, etc., letting you easily have one application work in several sites simultaneously
 </div>
 <blockquote class="Quote">
-Note for Clojure flavor: All Clojure vars are VM-wide globals equivalent in scope to executable.globals. You usually work with namespaces that Prudence creates on-the-fly, so they do not persist beyond the execution. However, if you explicitly define a namespace, then you use it as a place for shared state. It will then be up to you to make sure that your namescape doesn’t collide with that of another application installed in the Prudence insstance. Though this approach might seem to break our rule of thumb here, of preferring application.globals to executable.globals, it is more idiomatic to Clojure and Lisps more generally.
+Note for Clojure flavor: All Clojure vars are VM-wide globals equivalent in scope to executable.globals. You usually work with namespaces that Prudence creates on the fly, so they do not persist beyond the execution. However, if you explicitly define a namespace, then you use it as a place for shared state. It will then be up to you to make sure that your namescape doesn’t collide with that of another application installed in the Prudence insstance. Though this approach might seem to break our rule of thumb here, of preferring application.globals to executable.globals, it is more idiomatic to Clojure and Lisps more generally.
 </blockquote>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-82"></a>Concurrency<a class="Label" name="../api/|concurrency"> </a>
@@ -5844,14 +5858,14 @@ You may ask, then, why you wouldn’t want to just use your language globals, wh
 To easily share conversation-scope state between scriptlets written in different languages.
 </li>
 <li>
-To share state for deferred conversations--see <u>conversation.defer (page <a class="Reference" href="#../api/|conversation-defer">↑</a>)</u>.
+To share state for deferred conversations---see <u>conversation.defer (page <a class="Reference" href="#../api/|conversation-defer">↑</a>)</u>.
 </li>
 <li>
 <u>URI segments are stored here (page <a class="Reference" href="#../routing/|capturing">↑</a>)</u>.
 </li>
 </ol>
 <h1 class="Section">
-<a class="toc" name="toc-Section-12"></a>Debugging<a class="Label" name="../debugging/"> </a>
+<a class="toc" name="toc-Section-13"></a>Debugging<a class="Label" name="../debugging/"> </a>
 </h1>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-78"></a>Logging
@@ -5935,7 +5949,7 @@ In both cases, you can add ‘‘?highlight=n’’ to the query, when ‘‘n�
 As of Prudence version 1.0, you cannot set breakpoints in your code, unless it’s in Java. Future versions of Prudence may allow breakpoints for some flavors, as supported languages add more debugging features. However, we do not feel that this is such a great loss, or that it would adversely affect your ability to develop for Prudence. The combination of robust logging and the debug page can go a long way towards helping you diagnose your problems. Debugging highly concurrent applications, such as network servers, does not work very well with breakpoints, anyway.
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-13"></a>Logging<a class="Label" name="../logging/"> </a>
+<a class="toc" name="toc-Section-14"></a>Logging<a class="Label" name="../logging/"> </a>
 </h1>
 <div class="Unindented">
 Prudence comes pre-configured with robust logging, based on <a class="URL" href="http://logging.apache.org/log4j/">log4j</a>.
@@ -6137,7 +6151,7 @@ logs/web.log \
 </div>
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-14"></a>Administration<a class="Label" name="../administration/"> </a>
+<a class="toc" name="toc-Section-15"></a>Administration<a class="Label" name="../administration/"> </a>
 </h1>
 <div class="Unindented">
 Prudence comes with the ‘‘Prudence Administration Application.’’ As of Prudence 1.0, this is a simple application that lets you see the servers, virtual hosts and applications in the Prudence instance, and lets you start and stop them. Future versions of Prudence will build on this foundation, allowing for more runtime control, configuration and monitoring.
@@ -6204,17 +6218,14 @@ applicationInstance.inboundRoot = authenticator
 </div>
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-15"></a>Prudence As a Daemon<a class="Label" name="../daemon/"> </a>
+<a class="toc" name="toc-Section-16"></a>Prudence As a Daemon<a class="Label" name="../daemon/"> </a>
 </h1>
 <div class="Unindented">
-In production environments, it’s best to run Prudence as a daemon in Unix-like systems or a service in Windows, via a lightweight wrapper. This will provide proper process monitoring and control. For example, if Prudence’s JVM crashes for some reason, hangs, grabs too much CPU or RAM, the wrapper can automatically shut it down and even restart it.
+Though you can start Prudence via the <u>/bin/ scripts (page <a class="Reference" href="#../instance/|bin">↑</a>)</u>, in production environments it’s best to run Prudence as a daemon. (Called a ‘‘service’’ in Windows). A lightweight daemon wrapper can provide proper process monitoring and control. For example, if Prudence’s JVM crashes for some reason, hangs, grabs too much CPU or RAM, the wrapper can automatically shut it down and even restart it.
 </div>
 <div class="Indented">
-While Prudence comes with the necessary configuration files for this, it does not include an actual wrapper, which you will need to install manually. Each of the two available wrappers is problematic: Tanuki’s JSW uses a restrictive license (GPL) that will not allow us to distribute it with Prudence, and YAJSW is far too big a download to include in Prudence. You can, however, easily download and install either of them yourself. Just be sure to follow the distribution restrictions in the case of JSW.
+While Prudence comes with the necessary configuration files for wrappers, it does not include an actual wrapper, which you will need to install separately. The reason we haven’t included them is different for each wrapper: Tanuki’s JSW uses a restrictive license (GPL) that will not allow us to distribute it with Prudence, and YAJSW is just far too big.
 </div>
-<blockquote class="Quote">
-History lesson: The copyright for JSW is held by its original developer, Tanuki Software. For the first few versions Tanuki released JSW under a permissive license, making it popular in many open source projects. However, since version 3.2 it has been distributed under the GPL 2.0 (and also via a commercial license). We applaud Tanuki’s commitment to open source, and are big fans of the GPL. However, the GPL makes it impossible to distribute JSW with open source projects using less restrictive licenses, such as Prudence. Many projects have kept distributing version 3.2 of JSW, which is now out of date and missing bug fixes. For less restrictive open source projects, the gap has been filled by YAJSW, which seeks not only to be a drop-in replacement for JSW, but to also go beyond it with many additional features.
-</blockquote>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-88"></a>JSW
 </h2>
@@ -6222,10 +6233,10 @@ History lesson: The copyright for JSW is held by its original developer, Tanuki 
 <a class="URL" href="http://wrapper.tanukisoftware.org/">JSW</a> is written in C rather than Java, making it much more lightweight than YAJSW. It supports many operating systems.
 </div>
 <div class="Indented">
-See /configuration/wrapper.conf for a sample JSW configuration. The wrapper will log to /logs/wrapper.log.
+See /configuration/wrapper.conf for a sample JSW configuration, which also configures the wrapper to log to /logs/wrapper.log.
 </div>
 <div class="Indented">
-In particular, you’ll want to change:
+In particular, you’ll want to set the following configuration settings:
 </div>
 <ul>
 
@@ -6242,6 +6253,9 @@ wrapper.java.maxmemory: Set this according to your deployment environment. More 
 wrapper.java.initmemory: A reasonably high value here can help speed up Prudence’s startup time.
 </li>
 </ul>
+<blockquote class="Quote">
+The copyright for JSW is held by its original developer, Tanuki Software. For the first few versions Tanuki released JSW under a permissive license, making it popular in many open source projects. However, since version 3.2 it has been distributed under the GPL 2.0 (and also via a commercial license). We applaud Tanuki’s commitment to open source, and are big fans of the GPL. However, the GPL makes it impossible to distribute JSW with open source projects using less restrictive licenses, such as Prudence. Many projects have kept distributing version 3.2 of JSW, which is now out of date and missing bug fixes. Note that Prudence’s license, the LGPL 3.0, has a clause allowing you to upgrade it to GPL, which would allow you to distribute JSW with it. Doing this would in turn require you to distribute you own product under the GPL.
+</blockquote>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-89"></a>YAJSW
 </h2>
@@ -6264,7 +6278,7 @@ YAJSW allows for remote monitoring and control via JMX.
 TODO
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-16"></a>HTTP Proxy
+<a class="toc" name="toc-Section-17"></a>HTTP Proxy
 </h1>
 <div class="Unindented">
 There’s nothing special about how Prudence handles HTTP, and it can work easily behind any reverse proxy. This lets you easily unite Prudence with other web servers or run it behind a load balancer. Though it’s not unique to Prudence, we thought to add this section to the manual in order to get you up and running quickly with this useful scenario.
@@ -6447,7 +6461,7 @@ Here’s a sample Apache configuration that proxies all URLs beginning with ‘�
 </div>
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-17"></a>Prudence As a Restlet Container<a class="Label" name="../restlet-container/"> </a>
+<a class="toc" name="toc-Section-18"></a>Prudence As a Restlet Container<a class="Label" name="../restlet-container/"> </a>
 </h1>
 <div class="Unindented">
 Why Prudence?
@@ -6462,7 +6476,7 @@ Though applications can be written in Prudence without a single line of Java cod
 Why use Prudence for a Restlet application that already works?
 </div>
 <div class="Indented">
-Prudence makes it easy to handle the bootstrapping and <u>routing (page <a class="Reference" href="#../application/|routing-file">↑</a>)</u> of your applications, and the <u>Administration Application (page <a class="Reference" href="#../administration/">↑</a>)</u>, <u>debugging (page <a class="Reference" href="#../debugging/">↑</a>)</u> and <u>logging (page <a class="Reference" href="#../logging/">↑</a>)</u> features make it easier to deploy and manage multiple applications together. These issues have more to do with your application’s configuration, rather than its functionality, and it can be useful to handle them outside of the Java build process, using live, dynamic languages in simple text source that you can modify on-the-fly. Deploying your Restlet application to a Prudence instance can be as simple as copying a zip file to a Prudence container.
+Prudence makes it easy to handle the bootstrapping and <u>routing (page <a class="Reference" href="#../application/|routing-file">↑</a>)</u> of your applications, and the <u>Administration Application (page <a class="Reference" href="#../administration/">↑</a>)</u>, <u>debugging (page <a class="Reference" href="#../debugging/">↑</a>)</u> and <u>logging (page <a class="Reference" href="#../logging/">↑</a>)</u> features make it easier to deploy and manage multiple applications together. These issues have more to do with your application’s configuration, rather than its functionality, and it can be useful to handle them outside of the Java build process, using live, dynamic languages in simple text source that you can modify on the fly. Deploying your Restlet application to a Prudence instance can be as simple as copying a zip file to a Prudence container.
 </div>
 <div class="Indented">
 This need is also fulfilled by servlet and Java Enterprise Edition (JEE) containers, such as Tomcat, Resin and JBoss. Indeed, Restlet has a JEE edition, and good support for servlets. However, if all you need is a deployment container, Prudence can serve as a straightforward, pure REST alternative to JEE. 
@@ -6510,7 +6524,7 @@ Easy prototyping of REST <u>resources (page <a class="Reference" href="#../resou
 Your choice among <u>6 languages (page <a class="Reference" href="#../../flavors/">↑</a>)</u>
 </li>
 <li>
-<u>Code is compiled, cached and loaded on-the-fly (page <a class="Reference" href="#../resources/|life">↑</a>)</u>
+<u>Code is compiled, cached and loaded on the fly (page <a class="Reference" href="#../resources/|life">↑</a>)</u>
 </li>
 <li>
 <u>Rich debug page (page <a class="Reference" href="#../debugging/|the-debug-page">↑</a>)</u> shows errors and <u>source code (page <a class="Reference" href="#../debugging/|source-code">↑</a>)</u>
@@ -6528,7 +6542,7 @@ Powerful <u>HTML generation platform (page <a class="Reference" href="#../genera
 Your choice from six languages, including <u>mixing languages (page <a class="Reference" href="#../generating-html/|mixing-languages">↑</a>)</u> and <u>templating engines (page <a class="Reference" href="#../generating-html/|templating-languages">↑</a>)</u> (Velocity, Succinct) on one page
 </li>
 <li>
-<u>Code is compiled, cached and loaded on-the-fly (page <a class="Reference" href="#../generating-html/|life">↑</a>)</u>
+<u>Code is compiled, cached and loaded on the fly (page <a class="Reference" href="#../generating-html/|life">↑</a>)</u>
 </li>
 <li>
 RAM/database/Hazelcast/memcached <u>server-side caching (page <a class="Reference" href="#../api/|document-cache">↑</a>)</u>, using Restlet’s URI templating language for <u>cache key generation (page <a class="Reference" href="#../api/|document-cache-key-pattern">↑</a>)</u>
@@ -6648,7 +6662,7 @@ application.useTransactions = true
 </div>
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-18"></a>Scaling Tips<a class="Label" name="../../scaling/"> </a><a class="Label" name="../scaling/"> </a>
+<a class="toc" name="toc-Section-19"></a>Scaling Tips<a class="Label" name="../../scaling/"> </a><a class="Label" name="../scaling/"> </a>
 </h1>
 <div class="Unindented">
 If you want your application to handle many concurrent users, then you’re fighting this fact: a request will get queued in the best case or discarded in the worst case if there is no thread available to serve it.
@@ -6846,7 +6860,7 @@ Pre-filling the cache can take you very far. It is, however, quite complicated t
 If we go back to our tree example above, the problem was that it was too costly to fetch the entire tree from the database. But what if we cache the tree itself? In that case, it would be very quick to generate any view of the tree on-demand. Instead of caching the view, we’d be caching the data, and achieving the same scalability gains.
 </div>
 <div class="Indented">
-Easy, right? So why not cache <i>all</i> our data structures? The reason is that it’s very difficult to do this correctly beyond trivial examples. Data structures tend to have complex interrelationships (one-to-many, many-to-many, foreign keys, recursive tree structures, graphs, etc.) such that a change in data at one point of the structure may alter various others in particular ways. For example, consider a calendar database, and that you’re caching individual days with all their events. Weekly calendar views are then generated on-the-fly (and quickly) for users according to what kinds of events they want to see in their personal calendars. What happens if a user adds a recurring event that happens every Monday? You’ll need to make sure that all Mondays currently cached would be invalidated, which might mean tagging all these as ‘‘monday’’ using Prudence’s cache tags. This requires a specific caching strategy for a specific application.
+Easy, right? So why not cache <i>all</i> our data structures? The reason is that it’s very difficult to do this correctly beyond trivial examples. Data structures tend to have complex interrelationships (one-to-many, many-to-many, foreign keys, recursive tree structures, graphs, etc.) such that a change in data at one point of the structure may alter various others in particular ways. For example, consider a calendar database, and that you’re caching individual days with all their events. Weekly calendar views are then generated on the fly (and quickly) for users according to what kinds of events they want to see in their personal calendars. What happens if a user adds a recurring event that happens every Monday? You’ll need to make sure that all Mondays currently cached would be invalidated, which might mean tagging all these as ‘‘monday’’ using Prudence’s cache tags. This requires a specific caching strategy for a specific application.
 </div>
 <div class="Indented">
 By all means, cache your data structures if you can’t easily cache your output, but be aware of the challenge!
@@ -7216,7 +7230,7 @@ Though you can run your own column database via open source projects like <a cla
 Of course, consider that it’s very possible to use both SQL and ‘‘NoSQL’’ (graph, document, column) databases together for different parts of your application. See <u>backend partitioning (page <a class="Reference" href="#../scaling/|backend-partitioning">↑</a>)</u>.
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-19"></a>Under the Hood
+<a class="toc" name="toc-Section-20"></a>Under the Hood
 </h1>
 <div class="Unindented">
 Prudence brings together many open source libraries, some of which were designed specifically for Prudence.
@@ -7246,7 +7260,7 @@ Our premise was this: to make Prudence applications easy to deploy, they could n
 Unfortunately, we found that integrating JVM languages into Prudence was anything but trivial. Each implementation had its own idea of what integration could mean. We tried to standardize on <a class="URL" href="http://java.sun.com/developer/technicalArticles/J2SE/Desktop/scripting/">JSR-223 (the Java scripting standard)</a>, but found that adherence to the specification was inconsistent, and that the specification itself is vague, especially when it comes to threading. We hacked and hacked and hacked. We even submitted patches to fix broken implementations of various languages. All in all, we probably spent more time on this than on any other aspect of Prudence.
 </div>
 <div class="Indented">
-The result is an API more abstract than JSR-223, but with a clear threading model. Under the hood, Scripturian contains many tricks and mechanisms to make each language work correctly and well, but you don’t have to worry about any of it. Scripturian just works!
+The result is an API more abstract than JSR-223, but with a clear threading model. Under the hood, Scripturian contains many tricks and mechanisms to make each language work correctly and well, but you don’t have to worry about any of it: Scripturian just works.
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-102"></a>Jython, JRuby, Clojure, Rhino, Quercus, Groovy
@@ -7269,20 +7283,23 @@ Restlet’s super-powers are three:
 <ol>
 
 <li>
-Clean abstraction of HTTP requests, responses and headers over best-of-breed engines, such as <a class="URL" href="https://grizzly.dev.java.net/">Grizzly</a>, <a class="URL" href="http://jetty.codehaus.org/jetty/">Jetty</a> and <a class="URL" href="http://www.jboss.org/netty">Netty</a>. Automatically gain the scalable advantages of non-blocking I/O and even asynchronous request handling (which will be even better supported in Restlet 2.1). Restlet transparently handles conditional requests, content negotiation, and other complicated HTTP labor.
+It’s a clean abstraction of HTTP requests, responses and headers over best-of-breed HTTP engines, such as <a class="URL" href="https://grizzly.dev.java.net/">Grizzly</a>, <a class="URL" href="http://jetty.codehaus.org/jetty/">Jetty</a> and <a class="URL" href="http://www.jboss.org/netty">Netty</a>. Automatically gain the scalable advantages of non-blocking I/O and even asynchronous request handling (which will be even better supported in Restlet 2.1). Restlet transparently handles conditional requests, content negotiation, and other complicated HTTP mechanisms.
 </li>
 <li>
-Powerful URI routing and manipulation. Expose your service to users and APIs with elegance and coherence. Make sure the URI reaches its destination, with support for virtual hosting, rewriting, templating, and other useful real-world features. Restlet is truly the Swiss army knife of URIs!
+Powerful URI routing and manipulation. Expose your service to users and APIs with elegance and coherence. Make sure the URI reaches its destination, with support for virtual hosting, rewriting, templating, and other useful real-world features. Restlet is truly the Swiss army knife of URIs.
 </li>
 <li>
-Straightforward data representation and consumption through a diverse set of extensions. Expose your data using any standard format, and even convert it on-the-fly. Easily parse data received from clients.
+Straightforward data representation and consumption through a diverse set of extensions. Expose your data using any standard format, and even convert it on the fly. Easily parse data received from clients.
 </li>
 </ol>
 <div class="Unindented">
 Restlet is a great library, with a great ecosystem of extensions. In embracing it, though, we missed some of the advantages of having a servlet container: easy deployment and configuration, centralized logging, etc. We also missed having JSP at our fingertips to quickly push out dynamic HTML.
 </div>
 <div class="Indented">
-Prudence is meant to fill in these gaps. 
+Prudence is meant to fill in these gaps.
+</div>
+<div class="Indented">
+Special thanks go to <a class="URL" href="http://www.noelios.com/">Noelios</a>, and especially Jérôme Louvel, for cultivating such a vibrant community around Restlet. It’s a solid foundation.
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-104"></a>Succinct
@@ -7312,7 +7329,7 @@ We’re great fans of this lean and mean database engine! It has allowed us to d
 This library is a dream come true: distributed, fault-tolerant implementations of the JVM’s standard collection interfaces, with distributed task queues thrown into the box. We are confident that <a class="URL" href="http://www.hazelcast.com/">Hazelcast</a> will help many Prudence users scale their applications easily and elegantly.
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-20"></a>FAQ
+<a class="toc" name="toc-Section-21"></a>FAQ
 </h1>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-108"></a>REST
@@ -7525,7 +7542,7 @@ We understand that in some cases open sourcing your product is impossible. As a 
 The Lesser GPL used to be called the ‘‘Library GPL,’’ and was originally drafted for glibc. It represents a certain admission of defeat: there are so many alternatives to our library out there, that you might not consider using our library under GPL.
 </div>
 <div class="Indented">
-In the case of Linux, the GPL has done a wonderful job in convincing vendors to open source their code in order to ship their products with Linux inside. It just doesn’t seem likely that they would do the same for Prudence.
+In the case of Linux, the GPL has done a wonderful job at convincing vendors to open source their code in order to ship their products with Linux inside. It just doesn’t seem likely that they would do the same for Prudence.
 </div>
 <div class="Indented">
 Note that the LGPL version 3 has a clause allowing you to ‘‘upgrade’’ Prudence to the full GPL for inclusion in your GPL-ed product. This is a terrific feature, and another reason to love this excellent license.
