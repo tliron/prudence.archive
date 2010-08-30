@@ -33,6 +33,8 @@ import com.threecrickets.scripturian.exception.ParsingException;
 import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
+ * TODO
+ * 
  * @author Tal Liron
  */
 public class ApplicationTask implements Runnable
@@ -330,12 +332,6 @@ public class ApplicationTask implements Runnable
 		}
 
 		return prepare;
-	}
-
-	public File getTaskDirectoryRelative()
-	{
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	//

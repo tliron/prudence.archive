@@ -18,7 +18,7 @@ import java.io.File;
  * 
  * @author Tal Liron
  */
-public class DelegatedFilterConversationService extends ConversationServiceBase
+public class DelegatedHandlerConversationService extends ConversationServiceBase
 {
 	//
 	// Construction
@@ -33,7 +33,7 @@ public class DelegatedFilterConversationService extends ConversationServiceBase
 	 * @param fileUploadDirectory
 	 *        The directory in which to place uploaded files
 	 */
-	public DelegatedFilterConversationService( int fileUploadSizeThreshold, File fileUploadDirectory )
+	public DelegatedHandlerConversationService( int fileUploadSizeThreshold, File fileUploadDirectory )
 	{
 		super( fileUploadSizeThreshold, fileUploadDirectory );
 	}

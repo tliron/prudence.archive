@@ -20,13 +20,13 @@ import com.threecrickets.scripturian.exception.ParsingException;
 /**
  * @author Tal Liron
  */
-public class DelegatedFilterDocumentService extends DocumentServiceBase
+public class DelegatedHandlerDocumentService extends DocumentServiceBase
 {
 	//
 	// Construction
 	//
 
-	public DelegatedFilterDocumentService( DocumentSource<Executable> documentSource )
+	public DelegatedHandlerDocumentService( DocumentSource<Executable> documentSource )
 	{
 		super( documentSource );
 	}
