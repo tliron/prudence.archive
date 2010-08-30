@@ -32,7 +32,30 @@ import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 
 /**
- * TODO
+ * A Restlet resource that returns a formatted textual representation of
+ * Scripturian {@link DocumentDescriptor} source code.
+ * <p>
+ * By default uses <a href="http://code.google.com/p/jygments/">Jygments</a> to
+ * format the source code, but custom formatters can be plugged in instead.
+ * <p>
+ * Before using this resource, make sure to configure a valid list of document
+ * sources in the application's {@link Context}; see
+ * {@link #getDocumentSources()}.
+ * <p>
+ * Summary of settings configured via the application's {@link Context}:
+ * <ul>
+ * <li>
+ * <code>com.threecrickets.prudence.SourceCodeResource.documentFormatter:</code>
+ * {@link DocumentFormatter}. Defaults to a {@link JygmentsDocumentFormatter}.
+ * See {@link #getDocumentFormatter()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.SourceCodeResource.documentSources:</code>
+ * an iterable of {@link DocumentSource}. <b>Required.</b> See
+ * {@link #getDocumentSources()}.</li>
+ * </ul>
+ * <p>
+ * <i>"Restlet" is a registered trademark of <a
+ * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
  * @author Tal Liron
  */
@@ -42,8 +65,14 @@ public class SourceCodeResource extends ServerResource
 	// Constants
 	//
 
+	/**
+	 * Constant.
+	 */
 	public static final String DOCUMENT = "document";
 
+	/**
+	 * Constant.
+	 */
 	public static final String HIGHLIGHT = "highlight";
 
 	//

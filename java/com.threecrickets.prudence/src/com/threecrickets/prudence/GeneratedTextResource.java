@@ -101,7 +101,7 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * service. Defaults to "conversation". See
  * {@link #getConversationServiceName()}.</li>
  * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKey:</code>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern:</code>
  * {@link String}, defaults to "{ri}|{dn}". See
  * {@link #getDefaultCacheKeyPattern()}.</li>
  * <li>
@@ -128,6 +128,14 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.executionController:</code>
  * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.fileUploadDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../uploads/". See {@link #getFileUploadDirectory()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold:</code>
+ * {@link Integer}, defaults to zero. See {@link #getFileUploadSizeThreshold()}.
+ * </li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.fragmentDirectory:</code>
  * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus

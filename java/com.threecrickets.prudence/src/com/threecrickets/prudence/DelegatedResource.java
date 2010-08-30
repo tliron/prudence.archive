@@ -53,10 +53,12 @@ import com.threecrickets.scripturian.exception.ParsingException;
 import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
- * A Restlet resource which delegates functionality to a Scripturian
+ * A Restlet resource that delegates functionality to a Scripturian
  * {@link Executable} via entry points. The entry points must be global
  * functions, closures, or whatever other technique the language engine uses to
- * for entry points. Supported entry points are:
+ * for entry points.
+ * <p>
+ * Supported entry points are:
  * <ul>
  * <li><code>handleInit()</code></li>
  * <li><code>handleGet()</code></li>
@@ -145,6 +147,14 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <code>com.threecrickets.prudence.DelegatedResource.executionController:</code>
  * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
  * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.fileUploadDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../uploads/". See {@link #getFileUploadDirectory()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold:</code>
+ * {@link Integer}, defaults to zero. See {@link #getFileUploadSizeThreshold()}.
+ * </li>
+ * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.libraryDirectory:</code>
  * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
  * "../libraries/". See {@link #getLibraryDirectory()}.</li>
@@ -165,6 +175,8 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <code>com.threecrickets.prudence.DelegatedResource.writer:</code>
  * {@link Writer}, defaults to standard output. See {@link #getWriter()}.</li>
  * </ul>
+ * <p>
+ * For a simpler delegate, see {@link DelegatedHandler}.
  * <p>
  * <i>"Restlet" is a registered trademark of <a
  * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
@@ -1150,6 +1162,21 @@ public class DelegatedResource extends ServerResource
 	// Private
 
 	/**
+	 * Constant.
+	 */
+	private static final String SOURCE = "source";
+
+	/**
+	 * Constant.
+	 */
+	private static final String HIGHLIGHT = "highlight";
+
+	/**
+	 * Constant.
+	 */
+	private static final String TRUE = "true";
+
+	/**
 	 * The {@link LanguageManager} used to create the language adapters.
 	 */
 	private volatile LanguageManager languageManager;
@@ -1281,21 +1308,6 @@ public class DelegatedResource extends ServerResource
 	 * The document formatter.
 	 */
 	private volatile DocumentFormatter<Executable> documentFormatter;
-
-	/**
-	 * Constant.
-	 */
-	private static final String SOURCE = "source";
-
-	/**
-	 * Constant.
-	 */
-	private static final String HIGHLIGHT = "highlight";
-
-	/**
-	 * Constant.
-	 */
-	private static final String TRUE = "true";
 
 	/**
 	 * Returns a representation based on the object. If the object is not
