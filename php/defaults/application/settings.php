@@ -12,6 +12,7 @@ global $resources_base_url, $resources_base_path, $resources_default_name, $reso
 global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_source_viewable, $dynamic_web_minimum_time_between_validity_checks, $dynamic_web_client_caching_mode;
 global $static_web_base_url, $static_web_base_path, $static_web_directory_listing_allowed;
 global $file_upload_size_threshold;
+global $handlers_base_path, $handlers_default_name, $handlers_minimum_time_between_validity_checks;
 global $tasks_base_path, $tasks_default_name, $tasks_minimum_time_between_validity_checks;
 global $preheat_resources;
 global $url_add_trailing_slash;
@@ -164,6 +165,29 @@ $static_web_directory_listing_allowed = TRUE;
 // Defaults to zero, meaning that all uploaded files will be stored to disk.
 
 $file_upload_size_threshold = 0;
+
+//
+// Handlers
+//
+// Sets up a directory under which you can place script files that implement
+// general-purpose handlers.
+//
+
+$handlers_base_path = '/handlers/';
+
+// If the handler name points to a directory rather than a file, and that directory
+// contains a file with this name, then it will be used. This allows
+// you to use the directory structure to create nice URLs without relying
+// on filenames.
+
+$handlers_default_name = 'default';
+
+// This is the time (in milliseconds) allowed to pass until a script file
+// is tested to see if it was changed. During development, you'd want this
+// to be low, but during production, it should be high in order to avoid
+// unnecessary hits on the filesystem.
+
+$handlers_minimum_time_between_validity_checks = 0;
 
 //
 // Tasks

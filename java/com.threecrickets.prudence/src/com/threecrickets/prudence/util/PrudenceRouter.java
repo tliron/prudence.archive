@@ -41,7 +41,8 @@ public class PrudenceRouter extends FallbackRouter
 	//
 
 	/**
-	 * Constructs a Prudence router with a default cache duration of 5 seconds.
+	 * Constructs a Prudence router with a default {@link Fallback} cache
+	 * duration of 5 seconds.
 	 * 
 	 * @param context
 	 *        The context
@@ -57,7 +58,8 @@ public class PrudenceRouter extends FallbackRouter
 	 * @param context
 	 *        The context
 	 * @param cacheDuration
-	 *        The cache duration, in milliseconds
+	 *        The default cache duration for {@link Fallback} instances, in
+	 *        milliseconds
 	 */
 	public PrudenceRouter( Context context, int cacheDuration )
 	{
@@ -66,6 +68,48 @@ public class PrudenceRouter extends FallbackRouter
 		setAuthor( "Tal Liron" );
 		setName( "PrudenceRouter" );
 		setDescription( "A FallbackRouter with shortcut methods for common routing tasks" );
+	}
+
+	//
+	// Attributes
+	//
+
+	/**
+	 * @return The filter document source
+	 * @see #setFilterDocumentSource(DocumentSource)
+	 */
+	public DocumentSource<Executable> getFilterDocumentSource()
+	{
+		return filterDocumentSource;
+	}
+
+	/**
+	 * @param filterDocumentSource
+	 *        The filter document source
+	 * @see #getFilterDocumentSource()
+	 */
+	public void setFilterDocumentSource( DocumentSource<Executable> filterDocumentSource )
+	{
+		this.filterDocumentSource = filterDocumentSource;
+	}
+
+	/**
+	 * @return The filter language manager
+	 * @see #setFilterLanguageManager(LanguageManager)
+	 */
+	public LanguageManager getFilterLanguageManager()
+	{
+		return filterLanguageManager;
+	}
+
+	/**
+	 * @param filterLanguageManager
+	 *        The filter language manager
+	 * @see #getFilterLanguageManager()
+	 */
+	public void setFilterLanguageManager( LanguageManager filterLanguageManager )
+	{
+		this.filterLanguageManager = filterLanguageManager;
 	}
 
 	//
@@ -158,6 +202,9 @@ public class PrudenceRouter extends FallbackRouter
 	/**
 	 * As {@link #filter(String, Filter, Restlet)}, but internally uses a
 	 * {@link DelegatedFilter}.
+	 * <p>
+	 * You must set {@link #setFilterDocumentSource(DocumentSource)} and
+	 * {@link #setFilterLanguageManager(LanguageManager)} for this to work.
 	 * 
 	 * @param uriTemplate
 	 *        The URI path template that must match the relative part of the
@@ -166,15 +213,11 @@ public class PrudenceRouter extends FallbackRouter
 	 *        The filter document name
 	 * @param target
 	 *        The target Restlet to attach
-	 * @param documentSource
-	 *        The filter document source
-	 * @param languageManager
-	 *        The language manager
 	 * @return The created route
 	 */
-	public Route filter( String uriTemplate, String documentName, Restlet target, DocumentSource<Executable> documentSource, LanguageManager languageManager )
+	public Route filter( String uriTemplate, String documentName, Restlet target )
 	{
-		return filter( uriTemplate, new DelegatedFilter( null, documentName, documentSource, languageManager ), target );
+		return filter( uriTemplate, new DelegatedFilter( null, documentName, filterDocumentSource, filterLanguageManager ), target );
 	}
 
 	/**
@@ -203,6 +246,9 @@ public class PrudenceRouter extends FallbackRouter
 	 * As
 	 * {@link #filter(String, String, Restlet, DocumentSource, LanguageManager)}
 	 * , but enforces matching mode {@link Template#MODE_STARTS_WITH}.
+	 * <p>
+	 * You must set {@link #setFilterDocumentSource(DocumentSource)} and
+	 * {@link #setFilterLanguageManager(LanguageManager)} for this to work.
 	 * 
 	 * @param uriTemplate
 	 *        The URI path template that must match the relative part of the
@@ -211,15 +257,11 @@ public class PrudenceRouter extends FallbackRouter
 	 *        The filter document name
 	 * @param target
 	 *        The target Restlet to attach
-	 * @param documentSource
-	 *        The filter document source
-	 * @param languageManager
-	 *        The language manager
 	 * @return The created route
 	 */
-	public Route filterBase( String uriTemplate, String documentName, Restlet target, DocumentSource<Executable> documentSource, LanguageManager languageManager )
+	public Route filterBase( String uriTemplate, String documentName, Restlet target )
 	{
-		return filterBase( uriTemplate, new DelegatedFilter( null, documentName, documentSource, languageManager ), target );
+		return filterBase( uriTemplate, new DelegatedFilter( null, documentName, filterDocumentSource, filterLanguageManager ), target );
 	}
 
 	/**
@@ -294,4 +336,17 @@ public class PrudenceRouter extends FallbackRouter
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	/**
+	 * Document source for delegated filters.
+	 */
+	private volatile DocumentSource<Executable> filterDocumentSource;
+
+	/**
+	 * Language manager for delegated filters.
+	 */
+	private volatile LanguageManager filterLanguageManager;
 }

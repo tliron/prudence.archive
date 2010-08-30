@@ -452,6 +452,28 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
+	 * The {@link DocumentSource} used to fetch {@link DelegatedHandler}
+	 * documents. Can be null if delegated handlers are not supported.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The handlers document source or null
+	 */
+	@SuppressWarnings("unchecked")
+	public DocumentSource<Executable> getHandlersDocumentSource()
+	{
+		if( handlersDocumentSource == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			handlersDocumentSource = (DocumentSource<Executable>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource" );
+		}
+
+		return handlersDocumentSource;
+	}
+
+	/**
 	 * Executables might use this directory for including fragments. If the
 	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
 	 * will default to the {@link DocumentFileSource#getBasePath()} plus
@@ -936,6 +958,12 @@ public class GeneratedTextResource extends ServerResource
 	 * The {@link DocumentSource} used to fetch scripts.
 	 */
 	private volatile DocumentSource<Executable> documentSource;
+
+	/**
+	 * The {@link DocumentSource} used to fetch {@link DelegatedHandler}
+	 * documents. Can be null if delegated handlers are not supported.
+	 */
+	private volatile DocumentSource<Executable> handlersDocumentSource;
 
 	/**
 	 * Executables might use this directory for including fragments.

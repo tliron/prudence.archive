@@ -101,11 +101,20 @@ for url in $url_add_trailing_slash
 	end
 end
 
+$language_manager = $executable.manager
+
+//
+// Handlers
+//
+
+$handlers_document_source = DocumentFileSource.new($application_base_path + $handlers_base_path, $handlers_default_name, 'rb', $handlers_minimum_time_between_validity_checks)
+$router.filter_document_source = $handlers_document_source
+$router.filter_language_manager = $language_manager
+
 #
 # Dynamic web
 #
 
-$language_manager = $executable.manager
 $dynamic_web_document_source = DocumentFileSource.new($application_base_path + $dynamic_web_base_path, $dynamic_web_default_document, 'rb', $dynamic_web_minimum_time_between_validity_checks)
 $attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = $language_manager
 $attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'ruby'
@@ -115,6 +124,7 @@ $attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] =
 $attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController.new # Adds PHP predefined variables
 $attributes['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode
 $attributes['com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold'] = $file_upload_size_threshold
+$attributes['com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource'] = $handlers_document_source
 
 $dynamic_web = Finder.new($application_instance.context, $class_loader.load_class('com.threecrickets.prudence.GeneratedTextResource'))
 $dynamic_web_base_url = fix_url $dynamic_web_base_url

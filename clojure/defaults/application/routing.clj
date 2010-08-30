@@ -90,11 +90,20 @@
 			(let [url (if (.endsWith url "/") (.substring url (- (.length url) 1)) url)]
 				(.attach router url add-trailing-slash)))))
 
+(def language-manager (.. executable getManager))
+
+;
+; Handlers
+;
+
+(def handlers-document-source = (DocumentFileSource. (str application-base-path handlers-base-path) handlers-default-name "clj" (.longValue handlers-minimum-time-between-validity-checks)))
+(.setFilterDocumentSource router handlers-document-source)
+(.setFilterLanguageManager router language-manager)
+
 ;
 ; Dynamic web
 ;
 
-(def language-manager (.. executable getManager))
 (def dynamic-web-document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document "clj" (.longValue dynamic-web-minimum-time-between-validity-checks)))
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.languageManager" language-manager)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag" "clojure")
@@ -104,6 +113,7 @@
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.executionController" (PhpExecutionController.)) ; Adds PHP predefined variables
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.clientCachingMode" dynamic-web-client-caching-mode)
 (.put attributes "com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold" file-upload-size-threshold)
+(.put attributes "com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource" handlers-document-source)
 
 (def dynamic-web (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.GeneratedTextResource")))
 (def dynamic-web-base-url (fix-url dynamic-web-base-url))

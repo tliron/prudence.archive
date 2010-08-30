@@ -101,11 +101,20 @@ for(url in urlAddTrailingSlash) {
 	}
 }
 
+languageManager = executable.manager
+
+//
+// Handlers
+//
+
+handlersDocumentSource = new DocumentFileSource(applicationBasePath + handlersBasePath, handlersDefaultName, 'gv', handlersMinimumTimeBetweenValidityChecks)
+router.filterDocumentSource = handlersDocumentSource
+router.filterLanguageManager = languageManager
+
 //
 // Dynamic web
 //
 
-languageManager = executable.manager
 dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'gv', dynamicWebMinimumTimeBetweenValidityChecks)
 attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = languageManager
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'groovy'
@@ -115,6 +124,7 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = 
 attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController() // Adds PHP predefined variables
 attributes['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamicWebClientCachingMode
 attributes['com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold'] = fileUploadSizeThreshold
+attributes['com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource'] = handlersDocumentSource
 
 dynamicWeb = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 dynamicWebBaseURL = fixURL(dynamicWebBaseURL)

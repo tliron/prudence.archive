@@ -51,7 +51,7 @@ public class DelegatedCacheKeyPatternHandler extends DelegatedHandler
 
 	/**
 	 * @return The entry point name for <code>handleCacheKeyPattern()</code>
-	 * @see #setEntryPointNameForCacheKeyPattern
+	 * @see #setEntryPointNameForCacheKeyPattern(String)
 	 */
 	public String getEntryPointNameForCacheKeyPattern()
 	{
@@ -61,7 +61,7 @@ public class DelegatedCacheKeyPatternHandler extends DelegatedHandler
 	/**
 	 * @param entryPointNameForCacheKeyPattern
 	 *        The entry point name for <code>handleCacheKeyPattern()</code>
-	 * @see #getEntryPointNameForCacheKeyPattern
+	 * @see #getEntryPointNameForCacheKeyPattern()
 	 */
 	public void setEntryPointNameForCacheKeyPattern( String entryPointNameForCacheKeyPattern )
 	{

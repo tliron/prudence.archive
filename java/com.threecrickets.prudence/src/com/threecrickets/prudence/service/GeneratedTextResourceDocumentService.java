@@ -17,16 +17,24 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.apache.bcel.verifier.statics.StringRepresentation;
+import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.data.Reference;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.routing.Template;
 import org.restlet.routing.Variable;
 
+import com.threecrickets.prudence.DelegatedCacheKeyPatternHandler;
 import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.CacheEntry;
@@ -34,7 +42,9 @@ import com.threecrickets.prudence.internal.GeneratedTextDeferredRepresentation;
 import com.threecrickets.prudence.util.CaptiveRedirector;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
+import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
+import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
@@ -141,13 +151,23 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	}
 
 	/**
+	 * The cache key pattern handlers.
+	 * 
+	 * @return The cache key pattern handlers
+	 */
+	public ConcurrentMap<String, String> getCacheKeyPatternHandlers()
+	{
+		return getCacheKeyPatternHandlers( getCurrentDocumentDescriptor().getDocument(), true );
+	}
+
+	/**
 	 * Casts the cache key pattern for the current executable.
 	 * 
 	 * @return The cache key for the current executable or null
 	 */
 	public String getCacheKey()
 	{
-		return getCacheKey( getCurrentDocumentDescriptor() );
+		return castCacheKey( getCurrentDocumentDescriptor() );
 	}
 
 	/**
@@ -252,7 +272,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		pushDocumentDescriptor( documentDescriptor );
 		try
 		{
-			return execute( documentDescriptor.getDocument() );
+			return generateText( documentDescriptor.getDocument() );
 		}
 		finally
 		{
@@ -279,7 +299,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		// Cache the document descriptor in the request
 		resource.getRequest().getAttributes().put( "com.threecrickets.prudence.GeneratedTextResource.documentDescriptor", documentDescriptor );
 
-		String cacheKey = getCacheKey( documentDescriptor );
+		String cacheKey = castCacheKey( documentDescriptor );
 		if( cacheKey != null )
 		{
 			Cache cache = resource.getCache();
@@ -347,6 +367,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 	private static final String CACHE_KEY_PATTERN_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheKeyPattern";
 
+	private static final String CACHE_KEY_PATTERN_HANDLERS_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers";
+
 	private static final String CACHE_TAGS_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheTags";
 
 	/**
@@ -385,6 +407,28 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 * @param executable
 	 *        The executable
 	 * @param create
+	 *        Whether to create a handler map if it doesn't exist
+	 * @return The handler map or null
+	 */
+	@SuppressWarnings("unchecked")
+	private static ConcurrentMap<String, String> getCacheKeyPatternHandlers( Executable executable, boolean create )
+	{
+		ConcurrentMap<String, String> handlers = (ConcurrentMap<String, String>) executable.getAttributes().get( CACHE_KEY_PATTERN_HANDLERS_ATTRIBUTE );
+		if( handlers == null && create )
+		{
+			handlers = new ConcurrentHashMap<String, String>();
+			ConcurrentMap<String, String> existing = (ConcurrentMap<String, String>) executable.getAttributes().putIfAbsent( CACHE_KEY_PATTERN_HANDLERS_ATTRIBUTE, handlers );
+			if( existing != null )
+				handlers = existing;
+		}
+
+		return handlers;
+	}
+
+	/**
+	 * @param executable
+	 *        The executable
+	 * @param create
 	 *        Whether to create a cache tag set if it doesn't exist
 	 * @return The cache tags or null
 	 */
@@ -398,8 +442,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			Set<String> existing = (Set<String>) executable.getAttributes().putIfAbsent( CACHE_TAGS_ATTRIBUTE, cacheTags );
 			if( existing != null )
 				cacheTags = existing;
-
 		}
+
 		return cacheTags;
 	}
 
@@ -423,7 +467,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 *        The document descriptor
 	 * @return The cache key or null
 	 */
-	private String getCacheKey( DocumentDescriptor<Executable> documentDescriptor )
+	private String castCacheKey( DocumentDescriptor<Executable> documentDescriptor )
 	{
 		String cacheKeyPattern = getCacheKeyPattern( documentDescriptor.getDocument() );
 		if( cacheKeyPattern == null )
@@ -434,20 +478,62 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 			Reference captiveReference = CaptiveRedirector.getCaptiveReference( resource.getRequest() );
 			Reference resourceReference = resource.getRequest().getResourceRef();
+			Request request = resource.getRequest();
+			Response response = resource.getResponse();
 
-			// Our additional template variables: {dn}, {an} and {ptb}
-
+			// {dn}
 			if( cacheKeyPattern.contains( DOCUMENT_NAME_VARIABLE_FULL ) )
 				template.getVariables().put( DOCUMENT_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, documentDescriptor.getDefaultName(), true, true ) );
 
+			// {an}
 			if( cacheKeyPattern.contains( APPLICATION_NAME_VARIABLE_FULL ) )
 				template.getVariables().put( APPLICATION_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, resource.getApplication().getName(), true, true ) );
 
+			// {ptb}
 			if( cacheKeyPattern.contains( PATH_TO_BASE_VARIABLE_FULL ) )
 			{
 				Reference reference = captiveReference != null ? captiveReference : resourceReference;
 				String pathToBase = reference.getBaseRef().getRelativeRef( reference ).getPath();
 				template.getVariables().put( PATH_TO_BASE_VARIABLE, new Variable( Variable.TYPE_ALL, pathToBase, true, true ) );
+			}
+
+			// Custom handlers
+			Map<String, String> cacheKeyPatternHandlers = getCacheKeyPatternHandlers( documentDescriptor.getDocument(), false );
+			if( cacheKeyPatternHandlers != null )
+			{
+				// Group variables together for handlers
+				Map<String, Set<String>> delegatedHandlers = new HashMap<String, Set<String>>();
+				for( Map.Entry<String, String> entry : cacheKeyPatternHandlers.entrySet() )
+				{
+					String variable = entry.getKey();
+					String documentName = entry.getValue();
+					if( cacheKeyPattern.contains( "{" + variable + "}" ) )
+					{
+						Set<String> variables = delegatedHandlers.get( documentName );
+						if( variables == null )
+						{
+							variables = new HashSet<String>();
+							delegatedHandlers.put( documentName, variables );
+						}
+						variables.add( variable );
+					}
+				}
+
+				// Call handlers
+				if( !delegatedHandlers.isEmpty() )
+				{
+					DocumentSource<Executable> handlersDocumentSource = resource.getHandlersDocumentSource();
+					if( handlersDocumentSource == null )
+						throw new RuntimeException( "Cannot use cacheKeyPatternHandlers if no handlersDocumentSource was set" );
+
+					LanguageManager languageManager = resource.getLanguageManager();
+
+					for( Map.Entry<String, Set<String>> entry : delegatedHandlers.entrySet() )
+					{
+						DelegatedCacheKeyPatternHandler delegatedHandler = new DelegatedCacheKeyPatternHandler( entry.getKey(), handlersDocumentSource, languageManager );
+						delegatedHandler.handleCacheKeyPattern( entry.getValue().toArray( new String[] {} ) );
+					}
+				}
 			}
 
 			// Use captive reference as the resource reference
@@ -456,7 +542,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			try
 			{
 				// Cast it
-				return template.format( resource.getRequest(), resource.getResponse() );
+				return template.format( request, response );
 			}
 			finally
 			{
@@ -504,8 +590,30 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		return cleanedCacheTags;
 	}
 
+	/*
+	 * private Object x( Executable executable ) { // Filter before handling
+	 * List<DelegatedFilter> filters = getFilters( executable, false );
+	 * ListIterator<DelegatedFilter> documentFilterIterator = null; boolean skip
+	 * = false; if( filters != null ) { documentFilterIterator =
+	 * filters.listIterator(); while( documentFilterIterator.hasNext() ) {
+	 * DelegatedFilter delegatedFilter = documentFilterIterator.next(); int
+	 * action = delegatedFilter.handleBefore( resource.getRequest(),
+	 * resource.getResponse() ); switch( action ) { case Filter.STOP: return
+	 * null; case Filter.SKIP: skip = true; break; } } } // Filter after
+	 * handling if( documentFilterIterator != null ) { while(
+	 * documentFilterIterator.hasPrevious() ) { DelegatedFilter delegatedFilter
+	 * = documentFilterIterator.previous(); delegatedFilter.handleAfter(
+	 * resource.getRequest(), resource.getResponse() ); } } if( filters != null
+	 * ) for( ListIterator<DelegatedFilter> i = filters.listIterator(
+	 * filters.size() ); i.hasPrevious(); ) i.previous().handleAfter(
+	 * resource.getRequest(), resource.getResponse() ); return null; }
+	 */
+
 	/**
-	 * The actual execution of an executable.
+	 * Generates and possibly caches a textual representation. The returned
+	 * representation is either a {@link StringRepresentation} or a
+	 * {@link GeneratedTextDeferredRepresentation}. Text in the former case
+	 * could be the result of either execution or retrieval from the cache.
 	 * 
 	 * @param executable
 	 *        The executable
@@ -515,7 +623,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 * @throws ParsingException
 	 * @throws ExecutionException
 	 */
-	private Representation execute( Executable executable ) throws IOException, ParsingException, ExecutionException
+	private Representation generateText( Executable executable ) throws IOException, ParsingException, ExecutionException
 	{
 		Writer writer = executionContext.getWriter();
 

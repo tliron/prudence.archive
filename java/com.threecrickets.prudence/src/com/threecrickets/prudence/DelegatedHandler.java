@@ -35,6 +35,7 @@ import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
+import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * A general-purpose delegate used to enter defined entry points in a
@@ -221,6 +222,25 @@ public class DelegatedHandler
 	}
 
 	/**
+	 * If the {@link #getDocumentSource()} is a {@link DocumentFileSource}, then
+	 * this is the library directory relative to the
+	 * {@link DocumentFileSource#getBasePath()}. Otherwise, it's null.
+	 * 
+	 * @return The relative library directory or null
+	 */
+	public File getLibraryDirectoryRelative()
+	{
+		DocumentSource<Executable> documentSource = getDocumentSource();
+		if( documentSource instanceof DocumentFileSource<?> )
+		{
+			File libraryDirectory = getLibraryDirectory();
+			if( libraryDirectory != null )
+				return ScripturianUtil.getRelativeFile( libraryDirectory, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
+		}
+		return null;
+	}
+
+	/**
 	 * Defaults to "document".
 	 * 
 	 * @return The document service name
@@ -357,7 +377,7 @@ public class DelegatedHandler
 				if( libraryDirectory != null )
 					executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
 
-				executionContext.getServices().put( documentServiceName, new DelegatedHandlerDocumentService( documentSource ) );
+				executionContext.getServices().put( documentServiceName, new DelegatedHandlerDocumentService( this, documentSource ) );
 				executionContext.getServices().put( applicationServiceName, new ApplicationService() );
 
 				try

@@ -11,10 +11,14 @@
 
 package com.threecrickets.prudence.service;
 
+import java.io.File;
+
+import com.threecrickets.prudence.DelegatedHandler;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
+import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
@@ -26,9 +30,14 @@ public class DelegatedHandlerDocumentService extends DocumentServiceBase
 	// Construction
 	//
 
-	public DelegatedHandlerDocumentService( DocumentSource<Executable> documentSource )
+	/**
+	 * @param delegatedHandler
+	 * @param documentSource
+	 */
+	public DelegatedHandlerDocumentService( DelegatedHandler delegatedHandler, DocumentSource<Executable> documentSource )
 	{
 		super( documentSource );
+		this.delegatedHandler = delegatedHandler;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -41,6 +50,30 @@ public class DelegatedHandlerDocumentService extends DocumentServiceBase
 	@Override
 	protected DocumentDescriptor<Executable> getDocumentDescriptor( String documentName ) throws ParsingException, DocumentException
 	{
-		return null;
+		DocumentDescriptor<Executable> documentDescriptor;
+		try
+		{
+			documentDescriptor = Executable.createOnce( documentName, getSource(), false, delegatedHandler.getLanguageManager(), delegatedHandler.getDefaultLanguageTag(), delegatedHandler.isPrepare() );
+		}
+		catch( DocumentNotFoundException x )
+		{
+			// Try the library directory
+			File libraryDirectory = delegatedHandler.getLibraryDirectoryRelative();
+			if( libraryDirectory != null )
+				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, delegatedHandler.getLanguageManager(), delegatedHandler.getDefaultLanguageTag(),
+					delegatedHandler.isPrepare() );
+			else
+				throw x;
+		}
+
+		return documentDescriptor;
 	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	/**
+	 * The handler.
+	 */
+	private final DelegatedHandler delegatedHandler;
 }

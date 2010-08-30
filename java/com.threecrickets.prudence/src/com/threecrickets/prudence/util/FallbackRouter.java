@@ -55,7 +55,8 @@ public class FallbackRouter extends Router
 	 * @param context
 	 *        The context
 	 * @param cacheDuration
-	 *        The cache duration, in milliseconds
+	 *        The default cache duration for {@link Fallback} instances, in
+	 *        milliseconds
 	 */
 	public FallbackRouter( Context context, int cacheDuration )
 	{
@@ -72,7 +73,8 @@ public class FallbackRouter extends Router
 	//
 
 	/**
-	 * The cache duration, in milliseconds.
+	 * The default cache duration for {@link Fallback} instances, in
+	 * millisecondss.
 	 * 
 	 * @return The cache duration, in milliseconds
 	 * @see Fallback#getCacheDuration()
@@ -83,7 +85,8 @@ public class FallbackRouter extends Router
 	}
 
 	/**
-	 * The cache duration, in milliseconds. (Modifiable by concurrent threads.)
+	 * The default cache duration for {@link Fallback} instances, in
+	 * milliseconds. (Modifiable by concurrent threads.)
 	 * 
 	 * @param cacheDuration
 	 *        The cache duration, in milliseconds
@@ -178,7 +181,8 @@ public class FallbackRouter extends Router
 	// Private
 
 	/**
-	 * The cache duration, in milliseconds.
+	 * The default cache duration for {@link Fallback} instances, in
+	 * milliseconds.
 	 */
 	private final AtomicInteger cacheDuration;
 }

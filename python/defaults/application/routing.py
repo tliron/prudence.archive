@@ -84,11 +84,20 @@ for url in url_add_trailing_slash:
 			url = url[:-1]
 		router.attach(url, add_trailing_slash)
 
+language_manager = executable.manager
+
+#
+# Handlers
+#
+
+handlers_document_source = DocumentFileSource(application_base_path + handlers_base_path, handlers_default_name, 'py', handlers_minimum_time_between_validity_checks)
+router.filterDocumentSource = handlers_document_source
+router.filterLanguageManager = language_manager
+
 #
 # Dynamic web
 #
 
-language_manager = executable.manager
 dynamic_web_document_source = DocumentFileSource(application_base_path + dynamic_web_base_path, dynamic_web_default_document, 'py', dynamic_web_minimum_time_between_validity_checks)
 attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = language_manager
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'python'
@@ -98,6 +107,7 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = 
 attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController() # Adds PHP predefined variables
 attributes['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamic_web_client_caching_mode
 attributes['com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold'] = file_upload_size_threshold
+attributes['com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource'] = handlers_document_source
 
 dynamic_web = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 dynamic_web_base_url = fix_url(dynamic_web_base_url)
