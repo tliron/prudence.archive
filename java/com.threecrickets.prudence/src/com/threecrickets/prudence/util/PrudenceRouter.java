@@ -157,7 +157,7 @@ public class PrudenceRouter extends FallbackRouter
 
 	/**
 	 * As {@link #filter(String, Filter, Restlet)}, but internally uses a
-	 * {@link DelegatedFilterOld}.
+	 * {@link DelegatedFilter}.
 	 * 
 	 * @param uriTemplate
 	 *        The URI path template that must match the relative part of the
