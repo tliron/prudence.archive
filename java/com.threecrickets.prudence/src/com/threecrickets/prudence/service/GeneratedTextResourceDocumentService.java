@@ -355,6 +355,10 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 	private static final String DOCUMENT_NAME_VARIABLE_FULL = "{" + DOCUMENT_NAME_VARIABLE + "}";
 
+	private static final String CLIENT_INFO_PREFERRED_ENCODING = "cipe";
+
+	private static final String CLIENT_INFO_PREFERRED_ENCODING_FULL = "{" + CLIENT_INFO_PREFERRED_ENCODING + "}";
+
 	private static final String APPLICATION_NAME_VARIABLE = "an";
 
 	private static final String APPLICATION_NAME_VARIABLE_FULL = "{" + APPLICATION_NAME_VARIABLE + "}";
@@ -487,13 +491,13 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			if( cacheKeyPattern.contains( APPLICATION_NAME_VARIABLE_FULL ) )
 				template.getVariables().put( APPLICATION_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, resource.getApplication().getName(), true, true ) );
 
+			// {cipe}
+			if( cacheKeyPattern.contains( CLIENT_INFO_PREFERRED_ENCODING_FULL ) )
+				template.getVariables().put( CLIENT_INFO_PREFERRED_ENCODING, new Variable( Variable.TYPE_ALL, conversationService.getPreferredEncodingName(), true, true ) );
+
 			// {ptb}
 			if( cacheKeyPattern.contains( PATH_TO_BASE_VARIABLE_FULL ) )
-			{
-				Reference reference = captiveReference != null ? captiveReference : resourceReference;
-				String pathToBase = reference.getBaseRef().getRelativeRef( reference ).getPath();
-				template.getVariables().put( PATH_TO_BASE_VARIABLE, new Variable( Variable.TYPE_ALL, pathToBase, true, true ) );
-			}
+				template.getVariables().put( PATH_TO_BASE_VARIABLE, new Variable( Variable.TYPE_ALL, conversationService.getPathToBase(), true, true ) );
 
 			// Custom handlers
 			Map<String, String> cacheKeyPatternHandlers = getCacheKeyPatternHandlers( documentDescriptor.getDocument(), false );

@@ -12,6 +12,7 @@
 package com.threecrickets.prudence.service;
 
 import org.restlet.data.CharacterSet;
+import org.restlet.data.Encoding;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 
@@ -71,6 +72,30 @@ public class GeneratedTextResourceConversationService extends ResourceConversati
 	public boolean getIsDeferred()
 	{
 		return isDeferred();
+	}
+
+	/**
+	 * The preferred encoding.
+	 * 
+	 * @return The preferred encoding or null
+	 */
+	public Encoding getPreferredEncoding()
+	{
+		return getResource().getClientInfo().getPreferredEncoding( GeneratedTextResource.SUPPORTED_ENCODINGS );
+	}
+
+	/**
+	 * The preferred encoding name.
+	 * 
+	 * @return The preferred encoding name or null
+	 */
+	public String getPreferredEncodingName()
+	{
+		Encoding preferredEncoding = getPreferredEncoding();
+		if( preferredEncoding != null )
+			return preferredEncoding.getName();
+		else
+			return null;
 	}
 
 	//

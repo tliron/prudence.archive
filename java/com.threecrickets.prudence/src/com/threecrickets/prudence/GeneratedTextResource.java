@@ -13,6 +13,7 @@ package com.threecrickets.prudence;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.data.CacheDirective;
 import org.restlet.data.CharacterSet;
+import org.restlet.data.Encoding;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
@@ -39,6 +41,7 @@ import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.prudence.service.ApplicationService;
 import com.threecrickets.prudence.service.GeneratedTextResourceConversationService;
 import com.threecrickets.prudence.service.GeneratedTextResourceDocumentService;
+import com.threecrickets.prudence.util.IoUtil;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
@@ -175,6 +178,13 @@ public class GeneratedTextResource extends ServerResource
 	public static final int CLIENT_CACHING_MODE_CONDITIONAL = 1;
 
 	public static final int CLIENT_CACHING_MODE_OFFLINE = 2;
+
+	public static final List<Encoding> SUPPORTED_ENCODINGS = new ArrayList<Encoding>();
+
+	{
+		SUPPORTED_ENCODINGS.addAll( IoUtil.SUPPORTED_COMPRESSION_ENCODINGS );
+		SUPPORTED_ENCODINGS.add( Encoding.IDENTITY );
+	}
 
 	//
 	// Attributes

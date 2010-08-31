@@ -81,7 +81,7 @@ public class CacheEntry implements Externalizable
 		this.documentModificationDate = documentModificationDate;
 		this.expirationDate = expirationDate;
 
-		if( encoding != null )
+		if( IoUtil.SUPPORTED_COMPRESSION_ENCODINGS.contains( encoding ) )
 		{
 			bytes = IoUtil.compress( string, encoding, "text" );
 		}

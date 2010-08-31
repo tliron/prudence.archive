@@ -22,7 +22,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -41,6 +43,11 @@ import org.restlet.data.Encoding;
  */
 public abstract class IoUtil
 {
+	/**
+	 * Constant.
+	 */
+	public static List<Encoding> SUPPORTED_COMPRESSION_ENCODINGS = Arrays.asList( Encoding.GZIP, Encoding.DEFLATE, Encoding.ZIP );
+
 	/**
 	 * Copies streams. The input stream is entirely consumed and closed.
 	 * 

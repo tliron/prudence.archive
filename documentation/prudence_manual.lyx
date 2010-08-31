@@ -12245,6 +12245,19 @@ reference "../generating-html/|routing-get-and-post"
 {cig}: client agent name
 \end_layout
 
+\begin_layout Itemize
+{cipe}: client preferred encoding, identical to 
+\bar under
+conversation.preferredEncoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-preferred-encoding"
+
+\end_inset
+
+)
+\end_layout
+
 \begin_layout Subsubsection
 Response Attributes
 \end_layout
@@ -14928,6 +14941,25 @@ Note that in non-negotiated HTTP mode, Prudence ``passes through'' the client
  entity as a variant.
 \end_layout
 
+\begin_layout Paragraph
+conversation.preferredEncoding
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-preferred-encoding"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+(only available in /web/dynamic/ and /fragments/)
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
 \begin_layout Subsubsection
 Request and Response Attributes
 \end_layout
@@ -15391,6 +15423,18 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_inset
 
 ).
+ In /web/dynamic/, you can also use the 
+\bar under
+conversation.preferredEncoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-preferred-encoding"
+
+\end_inset
+
+)
+\bar default
+ shortcut, which tests against Prudence's preferred encodings for HTML.
 \end_layout
 
 \begin_layout Quote
@@ -15410,11 +15454,28 @@ reference "../api/|document-cache-duration"
 
 )
 \bar default
-, it will be stored in the cache in this compressed state, such that subsequent
- cache retrievals will not involve any additional overhead.
- The total overhead would thus likely be insignificant for cached documents,
- while the bandwidth savings and performance benefits can be considerable.
+, it will be stored in the cache in its compressed state, such that subsequent
+ cache retrievals would not involve any additional overhead.
+ Thus, the total overhead would likely be insignificant for cached documents,
+ while the bandwidth savings and performance benefits could be considerable.
  Caching and compression are good friends!
+\end_layout
+
+\begin_layout Quote
+Also note that if you're caching compressed pages using ``document.encoding
+ = conversation.preferredEncoding'', you likely want to use the ``{cipe}''
+ variable in your 
+\bar under
+document.cacheKeyPattern (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-key-pattern"
+
+\end_inset
+
+)
+\bar default
+ to ensure that you are caching each encoding with different keys.
 \end_layout
 
 \begin_layout Subsubsection
@@ -15702,10 +15763,6 @@ name "../api/|conversation-add-media-type"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-(only available in /resources/)
 \end_layout
 
 \begin_layout Standard
