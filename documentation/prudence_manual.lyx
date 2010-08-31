@@ -6875,9 +6875,20 @@ Note that you can change the cache interval dynamically.
  hours'' where users expect to see especially up-to-date results.
 \end_layout
 
+\begin_layout Paragraph
+Caching and Compression
+\begin_inset CommandInset label
+LatexCommand label
+name "../generating-html/|caching-and-compression"
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 For further bandwidth and performance improvements with most clients, consider
- compressing your output with 
+ compressing your output by setting 
 \bar under
 conversation.encoding (page 
 \begin_inset CommandInset ref
@@ -6889,8 +6900,116 @@ reference "../api/|conversation-encoding"
 )
 \bar default
 .
- Cache entries are stored in their compressed state, such that subsequent
- cache retrievals will not involve any additional overhead.
+ Modern client processors, even on mobile devices, decompress fast enough
+ that the network ends up being the performance bottleneck.
+ The smaller the response, the better.
+\end_layout
+
+\begin_layout Standard
+Compression does require some additional computation overhead, so do test
+ for costs vs.
+ benefits before applying compression across the board.
+ Note, though, that if you are caching the output, it will be stored in
+ the cache in its compressed state, such that subsequent cache retrievals
+ would not involve any additional overhead.
+ Thus, the total overhead would likely be insignificant for cached documents,
+ while the bandwidth savings and performance benefits could be considerable.
+ Caching and compression are good friends!
+\end_layout
+
+\begin_layout Standard
+Prudence supports three compression algorithms, so it's safest to choose
+ the one the client prefers, via 
+\bar under
+conversation.preferredEncoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-preferred-encoding"
+
+\end_inset
+
+)
+\bar default
+.
+ You likely want to use the matching ``{pe}'' variable in your 
+\bar under
+document.cacheKeyPattern (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-key-pattern"
+
+\end_inset
+
+)
+\bar default
+ to ensure that you are storing each encoding separately in the cache.
+ Example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+// Cache according to application name, path to base, document name and
+ preferred encoding
+\end_layout
+
+\begin_layout Plain Layout
+
+document.cacheKeyPattern = '{an}|{ptb}|{dn}|{pe}'
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// Use preferred encoding
+\end_layout
+
+\begin_layout Plain Layout
+
+if(conversation.preferredEncoding) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	document.encoding = conversation.preferredEncoding
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that if you have your own way to determine encoding, you will likely
+ need a 
+\bar under
+cache key pattern handler (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-key-pattern-handlers"
+
+\end_inset
+
+)
+\bar default
+ to insert it into the cache key.
 \end_layout
 
 \begin_layout Subsection
@@ -12246,7 +12365,7 @@ reference "../generating-html/|routing-get-and-post"
 \end_layout
 
 \begin_layout Itemize
-{cipe}: client preferred encoding, identical to 
+{pe}: preferred encoding, identical to 
 \bar under
 conversation.preferredEncoding (page 
 \begin_inset CommandInset ref
@@ -15316,6 +15435,10 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 .
 \end_layout
 
+\begin_layout Standard
+The default status code is 200 (``OK'').
+\end_layout
+
 \begin_layout Paragraph
 conversation.languageName, conversation.language
 \begin_inset CommandInset label
@@ -15439,43 +15562,21 @@ reference "../api/|conversation-preferred-encoding"
 
 \begin_layout Quote
 In /web/dynamic/, setting the encoding to either ``zip'', ``gzip'' or ``deflate'
-' will cause Prudence to automatically compress the output text.
- This does require some additional computation overhead, so test for costs
- vs.
- benefits before applying compression across the board.
- Note, though, that if you are caching the output with 
+' will cause Prudence to compress the output text.
+ Cache entries are stored in their compressed state, such that subsequent
+ cache retrievals will not involve this additional overhead.
+ See 
 \bar under
-document.cacheDuration (page 
+caching and encoding (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|document-cache-duration"
+reference "../generating-html/|caching-and-compression"
 
 \end_inset
 
 )
 \bar default
-, it will be stored in the cache in its compressed state, such that subsequent
- cache retrievals would not involve any additional overhead.
- Thus, the total overhead would likely be insignificant for cached documents,
- while the bandwidth savings and performance benefits could be considerable.
- Caching and compression are good friends!
-\end_layout
-
-\begin_layout Quote
-Also note that if you're caching compressed pages using ``document.encoding
- = conversation.preferredEncoding'', you likely want to use the ``{cipe}''
- variable in your 
-\bar under
-document.cacheKeyPattern (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|document-cache-key-pattern"
-
-\end_inset
-
-)
-\bar default
- to ensure that you are caching each encoding with different keys.
+ for a detailed discussion.
 \end_layout
 
 \begin_layout Subsubsection

@@ -81,7 +81,9 @@ public class GeneratedTextResourceConversationService extends ResourceConversati
 	 */
 	public Encoding getPreferredEncoding()
 	{
-		return getResource().getClientInfo().getPreferredEncoding( GeneratedTextResource.SUPPORTED_ENCODINGS );
+		if( preferredEncoding == null )
+			preferredEncoding = getResource().getClientInfo().getPreferredEncoding( GeneratedTextResource.SUPPORTED_ENCODINGS );
+		return preferredEncoding;
 	}
 
 	/**
@@ -128,4 +130,12 @@ public class GeneratedTextResourceConversationService extends ResourceConversati
 	 * This boolean is true when the writer is in deferred mode.
 	 */
 	protected boolean isDeferred;
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	/**
+	 * The preferred encoding.
+	 */
+	private Encoding preferredEncoding;
 }
