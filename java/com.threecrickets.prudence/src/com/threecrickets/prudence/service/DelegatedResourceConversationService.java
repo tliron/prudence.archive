@@ -176,7 +176,7 @@ public class DelegatedResourceConversationService extends ResourceConversationSe
 	/**
 	 * The "max-age" cache control header.
 	 * 
-	 * @return The max age in seconds,+ or -1 if not set
+	 * @return The max age in seconds, or -1 if not set
 	 * @see #setMaxAge(int)
 	 */
 	public int getMaxAge()
