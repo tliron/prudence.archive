@@ -827,61 +827,61 @@ public class GeneratedTextResource extends ServerResource
 	@Override
 	public Representation get() throws ResourceException
 	{
-		return execute( null, null );
+		return generateText( null, null );
 	}
 
 	@Override
 	public Representation get( Variant variant ) throws ResourceException
 	{
-		return execute( null, variant );
+		return generateText( null, variant );
 	}
 
 	@Override
 	public Representation post( Representation entity ) throws ResourceException
 	{
-		return execute( entity, null );
+		return generateText( entity, null );
 	}
 
 	@Override
 	public Representation post( Representation entity, Variant variant ) throws ResourceException
 	{
-		return execute( entity, variant );
+		return generateText( entity, variant );
 	}
 
 	@Override
 	public Representation put( Representation entity ) throws ResourceException
 	{
-		return execute( entity, null );
+		return generateText( entity, null );
 	}
 
 	@Override
 	public Representation put( Representation entity, Variant variant ) throws ResourceException
 	{
-		return execute( entity, variant );
+		return generateText( entity, variant );
 	}
 
 	@Override
 	public Representation delete() throws ResourceException
 	{
-		return execute( null, null );
+		return generateText( null, null );
 	}
 
 	@Override
 	public Representation delete( Variant variant ) throws ResourceException
 	{
-		return execute( null, variant );
+		return generateText( null, variant );
 	}
 
 	@Override
 	public Representation options() throws ResourceException
 	{
-		return execute( null, null );
+		return generateText( null, null );
 	}
 
 	@Override
 	public Representation options( Variant variant ) throws ResourceException
 	{
-		return execute( null, variant );
+		return generateText( null, variant );
 	}
 
 	@Override
@@ -895,11 +895,15 @@ public class GeneratedTextResource extends ServerResource
 	{
 		Request request = getRequest();
 		Map<String, Object> attributes = request.getAttributes();
-		String documentName = request.getResourceRef().getRemainingPart( true, false );
-		documentName = validateDocumentName( documentName );
 
-		// Cache the document name in the request
-		attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentname", documentName );
+		// Check for cached document name in the request
+		String documentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentname" );
+		if( documentName == null )
+		{
+			documentName = request.getResourceRef().getRemainingPart( true, false );
+			documentName = validateDocumentName( documentName );
+			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentname", documentName );
+		}
 
 		GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this, null, null, variant );
 		try
@@ -1068,7 +1072,10 @@ public class GeneratedTextResource extends ServerResource
 	private final boolean asynchronousSupport = false;
 
 	/**
-	 * Does the actual handling of requests.
+	 * Generates and possibly caches a textual representation. The returned
+	 * representation is either a {@link StringRepresentation} or a
+	 * {@link GeneratedTextDeferredRepresentation}. Text in the former case
+	 * could be the result of either execution or retrieval from the cache.
 	 * 
 	 * @param entity
 	 *        The entity
@@ -1077,7 +1084,7 @@ public class GeneratedTextResource extends ServerResource
 	 * @return A representation
 	 * @throws ResourceException
 	 */
-	private Representation execute( Representation entity, Variant variant ) throws ResourceException
+	private Representation generateText( Representation entity, Variant variant ) throws ResourceException
 	{
 		Request request = getRequest();
 		Map<String, Object> attributes = request.getAttributes();
@@ -1088,6 +1095,7 @@ public class GeneratedTextResource extends ServerResource
 		{
 			documentName = request.getResourceRef().getRemainingPart( true, false );
 			documentName = validateDocumentName( documentName );
+			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentname", documentName );
 		}
 
 		try
