@@ -94,7 +94,7 @@ public class InProcessMemoryCache implements Cache
 
 	public void store( String key, Iterable<String> tags, CacheEntry entry )
 	{
-		int entrySize = entry.getString().length();
+		int entrySize = entry.getSize();
 
 		if( debug )
 			System.out.println( "Store: " + key + " " + tags );

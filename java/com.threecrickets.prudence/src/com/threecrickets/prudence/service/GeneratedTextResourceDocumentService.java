@@ -478,8 +478,6 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 			Reference captiveReference = CaptiveRedirector.getCaptiveReference( resource.getRequest() );
 			Reference resourceReference = resource.getRequest().getResourceRef();
-			Request request = resource.getRequest();
-			Response response = resource.getResponse();
 
 			// {dn}
 			if( cacheKeyPattern.contains( DOCUMENT_NAME_VARIABLE_FULL ) )
@@ -536,9 +534,12 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				}
 			}
 
+			Request request = resource.getRequest();
+			Response response = resource.getResponse();
+
 			// Use captive reference as the resource reference
 			if( captiveReference != null )
-				resource.getRequest().setResourceRef( captiveReference );
+				request.setResourceRef( captiveReference );
 			try
 			{
 				// Cast it
@@ -548,7 +549,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			{
 				// Return regular reference
 				if( captiveReference != null )
-					resource.getRequest().setResourceRef( resourceReference );
+					request.setResourceRef( resourceReference );
 			}
 		}
 	}
@@ -635,8 +636,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			if( writer != null )
 				writer.write( pureText );
 
-			return new CacheEntry( pureText, conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), executable.getDocumentTimestamp(),
-				getExpirationTimestamp( executable ) ).represent();
+			return new CacheEntry( pureText, conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), conversationService.getEncoding(),
+				executable.getDocumentTimestamp(), getExpirationTimestamp( executable ) ).represent();
 		}
 
 		int startPosition = 0;
@@ -662,7 +663,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			if( cacheEntry != null )
 			{
 				// We want to write this, too, for includes
-				if( writer != null )
+				if( ( writer != null ) && ( cacheEntry.getString() != null ) )
 					writer.write( cacheEntry.getString() );
 
 				return cacheEntry.represent();
@@ -683,7 +684,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 						if( executable.getDocumentTimestamp() <= cacheEntry.getDocumentModificationDate().getTime() )
 						{
 							// We want to write this, too, for includes
-							if( writer != null )
+							if( ( writer != null ) && ( cacheEntry.getString() != null ) )
 								writer.write( cacheEntry.getString() );
 
 							return cacheEntry.represent();
@@ -729,7 +730,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 				// Get the buffer from when we executed the executable
 				CacheEntry cacheEntry = new CacheEntry( writerBuffer.substring( startPosition ), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(),
-					executable.getDocumentTimestamp(), getExpirationTimestamp( executable ) );
+					conversationService.getEncoding(), executable.getDocumentTimestamp(), getExpirationTimestamp( executable ) );
 
 				// Cache if enabled
 				String cacheKey = getCacheKey();
@@ -753,8 +754,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				if( startPosition == 0 )
 					return cacheEntry.represent();
 				else
-					return new CacheEntry( writerBuffer.toString(), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), executable.getDocumentTimestamp(),
-						getExpirationTimestamp( executable ) ).represent();
+					return new CacheEntry( writerBuffer.toString(), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), conversationService.getEncoding(),
+						executable.getDocumentTimestamp(), getExpirationTimestamp( executable ) ).represent();
 			}
 		}
 		catch( ExecutionException x )

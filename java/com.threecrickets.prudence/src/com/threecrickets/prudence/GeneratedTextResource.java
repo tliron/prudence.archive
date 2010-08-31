@@ -1142,7 +1142,8 @@ public class GeneratedTextResource extends ServerResource
 				{
 					case CLIENT_CACHING_MODE_DISABLED:
 					{
-						// Remove all current caching headers, and set "no-cache"
+						// Remove all current caching headers, and set
+						// "no-cache"
 						representation.setModificationDate( null );
 						representation.setExpirationDate( null );
 						representation.setTag( null );

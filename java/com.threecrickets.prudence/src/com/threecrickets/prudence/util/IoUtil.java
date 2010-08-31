@@ -13,6 +13,8 @@ package com.threecrickets.prudence.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,9 +26,13 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+
+import org.restlet.data.Encoding;
 
 /**
  * Utility methods for I/O and files.
@@ -143,6 +149,65 @@ public abstract class IoUtil
 				uniqueFile = existing;
 		}
 		return uniqueFile;
+	}
+
+	/**
+	 * Compresses an input stream into a byte array.
+	 * 
+	 * @param in
+	 *        The input stream
+	 * @param encoding
+	 *        The encoding
+	 * @param documentName
+	 *        The document name (only used with {@link Encoding#ZIP})
+	 * @return The byte array
+	 * @throws IOException
+	 */
+	public static byte[] compress( InputStream in, Encoding encoding, String documentName ) throws IOException
+	{
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+		DeflaterOutputStream encoder = null;
+		if( encoding.equals( Encoding.GZIP ) )
+			encoder = new GZIPOutputStream( buffer );
+		else if( encoding.equals( Encoding.ZIP ) )
+			encoder = new ZipOutputStream( buffer );
+		else if( encoding.equals( Encoding.DEFLATE ) )
+			encoder = new DeflaterOutputStream( buffer );
+
+		if( encoder == null )
+			throw new IOException( "Unsupported encoding: " + encoding );
+
+		try
+		{
+			if( encoder instanceof ZipOutputStream )
+				( (ZipOutputStream) encoder ).putNextEntry( new ZipEntry( documentName ) );
+
+			copyStream( in, encoder );
+		}
+		finally
+		{
+			encoder.close();
+		}
+
+		return buffer.toByteArray();
+	}
+
+	/**
+	 * Compresses text into a byte array.
+	 * 
+	 * @param text
+	 *        The string
+	 * @param encoding
+	 *        The encoding
+	 * @param documentName
+	 *        The document name (only used with {@link Encoding#ZIP})
+	 * @return The byte array
+	 * @throws IOException
+	 */
+	public static byte[] compress( CharSequence text, Encoding encoding, String documentName ) throws IOException
+	{
+		return compress( new ByteArrayInputStream( text.toString().getBytes() ), encoding, documentName );
 	}
 
 	/**

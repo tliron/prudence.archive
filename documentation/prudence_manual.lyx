@@ -6875,6 +6875,24 @@ Note that you can change the cache interval dynamically.
  hours'' where users expect to see especially up-to-date results.
 \end_layout
 
+\begin_layout Standard
+For further bandwidth and performance improvements with most clients, consider
+ compressing your output with 
+\bar under
+conversation.encoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-encoding"
+
+\end_inset
+
+)
+\bar default
+.
+ Cache entries are stored in their compressed state, such that subsequent
+ cache retrievals will not involve any additional overhead.
+\end_layout
+
 \begin_layout Subsection
 Conditional Requests
 \begin_inset CommandInset label
@@ -6944,6 +6962,22 @@ reference "../resources/|conditional-requests"
 )
 \bar default
  instead.
+\end_layout
+
+\begin_layout Standard
+For further bandwidth and performance improvements with most clients, consider
+ compressing your output with 
+\bar under
+conversation.encoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-encoding"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsection
@@ -15109,7 +15143,15 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \begin_layout Standard
 To find out which media types the client accepts and prefers, use conversation.re
 quest.clientInfo.acceptedMediaTypes and conversation.request.clientInfo.getPreferredM
-ediaType().
+ediaType() (see 
+\begin_inset CommandInset href
+LatexCommand href
+name "ClientInfo documentation"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Quote
@@ -15188,7 +15230,15 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \begin_layout Standard
 To find out which character sets the client accepts and prefers, use conversatio
 n.request.clientInfo.acceptedCharacterSets and conversation.request.clientInfo.getPref
-erredCharacterSet().
+erredCharacterSet() (see 
+\begin_inset CommandInset href
+LatexCommand href
+name "ClientInfo documentation"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Quote
@@ -15277,7 +15327,15 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \begin_layout Standard
 To find out which languages the client accepts and prefers, use conversation.requ
 est.clientInfo.acceptedLanguages and conversation.request.clientInfo.getPreferredLang
-uage().
+uage() (see 
+\begin_inset CommandInset href
+LatexCommand href
+name "ClientInfo documentation"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
@@ -15296,11 +15354,6 @@ name "../api/|conversation-encoding"
 
 \end_layout
 
-\begin_layout Quote
-This value is currently not being used by Prudence, but will be supported
- in the future.
-\end_layout
-
 \begin_layout Standard
 These two variants represent the same value, letting you access the value
  in different ways.
@@ -15308,7 +15361,7 @@ These two variants represent the same value, letting you access the value
 
 \begin_layout Standard
 conversation.encodingName is an internal name used for the encoding.
- Examples include ``zip,'' ``gzip,'' ``compres,'' and ``deflate.'' The ``*''
+ Examples include ``zip,'' ``gzip,'' ``compress,'' and ``deflate.'' The ``*''
  name represents all possible encodings.
  The exact list of supported names depends on the underlying Restlet implementat
 ion.
@@ -15329,7 +15382,39 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \begin_layout Standard
 To find out which encodings the client accepts and prefers, use conversation.requ
 est.clientInfo.acceptedEncodings and conversation.request.clientInfo.getPreferredEnco
-ding().
+ding() (see 
+\begin_inset CommandInset href
+LatexCommand href
+name "ClientInfo documentation"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Quote
+In /web/dynamic/, setting the encoding to either ``zip'', ``gzip'' or ``deflate'
+' will cause Prudence to automatically compress the output text.
+ This does require some additional computation overhead, so test for costs
+ vs.
+ benefits before applying compression across the board.
+ Note, though, that if you are caching the output with 
+\bar under
+document.cacheDuration (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-duration"
+
+\end_inset
+
+)
+\bar default
+, it will be stored in the cache in this compressed state, such that subsequent
+ cache retrievals will not involve any additional overhead.
+ The total overhead would thus likely be insignificant for cached documents,
+ while the bandwidth savings and performance benefits can be considerable.
+ Caching and compression are good friends!
 \end_layout
 
 \begin_layout Subsubsection

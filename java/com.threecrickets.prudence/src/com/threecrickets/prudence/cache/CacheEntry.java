@@ -18,15 +18,21 @@ import java.io.ObjectOutput;
 import java.util.Date;
 
 import org.restlet.data.CharacterSet;
+import org.restlet.data.Encoding;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Metadata;
+import org.restlet.representation.Representation;
 import org.restlet.representation.RepresentationInfo;
 import org.restlet.representation.StringRepresentation;
 
+import com.threecrickets.prudence.util.ByteArrayRepresentation;
+import com.threecrickets.prudence.util.IoUtil;
+
 /**
  * A serializable, cacheable set of parameters from which
- * {@link StringRepresentation} instances can be created.
+ * {@link StringRepresentation} or {@link ByteArrayRepresentation} instances can
+ * be created.
  * <p>
  * Instances are not thread safe.
  * 
@@ -40,7 +46,7 @@ public class CacheEntry implements Externalizable
 	//
 
 	/**
-	 * Constructor. A constructor without arguments is requires for
+	 * Constructor. A constructor without arguments is required for
 	 * {@link Externalizable}.
 	 */
 	public CacheEntry()
@@ -48,7 +54,7 @@ public class CacheEntry implements Externalizable
 	}
 
 	/**
-	 * Constructor.
+	 * Construction. Compresses string if encoding is provided.
 	 * 
 	 * @param string
 	 *        The string
@@ -58,23 +64,62 @@ public class CacheEntry implements Externalizable
 	 *        The language
 	 * @param characterSet
 	 *        The character set
+	 * @param encoding
+	 *        The encoding
+	 * @param documentModificationDate
+	 *        The document modification date
+	 * @param expirationDate
+	 *        The expiration date
+	 * @throws IOException
+	 */
+	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, Encoding encoding, Date documentModificationDate, Date expirationDate ) throws IOException
+	{
+		this.mediaType = mediaType;
+		this.language = language;
+		this.characterSet = characterSet;
+		this.encoding = encoding;
+		this.documentModificationDate = documentModificationDate;
+		this.expirationDate = expirationDate;
+
+		if( encoding != null )
+		{
+			bytes = IoUtil.compress( string, encoding, "text" );
+		}
+		else
+			this.string = string;
+	}
+
+	/**
+	 * Construction.
+	 * 
+	 * @param bytes
+	 *        The bytes
+	 * @param mediaType
+	 *        The media type
+	 * @param language
+	 *        The language
+	 * @param characterSet
+	 *        The character set
+	 * @param encoding
+	 *        The encoding
 	 * @param documentModificationDate
 	 *        The document modification date
 	 * @param expirationDate
 	 *        The expiration date
 	 */
-	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, Date documentModificationDate, Date expirationDate )
+	public CacheEntry( byte[] bytes, MediaType mediaType, Language language, CharacterSet characterSet, Encoding encoding, Date documentModificationDate, Date expirationDate )
 	{
-		this.string = string;
+		this.bytes = bytes;
 		this.mediaType = mediaType;
 		this.language = language;
 		this.characterSet = characterSet;
+		this.encoding = encoding;
 		this.documentModificationDate = documentModificationDate;
 		this.expirationDate = expirationDate;
 	}
 
 	/**
-	 * Constructor.
+	 * Construction.
 	 * 
 	 * @param string
 	 *        The string
@@ -84,14 +129,41 @@ public class CacheEntry implements Externalizable
 	 *        The language
 	 * @param characterSet
 	 *        The character set
+	 * @param encoding
+	 *        The encoding
 	 * @param docmuentModificationTimestamp
 	 *        The document modification timestamp
 	 * @param expirationTimestamp
 	 *        The expiration timestamp or 0 for no expiration
+	 * @throws IOException
 	 */
-	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, long docmuentModificationTimestamp, long expirationTimestamp )
+	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, Encoding encoding, long docmuentModificationTimestamp, long expirationTimestamp ) throws IOException
 	{
-		this( string, mediaType, language, characterSet, new Date( docmuentModificationTimestamp ), expirationTimestamp > 0 ? new Date( expirationTimestamp ) : null );
+		this( string, mediaType, language, characterSet, encoding, new Date( docmuentModificationTimestamp ), expirationTimestamp > 0 ? new Date( expirationTimestamp ) : null );
+	}
+
+	/**
+	 * Construction.
+	 * 
+	 * @param bytes
+	 *        The bytes
+	 * @param mediaType
+	 *        The media type
+	 * @param language
+	 *        The language
+	 * @param characterSet
+	 *        The character set
+	 * @param encoding
+	 *        The encoding
+	 * @param docmuentModificationTimestamp
+	 *        The document modification timestamp
+	 * @param expirationTimestamp
+	 *        The expiration timestamp or 0 for no expiration
+	 * @throws IOException
+	 */
+	public CacheEntry( byte[] bytes, MediaType mediaType, Language language, CharacterSet characterSet, Encoding encoding, long docmuentModificationTimestamp, long expirationTimestamp )
+	{
+		this( bytes, mediaType, language, characterSet, encoding, new Date( docmuentModificationTimestamp ), expirationTimestamp > 0 ? new Date( expirationTimestamp ) : null );
 	}
 
 	//
@@ -104,6 +176,25 @@ public class CacheEntry implements Externalizable
 	public String getString()
 	{
 		return string;
+	}
+
+	/**
+	 * @return The bytes
+	 */
+	public byte[] getBytes()
+	{
+		return bytes;
+	}
+
+	/**
+	 * @return The length in bytes of either the string or the bytes
+	 */
+	public int getSize()
+	{
+		if( string != null )
+			return string.getBytes().length;
+		else
+			return bytes.length;
 	}
 
 	/**
@@ -128,6 +219,14 @@ public class CacheEntry implements Externalizable
 	public CharacterSet getCharacterSet()
 	{
 		return characterSet;
+	}
+
+	/**
+	 * @return The encoding
+	 */
+	public Encoding getEncoding()
+	{
+		return encoding;
 	}
 
 	/**
@@ -159,13 +258,27 @@ public class CacheEntry implements Externalizable
 	//
 
 	/**
-	 * Creates a {@link StringRepresentation}.
+	 * Creates a {@link StringRepresentation} or a
+	 * {@link ByteArrayRepresentation}.
 	 * 
-	 * @return A {@link StringRepresentation}
+	 * @return A {@link Representation}
 	 */
-	public StringRepresentation represent()
+	public Representation represent()
 	{
-		StringRepresentation representation = new StringRepresentation( string, mediaType, language, characterSet );
+		Representation representation;
+
+		if( bytes != null )
+		{
+			representation = new ByteArrayRepresentation( mediaType, bytes );
+			if( language != null )
+				representation.getLanguages().add( language );
+			representation.setCharacterSet( characterSet );
+			if( encoding != null )
+				representation.getEncodings().add( encoding );
+		}
+		else
+			representation = new StringRepresentation( string, mediaType, language, characterSet );
+
 		representation.setModificationDate( modificationDate );
 		representation.setExpirationDate( expirationDate );
 		return representation;
@@ -187,10 +300,14 @@ public class CacheEntry implements Externalizable
 
 	public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
 	{
+		int byteSize = in.readInt();
+		bytes = new byte[byteSize];
+		in.readFully( bytes );
 		string = in.readUTF();
 		mediaType = MediaType.valueOf( in.readUTF() );
 		language = Language.valueOf( in.readUTF() );
 		characterSet = CharacterSet.valueOf( in.readUTF() );
+		encoding = Encoding.valueOf( in.readUTF() );
 		documentModificationDate = new Date( in.readLong() );
 		modificationDate = new Date( in.readLong() );
 		expirationDate = new Date( in.readLong() );
@@ -198,10 +315,13 @@ public class CacheEntry implements Externalizable
 
 	public void writeExternal( ObjectOutput out ) throws IOException
 	{
+		out.writeInt( bytes.length );
+		out.write( bytes );
 		out.writeUTF( nonNull( string ) );
 		out.writeUTF( nonNull( mediaType ) );
 		out.writeUTF( nonNull( language ) );
 		out.writeUTF( nonNull( characterSet ) );
+		out.writeUTF( nonNull( encoding ) );
 		out.writeLong( documentModificationDate.getTime() );
 		out.writeLong( modificationDate.getTime() );
 		out.writeLong( expirationDate.getTime() );
@@ -209,6 +329,11 @@ public class CacheEntry implements Externalizable
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
+
+	/**
+	 * The stored bytes.
+	 */
+	private byte[] bytes;
 
 	/**
 	 * The stored string.
@@ -229,6 +354,11 @@ public class CacheEntry implements Externalizable
 	 * The character set.
 	 */
 	private CharacterSet characterSet;
+
+	/**
+	 * The encoding.
+	 */
+	private Encoding encoding;
 
 	/**
 	 * The document modification date.
