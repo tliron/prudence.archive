@@ -3,10 +3,10 @@
 ;
 
 (import
-	'org.restlet.data.Reference
-	'org.restlet.data.MediaType
-	'com.threecrickets.prudence.util.DelegatedStatusService
- 'com.threecrickets.prudence.util.PrudenceTaskCollector)
+ 'org.restlet.data.Reference
+ 'org.restlet.data.MediaType
+ 'com.threecrickets.prudence.DelegatedStatusService
+ 'com.threecrickets.prudence.ApplicationTaskCollector)
 
 ;
 ; Settings
@@ -66,4 +66,4 @@
 (.put attributes "com.threecrickets.prudence.ApplicationTask.defaultLanguageTag" "clojure")
 (.put attributes "com.threecrickets.prudence.ApplicationTask.defaultName" tasks-default-name)
 (.put attributes "com.threecrickets.prudence.ApplicationTask.documentSource" tasks-document-source)
-(.addTaskCollector scheduler (PrudenceTaskCollector. (File. (str application-base-path "/crontab")) application-instance))
+(.addTaskCollector scheduler (ApplicationTaskCollector. (File. (str application-base-path "/crontab")) application-instance))

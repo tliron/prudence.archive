@@ -29,6 +29,7 @@ import org.restlet.data.Status;
 import org.restlet.data.Warning;
 import org.restlet.representation.StringRepresentation;
 
+import com.threecrickets.prudence.DelegatedStatusService;
 import com.threecrickets.prudence.SourceCodeResource;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;

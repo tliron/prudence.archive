@@ -5,8 +5,8 @@
 import org.restlet.data.Reference
 import org.restlet.data.MediaType
 import com.threecrickets.scripturian.document.DocumentFileSource
-import com.threecrickets.prudence.util.DelegatedStatusService
-import com.threecrickets.prudence.util.PrudenceTaskCollector
+import com.threecrickets.prudence.DelegatedStatusService
+import com.threecrickets.prudence.ApplicationTaskCollector
 
 //
 // Settings
@@ -69,4 +69,4 @@ attributes['com.threecrickets.prudence.ApplicationTask.languageManager'] = langu
 attributes['com.threecrickets.prudence.ApplicationTask.defaultLanguageTag'] = 'groovy'
 attributes['com.threecrickets.prudence.ApplicationTask.defaultName'] = tasksDefaultName
 attributes['com.threecrickets.prudence.ApplicationTask.documentSource'] = tasksDocumentSource
-scheduler.addTaskCollector(new PrudenceTaskCollector(new File(applicationBasePath + '/crontab'), applicationInstance))
+scheduler.addTaskCollector(new ApplicationTaskCollector(new File(applicationBasePath + '/crontab'), applicationInstance))

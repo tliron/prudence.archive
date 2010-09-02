@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.util;
+package com.threecrickets.prudence;
 
 import org.restlet.Context;
 import org.restlet.Request;
@@ -23,7 +23,11 @@ import org.restlet.routing.Route;
 import org.restlet.routing.Template;
 import org.restlet.util.Resolver;
 
-import com.threecrickets.prudence.DelegatedFilter;
+import com.threecrickets.prudence.util.CaptiveRedirector;
+import com.threecrickets.prudence.util.Fallback;
+import com.threecrickets.prudence.util.FallbackRouter;
+import com.threecrickets.prudence.util.NormalizingRedirector;
+import com.threecrickets.prudence.util.StatusRestlet;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentSource;

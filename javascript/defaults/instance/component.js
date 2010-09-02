@@ -6,7 +6,7 @@ importClass(
 	java.lang.Runtime,
 	java.util.concurrent.Executors,
 	org.restlet.Component,
-	com.threecrickets.prudence.util.DelegatedStatusService,
+	com.threecrickets.prudence.DelegatedStatusService,
 	com.threecrickets.prudence.cache.InProcessMemoryCache,
 	Packages.it.sauronsoftware.cron4j.Scheduler)
 

@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.util;
+package com.threecrickets.prudence;
 
 import org.restlet.Application;
 import org.restlet.Context;
@@ -32,11 +32,20 @@ public class PrudenceApplication extends Application
 	// Construction
 	//
 
+	/**
+	 * Construction.
+	 */
 	public PrudenceApplication()
 	{
 		super();
 	}
 
+	/**
+	 * Construction.
+	 * 
+	 * @param context
+	 *        The context
+	 */
 	public PrudenceApplication( Context context )
 	{
 		super( context );

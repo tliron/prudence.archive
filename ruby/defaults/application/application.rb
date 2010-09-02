@@ -2,6 +2,6 @@
 # Prudence Application
 #
 
-import com.threecrickets.prudence.util.PrudenceApplication
+import com.threecrickets.prudence.PrudenceApplication
 
 $application_instance = PrudenceApplication.new

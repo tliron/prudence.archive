@@ -2,6 +2,6 @@
 # Prudence Application
 #
 
-from com.threecrickets.prudence.util import PrudenceApplication
+from com.threecrickets.prudence import PrudenceApplication
 
 application_instance = PrudenceApplication()

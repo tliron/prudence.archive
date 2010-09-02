@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.util;
+package com.threecrickets.prudence;
 
 import it.sauronsoftware.cron4j.SchedulingPattern;
 import it.sauronsoftware.cron4j.TaskCollector;
@@ -23,7 +23,6 @@ import java.io.IOException;
 
 import org.restlet.Application;
 
-import com.threecrickets.prudence.ApplicationTask;
 import com.threecrickets.prudence.internal.ApplicationCronTask;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.ParsingException;
@@ -41,13 +40,13 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * @author Tal Liron
  * @see ApplicationTask
  */
-public class PrudenceTaskCollector implements TaskCollector
+public class ApplicationTaskCollector implements TaskCollector
 {
 	//
 	// Construction
 	//
 
-	public PrudenceTaskCollector( File crontab, Application application )
+	public ApplicationTaskCollector( File crontab, Application application )
 	{
 		this.crontab = crontab;
 		this.application = application;

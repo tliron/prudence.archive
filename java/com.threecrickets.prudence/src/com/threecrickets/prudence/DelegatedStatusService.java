@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.util;
+package com.threecrickets.prudence;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -22,6 +22,9 @@ import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.routing.Redirector;
 import org.restlet.service.StatusService;
+
+import com.threecrickets.prudence.util.CaptiveRedirector;
+import com.threecrickets.prudence.util.DebugRepresentation;
 
 /**
  * Allows delegating the handling of errors to specified restlets.
@@ -39,7 +42,7 @@ public class DelegatedStatusService extends StatusService
 	 * A request attribute to signify to upstream instances that the status has
 	 * already been handled.
 	 */
-	public static final String PASSTHROUGH_ATTRIBUTE = "com.threecrickets.prudence.util.DelegatedStatusService.passThrough";
+	public static final String PASSTHROUGH_ATTRIBUTE = "com.threecrickets.prudence.DelegatedStatusService.passThrough";
 
 	//
 	// Construction

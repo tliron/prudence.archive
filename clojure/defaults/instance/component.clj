@@ -3,9 +3,9 @@
 ;
 
 (import
-	'java.util.concurrent.Executors
-	'org.restlet.Component
-	'com.threecrickets.prudence.util.DelegatedStatusService
+  'java.util.concurrent.Executors
+  'org.restlet.Component
+	'com.threecrickets.prudence.DelegatedStatusService
 	'com.threecrickets.prudence.cache.InProcessMemoryCache
   'it.sauronsoftware.cron4j.Scheduler)
 

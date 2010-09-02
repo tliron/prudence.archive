@@ -5,8 +5,8 @@
 importClass(
 	org.restlet.data.Reference,
 	org.restlet.data.MediaType,
-	com.threecrickets.prudence.util.DelegatedStatusService,
-	com.threecrickets.prudence.util.PrudenceTaskCollector)
+	com.threecrickets.prudence.DelegatedStatusService,
+	com.threecrickets.prudence.ApplicationTaskCollector)
 
 //
 // Settings
@@ -69,4 +69,4 @@ attributes.put('com.threecrickets.prudence.ApplicationTask.languageManager', lan
 attributes.put('com.threecrickets.prudence.ApplicationTask.defaultLanguageTag', 'javascript')
 attributes.put('com.threecrickets.prudence.ApplicationTask.defaultName', tasksDefaultName)
 attributes.put('com.threecrickets.prudence.ApplicationTask.documentSource', tasksDocumentSource)
-scheduler.addTaskCollector(new PrudenceTaskCollector(new File(applicationBasePath + '/crontab'), applicationInstance))
+scheduler.addTaskCollector(new ApplicationTaskCollector(new File(applicationBasePath + '/crontab'), applicationInstance))

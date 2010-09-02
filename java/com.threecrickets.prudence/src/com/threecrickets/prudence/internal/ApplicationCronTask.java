@@ -17,7 +17,7 @@ import it.sauronsoftware.cron4j.TaskExecutionContext;
 import org.restlet.Application;
 
 import com.threecrickets.prudence.ApplicationTask;
-import com.threecrickets.prudence.util.PrudenceTaskCollector;
+import com.threecrickets.prudence.ApplicationTaskCollector;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
@@ -26,7 +26,7 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * {@link Task} wrapper for an {@link ApplicationTask}.
  * 
  * @author Tal Liron
- * @see PrudenceTaskCollector
+ * @see ApplicationTaskCollector
  */
 public class ApplicationCronTask extends Task
 {

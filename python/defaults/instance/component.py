@@ -5,7 +5,7 @@
 from java.lang import Runtime
 from java.util.concurrent import Executors
 from org.restlet import Component
-from com.threecrickets.prudence.util import DelegatedStatusService
+from com.threecrickets.prudence import DelegatedStatusService
 from com.threecrickets.prudence.cache import InProcessMemoryCache
 from it.sauronsoftware.cron4j import Scheduler
 

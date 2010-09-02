@@ -3,7 +3,7 @@
 #
 
 from org.restlet.data import Reference, MediaType
-from com.threecrickets.prudence.util import DelegatedStatusService, PrudenceTaskCollector
+from com.threecrickets.prudence import DelegatedStatusService, ApplicationTaskCollector
 
 #
 # Settings
@@ -64,4 +64,4 @@ attributes['com.threecrickets.prudence.ApplicationTask.languageManager'] = langu
 attributes['com.threecrickets.prudence.ApplicationTask.defaultLanguageTag'] = 'python'
 attributes['com.threecrickets.prudence.ApplicationTask.defaultName'] = tasks_default_name
 attributes['com.threecrickets.prudence.ApplicationTask.documentSource'] = tasks_document_source
-scheduler.addTaskCollector(PrudenceTaskCollector(File(application_base_path + '/crontab'), application_instance))
+scheduler.addTaskCollector(ApplicationTaskCollector(File(application_base_path + '/crontab'), application_instance))
