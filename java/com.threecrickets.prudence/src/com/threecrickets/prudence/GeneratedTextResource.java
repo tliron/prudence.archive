@@ -105,7 +105,7 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * {@link #getConversationServiceName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern:</code>
- * {@link String}, defaults to "{ri}|{dn}". See
+ * {@link String}, defaults to "{ri}|{dn}|{ptb}|{pe}". See
  * {@link #getDefaultCacheKeyPattern()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCharacterSet:</code>
@@ -363,7 +363,7 @@ public class GeneratedTextResource extends ServerResource
 
 	/**
 	 * The default cache key pattern to use if the executable doesn't specify
-	 * one. Defaults to "{ri}|{dn}".
+	 * one. Defaults to "{ri}|{dn}|{ptb}|{pe}".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern</code>
@@ -379,7 +379,7 @@ public class GeneratedTextResource extends ServerResource
 			defaultCacheKeyPattern = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern" );
 
 			if( defaultCacheKeyPattern == null )
-				defaultCacheKeyPattern = "{ri}|{dn}";
+				defaultCacheKeyPattern = "{ri}|{dn}|{ptb}|{pe}";
 		}
 
 		return defaultCacheKeyPattern;

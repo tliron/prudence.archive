@@ -45,6 +45,7 @@ public class GeneratedTextResourceConversationService extends ResourceConversati
 	public GeneratedTextResourceConversationService( GeneratedTextResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
 	{
 		super( resource, entity, variant, defaultCharacterSet, resource.getFileUploadSizeThreshold(), resource.getFileUploadDirectory() );
+		setEncoding( getPreferredEncoding() );
 	}
 
 	//
