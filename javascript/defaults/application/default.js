@@ -57,7 +57,7 @@ applicationInstance.context.setLogger(applicationLoggerName)
 //
 
 for(var key in predefinedGlobals) {
-	attributes.put(key, predefinedGlobals[key])
+	applicationGlobals.put(key, predefinedGlobals[key])
 }
 
 //
@@ -65,8 +65,8 @@ for(var key in predefinedGlobals) {
 //
 
 var tasksDocumentSource = new DocumentFileSource(applicationBasePath + tasksBasePath, tasksDefaultName, 'js', tasksMinimumTimeBetweenValidityChecks)
-attributes.put('com.threecrickets.prudence.ApplicationTask.languageManager', languageManager)
-attributes.put('com.threecrickets.prudence.ApplicationTask.defaultLanguageTag', 'javascript')
-attributes.put('com.threecrickets.prudence.ApplicationTask.defaultName', tasksDefaultName)
-attributes.put('com.threecrickets.prudence.ApplicationTask.documentSource', tasksDocumentSource)
+applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.languageManager', languageManager)
+applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.defaultLanguageTag', 'javascript')
+applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.defaultName', tasksDefaultName)
+applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.documentSource', tasksDocumentSource)
 scheduler.addTaskCollector(new ApplicationTaskCollector(new File(applicationBasePath + '/crontab'), applicationInstance))

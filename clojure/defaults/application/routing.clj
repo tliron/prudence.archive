@@ -3,18 +3,19 @@
 ;
 
 (import
-	'java.lang.ClassLoader
-	'java.io.File
-	'org.restlet.routing.Router
-	'org.restlet.routing.Redirector
-	'org.restlet.routing.Template
-	'org.restlet.resource.Finder
-	'org.restlet.resource.Directory
-	'com.threecrickets.scripturian.util.DefrostTask
-	'com.threecrickets.scripturian.document.DocumentFileSource
-	'com.threecrickets.prudence.PrudenceRouter
-	'com.threecrickets.prudence.util.PreheatTask
-	'com.threecrickets.prudence.util.PhpExecutionController)
+ 'java.lang.ClassLoader
+ 'java.io.File
+ 'java.util.concurrent.ConcurrentHashMap
+ 'org.restlet.routing.Router
+ 'org.restlet.routing.Redirector
+ 'org.restlet.routing.Template
+ 'org.restlet.resource.Finder
+ 'org.restlet.resource.Directory
+ 'com.threecrickets.scripturian.util.DefrostTask
+ 'com.threecrickets.scripturian.document.DocumentFileSource
+ 'com.threecrickets.prudence.PrudenceRouter
+ 'com.threecrickets.prudence.util.PreheatTask
+ 'com.threecrickets.prudence.util.PhpExecutionController)
 
 (def classLoader (ClassLoader/getSystemClassLoader))
 
@@ -65,12 +66,12 @@
 (add-to-hosts (.entrySet hosts))
 (println ".")
 
-(def attributes (.. application-instance getContext (getAttributes)))
+(def application-globals (.. application-instance getContext (getAttributes)))
 
-(.put attributes "com.threecrickets.prudence.component" component)
+(.put application-globals "com.threecrickets.prudence.component" component)
 (def cache (.. component getContext getAttributes (get "com.threecrickets.prudence.cache")))
 (if (not (nil? cache))
-	(.put attributes "com.threecrickets.prudence.cache" cache))
+	(.put application-globals "com.threecrickets.prudence.cache" cache))
 
 ;
 ; Inbound root
@@ -105,15 +106,17 @@
 ;
 
 (def dynamic-web-document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document "clj" (.longValue dynamic-web-minimum-time-between-validity-checks)))
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.languageManager" language-manager)
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag" "clojure")
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.documentSource" dynamic-web-document-source)
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" dynamic-web-source-viewable)
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.executionController" (PhpExecutionController.)) ; Adds PHP predefined variables
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.clientCachingMode" dynamic-web-client-caching-mode)
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold" file-upload-size-threshold)
-(.put attributes "com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource" handlers-document-source)
+(def cache-key-pattern-handlers (ConcurrentHashMap.))
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.languageManager" language-manager)
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag" "clojure")
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.documentSource" dynamic-web-document-source)
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" dynamic-web-source-viewable)
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.executionController" (PhpExecutionController.)) ; Adds PHP predefined variables
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.clientCachingMode" dynamic-web-client-caching-mode)
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold" file-upload-size-threshold)
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource" handlers-document-source)
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers" cache-key-pattern-handlers)
 
 (def dynamic-web (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.GeneratedTextResource")))
 (def dynamic-web-base-url (fix-url dynamic-web-base-url))
@@ -138,12 +141,12 @@
 ;
 
 (def resources-document-source (DocumentFileSource. (str application-base-path resources-base-path) resources-default-name "clj" (.longValue resources-minimum-time-between-validity-checks))) 
-(.put attributes "com.threecrickets.prudence.DelegatedResource.languageManager" language-manager)
-(.put attributes "com.threecrickets.prudence.DelegatedResource.defaultLanguageTag" "clojure")
-(.put attributes "com.threecrickets.prudence.DelegatedResource.defaultName" resources-default-name)
-(.put attributes "com.threecrickets.prudence.DelegatedResource.documentSource" resources-document-source)
-(.put attributes "com.threecrickets.prudence.DelegatedResource.sourceViewable" resources-source-viewable)
-(.put attributes "com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold" file-upload-size-threshold)
+(.put application-globals "com.threecrickets.prudence.DelegatedResource.languageManager" language-manager)
+(.put application-globals "com.threecrickets.prudence.DelegatedResource.defaultLanguageTag" "clojure")
+(.put application-globals "com.threecrickets.prudence.DelegatedResource.defaultName" resources-default-name)
+(.put application-globals "com.threecrickets.prudence.DelegatedResource.documentSource" resources-document-source)
+(.put application-globals "com.threecrickets.prudence.DelegatedResource.sourceViewable" resources-source-viewable)
+(.put application-globals "com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold" file-upload-size-threshold)
 
 (def resources (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
 (def resources-base-url (fix-url resources-base-url))
@@ -159,7 +162,7 @@
 
 (if show-debug-on-error
 	(do
-		(.put attributes "com.threecrickets.prudence.SourceCodeResource.documentSources" [dynamic-web-document-source resources-document-source])
+		(.put application-globals "com.threecrickets.prudence.SourceCodeResource.documentSources" [dynamic-web-document-source resources-document-source])
 		
 		(def source-code (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.SourceCodeResource")))
     (def show-source-code-url (fix-url show-source-code-url))

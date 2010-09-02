@@ -6,6 +6,7 @@ importClass(
 	java.lang.ClassLoader,
 	java.io.File,
 	java.util.ArrayList,
+	java.util.concurrent.ConcurrentHashMap,
 	org.restlet.routing.Router,
 	org.restlet.routing.Redirector,
 	org.restlet.routing.Template,
@@ -72,12 +73,12 @@ for(var i in hosts) {
 }
 print('.\n')
 
-var attributes = applicationInstance.context.attributes
+var applicationGlobals = applicationInstance.context.attributes
 
-attributes.put('com.threecrickets.prudence.component', component)
+applicationGlobals.put('com.threecrickets.prudence.component', component)
 var cache =  component.context.attributes.get('com.threecrickets.prudence.cache')
 if(cache) {
-	attributes.put('com.threecrickets.prudence.cache', cache)
+	applicationGlobals.put('com.threecrickets.prudence.cache', cache)
 }
 
 //
@@ -118,15 +119,17 @@ router.filterLanguageManager = languageManager
 //
 
 var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'js', dynamicWebMinimumTimeBetweenValidityChecks)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'javascript')
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.executionController', new PhpExecutionController()) // Adds PHP predefined variables
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.clientCachingMode', dynamicWebClientCachingMode)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold', fileUploadSizeThreshold)
-attributes.put('com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource', handlersDocumentSource)
+var cacheKeyPatternHandlers = new ConcurrentHashMap()
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager)
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'javascript')
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument)
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource)
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable)
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.executionController', new PhpExecutionController()) // Adds PHP predefined variables
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.clientCachingMode', dynamicWebClientCachingMode)
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold', fileUploadSizeThreshold)
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource', handlersDocumentSource)
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers', cacheKeyPatternHandlers)
 
 var dynamicWeb = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 dynamicWebBaseURL = fixURL(dynamicWebBaseURL)
@@ -154,12 +157,12 @@ router.attachBase(staticWebBaseURL, staticWeb)
 //
 
 var resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, 'js', resourcesMinimumTimeBetweenValidityChecks)
-attributes.put('com.threecrickets.prudence.DelegatedResource.languageManager', languageManager)
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultLanguageTag', 'javascript')
-attributes.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName)
-attributes.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource)
-attributes.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable)
-attributes.put('com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold', fileUploadSizeThreshold)
+applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.languageManager', languageManager)
+applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.defaultLanguageTag', 'javascript')
+applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName)
+applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource)
+applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable)
+applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold', fileUploadSizeThreshold)
 
 resources = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 resourcesBaseURL = fixURL(resourcesBaseURL)
@@ -180,7 +183,7 @@ if(showDebugOnError) {
 	var documentSources = new ArrayList()
 	documentSources.add(dynamicWebDocumentSource)
 	documentSources.add(resourcesDocumentSource)
-	attributes.put('com.threecrickets.prudence.SourceCodeResource.documentSources', documentSources)
+	applicationGlobals.put('com.threecrickets.prudence.SourceCodeResource.documentSources', documentSources)
 	var sourceCode = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.SourceCodeResource'))
 	showSourceCodeURL = fixURL(showSourceCodeURL)
 	router.attach(showSourceCodeURL, sourceCode).matchingMode = Template.MODE_EQUALS

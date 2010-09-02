@@ -499,9 +499,20 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			if( cacheKeyPattern.contains( PREFERRED_ENCODING_FULL ) )
 				template.getVariables().put( PREFERRED_ENCODING, new Variable( Variable.TYPE_ALL, conversationService.getPreferredEncodingName(), true, true ) );
 
-			// Custom handlers
-			Map<String, String> cacheKeyPatternHandlers = getCacheKeyPatternHandlers( documentDescriptor.getDocument(), false );
-			if( cacheKeyPatternHandlers != null )
+			Map<String, String> cacheKeyPatternHandlers = new HashMap<String, String>();
+
+			// Resource handlers
+			Map<String, String> resourceCacheKeyPatternHandlers = resource.getCacheKeyPatternHandlers();
+			if( resourceCacheKeyPatternHandlers != null )
+				cacheKeyPatternHandlers.putAll( resourceCacheKeyPatternHandlers );
+
+			// Merge document handlers over resource handlers
+			Map<String, String> documentCacheKeyPatternHandlers = getCacheKeyPatternHandlers( documentDescriptor.getDocument(), false );
+			if( documentCacheKeyPatternHandlers != null )
+				cacheKeyPatternHandlers.putAll( documentCacheKeyPatternHandlers );
+
+			// Handlers
+			if( !cacheKeyPatternHandlers.isEmpty() )
 			{
 				// Group variables together for handlers
 				Map<String, Set<String>> delegatedHandlers = new HashMap<String, Set<String>>();

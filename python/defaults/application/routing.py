@@ -6,6 +6,7 @@ import sys
 
 from java.lang import ClassLoader
 from java.io import File
+from java.util.concurrent import ConcurrentHashMap
 
 from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Finder, Directory
@@ -100,6 +101,7 @@ router.filterLanguageManager = language_manager
 #
 
 dynamic_web_document_source = DocumentFileSource(application_base_path + dynamic_web_base_path, dynamic_web_default_document, 'py', dynamic_web_minimum_time_between_validity_checks)
+cache_key_pattern_handlers = ConcurrentHashMap()
 attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = language_manager
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'python'
 attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamic_web_default_document
@@ -109,6 +111,7 @@ attributes['com.threecrickets.prudence.GeneratedTextResource.executionController
 attributes['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamic_web_client_caching_mode
 attributes['com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold'] = file_upload_size_threshold
 attributes['com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource'] = handlers_document_source
+attributes['com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers'] = cache_key_pattern_handlers
 
 dynamic_web = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 dynamic_web_base_url = fix_url(dynamic_web_base_url)

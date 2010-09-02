@@ -6,6 +6,7 @@
 import java.lang.ClassLoader;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import org.restlet.routing.Router;
 import org.restlet.routing.Redirector;
 import org.restlet.routing.Template;
@@ -17,13 +18,14 @@ import com.threecrickets.prudence.PrudenceRouter;
 import com.threecrickets.prudence.util.PreheatTask;
 import com.threecrickets.prudence.util.PhpExecutionController;
 
-global $executable, $component, $tasks, $application_instance, $attributes, $language_manager;
+global $executable, $component, $tasks, $application_instance, $application_globals, $language_manager;
 global $application_internal_name, $application_logger_name, $application_base_path, $application_default_url;
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $show_debug_on_error, $show_source_code_url;
 global $hosts;
 global $resources_base_url, $resources_base_path, $resources_default_name, $resources_defrost, $resources_source_viewable, $resources_minimum_time_between_validity_checks;
 global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_source_viewable, $dynamic_web_minimum_time_between_validity_checks, $dynamic_web_client_caching_mode;
+global $cache_key_pattern_handlers;
 global $static_web_base_url, $static_web_base_path, $static_web_directory_listing_allowed;
 global $file_upload_size_threshold;
 global $handlers_base_path, $handlers_default_name, $handlers_minimum_time_between_validity_checks;
@@ -89,12 +91,12 @@ foreach($hosts as $entry) {
 }
 print ".\n";
 
-$attributes = $application_instance->context->attributes;
+$application_globals = $application_instance->context->attributes;
 
-$attributes['com.threecrickets.prudence.component'] = $component;
+$application_globals['com.threecrickets.prudence.component'] = $component;
 $cache = $component->context->attributes['com.threecrickets.prudence.cache'];
 if($cache) {
-	$attributes['com.threecrickets.prudence.cache'] = $cache;
+	$application_globals['com.threecrickets.prudence.cache'] = $cache;
 }
 
 //
@@ -135,15 +137,17 @@ $router->filterLanguageManager = $language_manager;
 //
 
 $dynamic_web_document_source = new DocumentFileSource($application_base_path . $dynamic_web_base_path, $dynamic_web_default_document, 'php', $dynamic_web_minimum_time_between_validity_checks);
-$attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = $language_manager;
-$attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'php';
-$attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = $dynamic_web_default_document;
-$attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source;
-$attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = $dynamic_web_source_viewable;
-$attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController(); // Adds PHP predefined variables
-$attributes['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode;
-$attributes['com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold'] = $file_upload_size_threshold;
-$attributes['com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource'] = $handlers_document_source;
+$cache_key_pattern_handlers = new ConcurrentHashMap();
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = $language_manager;
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'php';
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = $dynamic_web_default_document;
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source;
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = $dynamic_web_source_viewable;
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController(); // Adds PHP predefined variables
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode;
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold'] = $file_upload_size_threshold;
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource'] = $handlers_document_source;
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers'] = $cache_key_pattern_handlers;
 
 $dynamic_web = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.GeneratedTextResource'));
 $dynamic_web_base_url = fix_url($dynamic_web_base_url);
@@ -171,12 +175,12 @@ $router->attachBase($static_web_base_url, $static_web);
 //
 
 $resources_document_source = new DocumentFileSource($application_base_path . $resources_base_path, $resources_default_name, 'php', $resources_minimum_time_between_validity_checks);
-$attributes['com.threecrickets.prudence.DelegatedResource.languageManager'] = $language_manager;
-$attributes['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'php';
-$attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = $resources_default_name;
-$attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = $resources_document_source;
-$attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = $resources_source_viewable;
-$attributes['com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold'] = $file_upload_size_threshold;
+$application_globals['com.threecrickets.prudence.DelegatedResource.languageManager'] = $language_manager;
+$application_globals['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'php';
+$application_globals['com.threecrickets.prudence.DelegatedResource.defaultName'] = $resources_default_name;
+$application_globals['com.threecrickets.prudence.DelegatedResource.documentSource'] = $resources_document_source;
+$application_globals['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = $resources_source_viewable;
+$application_globals['com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold'] = $file_upload_size_threshold;
 
 $resources = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.DelegatedResource'));
 $resources_base_url = fix_url($resources_base_url);
@@ -197,7 +201,7 @@ if($show_debug_on_error) {
 	$document_sources = new ArrayList();
 	$document_sources->add($dynamic_web_document_source);
 	$document_sources->add($resources_document_source);
-	$attributes['com.threecrickets.prudence.SourceCodeResource.documentSources'] = $document_sources;
+	$application_globals['com.threecrickets.prudence.SourceCodeResource.documentSources'] = $document_sources;
 	$source_code = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.SourceCodeResource'));
 	$show_source_code_url = fix_url($show_source_code_url);
 	$router->attach($show_source_code_url, $source_code)->matchingMode = Template::MODE_EQUALS;

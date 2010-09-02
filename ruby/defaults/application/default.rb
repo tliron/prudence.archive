@@ -64,8 +64,8 @@ end
 #
 
 $tasks_document_source = DocumentFileSource.new($application_base_path + $tasks_base_path, $tasks_default_name, 'rb', $tasks_minimum_time_between_validity_checks)
-$attributes['com.threecrickets.prudence.ApplicationTask.languageManager'] = $language_manager
-$attributes['com.threecrickets.prudence.ApplicationTask.defaultLanguageTag'] = 'ruby'
-$attributes['com.threecrickets.prudence.ApplicationTask.defaultName'] = $tasks_default_name
-$attributes['com.threecrickets.prudence.ApplicationTask.documentSource'] = $tasks_document_source
+$application_globals['com.threecrickets.prudence.ApplicationTask.languageManager'] = $language_manager
+$application_globals['com.threecrickets.prudence.ApplicationTask.defaultLanguageTag'] = 'ruby'
+$application_globals['com.threecrickets.prudence.ApplicationTask.defaultName'] = $tasks_default_name
+$application_globals['com.threecrickets.prudence.ApplicationTask.documentSource'] = $tasks_document_source
 $scheduler.add_task_collector ApplicationTaskCollector.new(java.io.File.new($application_base_path + '/crontab'), $application_instance)

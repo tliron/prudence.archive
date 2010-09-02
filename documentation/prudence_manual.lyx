@@ -7491,6 +7491,13 @@ reference "../../rest/"
 
 \begin_layout Subsection
 Files
+\begin_inset CommandInset label
+LatexCommand label
+name "../resources/|files"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -9174,21 +9181,97 @@ name "../handlers/"
 \end_layout
 
 \begin_layout Standard
-Handlers work similarly to resources, except that they are much simpler:
- they are not mapped to URLs.
- Instead, they must be explicitly used for specific purposes.
+Prudence supports a few kinds of ``handlers,'' special purpose code for
+ handling specified mechanisms.
 \end_layout
 
 \begin_layout Subsection
-Files
+Comparison with Resources
 \end_layout
 
 \begin_layout Standard
-/handlers/
+Creating handlers is similar to creating a 
+\bar under
+resource (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/"
+
+\end_inset
+
+)
+\bar default
+, except that they are much simpler.
 \end_layout
 
-\begin_layout Subsection
-Life
+\begin_layout Standard
+All files under /handlers/ are assumed to be source code files.
+ They are mapped simply to internal URIs, where a trailing slash is optional.
+ Handlers do not have external URIs like 
+\bar under
+resources (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|files"
+
+\end_inset
+
+)
+\bar default
+.
+ Though there are different kinds of handlers, they are all put in /handlers/,
+ the different being only in which entry points Prudence expects to find
+ in them.
+ It's up to you to use the correct kind of handler for the correct purpose.
+\end_layout
+
+\begin_layout Standard
+The life cycle of handlers is similar to that of 
+\bar under
+resources (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|life"
+
+\end_inset
+
+)
+\bar default
+, except that no defrosting or preheating is supported.
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Entry points (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|entry-points"
+
+\end_inset
+
+)
+\bar default
+ work a bit differently:
+\end_layout
+
+\begin_layout Itemize
+Like in resources, the 
+\bar under
+``conversation'' service (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation"
+
+\end_inset
+
+)
+\bar default
+ is provided as the first argument, but only a subset of the API is supported.
+\end_layout
+
+\begin_layout Itemize
+Some entry points support additional arguments.
 \end_layout
 
 \begin_layout Subsection
@@ -9203,7 +9286,18 @@ name "../handlers/|cache-key-pattern-handlers"
 \end_layout
 
 \begin_layout Standard
-See 
+These handlers are used to set 
+\bar under
+conversation.locals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-locals"
+
+\end_inset
+
+)
+\bar default
+ that are then used for filling in custom 
 \bar under
 document.cacheKeyPattern (page 
 \begin_inset CommandInset ref
@@ -9214,11 +9308,71 @@ reference "../api/|document-cache-key-pattern"
 
 )
 \bar default
-.
+ variables.
+ If, and only if, the variable is used in a cache key pattern, then the
+ handler is called.
+ It is expected that the handler would then fill the appropriate 
+\bar under
+conversation.local (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-locals"
+
+\end_inset
+
+)
+\bar default
+ with a value, which is then used to cast the pattern into a value.
 \end_layout
 
 \begin_layout Standard
-Add it with 
+Custom variables for sophisticated, powerful caching strategies.
+ For example, by including a user identifier in cache key patterns, you
+ can allow for caching pages or fragments per user.
+\end_layout
+
+\begin_layout Subsubsection
+Global Handlers
+\end_layout
+
+\begin_layout Standard
+One way to use them is to set them globally, such they will be usable in
+ cache key patterns of any document.
+ To do so, in your application's /routing.* use the cacheKeyPatternHandlers
+ service, which is a map of variable names (without the curly brackets)
+ to handler names.
+ For example, let's have ``{un}'' and ``{ug}'' be handled by ``/handlers/userinf
+o.js''.
+ Here the /routing.js:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+cacheKeyPatternHandlers.put('un', 'userinfo/')
+\end_layout
+
+\begin_layout Plain Layout
+
+cacheKeyPatternHandlers.put('ug', 'userinfo/')
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Local Handlers
+\end_layout
+
+\begin_layout Standard
+You can also set cache key pattern handlers for specific documents, using
+ 
 \bar under
 document.cacheKeyPatternHandlers (page 
 \begin_inset CommandInset ref
@@ -9230,6 +9384,34 @@ reference "../api/|document-cache-key-pattern-handlers"
 )
 \bar default
 .
+ Local settings will override global settings.
+ For example, here's a scriptlet from a document in /web/dynamic/ or /web/fragme
+nts/:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+document.cacheKeyPatternHandlers.put('un', 'userinfo/')
+\end_layout
+
+\begin_layout Plain Layout
+
+document.cacheKeyPatternHandlers.put('ug', 'userinfo/')
+\end_layout
+
+\begin_layout Plain Layout
+
+document.cacheKeyPattern = '{an}|{ptb}|{dn}|{un}' 
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -9238,6 +9420,173 @@ Entry Points
 
 \begin_layout Paragraph
 handleCacheKeyPattern
+\end_layout
+
+\begin_layout Standard
+The second argument of this entry point, after the 
+\bar under
+``conversation'' service (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation"
+
+\end_inset
+
+)
+\bar default
+, is a list of the variable names that appear in the 
+\bar under
+document.cacheKeyPattern (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-key-pattern"
+
+\end_inset
+
+)
+\bar default
+, and which you have registered to handle by calling 
+\bar under
+document.cacheKeyPatternHandlers (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-key-pattern-handlers"
+
+\end_inset
+
+)
+\bar default
+.
+ The variable names here are not enclosed in curly brackets.
+\end_layout
+
+\begin_layout Standard
+A good technique is to iterate this list and fill in an appropriate 
+\bar under
+conversation.local (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-locals"
+
+\end_inset
+
+)
+\bar default
+ for each variable.
+ He is a ``/handlers/userinfo.js'' to match the example above:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+function handleCacheKeyPattern(conversation, variables) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	var cookie = conversation.getCookie('session')
+\end_layout
+
+\begin_layout Plain Layout
+
+	var user = getUserFromCookie(user)
+\end_layout
+
+\begin_layout Plain Layout
+
+	for(var i in variables) {
+\end_layout
+
+\begin_layout Plain Layout
+
+		var variable = String(variables[i])
+\end_layout
+
+\begin_layout Plain Layout
+
+		switch(variable) {
+\end_layout
+
+\begin_layout Plain Layout
+
+			case 'un':
+\end_layout
+
+\begin_layout Plain Layout
+
+				conversation.locals.put('un', user.name)
+\end_layout
+
+\begin_layout Plain Layout
+
+				break
+\end_layout
+
+\begin_layout Plain Layout
+
+			case 'ug':
+\end_layout
+
+\begin_layout Plain Layout
+
+				conversation.locals.put('ug', user.group)
+\end_layout
+
+\begin_layout Plain Layout
+
+				break
+\end_layout
+
+\begin_layout Plain Layout
+
+		}
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+function getUserFromCookie(cookie) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	...
+\end_layout
+
+\begin_layout Plain Layout
+
+	return user
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that no return value is expected.
 \end_layout
 
 \begin_layout Subsection
@@ -9252,9 +9601,11 @@ name "../handlers/|filters"
 \end_layout
 
 \begin_layout Standard
-See 
+Filters sit somewhere along the conversation route, and are able to affect
+ the progress of the conversation.
+ See 
 \bar under
-filtering in routing (page 
+the section on filtering in routing (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../routing/|filtering"
@@ -9263,19 +9614,126 @@ reference "../routing/|filtering"
 
 )
 \bar default
-.
+ for a complete discussion.
 \end_layout
 
 \begin_layout Subsubsection
 Entry Points
 \end_layout
 
+\begin_layout Standard
+Both entry points are optional, though it's quite useless to have a filter
+ with neither.
+\end_layout
+
 \begin_layout Paragraph
 handleBefore
+\begin_inset CommandInset label
+LatexCommand label
+name "../handlers/|handle-before"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is called 
+\emph on
+before
+\emph default
+ the request is handled by the next handler along the route.
+\end_layout
+
+\begin_layout Standard
+There is likely no response set at this point, so you only have access to
+ request attributes.
+\end_layout
+
+\begin_layout Standard
+Three return values are supported, as either a string or a number:
+\end_layout
+
+\begin_layout Itemize
+``continue'' or 0: Continue to the next handler
+\end_layout
+
+\begin_layout Itemize
+``skip'' or 1: Skip the next handler and continue to our 
+\bar under
+handleAfter entry point (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../handlers/|handle-after"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+``stop'' or 2: Stop our handling altogether (note that previous handlers
+ along the route may still process the conversation before it returns to
+ the client)
 \end_layout
 
 \begin_layout Paragraph
 handleAfter
+\begin_inset CommandInset label
+LatexCommand label
+name "../handlers/|handle-after"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is called 
+\emph on
+after
+\emph default
+ the request is handled by the next handler along the route, unless ``stop''
+ was returned from our 
+\bar under
+handleBefore (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../handlers/|handle-before"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+At this point, a response has usually been set, unless we returned ``skip''
+ from in handleBefore or another filter down the route erased it.
+ You may manipulate the response or even replace it entirely.
+\end_layout
+
+\begin_layout Standard
+Note that handleAfter is called even if the next handler encounters an error.
+ You can test for such an error with 
+\bar under
+conversation.statusCode (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-status-code"
+
+\end_inset
+
+)
+\bar default
+.
+ Indeed, one use case for filters is to clean up and release hanging services
+ after errors occur.
+\end_layout
+
+\begin_layout Standard
+No return value is expected.
 \end_layout
 
 \begin_layout Section
@@ -11672,12 +12130,77 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_layout
 
 \begin_layout Standard
-In addition to the standard Restlet API, Prudence allows for a few useful
- shortcuts for filtering:
+There are many use cases for filters.
+ Here are just a few common ones:
+\end_layout
+
+\begin_layout Itemize
+Guards: they check if the client's request has the right authorization (has
+ the right cookie, originated at a white-listed IP address, etc.) before
+ letting it continue.
+ On stopping, they usually set the 
+\bar under
+conversation.statusCode (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-status-code"
+
+\end_inset
+
+)
+\bar default
+ to either 401 (``unauthorized'') or 402 (``forbidden'').
+\end_layout
+
+\begin_layout Itemize
+Sanitizers: they remove harmful data or code from the client request, remove
+ private or offensive material from the response, etc.
+\end_layout
+
+\begin_layout Itemize
+Transformers: they translate, re-encode, decorate or otherwise transform
+ response entities between various formats.
+\end_layout
+
+\begin_layout Itemize
+Monitors: they can log each request passing through, accumulate statistics,
+ alert administrators, etc.
+\end_layout
+
+\begin_layout Itemize
+Throttles: they can refuse to pass requests on if the system is overloaded,
+ if the client has exceeded a quota, etc.
+ On stopping, they usually set the 
+\bar under
+conversation.statusCode (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-status-code"
+
+\end_inset
+
+)
+\bar default
+ to 503 (``service unavailable'').
+\end_layout
+
+\begin_layout Itemize
+Cachers: they can fetch from a cache according to request attributes, and
+ store in a cache according to response attributes.
+\end_layout
+
+\begin_layout Itemize
+Post-processors: they can find and interpret special codes, scriptlets,
+ headers, etc., in the response as commands to execute.
 \end_layout
 
 \begin_layout Standard
-Here's an example of filters all static web requests through the 
+In addition to the standard Restlet API, Prudence allows for a few useful
+ shortcuts for filtering.
+\end_layout
+
+\begin_layout Standard
+Here's an example of filtering all static web requests through the 
 \bar under
 JavaScriptUnifyMinifyFilter (page 
 \begin_inset CommandInset ref
@@ -12364,19 +12887,6 @@ reference "../generating-html/|routing-get-and-post"
 {cig}: client agent name
 \end_layout
 
-\begin_layout Itemize
-{pe}: preferred encoding, identical to 
-\bar under
-conversation.preferredEncoding (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-preferred-encoding"
-
-\end_inset
-
-)
-\end_layout
-
 \begin_layout Subsubsection
 Response Attributes
 \end_layout
@@ -12510,6 +13020,19 @@ conversation.pathToBase (page
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../api/|conversation-path-to-base"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+{pe}: preferred encoding, identical to 
+\bar under
+conversation.preferredEncoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-preferred-encoding"
 
 \end_inset
 
@@ -13209,12 +13732,12 @@ reference "../routing/|uri-patterns"
 )
 \bar default
  for a complete list of built-in variables.
- You can additionally set your own variables using handlers, via 
+ You can additionally set your own variables using 
 \bar under
-document.cacheKeyPatternHandlers (page 
+cache key pattern handlers (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|document-cache-key-pattern-handlers"
+reference "../handlers/|cache-key-pattern-handlers"
 
 \end_inset
 
@@ -13365,20 +13888,8 @@ reference "../handlers/|cache-key-pattern-handlers"
 )
 \bar default
  names.
- If, and only if, the variable is used in the cache key pattern, then the
- handler is called.
- It is expected that the handler would then fill the appropriate 
-\bar under
-conversation.local (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-locals"
-
-\end_inset
-
-)
-\bar default
- with a value, which is then used to cast the pattern into a value.
+ Use this to override global handlers, or to otherwise set handlers specific
+ to this document.
 \end_layout
 
 \begin_layout Standard
@@ -13393,7 +13904,7 @@ reference "../handlers/|cache-key-pattern-handlers"
 
 )
 \bar default
- for more information.
+ for a complete reference.
 \end_layout
 
 \begin_layout Paragraph
@@ -15061,7 +15572,7 @@ Note that in non-negotiated HTTP mode, Prudence ``passes through'' the client
 \end_layout
 
 \begin_layout Paragraph
-conversation.preferredEncoding
+conversation.preferredEncodingName, conversation.preferredEncoding
 \begin_inset CommandInset label
 LatexCommand label
 name "../api/|conversation-preferred-encoding"
@@ -15076,7 +15587,45 @@ name "../api/|conversation-preferred-encoding"
 \end_layout
 
 \begin_layout Standard
-TODO
+The client's favorite encoding among those normally supported by Prudence
+ for HTML and other text representations, which includes three compression
+ encodings.
+ To find out which encodings the client accepts and prefers, use conversation.req
+uest.clientInfo.acceptedEncodings and use conversation.request.clientInfo.getPreferre
+dEncoding() for custom negotiation (see 
+\begin_inset CommandInset href
+LatexCommand href
+name "ClientInfo documentation"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+These two variants represent the same value, letting you access the value
+ in different ways.
+\end_layout
+
+\begin_layout Standard
+conversation.preferredEncodingName is an internal name used for the encoding.
+ Examples include ``zip,'' ``gzip,'' ``compress,'' and ``deflate.'' The ``*''
+ name represents all possible encodings.
+ The exact list of supported names depends on the underlying Restlet implementat
+ion.
+\end_layout
+
+\begin_layout Standard
+conversation.preferredEncoding is the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "Encoding instance"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/Encoding.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -15109,10 +15658,29 @@ Note that in /resources/ you always have the option of explicitly returning
 
 \begin_layout Paragraph
 conversation.cookies
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-cookies"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 This is initialized as a list (not a map) of cookies sent from the client.
+ Use 
+\bar under
+conversation.getCookie (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-get-cookie"
+
+\end_inset
+
+)
+\bar default
+ as a shortcut to retrieve a cookie by name.
 \end_layout
 
 \begin_layout Standard
@@ -15200,10 +15768,29 @@ cookie.comment: some clients store this, some discard it
 
 \begin_layout Paragraph
 conversation.getCookie
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-get-cookie"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 Gets a cookie by its name, or returns null if it doesn't exist.
+ See 
+\bar under
+conversation.cookies (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-cookies"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -15214,6 +15801,18 @@ conversation.createCookie
 You must provide the cookie name as an argument.
  Returns a new cookie instance if the cookie doesn't exist yet, or the existing
  cookie if it does.
+ The cookie is added to 
+\bar under
+conversation.cookies (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-cookies"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard

@@ -62,8 +62,8 @@
 ;
 
 (def tasks-document-source (DocumentFileSource. (str application-base-path tasks-base-path) tasks-default-name "clj" (.longValue tasks-minimum-time-between-validity-checks)))
-(.put attributes "com.threecrickets.prudence.ApplicationTask.languageManager" language-manager)
-(.put attributes "com.threecrickets.prudence.ApplicationTask.defaultLanguageTag" "clojure")
-(.put attributes "com.threecrickets.prudence.ApplicationTask.defaultName" tasks-default-name)
-(.put attributes "com.threecrickets.prudence.ApplicationTask.documentSource" tasks-document-source)
+(.put application-globals "com.threecrickets.prudence.ApplicationTask.languageManager" language-manager)
+(.put application-globals "com.threecrickets.prudence.ApplicationTask.defaultLanguageTag" "clojure")
+(.put application-globals "com.threecrickets.prudence.ApplicationTask.defaultName" tasks-default-name)
+(.put application-globals "com.threecrickets.prudence.ApplicationTask.documentSource" tasks-document-source)
 (.addTaskCollector scheduler (ApplicationTaskCollector. (File. (str application-base-path "/crontab")) application-instance))

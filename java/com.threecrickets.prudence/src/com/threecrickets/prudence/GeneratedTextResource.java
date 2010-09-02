@@ -386,6 +386,27 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
+	 * The cache key pattern handlers.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The cache key pattern handlers or null
+	 */
+	@SuppressWarnings("unchecked")
+	public ConcurrentMap<String, String> getCacheKeyPatternHandlers()
+	{
+		if( cacheKeyPatternHandlers == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			cacheKeyPatternHandlers = (ConcurrentMap<String, String>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers" );
+		}
+
+		return cacheKeyPatternHandlers;
+	}
+
+	/**
 	 * An optional {@link ExecutionController} to be used with the scriptlets.
 	 * Useful for exposing your own global variables to the scriptlets.
 	 * <p>
@@ -1016,6 +1037,11 @@ public class GeneratedTextResource extends ServerResource
 	 * one.
 	 */
 	private volatile String defaultCacheKeyPattern;
+
+	/**
+	 * The cache key pattern handlers.
+	 */
+	private volatile ConcurrentMap<String, String> cacheKeyPatternHandlers;
 
 	/**
 	 * The default character set to be used if the client does not specify it.

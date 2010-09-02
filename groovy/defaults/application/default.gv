@@ -65,8 +65,8 @@ predefinedGlobals.each() { key, value ->
 //
 
 tasksDocumentSource = new DocumentFileSource(applicationBasePath + tasksBasePath, tasksDefaultName, 'gv', tasksMinimumTimeBetweenValidityChecks)
-attributes['com.threecrickets.prudence.ApplicationTask.languageManager'] = languageManager
-attributes['com.threecrickets.prudence.ApplicationTask.defaultLanguageTag'] = 'groovy'
-attributes['com.threecrickets.prudence.ApplicationTask.defaultName'] = tasksDefaultName
-attributes['com.threecrickets.prudence.ApplicationTask.documentSource'] = tasksDocumentSource
+applicationGlobals['com.threecrickets.prudence.ApplicationTask.languageManager'] = languageManager
+applicationGlobals['com.threecrickets.prudence.ApplicationTask.defaultLanguageTag'] = 'groovy'
+applicationGlobals['com.threecrickets.prudence.ApplicationTask.defaultName'] = tasksDefaultName
+applicationGlobals['com.threecrickets.prudence.ApplicationTask.documentSource'] = tasksDocumentSource
 scheduler.addTaskCollector(new ApplicationTaskCollector(new File(applicationBasePath + '/crontab'), applicationInstance))
