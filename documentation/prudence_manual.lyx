@@ -7469,7 +7469,7 @@ In Prudence, ``resources'' are encapsulated operational units similar to
  The idea of a ``resource-oriented architecture,'' often called ``REST,''
  is covered in depth in 
 \bar under
-``Making the Case for REST'' (page 
+``The Case for REST'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../../rest/"
@@ -9056,11 +9056,8 @@ name "../resources/|resources-as-api"
 \end_layout
 
 \begin_layout Standard
-A ``resource-oriented architecture''
-\bar under
- 
-\bar default
-is purposely more minimal than object-oriented, transactional architectures.
+A ``resource-oriented architecture'' is purposely more minimal than object-orien
+ted, transactional architectures.
  However, as discussed in 
 \bar under
 ``The Case for REST'' (page 
@@ -20591,7 +20588,7 @@ Ignore the buzzwords, and instead make sure you're choosing technology that
 \begin_layout Standard
 We discuss this topic some more in 
 \bar under
-``Making the Case for Rest'' (page 
+``The Case for Rest'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../rest/"
