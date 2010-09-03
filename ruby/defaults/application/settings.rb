@@ -136,6 +136,10 @@ $dynamic_web_client_caching_mode = 1
 $static_web_base_url = '/'
 $static_web_base_path = '/web/static/'
 
+# Whether to enable smart compression on HTTP representations.
+
+$static_web_compress = true
+
 # If the URL points to a directory rather than a file, then this will allow
 # automatic creation of an HTML page with a directory listing.
 

@@ -5090,6 +5090,24 @@ Relative to the application's subdirectory.
 \end_layout
 
 \begin_layout Paragraph
+staticWebCompress
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|static-web-compress"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Whether to enable smart compression before sending files over HTTP.
+ Only uncompressed files will be compressed, and only if there are bandwidth
+ savings will the compressed version be used.
+ Defaults to true.
+\end_layout
+
+\begin_layout Paragraph
 staticWebDirectoryListingAllowed
 \end_layout
 
@@ -6937,15 +6955,17 @@ Compression does require some additional computation overhead.
  Note that if you are caching the output, it will be stored in the cache
  in its compressed state, such that subsequent cache retrievals would not
  involve any additional overhead.
+ Additionally, if an uncompressed version already exists in the cache, it
+ will be compressed, cached and used, for optmal efficiency.
  Thus, the total overhead would likely be insignificant for cached documents,
  while the bandwidth savings and performance benefits could be considerable.
  Caching and compression are good friends!
 \end_layout
 
 \begin_layout Standard
-If there are no gains, you can disable Prudence's use of the client's preferred
- encoding via the ``com.threecrickets.prudence.GeneratedTextResource.negotiateEncodi
-ng'' application global.
+If there are no gains from compression in your application, you can disable
+ Prudence's automatic use of the client's preferred encoding via the ``com.threec
+rickets.prudence.GeneratedTextResource.negotiateEncoding'' application global.
 \end_layout
 
 \begin_layout Subsection
@@ -10032,11 +10052,31 @@ You're likely, though, wondering if /web/static/ is merely a convenience,
 \begin_layout Standard
 Our recommendation is to take that route only if those web servers offer
  important features that you won't find in Prudence.
- Remember that Prudence has many powerful features, including URL rewriting,
- redirecting and routing, and that Prudence's non-blocking I/O does a great
- job at serving files.
- You will likely not see better performance or scalability by replacing
- /web/static/ with standard web servers.
+ Remember that Prudence has many powerful features, including 
+\bar under
+URL rewriting and redirection (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/"
+
+\end_inset
+
+)
+\bar default
+, 
+\bar under
+smart compression (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|static-web-compress"
+
+\end_inset
+
+)
+\bar default
+, and that Prudence's non-blocking I/O does a great job at scaling.
+ You will likely not see significantly better performance or scalability
+ by replacing /web/static/ with standard web servers.
 \end_layout
 
 \begin_layout Subsection

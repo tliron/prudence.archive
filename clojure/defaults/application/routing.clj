@@ -11,6 +11,7 @@
  'org.restlet.routing.Template
  'org.restlet.resource.Finder
  'org.restlet.resource.Directory
+ 'org.restlet.engine.application.Encoder
  'com.threecrickets.scripturian.util.DefrostTask
  'com.threecrickets.scripturian.document.DocumentFileSource
  'com.threecrickets.prudence.PrudenceRouter
@@ -134,7 +135,9 @@
 (.setListingAllowed static-web static-web-directory-listing-allowed)
 (.setNegotiateContent static-web true)
 (def static-web-base-url (fix-url static-web-base-url))
-(.attachBase router static-web-base-url static-web)
+(if static-web-compress
+  (.filterBase router static-web-base-url (Encoder. nil) static-web)
+  (.attachBase router static-web-base-url static-web))
 
 ;
 ; Resources

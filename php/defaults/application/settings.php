@@ -10,7 +10,7 @@ global $application_logger_name;
 global $hosts;
 global $resources_base_url, $resources_base_path, $resources_default_name, $resources_defrost, $resources_source_viewable, $resources_minimum_time_between_validity_checks;
 global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_source_viewable, $dynamic_web_minimum_time_between_validity_checks, $dynamic_web_client_caching_mode;
-global $static_web_base_url, $static_web_base_path, $static_web_directory_listing_allowed;
+global $static_web_base_url, $static_web_base_path, $static_web_compress, $static_web_directory_listing_allowed;
 global $file_upload_size_threshold;
 global $handlers_base_path, $handlers_default_name, $handlers_minimum_time_between_validity_checks;
 global $tasks_base_path, $tasks_default_name, $tasks_minimum_time_between_validity_checks;
@@ -151,6 +151,10 @@ $dynamic_web_client_caching_mode = 1;
 
 $static_web_base_url = '/';
 $static_web_base_path = '/web/static/';
+
+// Whether to enable smart compression on HTTP representations.
+
+$static_web_compress = TRUE;
 
 // If the URL points to a directory rather than a file, then this will allow
 // automatic creation of an HTML page with a directory listing.

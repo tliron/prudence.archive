@@ -136,6 +136,10 @@ dynamicWebClientCachingMode = 1
 staticWebBaseURL = '/'
 staticWebBasePath = '/web/static/'
 
+// Whether to enable smart compression on HTTP representations.
+
+staticWebCompress = true
+
 // If the URL points to a directory rather than a file, then this will allow
 // automatic creation of an HTML page with a directory listing.
 

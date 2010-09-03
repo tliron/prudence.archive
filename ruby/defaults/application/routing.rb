@@ -9,6 +9,7 @@ import org.restlet.routing.Redirector
 import org.restlet.routing.Template
 import org.restlet.resource.Finder
 import org.restlet.resource.Directory
+import org.restlet.engine.application.Encoder
 import com.threecrickets.scripturian.util.DefrostTask
 import com.threecrickets.scripturian.document.DocumentFileSource
 import com.threecrickets.prudence.PrudenceRouter
@@ -148,7 +149,11 @@ $static_web = Directory.new($application_instance.context, java.io.File.new($app
 $static_web.listing_allowed = $static_web_directory_listing_allowed
 $static_web.negotiating_content = true
 $static_web_base_url = fix_url $static_web_base_url
-$router.attach_base $static_web_base_url, $static_web
+if $static_web_compress
+	$router.filter_base $static_web_base_url, Encoder.new(nil), $static_web
+else
+	$router.attach_base $static_web_base_url, $static_web
+end
 
 #
 # Resources

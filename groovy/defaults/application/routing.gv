@@ -10,6 +10,7 @@ import org.restlet.routing.Redirector
 import org.restlet.routing.Template
 import org.restlet.resource.Finder
 import org.restlet.resource.Directory
+import org.restlet.engine.application.Encoder
 import com.threecrickets.scripturian.util.DefrostTask
 import com.threecrickets.scripturian.document.DocumentFileSource
 import com.threecrickets.prudence.PrudenceRouter
@@ -148,7 +149,12 @@ staticWeb = new Directory(applicationInstance.context, new File(applicationBaseP
 staticWeb.listingAllowed = staticWebDirectoryListingAllowed
 staticWeb.negotiatingContent = true
 staticWebBaseURL = fixURL(staticWebBaseURL)
-router.attachBase(staticWebBaseURL, staticWeb)
+if(staticWebCompress) {
+	router.filterBase(staticWebBaseURL, new Encoder(null), staticWeb)
+}
+else {
+	router.attachBase(staticWebBaseURL, staticWeb)
+} 
 
 //
 // Resources

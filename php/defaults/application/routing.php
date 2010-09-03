@@ -12,6 +12,7 @@ import org.restlet.routing.Redirector;
 import org.restlet.routing.Template;
 import org.restlet.resource.Finder;
 import org.restlet.resource.Directory;
+import org.restlet.engine.application.Encoder;
 import com.threecrickets.scripturian.util.DefrostTask;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.prudence.PrudenceRouter;
@@ -26,7 +27,7 @@ global $hosts;
 global $resources_base_url, $resources_base_path, $resources_default_name, $resources_defrost, $resources_source_viewable, $resources_minimum_time_between_validity_checks;
 global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_source_viewable, $dynamic_web_minimum_time_between_validity_checks, $dynamic_web_client_caching_mode;
 global $cache_key_pattern_handlers;
-global $static_web_base_url, $static_web_base_path, $static_web_directory_listing_allowed;
+global $static_web_base_url, $static_web_base_path, $static_web_compress, $static_web_directory_listing_allowed;
 global $file_upload_size_threshold;
 global $handlers_base_path, $handlers_default_name, $handlers_minimum_time_between_validity_checks;
 global $preheat_resources;
@@ -154,7 +155,7 @@ $dynamic_web_base_url = fix_url($dynamic_web_base_url);
 $router->attachBase($dynamic_web_base_url, $dynamic_web);
 
 if($dynamic_web_defrost) {
-	$defrost_tasks = DefrostTask::forDocumentSource($dynamic_web_document_source, $language_manager, 'php', true, true);
+	$defrost_tasks = DefrostTask::forDocumentSource($dynamic_web_document_source, $language_manager, 'php', TRUE, TRUE);
 	foreach($defrost_tasks as $defrost_task) {
 		$tasks[] = $defrost_task;
 	}
@@ -166,9 +167,14 @@ if($dynamic_web_defrost) {
 
 $static_web = new Directory($application_instance->context, new File($application_base_path . $static_web_base_path)->toURI()->toString());
 $static_web->listingAllowed = $static_web_directory_listing_allowed;
-$static_web->negotiatingContent = true;
+$static_web->negotiatingContent = TRUE;
 $static_web_base_url = fix_url($static_web_base_url);
-$router->attachBase($static_web_base_url, $static_web);
+if ($static_web_compress) {
+	$router->filterBase($static_web_base_url, new Encoder(NULL), $static_web)
+}
+else {
+	$router->attachBase($static_web_base_url, $static_web);
+} 
 
 //
 // Resources
@@ -187,7 +193,7 @@ $resources_base_url = fix_url($resources_base_url);
 $router->attachBase($resources_base_url, $resources);
 
 if($resources_defrost) {
-	$defrost_tasks = DefrostTask::forDocumentSource($resources_document_source, $language_manager, 'php', false, true);
+	$defrost_tasks = DefrostTask::forDocumentSource($resources_document_source, $language_manager, 'php', FALSE, TRUE);
 	foreach($defrost_tasks as $defrost_task) {
 		$tasks[] = $defrost_task;
 	}

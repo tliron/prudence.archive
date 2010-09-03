@@ -46,7 +46,7 @@ public abstract class IoUtil
 	/**
 	 * Constant.
 	 */
-	public static List<Encoding> SUPPORTED_COMPRESSION_ENCODINGS = Arrays.asList( Encoding.GZIP, Encoding.DEFLATE, Encoding.ZIP );
+	public static List<Encoding> SUPPORTED_COMPRESSION_ENCODINGS = Arrays.asList( Encoding.GZIP, Encoding.ZIP, Encoding.DEFLATE );
 
 	/**
 	 * Copies streams. The input stream is entirely consumed and closed.

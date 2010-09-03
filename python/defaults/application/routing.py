@@ -10,6 +10,7 @@ from java.util.concurrent import ConcurrentHashMap
 
 from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Finder, Directory
+from org.restlet.engine.application import Encoder
 from com.threecrickets.scripturian.util import DefrostTask
 from com.threecrickets.scripturian.document import DocumentFileSource
 from com.threecrickets.prudence import PrudenceRouter
@@ -129,7 +130,10 @@ static_web = Directory(application_instance.context, File(application_base_path 
 static_web.listingAllowed = static_web_directory_listing_allowed
 static_web.negotiateContent = True
 static_web_base_url = fix_url(static_web_base_url)
-router.attachBase(static_web_base_url, static_web)
+if static_web_compress:
+	router.filterBase(static_web_base_url, Encoder(None), static_web)
+else:
+	router.attachBase(static_web_base_url, static_web)
 
 #
 # Resources
