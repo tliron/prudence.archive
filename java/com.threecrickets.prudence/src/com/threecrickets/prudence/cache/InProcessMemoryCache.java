@@ -156,7 +156,7 @@ public class InProcessMemoryCache implements Cache
 
 				entry = cache.remove( key );
 				if( entry != null )
-					size.addAndGet( -entry.getString().length() );
+					size.addAndGet( -entry.getSize() );
 				else
 					entry = null;
 			}
@@ -185,7 +185,7 @@ public class InProcessMemoryCache implements Cache
 
 				CacheEntry removed = cache.remove( key );
 				if( removed != null )
-					size.addAndGet( -removed.getString().length() );
+					size.addAndGet( -removed.getSize() );
 			}
 		}
 	}
@@ -203,7 +203,7 @@ public class InProcessMemoryCache implements Cache
 					if( debug )
 						System.out.println( "Pruned " + entry.getKey() );
 
-					size.addAndGet( -removed.getString().length() );
+					size.addAndGet( -removed.getSize() );
 				}
 			}
 		}
