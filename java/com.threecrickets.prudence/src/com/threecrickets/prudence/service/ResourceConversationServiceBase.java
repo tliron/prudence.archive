@@ -14,7 +14,6 @@ package com.threecrickets.prudence.service;
 import java.io.File;
 
 import org.restlet.data.CharacterSet;
-import org.restlet.data.Encoding;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
@@ -132,46 +131,6 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	public void setCharacterSetShortName( String characterSetShortName )
 	{
 		characterSet = resource.getApplication().getMetadataService().getCharacterSet( characterSetShortName );
-	}
-
-	/**
-	 * The encoding.
-	 * 
-	 * @return The encoding or null if not set
-	 * @see #setEncoding(Encoding)
-	 */
-	public Encoding getEncoding()
-	{
-		return encoding;
-	}
-
-	/**
-	 * @param encoding
-	 *        The encoding or null
-	 * @see #getEncoding()
-	 */
-	public void setEncoding( Encoding encoding )
-	{
-		this.encoding = encoding;
-	}
-
-	/**
-	 * @return The encoding name
-	 * @see #getEncoding()
-	 */
-	public String getEncodingName()
-	{
-		return encoding != null ? encoding.getName() : null;
-	}
-
-	/**
-	 * @param encodingName
-	 *        The encoding name
-	 * @see #setEncoding(Encoding)
-	 */
-	public void setEncodingName( String encodingName )
-	{
-		encoding = Encoding.valueOf( encodingName );
 	}
 
 	/**
@@ -325,11 +284,6 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	 * The character set.
 	 */
 	private CharacterSet characterSet;
-
-	/**
-	 * The encoding.
-	 */
-	private Encoding encoding;
 
 	/**
 	 * The language.

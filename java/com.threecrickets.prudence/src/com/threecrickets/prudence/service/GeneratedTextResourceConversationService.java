@@ -45,35 +45,14 @@ public class GeneratedTextResourceConversationService extends ResourceConversati
 	public GeneratedTextResourceConversationService( GeneratedTextResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
 	{
 		super( resource, entity, variant, defaultCharacterSet, resource.getFileUploadSizeThreshold(), resource.getFileUploadDirectory() );
-		setEncoding( getPreferredEncoding() );
+
+		if( resource.isNegotiateEncoding() )
+			encoding = getPreferredEncoding();
 	}
 
 	//
 	// Attributes
 	//
-
-	/**
-	 * This boolean is true when the writer is in deferred mode.
-	 * 
-	 * @return True if in deferred mode
-	 */
-	public boolean isDeferred()
-	{
-		return isDeferred;
-	}
-
-	/**
-	 * Identical to {@link #isDeferred()}. Supports scripting engines which
-	 * don't know how to recognize the "is" getter notation, but can recognize
-	 * the "get" notation.
-	 * 
-	 * @return True if in deferred mode
-	 * @see #isDeferred()
-	 */
-	public boolean getIsDeferred()
-	{
-		return isDeferred();
-	}
 
 	/**
 	 * The preferred encoding.
@@ -99,6 +78,49 @@ public class GeneratedTextResourceConversationService extends ResourceConversati
 			return preferredEncoding.getName();
 		else
 			return null;
+	}
+
+	/**
+	 * The encoding.
+	 * 
+	 * @return The encoding or null if not set
+	 * @see #setEncoding(Encoding)
+	 */
+	public Encoding getEncoding()
+	{
+		return encoding;
+	}
+
+	/**
+	 * @return The encoding name
+	 * @see #getEncoding()
+	 */
+	public String getEncodingName()
+	{
+		return encoding != null ? encoding.getName() : null;
+	}
+
+	/**
+	 * This boolean is true when the writer is in deferred mode.
+	 * 
+	 * @return True if in deferred mode
+	 */
+	public boolean isDeferred()
+	{
+		return isDeferred;
+	}
+
+	/**
+	 * Identical to {@link #isDeferred()}. Supports scripting engines which
+	 * don't know how to recognize the "is" getter notation, but can recognize
+	 * the "get" notation.
+	 * 
+	 * @return True if in deferred mode
+	 * @see #isDeferred()
+	 */
+	public boolean getIsDeferred()
+	{
+		return isDeferred();
 	}
 
 	//
@@ -139,4 +161,9 @@ public class GeneratedTextResourceConversationService extends ResourceConversati
 	 * The preferred encoding.
 	 */
 	private Encoding preferredEncoding;
+
+	/**
+	 * The encoding.
+	 */
+	private Encoding encoding;
 }

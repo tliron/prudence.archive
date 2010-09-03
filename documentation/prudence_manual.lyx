@@ -2192,7 +2192,7 @@ You might want to take a look at
 \begin_inset CommandInset href
 LatexCommand href
 name "Making the Case for REST"
-target "../rest/"
+target "../../rest/"
 
 \end_inset
 
@@ -6740,8 +6740,8 @@ reference "../../scaling/|caching"
 \end_layout
 
 \begin_layout Standard
-Prudence handles caching of results.
- Every file has its own caching interval, 
+Every /web/dynamic/ and /fragment/ document has its own caching interval,
+ 
 \bar under
 document.cacheDuration (page 
 \begin_inset CommandInset ref
@@ -6869,7 +6869,7 @@ Any file that includes the temperature fragment will use a cached result,
 \end_layout
 
 \begin_layout Standard
-Note that you can change the cache interval dynamically.
+Note that you can change the cache duration dynamically.
  For example, you might want to increase it if you see that your machine's
  CPU load is too high, or you might even want to decrease it during ``rush
  hours'' where users expect to see especially up-to-date results.
@@ -6887,8 +6887,8 @@ name "../generating-html/|caching-and-compression"
 \end_layout
 
 \begin_layout Standard
-For further bandwidth and performance improvements with most clients, consider
- compressing your output by setting 
+For further bandwidth and performance improvements with most clients, Prudence
+ compresses your output by default, by setting 
 \bar under
 conversation.encoding (page 
 \begin_inset CommandInset ref
@@ -6899,29 +6899,9 @@ reference "../api/|conversation-encoding"
 
 )
 \bar default
-.
- Modern client processors, even on mobile devices, decompress fast enough
- that the network ends up being the performance bottleneck.
- The smaller the response, the better.
-\end_layout
-
-\begin_layout Standard
-Compression does require some additional computation overhead, so do test
- for costs vs.
- benefits before applying compression across the board.
- Note, though, that if you are caching the output, it will be stored in
- the cache in its compressed state, such that subsequent cache retrievals
- would not involve any additional overhead.
- Thus, the total overhead would likely be insignificant for cached documents,
- while the bandwidth savings and performance benefits could be considerable.
- Caching and compression are good friends!
-\end_layout
-
-\begin_layout Standard
-Prudence supports three compression algorithms, so it's safest to choose
- the one the client prefers, via 
+ to the client's 
 \bar under
-conversation.preferredEncoding (page 
+preferred encoding (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../api/|conversation-preferred-encoding"
@@ -6931,9 +6911,15 @@ reference "../api/|conversation-preferred-encoding"
 )
 \bar default
 .
- You likely want to use the matching ``{pe}'' variable in your 
+ Modern client processors, even on mobile devices, decompress fast enough
+ that the network ends up being the performance bottleneck.
+ The smaller the response, then, the better.
+\end_layout
+
+\begin_layout Standard
+Because the 
 \bar under
-document.cacheKeyPattern (page 
+cache key pattern (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../api/|document-cache-key-pattern"
@@ -6942,74 +6928,24 @@ reference "../api/|document-cache-key-pattern"
 
 )
 \bar default
- to ensure that you are storing each encoding separately in the cache.
- Example:
+ automatically gets the encoding added to it, you will always be using the
+ correctly encoded cache entry.
 \end_layout
 
 \begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<%
-\end_layout
-
-\begin_layout Plain Layout
-
-// Cache according to application name, path to base, document name and
- preferred encoding
-\end_layout
-
-\begin_layout Plain Layout
-
-document.cacheKeyPattern = '{an}|{ptb}|{dn}|{pe}'
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-// Use preferred encoding
-\end_layout
-
-\begin_layout Plain Layout
-
-if(conversation.preferredEncoding) {
-\end_layout
-
-\begin_layout Plain Layout
-
-	document.encoding = conversation.preferredEncoding
-\end_layout
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\end_inset
-
-
+Compression does require some additional computation overhead.
+ Note that if you are caching the output, it will be stored in the cache
+ in its compressed state, such that subsequent cache retrievals would not
+ involve any additional overhead.
+ Thus, the total overhead would likely be insignificant for cached documents,
+ while the bandwidth savings and performance benefits could be considerable.
+ Caching and compression are good friends!
 \end_layout
 
 \begin_layout Standard
-Note that if you have your own way to determine encoding, you will likely
- need a 
-\bar under
-cache key pattern handler (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|document-cache-key-pattern-handlers"
-
-\end_inset
-
-)
-\bar default
- to insert it into the cache key.
+If there are no gains, you can disable Prudence's use of the client's preferred
+ encoding via the ``com.threecrickets.prudence.GeneratedTextResource.negotiateEncodi
+ng'' application global.
 \end_layout
 
 \begin_layout Subsection
@@ -13777,6 +13713,25 @@ reference "../api/|document-cache-key"
 \end_layout
 
 \begin_layout Standard
+Whatever pattern you use, Prudence will 
+\emph on
+always 
+\emph default
+add 
+\bar under
+conversation.encoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-encoding"
+
+\end_inset
+
+)
+\bar default
+ to the key, because you always want different encodings to be cached separately.
+\end_layout
+
+\begin_layout Standard
 document.cacheKeyPattern is ignored if 
 \bar under
 document.cacheDuration (page 
@@ -13800,9 +13755,19 @@ Cache key patterns are a very powerful feature that lets you easily create
 \end_layout
 
 \begin_layout Standard
-The default cache key pattern is ``{ri}|{dn}'', which is a string containing
- the request identifier (the URI), a pipe character (``|''), and then the
- document name.
+The default cache key pattern is ``{ri}|{dn}|{ptb}'', which is a string
+ containing the request identifier (the URI), the document name, the 
+\bar under
+path to base (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-path-to-base"
+
+\end_inset
+
+)
+\bar default
+.
  An actual key could thus be: ``http://mysite.org/wackywiki/main|/common/header.ht
 ml''.
  This default is sensible, because it makes sure that included fragments
@@ -13924,7 +13889,7 @@ This is the actual cache key:
 document.cacheKeyPattern (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../manual/api/|document-cache-key-pattern"
+reference "../api/|document-cache-key-pattern"
 
 \end_inset
 
@@ -15583,7 +15548,7 @@ name "../api/|conversation-preferred-encoding"
 \end_layout
 
 \begin_layout Standard
-(only available in /web/dynamic/ and /fragments/)
+(only available in /web/dynamic/ and /web/fragments/)
 \end_layout
 
 \begin_layout Standard
@@ -16109,6 +16074,44 @@ name "../api/|conversation-encoding"
 \end_layout
 
 \begin_layout Standard
+In /web/dynamic/, this value is read-only.
+ It is usually set to the value of 
+\bar under
+conversation.preferredEncoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-preferred-encoding"
+
+\end_inset
+
+)
+\bar default
+.
+ If it is ``zip'', ``gzip'' or ``deflate,'' Prudence will compress the output
+ text.
+ Cache entries are stored in their compressed state, such that subsequent
+ cache retrievals will not involve this additional overhead.
+ See 
+\bar under
+caching and encoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|caching-and-compression"
+
+\end_inset
+
+)
+\bar default
+ for a detailed discussion
+\end_layout
+
+\begin_layout Standard
+In /resources/, you can change this value, but all it would do is set the
+ appropriate header in the response.
+ It is up to you to supply Prudence with a correctly encoded representation.
+\end_layout
+
+\begin_layout Standard
 These two variants represent the same value, letting you access the value
  in different ways.
 \end_layout
@@ -16145,37 +16148,10 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_inset
 
 ).
- In /web/dynamic/, you can also use the 
-\bar under
-conversation.preferredEncoding (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-preferred-encoding"
-
-\end_inset
-
-)
-\bar default
- shortcut, which tests against Prudence's preferred encodings for HTML.
 \end_layout
 
-\begin_layout Quote
-In /web/dynamic/, setting the encoding to either ``zip'', ``gzip'' or ``deflate'
-' will cause Prudence to compress the output text.
- Cache entries are stored in their compressed state, such that subsequent
- cache retrievals will not involve this additional overhead.
- See 
-\bar under
-caching and encoding (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../generating-html/|caching-and-compression"
-
-\end_inset
-
-)
-\bar default
- for a detailed discussion.
+\begin_layout Standard
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -18590,7 +18566,7 @@ Scaling up can be straightforward: simply add more and more instances behind
 Scaling Tips (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../scaling/"
+reference "../../scaling/"
 
 \end_inset
 

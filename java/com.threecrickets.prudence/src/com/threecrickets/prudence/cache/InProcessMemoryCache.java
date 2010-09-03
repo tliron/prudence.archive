@@ -101,7 +101,7 @@ public class InProcessMemoryCache implements Cache
 
 		CacheEntry removed = cache.put( key, entry );
 		if( removed != null )
-			size.addAndGet( -removed.getString().length() );
+			size.addAndGet( -removed.getSize() );
 		size.addAndGet( entrySize );
 
 		if( size.get() > maxSize )

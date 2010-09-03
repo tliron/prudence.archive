@@ -105,7 +105,7 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * {@link #getConversationServiceName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern:</code>
- * {@link String}, defaults to "{ri}|{dn}|{ptb}|{pe}". See
+ * {@link String}, defaults to "{ri}|{dn}|{ptb}". See
  * {@link #getDefaultCacheKeyPattern()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCharacterSet:</code>
@@ -363,7 +363,7 @@ public class GeneratedTextResource extends ServerResource
 
 	/**
 	 * The default cache key pattern to use if the executable doesn't specify
-	 * one. Defaults to "{ri}|{dn}|{ptb}|{pe}".
+	 * one. Defaults to "{ri}|{dn}|{ptb}".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern</code>
@@ -379,7 +379,7 @@ public class GeneratedTextResource extends ServerResource
 			defaultCacheKeyPattern = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern" );
 
 			if( defaultCacheKeyPattern == null )
-				defaultCacheKeyPattern = "{ri}|{dn}|{ptb}|{pe}";
+				defaultCacheKeyPattern = "{ri}|{dn}|{ptb}";
 		}
 
 		return defaultCacheKeyPattern;
@@ -696,6 +696,29 @@ public class GeneratedTextResource extends ServerResource
 		}
 
 		return trailingSlashRequired;
+	}
+
+	/**
+	 * Whether or not to negotiate encoding by default. Defaults to true.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.negotiateEncoding</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return Whether to allow client caching
+	 */
+	public boolean isNegotiateEncoding()
+	{
+		if( negotiateEncoding == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			negotiateEncoding = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.negotiateEncoding" );
+
+			if( negotiateEncoding == null )
+				negotiateEncoding = true;
+		}
+
+		return negotiateEncoding;
 	}
 
 	/**
@@ -1059,6 +1082,11 @@ public class GeneratedTextResource extends ServerResource
 	private volatile Boolean trailingSlashRequired;
 
 	/**
+	 * Whether or not to negotiate encoding by default.
+	 */
+	private volatile Boolean negotiateEncoding;
+
+	/**
 	 * Whether or not to send information to the client about cache expiration.
 	 */
 	private volatile Integer clientCachingMode;
@@ -1172,7 +1200,7 @@ public class GeneratedTextResource extends ServerResource
 			try
 			{
 				// Execute and represent output
-				representation = documentService.include( documentName, false );
+				representation = documentService.include( documentName );
 
 				switch( getClientCachingMode() )
 				{

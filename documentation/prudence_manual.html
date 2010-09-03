@@ -1221,7 +1221,7 @@ As stated earlier, where Prudence truly shines is in its support for REST resour
 A resource-oriented architecture is perfect for ‘‘AJAX’’ and other rich client platforms (Flash, Silverlight, etc.). Another use is for a scalable backend conduit between servers. Depending on how you look at it, resources are either an online database, an API for your service, or both. 
 </div>
 <blockquote class="Quote">
-You might want to take a look at <a class="URL" href="../rest/">Making the Case for REST</a> for a better understanding of REST and what it can do for you.
+You might want to take a look at <a class="URL" href="../../rest/">Making the Case for REST</a> for a better understanding of REST and what it can do for you.
 </blockquote>
 <div class="Unindented">
 Let’s start with a resource that can be read for some plain text. Resources are put in the /resources/ subdirectory, and, like /web/dynamic/ and /web/static/, the filename and directory tree define the URL:
@@ -2833,7 +2833,7 @@ The solution is to cache results. Sometimes caching for even tiny time intervals
 This was a trivial example. Truly scalable software requires smart caching everywhere, from the level of file and database access all the way to the generated results. For a full treatment of the topic, see <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../../scaling/|caching">↓</a>)</u>.
 </div>
 <div class="Indented">
-Prudence handles caching of results. Every file has its own caching interval, <u>document.cacheDuration (page <a class="Reference" href="#../api/|document-cache-duration">↓</a>)</u>, which you can access and change in scriptlets. For example, here’s the home page mentioned above:
+Every /web/dynamic/ and /fragment/ document has its own caching interval, <u>document.cacheDuration (page <a class="Reference" href="#../api/|document-cache-duration">↓</a>)</u>, which you can access and change in scriptlets. For example, here’s the home page mentioned above:
 </div>
 <div class="Indented">
 
@@ -2876,39 +2876,22 @@ The current temperature is &lt;%= temperature %&gt; degrees.
 Any file that includes the temperature fragment will use a cached result, up to half an hour old. The home page, however, is regenerated every 5 seconds, so that the user count is up to 5 seconds old. Prudence lets you finely control how caching works.
 </div>
 <div class="Indented">
-Note that you can change the cache interval dynamically. For example, you might want to increase it if you see that your machine’s CPU load is too high, or you might even want to decrease it during ‘‘rush hours’’ where users expect to see especially up-to-date results.
+Note that you can change the cache duration dynamically. For example, you might want to increase it if you see that your machine’s CPU load is too high, or you might even want to decrease it during ‘‘rush hours’’ where users expect to see especially up-to-date results.
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-39"></a>Caching and Compression<a class="Label" name="../generating-html/|caching-and-compression"> </a>
 </div>
 <div class="Unindented">
-For further bandwidth and performance improvements with most clients, consider compressing your output by setting <u>conversation.encoding (page <a class="Reference" href="#../api/|conversation-encoding">↓</a>)</u>. Modern client processors, even on mobile devices, decompress fast enough that the network ends up being the performance bottleneck. The smaller the response, the better.
+For further bandwidth and performance improvements with most clients, Prudence compresses your output by default, by setting <u>conversation.encoding (page <a class="Reference" href="#../api/|conversation-encoding">↓</a>)</u> to the client’s <u>preferred encoding (page <a class="Reference" href="#../api/|conversation-preferred-encoding">↓</a>)</u>. Modern client processors, even on mobile devices, decompress fast enough that the network ends up being the performance bottleneck. The smaller the response, then, the better.
 </div>
 <div class="Indented">
-Compression does require some additional computation overhead, so do test for costs vs. benefits before applying compression across the board. Note, though, that if you are caching the output, it will be stored in the cache in its compressed state, such that subsequent cache retrievals would not involve any additional overhead. Thus, the total overhead would likely be insignificant for cached documents, while the bandwidth savings and performance benefits could be considerable. Caching and compression are good friends!
+Because the <u>cache key pattern (page <a class="Reference" href="#../api/|document-cache-key-pattern">↓</a>)</u> automatically gets the encoding added to it, you will always be using the correctly encoded cache entry.
 </div>
 <div class="Indented">
-Prudence supports three compression algorithms, so it’s safest to choose the one the client prefers, via <u>conversation.preferredEncoding (page <a class="Reference" href="#../api/|conversation-preferred-encoding">↓</a>)</u>. You likely want to use the matching ‘‘{pe}’’ variable in your <u>document.cacheKeyPattern (page <a class="Reference" href="#../api/|document-cache-key-pattern">↓</a>)</u> to ensure that you are storing each encoding separately in the cache. Example:
+Compression does require some additional computation overhead. Note that if you are caching the output, it will be stored in the cache in its compressed state, such that subsequent cache retrievals would not involve any additional overhead. Thus, the total overhead would likely be insignificant for cached documents, while the bandwidth savings and performance benefits could be considerable. Caching and compression are good friends!
 </div>
 <div class="Indented">
-
-<div class="float">
-
-<div class="listing">
-<code class="listing">&lt;%
-// Cache according to application name, path to base, document name and preferred encoding
-document.cacheKeyPattern = ’{an}|{ptb}|{dn}|{pe}’
-​
-// Use preferred encoding
-if(conversation.preferredEncoding) {
-	document.encoding = conversation.preferredEncoding
-}
-</code>
-</div>
-</div>
-</div>
-<div class="Indented">
-Note that if you have your own way to determine encoding, you will likely need a <u>cache key pattern handler (page <a class="Reference" href="#../api/|document-cache-key-pattern-handlers">↓</a>)</u> to insert it into the cache key.
+If there are no gains, you can disable Prudence’s use of the client’s preferred encoding via the ‘‘com.threecrickets.prudence.GeneratedTextResource.negotiateEncoding’’ application global.
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-40"></a>Conditional Requests<a class="Label" name="../generating-html/|conditional-requests"> </a>
@@ -5135,13 +5118,16 @@ This lets you control the key that is used to store and retrieve the cached outp
 The cache key itself is cast from the cache key pattern for every request reaching your document. This cache key is checked against the <u>cache (page <a class="Reference" href="#../api/|document-cache">↓</a>)</u>, and if a valid cache entry exists there, it is used. Otherwise, your document is executed. For debugging purposes, you can use <u>document.cacheKey (page <a class="Reference" href="#../api/|document-cache-key">↓</a>)</u> to output the actual cache key used for the request.
 </div>
 <div class="Indented">
+Whatever pattern you use, Prudence will <i>always </i>add <u>conversation.encoding (page <a class="Reference" href="#../api/|conversation-encoding">↓</a>)</u> to the key, because you always want different encodings to be cached separately.
+</div>
+<div class="Indented">
 document.cacheKeyPattern is ignored if <u>document.cacheDuration (page <a class="Reference" href="#../api/|document-cache-duration">↑</a>)</u> is zero.
 </div>
 <div class="Indented">
 Cache key patterns are a very powerful feature that lets you easily create different cached versions of documents for different kinds of users and requests, but it’s not always trivial to determine the best cache key pattern for every situation. It depends strongly on how you use and cache your fragments.
 </div>
 <div class="Indented">
-The default cache key pattern is ‘‘{ri}|{dn}’’, which is a string containing the request identifier (the URI), a pipe character (‘‘|’’), and then the document name. An actual key could thus be: ‘‘http://mysite.org/wackywiki/main|/common/header.html’’. This default is sensible, because it makes sure that included fragments are cached invidually. For example, only using ‘‘{ri}’’ would have each included fragment use the same key and override others.
+The default cache key pattern is ‘‘{ri}|{dn}|{ptb}’’, which is a string containing the request identifier (the URI), the document name, the <u>path to base (page <a class="Reference" href="#../api/|conversation-path-to-base">↓</a>)</u>. An actual key could thus be: ‘‘http://mysite.org/wackywiki/main|/common/header.html’’. This default is sensible, because it makes sure that included fragments are cached invidually. For example, only using ‘‘{ri}’’ would have each included fragment use the same key and override others.
 </div>
 <div class="Indented">
 However, though sensible, the default cache key pattern may not be the most efficient. For example, if the header fragment used in the example above never changes per page, then it’s wasteful to cache it separately per URI. It would be more efficient to set document.cacheKeyPattern = ‘‘{an}|{dn}’’ or ‘‘{an}|{ptb}|{dn}’’ in a scriptlet in header.html.
@@ -5165,7 +5151,7 @@ See <u>cache key pattern handlers (page <a class="Reference" href="#../handlers/
 <a class="toc" name="toc-Paragraph-71"></a>document.cacheKey<a class="Label" name="../api/|document-cache-key"> </a>
 </div>
 <div class="Unindented">
-This is the actual cache key: <u>document.cacheKeyPattern (page <a class="Reference" href="#../manual/api/|document-cache-key-pattern">↑</a>)</u>, cast for the current conversation. The value is read-only, and made available mostly for debugging purposes.
+This is the actual cache key: <u>document.cacheKeyPattern (page <a class="Reference" href="#../api/|document-cache-key-pattern">↑</a>)</u>, cast for the current conversation. The value is read-only, and made available mostly for debugging purposes.
 </div>
 <div class="Paragraph">
 <a class="toc" name="toc-Paragraph-72"></a>document.cacheTags<a class="Label" name="../api/|document-cache-tags"> </a><a class="Label" name="../manual/api/|document-cache-tags"> </a>
@@ -5676,7 +5662,7 @@ Note that in non-negotiated HTTP mode, Prudence ‘‘passes through’’ the c
 <a class="toc" name="toc-Paragraph-95"></a>conversation.preferredEncodingName, conversation.preferredEncoding<a class="Label" name="../api/|conversation-preferred-encoding"> </a>
 </div>
 <div class="Unindented">
-(only available in /web/dynamic/ and /fragments/)
+(only available in /web/dynamic/ and /web/fragments/)
 </div>
 <div class="Indented">
 The client’s favorite encoding among those normally supported by Prudence for HTML and other text representations, which includes three compression encodings. To find out which encodings the client accepts and prefers, use conversation.request.clientInfo.acceptedEncodings and use conversation.request.clientInfo.getPreferredEncoding() for custom negotiation (see <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html">ClientInfo documentation</a>)
@@ -5850,6 +5836,12 @@ Note that the language can be a null value, and that responses do not have to sp
 <a class="toc" name="toc-Paragraph-103"></a>conversation.encodingName, conversation.encoding<a class="Label" name="../api/|conversation-encoding"> </a>
 </div>
 <div class="Unindented">
+In /web/dynamic/, this value is read-only. It is usually set to the value of <u>conversation.preferredEncoding (page <a class="Reference" href="#../api/|conversation-preferred-encoding">↑</a>)</u>. If it is ‘‘zip’’, ‘‘gzip’’ or ‘‘deflate,’’ Prudence will compress the output text. Cache entries are stored in their compressed state, such that subsequent cache retrievals will not involve this additional overhead. See <u>caching and encoding (page <a class="Reference" href="#../generating-html/|caching-and-compression">↑</a>)</u> for a detailed discussion
+</div>
+<div class="Indented">
+In /resources/, you can change this value, but all it would do is set the appropriate header in the response. It is up to you to supply Prudence with a correctly encoded representation.
+</div>
+<div class="Indented">
 These two variants represent the same value, letting you access the value in different ways.
 </div>
 <div class="Indented">
@@ -5859,11 +5851,11 @@ conversation.encodingName is an internal name used for the encoding. Examples in
 conversation.encoding is the underlying <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/Encoding.html">Encoding instance</a>.
 </div>
 <div class="Indented">
-To find out which encodings the client accepts and prefers, use conversation.request.clientInfo.acceptedEncodings and conversation.request.clientInfo.getPreferredEncoding() (see <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html">ClientInfo documentation</a>). In /web/dynamic/, you can also use the <u>conversation.preferredEncoding (page <a class="Reference" href="#../api/|conversation-preferred-encoding">↑</a>)</u> shortcut, which tests against Prudence’s preferred encodings for HTML.
+To find out which encodings the client accepts and prefers, use conversation.request.clientInfo.acceptedEncodings and conversation.request.clientInfo.getPreferredEncoding() (see <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html">ClientInfo documentation</a>).
 </div>
-<blockquote class="Quote">
-In /web/dynamic/, setting the encoding to either ‘‘zip’’, ‘‘gzip’’ or ‘‘deflate’’ will cause Prudence to compress the output text. Cache entries are stored in their compressed state, such that subsequent cache retrievals will not involve this additional overhead. See <u>caching and encoding (page <a class="Reference" href="#../generating-html/|caching-and-compression">↑</a>)</u> for a detailed discussion.
-</blockquote>
+<div class="Indented">
+.
+</div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-96"></a>Response Attributes for Resources<a class="Label" name="../api/|response-attributes-resources"> </a>
 </h3>
@@ -6674,7 +6666,7 @@ There’s nothing special about how Prudence handles HTTP, and it can work easil
 You can run many instances of Prudence behind a load balancer. This offers fault tolerance, maintenance options, and the possibility of dramatically scaling up the number of requests you can support. Your application can tolerate failure of any number of instances, as long as you have one running, because load balancers will automatically route to working instances. Similarly, load balancing allows you to bring some instances down for maintenance while keeping your application up and running.
 </div>
 <div class="Indented">
-Scaling up can be straightforward: simply add more and more instances behind the load balancer, which will make sure to distribute requests among them, while monitoring their responsiveness to accommodate for how well they handle their load. More complex systems can involve different kinds of instances, with the load balancer being in charge of routing requests to the appropriate pool of instances. This ‘‘partitioning’’ can be according to features (one pool handles chat room, one pool handles file downloads), geography (one pool handles England, one pool handles France), or other clever ways to keep the whole system efficient and responsive. See <u>Scaling Tips (page <a class="Reference" href="#../scaling/">↓</a>) </u>for an in-depth treatment.
+Scaling up can be straightforward: simply add more and more instances behind the load balancer, which will make sure to distribute requests among them, while monitoring their responsiveness to accommodate for how well they handle their load. More complex systems can involve different kinds of instances, with the load balancer being in charge of routing requests to the appropriate pool of instances. This ‘‘partitioning’’ can be according to features (one pool handles chat room, one pool handles file downloads), geography (one pool handles England, one pool handles France), or other clever ways to keep the whole system efficient and responsive. See <u>Scaling Tips (page <a class="Reference" href="#../../scaling/">↓</a>) </u>for an in-depth treatment.
 </div>
 <div class="Indented">
 There are many great load balancers out there, but we especially like <a class="URL" href="http://www.danga.com/perlbal/">Perlbal</a>. Here’s a sample perlbal.conf in which we use Perlbal to handle secure (SSL) connections for us:

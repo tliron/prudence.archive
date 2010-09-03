@@ -28,6 +28,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.apache.bcel.verifier.statics.StringRepresentation;
 import org.restlet.Request;
 import org.restlet.Response;
+import org.restlet.data.Encoding;
 import org.restlet.data.Reference;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
@@ -161,9 +162,9 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	}
 
 	/**
-	 * Casts the cache key pattern for the current executable.
+	 * Casts the cache key pattern for the current executable and encoding.
 	 * 
-	 * @return The cache key for the current executable or null
+	 * @return The cache key or null
 	 */
 	public String getCacheKey()
 	{
@@ -205,36 +206,20 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 * @throws DocumentException
 	 * @throws IOException
 	 */
-	public Representation include( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
-	{
-		return include( documentName, true );
-	}
-
-	/**
-	 * Includes a text document into the current location. The document may be a
-	 * "text-with-scriptlets" executable, in which case its output could be
-	 * dynamically generated.
-	 * 
-	 * @param documentName
-	 *        The document name
-	 * @param allowFragments
-	 *        Whether to allow documents in the fragments directory
-	 * @return A representation of the document's output
-	 * @throws ParsingException
-	 * @throws ExecutionException
-	 * @throws DocumentException
-	 * @throws IOException
-	 * @see GeneratedTextResource#getFragmentDirectory()
-	 */
 	@SuppressWarnings("unchecked")
-	public Representation include( String documentName, boolean allowFragments ) throws ParsingException, ExecutionException, DocumentException, IOException
+	public Representation include( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
 	{
 		documentName = resource.validateDocumentName( documentName );
 
-		DocumentDescriptor<Executable> documentDescriptor;
+		// This will be null if we're the initial document
+		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
 
-		// See if a document descriptor is cached in the request
-		documentDescriptor = (DocumentDescriptor<Executable>) resource.getRequest().getAttributes().remove( "com.threecrickets.prudence.GeneratedTextResource.documentDescriptor" );
+		DocumentDescriptor<Executable> documentDescriptor = null;
+
+		// For initial documents, see if a document descriptor is cached for us
+		// in the request
+		if( currentDocumentDescriptor == null )
+			documentDescriptor = (DocumentDescriptor<Executable>) resource.getRequest().getAttributes().remove( "com.threecrickets.prudence.GeneratedTextResource.documentDescriptor" );
 
 		if( documentDescriptor == null )
 		{
@@ -244,7 +229,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			}
 			catch( DocumentNotFoundException x )
 			{
-				if( allowFragments )
+				if( currentDocumentDescriptor != null )
 				{
 					// Try the fragment directory
 					File fragmentDirectory = resource.getFragmentDirectoryRelative();
@@ -259,14 +244,20 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			}
 		}
 
-		// Add dependency
-		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
-		if( currentDocumentDescriptor != null )
-			currentDocumentDescriptor.getDependencies().add( documentDescriptor );
-
-		if( conversationService.getMediaType() == null )
+		if( currentDocumentDescriptor == null )
+		{
 			// Set initial media type according to the document's tag
-			conversationService.setMediaTypeExtension( documentDescriptor.getTag() );
+			if( conversationService.getMediaType() == null )
+				conversationService.setMediaTypeExtension( documentDescriptor.getTag() );
+
+			// Set the initial document encoding to that of the conversation
+			setEncoding( documentDescriptor.getDocument(), conversationService.getEncoding() );
+		}
+		else
+		{
+			// Add dependency
+			currentDocumentDescriptor.getDependencies().add( documentDescriptor );
+		}
 
 		// Execute
 		pushDocumentDescriptor( documentDescriptor );
@@ -298,6 +289,13 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 		// Cache the document descriptor in the request
 		resource.getRequest().getAttributes().put( "com.threecrickets.prudence.GeneratedTextResource.documentDescriptor", documentDescriptor );
+
+		// Set initial media type according to the document's tag
+		if( conversationService.getMediaType() == null )
+			conversationService.setMediaTypeExtension( documentDescriptor.getTag() );
+
+		// Set the initial document encoding to that of the conversation
+		setEncoding( documentDescriptor.getDocument(), conversationService.getEncoding() );
 
 		String cacheKey = castCacheKey( documentDescriptor );
 		if( cacheKey != null )
@@ -363,9 +361,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 	private static final String PATH_TO_BASE_VARIABLE_FULL = "{" + PATH_TO_BASE_VARIABLE + "}";
 
-	private static final String PREFERRED_ENCODING = "pe";
-
-	private static final String PREFERRED_ENCODING_FULL = "{" + PREFERRED_ENCODING + "}";
+	private static final String ENCODING_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.encoding";
 
 	private static final String CACHE_DURATION_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheDuration";
 
@@ -394,6 +390,33 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 * Buffer used for caching.
 	 */
 	private StringBuffer writerBuffer;
+
+	/**
+	 * The encoding for the executable (different from the encoding for the
+	 * conversation).
+	 * 
+	 * @param executable
+	 *        The executable
+	 * @return The encoding or null
+	 */
+	private static Encoding getEncoding( Executable executable )
+	{
+		return (Encoding) executable.getAttributes().get( ENCODING_ATTRIBUTE );
+	}
+
+	/**
+	 * The encoding for the executable (different from the encoding for the
+	 * conversation).
+	 * 
+	 * @param executable
+	 *        The executable
+	 * @param encoding
+	 *        The encoding
+	 */
+	private static void setEncoding( Executable executable, Encoding encoding )
+	{
+		executable.getAttributes().put( ENCODING_ATTRIBUTE, encoding );
+	}
 
 	/**
 	 * The cache key pattern.
@@ -469,6 +492,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 * 
 	 * @param documentDescriptor
 	 *        The document descriptor
+	 * @param encoding
+	 *        The encoding or null
 	 * @return The cache key or null
 	 */
 	private String castCacheKey( DocumentDescriptor<Executable> documentDescriptor )
@@ -494,10 +519,6 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			// {ptb}
 			if( cacheKeyPattern.contains( PATH_TO_BASE_VARIABLE_FULL ) )
 				template.getVariables().put( PATH_TO_BASE_VARIABLE, new Variable( Variable.TYPE_ALL, conversationService.getPathToBase(), true, true ) );
-
-			// {pe}
-			if( cacheKeyPattern.contains( PREFERRED_ENCODING_FULL ) )
-				template.getVariables().put( PREFERRED_ENCODING, new Variable( Variable.TYPE_ALL, conversationService.getPreferredEncodingName(), true, true ) );
 
 			Map<String, String> cacheKeyPatternHandlers = new HashMap<String, String>();
 
@@ -558,7 +579,14 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			try
 			{
 				// Cast it
-				return template.format( request, response );
+				String cacheKey = template.format( request, response );
+
+				// Add encoding
+				Encoding encoding = getEncoding( documentDescriptor.getDocument() );
+				if( encoding != null )
+					cacheKey += "|" + encoding.getName();
+
+				return cacheKey;
 			}
 			finally
 			{
@@ -651,8 +679,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			if( writer != null )
 				writer.write( pureText );
 
-			return new CacheEntry( pureText, conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), conversationService.getEncoding(),
-				executable.getDocumentTimestamp(), getExpirationTimestamp( executable ) ).represent();
+			return new CacheEntry( pureText, conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), getEncoding( executable ), executable.getDocumentTimestamp(),
+				getExpirationTimestamp( executable ) ).represent();
 		}
 
 		int startPosition = 0;
@@ -745,7 +773,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 				// Get the buffer from when we executed the executable
 				CacheEntry cacheEntry = new CacheEntry( writerBuffer.substring( startPosition ), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(),
-					conversationService.getEncoding(), executable.getDocumentTimestamp(), getExpirationTimestamp( executable ) );
+					getEncoding( executable ), executable.getDocumentTimestamp(), getExpirationTimestamp( executable ) );
 
 				// Cache if enabled
 				String cacheKey = getCacheKey();
@@ -769,7 +797,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				if( startPosition == 0 )
 					return cacheEntry.represent();
 				else
-					return new CacheEntry( writerBuffer.toString(), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), conversationService.getEncoding(),
+					return new CacheEntry( writerBuffer.toString(), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), getEncoding( executable ),
 						executable.getDocumentTimestamp(), getExpirationTimestamp( executable ) ).represent();
 			}
 		}

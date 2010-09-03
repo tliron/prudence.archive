@@ -16,6 +16,7 @@ import java.util.Iterator;
 
 import org.restlet.data.CacheDirective;
 import org.restlet.data.CharacterSet;
+import org.restlet.data.Encoding;
 import org.restlet.data.MediaType;
 import org.restlet.data.Tag;
 import org.restlet.engine.http.header.HeaderConstants;
@@ -51,6 +52,50 @@ public class DelegatedResourceConversationService extends ResourceConversationSe
 	public DelegatedResourceConversationService( DelegatedResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
 	{
 		super( resource, entity, variant, defaultCharacterSet, resource.getFileUploadSizeThreshold(), resource.getFileUploadDirectory() );
+	}
+
+	//
+	// Attributes
+	//
+
+	/**
+	 * The encoding.
+	 * 
+	 * @return The encoding or null if not set
+	 * @see #setEncoding(Encoding)
+	 */
+	public Encoding getEncoding()
+	{
+		return encoding;
+	}
+
+	/**
+	 * @param encoding
+	 *        The encoding or null
+	 * @see #getEncoding()
+	 */
+	public void setEncoding( Encoding encoding )
+	{
+		this.encoding = encoding;
+	}
+
+	/**
+	 * @return The encoding name
+	 * @see #getEncoding()
+	 */
+	public String getEncodingName()
+	{
+		return encoding != null ? encoding.getName() : null;
+	}
+
+	/**
+	 * @param encodingName
+	 *        The encoding name
+	 * @see #setEncoding(Encoding)
+	 */
+	public void setEncodingName( String encodingName )
+	{
+		encoding = Encoding.valueOf( encodingName );
 	}
 
 	/**
@@ -248,6 +293,11 @@ public class DelegatedResourceConversationService extends ResourceConversationSe
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
+
+	/**
+	 * The encoding.
+	 */
+	private Encoding encoding;
 
 	/**
 	 * The expiration date.
