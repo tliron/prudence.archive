@@ -168,7 +168,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public String getCacheKey()
 	{
-		return castCacheKey( getCurrentDocumentDescriptor() );
+		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
+		return getCacheKeyForEncoding( castCacheKey( currentDocumentDescriptor ), getEncoding( currentDocumentDescriptor.getDocument() ) );
 	}
 
 	/**
@@ -251,7 +252,9 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				conversationService.setMediaTypeExtension( documentDescriptor.getTag() );
 
 			// Set the initial document encoding to that of the conversation
-			setEncoding( documentDescriptor.getDocument(), conversationService.getEncoding() );
+			Encoding encoding = conversationService.getEncoding();
+			if( encoding != null )
+				setEncoding( documentDescriptor.getDocument(), encoding );
 		}
 		else
 		{
@@ -263,7 +266,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		pushDocumentDescriptor( documentDescriptor );
 		try
 		{
-			return generateText( documentDescriptor.getDocument() );
+			return generateText( documentDescriptor );
 		}
 		finally
 		{
@@ -295,7 +298,9 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			conversationService.setMediaTypeExtension( documentDescriptor.getTag() );
 
 		// Set the initial document encoding to that of the conversation
-		setEncoding( documentDescriptor.getDocument(), conversationService.getEncoding() );
+		Encoding encoding = conversationService.getEncoding();
+		if( encoding != null )
+			setEncoding( documentDescriptor.getDocument(), encoding );
 
 		String cacheKey = castCacheKey( documentDescriptor );
 		if( cacheKey != null )
@@ -303,7 +308,12 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			Cache cache = resource.getCache();
 			if( cache != null )
 			{
-				CacheEntry cacheEntry = cache.fetch( cacheKey );
+				// Try cache key for encoding first
+				String cacheKeyForEncoding = getCacheKeyForEncoding( cacheKey, getEncoding( documentDescriptor.getDocument() ) );
+				CacheEntry cacheEntry = cache.fetch( cacheKeyForEncoding );
+				if( cacheEntry == null )
+					cacheEntry = cache.fetch( cacheKey );
+
 				if( cacheEntry != null )
 				{
 					// Make sure the document is not newer than the cache
@@ -311,6 +321,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 					if( documentDescriptor.getDocument().getDocumentTimestamp() <= cacheEntry.getDocumentModificationDate().getTime() )
 					{
 						// Cache the cache entry in the request
+						resource.getRequest().getAttributes().put( "com.threecrickets.prudence.GeneratedTextResource.cacheKey", cacheKey );
 						resource.getRequest().getAttributes().put( "com.threecrickets.prudence.GeneratedTextResource.cacheEntry", cacheEntry );
 
 						return cacheEntry;
@@ -488,6 +499,23 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	}
 
 	/**
+	 * Adds encoding to a cache key.
+	 * 
+	 * @param cacheKey
+	 *        The cache key
+	 * @param encoding
+	 *        The encoding or null
+	 * @return The cache key for the encoding
+	 */
+	private static String getCacheKeyForEncoding( String cacheKey, Encoding encoding )
+	{
+		if( encoding != null )
+			return cacheKey + "|" + encoding.getName();
+		else
+			return cacheKey;
+	}
+
+	/**
 	 * Casts the cache key pattern for an executable.
 	 * 
 	 * @param documentDescriptor
@@ -579,14 +607,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			try
 			{
 				// Cast it
-				String cacheKey = template.format( request, response );
-
-				// Add encoding
-				Encoding encoding = getEncoding( documentDescriptor.getDocument() );
-				if( encoding != null )
-					cacheKey += "|" + encoding.getName();
-
-				return cacheKey;
+				return template.format( request, response );
 			}
 			finally
 			{
@@ -654,21 +675,63 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 
 	/**
+	 * Represents a cache entry, making sure to re-encode it (and store the
+	 * re-encoded entry in the cache) if necessary.
+	 * 
+	 * @param cacheEntry
+	 *        The cache entry
+	 * @param encoding
+	 *        The encoding
+	 * @param cacheKey
+	 *        The cache key
+	 * @param executable
+	 *        The executable
+	 * @param writer
+	 *        The writer
+	 * @return The representation
+	 * @throws IOException
+	 */
+	private Representation represent( CacheEntry cacheEntry, Encoding encoding, String cacheKey, Executable executable, Writer writer ) throws IOException
+	{
+		if( ( cacheEntry.getEncoding() == null ) && ( encoding != null ) )
+		{
+			// Re-encode it
+			cacheEntry = new CacheEntry( cacheEntry, encoding );
+
+			// Cache re-encoded entry
+			Cache cache = resource.getCache();
+			if( cache != null )
+			{
+				String cacheKeyForEncoding = getCacheKeyForEncoding( cacheKey, encoding );
+				Set<String> cacheTags = getCacheTags( executable, false );
+				cache.store( cacheKeyForEncoding, cacheTags, cacheEntry );
+			}
+		}
+
+		// We want to write this, too, for includes
+		if( ( writer != null ) && ( cacheEntry.getString() != null ) )
+			writer.write( cacheEntry.getString() );
+
+		return cacheEntry.represent();
+	}
+
+	/**
 	 * Generates and possibly caches a textual representation. The returned
 	 * representation is either a {@link StringRepresentation} or a
 	 * {@link GeneratedTextDeferredRepresentation}. Text in the former case
 	 * could be the result of either execution or retrieval from the cache.
 	 * 
-	 * @param executable
-	 *        The executable
+	 * @param documentDescriptor
+	 *        The document descriptor
 	 * @return A representation, either generated by the executable or fetched
 	 *         from the cache
 	 * @throws IOException
 	 * @throws ParsingException
 	 * @throws ExecutionException
 	 */
-	private Representation generateText( Executable executable ) throws IOException, ParsingException, ExecutionException
+	private Representation generateText( DocumentDescriptor<Executable> documentDescriptor ) throws IOException, ParsingException, ExecutionException
 	{
+		Executable executable = documentDescriptor.getDocument();
 		Writer writer = executionContext.getWriter();
 
 		// Optimized handling for pure text
@@ -702,37 +765,28 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			}
 
 			// See if a valid cache entry has already been cached in the request
-			CacheEntry cacheEntry = (CacheEntry) resource.getRequest().getAttributes().get( "com.threecrickets.prudence.GeneratedTextResource.cacheEntry" );
-			if( cacheEntry != null )
-			{
-				// We want to write this, too, for includes
-				if( ( writer != null ) && ( cacheEntry.getString() != null ) )
-					writer.write( cacheEntry.getString() );
-
-				return cacheEntry.represent();
-			}
+			CacheEntry cacheEntry = (CacheEntry) resource.getRequest().getAttributes().remove( "com.threecrickets.prudence.GeneratedTextResource.cacheEntry" );
+			String cacheKey = (String) resource.getRequest().getAttributes().remove( "com.threecrickets.prudence.GeneratedTextResource.cacheKey" );
+			if( ( cacheEntry != null ) && ( cacheKey != null ) )
+				return represent( cacheEntry, getEncoding( executable ), cacheKey, executable, writer );
 
 			// Attempt to use cache
-			String cacheKey = getCacheKey();
+			cacheKey = castCacheKey( documentDescriptor );
 			if( cacheKey != null )
 			{
 				Cache cache = resource.getCache();
 				if( cache != null )
 				{
-					cacheEntry = cache.fetch( cacheKey );
-					if( cacheEntry != null )
-					{
-						// Make sure the document is not newer than the cache
-						// entry
-						if( executable.getDocumentTimestamp() <= cacheEntry.getDocumentModificationDate().getTime() )
-						{
-							// We want to write this, too, for includes
-							if( ( writer != null ) && ( cacheEntry.getString() != null ) )
-								writer.write( cacheEntry.getString() );
+					// Try cache key for encoding first
+					Encoding encoding = getEncoding( executable );
+					String cacheKeyForEncoding = getCacheKeyForEncoding( cacheKey, encoding );
+					cacheEntry = cache.fetch( cacheKeyForEncoding );
+					if( cacheEntry == null )
+						cacheEntry = cache.fetch( cacheKey );
 
-							return cacheEntry.represent();
-						}
-					}
+					// Make sure the document is not newer than the cache entry
+					if( ( cacheEntry != null ) && ( executable.getDocumentTimestamp() <= cacheEntry.getDocumentModificationDate().getTime() ) )
+						return represent( cacheEntry, encoding, cacheKey, executable, writer );
 				}
 			}
 		}
@@ -785,12 +839,10 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 					if( ( cacheTags != null ) && !cacheTags.isEmpty() )
 						cacheTags = propagateCacheTags( cacheTags );
 
+					// Cache!
 					Cache cache = resource.getCache();
 					if( cache != null )
-					{
-						// Cache!
 						cache.store( cacheKey, cacheTags, cacheEntry );
-					}
 				}
 
 				// Return a representation of the entire buffer

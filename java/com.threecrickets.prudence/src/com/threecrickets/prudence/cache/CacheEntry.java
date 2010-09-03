@@ -46,11 +46,25 @@ public class CacheEntry implements Externalizable
 	//
 
 	/**
-	 * Constructor. A constructor without arguments is required for
+	 * Construction. A constructor without arguments is required for
 	 * {@link Externalizable}.
 	 */
 	public CacheEntry()
 	{
+	}
+
+	/**
+	 * Construction with re-encoding.
+	 * 
+	 * @param cacheEntry
+	 *        The cache entry to clone (must be un-encoded)
+	 * @param encoding
+	 *        The new encoding to use
+	 * @throws IOException
+	 */
+	public CacheEntry( CacheEntry cacheEntry, Encoding encoding ) throws IOException
+	{
+		this( cacheEntry.string, cacheEntry.mediaType, cacheEntry.language, cacheEntry.characterSet, encoding, cacheEntry.modificationDate, cacheEntry.expirationDate );
 	}
 
 	/**
