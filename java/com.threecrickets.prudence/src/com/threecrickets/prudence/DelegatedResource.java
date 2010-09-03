@@ -1347,7 +1347,7 @@ public class DelegatedResource extends ServerResource
 			if( MediaType.APPLICATION_JAVA.equals( conversationService.getMediaType() ) )
 			{
 				// Wrap in an object representation
-				representation = new ObjectRepresentation<Serializable>( (Serializable) object );
+				representation = new ObjectRepresentation<Serializable>( (Serializable) object, MediaType.APPLICATION_JAVA );
 				Language language = conversationService.getLanguage();
 				if( language != null )
 					representation.getLanguages().add( language );
