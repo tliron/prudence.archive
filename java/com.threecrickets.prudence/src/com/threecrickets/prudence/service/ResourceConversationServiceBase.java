@@ -12,8 +12,10 @@
 package com.threecrickets.prudence.service;
 
 import java.io.File;
+import java.util.List;
 
 import org.restlet.data.CharacterSet;
+import org.restlet.data.Encoding;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
@@ -37,34 +39,51 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	 * @param resource
 	 *        The resource
 	 * @param entity
-	 *        The entity or null
-	 * @param variant
-	 *        The variant or null
+	 *        The client entity or null
+	 * @param preferences
+	 *        The negotiated client preferences or null
 	 * @param defaultCharacterSet
 	 *        The character set to use if unspecified by variant
+	 * @param supportedEncodings
+	 *        The supported encodings or null
 	 * @param fileUploadSizeThreshold
 	 *        The size in bytes beyond which uploaded files will be stored to
 	 *        disk
 	 * @param fileUploadDirectory
 	 *        The directory in which to place uploaded files
 	 */
-	public ResourceConversationServiceBase( R resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet, int fileUploadSizeThreshold, File fileUploadDirectory )
+	public ResourceConversationServiceBase( R resource, Representation entity, Variant preferences, CharacterSet defaultCharacterSet, List<Encoding> supportedEncodings, int fileUploadSizeThreshold,
+		File fileUploadDirectory )
 	{
 		super( fileUploadSizeThreshold, fileUploadDirectory );
 
 		this.resource = resource;
 		this.entity = entity;
-		this.variant = variant;
+		this.preferences = preferences != null ? preferences : getPreferredVariant();
 
-		if( variant != null )
+		if( preferences != null )
 		{
-			mediaType = variant.getMediaType();
-			characterSet = variant.getCharacterSet();
+			mediaType = preferences.getMediaType();
+			characterSet = preferences.getCharacterSet();
+
+			if( supportedEncodings != null )
+			{
+				List<Encoding> preferredEncodings = preferences.getEncodings();
+				for( Encoding encoding : supportedEncodings )
+				{
+					if( preferredEncodings.contains( encoding ) )
+					{
+						this.encoding = encoding;
+						break;
+					}
+				}
+			}
 		}
 
 		// For HTML forms, switch to HTML
-		if( entity != null && ( entity.getMediaType().equals( MediaType.APPLICATION_WWW_FORM ) ) )
-			mediaType = MediaType.TEXT_HTML;
+		// if( entity != null && ( entity.getMediaType().equals(
+		// MediaType.APPLICATION_WWW_FORM ) ) )
+		// mediaType = MediaType.TEXT_HTML;
 
 		if( characterSet == null )
 			characterSet = defaultCharacterSet;
@@ -73,6 +92,46 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	//
 	// Attributes
 	//
+
+	/**
+	 * The encoding.
+	 * 
+	 * @return The encoding or null if not set
+	 * @see #setEncoding(Encoding)
+	 */
+	public Encoding getEncoding()
+	{
+		return encoding;
+	}
+
+	/**
+	 * @param encoding
+	 *        The encoding or null
+	 * @see #getEncoding()
+	 */
+	public void setEncoding( Encoding encoding )
+	{
+		this.encoding = encoding;
+	}
+
+	/**
+	 * @return The encoding name
+	 * @see #getEncoding()
+	 */
+	public String getEncodingName()
+	{
+		return encoding != null ? encoding.getName() : null;
+	}
+
+	/**
+	 * @param encodingName
+	 *        The encoding name
+	 * @see #setEncoding(Encoding)
+	 */
+	public void setEncodingName( String encodingName )
+	{
+		encoding = Encoding.valueOf( encodingName );
+	}
 
 	/**
 	 * The character set.
@@ -120,7 +179,7 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	 */
 	public String getCharacterSetShortName()
 	{
-		return characterSet != null ? resource.getApplication().getMetadataService().getExtension( characterSet ) : null;
+		return characterSet != null ? resource.getMetadataService().getExtension( characterSet ) : null;
 	}
 
 	/**
@@ -130,7 +189,7 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	 */
 	public void setCharacterSetShortName( String characterSetShortName )
 	{
-		characterSet = resource.getApplication().getMetadataService().getCharacterSet( characterSetShortName );
+		characterSet = resource.getMetadataService().getCharacterSet( characterSetShortName );
 	}
 
 	/**
@@ -219,7 +278,7 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	 */
 	public String getMediaTypeExtension()
 	{
-		return mediaType != null ? resource.getApplication().getMetadataService().getExtension( mediaType ) : null;
+		return mediaType != null ? resource.getMetadataService().getExtension( mediaType ) : null;
 	}
 
 	/**
@@ -229,7 +288,19 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	 */
 	public void setMediaTypeExtension( String mediaTypeExtension )
 	{
-		mediaType = resource.getApplication().getMetadataService().getMediaType( mediaTypeExtension );
+		mediaType = resource.getMetadataService().getMediaType( mediaTypeExtension );
+	}
+
+	/**
+	 * The preferred variant.
+	 * 
+	 * @return The preferred variant
+	 */
+	public Variant getPreferredVariant()
+	{
+		if( preferredVariant == null )
+			preferredVariant = resource.getRequest().getClientInfo().getPreferredVariant( resource.getVariants(), resource.getMetadataService() );
+		return preferredVariant;
 	}
 
 	/**
@@ -243,19 +314,19 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	}
 
 	/**
-	 * The variant.
+	 * The negotiated client preferences.
 	 * 
-	 * @return The variant or null if not available
+	 * @return The negotiated preferences or null if not available
 	 */
-	public Variant getVariant()
+	public Variant getPreferences()
 	{
-		return variant;
+		return preferences;
 	}
 
 	/**
-	 * The entity.
+	 * The client entity.
 	 * 
-	 * @return The entity's representation or null if not available
+	 * @return The client entity's representation or null if not available
 	 */
 	public Representation getEntity()
 	{
@@ -271,14 +342,19 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	private final R resource;
 
 	/**
-	 * The {@link Variant} of this request.
+	 * The negotiated client preferences.
 	 */
-	private final Variant variant;
+	private final Variant preferences;
 
 	/**
-	 * The entity.
+	 * The client entity.
 	 */
 	private final Representation entity;
+
+	/**
+	 * The encoding.
+	 */
+	private Encoding encoding;
 
 	/**
 	 * The character set.
@@ -294,4 +370,9 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	 * The media type.
 	 */
 	private MediaType mediaType;
+
+	/**
+	 * The preferred variant
+	 */
+	private Variant preferredVariant;
 }

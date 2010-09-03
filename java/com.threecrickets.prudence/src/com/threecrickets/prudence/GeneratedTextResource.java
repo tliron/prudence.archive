@@ -181,6 +181,7 @@ public class GeneratedTextResource extends ServerResource
 
 	public static final List<Encoding> SUPPORTED_ENCODINGS = new ArrayList<Encoding>();
 
+	static
 	{
 		SUPPORTED_ENCODINGS.addAll( IoUtil.SUPPORTED_COMPRESSION_ENCODINGS );
 		SUPPORTED_ENCODINGS.add( Encoding.IDENTITY );
@@ -876,6 +877,60 @@ public class GeneratedTextResource extends ServerResource
 	{
 		super.doInit();
 		setAnnotated( false );
+
+		Request request = getRequest();
+		Map<String, Object> attributes = request.getAttributes();
+
+		// Check for cached document name in the request
+		String documentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentname" );
+		if( documentName == null )
+		{
+			documentName = request.getResourceRef().getRemainingPart( true, false );
+			documentName = validateDocumentName( documentName );
+			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentname", documentName );
+		}
+
+		try
+		{
+			DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocument( documentName );
+			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentDescriptor", documentDescriptor );
+
+			// Media type is chosen according to the document descriptor tag
+			MediaType mediaType = getMetadataService().getMediaType( documentDescriptor.getTag() );
+
+			if( isNegotiateEncoding() )
+			{
+				// Add a variant for each supported encoding
+				if( mediaType != null )
+				{
+					for( Encoding encoding : SUPPORTED_ENCODINGS )
+					{
+						Variant variant = new Variant( mediaType );
+						variant.getEncodings().add( encoding );
+						getVariants().add( variant );
+					}
+				}
+				else
+				{
+					for( Encoding encoding : SUPPORTED_ENCODINGS )
+					{
+						Variant variant = new Variant();
+						variant.getEncodings().add( encoding );
+						getVariants().add( variant );
+					}
+				}
+			}
+			else if( mediaType != null )
+				getVariants().add( new Variant( mediaType ) );
+		}
+		catch( DocumentNotFoundException x )
+		{
+			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
+		}
+		catch( DocumentException x )
+		{
+			throw new ResourceException( x );
+		}
 	}
 
 	@Override
@@ -1202,23 +1257,27 @@ public class GeneratedTextResource extends ServerResource
 				// Execute and represent output
 				representation = documentService.include( documentName );
 
+				List<CacheDirective> cacheDirectives = getResponse().getCacheDirectives();
 				switch( getClientCachingMode() )
 				{
 					case CLIENT_CACHING_MODE_DISABLED:
 					{
-						// Remove all current caching headers, and set
-						// "no-cache"
+						// Remove all conditional and caching headers,
+						// explicitly setting "no-cache"
 						representation.setModificationDate( null );
 						representation.setExpirationDate( null );
 						representation.setTag( null );
-						List<CacheDirective> cacheDirectives = getResponse().getCacheDirectives();
 						cacheDirectives.clear();
 						cacheDirectives.add( CacheDirective.noCache() );
 						break;
 					}
 
 					case CLIENT_CACHING_MODE_CONDITIONAL:
-						// Leave conditional headers intact
+						// Leave conditional headers intact, but remove cache
+						// headers, explicitly setting "no-cache"
+						representation.setExpirationDate( null );
+						cacheDirectives.clear();
+						cacheDirectives.add( CacheDirective.noCache() );
 						break;
 
 					case CLIENT_CACHING_MODE_OFFLINE:
@@ -1231,7 +1290,6 @@ public class GeneratedTextResource extends ServerResource
 							long maxAge = ( expirationDate.getTime() - System.currentTimeMillis() );
 							if( maxAge > 0 )
 							{
-								List<CacheDirective> cacheDirectives = getResponse().getCacheDirectives();
 								cacheDirectives.clear();
 								cacheDirectives.add( CacheDirective.maxAge( (int) maxAge / 1000 ) );
 							}

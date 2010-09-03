@@ -6934,7 +6934,18 @@ reference "../api/|conversation-encoding"
 
 )
 \bar default
- to the client's preferred encoding.
+ to the client's 
+\bar under
+preferred encoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-preferred-encoding"
+
+\end_inset
+
+)
+\bar default
+.
  Modern client processors, even on mobile devices, decompress fast enough
  that the network ends up being the performance bottleneck.
  The smaller the response, then, the better.
@@ -7003,9 +7014,13 @@ name "../generating-html/|conditional-requests"
 \end_layout
 
 \begin_layout Standard
+This topic is related to caching, but from the client's perspective.
+\end_layout
+
+\begin_layout Standard
 HTTP clients, such as web browsers, store downloaded content in their cache,
- marking it with a modification date and tag according to HTTP headers in
- the response.
+ marking it with expiration and modification dates according to HTTP headers
+ in the response.
  Subsequent requests to the same URL will be ``conditional,'' meaning that
  the client will tell the server what the latest modification date it has.
  If the server does not have new data, then it returns an empty response
@@ -7027,8 +7042,9 @@ reference "../api/|document-cache-duration"
 )
 \bar default
 , then conditional requests are already in effect for you by default.
- Prudence automatically sets the modification dates accordingly.
- You can disable this feature via the 
+ Prudence automatically sets the modification and expiration dates accordingly.
+ You can disable this feature, and also enable offline caching, via the
+ 
 \bar under
 dynamicWebClientCachingMode setting (page 
 \begin_inset CommandInset ref
@@ -7040,40 +7056,6 @@ reference "../application/|dynamic-web-client-caching-mode"
 )
 \bar default
 .
-\end_layout
-
-\begin_layout Paragraph
-Client Caching
-\end_layout
-
-\begin_layout Standard
-Though clients rely on a local cache for conditional requests, you can provide
- them with additional caching directives.
- You can enable this via the the 
-\bar under
-dynamicWebClientCachingMode setting (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../application/|dynamic-web-client-caching-mode"
-
-\end_inset
-
-)
-\bar default
-.
-\end_layout
-
-\begin_layout Standard
-Explicitly setting cache directives has an important side effect: most clients
- will 
-\emph on
-not
-\emph default
- send conditional HTTP requests for the cached data until the cache entry
- expires.
- This allows you to save bandwidth and improves client performance, but
- at the expense of not being able to update the client upon changes.
- Use with care.
 \end_layout
 
 \begin_layout Standard
@@ -7089,6 +7071,22 @@ reference "../resources/|conditional-requests"
 )
 \bar default
  instead.
+\end_layout
+
+\begin_layout Standard
+For further bandwidth and performance improvements with most clients, consider
+ compressing your output with 
+\bar under
+conversation.encoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-encoding"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsection
@@ -8328,28 +8326,8 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_layout
 
 \begin_layout Itemize
-Other return values: If the 
-\bar under
-conversation.mediaType (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-media-type"
-
-\end_inset
-
-)
-\bar default
- is ``application/java'' the value will be wrapped in an 
-\begin_inset CommandInset href
-LatexCommand href
-name "ObjectRepresentation instance"
-target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/representation/ObjectRepresentation.html"
-
-\end_inset
-
-.
- Otherwise, it will be converted into a string if it isn't a string already,
- and returned to the client as a textual representation.
+Other return values are converted into strings, if they are not strings
+ already, which are then returned as textual representations to the client.
 \end_layout
 
 \begin_layout Standard
@@ -8929,8 +8907,8 @@ name "../resources/|conditional-requests"
 
 \begin_layout Standard
 HTTP clients, such as web browsers, store downloaded content in their local
- cache, marking it with a modification date and tag according to HTTP headers
- in the response.
+ cache, marking it with expiration and modification dates according to HTTP
+ headers in the response.
  Subsequent requests to the same URL will be ``conditional,'' meaning that
  the client will tell the server what the latest modification date it has.
  If the server does not have new data, then it returns an empty response
@@ -8964,6 +8942,16 @@ reference "../api/|conversation-tag"
 )
 \bar default
 .
+ Note that these attributes are ignored in case you are constructing and
+ returning your own 
+\begin_inset CommandInset href
+LatexCommand href
+name "Representation instance"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/representation/Representation.html"
+
+\end_inset
+
+.
  If you implement 
 \bar under
 handleGetInfo (page 
@@ -8979,34 +8967,7 @@ reference "../resources/|handle-get-info"
 \end_layout
 
 \begin_layout Standard
-Note that these attributes are ignored in case you are constructing and
- returning your own 
-\begin_inset CommandInset href
-LatexCommand href
-name "Representation instance"
-target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/representation/Representation.html"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Paragraph
-Client Caching
-\begin_inset CommandInset label
-LatexCommand label
-name "../resources/|client-caching"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Though clients rely on a local cache for conditional requests, you can provide
- them with additional caching directives.
- In Prudence, you can control the expiration of the client's cached entry
- with 
+You can control the expiration of the client's cached entry with 
 \bar under
 conversation.maxAge (page 
 \begin_inset CommandInset ref
@@ -9029,23 +8990,12 @@ reference "../api/|conversation-expiration-date"
 )
 \bar default
 .
-\end_layout
-
-\begin_layout Standard
-Explicitly setting cache directives has an important side effect: most clients
- will 
-\emph on
-not
-\emph default
- send conditional HTTP requests for the cached data until the cache entry
- expires.
- This allows you to save bandwidth and improves client performance, but
- at the expense of not being able to update the client upon changes.
- Use with care.
+ Until the cache entry expires, most clients will not send conditional HTTP
+ requests for the cached data, so use it with care.
 \end_layout
 
 \begin_layout Subsection
-Resources As API
+Resources as API
 \begin_inset CommandInset label
 LatexCommand label
 name "../resources/|resources-as-api"
@@ -9056,192 +9006,16 @@ name "../resources/|resources-as-api"
 \end_layout
 
 \begin_layout Standard
-A ``resource-oriented architecture''
-\bar under
- 
-\bar default
-is purposely more minimal than object-oriented, transactional architectures.
- However, as discussed in 
-\bar under
-``The Case for REST'' (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../../rest/"
+TODO
+\end_layout
 
-\end_inset
-
-)
-\bar default
-, there are many advantages to this minimalism.
- While it's possible for you to maintain multiple interfaces to your service,
- it might make more sense to standardize around REST principles throughout
- your application.
+\begin_layout Standard
+There's no need to maintain a separate ``internal API,'' with REST resources
+ serving as an ``external API.'' Your resources are available internally,
+ without having to use HTTP.
  A single, uniform API is more maintainable, and less prone to bugs.
-\end_layout
-
-\begin_layout Standard
-Prudence lets you access your resources internally, without having to go
- through HTTP, using 
-\bar under
-document.internal (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|document-internal"
-
-\end_inset
-
-)
-\bar default
-.
- You can furthermore avoid special representations and pass JVM objects
- through directly by setting 
-\bar under
-conversation.mediaType (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-media-type"
-
-\end_inset
-
-)
-\bar default
- to ``application/java''.
-\end_layout
-
-\begin_layout Standard
-For example, here's a resource that nicely supports both external and internal
- clients:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-function handleInit(conversation) {
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.addMediaTypeByName('application/json')
-\end_layout
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-function handleGet(conversation) {
-\end_layout
-
-\begin_layout Plain Layout
-
-	var data = getData()
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	if(conversation.internal) {
-\end_layout
-
-\begin_layout Plain Layout
-
-		conversation.mediaTypeName = 'application/java'
-\end_layout
-
-\begin_layout Plain Layout
-
-		return data
-\end_layout
-
-\begin_layout Plain Layout
-
-	}
-\end_layout
-
-\begin_layout Plain Layout
-
-	else {
-\end_layout
-
-\begin_layout Plain Layout
-
-		conversation.mediaTypeName = 'application/json'
-\end_layout
-
-\begin_layout Plain Layout
-
-		return JSON.stringify(data)
-\end_layout
-
-\begin_layout Plain Layout
-
-	}
-\end_layout
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-function getData() {
-\end_layout
-
-\begin_layout Plain Layout
-
-	return {name: 'test', description: 'This is some test data'}
-\end_layout
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-We can then access the resource directly, without any JSON encoding/decoding:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-var data = document.internal('/testresource/', 'application/java').get().object
-\end_layout
-
-\begin_layout Plain Layout
-
-print(object.description)
-\end_layout
-
-\end_inset
-
-
+ Additionally, the internal connectivity is an easy way to test your resources.
+ See below for internal access to your resources.
 \end_layout
 
 \begin_layout Subsubsection
@@ -13262,6 +13036,19 @@ reference "../api/|conversation-path-to-base"
 )
 \end_layout
 
+\begin_layout Itemize
+{pe}: preferred encoding, identical to 
+\bar under
+conversation.preferredEncoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-preferred-encoding"
+
+\end_inset
+
+)
+\end_layout
+
 \begin_layout Subsubsection
 conversation.locals
 \end_layout
@@ -15425,7 +15212,7 @@ Note that in /web/dynamic/ ``conversation'' is available as a global variable.
 \end_layout
 
 \begin_layout Subsubsection
-The Request
+Request Attributes
 \end_layout
 
 \begin_layout Paragraph
@@ -15544,7 +15331,7 @@ Click <a href="<%= conversation.pathToBase %>/contact/">here</a> to contact
 \end_layout
 
 \begin_layout Quote
-Note: If you are caching a document that relies on conversation.pathToBase,
+Warning: If you are caching a document that relies on conversation.pathToBase,
  you likely also want to include ``{ptb}'' or some other path reference
  in the 
 \bar under
@@ -15637,11 +15424,6 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_layout
 
 \begin_layout Standard
-Note that either ``data'' or ``file'' are valid, but not both.
- One will always be null.
-\end_layout
-
-\begin_layout Standard
 Prudence allows you to keep smaller files in memory.
  See the 
 \bar under
@@ -15655,6 +15437,11 @@ reference "../application/|file-upload-size-threshold"
 )
 \bar default
 .
+\end_layout
+
+\begin_layout Standard
+Note that either ``data'' or ``file'' are valid, but not both.
+ One will always be null.
 \end_layout
 
 \begin_layout Paragraph
@@ -15688,15 +15475,11 @@ conversation.entity
 \end_layout
 
 \begin_layout Standard
-(only available in HTTP PUT and POST commands)
+This is data sent by the client.
 \end_layout
 
 \begin_layout Standard
-This is the data entity sent by the client.
-\end_layout
-
-\begin_layout Standard
-In the case of an HTML POST form, it would be more convenient to use 
+In the case of an HTML form, it would be more convenient 
 \bar under
 conversation.form (page 
 \begin_inset CommandInset ref
@@ -15759,46 +15542,7 @@ If you want to access conversation.entity.text more than once, save it to
 \end_layout
 
 \begin_layout Paragraph
-conversation.preferences
-\begin_inset CommandInset label
-LatexCommand label
-name "../api/|conversation-preferences"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-In /web/dynamic/ and /web/static/, if the client request does not contain
- any data representation, for example in a ``GET'' request, then the 
-\bar under
-media type's default value will be set according to the filename extension
- (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../routing/|extensions-mime-types"
-
-\end_inset
-
-)
-\bar default
-.
-\end_layout
-
-\begin_layout Quote
-If the client request does not specificy a character set, then the character
- set will fall back to a default determined by the ``com.threecrickets.prudence.Gen
-eratedTextResource.defaultCharacterSet'' application global.
- It not explicitly set, it will be UTF-8.
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Standard
-Not available during handleInit
+conversation.variant
 \end_layout
 
 \begin_layout Standard
@@ -15866,34 +15610,11 @@ Note that in non-negotiated HTTP mode, Prudence ``passes through'' the client
  entity as a variant.
 \end_layout
 
-\begin_layout Subsubsection
-The Response
-\end_layout
-
-\begin_layout Standard
-By default, Prudence initializes all response attributes according to the
- 
-\bar under
-client's preferences (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-preferences"
-
-\end_inset
-
-)
-\bar default
-.
- However, you may want to explicitly change them.
- Also note that some clients to not specify preferences, in which case the
- response attributes will be undefined.
-\end_layout
-
 \begin_layout Paragraph
-conversation.statusCode, conversation.status
+conversation.preferredEncodingName, conversation.preferredEncoding
 \begin_inset CommandInset label
 LatexCommand label
-name "../api/|conversation-status-code"
+name "../api/|conversation-preferred-encoding"
 
 \end_inset
 
@@ -15901,37 +15622,24 @@ name "../api/|conversation-status-code"
 \end_layout
 
 \begin_layout Standard
-This is the HTTP status code returned to the client.
- The default status code is 200 (``OK'').
+(only available in /web/dynamic/ and /web/fragments/)
 \end_layout
 
 \begin_layout Standard
-Prudence will automatically set the status code to 500 (``internal server
- error'') in the case of an unhandled exception in your code.
- It can also display a 
-\bar under
-debug page (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../debugging/|the-debug-page"
+The client's favorite encoding among those normally supported by Prudence
+ for HTML and other text representations, which includes three compression
+ encodings.
+ To find out which encodings the client accepts and prefers, use conversation.req
+uest.clientInfo.acceptedEncodings and use conversation.request.clientInfo.getPreferre
+dEncoding() for custom negotiation (see 
+\begin_inset CommandInset href
+LatexCommand href
+name "ClientInfo documentation"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
 
 \end_inset
 
 )
-\bar default
- in such cases.
- You can also 
-\bar under
-capture error codes (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../routing/|capturing-errors"
-
-\end_inset
-
-)
-\bar default
- and display custom error pages to users.
 \end_layout
 
 \begin_layout Standard
@@ -15940,323 +15648,7 @@ These two variants represent the same value, letting you access the value
 \end_layout
 
 \begin_layout Standard
-conversation.statusCode is an HTTP status code as an integer.
-\end_layout
-
-\begin_layout Standard
-conversation.status is the underlying 
-\begin_inset CommandInset href
-LatexCommand href
-name "Status instance"
-target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/Status.html"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Paragraph
-conversation.mediaTypeName, conversation.mediaTypeExtension, conversation.mediaType
-\begin_inset CommandInset label
-LatexCommand label
-name "../api/|conversation-media-type"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-In /resources/, the ``application/java'' media type is 
-\bar under
-treated specially
-\bar default
- 
-\bar under
-(page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../resources/|handle-get"
-
-\end_inset
-
-)
-\bar default
-.
-\end_layout
-
-\begin_layout Standard
-These three variants all represent the same value, letting you access the
- value in different ways.
-\end_layout
-
-\begin_layout Standard
-conversation.mediaTypeName is the MIME representing the media type.
- MIME (Multipurpose Internet Mail Extensions) is an established web standard
- for specifying media types.
- Examples include: ``text/plain,'' ``text/html,'' ``application/json,''
- and ``application/x-www-form-urlencoded.'' The exact list of supported MIME
- types depends on the underlying Restlet implementation.
-\end_layout
-
-\begin_layout Standard
-conversation.mediaTypeExtension is the media type as the default filename
- extension for the media type.
- For example, ``txt'' is equivalent to MIME ``text/plain,'' and ``xml''
- is equivalent to ``application/xml.'' Each application has its own mappings
- of filename extensions to media types.
- See also 
-\bar under
-application.getMediaType (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|application-get-media-type"
-
-\end_inset
-
-)
-\bar default
-, and how to change the 
-\bar under
-mappings for your application (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../application/|default-file"
-
-\end_inset
-
-)
-\bar default
-.
-\end_layout
-
-\begin_layout Standard
-conversation.mediaType is the underlying 
-\begin_inset CommandInset href
-LatexCommand href
-name "MediaType instance"
-target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/MediaType.html"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-The default media type will be set according to 
-\bar under
-conversation.preferences (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-preferences"
-
-\end_inset
-
-)
-\bar default
-.
- Use 
-\begin_inset CommandInset href
-LatexCommand href
-name "conversation.request.clientInfo.acceptedMediaTypes"
-target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
-
-\end_inset
-
- to find out more generally which media types the client supports.
-\end_layout
-
-\begin_layout Paragraph
-conversation.characterSetName, conversation.characterSetShortName, conversation.cha
-racterSet
-\begin_inset CommandInset label
-LatexCommand label
-name "../api/|conversation-character-set"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-These three variants all represent the same value, letting you access the
- value in different ways.
-\end_layout
-
-\begin_layout Standard
-conversation.characterSetName is ISO's UTC (Universal Character Set) name
- of the character set.
- For example, ``ISO-8859-1'' is the ``Latin 1'' character set and ``UTF-8''
- is the 8-bit Unicode Transformation Format, ``US-ASCII'' is ASCII, etc.
- The exact list of supported ISO names depends on the underlying Restlet
- implementation.
-\end_layout
-
-\begin_layout Standard
-conversation.characterSetShortName is a shortcut name for the character set.
- Shortcuts include ``ascii,'' ``utf8,'' and ``win'' (for the Windows 1252
- character set).
- Restlet handles shortcuts names together with 
-\bar under
-filename extension mappings.(page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../application/|default-file"
-
-\end_inset
-
-)
-\bar default
-.
-\end_layout
-
-\begin_layout Standard
-conversation.characterSet is the underlying 
-\begin_inset CommandInset href
-LatexCommand href
-name "CharacterSet instance"
-target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/CharacterSet.html"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-The default character set will be set according to 
-\bar under
-conversation.preferences (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-preferences"
-
-\end_inset
-
-)
-\bar default
-.Use 
-\begin_inset CommandInset href
-LatexCommand href
-name "conversation.request.clientInfo.acceptedCharacterSets"
-target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
-
-\end_inset
-
- to find out more generally which character sets the client supports.
-\end_layout
-
-\begin_layout Paragraph
-conversation.languageName, conversation.language
-\begin_inset CommandInset label
-LatexCommand label
-name "../api/|conversation-language"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-These two variants represent the same value, letting you access the value
- in different ways.
-\end_layout
-
-\begin_layout Standard
-conversation.languageName is the IETF locale name for the language.
- Examples include ``en'' for English, ``en-us'' for USA English, ``fr''
- for French, etc.
- The exact list of supported IETF names depends on the underlying Restlet
- implementation.
-\end_layout
-
-\begin_layout Standard
-conversation.language is the underlying 
-\begin_inset CommandInset href
-LatexCommand href
-name "Language instance"
-target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/Language.html"
-
-\end_inset
-
-.
- Because IETF names are hierarchical, you might prefer to use this as a
- way to test for containment.
- For example, conversation.language.includes will tell you that ``en-us''
- is included in ``en.''
-\end_layout
-
-\begin_layout Standard
-The default language will be set according to 
-\bar under
-conversation.preferences (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-preferences"
-
-\end_inset
-
-)
-\bar default
-.Use 
-\begin_inset CommandInset href
-LatexCommand href
-name "conversation.request.clientInfo.acceptedLanguages"
-target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
-
-\end_inset
-
- to find out more generally which languages the client supports.
-\end_layout
-
-\begin_layout Standard
-Note that the language can be a null value, and that responses do not have
- to specify a language.
-\end_layout
-
-\begin_layout Paragraph
-conversation.encodingName, conversation.encoding
-\begin_inset CommandInset label
-LatexCommand label
-name "../api/|conversation-encoding"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-In /web/dynamic/, this value is read-only.
- If it is ``zip'', ``gzip'' or ``deflate,'' Prudence will compress the output
- text.
- Cache entries are stored in their compressed state, such that subsequent
- cache retrievals will not involve this additional overhead.
- See 
-\bar under
-caching and encoding (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../generating-html/|caching-and-compression"
-
-\end_inset
-
-)
-\bar default
- for a detailed discussion
-\end_layout
-
-\begin_layout Standard
-In /resources/, you can change this value, but all it would do is set the
- appropriate header in the response.
- It is up to you to supply Prudence with a correctly encoded representation.
-\end_layout
-
-\begin_layout Standard
-These two variants represent the same value, letting you access the value
- in different ways.
-\end_layout
-
-\begin_layout Standard
-conversation.encodingName is an internal name used for the encoding.
+conversation.preferredEncodingName is an internal name used for the encoding.
  Examples include ``zip,'' ``gzip,'' ``compress,'' and ``deflate.'' The ``*''
  name represents all possible encodings.
  The exact list of supported names depends on the underlying Restlet implementat
@@ -16264,7 +15656,7 @@ ion.
 \end_layout
 
 \begin_layout Standard
-conversation.encoding is the underlying 
+conversation.preferredEncoding is the underlying 
 \begin_inset CommandInset href
 LatexCommand href
 name "Encoding instance"
@@ -16275,31 +15667,32 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 .
 \end_layout
 
-\begin_layout Standard
-The default encoding will be set according to 
-\bar under
-conversation.preferences (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-preferences"
-
-\end_inset
-
-)
-\bar default
-.Use 
-\begin_inset CommandInset href
-LatexCommand href
-name "conversation.request.clientInfo.acceptedEncodings"
-target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
-
-\end_inset
-
- to find out more generally which encodings the client supports.
+\begin_layout Subsubsection
+Request and Response Attributes
 \end_layout
 
-\begin_layout Subsubsection
-Cookies
+\begin_layout Standard
+The attributes are initially set according to the client request, and by
+ default are passed through as is to the response.
+ For example, if a client sends you data in media type ``application/json,''
+ then the default would be for the response to be in the same format.
+ Obviously, this is not always the desired outcome, and you can explicitly
+ examine and change these attributes.
+\end_layout
+
+\begin_layout Quote
+The one exception to this rule is HTML forms.
+ The data comes from the client as MIME type ``application/x-www-form-urlencoded
+,'' but it's highly unlikely that you'd want to return an HTML form back
+ to the client.
+ For this case only, Prudence sets the mediaType to ``application/html''.
+ You can explicitly change it something else if you need to.
+\end_layout
+
+\begin_layout Standard
+Note that in /resources/ you always have the option of explicitly returning
+ a Representation instance to the client, in which case none of these attributes
+ will be used for the response.
 \end_layout
 
 \begin_layout Paragraph
@@ -16468,8 +15861,375 @@ For new cookies, be sure to call save() on the cookie in order to send it
  response).
 \end_layout
 
+\begin_layout Paragraph
+conversation.mediaTypeName, conversation.mediaTypeExtension, conversation.mediaType
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-media-type"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These three variants all represent the same value, letting you access the
+ value in different ways.
+\end_layout
+
+\begin_layout Standard
+conversation.mediaTypeName is the MIME representing the media type.
+ MIME (Multipurpose Internet Mail Extensions) is an established web standard
+ for specifying media types.
+ Examples include: ``text/plain,'' ``text/html,'' ``application/json,''
+ and ``application/x-www-form-urlencoded.'' The exact list of supported MIME
+ types depends on the underlying Restlet implementation.
+\end_layout
+
+\begin_layout Standard
+conversation.mediaTypeExtension is the media type as the default filename
+ extension for the media type.
+ For example, ``txt'' is equivalent to MIME ``text/plain,'' and ``xml''
+ is equivalent to ``application/xml.'' Each application has its own mappings
+ of filename extensions to media types.
+ See also 
+\bar under
+application.getMediaType (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-get-media-type"
+
+\end_inset
+
+)
+\bar default
+, and how to change the 
+\bar under
+mappings for your application (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|default-file"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+conversation.mediaType is the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "MediaType instance"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/MediaType.html"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+To find out which media types the client accepts and prefers, use conversation.re
+quest.clientInfo.acceptedMediaTypes and conversation.request.clientInfo.getPreferredM
+ediaType() (see 
+\begin_inset CommandInset href
+LatexCommand href
+name "ClientInfo documentation"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Quote
+In /web/dynamic/ and /web/static/, if the client request does not contain
+ any data representation, for example in a ``GET'' request, then the 
+\bar under
+media type's default value will be set according to the filename extension
+ (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|extensions-mime-types"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Paragraph
+conversation.characterSetName, conversation.characterSetShortName, conversation.cha
+racterSet
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-character-set"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These three variants all represent the same value, letting you access the
+ value in different ways.
+\end_layout
+
+\begin_layout Standard
+conversation.characterSetName is ISO's UTC (Universal Character Set) name
+ of the character set.
+ For example, ``ISO-8859-1'' is the ``Latin 1'' character set and ``UTF-8''
+ is the 8-bit Unicode Transformation Format, ``US-ASCII'' is ASCII, etc.
+ The exact list of supported ISO names depends on the underlying Restlet
+ implementation.
+\end_layout
+
+\begin_layout Standard
+conversation.characterSetShortName is a shortcut name for the character set.
+ Shortcuts include ``ascii,'' ``utf8,'' and ``win'' (for the Windows 1252
+ character set).
+ Restlet handles shortcuts names together with 
+\bar under
+filename extension mappings.(page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|default-file"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+conversation.characterSet is the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "CharacterSet instance"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/CharacterSet.html"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+To find out which character sets the client accepts and prefers, use conversatio
+n.request.clientInfo.acceptedCharacterSets and conversation.request.clientInfo.getPref
+erredCharacterSet() (see 
+\begin_inset CommandInset href
+LatexCommand href
+name "ClientInfo documentation"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Quote
+If the client request does not specificy a character set, then the character
+ set will fall back to a default determined by the ``com.threecrickets.prudence.Gen
+eratedTextResource.defaultCharacterSet'' application global.
+ It not explicitly set, it will be UTF-8.
+\end_layout
+
 \begin_layout Subsubsection
-Conditional Requests
+Response Attributes
+\end_layout
+
+\begin_layout Paragraph
+conversation.statusCode, conversation.status
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-status-code"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These two variants represent the same value, letting you access the value
+ in different ways.
+\end_layout
+
+\begin_layout Standard
+conversation.statusCode is an HTTP status code as an integer.
+\end_layout
+
+\begin_layout Standard
+conversation.status is the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "Status instance"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/Status.html"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The default status code is 200 (``OK'').
+\end_layout
+
+\begin_layout Paragraph
+conversation.languageName, conversation.language
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-language"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These two variants represent the same value, letting you access the value
+ in different ways.
+\end_layout
+
+\begin_layout Standard
+conversation.languageName is the IETF locale name for the language.
+ Examples include ``en'' for English, ``en-us'' for USA English, ``fr''
+ for French, etc.
+ The exact list of supported IETF names depends on the underlying Restlet
+ implementation.
+\end_layout
+
+\begin_layout Standard
+conversation.language is the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "Language instance"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/Language.html"
+
+\end_inset
+
+.
+ Because IETF names are hierarchical, you might prefer to use this as a
+ way to test for containment.
+ For example, conversation.language.includes will tell you that ``en-us''
+ is included in ``en.''
+\end_layout
+
+\begin_layout Standard
+To find out which languages the client accepts and prefers, use conversation.requ
+est.clientInfo.acceptedLanguages and conversation.request.clientInfo.getPreferredLang
+uage() (see 
+\begin_inset CommandInset href
+LatexCommand href
+name "ClientInfo documentation"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Note that the language can be a null value, and that responses do not have
+ to specify a language.
+\end_layout
+
+\begin_layout Paragraph
+conversation.encodingName, conversation.encoding
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-encoding"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In /web/dynamic/, this value is read-only.
+ It is usually set to the value of 
+\bar under
+conversation.preferredEncoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-preferred-encoding"
+
+\end_inset
+
+)
+\bar default
+.
+ If it is ``zip'', ``gzip'' or ``deflate,'' Prudence will compress the output
+ text.
+ Cache entries are stored in their compressed state, such that subsequent
+ cache retrievals will not involve this additional overhead.
+ See 
+\bar under
+caching and encoding (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|caching-and-compression"
+
+\end_inset
+
+)
+\bar default
+ for a detailed discussion
+\end_layout
+
+\begin_layout Standard
+In /resources/, you can change this value, but all it would do is set the
+ appropriate header in the response.
+ It is up to you to supply Prudence with a correctly encoded representation.
+\end_layout
+
+\begin_layout Standard
+These two variants represent the same value, letting you access the value
+ in different ways.
+\end_layout
+
+\begin_layout Standard
+conversation.encodingName is an internal name used for the encoding.
+ Examples include ``zip,'' ``gzip,'' ``compress,'' and ``deflate.'' The ``*''
+ name represents all possible encodings.
+ The exact list of supported names depends on the underlying Restlet implementat
+ion.
+\end_layout
+
+\begin_layout Standard
+conversation.encoding is the underlying 
+\begin_inset CommandInset href
+LatexCommand href
+name "Encoding instance"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/Encoding.html"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+To find out which encodings the client accepts and prefers, use conversation.requ
+est.clientInfo.acceptedEncodings and conversation.request.clientInfo.getPreferredEnco
+ding() (see 
+\begin_inset CommandInset href
+LatexCommand href
+name "ClientInfo documentation"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+.
+\end_layout
+
+\begin_layout Subsubsection
+Response Attributes for Resources
 \begin_inset CommandInset label
 LatexCommand label
 name "../api/|response-attributes-resources"
@@ -16480,23 +16240,8 @@ name "../api/|response-attributes-resources"
 \end_layout
 
 \begin_layout Standard
-These attributes are only available for /resources/.
- See 
-\bar under
-conditional requests (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../resources/|conditional-requests"
-
-\end_inset
-
-)
-\bar default
- for use cases.
-\end_layout
-
-\begin_layout Standard
-For /web/dynamic/, these attributes are indirectly set according to 
+Note that modificationTimestamp, expirationTimestamp and maxAge are set
+ indirectly for /web/dynamic/, via 
 \bar under
 document.cacheDuration (page 
 \begin_inset CommandInset ref
@@ -16507,7 +16252,8 @@ reference "../api/|document-cache-duration"
 
 )
 \bar default
- and 
+.
+ To control how these are set, see the 
 \bar under
 dynamicWebClientCachingMode setting (page 
 \begin_inset CommandInset ref
@@ -16535,6 +16281,21 @@ name "../api/|conversation-modification-date"
 \begin_layout Standard
 These two variants represent the same value, letting you access the value
  in different ways.
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+conditional requests (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|conditional-requests"
+
+\end_inset
+
+)
+\bar default
+ for use cases.
 \end_layout
 
 \begin_layout Standard
@@ -16567,6 +16328,21 @@ These two variants represent the same value, letting you access the value
 \end_layout
 
 \begin_layout Standard
+See 
+\bar under
+conditional requests (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|conditional-requests"
+
+\end_inset
+
+)
+\bar default
+ for use cases.
+\end_layout
+
+\begin_layout Standard
 conversation.httpTag is an HTTP ETag string.
  Once you set conversation.httpTag for a conversation, you cannot ``unset''
  it---you can only change it to another value.
@@ -16585,52 +16361,6 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 .
 \end_layout
 
-\begin_layout Subsubsection
-Client Caching
-\end_layout
-
-\begin_layout Standard
-These attributes are only available for /resources/.
- See 
-\bar under
-conditional requests and client caching (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../resources/|client-caching"
-
-\end_inset
-
-)
-\bar default
- for use cases.
-\end_layout
-
-\begin_layout Standard
-For /web/dynamic/, these attributes are indirectly set according to 
-\bar under
-document.cacheDuration (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|document-cache-duration"
-
-\end_inset
-
-)
-\bar default
- and 
-\bar under
-dynamicWebClientCachingMode setting (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../application/|dynamic-web-client-caching-mode"
-
-\end_inset
-
-)
-\bar default
-.
-\end_layout
-
 \begin_layout Paragraph
 conversation.maxAge
 \begin_inset CommandInset label
@@ -16644,11 +16374,7 @@ name "../api/|conversation-max-age"
 
 \begin_layout Standard
 Clients are asked not to use cached versions of the response entity for
- more than this number of seconds 
-\emph on
-and 
-\emph default
-not to perform conditional requests until then.
+ more than this number of seconds.
  You can also use 
 \bar under
 conversation.expirationDate (page 
@@ -16660,8 +16386,7 @@ reference "../api/|conversation-expiration-date"
 
 )
 \bar default
- instead of this value (for most clients, this value supercedes conversation.expi
-rationDate).
+ instead of this value (this value supercedes conversation.expirationDate).
 \end_layout
 
 \begin_layout Standard
@@ -16717,11 +16442,7 @@ name "../api/|conversation-expiration-date"
 
 \begin_layout Standard
 Clients are asked not to use cached versions of the response entity after
- this date 
-\emph on
-and 
-\emph default
-not to perform conditional requests until then.
+ this date.
  You can also use 
 \bar under
 conversation.maxAge (page 
@@ -16733,8 +16454,8 @@ reference "../api/|conversation-max-age"
 
 )
 \bar default
- instead of this value (for most clients, conversation.maxAge supercedes
- this value).
+ instead of this value (conversation.maxAge supercedes this value if it is
+ present).
 \end_layout
 
 \begin_layout Standard
@@ -16782,10 +16503,6 @@ conversation.expirationDate is the underlying JVM Date instance.
  Refer to the Java API documentation for details.
 \end_layout
 
-\begin_layout Subsubsection
-Resource Initialization
-\end_layout
-
 \begin_layout Paragraph
 conversation.addMediaTypeByName, conversation.addMediaTypeByExtension, conversatio
 n.addMediaType
@@ -16817,16 +16534,16 @@ reference "../resources/|handle-init"
  case the client supports multiple media types.
  Prudence handles content negotiation automatically, and sets 
 \bar under
-conversation.preferences (page 
+conversation.mediaType (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|conversation-preferences"
+reference "../api/|conversation-media-type"
 
 \end_inset
 
 )
 \bar default
- accordingly.
+ according the selected media type.
 \end_layout
 
 \begin_layout Standard
@@ -16879,6 +16596,20 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
+To find out which media types the client accepts and prefers, use conversation.re
+quest.clientInfo.acceptedMediaTypes and conversation.request.clientInfo.getPreferredM
+ediaType() (see 
+\begin_inset CommandInset href
+LatexCommand href
+name "ClientInfo documentation"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Subsubsection

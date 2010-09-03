@@ -15,7 +15,10 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
+import org.restlet.Application;
 import org.restlet.data.LocalReference;
+import org.restlet.data.MediaType;
+import org.restlet.data.Preference;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 
@@ -163,13 +166,15 @@ public abstract class DocumentServiceBase
 	 * 
 	 * @param resourceUri
 	 *        The URI
-	 * @param mediaType
-	 *        The default media type of requests
+	 * @param mediaTypeName
+	 *        The preferred media type
 	 * @return The client proxy
 	 */
-	public ClientResource internal( String resourceUri, String mediaType )
+	public ClientResource internal( String resourceUri, String mediaTypeName )
 	{
-		return new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_APPLICATION, resourceUri ) );
+		ClientResource clientResource = new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_APPLICATION, resourceUri ) );
+		clientResource.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( getMediaType( mediaTypeName ), 1f ) );
+		return clientResource;
 	}
 
 	/**
@@ -179,13 +184,15 @@ public abstract class DocumentServiceBase
 	 *        The application internal name
 	 * @param resourceUri
 	 *        The URI
-	 * @param mediaType
-	 *        The default media type of requests
+	 * @param mediaTypeName
+	 *        The preferred media type
 	 * @return The client proxy
 	 */
-	public ClientResource internal( String applicationInternalName, String resourceUri, String mediaType )
+	public ClientResource internal( String applicationInternalName, String resourceUri, String mediaTypeName )
 	{
-		return new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, "/" + applicationInternalName + "/" + resourceUri ) );
+		ClientResource clientResource = new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, "/" + applicationInternalName + "/" + resourceUri ) );
+		clientResource.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( getMediaType( mediaTypeName ), 1f ) );
+		return clientResource;
 	}
 
 	/**
@@ -193,13 +200,15 @@ public abstract class DocumentServiceBase
 	 * 
 	 * @param uri
 	 *        The URI
-	 * @param mediaType
-	 *        The default media type of requests
+	 * @param mediaTypeName
+	 *        The preferred media type
 	 * @return The client proxy
 	 */
-	public ClientResource external( String uri, String mediaType )
+	public ClientResource external( String uri, String mediaTypeName )
 	{
-		return new ClientResource( uri );
+		ClientResource clientResource = new ClientResource( uri );
+		clientResource.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( getMediaType( mediaTypeName ), 1f ) );
+		return clientResource;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -264,6 +273,21 @@ public abstract class DocumentServiceBase
 	 * The document source.
 	 */
 	private final DocumentSource<Executable> documentSource;
+
+	/**
+	 * Get a media type by its MIME type name.
+	 * 
+	 * @param name
+	 *        The MIME type name
+	 * @return The media type
+	 */
+	private static MediaType getMediaType( String name )
+	{
+		MediaType mediaType = MediaType.valueOf( name );
+		if( mediaType == null )
+			mediaType = Application.getCurrent().getMetadataService().getMediaType( name );
+		return mediaType;
+	}
 
 	/**
 	 * Gets a document descriptor without reading the contents of the file. Only

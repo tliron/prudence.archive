@@ -12,7 +12,6 @@
 package com.threecrickets.prudence.service;
 
 import org.restlet.data.CharacterSet;
-import org.restlet.data.Encoding;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 
@@ -44,61 +43,12 @@ public class GeneratedTextResourceConversationService extends ResourceConversati
 	 */
 	public GeneratedTextResourceConversationService( GeneratedTextResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
 	{
-		super( resource, entity, variant, defaultCharacterSet, resource.getFileUploadSizeThreshold(), resource.getFileUploadDirectory() );
-
-		if( resource.isNegotiateEncoding() )
-			encoding = getPreferredEncoding();
+		super( resource, entity, variant, defaultCharacterSet, GeneratedTextResource.SUPPORTED_ENCODINGS, resource.getFileUploadSizeThreshold(), resource.getFileUploadDirectory() );
 	}
 
 	//
 	// Attributes
 	//
-
-	/**
-	 * The preferred encoding.
-	 * 
-	 * @return The preferred encoding or null
-	 */
-	public Encoding getPreferredEncoding()
-	{
-		if( preferredEncoding == null )
-			preferredEncoding = getResource().getClientInfo().getPreferredEncoding( GeneratedTextResource.SUPPORTED_ENCODINGS );
-		return preferredEncoding;
-	}
-
-	/**
-	 * The preferred encoding name.
-	 * 
-	 * @return The preferred encoding name or null
-	 */
-	public String getPreferredEncodingName()
-	{
-		Encoding preferredEncoding = getPreferredEncoding();
-		if( preferredEncoding != null )
-			return preferredEncoding.getName();
-		else
-			return null;
-	}
-
-	/**
-	 * The encoding.
-	 * 
-	 * @return The encoding or null if not set
-	 * @see #setEncoding(Encoding)
-	 */
-	public Encoding getEncoding()
-	{
-		return encoding;
-	}
-
-	/**
-	 * @return The encoding name
-	 * @see #getEncoding()
-	 */
-	public String getEncodingName()
-	{
-		return encoding != null ? encoding.getName() : null;
-	}
 
 	/**
 	 * This boolean is true when the writer is in deferred mode.
@@ -153,17 +103,4 @@ public class GeneratedTextResourceConversationService extends ResourceConversati
 	 * This boolean is true when the writer is in deferred mode.
 	 */
 	protected boolean isDeferred;
-
-	// //////////////////////////////////////////////////////////////////////////
-	// Private
-
-	/**
-	 * The preferred encoding.
-	 */
-	private Encoding preferredEncoding;
-
-	/**
-	 * The encoding.
-	 */
-	private Encoding encoding;
 }

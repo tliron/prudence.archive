@@ -14,6 +14,7 @@ package com.threecrickets.prudence;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.io.Writer;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,9 +24,11 @@ import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
+import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.data.Tag;
+import org.restlet.representation.ObjectRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.RepresentationInfo;
 import org.restlet.representation.StringRepresentation;
@@ -1323,21 +1326,43 @@ public class DelegatedResource extends ServerResource
 	private Representation getRepresentation( Object object, DelegatedResourceConversationService conversationService )
 	{
 		if( object == null )
+		{
 			return null;
+		}
 		else if( object instanceof Representation )
+		{
 			return (Representation) object;
+		}
 		else if( object instanceof Number )
 		{
 			// Returning a number means setting the status
 			getResponse().setStatus( Status.valueOf( ( (Number) object ).intValue() ) );
+
 			return null;
 		}
 		else
 		{
-			Representation representation = new StringRepresentation( object.toString(), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet() );
+			Representation representation;
+
+			if( MediaType.APPLICATION_JAVA.equals( conversationService.getMediaType() ) )
+			{
+				// Wrap in an object representation
+				representation = new ObjectRepresentation<Serializable>( (Serializable) object );
+				Language language = conversationService.getLanguage();
+				if( language != null )
+					representation.getLanguages().add( language );
+				representation.setCharacterSet( conversationService.getCharacterSet() );
+			}
+			else
+			{
+				// Convert to string
+				representation = new StringRepresentation( object.toString(), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet() );
+			}
+
 			representation.setTag( conversationService.getTag() );
 			representation.setExpirationDate( conversationService.getExpirationDate() );
 			representation.setModificationDate( conversationService.getModificationDate() );
+
 			return representation;
 		}
 	}
