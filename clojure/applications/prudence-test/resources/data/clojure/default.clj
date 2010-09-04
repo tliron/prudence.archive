@@ -12,8 +12,7 @@
 
 ; Use the JSON libraries and our context library
 (use
-	'clojure.contrib.json.read
-	'clojure.contrib.json.write
+	'clojure.contrib.json
 	'clojure.context)
 
 (import

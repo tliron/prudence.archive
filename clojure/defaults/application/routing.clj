@@ -98,7 +98,7 @@
 ; Handlers
 ;
 
-(def handlers-document-source = (DocumentFileSource. (str application-base-path handlers-base-path) handlers-default-name "clj" (.longValue handlers-minimum-time-between-validity-checks)))
+(def handlers-document-source (DocumentFileSource. (str application-base-path handlers-base-path) handlers-default-name "clj" (.longValue handlers-minimum-time-between-validity-checks)))
 (.setFilterDocumentSource router handlers-document-source)
 (.setFilterLanguageManager router language-manager)
 

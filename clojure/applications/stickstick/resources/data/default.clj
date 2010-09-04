@@ -1,7 +1,6 @@
 
 (use
-	'clojure.contrib.json.read
-	'clojure.contrib.json.write
+	'clojure.contrib.json
 	'clojure.contrib.sql
 	'stickstick.data)
 

@@ -55,7 +55,7 @@
 ; Predefined Globals
 ;
 
-(.putAll attributes predefined-globals)
+(.putAll application-globals predefined-globals)
 
 ;
 ; Tasks
