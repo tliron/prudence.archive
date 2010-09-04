@@ -21,7 +21,7 @@ jruby				1.5.1
 json				
 jsr-223				
 junit				4.8.1
-jython				2.5.2 (Revision 7063)
+jython				2.5.2 beta 1
 jygments			1.0 (Revision 21)
 log4j				1.2.15
 mime4j				0.6
