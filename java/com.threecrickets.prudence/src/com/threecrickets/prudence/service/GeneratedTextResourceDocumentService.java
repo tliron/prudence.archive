@@ -805,6 +805,11 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			// Execute!
 			executable.execute( executionContext, this, resource.getExecutionController() );
 
+			// Propagate cache tags up the stack
+			Set<String> cacheTags = getCacheTags( executable, false );
+			if( ( cacheTags != null ) && !cacheTags.isEmpty() )
+				cacheTags = propagateCacheTags( cacheTags );
+
 			// Did the executable ask us to defer?
 			if( conversationService.defer )
 			{
@@ -825,32 +830,41 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			{
 				writer.flush();
 
+				Encoding encoding = getEncoding( executable );
+				long expirationTimestamp = getExpirationTimestamp( executable );
+
 				// Get the buffer from when we executed the executable
-				CacheEntry cacheEntry = new CacheEntry( writerBuffer.substring( startPosition ), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(),
-					getEncoding( executable ), executable.getDocumentTimestamp(), getExpirationTimestamp( executable ) );
+				CacheEntry cacheEntry = new CacheEntry( writerBuffer.substring( startPosition ), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), null,
+					executable.getDocumentTimestamp(), expirationTimestamp );
+
+				// Encoded version
+				CacheEntry encodedCacheEntry = new CacheEntry( cacheEntry, encoding );
 
 				// Cache if enabled
-				String cacheKey = getCacheKey();
-				if( ( cacheKey != null ) && ( cacheEntry.getExpirationDate() != null ) )
+				if( expirationTimestamp > 0 )
 				{
-					Set<String> cacheTags = getCacheTags( executable, false );
+					String cacheKey = castCacheKey( documentDescriptor );
+					if( cacheKey != null )
+					{
+						// Cache!
+						Cache cache = resource.getCache();
+						if( cache != null )
+						{
+							String cacheKeyForEncoding = getCacheKeyForEncoding( cacheKey, encoding );
+							cache.store( cacheKeyForEncoding, cacheTags, encodedCacheEntry );
 
-					// Propagate cache tags up the stack
-					if( ( cacheTags != null ) && !cacheTags.isEmpty() )
-						cacheTags = propagateCacheTags( cacheTags );
-
-					// Cache!
-					Cache cache = resource.getCache();
-					if( cache != null )
-						cache.store( cacheKey, cacheTags, cacheEntry );
+							// Cache un-encoded entry separately
+							if( encoding != null )
+								cache.store( cacheKey, cacheTags, cacheEntry );
+						}
+					}
 				}
 
 				// Return a representation of the entire buffer
 				if( startPosition == 0 )
-					return cacheEntry.represent();
+					return encodedCacheEntry.represent();
 				else
-					return new CacheEntry( writerBuffer.toString(), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), getEncoding( executable ),
-						executable.getDocumentTimestamp(), getExpirationTimestamp( executable ) ).represent();
+					return new CacheEntry( encodedCacheEntry, writerBuffer.toString() ).represent();
 			}
 		}
 		catch( ExecutionException x )

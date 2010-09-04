@@ -68,6 +68,20 @@ public class CacheEntry implements Externalizable
 	}
 
 	/**
+	 * Construction with different string.
+	 * 
+	 * @param cacheEntry
+	 *        The cache entry to clone
+	 * @param string
+	 *        The new string to use
+	 * @throws IOException
+	 */
+	public CacheEntry( CacheEntry cacheEntry, String string ) throws IOException
+	{
+		this( string, cacheEntry.mediaType, cacheEntry.language, cacheEntry.characterSet, cacheEntry.encoding, cacheEntry.modificationDate, cacheEntry.expirationDate );
+	}
+
+	/**
 	 * Construction. Compresses string if encoding is provided.
 	 * 
 	 * @param string

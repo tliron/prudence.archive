@@ -6,6 +6,7 @@
 \begin_preamble
 \usepackage{prettyref}
 \newrefformat{}{section~\ref{#1}}
+\sloppy
 \end_preamble
 \use_default_options true
 \language english
@@ -168,6 +169,7 @@ First, let's start with a way of identifying our resources.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -282,6 +284,7 @@ This is our most complex operation.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -323,6 +326,7 @@ Obviously, this is not a scalable solution.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -362,6 +366,7 @@ Of course, we can also have ``/animal/cat/next'' return unique IDs (such
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -399,6 +404,7 @@ At first glance, handling the problem of getting lots of resources at the
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -421,6 +427,7 @@ A ``read'' would give us all cats.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -447,6 +454,7 @@ We can define the above to return no more than 100 cats: from the 100th,
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -478,6 +486,7 @@ The problem of supporting multiple formats seems similar, at first glance,
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1221,7 +1230,7 @@ Create /applications/wackywiki/web/static/.
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "language=HTML"
+lstparams "breaklines=true,language=HTML"
 inline false
 status open
 
@@ -1326,7 +1335,7 @@ Let's move our index.html from /web/static/ to /web/dynamic/ and edit it
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "language=HTML"
+lstparams "breaklines=true,language=HTML"
 inline false
 status open
 
@@ -1482,6 +1491,7 @@ Let's make our dynamic page more readable by using special ``expression
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1572,6 +1582,7 @@ What happens if you have a coding error in your scriptlets? Let's try and
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1627,6 +1638,7 @@ Let's create a fragment that displays the current time.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1667,6 +1679,7 @@ It is currently <%= now.strftime('%H:%M') %> o' clock, and <%= now.strftime('%S'
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1775,6 +1788,7 @@ Let's enable a simple 60 second cache.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1906,6 +1920,7 @@ Let's allow users to edit our wacky wiki.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1930,6 +1945,7 @@ fresh = form.getFirstValue('fresh') == 'true'
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1964,6 +1980,7 @@ Wiki content is: <%= wiki %>
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2049,6 +2066,7 @@ Prudence does a lot of the HTTP work automatically, but you can manipulate
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2119,6 +2137,7 @@ g.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2211,6 +2230,7 @@ Let's start with a resource that can be read for some plain text.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2281,6 +2301,7 @@ Let's add support for JSON to our resource:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2359,6 +2380,7 @@ Just as /web/fragments/ was a useful place for us to put reusable web fragments,
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2444,6 +2466,7 @@ Let's make use of our library in our resource:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2515,6 +2538,7 @@ def handle_get(conversation):
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2628,6 +2652,7 @@ Let's give our wiki resources a modification date, so that clients can properly
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2754,6 +2779,7 @@ def set_wiki(content):
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2850,6 +2876,7 @@ Let's add handleGetInfo():
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2961,6 +2988,7 @@ As we said earlier, our resources can be seen as an API.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -3016,6 +3044,7 @@ For completion, here's an example of how to access our resources from another
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -3491,6 +3520,7 @@ Here's an overriding example in the JavaScript flavor.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -4246,6 +4276,7 @@ Here you can modify an application's filename extensions to media type mappings.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -4650,6 +4681,7 @@ If not ``hosts'' setting is specified, it defaults to attach to the default
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -4669,6 +4701,7 @@ Here's an example of a more complex ``hosts'' setting:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -5030,7 +5063,7 @@ conversation.modificationDate, conversation.expirationDate and conversation.tag
  (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|response-attributes-resources"
+reference "../api/|contional-requests"
 
 \end_inset
 
@@ -5528,6 +5561,7 @@ In fact, behind the scenes, all non-scriptlet text is turned into code.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -5577,6 +5611,7 @@ The above translates into something like this:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -5661,6 +5696,7 @@ Code files you put in your application's /libraries/ subdirectory can be
 \begin_layout Itemize
 Python:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -5682,6 +5718,7 @@ data = getData()
 \begin_layout Itemize
 Ruby:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -5703,6 +5740,7 @@ $data = get_data
 \begin_layout Itemize
 Clojure:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -5724,6 +5762,7 @@ status open
 \begin_layout Itemize
 PHP:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -5757,6 +5796,7 @@ reference "../api/|document-execute"
 \bar default
 :
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -5797,6 +5837,7 @@ A common idiom is to print out expressions interwoven with non-scriptlet
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -5847,6 +5888,7 @@ Expression can be as elaborate as needed.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -5878,6 +5920,7 @@ You can include other files in-place using an include scriptlet, marked
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -5928,6 +5971,7 @@ The above example assumed a file named ``/web/dynamic/lines/simple.html'',
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -5971,6 +6015,7 @@ reference "../api/|document-include"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -6084,6 +6129,7 @@ However, Prudence lets you use scriptlets of any language by adding the
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -6206,6 +6252,7 @@ Expression and include scriptlets work the same way.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -6274,6 +6321,7 @@ By mixing languages, you can write all the more straightforward templating
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -6404,6 +6452,7 @@ reference "../generating-html/|mixing-languages"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -6499,6 +6548,7 @@ But, fear not, Prudence lets you solve this problem via the ``in-flow''
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -6793,6 +6843,7 @@ reference "../api/|document-cache-duration"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -6862,6 +6913,7 @@ Here is ``/web/fragments/temperature.html'':
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -7131,6 +7183,7 @@ Let's start with a simple form:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -7201,6 +7254,7 @@ As it stands, the above form will simply render again when the client clicks
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -7326,6 +7380,7 @@ reference "../routing/|uri-patterns"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -7372,6 +7427,7 @@ reference "../resources/"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -7391,6 +7447,7 @@ And then, under /resources/send.js:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -7820,6 +7877,7 @@ Code files you put in your application's /libraries/ subdirectory can be
 \begin_layout Itemize
 Python:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -7841,6 +7899,7 @@ data = getData()
 \begin_layout Itemize
 Ruby:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -7862,6 +7921,7 @@ $data = get_data
 \begin_layout Itemize
 Clojure:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -7883,6 +7943,7 @@ status open
 \begin_layout Itemize
 PHP:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -7916,6 +7977,7 @@ reference "../api/|document-execute"
 \bar default
 :
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -7960,6 +8022,7 @@ Each file is a regular source code file, but a few special ``entry points''
 \begin_layout Itemize
 Python uses global functions:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -7981,6 +8044,7 @@ def handle_get(conversation):
 \begin_layout Itemize
 Ruby uses global methods:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -8007,6 +8071,7 @@ end
 \begin_layout Itemize
 Clojure uses functions in the current namespace:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -8028,6 +8093,7 @@ status open
 \begin_layout Itemize
 JavaScript uses global functions:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -8054,6 +8120,7 @@ function handleGet(conversation) {
 \begin_layout Itemize
 PHP uses global functions:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -8081,6 +8148,7 @@ function handle_get($conversation) {
 Groovy uses closures tied to global variables (there are no global methods
  in Groovy):
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -8163,6 +8231,7 @@ reference "../api/|conversation-add-media-type"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -9112,6 +9181,7 @@ For example, here's a resource that nicely supports both external and internal
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -9123,6 +9193,11 @@ function handleInit(conversation) {
 \begin_layout Plain Layout
 
 	conversation.addMediaTypeByName('application/json')
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('application/java')
 \end_layout
 
 \begin_layout Plain Layout
@@ -9146,16 +9221,7 @@ function handleGet(conversation) {
 
 \begin_layout Plain Layout
 
-\end_layout
-
-\begin_layout Plain Layout
-
-	if(conversation.internal) {
-\end_layout
-
-\begin_layout Plain Layout
-
-		conversation.mediaTypeName = 'application/java'
+	if(conversation.mediaTypeName == 'application/java') {
 \end_layout
 
 \begin_layout Plain Layout
@@ -9171,11 +9237,6 @@ function handleGet(conversation) {
 \begin_layout Plain Layout
 
 	else {
-\end_layout
-
-\begin_layout Plain Layout
-
-		conversation.mediaTypeName = 'application/json'
 \end_layout
 
 \begin_layout Plain Layout
@@ -9223,6 +9284,7 @@ We can then access the resource directly, without any JSON encoding/decoding:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -9233,7 +9295,27 @@ var data = document.internal('/testresource/', 'application/java').get().object
 
 \begin_layout Plain Layout
 
-print(object.description)
+print(data.description)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// Just for comparison, here's how we would to it using JSON encoding/decoding
+\end_layout
+
+\begin_layout Plain Layout
+
+var data = eval('(' + document.internal('/testresource/', 'application/json').get(
+).text + ')')
+\end_layout
+
+\begin_layout Plain Layout
+
+print(data.description)
 \end_layout
 
 \end_inset
@@ -9241,145 +9323,22 @@ print(object.description)
 
 \end_layout
 
-\begin_layout Subsubsection
-Accessing Resources Internally
-\end_layout
-
-\begin_layout Standard
-Prudence has very easy-to-use REST client, and a rich API for creating and
- manipulation data representations.
- You can use it to access your own resources, as well as resources from
- other applications in your Prudence installation.
- Examples:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-importClass(org.restlet.resource.ClientResource);
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-// A resource in our application
-\end_layout
-
-\begin_layout Plain Layout
-
-var r = new ClientResource('riap://application/hosts');
-\end_layout
-
-\begin_layout Plain Layout
-
-print(r.get().text);
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-// A resource from another application on our host
-\end_layout
-
-\begin_layout Plain Layout
-
-var id = 9;
-\end_layout
-
-\begin_layout Plain Layout
-
-var r = new ClientResource('riap://host/stickstick/note/' + id + '/');
-\end_layout
-
-\begin_layout Plain Layout
-
-var note = JSON.parse(String(r.get(MediaType.APPLICATION_JSON).text));
-\end_layout
+\begin_layout Quote
+Note: The ``application/java'' media type can be used 
+\bar under
+externally (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-external"
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Subsection
-Accessing External REST Services
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Standard
-The client API mentioned above can also be used to access external resources
- from anywhere on the web.
-\end_layout
-
-\begin_layout Standard
-Examples:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-importClass(org.restlet.resource.ClientResource)
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-// An external resource
-\end_layout
-
-\begin_layout Plain Layout
-
-var r = new ClientResource('http://threecrickets/prudence/data/rhino')
-\end_layout
-
-\begin_layout Plain Layout
-
-print(r.get().text)
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Note that for the above to work, you need HTTP configured in your clients
- file:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-component.clients.add(Protocol.HTTP)
-\end_layout
-
-\end_inset
-
-
+)
+\bar default
+, too.
+ In such a case, the object would be serialized/unserialized over HTTP.
+ This does mean that your data class has to properly support JVM serialization,
+ via the Serializable or Externalizable interfaces.
 \end_layout
 
 \begin_layout Section
@@ -9561,6 +9520,7 @@ o.js''.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -9604,6 +9564,7 @@ nts/:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -9691,6 +9652,7 @@ reference "../api/|conversation-locals"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -10246,6 +10208,7 @@ target "http://www.sauronsoftware.it/projects/cron4j/"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -10465,6 +10428,7 @@ Another trick to force clients to re-request an updated file is to add query
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -10494,6 +10458,7 @@ Since the above techniques require considerable discipline from the application
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -10626,6 +10591,7 @@ If order of source files within the unified file is important, make sure
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -10670,6 +10636,7 @@ An example of loading the unified-minified file from HTML:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -10732,6 +10699,7 @@ reference "../static-web/|javascript-unify-minify-filter"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -11213,6 +11181,7 @@ reference "../routing/|capturing"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -11361,6 +11330,7 @@ The following will make sure that the given URI always returns a 404, even
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -11438,6 +11408,7 @@ For example, in /routing.* (JavaScript flavor):
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -11471,6 +11442,7 @@ And then, in ``/web/dynamic/forum/help.html'':
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -11547,6 +11519,7 @@ reference "../api/|conversation-path-to-base"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -11611,6 +11584,7 @@ Another feature of internal redirection is that your code you can check
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -11677,6 +11651,7 @@ Prudence also lets you capture into a different application in the instance.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -11724,6 +11699,7 @@ reference "../routing/|uri-patterns"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -11743,6 +11719,7 @@ We can then have a dynamic web page named ``/message/GET.html'':
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -11802,6 +11779,7 @@ and one named ``/message/POST.html'':
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -11841,6 +11819,7 @@ Another example of capturing with URI patterns:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -11952,6 +11931,7 @@ Examples from /instance/routing.* (JavaScript flavor):
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -12014,6 +11994,7 @@ Examples from an application's /routing.*:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -12109,6 +12090,7 @@ For example:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -12161,6 +12143,7 @@ For other redirections in the 300 family, follow this example (JavaScript):
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -12233,6 +12216,7 @@ Here are a few examples (JavaScript):
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -12449,6 +12433,7 @@ reference "../static-web/|javascript-unify-minify-filter"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -12552,6 +12537,7 @@ You can also filter the entire application by replacing its inbound router
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -12604,6 +12590,7 @@ reference "../handlers/|filters"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -12634,6 +12621,7 @@ target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prude
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -12743,6 +12731,7 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -12889,6 +12878,7 @@ Here are a few examples (JavaScript):
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -13670,6 +13660,7 @@ For example, to schedule a task to run exactly very 10 minutes, starting
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -13694,6 +13685,7 @@ Note that even if the task is set to run ASAP, with no repetition, it is
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -13714,6 +13706,7 @@ You can also store this ``future'' object, and check (without blocking)
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -14351,6 +14344,7 @@ reference "../instance/|component-file"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -14448,6 +14442,7 @@ target "http://www.hazelcast.com/"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -15064,8 +15059,9 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_layout
 
 \begin_layout Standard
-The URIs used in document.internal are not relative to any server or virtual
+The first argument is a URI, which is not relative to any server or virtual
  host, but to the application root.
+ The second argument is the preferred media type name.
 \end_layout
 
 \begin_layout Standard
@@ -15073,8 +15069,8 @@ Common use cases:
 \end_layout
 
 \begin_layout Enumerate
-By letting you use your RESTful resources both internally and externally,
- document.internal lets you create unified resource API.
+By letting you use your REST resources both internally and externally, document.i
+nternal lets you create unified resource API.
  document.internal directly accesses the resource (not via HTTP), so it is
  just about as fast as a simple function call, and is definitely scalable.
  Thus, there may be no need to create a separate set of functions for you
@@ -15140,6 +15136,11 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_layout
 
 \begin_layout Standard
+The first argument is a full URL.
+ The second argument is the preferred media type name.
+\end_layout
+
+\begin_layout Standard
 Common use cases:
 \end_layout
 
@@ -15189,6 +15190,7 @@ Here's an example of using document.external to read a JSON representation
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -15199,12 +15201,7 @@ var fixture =
 
 \begin_layout Plain Layout
 
-	document.external('file:///myfiles/fixture.json',
-\end_layout
-
-\begin_layout Plain Layout
-
-	'application/json').get()
+	document.external('file:///myfiles/fixture.json', 'application/json').get().text
 \end_layout
 
 \end_inset
@@ -15526,6 +15523,7 @@ l.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -15767,11 +15765,53 @@ name "../api/|conversation-preferences"
 \end_layout
 
 \begin_layout Standard
-In /web/dynamic/ and /web/static/, if the client request does not contain
- any data representation, for example in a ``GET'' request, then the 
+Provides you with low-level access to the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet Variant instance"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/representation/Variant.html"
+
+\end_inset
+
+ negotiated with the client.
+ You will usually not have to use this, because 
 \bar under
-media type's default value will be set according to the filename extension
- (page 
+response attributes (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|the-response"
+
+\end_inset
+
+)
+\bar default
+ are set accordingly.
+\end_layout
+
+\begin_layout Standard
+Negotiation happens between the client's preferences, if provided by the
+ client in the request, and our list of supported variations.
+\end_layout
+
+\begin_layout Standard
+In /resources/, this attribute will be null during the 
+\bar under
+handleInit entry point (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/|handle-init"
+
+\end_inset
+
+)
+\bar default
+, precisely because we have not yet set our list of supported variations.
+\end_layout
+
+\begin_layout Standard
+In /web/dynamic/ (and /web/static/), our supported 
+\bar under
+media type will be set according to the filename extension (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../routing/|extensions-mime-types"
@@ -15783,88 +15823,15 @@ reference "../routing/|extensions-mime-types"
 .
 \end_layout
 
-\begin_layout Quote
-If the client request does not specificy a character set, then the character
- set will fall back to a default determined by the ``com.threecrickets.prudence.Gen
-eratedTextResource.defaultCharacterSet'' application global.
- It not explicitly set, it will be UTF-8.
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Standard
-Not available during handleInit
-\end_layout
-
-\begin_layout Standard
-This allows low-level access to the 
-\begin_inset CommandInset href
-LatexCommand href
-name "Restlet Variant instance"
-target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/representation/Variant.html"
-
-\end_inset
-
- sent by the client.
- In negotiated HTTP mode, the ``variant'' encapsulates a set of preferences
- the client might have for returned representations.
- You usually don't have to access the variant: Prudence expands these via
- 
-\bar under
-conversation.mediaType (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-media-type"
-
-\end_inset
-
-)
-\bar default
-, 
-\bar under
-conversation.characterSet (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-character-set"
-
-\end_inset
-
-)
-\bar default
-, 
-\bar under
-conversation.encoding (
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-encoding"
-
-\end_inset
-
-)
-\bar default
-, and 
-\bar under
-conversation.language (
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-language"
-
-\end_inset
-
-)
-\bar default
-.
-\end_layout
-
-\begin_layout Standard
-Note that in non-negotiated HTTP mode, Prudence ``passes through'' the client
- entity as a variant.
-\end_layout
-
 \begin_layout Subsubsection
 The Response
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|the-response"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -16140,6 +16107,13 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_inset
 
  to find out more generally which character sets the client supports.
+\end_layout
+
+\begin_layout Quote
+If the client does not specify a preferred character set, then the character
+ set will fall back to a default determined by the ``com.threecrickets.prudence.Gen
+eratedTextResource.defaultCharacterSet'' application global.
+ It not explicitly set, it will be UTF-8.
 \end_layout
 
 \begin_layout Paragraph
@@ -16469,7 +16443,7 @@ For new cookies, be sure to call save() on the cookie in order to send it
 Conditional Requests
 \begin_inset CommandInset label
 LatexCommand label
-name "../api/|response-attributes-resources"
+name "../api/|contional-requests"
 
 \end_inset
 
@@ -16798,7 +16772,34 @@ name "../api/|conversation-add-media-type"
 \begin_layout Standard
 These three variants all do the same thing, letting you add a media type
  to the list of media types you can support in the response.
- You'll want to call one or more of these in a 
+ After negotiation with the client's preferences, the preferred media type
+ will be found in 
+\bar under
+conversation.preferences (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-preferences"
+
+\end_inset
+
+)
+\bar default
+ and in 
+\bar under
+conversation.mediaType (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-media-type"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+You'll want to call one or more of these in a 
 \bar under
 resource's handleInit() entry point (page 
 \begin_inset CommandInset ref
@@ -16812,18 +16813,6 @@ reference "../resources/|handle-init"
 .
  Order of these calls is important, as it defines order of preference in
  case the client supports multiple media types.
- Prudence handles content negotiation automatically, and sets 
-\bar under
-conversation.preferences (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-preferences"
-
-\end_inset
-
-)
-\bar default
- accordingly.
 \end_layout
 
 \begin_layout Standard
@@ -17049,6 +17038,7 @@ Note that calling conversation.defer does not stop the current execution.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -17426,6 +17416,7 @@ For example, this code (Python flavor) is broken:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -17492,6 +17483,7 @@ Use this code instead:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -17554,6 +17546,7 @@ Here's an example:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -17647,6 +17640,7 @@ Here's a final version of our get_connection function that lets you control
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -18281,6 +18275,7 @@ You can configure your application's logger and sub-loggers.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -18340,6 +18335,7 @@ You can also add or change appenders for your loggers.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -18364,6 +18360,7 @@ We'll create a new appender for each new log file we need.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -18408,6 +18405,7 @@ Then, we'll direct our application logger to use this appender:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -18447,6 +18445,7 @@ target "http://www.analog.cx/"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -18578,6 +18577,7 @@ Let's say we want prudence-admin at the ``/admin/'' URL on the default host,
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -18617,6 +18617,7 @@ We'll create a routing.js file (for the JavaScript flavor):
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -18849,18 +18850,6 @@ See /configuration/yajsw.conf for a sample JSW configuration.
 Change yasjw.conf in the same way as described for wrapper.conf, above.
 \end_layout
 
-\begin_layout Subsubsection
-Monitoring with JMX
-\end_layout
-
-\begin_layout Standard
-YAJSW allows for remote monitoring and control via JMX.
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
 \begin_layout Section
 HTTP Proxy
 \begin_inset CommandInset label
@@ -18938,6 +18927,7 @@ target "http://www.danga.com/perlbal/"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -19119,6 +19109,7 @@ The nodes file is a list of IP addresses (not hostnames!) with ports.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -19150,6 +19141,7 @@ The secure_nodes file is the same for SSL connections.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -19190,6 +19182,7 @@ reference "../instance/|servers-file"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -19239,6 +19232,7 @@ reference "../instance/|hosts-file"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -19327,6 +19321,7 @@ reference "../application/|hosts"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -19411,6 +19406,7 @@ reference "../static-web/"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -20091,6 +20087,7 @@ reference "../application/|routing-file"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -20135,6 +20132,7 @@ You can also change Prudence's default routing by detaching and re-attaching
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -20202,6 +20200,7 @@ reference "../application/|application-file"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -21794,6 +21793,7 @@ For example:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -22521,6 +22521,7 @@ You'll see RESTful implementations that use either convention.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -22557,6 +22558,7 @@ all
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -22634,6 +22636,7 @@ The problem is that the XML header confuses Scripturian, Prudence's langauge
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
