@@ -12,7 +12,7 @@ execute_or_default('instance/hosts/')
 # Applications
 
 applications = component.context.attributes['com.threecrickets.prudence.applications'] = []
-applications_dir = File('applications')
+applications_dir = File(document.source.basePath, 'applications')
 
 properties_file = File(applications_dir, 'applications.properties')
 properties = IoUtil.loadProperties(properties_file)
@@ -37,7 +37,8 @@ for application_dir in application_dirs:
         application_logger_name = application_dir.name
         application_base_path = application_dir.path
         application_default_url = '/' + application_dir.name + '/'
-        execute_or_default(application_base_path, 'defaults/application/')
+        application_base = 'applications/' + application_dir.name + '/'
+        execute_or_default(application_base, 'defaults/application/')
         applications.append(application_instance)
 
 if len(applications) == 0:

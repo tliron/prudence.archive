@@ -13,7 +13,7 @@ execute_or_default 'instance/hosts/'
 
 $applications = ArrayList.new
 $component.context.attributes['com.threecrickets.prudence.applications'] = $applications
-$applications_dir = java.io.File.new('applications')
+$applications_dir = java.io.File.new($document.source.base_path, 'applications')
 
 $properties_file = java.io.File.new($applications_dir, 'applications.properties')
 $properties = IoUtil::load_properties $properties_file
@@ -40,7 +40,8 @@ for application_dir in $application_dirs
 		$application_logger_name = application_dir.name
 		$application_base_path = application_dir.path
 		$application_default_url = '/' + application_dir.name + '/'
-		execute_or_default $application_base_path, 'defaults/application'
+		$application_base = 'applications/' + application_dir.name + '/'
+		execute_or_default $application_base, 'defaults/application'
 		$applications.add $application_instance
 	end
 end

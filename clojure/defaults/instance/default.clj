@@ -41,7 +41,8 @@
 ; log4j: This is our actual logging engine
 (try
 	(import 'org.apache.log4j.PropertyConfigurator)
-	(org.apache.log4j.PropertyConfigurator/configure "configuration/logging.conf")
+	(System/setProperty "prudence.logs" (str (.. document getSource getBasePath (getPath)) "/logs"))
+	(org.apache.log4j.PropertyConfigurator/configure (str (.. document getSource getBasePath (getPath)) "/configuration/logging.conf"))
 (catch Exception _ nil)) 
 
 ; JULI: Remove any pre-existing configuration

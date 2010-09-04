@@ -3,7 +3,7 @@
 // Prudence Routing
 //
 
-global $component, $application_name, $application_internal_name, $application_logger_name, $application_base_path, $application_default_url, $application_instance;
+global $component, $application_name, $application_internal_name, $application_logger_name, $application_base_path, $application_default_url, $application_base, $application_instance;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ execute_or_default('instance/hosts/');
 
 $applications = new ArrayList();
 $component->context->attributes['com.threecrickets.prudence.applications'] = $applications;
-$applications_dir = new File('applications');
+$applications_dir = new File($document->source->basePath, 'applications');
 
 $properties_file = new File($applications_dir, 'applications.properties');
 $properties = IoUtil::loadProperties($properties_file);
@@ -43,7 +43,8 @@ foreach($application_dirs as $application_dir) {
 		$application_logger_name = $application_dir->name;
 		$application_base_path = $application_dir->path;
 		$application_default_url = '/' . $application_dir->name . '/';
-		execute_or_default($application_base_path, 'defaults/application');
+		$application_base = 'applications/' . $application_dir->name . '/';
+		execute_or_default($application_base, 'defaults/application');
 		$applications->add($application_instance);
 	}
 }

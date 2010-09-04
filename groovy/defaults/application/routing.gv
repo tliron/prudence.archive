@@ -75,7 +75,7 @@ out.flush()
 applicationGlobals = applicationInstance.context.attributes
 
 applicationGlobals['com.threecrickets.prudence.component'] = componentInstance
-cache =  componentInstance.context.applicationGlobals['com.threecrickets.prudence.cache']
+cache =  componentInstance.context.attributes['com.threecrickets.prudence.cache']
 if(cache) {
 	applicationGlobals['com.threecrickets.prudence.cache'] = cache
 }

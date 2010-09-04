@@ -16,7 +16,7 @@
 	{"stickstick.username" "root"}
 	{"stickstick.password" "root"}
 	{"stickstick.host" ""}
-	{"stickstick.database" "data/stickstick/stickstick"}))
+	{"stickstick.database" (str (.. document getSource getBasePath (getPath)) "/data/stickstick/stickstick")}))
 
 (def show-debug-on-error true)
 

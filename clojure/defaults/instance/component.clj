@@ -14,6 +14,7 @@
 ;
 
 (def component (Component.))
+(.. executable getGlobals (put "com.threecrickets.prudence.component" component))
 
 (.. component getContext getAttributes (put "com.threecrickets.prudence.version" prudence-version))
 (.. component getContext getAttributes (put "com.threecrickets.prudence.revision" prudence-revision))

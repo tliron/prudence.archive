@@ -15,6 +15,7 @@ importClass(
 //
 
 var component = new Component()
+executable.globals.put('com.threecrickets.prudence.component', component)
 
 component.context.attributes.put('com.threecrickets.prudence.version', prudenceVersion)
 component.context.attributes.put('com.threecrickets.prudence.revision', prudenceRevision)

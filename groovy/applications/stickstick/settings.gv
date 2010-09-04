@@ -15,7 +15,7 @@ predefinedGlobals['stickstick.backend'] = 'h2'
 predefinedGlobals['stickstick.username'] = 'root'
 predefinedGlobals['stickstick.password'] = 'root'
 predefinedGlobals['stickstick.host'] = ''
-predefinedGlobals['stickstick.database'] = 'data/stickstick/stickstick'
+predefinedGlobals['stickstick.database'] = document.source.basePath.path + '/data/stickstick/stickstick'
 
 showDebugOnError = true
 

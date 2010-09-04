@@ -15,7 +15,7 @@ $predefined_globals['stickstick.backend'] = 'h2'
 $predefined_globals['stickstick.username'] = 'root'
 $predefined_globals['stickstick.password'] = 'root'
 $predefined_globals['stickstick.host'] = ''
-$predefined_globals['stickstick.database'] = 'data/stickstick/stickstick'
+$predefined_globals['stickstick.database'] = document.source.base_path.path + '/data/stickstick/stickstick'
 
 $show_debug_on_error = true
 

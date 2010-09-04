@@ -37,7 +37,8 @@ print 'Prudence %s%s for %s.' % (prudence_version, prudence_revision, prudence_f
 # log4j: This is our actual logging engine
 try:
 	from org.apache.log4j import PropertyConfigurator
-	PropertyConfigurator.configure('configuration/logging.conf')
+	System.setProperty('prudence.logs', document.source.basePath.path + '/logs')
+	PropertyConfigurator.configure(document.source.basePath.path + '/configuration/logging.conf')
 except:
 	raise
 

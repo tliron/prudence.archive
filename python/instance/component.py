@@ -10,5 +10,5 @@ from com.threecrickets.prudence.cache import H2Cache, ChainCache
 default_cache = component.context.attributes['com.threecrickets.prudence.cache']
 chain_cache = ChainCache()
 chain_cache.caches.add(default_cache)
-chain_cache.caches.add(H2Cache('cache/prudence/prudence'))
+chain_cache.caches.add(H2Cache(document.source.basePath.path + '/cache/prudence/prudence'))
 component.context.attributes['com.threecrickets.prudence.cache'] = chain_cache

@@ -9,5 +9,5 @@ import com.threecrickets.prudence.cache.ChainCache
 
 // Create an H2-database-backed cache chained after the default memory cache
 defaultCache = componentInstance.context.attributes['com.threecrickets.prudence.cache']
-chainCache = new ChainCache(defaultCache, new H2Cache('cache/prudence/prudence'))
+chainCache = new ChainCache(defaultCache, new H2Cache(document.source.basePath.path + '/cache/prudence/prudence'))
 componentInstance.context.attributes['com.threecrickets.prudence.cache'] = chainCache

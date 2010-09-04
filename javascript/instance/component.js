@@ -12,5 +12,5 @@ importClass(
 var defaultCache = component.context.attributes.get('com.threecrickets.prudence.cache')
 var chainCache = new ChainCache()
 chainCache.caches.add(defaultCache)
-chainCache.caches.add(new H2Cache('cache/prudence/prudence'))
+chainCache.caches.add(new H2Cache(document.source.basePath.path + '/cache/prudence/prudence'))
 component.context.attributes.put('com.threecrickets.prudence.cache', chainCache)

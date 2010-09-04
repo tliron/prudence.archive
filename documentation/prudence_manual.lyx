@@ -10376,10 +10376,10 @@ name "../manual/static-web/|cache-control-filter"
 \end_layout
 
 \begin_layout Standard
-Prudence handles conditional HTTP automatically: when clients request a
- new file, they tell Prudence which version they have cached, and Prudence
- makes sure not to send them the file if they already have the most recent
- version.
+Prudence handles conditional HTTP automatically for /web/static/: when clients
+ request a new file, they tell Prudence which version they have cached,
+ and Prudence makes sure not to send them the file if they already have
+ the most recent version.
  Unfortunately, this still does require a short round-trip HTTP request
  between client and server.
 \end_layout
@@ -11922,7 +11922,7 @@ reference "../debugging/"
 You can capture errors both at the application level or at the instance
  level, which the former taking precedence.
  It may be a good idea to always capture at the instance level, in case
- applications don't do their own custom error pages.
+ applications don't capture for their own custom error pages.
 \end_layout
 
 \begin_layout Standard
@@ -12454,7 +12454,13 @@ importClass(com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter)
 
 \begin_layout Plain Layout
 
-// also note that the context for staticWeb will be used for the filter
+// also note that the context for staticWeb will be used for the filter,
+ so we can specify
+\end_layout
+
+\begin_layout Plain Layout
+
+// null for the context in the constructor
 \end_layout
 
 \begin_layout Plain Layout
@@ -12543,7 +12549,7 @@ status open
 
 \begin_layout Plain Layout
 
-var myFilter = MyFilter(applicationInstance.context)
+var myFilter = new MyFilter(applicationInstance.context)
 \end_layout
 
 \begin_layout Plain Layout
@@ -13025,7 +13031,7 @@ For more information, see the
 \begin_inset CommandInset href
 LatexCommand href
 name "Restlet Resolver documentation"
-target "http://www.restlet.org/documentation/2.0/jse/api/org/restlet/util/Resolver.html#createResolver(org.restlet.Request,%20org.restlet.Response)"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/util/Resolver.html"
 
 \end_inset
 
@@ -13302,7 +13308,7 @@ Cache key pattern handlers
 (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|document-cache-key-pattern-handlers"
+reference "../handlers/|cache-key-pattern-handlers"
 
 \end_inset
 

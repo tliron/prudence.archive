@@ -54,7 +54,8 @@ puts 'Prudence ' + $prudence_version + $prudence_revision + ' for ' + $prudence_
 # log4j: This is our actual logging engine
 begin
 	import org.apache.log4j.PropertyConfigurator
-	PropertyConfigurator::configure 'configuration/logging.conf'
+	System::set_property 'prudence.logs', $document.source.base_path.path + '/logs'
+	PropertyConfigurator::configure $document.source.base_path.path + '/configuration/logging.conf'
 rescue
 end
 

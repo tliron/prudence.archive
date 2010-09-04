@@ -3,11 +3,11 @@
 // Prudence Application
 //
 
-global $application_instance, $application_base_path, $application_globals, $language_manager;
+global $application_instance, $application_globals, $language_manager;
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $tasks_base_path, $tasks_default_name, $tasks_minimum_time_between_validity_checks;
 global $show_debug_on_error, $show_source_code_url;
-global $application_logger_name, $application_base_path;
+global $application_logger_name, $application_base, $application_base_path;
 global $predefined_globals;
 global $scheduler;
 
@@ -20,13 +20,13 @@ import com.threecrickets.prudence.ApplicationTaskCollector;
 // Settings
 //
 
-execute_or_default($application_base_path . '/settings/', 'defaults/application/settings/');
+execute_or_default($application_base . '/settings/', 'defaults/application/settings/');
 
 //
 // Application
 //
 
-execute_or_default($application_base_path . '/application/', 'defaults/application/application/');
+execute_or_default($application_base . '/application/', 'defaults/application/application/');
 
 $application_instance->name = $application_name;
 $application_instance->description = $application_description;
@@ -52,7 +52,7 @@ $application_instance->metadataService->addExtension('php', MediaType::valueOf('
 // Routing
 //
 
-execute_or_default($application_base_path . '/routing/', 'defaults/application/routing/');
+execute_or_default($application_base . '/routing/', 'defaults/application/routing/');
 
 //
 // Logging
@@ -65,7 +65,7 @@ $application_instance->context->setLogger($application_logger_name);
 //
 
 foreach($predefined_globals as $key => $value) {
-	$attributes[$key] = $value;
+	$application_globals[$key] = $value;
 }
 
 //

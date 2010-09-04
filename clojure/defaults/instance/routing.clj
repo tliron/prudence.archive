@@ -13,7 +13,7 @@
 ; Applications
 
 (def applications []) 
-(def applications-dir (File. "applications"))
+(def applications-dir (File. (.. document getSource getBasePath) "applications"))
 
 (def properties-file (File. applications-dir "applications.properties"))
 (def properties (IoUtil/loadProperties properties-file))
@@ -37,7 +37,8 @@
 	(def application-base-path (.getPath application-dir))
 	(def application-default-url (str "/" (.getName application-dir) "/"))
 	(def application-instance nil) ; otherwise the below would create it in a different namespace
-  (execute-or-default application-base-path "defaults/application/")
+	(def application-base (str "applications/" (.getPath application-dir) "/"))
+  (execute-or-default application-base "defaults/application/")
   (def applications (conj applications application-instance)))
 
 (.. component getContext getAttributes (put "com.threecrickets.prudence.applications" applications))

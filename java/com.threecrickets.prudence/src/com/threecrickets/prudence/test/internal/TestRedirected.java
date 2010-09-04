@@ -1,4 +1,4 @@
-package com.threecrickets.prudence.test;
+package com.threecrickets.prudence.test.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -7,9 +7,9 @@ import org.restlet.data.Status;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 
-public class TestOK implements Runnable
+public class TestRedirected implements Runnable
 {
-	public TestOK( String uri )
+	public TestRedirected( String uri )
 	{
 		this.uri = uri;
 	}
@@ -21,11 +21,11 @@ public class TestOK implements Runnable
 		try
 		{
 			resource.get();
-			assertEquals( "Testing: \"" + uri + "\"", Status.SUCCESS_OK, resource.getStatus() );
+			assertEquals( "Testing redirection: \"" + uri + "\"", Status.REDIRECTION_PERMANENT, resource.getStatus() );
 		}
 		catch( ResourceException x )
 		{
-			fail( "Testing: \"" + uri + "\": " + x.getMessage() );
+			fail( "Testing redirection: \"" + uri + "\": " + x.getMessage() );
 		}
 		finally
 		{

@@ -11,5 +11,5 @@ import com.threecrickets.prudence.cache.ChainCache
 $default_cache = $component.context.attributes['com.threecrickets.prudence.cache']
 $chain_cache = ChainCache.new
 $chain_cache.caches.add $default_cache
-$chain_cache.caches.add H2Cache.new('cache/prudence/prudence')
+$chain_cache.caches.add H2Cache.new($document.source.base_path.path + '/cache/prudence/prudence')
 $component.context.attributes['com.threecrickets.prudence.cache'] = $chain_cache

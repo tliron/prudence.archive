@@ -18,15 +18,15 @@ import com.threecrickets.prudence.test.internal.TestRedirected;
 /**
  * @author Tal Liron
  */
-public class KitchenSink extends Distribution
+public class Clojure extends Distribution
 {
 	//
 	// Construction
 	//
 
-	public KitchenSink()
+	public Clojure()
 	{
-		super( "kitchensink" );
+		super( "clojure" );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -43,18 +43,12 @@ public class KitchenSink extends Distribution
 
 	private static Runnable[] prudenceTests = new Runnable[]
 	{
-		new TestOK( "/prudence-test/" ),
-		new TestRedirected( "/prudence-test" ),
+		new TestOK( "/prudence-test/" ), new TestRedirected( "/prudence-test" ),
 		// /web/static/
 		new TestOK( "/prudence-test/style/soft-cricket.css" ),
 		// /web/dynamic/
-		new TestOK( "/prudence-test/test/rhino/?id=hello" ), new TestOK( "/prudence-test/test/quercus/?id=hello" ),
-		new TestOK( "/prudence-test/test/jython/?id=hello" ),
-		// new TestOK( "/prudence-test/test/jepp/?id=hello" ),
-		new TestOK( "/prudence-test/test/jruby/?id=hello" ), new TestOK( "/prudence-test/test/groovy/?id=hello" ), new TestOK( "/prudence-test/test/clojure/?id=hello" ),
-		new TestOK( "/prudence-test/test/velocity/?id=hello" ),
+		new TestOK( "/prudence-test/test/clojure/?id=hello" ),
 		// /resources/
-		new TestOK( "/prudence-test/data/rhino/" ), new TestOK( "/prudence-test/data/quercus/" ), new TestOK( "/prudence-test/data/jython/" ), new TestOK( "/prudence-test/data/jruby/" ),
-		new TestOK( "/prudence-test/data/groovy/" ), new TestOK( "/prudence-test/data/clojure/" )
+		new TestOK( "/prudence-test/data/clojure/" )
 	};
 }

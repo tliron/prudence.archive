@@ -46,7 +46,8 @@ print 'Prudence ' . $prudence_version . $prudence_revision . ' for ' . $prudence
 // log4j: This is our actual logging engine
 try {
 	import org.apache.log4j.PropertyConfigurator;
-	PropertyConfigurator::configure('configuration/logging.conf');
+	System::setProperty('prudence.logs', $document->source->basePath->path . '/logs');
+	PropertyConfigurator::configure($document->source->basePath->path . '/configuration/logging.conf');
 } catch(Exception $x) {}
 
 // JULI: Remove any pre-existing configuration

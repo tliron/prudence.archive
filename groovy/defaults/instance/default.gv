@@ -43,7 +43,8 @@ out.flush()
 // log4j: This is our actual logging engine
 import org.apache.log4j.PropertyConfigurator
 try {
-	PropertyConfigurator.configure('configuration/logging.conf')
+	System.setProperty('prudence.logs', document.source.basePath.path + '/logs')
+	PropertyConfigurator.configure(document.source.basePath.path + '/configuration/logging.conf')
 } catch(x) {}
 
 // JULI: Remove any pre-existing configuration

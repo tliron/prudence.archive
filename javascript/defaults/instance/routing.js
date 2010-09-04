@@ -15,7 +15,7 @@ executeOrDefault('instance/hosts/')
 
 var applications = new ArrayList()
 component.context.attributes.put('com.threecrickets.prudence.applications', applications)
-var applicationsDir = new File('applications')
+var applicationsDir = new File(document.source.basePath, 'applications')
 
 var propertiesFile = new File(applicationsDir, 'applications.properties')
 var properties = IoUtil.loadProperties(propertiesFile)
@@ -43,7 +43,8 @@ for(var i in applicationDirs) {
 		var applicationLoggerName = applicationDir.name
 		var applicationBasePath = applicationDir.path
 		var applicationDefaultURL = '/' + applicationDir.name + '/'
-		executeOrDefault(applicationBasePath, 'defaults/application/')
+		var applicationBase = 'applications/' + applicationDir.name + '/'
+		executeOrDefault(applicationBase, 'defaults/application/')
 		applications.add(applicationInstance)
 	}
 }

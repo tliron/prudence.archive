@@ -12,12 +12,12 @@
 ; Settings
 ;
 
-(execute-or-default (str application-base-path "/settings/") "defaults/application/settings/")
+(execute-or-default (str application-base "/settings/") "defaults/application/settings/")
 ;
 ; Application
 ;
 
-(execute-or-default (str application-base-path "/application/") "defaults/application/application/")
+(execute-or-default (str application-base "/application/") "defaults/application/application/")
 
 (.setName application-instance application-name)
 (.setDescription application-instance application-description)
@@ -43,7 +43,7 @@
 ; Routing
 ;
 
-(execute-or-default (str application-base-path "/routing/") "defaults/application/routing/")
+(execute-or-default (str application-base "/routing/") "defaults/application/routing/")
 
 ;
 ; Logging

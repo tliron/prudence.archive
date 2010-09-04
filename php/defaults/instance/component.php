@@ -10,6 +10,7 @@ import com.threecrickets.prudence.DelegatedStatusService;
 import com.threecrickets.prudence.cache.InProcessMemoryCache;
 import it.sauronsoftware.cron4j.Scheduler;
 
+global $executable;
 global $component, $executor, $scheduler, $prudence_version, $prudence_revision, $prudence_flavor;
 
 //
@@ -17,6 +18,7 @@ global $component, $executor, $scheduler, $prudence_version, $prudence_revision,
 //
 
 $component = new Component();
+$executable->globals['com.threecrickets.prudence.component'] = $component;
 
 $component->context->attributes['com.threecrickets.prudence.version'] = $prudence_version;
 $component->context->attributes['com.threecrickets.prudence.revision'] = $prudence_revision;

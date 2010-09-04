@@ -42,7 +42,8 @@ print('Prudence ' + prudenceVersion + prudenceRevision + ' for ' + prudenceFlavo
 // log4j: This is our actual logging engine
 try {
 	importClass(org.apache.log4j.PropertyConfigurator)
-	PropertyConfigurator.configure('configuration/logging.conf')
+	System.setProperty('prudence.logs', document.source.basePath.path + '/logs')
+	PropertyConfigurator.configure(document.source.basePath.path + '/configuration/logging.conf')
 } catch(x) {}
 
 // JULI: Remove any pre-existing configuration

@@ -11,13 +11,13 @@ import com.threecrickets.prudence.ApplicationTaskCollector
 # Settings
 #
 
-execute_or_default $application_base_path + '/settings/', 'defaults/application/settings/'
+execute_or_default $application_base + '/settings/', 'defaults/application/settings/'
 
 #
 # Application
 #
 
-execute_or_default $application_base_path + '/application/', 'defaults/application/application/'
+execute_or_default $application_base + '/application/', 'defaults/application/application/'
 
 $application_instance.name = $application_name
 $application_instance.description = $application_description
@@ -43,7 +43,7 @@ $application_instance.metadata_service.add_extension 'php', MediaType::TEXT_HTML
 # Routing
 #
 
-execute_or_default $application_base_path + '/routing/', 'defaults/application/routing/'
+execute_or_default $application_base + '/routing/', 'defaults/application/routing/'
 
 #
 # Logging
@@ -56,7 +56,7 @@ $application_instance.context.set_logger $application_logger_name
 #
 
 for key in $predefined_globals.keys
-	$attributes[key] = $predefined_globals[key]
+	$application_globals[key] = $predefined_globals[key]
 end
 
 #

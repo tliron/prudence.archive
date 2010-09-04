@@ -1,4 +1,4 @@
-package com.threecrickets.prudence.test;
+package com.threecrickets.prudence.test.internal;
 
 import java.util.Random;
 
@@ -23,7 +23,7 @@ public abstract class MultiTest
 		test( 0 );
 	}
 
-	@Test
+	//@Test
 	public void multiThreaded() throws Throwable
 	{
 		MultiTest.StressTest[] tests = new MultiTest.StressTest[threads];
