@@ -105,9 +105,9 @@ end
 
 $language_manager = $executable.manager
 
-//
-// Handlers
-//
+#
+# Handlers
+#
 
 $handlers_document_source = DocumentFileSource.new($application_base_path + $handlers_base_path, $handlers_default_name, 'rb', $handlers_minimum_time_between_validity_checks)
 $router.filter_document_source = $handlers_document_source
