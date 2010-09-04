@@ -882,12 +882,12 @@ public class GeneratedTextResource extends ServerResource
 		Map<String, Object> attributes = request.getAttributes();
 
 		// Check for cached document name in the request
-		String documentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentname" );
+		String documentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentName" );
 		if( documentName == null )
 		{
 			documentName = request.getResourceRef().getRemainingPart( true, false );
 			documentName = validateDocumentName( documentName );
-			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentname", documentName );
+			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentName", documentName );
 		}
 
 		try
@@ -1006,12 +1006,12 @@ public class GeneratedTextResource extends ServerResource
 		Map<String, Object> attributes = request.getAttributes();
 
 		// Check for cached document name in the request
-		String documentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentname" );
+		String documentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentName" );
 		if( documentName == null )
 		{
 			documentName = request.getResourceRef().getRemainingPart( true, false );
 			documentName = validateDocumentName( documentName );
-			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentname", documentName );
+			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentName", documentName );
 		}
 
 		GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this, null, null, variant );
@@ -1209,12 +1209,12 @@ public class GeneratedTextResource extends ServerResource
 		Map<String, Object> attributes = request.getAttributes();
 
 		// Check for cached document name in the request
-		String documentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentname" );
+		String documentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentName" );
 		if( documentName == null )
 		{
 			documentName = request.getResourceRef().getRemainingPart( true, false );
 			documentName = validateDocumentName( documentName );
-			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentname", documentName );
+			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentName", documentName );
 		}
 
 		try
