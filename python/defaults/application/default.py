@@ -53,7 +53,7 @@ application_instance.context.setLogger(application_logger_name)
 # Predefined Globals
 #
 
-attributes.putAll(predefined_globals)
+application_globals.putAll(predefined_globals)
 
 #
 # Tasks

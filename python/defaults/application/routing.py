@@ -61,12 +61,12 @@ for i in range(len(hosts)):
 		sys.stdout.write(', ')
 print '.'
 
-attributes = application_instance.context.attributes
+application_globals = application_instance.context.attributes
 
-attributes['com.threecrickets.prudence.component'] = component
+application_globals['com.threecrickets.prudence.component'] = component
 cache = component.context.attributes['com.threecrickets.prudence.cache']
 if cache is not None:
-	attributes['com.threecrickets.prudence.cache'] = cache
+	application_globals['com.threecrickets.prudence.cache'] = cache
 
 #
 # Inbound root
@@ -103,16 +103,16 @@ router.filterLanguageManager = language_manager
 
 dynamic_web_document_source = DocumentFileSource(application_base_path + dynamic_web_base_path, dynamic_web_default_document, 'py', dynamic_web_minimum_time_between_validity_checks)
 cache_key_pattern_handlers = ConcurrentHashMap()
-attributes['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = language_manager
-attributes['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'python'
-attributes['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamic_web_default_document
-attributes['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamic_web_document_source
-attributes['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
-attributes['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController() # Adds PHP predefined variables
-attributes['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamic_web_client_caching_mode
-attributes['com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold'] = file_upload_size_threshold
-attributes['com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource'] = handlers_document_source
-attributes['com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers'] = cache_key_pattern_handlers
+application_globals['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = language_manager
+application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'python'
+application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamic_web_default_document
+application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamic_web_document_source
+application_globals['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
+application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController() # Adds PHP predefined variables
+application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamic_web_client_caching_mode
+application_globals['com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold'] = file_upload_size_threshold
+application_globals['com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource'] = handlers_document_source
+application_globals['com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers'] = cache_key_pattern_handlers
 
 dynamic_web = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 dynamic_web_base_url = fix_url(dynamic_web_base_url)
@@ -140,12 +140,12 @@ else:
 #
 
 resources_document_source = DocumentFileSource(application_base_path + resources_base_path, resources_default_name, 'py', resources_minimum_time_between_validity_checks)
-attributes['com.threecrickets.prudence.DelegatedResource.languageManager'] = language_manager
-attributes['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'python'
-attributes['com.threecrickets.prudence.DelegatedResource.defaultName'] = resources_default_name
-attributes['com.threecrickets.prudence.DelegatedResource.documentSource'] = resources_document_source
-attributes['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resources_source_viewable
-attributes['com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold'] = file_upload_size_threshold
+application_globals['com.threecrickets.prudence.DelegatedResource.languageManager'] = language_manager
+application_globals['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'python'
+application_globals['com.threecrickets.prudence.DelegatedResource.defaultName'] = resources_default_name
+application_globals['com.threecrickets.prudence.DelegatedResource.documentSource'] = resources_document_source
+application_globals['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resources_source_viewable
+application_globals['com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold'] = file_upload_size_threshold
 
 resources = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 resources_base_url = fix_url(resources_base_url)
@@ -160,7 +160,7 @@ if resources_defrost:
 #
 
 if show_debug_on_error:
-	attributes['com.threecrickets.prudence.SourceCodeResource.documentSources'] = [dynamic_web_document_source, resources_document_source]
+	application_globals['com.threecrickets.prudence.SourceCodeResource.documentSources'] = [dynamic_web_document_source, resources_document_source]
 	source_code = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.SourceCodeResource'))
 	show_source_code_url = fix_url(show_source_code_url)
 	router.attach(show_source_code_url, source_code).matchingMode = Template.MODE_EQUALS
