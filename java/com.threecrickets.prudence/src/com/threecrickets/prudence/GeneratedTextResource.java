@@ -893,7 +893,6 @@ public class GeneratedTextResource extends ServerResource
 		try
 		{
 			DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocument( documentName );
-			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentDescriptor", documentDescriptor );
 
 			// Media type is chosen according to the document descriptor tag
 			MediaType mediaType = getMetadataService().getMediaType( documentDescriptor.getTag() );
