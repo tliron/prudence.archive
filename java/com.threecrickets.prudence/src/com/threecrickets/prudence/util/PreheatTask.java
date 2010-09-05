@@ -11,6 +11,7 @@
 
 package com.threecrickets.prudence.util;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.logging.Level;
 
@@ -78,7 +79,7 @@ public class PreheatTask implements Runnable
 	 */
 	public PreheatTask( Context context, String applicationInternalName, String resourceUri )
 	{
-		this.context = context;
+		this.context = context.createChildContext();
 		this.applicationInternalName = applicationInternalName;
 		this.resourceUri = resourceUri;
 	}
@@ -95,12 +96,8 @@ public class PreheatTask implements Runnable
 		try
 		{
 			context.getLogger().fine( "Preheating: " + uri );
-			clientResource.get();
+			clientResource.get().exhaust();
 			context.getLogger().fine( "Preheated: " + uri );
-			/*
-			 * try { System.out.println( clientResource.get().getText() ); }
-			 * catch( IOException x ) { }
-			 */
 		}
 		catch( ResourceException x )
 		{
@@ -115,6 +112,12 @@ public class PreheatTask implements Runnable
 				System.err.print( clientResource.getReference() + " - " );
 				x.printStackTrace();
 			}
+		}
+		catch( IOException x )
+		{
+			context.getLogger().log( Level.SEVERE, "Preheating error: " + uri, x );
+			System.err.print( clientResource.getReference() + " - " );
+			x.printStackTrace();
 		}
 	}
 

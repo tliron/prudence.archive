@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
@@ -25,6 +26,7 @@ import org.junit.Before;
 import org.restlet.Component;
 
 import com.threecrickets.scripturian.GlobalScope;
+import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.Scripturian;
 
 /**
@@ -48,6 +50,8 @@ public abstract class DistributionTest extends MultiTest
 	{
 		if( started || ( ( threads == 0 ) && ( iterations == 0 ) ) )
 			return;
+
+		deleteWorkFiles();
 
 		if( inProcess )
 			startInProcessComponent();
@@ -104,7 +108,7 @@ public abstract class DistributionTest extends MultiTest
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
-	private static final boolean inProcess = false;
+	private static final boolean inProcess = true;
 
 	private static boolean started;
 
@@ -136,6 +140,8 @@ public abstract class DistributionTest extends MultiTest
 	private void startInProcessComponent()
 	{
 		System.out.println( "Starting Prudence instance in this process..." );
+
+		System.setProperty( LanguageManager.SCRIPTURIAN_CACHE_PATH, "build/" + name + "/content/cache" );
 
 		Scripturian.main( new String[]
 		{
@@ -222,6 +228,30 @@ public abstract class DistributionTest extends MultiTest
 
 		System.out.println( "Stopped external process." );
 		externalProcess = null;
+	}
+
+	private static void deleteDirectory( File directory )
+	{
+		for( File file : directory.listFiles() )
+		{
+			if( file.isDirectory() )
+				deleteDirectory( file );
+			else
+				file.delete();
+		}
+
+		directory.delete();
+	}
+
+	private void deleteWorkFiles()
+	{
+		File logs = new File( "build/" + name + "/content/logs" );
+		if( logs.exists() )
+			deleteDirectory( logs );
+
+		File cache = new File( "build/" + name + "/content/cache" );
+		if( cache.exists() )
+			deleteDirectory( cache );
 	}
 
 	static
