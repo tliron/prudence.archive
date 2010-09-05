@@ -11,14 +11,14 @@
 
 package com.threecrickets.prudence.test;
 
-import com.threecrickets.prudence.test.internal.Distribution;
+import com.threecrickets.prudence.test.internal.DistributionTest;
 import com.threecrickets.prudence.test.internal.TestOK;
 import com.threecrickets.prudence.test.internal.TestRedirected;
 
 /**
  * @author Tal Liron
  */
-public class Ruby extends Distribution
+public class Ruby extends DistributionTest
 {
 	//
 	// Construction
@@ -26,7 +26,7 @@ public class Ruby extends Distribution
 
 	public Ruby()
 	{
-		super( "ruby" );
+		super( "ruby", true );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

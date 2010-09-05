@@ -7,25 +7,44 @@ import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.junit.Test;
 
+/**
+ * @author Tal Liron
+ */
 public abstract class MultiTest
 {
+	//
+	// Construction
+	//
+
 	public MultiTest( int threads, int iterations )
 	{
 		this.threads = threads;
 		this.iterations = iterations;
 	}
 
+	//
+	// Operations
+	//
+
 	public abstract void test( int index );
+
+	//
+	// JUnit
+	//
 
 	@Test
 	public void singleThread() throws Throwable
 	{
-		test( 0 );
+		for( int i = 0; i < iterations; i++ )
+			test( 0 );
 	}
 
-	//@Test
+	@Test
 	public void multiThreaded() throws Throwable
 	{
+		if( threads == 0 )
+			return;
+
 		MultiTest.StressTest[] tests = new MultiTest.StressTest[threads];
 		for( int i = 0; i < tests.length; i++ )
 		{
@@ -44,12 +63,19 @@ public abstract class MultiTest
 		new MultiThreadedTestRunner( tests ).runTestRunnables();
 	}
 
-	public StressTest newStressTest( int index )
-	{
-		return new StressTest( index, STRESS_TEST_SLEEP );
-	}
+	// //////////////////////////////////////////////////////////////////////////
+	// Protected
 
-	public class StressTest extends TestRunnable
+	protected final int threads;
+
+	protected final int iterations;
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	private static final int STRESS_TEST_SLEEP = 5;
+
+	private class StressTest extends TestRunnable
 	{
 		public StressTest( int index, int sleep )
 		{
@@ -72,13 +98,4 @@ public abstract class MultiTest
 
 		private final int sleep;
 	}
-
-	// //////////////////////////////////////////////////////////////////////////
-	// Private
-
-	private static final int STRESS_TEST_SLEEP = 5;
-
-	private final int threads;
-
-	private final int iterations;
 }

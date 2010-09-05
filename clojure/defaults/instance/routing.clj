@@ -37,7 +37,7 @@
 	(def application-base-path (.getPath application-dir))
 	(def application-default-url (str "/" (.getName application-dir) "/"))
 	(def application-instance nil) ; otherwise the below would create it in a different namespace
-	(def application-base (str "applications/" (.getPath application-dir) "/"))
+	(def application-base (str "applications/" (.getName application-dir) "/"))
   (execute-or-default application-base "defaults/application/")
   (def applications (conj applications application-instance)))
 

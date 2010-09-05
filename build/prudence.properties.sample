@@ -10,6 +10,10 @@
 # Whether to include debug information in the compiled Java classes
 debug=true
 
+# Set this to include Quercus (note that Quercus is GPL and cannot be
+# distributed with Prudence!)
+#quercus=true
+
 # Which flavor to use as the base for the Kitchen Sink distribution
 kitchensink-base=${javascript}
 

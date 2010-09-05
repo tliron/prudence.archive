@@ -245,7 +245,11 @@
 	<fetch-javadocs dist="${dist-kitchensink}" />
 </target>
 
-<target name="libraries-kitchensink" depends="jar-kitchensink" description="Fetch libraries">
+<target name="libraries-kitchensink-quercus" description="Fetch libraries" if="quercus">
+	<fetch-library dist="${dist-kitchensink}" library="quercus" />
+</target>
+
+<target name="libraries-kitchensink" depends="jar-kitchensink, libraries-kitchensink-quercus" description="Fetch libraries">
 	<fetch-library dist="${dist-kitchensink}" library="clojure" />
 	<fetch-library dist="${dist-kitchensink}" library="commons-codec" />
 	<fetch-library dist="${dist-kitchensink}" library="commons-dbcp" />
@@ -274,7 +278,6 @@
 	<fetch-library dist="${dist-kitchensink}" library="log4j" />
 	<fetch-library dist="${dist-kitchensink}" library="mime4j" />
 	<fetch-library dist="${dist-kitchensink}" library="mysqlconnector" />
-	<!-- GPL: <fetch-library dist="${dist-kitchensink}" library="quercus" /> -->
 	<fetch-library dist="${dist-kitchensink}" library="restlet" />
 	<fetch-library dist="${dist-kitchensink}" library="rhino" />
 	<fetch-library dist="${dist-kitchensink}" library="scripturian" />
@@ -654,7 +657,11 @@
 	<fetch-prudence-jar dist="${dist-php}" />
 </target>
 
-<target name="libraries-php" depends="jar-php" description="Fetch libraries">
+<target name="libraries-php-quercus" description="Fetch libraries" if="quercus">
+	<fetch-library dist="${dist-php}" library="quercus" />
+</target>
+
+<target name="libraries-php" depends="jar-php, libraries-php-quercus" description="Fetch libraries">
 	<fetch-library dist="${dist-php}" library="commons-codec" />
 	<fetch-library dist="${dist-php}" library="commons-dbcp" />
 	<fetch-library dist="${dist-php}" library="commons-fileupload" />
@@ -675,7 +682,6 @@
 	<fetch-library dist="${dist-php}" library="log4j" />
 	<fetch-library dist="${dist-php}" library="mime4j" />
 	<fetch-library dist="${dist-php}" library="mysqlconnector" />
-	<!-- GPL: <fetch-library dist="${dist-php}" library="quercus" /> -->
 	<fetch-library dist="${dist-php}" library="restlet" />
 	<fetch-library dist="${dist-php}" library="scripturian" />
 	<fetch-library dist="${dist-php}" library="servlet" />

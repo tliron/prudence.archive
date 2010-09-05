@@ -1,7 +1,7 @@
 #!/bin/bash
 
 here=$(readlink -f "$(dirname "$0")")
-cd $here
+cd $here/..
 
 java=/usr/bin/java
 #java=/usr/lib/jvm/java-1.5.0-sun/bin/java
@@ -49,7 +49,7 @@ libraries/org.slf4j.bridge.jar:\
 libraries/org.slf4j.impl.jar:\
 libraries/org.slf4j.jar
 
-"$java" \
+exec "$java" \
 -cp "$jars" \
 -Dscripturian.cache=cache \
 $main instance

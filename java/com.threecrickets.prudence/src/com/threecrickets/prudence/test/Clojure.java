@@ -11,14 +11,14 @@
 
 package com.threecrickets.prudence.test;
 
-import com.threecrickets.prudence.test.internal.Distribution;
+import com.threecrickets.prudence.test.internal.DistributionTest;
 import com.threecrickets.prudence.test.internal.TestOK;
 import com.threecrickets.prudence.test.internal.TestRedirected;
 
 /**
  * @author Tal Liron
  */
-public class Clojure extends Distribution
+public class Clojure extends DistributionTest
 {
 	//
 	// Construction
@@ -26,7 +26,7 @@ public class Clojure extends Distribution
 
 	public Clojure()
 	{
-		super( "clojure" );
+		super( "clojure", true );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

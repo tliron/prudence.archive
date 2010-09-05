@@ -56,7 +56,7 @@ libraries/org.slf4j.jar
 
 # We are setting java.library.path for Jepp
 
-"$java" \
+exec "$java" \
 -cp "$jars" \
 -Dscripturian.cache=cache \
 -Dpython.home=libraries/python \
