@@ -49,7 +49,7 @@ $component.internal_router.attach('/' + $application_internal_name + '/', $appli
 
 $add_trailing_slash = Redirector.new($application_instance.context, '{ri}/', Redirector::MODE_CLIENT_PERMANENT)
 
-print $application_instance.name + ': '
+print "#{$application_instance.name}: "
 i = 0
 for entry in $hosts
 	host = entry[0]
@@ -57,7 +57,7 @@ for entry in $hosts
 	if url.nil?
 		url = $application_default_url
 	end
-	print '"' + url + '" on ' + host.name
+	print "\"#{url}\" on #{host.name}"
 	host.attach(url, $application_instance).matching_mode = Template::MODE_STARTS_WITH
 	if url != '/'
 		if url[-1] == ?/

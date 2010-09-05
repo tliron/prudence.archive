@@ -39,7 +39,7 @@ public abstract class DistributionTest extends MultiTest
 	public DistributionTest( String name, boolean enabled )
 	{
 		// threads=40, iterations=1
-		super( enabled ? 10 : 0, enabled ? 1 : 0 );
+		super( enabled ? 20 : 0, enabled ? 10 : 0 );
 		this.name = name;
 	}
 
@@ -50,60 +50,13 @@ public abstract class DistributionTest extends MultiTest
 			return;
 
 		if( inProcess )
-		{
-			Scripturian.main( new String[]
-			{
-				"instance", "--base-path=build/" + name + "/content/"
-			} );
-
-			try
-			{
-				// Defrost/preheat
-				Thread.sleep( 2000 );
-			}
-			catch( InterruptedException x )
-			{
-				// Restore interrupt status
-				Thread.currentThread().interrupt();
-			}
-
-			getComponent();
-
-			started = true;
-		}
+			startInProcessComponent();
 		else
-		{
-			try
-			{
-				process = Runtime.getRuntime().exec( "build/" + name + "/content/bin/run.sh" );
-				try
-				{
-					BufferedReader input = new BufferedReader( new InputStreamReader( process.getInputStream() ) );
-					String line;
-					while( ( line = input.readLine() ) != null )
-					{
-						System.out.println( line );
-						if( line.startsWith( "Finished tasks" ) )
-						{
-							started = true;
-							break;
-						}
-					}
-					input.close();
-				}
-				catch( Exception x )
-				{
-					x.printStackTrace();
-				}
+			startExternalProcess();
 
-				assertTrue( started );
-			}
-			catch( IOException x )
-			{
-				x.printStackTrace();
-			}
-		}
+		assertTrue( started );
 
+		// Disable Restlet client log messages
 		Logger.getLogger( "" ).setLevel( Level.WARNING );
 	}
 
@@ -113,35 +66,18 @@ public abstract class DistributionTest extends MultiTest
 		if( !started )
 			return;
 
-		started = false;
-
 		if( inProcess )
 		{
-			try
-			{
-				getComponent().stop();
-				System.out.println( "Stopped component." );
-			}
-			catch( Exception x )
-			{
-				x.printStackTrace();
-			}
+			assertNotNull( getInProcessComponent() );
+			stopInProcessComponent();
 		}
 		else
 		{
-			assertNotNull( process );
-			process.destroy();
-			try
-			{
-				process.waitFor();
-			}
-			catch( InterruptedException x )
-			{
-				x.printStackTrace();
-			}
-			System.out.println( "Stopped process." );
-			process = null;
+			assertNotNull( externalProcess );
+			stopExternalProcess();
 		}
+
+		started = false;
 	}
 
 	//
@@ -172,40 +108,7 @@ public abstract class DistributionTest extends MultiTest
 
 	private static boolean started;
 
-	private static Process process;
-
-	private final String name;
-
-	static
-	{
-		Runtime.getRuntime().addShutdownHook( new Thread()
-		{
-			@Override
-			public void run()
-			{
-				if( process != null )
-				{
-					process.destroy();
-					try
-					{
-						process.waitFor();
-					}
-					catch( InterruptedException x )
-					{
-						x.printStackTrace();
-					}
-					System.out.println( "Cleaned up process." );
-				}
-			}
-		} );
-	}
-
-	private static Component getComponent()
-	{
-		Component component = (Component) GlobalScope.getInstance().getAttributes().get( "com.threecrickets.prudence.component" );
-		assertNotNull( component );
-		return component;
-	}
+	private static Process externalProcess;
 
 	private static Runnable[] adminTests = new Runnable[]
 	{
@@ -222,4 +125,116 @@ public abstract class DistributionTest extends MultiTest
 	// /resources/
 	// new TestOK( "/stickstick/data/" )
 	};
+
+	private final String name;
+
+	private static Component getInProcessComponent()
+	{
+		return (Component) GlobalScope.getInstance().getAttributes().get( "com.threecrickets.prudence.component" );
+	}
+
+	private void startInProcessComponent()
+	{
+		System.out.println( "Starting Prudence instance in this process..." );
+
+		Scripturian.main( new String[]
+		{
+			"instance", "--base-path=build/" + name + "/content/"
+		} );
+
+		try
+		{
+			// Defrost/preheat
+			Thread.sleep( 2000 );
+		}
+		catch( InterruptedException x )
+		{
+			// Restore interrupt status
+			Thread.currentThread().interrupt();
+			x.printStackTrace();
+		}
+
+		assertNotNull( getInProcessComponent() );
+
+		started = true;
+	}
+
+	private static void stopInProcessComponent()
+	{
+		try
+		{
+			getInProcessComponent().stop();
+			System.out.println( "Stopped in-process component." );
+		}
+		catch( Exception x )
+		{
+			x.printStackTrace();
+		}
+	}
+
+	private void startExternalProcess()
+	{
+		System.out.println( "Starting Prudence instance in an external process..." );
+
+		try
+		{
+			externalProcess = Runtime.getRuntime().exec( "build/" + name + "/content/bin/run.sh" );
+			try
+			{
+				BufferedReader input = new BufferedReader( new InputStreamReader( externalProcess.getInputStream() ) );
+				String line;
+				while( ( line = input.readLine() ) != null )
+				{
+					System.out.println( line );
+					if( line.startsWith( "Finished all startup tasks" ) )
+					{
+						started = true;
+						break;
+					}
+				}
+				input.close();
+			}
+			catch( Exception x )
+			{
+				x.printStackTrace();
+			}
+		}
+		catch( IOException x )
+		{
+			x.printStackTrace();
+		}
+	}
+
+	private static void stopExternalProcess()
+	{
+		externalProcess.destroy();
+
+		try
+		{
+			externalProcess.waitFor();
+		}
+		catch( InterruptedException x )
+		{
+			// Restore interrupt status
+			Thread.currentThread().interrupt();
+			x.printStackTrace();
+		}
+
+		System.out.println( "Stopped external process." );
+		externalProcess = null;
+	}
+
+	static
+	{
+		// Make sure we stop the external process
+		Runtime.getRuntime().addShutdownHook( new Thread()
+		{
+			@Override
+			public void run()
+			{
+				if( externalProcess != null )
+					stopExternalProcess();
+			}
+		} );
+	}
 }

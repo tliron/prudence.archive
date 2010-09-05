@@ -101,6 +101,7 @@ executeOrDefault('instance/servers/')
 //
 
 component.start()
+print('Prudence is up!\n')
 
 //
 // Scheduler
@@ -116,7 +117,7 @@ var fixedExecutor = Executors.newFixedThreadPool(Runtime.runtime.availableProces
 if(tasks.length > 0) {
 	var futures = []
 	var startTime = System.currentTimeMillis()
-	print('Executing ' + tasks.length + ' tasks...\n')
+	print('Executing ' + tasks.length + ' startup tasks...\n')
 	for(var i in tasks) {
 		var task = tasks[i]
 		futures.push(fixedExecutor.submit(task))
@@ -125,5 +126,5 @@ if(tasks.length > 0) {
 		var future = futures[i]
 		future.get()
 	}
-	print('Finished tasks in ' + ((System.currentTimeMillis() - startTime) / 1000) + ' seconds.\n')
+	print('Finished all startup tasks in ' + ((System.currentTimeMillis() - startTime) / 1000) + ' seconds.\n')
 }

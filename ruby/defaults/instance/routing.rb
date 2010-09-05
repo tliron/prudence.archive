@@ -22,7 +22,7 @@ $application_files = $applications_dir.list_files
 for application_file in $application_files
 	last_modified = application_file.last_modified.to_s
 	if not application_file.is_directory and application_file.name =~ /.zip$/ and $properties.get_property(application_file.name, '') != last_modified
-		puts 'Unpacking "' + application_file.name + '"...'
+		puts "Unpacking \"#{application_file.name}\"..."
 		IoUtil::unzip application_file, $applications_dir
 		$properties.set_property application_file.name, last_modified
 		$save_properties = true

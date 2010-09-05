@@ -106,6 +106,7 @@ execute_or_default('instance/servers/');
 //
 
 $component->start();
+print 'Prudence is up!\n';
 
 //
 // Scheduler
@@ -121,13 +122,13 @@ $fixed_executor = Executors::newFixedThreadPool(Runtime::getRuntime()->available
 if(count($tasks) > 0) {
 	$futures = array();
 	$start_time = System::currentTimeMillis();
-	print 'Executing ' . count($tasks) . " tasks...\n";
+	print 'Executing ' . count($tasks) . " startup tasks...\n";
 	foreach($tasks as $task) {
 		$futures[] = $fixed_executor->submit($task);
 	}
 	foreach($futures as $future) {
 		$future->get();
 	}
-	print 'Finished tasks in ' . ((System::currentTimeMillis() - $start_time) / 1000) . " seconds.\n";
+	print 'Finished all startup tasks in ' . ((System::currentTimeMillis() - $start_time) / 1000) . " seconds.\n";
 }
 ?>

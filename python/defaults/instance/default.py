@@ -98,6 +98,7 @@ execute_or_default('instance/servers/')
 #
 
 component.start()
+print 'Prudence is up!'
 
 #
 # Scheduler
@@ -113,9 +114,9 @@ fixed_executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProc
 if len(tasks) > 0:
 	futures = []
 	start_time = System.currentTimeMillis()
-	print 'Executing %s tasks...' % len(tasks)
+	print 'Executing %s startup tasks...' % len(tasks)
 	for task in tasks:
 	    futures.append(fixed_executor.submit(task))
 	for future in futures:
 		future.get()
-	print 'Finished tasks in %s seconds.' % ((System.currentTimeMillis() - start_time) / 1000.0)
+	print 'Finished all startup tasks in %s seconds.' % ((System.currentTimeMillis() - start_time) / 1000.0)

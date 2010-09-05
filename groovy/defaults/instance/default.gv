@@ -102,6 +102,7 @@ executeOrDefault('instance/servers/')
 //
 
 componentInstance.start()
+println('Prudence is up!')
 
 //
 // Scheduler
@@ -117,7 +118,7 @@ fixedExecutor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors
 if(tasks.size() > 0) {
 	futures = []
 	startTime = System.currentTimeMillis()
-	println('Executing ' + tasks.size() + ' tasks...')
+	println('Executing ' + tasks.size() + ' startup tasks...')
 	out.flush()
 	for(task in tasks) {
 		futures.add(fixedExecutor.submit(task))
@@ -125,6 +126,6 @@ if(tasks.size() > 0) {
 	for(future in futures) {
 		future.get()
 	}
-	print('Finished tasks in ' + ((System.currentTimeMillis() - startTime) / 1000) + ' seconds.\n')
+	println('Finished all startup tasks in ' + ((System.currentTimeMillis() - startTime) / 1000) + ' seconds.')
 	out.flush()
 }

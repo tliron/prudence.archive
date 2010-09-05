@@ -45,7 +45,7 @@ $prudence_flavor = 'Ruby'
 # Welcome
 #
 
-puts 'Prudence ' + $prudence_version + $prudence_revision + ' for ' + $prudence_flavor + '.'
+puts "Prudence #{$prudence_version}#{$prudence_revision} for #{$prudence_flavor}."
 
 #
 # Logging
@@ -115,6 +115,7 @@ execute_or_default 'instance/servers/'
 #
 
 $component.start
+puts 'Prudence is up!'
 
 #
 # Scheduler
@@ -130,12 +131,12 @@ $fixed_executor = Executors::new_fixed_thread_pool(Runtime::runtime.available_pr
 if $tasks.length > 0
 	futures = []
 	start_time = System::current_time_millis
-	print 'Executing ', $tasks.length, " tasks...\n"
+	puts "Executing #{$tasks.length} startup tasks..."
 	for task in $tasks
 		futures << $fixed_executor.submit(task)
 	end
 	for future in futures
 		future.get
 	end
-	print 'Finished tasks in ', (System::current_time_millis - start_time) / 1000.0, " seconds.\n"
+	puts "Finished all startup tasks in #{(System::current_time_millis - start_time) / 1000.0} seconds."
 end
