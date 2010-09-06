@@ -27,14 +27,11 @@
 ## Calling Java
 ##
 
-%><%javascript
+## Velocity is a templating language, not a full-blown scripting language. As such, it's missing some
+## features we need! In this case, we want to call a static method. So, we'll just use a programming
+## language scriptlet to fill in the gaps.
 
-// Velocity is a templating language, not a full-blown scripting language. As such, it's missing some
-// features we need! In this case, we want to call a static method. So, we'll just use this JavaScript
-// scriptlet to fill in the gaps.
-
-conversation.locals.put('currentTimeMillis', String(java.lang.System.currentTimeMillis()));
-%><%velocity
+%><%& 'test/velocity-helper/' %><%
 
 <p>This page was dynamically generated at $conversation.locals.currentTimeMillis</p>
 
