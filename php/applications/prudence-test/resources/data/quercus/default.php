@@ -116,6 +116,8 @@ function handle_get($conversation) {
 // to the client.
 
 function handle_post($conversation) {
+	
+	// Note: we must call ->getText() explicitly; ->text will not work
 
 	$update = json_decode($conversation->entity->getText(), true);
 	$state_lock = get_stack_lock($conversation);
@@ -151,6 +153,8 @@ function handle_post($conversation) {
 
 function handle_put($conversation) {
 
+	// Note: we must call ->getText() explicitly; ->text will not work
+	
 	$update = json_decode($conversation->entity->getText(), true);
 	set_state($conversation, $update);
 
