@@ -148,9 +148,9 @@ public abstract class DistributionTest extends MultiTest
 	{
 		new TestOK( "/stickstick/" ), new TestRedirected( "/stickstick" ),
 		// /web/static/
-		new TestOK( "/stickstick/style/soft-cricket.css" )
-	// /resources/
-	// new TestOK( "/stickstick/data/" )
+		new TestOK( "/stickstick/style/soft-cricket.css" ),
+		// /resources/
+		new TestOK( "/stickstick/data/" )
 	};
 
 	private final String name;

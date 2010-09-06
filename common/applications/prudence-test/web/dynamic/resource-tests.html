@@ -9,7 +9,8 @@ function call(verb) {
 		url: resource,
 		cache: false,
 		data: ((verb=='POST')||(verb=='PUT')) ? $('#content').val() : null,
-		dataType: (mime == 'application/json') ? 'json' : 'text',
+		contentType: 'application/json', // What we are sending
+		dataType: (mime == 'application/json') ? 'json' : 'text', // What we're requesting
 		beforeSend: function(request) {
 
 			// By default, jQuery adds the "*/*" wildcard to our Accept header, so

@@ -26,7 +26,7 @@ public class KitchenSink extends DistributionTest
 
 	public KitchenSink()
 	{
-		super( "kitchensink", false );
+		super( "kitchensink", true );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

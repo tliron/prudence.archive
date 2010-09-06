@@ -21,6 +21,7 @@ libraries/com.threecrickets.scripturian.jar:\
 libraries/com.threecrickets.succinct.jar:\
 libraries/it.sauronsoftware.cron4j.jar:\
 libraries/javax.servlet.jar:\
+libraries/jep.jar:\
 libraries/net.jcip.annotations.jar:\
 libraries/net.spy.memcached.jar:\
 libraries/org.apache.commons.codec.jar:\

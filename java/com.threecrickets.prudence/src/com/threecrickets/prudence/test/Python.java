@@ -47,7 +47,7 @@ public class Python extends DistributionTest
 		// /web/static/
 		new TestOK( "/prudence-test/style/soft-cricket.css" ),
 		// /web/dynamic/
-		new TestOK( "/prudence-test/test/jython/?id=hello" ),
+		new TestOK( "/prudence-test/test/jython/?id=hello" ), new TestOK( "/prudence-test/test/velocity/?id=hello" ),
 		// /resources/
 		new TestOK( "/prudence-test/data/jython/" )
 	};

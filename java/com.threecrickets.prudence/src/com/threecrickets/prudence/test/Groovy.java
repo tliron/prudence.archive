@@ -47,7 +47,7 @@ public class Groovy extends DistributionTest
 		// /web/static/
 		new TestOK( "/prudence-test/style/soft-cricket.css" ),
 		// /web/dynamic/
-		new TestOK( "/prudence-test/test/groovy/?id=hello" ),
+		new TestOK( "/prudence-test/test/groovy/?id=hello" ), new TestOK( "/prudence-test/test/velocity/?id=hello" ),
 		// /resources/
 		new TestOK( "/prudence-test/data/groovy/" )
 	};

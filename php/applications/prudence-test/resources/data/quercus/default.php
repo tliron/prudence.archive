@@ -75,7 +75,7 @@ function handle_init($conversation) {
 function handle_get($conversation) {
 
 	$state_lock = get_stack_lock($conversation);
-	$state = get_state($conversation);
+	$state =& get_state($conversation);
 
 	$state_lock->readLock()->lock();
 	try {
@@ -117,13 +117,14 @@ function handle_get($conversation) {
 
 function handle_post($conversation) {
 
-	$update = json_decode($conversation->entity->text, true);
+	$update = json_decode($conversation->entity->getText(), true);
 	$state_lock = get_stack_lock($conversation);
-	$state = get_state($conversation);
+	$state =& get_state($conversation);
 	
 	$state_lock->writeLock()->lock();
 	try {
 		foreach($update as $key => $value) {
+			print $key . '=' . $value . "\n";
 			$state[$key] = $value;
 		}
 	}
@@ -150,7 +151,7 @@ function handle_post($conversation) {
 
 function handle_put($conversation) {
 
-	$update = json_decode($conversation->entity->text, true);
+	$update = json_decode($conversation->entity->getText(), true);
 	set_state($conversation, $update);
 
 	return handle_get($conversation);
