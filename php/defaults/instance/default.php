@@ -106,7 +106,7 @@ execute_or_default('instance/servers/');
 //
 
 $component->start();
-print 'Prudence is up!\n';
+print "Prudence is up!\n";
 
 //
 // Scheduler

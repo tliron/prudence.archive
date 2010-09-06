@@ -29,7 +29,7 @@ function new_lock() {
 	return new ReentrantReadWriteLock();
 }
 
-function &get_stack_lock($conversation) {
+function get_stack_lock($conversation) {
 	return get_context_attribute($conversation, 'quercus.stateLock', 'new_lock');
 }
 
@@ -75,7 +75,7 @@ function handle_init($conversation) {
 function handle_get($conversation) {
 
 	$state_lock = get_stack_lock($conversation);
-	$state = &get_state($conversation);
+	$state = get_state($conversation);
 
 	$state_lock->readLock()->lock();
 	try {
@@ -119,7 +119,7 @@ function handle_post($conversation) {
 
 	$update = json_decode($conversation->entity->text, true);
 	$state_lock = get_stack_lock($conversation);
-	$state = &get_state($conversation);
+	$state = get_state($conversation);
 	
 	$state_lock->writeLock()->lock();
 	try {
