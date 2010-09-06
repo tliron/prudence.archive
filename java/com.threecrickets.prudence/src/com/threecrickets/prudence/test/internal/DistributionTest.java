@@ -63,6 +63,8 @@ public abstract class DistributionTest extends MultiTest
 
 		assertTrue( started );
 
+		System.out.println( "Testing with " + threads + " threads and " + iterations + " iterations" );
+
 		// Disable Restlet client log messages
 		Logger.getLogger( "" ).setLevel( Level.WARNING );
 	}
@@ -110,11 +112,26 @@ public abstract class DistributionTest extends MultiTest
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
-	private static final boolean inProcess = System.getProperty( "prudence.test.inProcess", "false" ).equals( "true" );
+	private static final boolean inProcess = "true".equals( System.getenv( "PRUDENCE_TEST_IN_PROCESS" ) );
 
-	private static int defaultThreads = Integer.parseInt( System.getProperty( "prudence.test.threads", "10" ) );
+	private static final int defaultThreads;
 
-	private static int defaultIterations = Integer.parseInt( System.getProperty( "prudence.test.threads", "3" ) );
+	private static final int defaultIterations;
+
+	static
+	{
+		String value = System.getenv( "PRUDENCE_TEST_THREADS" );
+		if( value != null )
+			defaultThreads = Integer.parseInt( value );
+		else
+			defaultThreads = 5;
+
+		value = System.getenv( "PRUDENCE_TEST_ITERATIONS" );
+		if( value != null )
+			defaultIterations = Integer.parseInt( value );
+		else
+			defaultIterations = 2;
+	}
 
 	private static boolean started;
 

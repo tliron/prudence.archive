@@ -138,9 +138,8 @@
 					<file file="${lib}/log4j/lib/org.apache.log4j.jar" />
 					<file file="${tmp}/lib/com.threecrickets.prudence.test.jar" />
 				</classpath>
-				<jvmarg value="-Dprudence.test.inProcess=false" />
-				<jvmarg value="-Dprudence.test.threads=10" />
-				<jvmarg value="-Dprudence.test.iterations=5" />
+				<env key="PRUDENCE_TEST_THREADS" value="${test-threads}" />
+				<env key="PRUDENCE_TEST_ITERATIONS" value="${test-iterations}" />
 				<jvmarg value="-Djava.library.path=${jepp-path}" />
 				<jvmarg value="-Dpython.home=libraries/python" />
 				<jvmarg value="-Dpython.cachedir=cache" />

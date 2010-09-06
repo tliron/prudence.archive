@@ -18,8 +18,11 @@ debug=true
 kitchensink-base=${javascript}
 
 #
-# The following values are only used for the "test-kitchensink" target.
+# For test targets
 #
+
+test-threads=10
+test-iterations=1
 
 # The full path to the Java VM to run
 test-jvm=/usr/lib/jvm/jdk1.5.0_22/bin/java
