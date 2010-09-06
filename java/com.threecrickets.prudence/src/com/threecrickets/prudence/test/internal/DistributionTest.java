@@ -164,6 +164,10 @@ public abstract class DistributionTest extends MultiTest
 		File cache = new File( "build/" + name + "/content/cache" );
 		if( cache.exists() )
 			deleteDirectory( cache );
+
+		File data = new File( "build/" + name + "/content/data" );
+		if( data.exists() )
+			deleteDirectory( data );
 	}
 
 	private static Component getInProcessComponent()
