@@ -22,7 +22,7 @@ kitchensink-base=${javascript}
 #
 
 test-threads=10
-test-iterations=1
+test-iterations=2
 
 # The full path to the Java VM to run
 test-jvm=/usr/lib/jvm/jdk1.5.0_22/bin/java
