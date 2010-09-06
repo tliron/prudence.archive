@@ -109,7 +109,7 @@ $language_manager = $executable.manager
 # Handlers
 #
 
-$handlers_document_source = DocumentFileSource.new($application_base_path + $handlers_base_path, $handlers_default_name, 'rb', $handlers_minimum_time_between_validity_checks)
+$handlers_document_source = DocumentFileSource.new($application_base + $handlers_base_path, $application_base_path + $handlers_base_path, $handlers_default_name, 'rb', $handlers_minimum_time_between_validity_checks)
 $router.filter_document_source = $handlers_document_source
 $router.filter_language_manager = $language_manager
 
@@ -117,7 +117,7 @@ $router.filter_language_manager = $language_manager
 # Dynamic web
 #
 
-$dynamic_web_document_source = DocumentFileSource.new($application_base_path + $dynamic_web_base_path, $dynamic_web_default_document, 'rb', $dynamic_web_minimum_time_between_validity_checks)
+$dynamic_web_document_source = DocumentFileSource.new($application_base + $dynamic_web_base_path, $application_base_path + $dynamic_web_base_path, $dynamic_web_default_document, 'rb', $dynamic_web_minimum_time_between_validity_checks)
 $cache_key_pattern_handlers = ConcurrentHashMap.new
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = $language_manager
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'ruby'
@@ -159,7 +159,7 @@ end
 # Resources
 #
 
-$resources_document_source = DocumentFileSource.new($application_base_path + $resources_base_path, $resources_default_name, 'rb', $resources_minimum_time_between_validity_checks)
+$resources_document_source = DocumentFileSource.new($application_base + $resources_base_path, $application_base_path + $resources_base_path, $resources_default_name, 'rb', $resources_minimum_time_between_validity_checks)
 $application_globals['com.threecrickets.prudence.DelegatedResource.languageManager'] = $language_manager
 $application_globals['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'ruby'
 $application_globals['com.threecrickets.prudence.DelegatedResource.defaultName'] = $resources_default_name

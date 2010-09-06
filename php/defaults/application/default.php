@@ -72,7 +72,7 @@ foreach($predefined_globals as $key => $value) {
 // Tasks
 //
 
-$tasks_document_source = new DocumentFileSource($application_base_path . $tasks_base_path, $tasks_default_name, 'php', $tasks_minimum_time_between_validity_checks);
+$tasks_document_source = new DocumentFileSource($application_base . $tasks_base_path, $application_base_path . $tasks_base_path, $tasks_default_name, 'php', $tasks_minimum_time_between_validity_checks);
 $application_globals['com.threecrickets.prudence.ApplicationTask.languageManager'] = $language_manager;
 $application_globals['com.threecrickets.prudence.ApplicationTask.defaultLanguageTag'] = 'php';
 $application_globals['com.threecrickets.prudence.ApplicationTask.defaultName'] = $tasks_default_name;

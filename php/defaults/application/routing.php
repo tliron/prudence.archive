@@ -129,7 +129,7 @@ $language_manager = $executable->manager;
 // Handlers
 //
 
-$handlers_document_source = new DocumentFileSource($application_base_path . $handlers_base_path, $handlers_default_name, 'php', $handlers_minimum_time_between_validity_checks);
+$handlers_document_source = new DocumentFileSource($application_base . $handlers_base_path, $application_base_path . $handlers_base_path, $handlers_default_name, 'php', $handlers_minimum_time_between_validity_checks);
 $router->filterDocumentSource = $handlers_document_source;
 $router->filterLanguageManager = $language_manager;
 
@@ -137,7 +137,7 @@ $router->filterLanguageManager = $language_manager;
 // Dynamic web
 //
 
-$dynamic_web_document_source = new DocumentFileSource($application_base_path . $dynamic_web_base_path, $dynamic_web_default_document, 'php', $dynamic_web_minimum_time_between_validity_checks);
+$dynamic_web_document_source = new DocumentFileSource($application_base . $dynamic_web_base_path, $application_base_path . $dynamic_web_base_path, $dynamic_web_default_document, 'php', $dynamic_web_minimum_time_between_validity_checks);
 $cache_key_pattern_handlers = new ConcurrentHashMap();
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = $language_manager;
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'php';
@@ -180,7 +180,7 @@ else {
 // Resources
 //
 
-$resources_document_source = new DocumentFileSource($application_base_path . $resources_base_path, $resources_default_name, 'php', $resources_minimum_time_between_validity_checks);
+$resources_document_source = new DocumentFileSource($application_base . $resources_base_path, $application_base_path . $resources_base_path, $resources_default_name, 'php', $resources_minimum_time_between_validity_checks);
 $application_globals['com.threecrickets.prudence.DelegatedResource.languageManager'] = $language_manager;
 $application_globals['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'php';
 $application_globals['com.threecrickets.prudence.DelegatedResource.defaultName'] = $resources_default_name;

@@ -40,10 +40,13 @@ public abstract class DistributionTest extends MultiTest
 
 	public DistributionTest( String name, boolean enabled )
 	{
-		// threads=40, iterations=1
-		super( enabled ? 20 : 0, enabled ? 10 : 0 );
+		super( enabled ? defaultThreads : 0, enabled ? defaultIterations : 0 );
 		this.name = name;
 	}
+
+	//
+	// JUnit
+	//
 
 	@Before
 	public void startPrudence()
@@ -97,7 +100,6 @@ public abstract class DistributionTest extends MultiTest
 			test.run();
 		for( Runnable test : stickstickTests )
 			test.run();
-
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -108,7 +110,11 @@ public abstract class DistributionTest extends MultiTest
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
-	private static final boolean inProcess = true;
+	private static final boolean inProcess = System.getProperty( "prudence.test.inProcess", "false" ).equals( "true" );
+
+	private static int defaultThreads = Integer.parseInt( System.getProperty( "prudence.test.threads", "10" ) );
+
+	private static int defaultIterations = Integer.parseInt( System.getProperty( "prudence.test.threads", "3" ) );
 
 	private static boolean started;
 
@@ -131,6 +137,17 @@ public abstract class DistributionTest extends MultiTest
 	};
 
 	private final String name;
+
+	private void deleteWorkFiles()
+	{
+		File logs = new File( "build/" + name + "/content/logs" );
+		if( logs.exists() )
+			deleteDirectory( logs );
+
+		File cache = new File( "build/" + name + "/content/cache" );
+		if( cache.exists() )
+			deleteDirectory( cache );
+	}
 
 	private static Component getInProcessComponent()
 	{
@@ -189,16 +206,22 @@ public abstract class DistributionTest extends MultiTest
 			{
 				BufferedReader input = new BufferedReader( new InputStreamReader( externalProcess.getInputStream() ) );
 				String line;
-				while( ( line = input.readLine() ) != null )
+				try
 				{
-					System.out.println( line );
-					if( line.startsWith( "Finished all startup tasks" ) )
+					while( ( line = input.readLine() ) != null )
 					{
-						started = true;
-						break;
+						System.out.println( line );
+						if( line.startsWith( "Finished all startup tasks" ) )
+						{
+							started = true;
+							break;
+						}
 					}
 				}
-				input.close();
+				finally
+				{
+					input.close();
+				}
 			}
 			catch( Exception x )
 			{
@@ -241,17 +264,6 @@ public abstract class DistributionTest extends MultiTest
 		}
 
 		directory.delete();
-	}
-
-	private void deleteWorkFiles()
-	{
-		File logs = new File( "build/" + name + "/content/logs" );
-		if( logs.exists() )
-			deleteDirectory( logs );
-
-		File cache = new File( "build/" + name + "/content/cache" );
-		if( cache.exists() )
-			deleteDirectory( cache );
 	}
 
 	static

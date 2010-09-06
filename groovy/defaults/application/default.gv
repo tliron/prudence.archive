@@ -64,7 +64,7 @@ predefinedGlobals.each() { key, value ->
 // Tasks
 //
 
-tasksDocumentSource = new DocumentFileSource(applicationBasePath + tasksBasePath, tasksDefaultName, 'gv', tasksMinimumTimeBetweenValidityChecks)
+tasksDocumentSource = new DocumentFileSource(applicationBase + tasksBasePath, applicationBasePath + tasksBasePath, tasksDefaultName, 'gv', tasksMinimumTimeBetweenValidityChecks)
 applicationGlobals['com.threecrickets.prudence.ApplicationTask.languageManager'] = languageManager
 applicationGlobals['com.threecrickets.prudence.ApplicationTask.defaultLanguageTag'] = 'groovy'
 applicationGlobals['com.threecrickets.prudence.ApplicationTask.defaultName'] = tasksDefaultName

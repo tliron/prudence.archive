@@ -61,7 +61,7 @@
 ; Tasks
 ;
 
-(def tasks-document-source (DocumentFileSource. (str application-base-path tasks-base-path) tasks-default-name "clj" (.longValue tasks-minimum-time-between-validity-checks)))
+(def tasks-document-source (DocumentFileSource. (str application-base tasks-base-path) (str application-base-path tasks-base-path) tasks-default-name "clj" (.longValue tasks-minimum-time-between-validity-checks)))
 (.put application-globals "com.threecrickets.prudence.ApplicationTask.languageManager" language-manager)
 (.put application-globals "com.threecrickets.prudence.ApplicationTask.defaultLanguageTag" "clojure")
 (.put application-globals "com.threecrickets.prudence.ApplicationTask.defaultName" tasks-default-name)

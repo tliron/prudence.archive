@@ -63,7 +63,7 @@ end
 # Tasks
 #
 
-$tasks_document_source = DocumentFileSource.new($application_base_path + $tasks_base_path, $tasks_default_name, 'rb', $tasks_minimum_time_between_validity_checks)
+$tasks_document_source = DocumentFileSource.new($application_base + $tasks_base_path, $application_base_path + $tasks_base_path, $tasks_default_name, 'rb', $tasks_minimum_time_between_validity_checks)
 $application_globals['com.threecrickets.prudence.ApplicationTask.languageManager'] = $language_manager
 $application_globals['com.threecrickets.prudence.ApplicationTask.defaultLanguageTag'] = 'ruby'
 $application_globals['com.threecrickets.prudence.ApplicationTask.defaultName'] = $tasks_default_name

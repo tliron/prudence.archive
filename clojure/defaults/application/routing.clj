@@ -98,7 +98,7 @@
 ; Handlers
 ;
 
-(def handlers-document-source (DocumentFileSource. (str application-base-path handlers-base-path) handlers-default-name "clj" (.longValue handlers-minimum-time-between-validity-checks)))
+(def handlers-document-source (DocumentFileSource. (str application-base handlers-base-path) (str application-base-path handlers-base-path) handlers-default-name "clj" (.longValue handlers-minimum-time-between-validity-checks)))
 (.setFilterDocumentSource router handlers-document-source)
 (.setFilterLanguageManager router language-manager)
 
@@ -106,7 +106,7 @@
 ; Dynamic web
 ;
 
-(def dynamic-web-document-source (DocumentFileSource. (str application-base-path dynamic-web-base-path) dynamic-web-default-document "clj" (.longValue dynamic-web-minimum-time-between-validity-checks)))
+(def dynamic-web-document-source (DocumentFileSource. (str application-base dynamic-web-base-path) (str application-base-path dynamic-web-base-path) dynamic-web-default-document "clj" (.longValue dynamic-web-minimum-time-between-validity-checks)))
 (def cache-key-pattern-handlers (ConcurrentHashMap.))
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.languageManager" language-manager)
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag" "clojure")
@@ -143,7 +143,7 @@
 ; Resources
 ;
 
-(def resources-document-source (DocumentFileSource. (str application-base-path resources-base-path) resources-default-name "clj" (.longValue resources-minimum-time-between-validity-checks))) 
+(def resources-document-source (DocumentFileSource. (str application-base resources-base-path) (str application-base-path resources-base-path) resources-default-name "clj" (.longValue resources-minimum-time-between-validity-checks))) 
 (.put application-globals "com.threecrickets.prudence.DelegatedResource.languageManager" language-manager)
 (.put application-globals "com.threecrickets.prudence.DelegatedResource.defaultLanguageTag" "clojure")
 (.put application-globals "com.threecrickets.prudence.DelegatedResource.defaultName" resources-default-name)

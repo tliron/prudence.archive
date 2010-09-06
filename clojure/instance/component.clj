@@ -12,5 +12,5 @@
 (def default-cache (.. component getContext getAttributes (get "com.threecrickets.prudence.cache")))
 (def chain-cache (ChainCache.))
 (.. chain-cache getCaches (add default-cache))
-(.. chain-cache getCaches (add (H2Cache. (str (.. document getSource getBasePath (getPath)) "cache/prudence/prudence"))))
+(.. chain-cache getCaches (add (H2Cache. (str (.. document getSource getBasePath (getPath)) "/cache/prudence/prudence"))))
 (.. component getContext getAttributes (put "com.threecrickets.prudence.cache" chain-cache))

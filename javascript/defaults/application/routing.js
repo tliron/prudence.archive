@@ -111,7 +111,7 @@ var languageManager = executable.manager
 // Handlers
 //
 
-var handlersDocumentSource = new DocumentFileSource(applicationBasePath + handlersBasePath, handlersDefaultName, 'js', handlersMinimumTimeBetweenValidityChecks)
+var handlersDocumentSource = new DocumentFileSource(applicationBase + handlersBasePath, applicationBasePath + handlersBasePath, handlersDefaultName, 'js', handlersMinimumTimeBetweenValidityChecks)
 router.filterDocumentSource = handlersDocumentSource
 router.filterLanguageManager = languageManager
 
@@ -119,7 +119,7 @@ router.filterLanguageManager = languageManager
 // Dynamic web
 //
 
-var dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'js', dynamicWebMinimumTimeBetweenValidityChecks)
+var dynamicWebDocumentSource = new DocumentFileSource(applicationBase + dynamicWebBasePath, applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'js', dynamicWebMinimumTimeBetweenValidityChecks)
 var cacheKeyPatternHandlers = new ConcurrentHashMap()
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager)
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'javascript')
@@ -162,7 +162,7 @@ else {
 // Resources
 //
 
-var resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, 'js', resourcesMinimumTimeBetweenValidityChecks)
+var resourcesDocumentSource = new DocumentFileSource(applicationBase + resourcesBasePath, applicationBasePath + resourcesBasePath, resourcesDefaultName, 'js', resourcesMinimumTimeBetweenValidityChecks)
 applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.languageManager', languageManager)
 applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.defaultLanguageTag', 'javascript')
 applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName)

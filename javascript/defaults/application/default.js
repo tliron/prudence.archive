@@ -64,7 +64,7 @@ for(var key in predefinedGlobals) {
 // Tasks
 //
 
-var tasksDocumentSource = new DocumentFileSource(applicationBasePath + tasksBasePath, tasksDefaultName, 'js', tasksMinimumTimeBetweenValidityChecks)
+var tasksDocumentSource = new DocumentFileSource(applicationBase + tasksBasePath, applicationBasePath + tasksBasePath, tasksDefaultName, 'js', tasksMinimumTimeBetweenValidityChecks)
 applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.languageManager', languageManager)
 applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.defaultLanguageTag', 'javascript')
 applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.defaultName', tasksDefaultName)

@@ -109,7 +109,7 @@ languageManager = executable.manager
 // Handlers
 //
 
-handlersDocumentSource = new DocumentFileSource(applicationBasePath + handlersBasePath, handlersDefaultName, 'gv', handlersMinimumTimeBetweenValidityChecks)
+handlersDocumentSource = new DocumentFileSource(applicationBase + handlersBasePath, applicationBasePath + handlersBasePath, handlersDefaultName, 'gv', handlersMinimumTimeBetweenValidityChecks)
 router.filterDocumentSource = handlersDocumentSource
 router.filterLanguageManager = languageManager
 
@@ -117,7 +117,7 @@ router.filterLanguageManager = languageManager
 // Dynamic web
 //
 
-dynamicWebDocumentSource = new DocumentFileSource(applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'gv', dynamicWebMinimumTimeBetweenValidityChecks)
+dynamicWebDocumentSource = new DocumentFileSource(applicationBase + dynamicWebBasePath, applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'gv', dynamicWebMinimumTimeBetweenValidityChecks)
 cacheKeyPatternHandlers = new ConcurrentHashMap()
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = languageManager
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'groovy'
@@ -160,7 +160,7 @@ else {
 // Resources
 //
 
-resourcesDocumentSource = new DocumentFileSource(applicationBasePath + resourcesBasePath, resourcesDefaultName, 'gv', resourcesMinimumTimeBetweenValidityChecks)
+resourcesDocumentSource = new DocumentFileSource(applicationBase + resourcesBasePath, applicationBasePath + resourcesBasePath, resourcesDefaultName, 'gv', resourcesMinimumTimeBetweenValidityChecks)
 applicationGlobals['com.threecrickets.prudence.DelegatedResource.languageManager'] = languageManager
 applicationGlobals['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'groovy'
 applicationGlobals['com.threecrickets.prudence.DelegatedResource.defaultName'] = resourcesDefaultName
