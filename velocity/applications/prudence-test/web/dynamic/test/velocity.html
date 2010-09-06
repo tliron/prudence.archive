@@ -31,6 +31,9 @@
 ## features we need! In this case, we want to call a static method. So, we'll just use a programming
 ## language scriptlet to fill in the gaps.
 
+## Let's make sure Velocity interprets this before switching to the helper
+#set($thisAdapter = $executable.context.adapter)
+
 %><%& 'test/velocity-helper/' %><%
 
 <p>This page was dynamically generated at $conversation.locals.currentTimeMillis</p>
@@ -51,7 +54,7 @@
 #end
 
 <h3>Language used:</h3>
-#printAdapter($executable.context.adapter)
+#printAdapter($thisAdapter)
 <h3>Available languages:</h3>
 #foreach($adapter in $executable.manager.adapters)
 	#printAdapter($adapter)
