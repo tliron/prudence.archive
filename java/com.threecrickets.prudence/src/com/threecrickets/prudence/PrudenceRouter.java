@@ -12,8 +12,6 @@
 package com.threecrickets.prudence;
 
 import org.restlet.Context;
-import org.restlet.Request;
-import org.restlet.Response;
 import org.restlet.Restlet;
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
@@ -21,7 +19,6 @@ import org.restlet.routing.Filter;
 import org.restlet.routing.Redirector;
 import org.restlet.routing.Route;
 import org.restlet.routing.Template;
-import org.restlet.util.Resolver;
 
 import com.threecrickets.prudence.util.CaptiveRedirector;
 import com.threecrickets.prudence.util.Fallback;
@@ -269,12 +266,76 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
+	 * Redirects a URI to a new URI with HTTP status 303 ("see other"). You can
+	 * use template variables in the URIs.
+	 * <p>
+	 * Enforces matching mode {@link Template#MODE_EQUALS}.
+	 * <p>
+	 * This is handled via a {@link NormalizingRedirector}.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param targetUriTemplate
+	 *        The target URI template
+	 * @return The created route
+	 * @see NormalizingRedirector
+	 */
+	public Route redirectClient( String uriTemplate, String targetUriTemplate )
+	{
+		return redirectClient( uriTemplate, targetUriTemplate, 303 );
+	}
+
+	/**
+	 * Redirects a URI to a new URI. You can use template variables in the URIs.
+	 * <p>
+	 * Enforces matching mode {@link Template#MODE_EQUALS}.
+	 * <p>
+	 * This is handled via a {@link NormalizingRedirector}.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param targetUriTemplate
+	 *        The target URI template
+	 * @param statusCode
+	 *        HTTP status code (must be 301, 302, 303 or 307)
+	 * @return The created route
+	 * @see NormalizingRedirector
+	 */
+	public Route redirectClient( String uriTemplate, String targetUriTemplate, int statusCode )
+	{
+		int mode;
+		switch( statusCode )
+		{
+			case 301:
+				mode = Redirector.MODE_CLIENT_PERMANENT;
+				break;
+			case 302:
+				mode = Redirector.MODE_CLIENT_FOUND;
+				break;
+			case 303:
+				mode = Redirector.MODE_CLIENT_SEE_OTHER;
+				break;
+			case 307:
+				mode = Redirector.MODE_CLIENT_TEMPORARY;
+				break;
+			default:
+				throw new IllegalArgumentException( "Unsupported status code: " + statusCode );
+		}
+
+		Route route = attach( uriTemplate, new NormalizingRedirector( getContext(), targetUriTemplate, mode ) );
+		route.setMatchingMode( Template.MODE_EQUALS );
+		return route;
+	}
+
+	/**
 	 * Captures (internally redirects) a URI to a new URI within this router's
 	 * application. You can use template variables in the URIs.
 	 * <p>
 	 * Enforces matching mode {@link Template#MODE_EQUALS}.
 	 * <p>
-	 * This is handled via a {@link Redirector} in
+	 * This is handled via a {@link CaptiveRedirector} in
 	 * {@link Redirector#MODE_SERVER_OUTBOUND} mode.
 	 * 
 	 * @param uriTemplate
@@ -283,8 +344,7 @@ public class PrudenceRouter extends FallbackRouter
 	 * @param internalUriTemplate
 	 *        The internal URI path to which we will redirect
 	 * @return The created route
-	 * @see NormalizingRedirector
-	 * @see Resolver#createResolver(Request, Response)
+	 * @see CaptiveRedirector
 	 */
 	public Route capture( String uriTemplate, String internalUriTemplate )
 	{
@@ -300,7 +360,7 @@ public class PrudenceRouter extends FallbackRouter
 	 * <p>
 	 * Enforces matching mode {@link Template#MODE_EQUALS}.
 	 * <p>
-	 * This is handled via a {@link Redirector} in
+	 * This is handled via a {@link CaptiveRedirector} in
 	 * {@link Redirector#MODE_SERVER_OUTBOUND} mode.
 	 * 
 	 * @param uriTemplate
@@ -311,8 +371,7 @@ public class PrudenceRouter extends FallbackRouter
 	 * @param internalUriTemplate
 	 *        The internal URI path to which we will redirect
 	 * @return The created route
-	 * @see NormalizingRedirector
-	 * @see Resolver#createResolver(Request, Response)
+	 * @see CaptiveRedirector
 	 */
 	public Route captureOther( String uriTemplate, String application, String internalUriTemplate )
 	{

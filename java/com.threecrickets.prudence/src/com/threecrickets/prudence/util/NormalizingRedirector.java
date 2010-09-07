@@ -74,6 +74,12 @@ public class NormalizingRedirector extends Redirector
 	protected Reference getTargetRef( Request request, Response response )
 	{
 		Reference reference = super.getTargetRef( request, response );
+
+		// Relative references should be considered relative to the resource
+		// reference
+		if( reference.getBaseRef() == null )
+			reference.setBaseRef( request.getResourceRef() );
+
 		return reference.getTargetRef();
 	}
 }

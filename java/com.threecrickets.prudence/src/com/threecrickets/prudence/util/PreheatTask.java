@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.restlet.Context;
 import org.restlet.data.LocalReference;
 import org.restlet.data.Status;
+import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 
@@ -96,7 +97,9 @@ public class PreheatTask implements Runnable
 		try
 		{
 			context.getLogger().fine( "Preheating: " + uri );
-			clientResource.get().exhaust();
+			Representation representation = clientResource.get();
+			if( representation != null )
+				representation.exhaust();
 			context.getLogger().fine( "Preheated: " + uri );
 		}
 		catch( ResourceException x )
