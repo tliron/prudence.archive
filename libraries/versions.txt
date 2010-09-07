@@ -9,7 +9,7 @@ cron4j				2.2.3
 grizzly				1.9.18-k
 groboutils			5 (note: we've removed the internal log4j distribution)
 groovy				1.7.4
-h2					1.2.140
+h2					1.2.142
 hazelcast			1.8.5
 httpclient			4.0.1
 httpcore			4.0.1 (blocking version)
