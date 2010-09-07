@@ -1096,7 +1096,7 @@ target "http://groovy.codehaus.org/"
 \begin_layout Standard
 All the other Prudence flavors offer JVM interaction, but Groovy does it
  best.
- If you know your project will require a lot of interaction with Java libraries,
+ If you know your project will require a lot of work with Java libraries,
  Groovy is a terrific---and fun!---choice.
 \end_layout
 
@@ -1116,6 +1116,1537 @@ name "../manual/tutorial/"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+The goal of this tutorial is to get you up and running with Prudence's most
+ basic features.
+ Along the way, we'll point you to those sections in the manual where you
+ can explore some topics in depth.
+\end_layout
+
+\begin_layout Standard
+We recommend going through this tutorial using the Firefox browser and the
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "Firebug"
+target "http://getfirebug.com/"
+
+\end_inset
+
+ add-on, which will let you see, in detail, exactly how Prudence responds
+ to client requests.
+\end_layout
+
+\begin_layout Subsection
+First Things First
+\end_layout
+
+\begin_layout Subsubsection
+Get It
+\end_layout
+
+\begin_layout Standard
+Prudence is available in six flavors, so choose one and 
+\begin_inset CommandInset href
+LatexCommand href
+name "download it"
+target "http://threecrickets.com/prudence/download/"
+
+\end_inset
+
+! 
+\bar under
+A friendly page (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../../flavors/"
+
+\end_inset
+
+)
+\bar default
+ is available to help you decide.
+\end_layout
+
+\begin_layout Standard
+For this tutorial, we'll use the ``Savory'' JavaScript flavor, because we
+ assume JavaScript would be the most widely known language among web developers.
+ But, let's be clear here: the JavaScript in this case runs on the 
+\emph on
+server
+\emph default
+, not in the 
+\emph on
+browser
+\emph default
+.
+ Wrap your head around that for a minute\SpecialChar \ldots{}
+ JavaScript is here used 
+\emph on
+not 
+\emph default
+for live manipulation of HTML elements, but to do the usual server-side
+ work: communicating with data stores, rendering HTML pages to send to clients,
+ etc.
+ Of course, in your project, you might be writing JavaScript code to run
+ on the 
+\emph on
+client
+\emph default
+, too.
+ We'll even show you an example of it in this tutorial.
+\end_layout
+
+\begin_layout Standard
+It should be very easy to use any other flavor with this tutorial, since
+ we'll be keeping actual programming to a minimum.
+ Just replace references to ``JavaScript'' with your flavor of choice.
+\end_layout
+
+\begin_layout Subsubsection
+JVM
+\end_layout
+
+\begin_layout Standard
+The only requirement for Prudence is a Java Virtual Machine (JVM), so make
+ sure you have one installed.
+\end_layout
+
+\begin_layout Quote
+A Java Runtime Environment (JRE) is enough for Prudence.
+ You need a Java Development Kit (JDK) only if you plan to write code in
+ Java.
+ Also, Prudence does not require anything from Java Enterprise Edition (JEE).
+ In fact, you can see Prudence as a RESTful, minimal alternative to developing
+ web applications under JEE.
+\end_layout
+
+\begin_layout Subsubsection
+Fire It Up
+\end_layout
+
+\begin_layout Standard
+You can start up Prudence by running the appropriate ``run'' script in the
+ /bin/ directory.
+ Run /bin/run.sh for Unix-like systems (Linux, *BSD and OS X), or /bin/run.bat
+ for Windows.
+ Prudence should declare its version and list the installed demo applications.
+ When it announces that it is listening on port 8080, it's ready to go.
+ You can quit Prudence by breaking (CTRL-C).
+\end_layout
+
+\begin_layout Standard
+Open your web browser to 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://localhost:8080/"
+target "http://localhost:8080/"
+
+\end_inset
+
+.
+ You should see the Prudence Administration application, where you can access
+ the demos.
+ Also, check out the /logs/ directory for running, ongoing logs.
+\end_layout
+
+\begin_layout Subsubsection
+Further Exploration
+\end_layout
+
+\begin_layout Itemize
+The /bin/ scripts work fine, but for production environments you're better
+ off 
+\bar under
+running Prudence as a daemon (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../daemon/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn how to 
+\bar under
+configure Prudence (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Logging is 
+\bar under
+fully configurable and very useful (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../logging/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+See the documentation for the 
+\bar under
+Prudence Administration application (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../administration/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Subsection
+Hello, World
+\end_layout
+
+\begin_layout Standard
+The /applications/ directory is where you install your applications.
+ You'll see the demo applications there, but let's create a new one, called
+ ``Wacky Wiki''.
+ Just create an ``/applications/wackywiki/'' directory, and restart Prudence.
+ The Prudence Administration application should show your application listed
+ under the 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://localhost:8080/wackywiki/"
+target "http://localhost:8080/wackywiki/"
+
+\end_inset
+
+ URL, but you won't see anything when you click on it quite yet.
+\end_layout
+
+\begin_layout Standard
+Let's create our first web page.
+ Create ``/applications/wackywiki/web/'', and then ``/applications/wackywiki/web
+/static/''.
+ By ``static'' here is meant that the contents do not change per user request.
+ Your /web/static/ directory functions pretty much like a regular web server,
+ and you can serve images, HTML, CSS files, etc., from it.
+ Let's create a ``/web/static/index.html'' file:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p>Hello, world! Welcome to Wacky Wiki.</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You should be able to see this page under 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://localhost:8080/wackywiki/"
+target "http://localhost:8080/wackywiki/"
+
+\end_inset
+
+.
+ If you're using Firebug, you can see that the contents are compressed (using
+ deflate, zip or gzip) and that conditional HTTP is also handled automatically,
+ such that subsequent page visits return the 304 ``the document has not
+ been modified'' status code.
+ In such cases, the browser will use its cached version instead of downloading
+ it from Prudence.
+\end_layout
+
+\begin_layout Subsubsection
+Further Exploration
+\end_layout
+
+\begin_layout Itemize
+Learn all about 
+\bar under
+configuring and deploying applications (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn advanced configuration and use of 
+\bar under
+/web/static/ (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../static-web/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Subsection
+Hello, Dynamic World
+\end_layout
+
+\begin_layout Standard
+Create a /web/dynamic/ directory and move your ``index.html'' file to there.
+ This directory does not work like a static web server: files you put here
+ can be injected with programming language code.
+ Edit ``index.html'', and add some code:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p>Hello, world! Welcome to Wacky Wiki.</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+var wiki = {title: 'I Love Prudence', contents: 'This is a love letter to
+ Prudence'}
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<h2><%= wiki.title %></h2>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p><%= wiki.contents %></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Refresh your browser, and you should see the dynamically generated page.
+ The ``<% \SpecialChar \ldots{}
+ %>'' delimiters are used to insert ``scriptlets'' of pure JavaScript
+ code.
+ The ``<%= \SpecialChar \ldots{}
+ %>'' delimiters accept a JavaScript expression, and print it
+ out onto the HTML page.
+\end_layout
+
+\begin_layout Subsubsection
+Caching
+\end_layout
+
+\begin_layout Standard
+You'll notice in Firebug that the contents are compressed, but there is
+ no conditional HTTP.
+ That's because Prudence generates a new version of the page per every user
+ request, such that clients should never expect their cached version to
+ be correct.
+\end_layout
+
+\begin_layout Standard
+We can fix this by adding caching to our page, specifically for 10 seconds
+ (10,000 milliseconds):
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p>Hello, world! Welcome to Wacky Wiki.</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+document.cacheDuration = 10000
+\end_layout
+
+\begin_layout Plain Layout
+
+var entry = {title: 'I Love Prudence', contents: 'This is a love letter
+ to Prudence.'}
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<h2><%= entry.title %></h2>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p><%= entry.contents %></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Keep refreshing the page, and you'll see that for every 10 seconds, you
+ are getting 304 status codes.
+\end_layout
+
+\begin_layout Standard
+Actually, something far more important is happening: multiple browsers from
+ multiple computers will see the same version of the page for those 10 seconds.
+ Prudence caches and serves a static version of the page during that interval.
+ In other words, when using that cached version, Prudence 
+\emph on
+does not run any of your JavaScript code
+\emph default
+.
+ Our code didn't do much in this example, but what if it was fetching data
+ for that wiki page from a database? Caching would allow you to serve a
+ very large number of user requests without ever touching your database.
+ That's excellent scalability, easily accomplished.
+\end_layout
+
+\begin_layout Subsubsection
+Debugging
+\end_layout
+
+\begin_layout Standard
+For fun, let's purposely introduce an error into our JavaScript code: just
+ type some nonsense into the scriptlet above.
+ When you refresh the page, you'll see a generic error.
+ Let's enable some debug information.
+ Create a file named ``/applications/wackywiki/settings.js'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+document.execute('defaults/application/settings/')
+\end_layout
+
+\begin_layout Plain Layout
+
+showDebugOnError = true
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Restart Prudence, and refresh the page.
+ You'll see Prudence's friendly debug page, with lots of useful information
+ to help you understand what went wrong, including a link directly to your
+ source code.
+ Of course, you wouldn't want to enable this debug page for production systems,
+ and you might want to show a custom error message instead.
+\end_layout
+
+\begin_layout Subsubsection
+Further Exploration
+\end_layout
+
+\begin_layout Itemize
+Learn 
+\bar under
+all about scriptlets (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|scriptlets"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+We've barely scratched the surface of Prudence's 
+\bar under
+sophisticated caching system (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|caching"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn how to 
+\bar under
+accept data from the user via HTML forms (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|handling-html-forms"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn about the many 
+\bar under
+application settings and the /settings.js file (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|settings"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn more about 
+\bar under
+the debug page and other debugging features (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../debugging/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn how to show 
+\bar under
+custom error pages (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing-errors"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Subsection
+Hello, Fragmented World
+\end_layout
+
+\begin_layout Standard
+As your application grows, you'll likely have a lot of reusable code.
+ Prudence can help you manage it.
+\end_layout
+
+\begin_layout Standard
+Let's create a /web/fragments/ directory, and put these files in it.
+ Here's ``header.html'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<head>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<title>Wacky Wiki</title>
+\end_layout
+
+\begin_layout Plain Layout
+
+</head>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<h1>Wacky Wiki</h1>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here's ``footer.html'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And here's ``entry.html'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<h2><%= entry.title %></h2>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p><%= entry.contents %></p>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can now edit our original ``/web/dynamic/index.html'' to be this:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%& 'header/' %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p>Hello, world! Welcome to Wacky Wiki.</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+document.cacheDuration = 10000
+\end_layout
+
+\begin_layout Plain Layout
+
+var entry = {title: 'I Love Prudence', contents: 'This is a love letter
+ to Prudence.'}
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%& 'entry/' %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%& 'footer/' %>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+All our fragments are reusable in other pages, too.
+ Let's create ``/web/dynamic/home.html'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%& 'header/' %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p>This is the home wiki.</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+document.cacheDuration = 10000
+\end_layout
+
+\begin_layout Plain Layout
+
+var entry = {title: 'Wiki Home', contents: 'This wiki page is empty.'}
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%& 'entry/' %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%& 'footer/' %>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that this page is available under the URL 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://localhost:8080/wackywiki/home/"
+target "http://localhost:8080/wackywiki/home/"
+
+\end_inset
+
+.
+ Prudence by default ignores filename extensions for URLs and requires trailing
+ slashes, leading to prettier, more coherent URLs for users.
+\end_layout
+
+\begin_layout Subsubsection
+Caching Fragments
+\end_layout
+
+\begin_layout Standard
+Other than reusability, fragments give you another advantage: in Prudence,
+ fragments are each cached individually.
+ You can thus have certain parts of pages cached longer than others.
+ Moreover, you can alter the cache key to make sure that all requests share
+ the same cached fragment.
+ This is a more advanced topic, but we'll provide a quick preview example
+ below for our ``header'' and ``footer'' fragments.
+ The cache key pattern ensures that the fragment is cached just once per
+ application name and document name; there's no need to cache these fragments
+ separately for ``index.html'', ``home.html'' or all our other Wacky Wiki
+ pages.
+ Maximum efficiency here for maximum scalability.
+\end_layout
+
+\begin_layout Standard
+Here's the new ``header.html'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<head>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<title>Wacky Wiki</title>
+\end_layout
+
+\begin_layout Plain Layout
+
+</head>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+document.cacheDuration = 300000
+\end_layout
+
+\begin_layout Plain Layout
+
+document.cacheKeyPattern = '{an}|{dn}'
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And ``footer.html'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+document.cacheDuration = 300000
+\end_layout
+
+\begin_layout Plain Layout
+
+document.cacheKeyPattern = '{an}|{dn}'
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Libraries
+\end_layout
+
+\begin_layout Standard
+Another aspect of reusability is code libraries.
+ These will have functions, classes, etc., that you'll want to reuse in your
+ scriptlets.
+\end_layout
+
+\begin_layout Standard
+Let's create an ``/applications/wackywiki/libraries/'' directory, and put
+ ``wikidata.js'' in it.
+ This is just a silly example: in a real application, you'll probably be
+ fetching your wiki entries from a data store.
+ Anyway:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+function getWikiEntry(id) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	// (Note the forced conversation to JavaScript string)
+\end_layout
+
+\begin_layout Plain Layout
+
+	switch(String(id)) {
+\end_layout
+
+\begin_layout Plain Layout
+
+		case 'index':
+\end_layout
+
+\begin_layout Plain Layout
+
+			return {title: 'I Love Prudence', contents: 'This is a love letter to
+ Prudence (retrieved from the database).'}
+\end_layout
+
+\begin_layout Plain Layout
+
+		case 'home':
+\end_layout
+
+\begin_layout Plain Layout
+
+			return {title: 'Wiki Home', contents: 'This wiki page is empty (retrieved
+ from the database).'}
+\end_layout
+
+\begin_layout Plain Layout
+
+		default:
+\end_layout
+
+\begin_layout Plain Layout
+
+			return {title: '', contents: ''}
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here is our new ``index.html'' page:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%& 'header/' %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p>Hello, world! Welcome to Wacky Wiki.</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+document.execute('wikidata/')
+\end_layout
+
+\begin_layout Plain Layout
+
+var entry = getWikiEntry('index')
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%& 'entry/' %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%& 'footer/' %>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We'll leave it as an exercize to you to make similar changes to ``home.html''.
+\end_layout
+
+\begin_layout Standard
+Note the use of ``document.execute'' here: this is a Prudence API that lets
+ you run code from /libraries/.
+ We're using it here, because the JavaScript language doesn't have an include
+ facility.
+ However, if you're using the other Prudence for Python, Ruby, PHP or Clojure,
+ you can use the language's include facilities: ``import'', ``require'',
+ etc.
+ The /libraries/ directory is automatically added to your inclusion path.
+ (Groovy has the same limitation as JavaScript in this.)
+\end_layout
+
+\begin_layout Subsubsection
+Further Exploration
+\end_layout
+
+\begin_layout Itemize
+Learn all about 
+\bar under
+cache key patterns (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-key-pattern"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn about 
+\bar under
+document.execute (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-execute"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn more about 
+\bar under
+pretty URLs (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|pretty-uris"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Subsection
+Hello, Multiplied World
+\end_layout
+
+\begin_layout Standard
+Creating a file per URL is obviously a bad idea.
+ For example, in our Wacky Wiki we had ``index.html'' and ``home.html'', but
+ they could obviously be handled by one file.
+ One file, in fact, that would handle 
+\emph on
+all 
+\emph default
+our wiki pages.
+\end_layout
+
+\begin_layout Standard
+In Prudence, this is called ``capturing'': we capture URLs that fit a generic
+ URL pattern into a single file.
+ To do this, we'll create a file in our application's root directory, ``/applica
+tions/wackywiki/routing.js'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+document.execute('defaults/application/routing/')
+\end_layout
+
+\begin_layout Plain Layout
+
+router.capture('wiki/{entryid}/', 'wiki/')
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that you have to restart Prudence in order for your routing.js to be
+ used.
+\end_layout
+
+\begin_layout Standard
+What we've done here is capture all URLs in the form ``wiki/\SpecialChar \ldots{}
+/'', where the
+ ellipsis would be any URL segment.
+ We send all these URLs to one file, internally named ``wiki/''.
+ (It's actually ``wiki.html'': Prudence always ignores filename extensions
+ and requires a trailing slash, remember?) That URL segment is also captured
+ by Prudence and sent as a special ``local'' value to the file.
+ We'll get to that below.
+\end_layout
+
+\begin_layout Standard
+We can now delete our ``home.html'' file, and just create ``/web/dynamic/wiki.html
+'' instead, which will be used to display 
+\emph on
+all
+\emph default
+ wiki pages:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%& 'header/' %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p>Hello, world! Welcome to Wacky Wiki.</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+document.execute('wikidata/')
+\end_layout
+
+\begin_layout Plain Layout
+
+var entryID = conversation.locals.get('entryid')
+\end_layout
+
+\begin_layout Plain Layout
+
+var entry = getWikiEntry(entryID)
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%& 'entry/' %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%& 'footer/' %>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Try to access 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://localhost:8080/wackywiki/wiki/home/"
+target "http://localhost:8080/wackywiki/wiki/home/"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Our ``index.html'' file will be a simple stub to display the ``index'' wiki
+ page:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+conversation.locals.put('entryid', 'index')
+\end_layout
+
+\begin_layout Plain Layout
+
+document.include('wiki/')
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Further Exploration
+\end_layout
+
+\begin_layout Itemize
+Learn how to write 
+\bar under
+URI patterns (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|uri-patterns"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn more about 
+\bar under
+capturing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|capturing"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn more about 
+\bar under
+the /routing.js file (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|routing-file"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn more generally about 
+\bar under
+Prudence's elaborate routing system (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn about 
+\bar under
+conversation locals and other ways of sharing state in Prudence (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|sharing-state"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Subsection
+Hello, RESTful World
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Standard
+The Case for REST
+\end_layout
+
+\begin_layout Subsection
+What Next?
+\end_layout
+
+\begin_layout Standard
+The Prudence Manual is very detailed, and available online in what we hope
+ is a friendly, easy-to-use format.
+ You can also 
+\begin_inset CommandInset href
+LatexCommand href
+name "download a PDF of it"
+target "http://threecrickets.com/prudence/download/"
+
+\end_inset
+
+ to print out or read on your e-reader.
+ But, the best way to learn is by creating your own Prudence applications.
+ Make sure to join the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Prudence Community"
+target "http://groups.google.com/group/prudence-community"
+
+\end_inset
+
+ online, to ask questions, contribute ideas and see how others are making
+ good use of Prudence!
+\end_layout
+
+\begin_layout Standard
+We'll point out just two important features that weren't mentioned in the
+ tutorial:
+\end_layout
+
+\begin_layout Subsubsection
+Filters
+\end_layout
+
+\begin_layout Standard
+Prudence lets you write code that will filter every incoming and outgoing
+ request.
+ This makes it easy to do a wide variery of general work such as authenticating,
+ sanitizing, transformation/encoding, monitoring, throttling, caching, processin
+g, etc.
+ See 
+\bar under
+filters (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../handlers/|filters"
+
+\end_inset
+
+)
+\bar default
+ for full information.
+\end_layout
+
+\begin_layout Subsubsection
+Tasks
+\end_layout
+
+\begin_layout Standard
+Prudence lets you write and run tasks asynchronously, and even to schedule
+ them using a crontab-like configuration file.
+ This is very useful for maintenance work such as releasing unused connections
+ and sessions, for sending email reminders, for monitoring services, etc.
+ See 
+\bar under
+tasks (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../tasks/"
+
+\end_inset
+
+)
+\bar default
+ for full information.
+\end_layout
+
+\begin_layout Section
+Tutorial OLD
 \end_layout
 
 \begin_layout Subsection
@@ -3139,6 +4670,13 @@ Advanced representations.
 
 \begin_layout Section
 The Prudence Instance
+\begin_inset CommandInset label
+LatexCommand label
+name "../instance/"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6963,6 +8501,40 @@ Note that you can change the cache duration dynamically.
 \end_layout
 
 \begin_layout Paragraph
+Cache Keys
+\end_layout
+
+\begin_layout Standard
+The default cache key used by Prudence is sensible enough that it would
+ not allow for cache conflicts while producing good results.
+ However, Prudence provides many sophisticated tools for customizing cache
+ keys for maximum efficiency.
+ Start with the 
+\bar under
+document.cacheKeyPattern API (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-key-pattern"
+
+\end_inset
+
+)
+\bar default
+, and then take a look at 
+\bar under
+cache key pattern handlers (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../handlers/|cache-key-pattern-handlers"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Paragraph
 Caching and Compression
 \begin_inset CommandInset label
 LatexCommand label
@@ -7145,6 +8717,13 @@ reference "../resources/|conditional-requests"
 
 \begin_layout Subsection
 Handling HTML Forms
+\begin_inset CommandInset label
+LatexCommand label
+name "../generating-html/|handling-html-forms"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -9127,7 +10706,7 @@ name "../resources/|resources-as-api"
 \begin_layout Standard
 A ``resource-oriented architecture'' is purposely more minimal than object-orien
 ted, transactional architectures.
- However, as discussed in 
+ As discussed in 
 \bar under
 ``The Case for REST'' (page 
 \begin_inset CommandInset ref
@@ -9138,7 +10717,7 @@ reference "../../rest/"
 
 )
 \bar default
-, there are many advantages to this minimalism.
+, there are many far-reaching advantages to this minimalism.
  While it's possible for you to maintain multiple interfaces to your service,
  it might make more sense to standardize around REST principles throughout
  your application.
@@ -9175,8 +10754,8 @@ reference "../api/|conversation-media-type"
 \end_layout
 
 \begin_layout Standard
-For example, here's a resource that nicely supports both external and internal
- clients:
+For example, here's ``/resources/testme.js'' that nicely supports both external
+ and internal clients:
 \end_layout
 
 \begin_layout Standard
@@ -9290,7 +10869,7 @@ status open
 
 \begin_layout Plain Layout
 
-var data = document.internal('/testresource/', 'application/java').get().object
+var data = document.internal('/testme/', 'application/java').get().object
 \end_layout
 
 \begin_layout Plain Layout
@@ -9309,8 +10888,8 @@ print(data.description)
 
 \begin_layout Plain Layout
 
-var data = eval('(' + document.internal('/testresource/', 'application/json').get(
-).text + ')')
+var data = eval('(' + document.internal('/testme/', 'application/json').get().text
+ + ')')
 \end_layout
 
 \begin_layout Plain Layout
@@ -22436,7 +24015,15 @@ target "http://threecrickets.com/succinct/"
  We created it because we wanted straightforward, scalable templating built
  in to Prudence, and were unsatisfied by other open source offerings.
  We think you might like it.
- (If not, Prudence fully supports Velocity.)
+ (If not, Prudence fully supports 
+\begin_inset CommandInset href
+LatexCommand href
+name "Velocity"
+target "http://velocity.apache.org/"
+
+\end_inset
+
+.)
 \end_layout
 
 \begin_layout Subsection
