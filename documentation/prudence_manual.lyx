@@ -663,7 +663,11 @@ g, at least, to be more generic.
  There are definitely use cases for non-HTTP, and even non-TCP/IP addressing
  schemes.
  In Prudence, you'll see that it's possible to address internal resources
- with non-URL kinds of URIs; see 
+ with URIs 
+\emph on
+that are not URLs
+\emph default
+; see 
 \bar under
 document.internal (page 
 \begin_inset CommandInset ref
@@ -1210,8 +1214,17 @@ JVM
 \end_layout
 
 \begin_layout Standard
-The only requirement for Prudence is a Java Virtual Machine (JVM), so make
- sure you have one installed.
+The only requirement for Prudence is a Java Virtual Machine (JVM), at least
+ version 5, so make sure you have one installed.
+ An excellent, open-source JVM is available from the 
+\begin_inset CommandInset href
+LatexCommand href
+name "OpenJDK"
+target "http://openjdk.java.net/"
+
+\end_inset
+
+ project.
 \end_layout
 
 \begin_layout Quote
@@ -1439,6 +1452,25 @@ reference "../static-web/"
 Hello, Dynamic World
 \end_layout
 
+\begin_layout Quote
+We're going to jump right into teaching you how to dynamically generate
+ web pages.
+ Prudence offers some terrific features for this, such as sophisticated
+ caching, but if you're more interested in how Prudence lets you to easily
+ create RESTful resources, 
+\bar under
+just skip ahead (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../tutorial/|rest-of-the-world"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
 \begin_layout Standard
 Create a /web/dynamic/ directory and move your ``index.html'' file to there.
  This directory does not work like a static web server: files you put here
@@ -1473,8 +1505,8 @@ status open
 
 \begin_layout Plain Layout
 
-var wiki = {title: 'I Love Prudence', contents: 'This is a love letter to
- Prudence'}
+var entry = {title: 'I Love Prudence', contents: 'This is a love letter
+ to Prudence'}
 \end_layout
 
 \begin_layout Plain Layout
@@ -1484,12 +1516,12 @@ var wiki = {title: 'I Love Prudence', contents: 'This is a love letter to
 
 \begin_layout Plain Layout
 
-	<h2><%= wiki.title %></h2>
+	<h2><%= entry.title %></h2>
 \end_layout
 
 \begin_layout Plain Layout
 
-	<p><%= wiki.contents %></p>
+	<p><%= entry.contents %></p>
 \end_layout
 
 \begin_layout Plain Layout
@@ -1889,7 +1921,7 @@ document.cacheDuration = 10000
 \begin_layout Plain Layout
 
 var entry = {title: 'I Love Prudence', contents: 'This is a love letter
- to Prudence.'}
+ to Prudence (fragmented).'}
 \end_layout
 
 \begin_layout Plain Layout
@@ -2149,7 +2181,7 @@ function getWikiEntry(id) {
 \begin_layout Plain Layout
 
 			return {title: 'I Love Prudence', contents: 'This is a love letter to
- Prudence (retrieved from the database).'}
+ Prudence (from the database).'}
 \end_layout
 
 \begin_layout Plain Layout
@@ -2159,8 +2191,8 @@ function getWikiEntry(id) {
 
 \begin_layout Plain Layout
 
-			return {title: 'Wiki Home', contents: 'This wiki page is empty (retrieved
- from the database).'}
+			return {title: 'Wiki Home', contents: 'This wiki page is empty (from
+ the database).'}
 \end_layout
 
 \begin_layout Plain Layout
@@ -2305,7 +2337,7 @@ reference "../routing/|pretty-uris"
 \end_layout
 
 \begin_layout Subsection
-Hello, Multiplied World
+Hello, Captured World
 \end_layout
 
 \begin_layout Standard
@@ -2352,14 +2384,14 @@ Note that you have to restart Prudence in order for your routing.js to be
 \end_layout
 
 \begin_layout Standard
-What we've done here is capture all URLs in the form ``wiki/\SpecialChar \ldots{}
-/'', where the
- ellipsis would be any URL segment.
+What we've done here is capture all URLs in the form of ``wiki/\SpecialChar \ldots{}
+/'', where
+ the ellipsis would be any URL segment.
  We send all these URLs to one file, internally named ``wiki/''.
  (It's actually ``wiki.html'': Prudence always ignores filename extensions
  and requires a trailing slash, remember?) That URL segment is also captured
- by Prudence and sent as a special ``local'' value to the file.
- We'll get to that below.
+ by Prudence and sent as a special ``conversation local'' value to the file.
+ We'll use it in the scriptlet below.
 \end_layout
 
 \begin_layout Standard
@@ -2553,15 +2585,756 @@ reference "../api/|sharing-state"
 \end_layout
 
 \begin_layout Subsection
-Hello, RESTful World
+Hello, REST of the World
+\begin_inset CommandInset label
+LatexCommand label
+name "../tutorial/|rest-of-the-world"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+What's REST?
 \end_layout
 
 \begin_layout Standard
-TODO
+Prudence is designed from the ground up around REST (``Representational
+ State Transfer'') principles, a term coined by Roy Fielding in 
+\begin_inset CommandInset href
+LatexCommand href
+name "Chapter 5 of his 2000 dissertation"
+target "http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm"
+
+\end_inset
+
+.
+ Fielding presented a perceptive analysis of what makes the Internet infrastruct
+ure so useful for distributed applications.
+ Identifying the infrastructure's key features helps us get the very best
+ out of it.
 \end_layout
 
 \begin_layout Standard
-The Case for REST
+In 
+\bar under
+``The Case for REST'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../../rest/"
+
+\end_inset
+
+)
+\bar default
+, we show how REST suggests a ``resource-oriented architecture.'' The ``resource'
+' is the 
+\emph on
+thing
+\emph default
+ that lies behind the Internet URL: it could be an HTML web page or a picture,
+ which is most of what we see in the World Wide Web, but it can also be
+ a blog entry, a social networking profile, a book you want to purchase,
+ or a business item stored in a database.
+ A web page is just one way to ``represent'' the resource.
+ In fact, we can represent it any format, whether it's textual formats like
+ XML and JSON, or proprietary binary formats.
+ We can even compress and encrypt it.
+\end_layout
+
+\begin_layout Standard
+What you may not know is that the ubiquitous HTTP actually supports sophisticate
+d negotiation of representational formats and several possible operations
+ on ``resources'': in addition to GET and POST, which are commonly used
+ in HTML forms, you can also PUT new resources where none were before and
+ DELETE existing resources.
+ This makes HTTP an attractive protocol for distributed applications: mostly
+ because it's already there, deployed and ready for you to use.
+\end_layout
+
+\begin_layout Subsubsection
+Your First Resource
+\end_layout
+
+\begin_layout Standard
+In Prudence, creating a RESTful resource can be easier than creating a dynamic
+ web page.
+\end_layout
+
+\begin_layout Standard
+Create an ``/applications/wackywiki/resources/'' directory to host your
+ resources.
+ Then, create an ``entry.js'' file in it:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+function handleInit(conversation) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('text/plain')
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+function handleGet(conversation) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	return 'Hello, REST of the World!'
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The ``media type'' mentioned in the code is just an abstract way to refer
+ to MIME types, which are a standard way to name representation formats
+ in the Internet.
+ (Actually, they were originally used to identify the format of email attachment
+s.)
+\end_layout
+
+\begin_layout Standard
+Point your browser to 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://localhost:8080/wackywiki/entry/"
+target "http://localhost:8080/wackywiki/entry/"
+
+\end_inset
+
+ to see your first resource.
+ Not very interesting, is it? Let's add support for another representation
+ format:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+function handleInit(conversation) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('text/plain')
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('text/html')
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+function handleGet(conversation) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	if(conversation.mediaTypeName == 'text/html') {
+\end_layout
+
+\begin_layout Plain Layout
+
+		return '<html><h1>Hello, <i>REST</i> of the World!</h1></html>'
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+	return 'Hello, REST of the World!'
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Refresh you browser, and now you should see your resource represented as
+ snazzy HTML.
+ Because desktop web browsers announce, in their HTTP requests, that they
+ 
+\emph on
+prefer 
+\emph default
+HTML, and Prudence properly negotiated the correct format from among those
+ we stated in our handleInit function, we could give the client what it
+ wanted.
+\end_layout
+
+\begin_layout Subsubsection
+You First 
+\emph on
+Real 
+\emph default
+Resource
+\end_layout
+
+\begin_layout Standard
+OK, enough saying hello to the world! Let's create a resource that actually
+ does something useful in Wacky Wiki.
+ We're assuming here that you created the ``/libraries/wikidata.js'' we introduce
+d previously.
+ Here's our new ``entry.js'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+document.execute('wikidata/')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+function handleInit(conversation) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('text/plain')
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('text/html')
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.addMediaTypeByName('application/json')
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+function handleGet(conversation) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	var entryID = conversation.locals.get('entryid')
+\end_layout
+
+\begin_layout Plain Layout
+
+	var entry = getWikiEntry(entryID)
+\end_layout
+
+\begin_layout Plain Layout
+
+	switch(String(conversation.mediaTypeName)) {
+\end_layout
+
+\begin_layout Plain Layout
+
+		case 'application/json':
+\end_layout
+
+\begin_layout Plain Layout
+
+			return '{"title":"' + entry.title + '", "contents":"' + entry.contents
+ + '"}'
+\end_layout
+
+\begin_layout Plain Layout
+
+		case 'text/html':
+\end_layout
+
+\begin_layout Plain Layout
+
+			return '<html><h1>' + entry.title + '</h1><p>' + entry.contents + '</p></html>'
+\end_layout
+
+\begin_layout Plain Layout
+
+		default:
+\end_layout
+
+\begin_layout Plain Layout
+
+			return entry.title + '
+\backslash
+n' + entry.contents
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For this to work for all wiki entry URLs, we also have to ``capture'' them,
+ using the method we learned above.
+ Here's our updated ``routing.js'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+document.execute('defaults/application/routing/')
+\end_layout
+
+\begin_layout Plain Layout
+
+router.capture('entry/{entryid}/', 'entry/')
+\end_layout
+
+\begin_layout Plain Layout
+
+router.capture('wiki/{entryid}/', 'wiki/')
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You need to restart Prudence for this new routing.js to take effect.
+ Then, you'll be able to see HTML representations of your wiki entries at
+ both 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://localhost:8080/wackywiki/entry/index/"
+target "http://localhost:8080/wackywiki/entry/index/"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://localhost:8080/wackywiki/entry/home/"
+target "http://localhost:8080/wackywiki/entry/home/"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+But, what about that JSON representation?
+\end_layout
+
+\begin_layout Subsubsection
+``AJAX''
+\end_layout
+
+\begin_layout Standard
+Modern web browsers are more than consumers of HTML, images and other formats
+ available via plugins (PDF, Flash, etc.).
+ With their internal JavaScript engines, the are adequate RESTful clients.
+ We'll use that feature to access our resource.
+\end_layout
+
+\begin_layout Standard
+Accessing RESTful resources from within web browsers is sometimes called
+ AJAX, which stands for ``Active JavaScript and XML.'' In this example, we're
+ preferring the more compact 
+\begin_inset CommandInset href
+LatexCommand href
+name "JSON"
+target "http://www.json.org/"
+
+\end_inset
+
+ format, so perhaps we should call it ``AJAJ''? Well, the end result is
+ the same.
+\end_layout
+
+\begin_layout Standard
+If you've ever worked with JavaScript in web browsers, you know how painful
+ it is to write code that runs on all popular, major web browsers.
+ For this example, we'll avoid that pain by using the cross-browser 
+\begin_inset CommandInset href
+LatexCommand href
+name "jQuery"
+target "http://jquery.com/"
+
+\end_inset
+
+ library, which is freely hosted by 
+\begin_inset CommandInset href
+LatexCommand href
+name "Google"
+target "http://code.google.com/apis/libraries/"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Let's add some AJAX magic to our ``index.html'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<head>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.
+4.2/jquery.js"></script>
+\end_layout
+
+\begin_layout Plain Layout
+
+</head>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p>Enter wiki page name:</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p><input id="entryid"></input></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p><button id="fetch">Fetch!</button></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<h2 id="title"></h2>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p id="content"></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<script>
+\end_layout
+
+\begin_layout Plain Layout
+
+$(document).ready(function() {
+\end_layout
+
+\begin_layout Plain Layout
+
+	$('#fetch').click(function() {
+\end_layout
+
+\begin_layout Plain Layout
+
+		$.ajax({
+\end_layout
+
+\begin_layout Plain Layout
+
+			type: 'GET',
+\end_layout
+
+\begin_layout Plain Layout
+
+			url: 'entry/' + $('#entryid').val() + '/',
+\end_layout
+
+\begin_layout Plain Layout
+
+			dataType: 'json',
+\end_layout
+
+\begin_layout Plain Layout
+
+			success: function(entry) {
+\end_layout
+
+\begin_layout Plain Layout
+
+				$('#title').text(entry.title);
+\end_layout
+
+\begin_layout Plain Layout
+
+				$('#content').text(entry.contents);
+\end_layout
+
+\begin_layout Plain Layout
+
+			}
+\end_layout
+
+\begin_layout Plain Layout
+
+		});
+\end_layout
+
+\begin_layout Plain Layout
+
+	});
+\end_layout
+
+\begin_layout Plain Layout
+
+});
+\end_layout
+
+\begin_layout Plain Layout
+
+</script>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We currently support two entry names: ``index'' and ``home''.
+ Type any of them into the input box, and click ``Fetch!''.
+ You should see the results displayed in your browser.
+ Make sure to use Firebug to see the browser communicating with your resource.
+\end_layout
+
+\begin_layout Standard
+This little example might not seem too exciting, but think of what's going
+ on here: Prudence is giving the web browser ``raw'' data, which it can
+ then represent in sophisticated ways.
+ The burden of rendering the user interface has moved from the server to
+ the client, allowing for an improved user experience on modern browsers,
+ and more room for your server to scale.
+\end_layout
+
+\begin_layout Standard
+But there's a lot more to REST than AJAX: clients for your raw JSON data
+ can be full-blown desktop applications, mobile phone apps, and even other
+ servers on the network (perhaps also based on Prudence).
+ Taken together, your resources can be considered an API.
+ In fact, a rich, RESTful API can be a valuable Internet product in itself.
+ You can do great things without serving a single web page.
+\end_layout
+
+\begin_layout Quote
+We'll repeat it, because it does get confusing: In the code segment above,
+ the JavaScript is running 
+\emph on
+in your browser
+\emph default
+, while in all the previous examples we had JavaScript running 
+\emph on
+in Prudence
+\emph default
+.
+ The language is the same, but the programming environment is vastly different.
+ In the browser, you have access to the DOM and browser services.
+ In Prudence, you have the 
+\bar under
+Prudence API (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/"
+
+\end_inset
+
+)
+\bar default
+ as well everything in the JVM.
+ We think it's nice to be able to write your web application in a single
+ language, whether it's on the client or the server, but if you find it
+ confusing, go ahead and use any of the other Prudence flavors: Python,
+ Ruby, PHP, Clojure or Groovy.
+\end_layout
+
+\begin_layout Quote
+P.S.
+ You may have noticed that we've used semicolons at the end of statements
+ on our client code.
+ Semicolons are optional in the JavaScript language, but many experts recommend
+ you use them anyway 
+\emph on
+in web browsers
+\emph default
+, because many code analysis and compression tools expect them.
+ Since there's no need to compress your server-side code, we recommend you
+ follow your own preference there.
+\end_layout
+
+\begin_layout Subsubsection
+Reader Meets Author
+\end_layout
+
+\begin_layout Standard
+We won't cover it in this tutorial, but with Prudence---and HTTP, and AJAX---you
+ can accept data from the client into your resource.
+ Use handlePut to create entirely new resources at the URL identified by
+ the client.
+ For example, Wacky Wiki clients can send you JSON data via a PUT, which
+ parse and save in the database as a new wiki entry.
+ There's also handlePost, used to update existing resources, and handleDelete
+ for getting rid of them.
+\end_layout
+
+\begin_layout Subsubsection
+Safe and Sound
+\end_layout
+
+\begin_layout Standard
+Worried about unauthorized access to your data? Prudence has a friendly
+ API for cookies, and allows for sophisticated authentication mechanisms
+ and secure connections.
+\end_layout
+
+\begin_layout Subsubsection
+Further Exploration
+\end_layout
+
+\begin_layout Itemize
+Learn all about 
+\bar under
+resources (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../resources/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn how to 
+\bar under
+access any RESTful resource from Prudence (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-external"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Itemize
+Learn about 
+\bar under
+cookies (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-cookies"
+
+\end_inset
+
+)
+\bar default
+ and SSL (page ?).
 \end_layout
 
 \begin_layout Subsection
@@ -2569,8 +3342,25 @@ What Next?
 \end_layout
 
 \begin_layout Standard
-The Prudence Manual is very detailed, and available online in what we hope
- is a friendly, easy-to-use format.
+The best way to learn Prudence is by creating your own applications.
+ Why not turn Wacky Wiki into the next Internet hit, or into an online discussio
+n board for your organization?
+\end_layout
+
+\begin_layout Standard
+Furthermore, Prudence comes with example code, and even a complete, data-driven,
+ RESTful application: Stickstick.
+ Stickstick is a shared, online bulletin board on which anyone can post
+ notes for everyone else to see.
+ You can move notes around and delete them.
+ The Stickstick source code demonstrates how you can save your resource
+ data into a SQL database, scalable handling of conditional HTTP, and even
+ a few AJAX tricks.
+\end_layout
+
+\begin_layout Standard
+And then there's the Prudence Manual: very detailed, and available online
+ in what we hope is a friendly, easy-to-use format.
  You can also 
 \begin_inset CommandInset href
 LatexCommand href
@@ -2580,8 +3370,10 @@ target "http://threecrickets.com/prudence/download/"
 \end_inset
 
  to print out or read on your e-reader.
- But, the best way to learn is by creating your own Prudence applications.
- Make sure to join the 
+\end_layout
+
+\begin_layout Standard
+Finally, make sure to join the 
 \begin_inset CommandInset href
 LatexCommand href
 name "Prudence Community"
@@ -2590,12 +3382,12 @@ target "http://groups.google.com/group/prudence-community"
 \end_inset
 
  online, to ask questions, contribute ideas and see how others are making
- good use of Prudence!
+ good use of Prudence.
 \end_layout
 
 \begin_layout Standard
-We'll point out just two important features that weren't mentioned in the
- tutorial:
+Before you run off to play with Stickstick, we'll mention just two important
+ features that weren't covered in the tutorial:
 \end_layout
 
 \begin_layout Subsubsection
@@ -2630,7 +3422,8 @@ Tasks
 Prudence lets you write and run tasks asynchronously, and even to schedule
  them using a crontab-like configuration file.
  This is very useful for maintenance work such as releasing unused connections
- and sessions, for sending email reminders, for monitoring services, etc.
+ and sessions, for sending email reminders and administrative alterts, for
+ monitoring services, etc.
  See 
 \bar under
 tasks (page 
@@ -2643,2029 +3436,6 @@ reference "../tasks/"
 )
 \bar default
  for full information.
-\end_layout
-
-\begin_layout Section
-Tutorial OLD
-\end_layout
-
-\begin_layout Subsection
-Run the Prudence Instance
-\end_layout
-
-\begin_layout Standard
-Prudence comes ready to rumble!
-\end_layout
-
-\begin_layout Standard
-All you need is a Java Virtual Machine (JVM), minimally version 5.
- Your operating system may already have one.
- Typing ``java'' from the command line will usually tell you so.
- Otherwise, an excellent, open-source JVM is available from the 
-\begin_inset CommandInset href
-LatexCommand href
-name "OpenJDK"
-target "http://openjdk.java.net/"
-
-\end_inset
-
- project.
-\end_layout
-
-\begin_layout Quote
-A Java Runtime Environment (JRE) is enough for Prudence.
- You need a Java Development Kit (JDK) only if you plan to write code in
- Java.
- Also, Prudence does not require anything from Java Enterprise Edition (JEE).
- In fact, you can see Prudence as a RESTful, minimal alternative to developing
- web applications under JEE.
-\end_layout
-
-\begin_layout Standard
-Try Prudence! Run /bin/run.sh for Unix-like systems (Linux, *BSD and OS X),
- or /bin/run.bat for Windows.
- Prudence should declare its version and list the installed demo applications.
- When it announces that it is listening on port 8080, it's ready to go.
- Open your web browser to 
-\begin_inset CommandInset href
-LatexCommand href
-name "http://localhost:8080/"
-target "http://localhost:8080/"
-
-\end_inset
-
-.
- You should see the Prudence Administration application, where you can access
- the demos.
- 
-\end_layout
-
-\begin_layout Quote
-The /bin/run scripts are there for getting you quickly up and running, however
- it is strongly recommended that you run 
-\begin_inset CommandInset href
-LatexCommand href
-name "Prudence as a daemon"
-target "../daemon/"
-
-\end_inset
-
- in production environments.
-\end_layout
-
-\begin_layout Subsection
-Your First Application
-\end_layout
-
-\begin_layout Standard
-Your Prudence instance hosts all applications under the /applications/ directory.
- To install a new application, simply create a new subdirectory there.
- The subdirectory name will be used as a default for various things: the
- base URL, logging, etc.
- We can change those later.
- 
-\end_layout
-
-\begin_layout Standard
-So, let's create /applications/wackywiki/
-\end_layout
-
-\begin_layout Standard
-If you restart Prudence, you'll see wackywiki listed in the admin application.
- There's nothing to see there quite yet, though.
-\end_layout
-
-\begin_layout Quote
-
-\emph on
-By the way:
-\emph default
- It's perfectly fine to use symbolic links or mounts to put your application
- subdirectories elsewhere.
-\end_layout
-
-\begin_layout Subsection
-A Static Web Page
-\end_layout
-
-\begin_layout Standard
-Create /applications/wackywiki/web/static/.
- Files you put there will served just like from any static web server.
- You can put images, HTML files, CSS or anything else.
- Let's start with a default web page.
-\end_layout
-
-\begin_layout Standard
-/web/static/index.html:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true,language=HTML"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<html>
-\end_layout
-
-\begin_layout Plain Layout
-
-<head>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<title>Wacky Wiki</title>
-\end_layout
-
-\begin_layout Plain Layout
-
-</head>
-\end_layout
-
-\begin_layout Plain Layout
-
-<body>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<div>
-\end_layout
-
-\begin_layout Plain Layout
-
-		Nothing to see here, for now.
- Carry on.
-\end_layout
-
-\begin_layout Plain Layout
-
-	</div>
-\end_layout
-
-\begin_layout Plain Layout
-
-</body>
-\end_layout
-
-\begin_layout Plain Layout
-
-</html> 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Restart Prudence, and browse to 
-\begin_inset CommandInset href
-LatexCommand href
-name "http://localhost:8080/wackiwiki/"
-target " http://localhost:8080/wackiwiki/"
-
-\end_inset
-
- to see the page.
- 
-\end_layout
-
-\begin_layout Subsection
-A Dynamic Web Page
-\end_layout
-
-\begin_layout Quote
-Important! While Prudence does dynamic web pages well, it really stands
- out from other web frameworks in its support for REST resources, which
- we'll see in the next section.
- We decided to start this tutorial with web pages, because the topic would
- likely be more familiar to most newcomers to Prudence.
-\end_layout
-
-\begin_layout Standard
-Create /applications/wackywiki/web/dynamic/.
- Unlike /web/static/, files in this directory must be text files (HTML,
- XML, plain text, etc.) They are specially processed so that they can include
- ``scriptlets'' of programming code.
- 
-\end_layout
-
-\begin_layout Standard
-Let's move our index.html from /web/static/ to /web/dynamic/ and edit it
- to add some Python scriptlets.
- 
-\end_layout
-
-\begin_layout Standard
-/web/dynamic/index.html:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true,language=HTML"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<html>
-\end_layout
-
-\begin_layout Plain Layout
-
-<head>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<title>Wacky Wiki</title>
-\end_layout
-
-\begin_layout Plain Layout
-
-</head>
-\end_layout
-
-\begin_layout Plain Layout
-
-<body>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<div>
-\end_layout
-
-\begin_layout Plain Layout
-
-		It is currently
-\end_layout
-
-\begin_layout Plain Layout
-
-<%python
-\end_layout
-
-\begin_layout Plain Layout
-
-from datetime import datetime
-\end_layout
-
-\begin_layout Plain Layout
-
-now = datetime.now()
-\end_layout
-
-\begin_layout Plain Layout
-
-print now.strftime('%H:%M')
-\end_layout
-
-\begin_layout Plain Layout
-
-%>
-\end_layout
-
-\begin_layout Plain Layout
-
-		o' clock, and
-\end_layout
-
-\begin_layout Plain Layout
-
-<%
-\end_layout
-
-\begin_layout Plain Layout
-
-print now.strftime('%S')
-\end_layout
-
-\begin_layout Plain Layout
-
-%>
-\end_layout
-
-\begin_layout Plain Layout
-
-		seconds
-\end_layout
-
-\begin_layout Plain Layout
-
-	</div>
-\end_layout
-
-\begin_layout Plain Layout
-
-</body>
-\end_layout
-
-\begin_layout Plain Layout
-
-</html>
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Restart Prudence, and browse to 
-\begin_inset CommandInset href
-LatexCommand href
-name "http://localhost:8080/wackiwiki/"
-target " http://localhost:8080/wackiwiki/"
-
-\end_inset
-
- to see the page.
- 
-\end_layout
-
-\begin_layout Standard
-You'll notice the <% and %> are used to delimit scriptlets, and that we've
- added ``python'' to the opening delimiter of the first scriptlet.
- Subsequent scriptlets on the page will automatically use the language of
- the previous scriptlets, so we don't have to repeat ``python''.
-\end_layout
-
-\begin_layout Standard
-Note, too, that Python's ``print'' works by adding output to the stream
- of text where the scriptlet is located.
-\end_layout
-
-\begin_layout Standard
-Final note: Though they are conventionally called ``scriptlets,'' they are
- not ``scripts'' in the common meaning of interpreted code.
- All scriptlets are, in fact, compiled and run as JVM bytecode.
- That's fast.
-\end_layout
-
-\begin_layout Subsubsection
-Expressions
-\end_layout
-
-\begin_layout Standard
-Let's make our dynamic page more readable by using special ``expression
- scriptlets.'' They're really just a shorthand for ``print.''
-\end_layout
-
-\begin_layout Standard
-/web/dynamic/index.html:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<html>
-\end_layout
-
-\begin_layout Plain Layout
-
-<head>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<title>Wacky Wiki</title>
-\end_layout
-
-\begin_layout Plain Layout
-
-</head>
-\end_layout
-
-\begin_layout Plain Layout
-
-<body>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<div>
-\end_layout
-
-\begin_layout Plain Layout
-
-<%python
-\end_layout
-
-\begin_layout Plain Layout
-
-from datetime import datetime
-\end_layout
-
-\begin_layout Plain Layout
-
-now = datetime.now()
-\end_layout
-
-\begin_layout Plain Layout
-
-%>
-\end_layout
-
-\begin_layout Plain Layout
-
-		It is currently <%= now.strftime('%H:%M') %> o' clock, and <%= now.strftime('%S'
-) %> seconds
-\end_layout
-
-\begin_layout Plain Layout
-
-	</div>
-\end_layout
-
-\begin_layout Plain Layout
-
-</body>
-\end_layout
-
-\begin_layout Plain Layout
-
-</html>
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-What happens if you have a coding error in your scriptlets? Let's try and
- introduce an error on purpose.
-\end_layout
-
-\begin_layout Standard
-/web/dynamic/index.html:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-...
- from dratetime import datetime ...
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-If you try to browse to the page, Prudence will show you a detailed debug
- page, from where you can also access the source code with the troublesome
- code line highlighted.
- Once you deploy your application, you can cancel this debug feature.
- Also, you can show your own, custom, user-friendly error pages.
- We'll get to that below.
- 
-\end_layout
-
-\begin_layout Subsubsection
-Fragments
-\end_layout
-
-\begin_layout Standard
-Prudence lets you include others documents in-place using a special scriptlet.
- This makes it very easy to reuse fragments of documents (which can include
- scriptlets) throughout your dynamic pages.
- Common reusable fragments are page headers, footers, and navigation menus.
-\end_layout
-
-\begin_layout Standard
-By convention in Prudence, fragments are put in /web/fragments/, though
- you can include them from anywhere, even from your regular /web/dynamic/
- or /web/static/ subdirectories.
- The advantage of keeping them out of those subdiretories is that users
- won't be able to access the individual fragments directly.
- Instead, we must explicitly include them in our /web/dynamic/ files.
- 
-\end_layout
-
-\begin_layout Standard
-Let's create a fragment that displays the current time.
-\end_layout
-
-\begin_layout Standard
-/web/fragments/time.html:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<%python
-\end_layout
-
-\begin_layout Plain Layout
-
-from datetime import datetime
-\end_layout
-
-\begin_layout Plain Layout
-
-now = datetime.now()
-\end_layout
-
-\begin_layout Plain Layout
-
-%>
-\end_layout
-
-\begin_layout Plain Layout
-
-It is currently <%= now.strftime('%H:%M') %> o' clock, and <%= now.strftime('%S')
- %> seconds
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-/web/dynamic/index.html:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<html>
-\end_layout
-
-\begin_layout Plain Layout
-
-<head>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<title>Wacky Wiki</title>
-\end_layout
-
-\begin_layout Plain Layout
-
-</head>
-\end_layout
-
-\begin_layout Plain Layout
-
-<body>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<div>
-\end_layout
-
-\begin_layout Plain Layout
-
-		<%& 'time/' %>
-\end_layout
-
-\begin_layout Plain Layout
-
-	</div>
-\end_layout
-
-\begin_layout Plain Layout
-
-</body>
-\end_layout
-
-\begin_layout Plain Layout
-
-</html>
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Note that the included scriptlet, which begins with the <%& delimiter, accepts
- a real Python expression.
- For example, you can do Pythony things like string interpolation: <%& '%s-%s'
- % (language, encoding) %>, allowing you to include different fragments
- according to changing circumstances.
- 
-\end_layout
-
-\begin_layout Subsubsection
-Caching
-\end_layout
-
-\begin_layout Standard
-Dynamically generating HTML and other text is very powerful.
- You may be wondering, however, how well this scales.
- Even if the Python code is compiled, it would still need to be run for
- every user request, right? Prudence supports straightforward per-page caching
- to greatly help you scale.
- By changing document.cacheDuration within a scriptlet, you can dynamically
- change how long Prudence will look for updates in the document.
- Note that even very short caching times can be a great boost to scalability.
- For example, if your cache duration is 1 second, it means that your scriptlets
- would only be run once every second.
- In computing terms, that's a very long time! Imagine that your popular
- web site is getting 1000 hits per second\SpecialChar \ldots{}
- 
-\end_layout
-
-\begin_layout Standard
-Finally, you'll be happy to know that by default Prudence also enables client-si
-de caching.
- It does this by setting a standard HTTP header that tells the client how
- long the content should be cached.
- All popular desktop and mobile web browsers recognize it.
- This means bandwidth savings for you, because the client will not download
- content it already has in its cache.
- 
-\end_layout
-
-\begin_layout Standard
-Let's enable a simple 60 second cache.
-\end_layout
-
-\begin_layout Standard
-/web/dynamic/index.html:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<% document.cacheDuration = 60000 %>
-\end_layout
-
-\begin_layout Plain Layout
-
-<html>
-\end_layout
-
-\begin_layout Plain Layout
-
-<head>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<title>Wacky Wiki</title>
-\end_layout
-
-\begin_layout Plain Layout
-
-</head>
-\end_layout
-
-\begin_layout Plain Layout
-
-<body>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<div>
-\end_layout
-
-\begin_layout Plain Layout
-
-		<%& 'time/' %>
-\end_layout
-
-\begin_layout Plain Layout
-
-	</div>
-\end_layout
-
-\begin_layout Plain Layout
-
-</body>
-\end_layout
-
-\begin_layout Plain Layout
-
-</html>
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-To test the above, go to our page and keep refreshing it in your web browser.
- You will see that the printed time will only be updated once every 10 seconds.
-\end_layout
-
-\begin_layout Standard
-To verify that client-side caching works correctly, we recommend using the
- free Firefox browser with the 
-\begin_inset CommandInset href
-LatexCommand href
-name "Firebug"
-target "http://getfirebug.com/"
-
-\end_inset
-
- add-on.
- In the Firebug network panel, you can see which requests are sent to the
- server.
- Within those 60 seconds between updates, you will see the that the request
- for the page returns a 304 status code: ``the document has not been modified.''
-\end_layout
-
-\begin_layout Standard
-For an even more elaborate experiment, try running two browsers at the same
- time on different machines, and keep refreshing them.
- You'll see each client caching individually, and yet the server still returning
- a different page only after the 60 second cache duration has passed.
- 
-\end_layout
-
-\begin_layout Standard
-Caching is very powerful, but obviously not useful for all pages.
- For example, if it's important for a page to always show the up-to-date
- to the moment information, you might not be able to afford even a one second
- cache.
- It's useful, then, to know that Prudence's document.cacheDuration works
- at the level of the actual document, so that each included fragment can
- set its own cache duration.
- Just remember that the top document or fragment requests will determine
- the caching for included fragments, too.
- If your index.html has a cache duration of 60 seconds, then even if an included
- fragment has a cache duration of 1 second, it would only appear to update
- every 60 seconds.
- 
-\end_layout
-
-\begin_layout Standard
-Scriptlets can also dynamically change the cache duration according to changing
- circumstances.
- For example, under heavy load, you might want your application to cache
- for longer periods of time.
-\end_layout
-
-\begin_layout Subsubsection
-HTML Forms
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Standard
-Let's allow users to edit our wacky wiki.
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-form = prudence.resource.request.resourceRef.queryAsForm
-\end_layout
-
-\begin_layout Plain Layout
-
-fresh = form.getFirstValue('fresh') == 'true'
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-/web/fragments/wiki.html:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<%python
-\end_layout
-
-\begin_layout Plain Layout
-
-wiki = 'Nothing in the wiki yet.'
-\end_layout
-
-\begin_layout Plain Layout
-
-%>
-\end_layout
-
-\begin_layout Plain Layout
-
-Wiki content is: <%= wiki %>
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-/web/dynamic/index.html:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<html>
-\end_layout
-
-\begin_layout Plain Layout
-
-<head>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<title>Wacky Wiki</title>
-\end_layout
-
-\begin_layout Plain Layout
-
-</head>
-\end_layout
-
-\begin_layout Plain Layout
-
-<body>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<div>
-\end_layout
-
-\begin_layout Plain Layout
-
-		<%& 'time/' %>
-\end_layout
-
-\begin_layout Plain Layout
-
-	</div>
-\end_layout
-
-\begin_layout Plain Layout
-
-	<div>
-\end_layout
-
-\begin_layout Plain Layout
-
-		<%& 'wiki/' %>
-\end_layout
-
-\begin_layout Plain Layout
-
-	</div>
-\end_layout
-
-\begin_layout Plain Layout
-
-</body>
-\end_layout
-
-\begin_layout Plain Layout
-
-</html>
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection
-More HTTP
-\end_layout
-
-\begin_layout Standard
-Prudence does a lot of the HTTP work automatically, but you can manipulate
- the response yourself.
- For example, to redirect the client: 
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-prudence.resource.response.locationRef = prudence.resource.request.resourceRef.baseRef
-\end_layout
-
-\begin_layout Plain Layout
-
-prudence.statusCode = 303
-\end_layout
-
-\begin_layout Plain Layout
-
-raise
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Quote
-Note the use of ``raise'': it's a handy trick to end processing of our page.
- Prudence recognizes that we explicitly changed the status code, so it doesn't
- consider this to be a real error.
-\end_layout
-
-\begin_layout Standard
-You can use also prudence.statusCode to explicitly set an error, for example
- to send 403 (``Forbidden'') if the user is not logged in.
- 
-\end_layout
-
-\begin_layout Standard
-Need more HTTP? Prudence supports HTTP cookies and HTTP authentication challenge
-s.
- We won't get into that in this tutorial, though.
- 
-\end_layout
-
-\begin_layout Subsubsection
-Templating
-\end_layout
-
-\begin_layout Standard
-You might wonder what other options are available to you other than ``python''
- for scriptlets.
- You can choose other languages---Ruby, JavaScript, Clojure, PHP, etc.---if
- you have them installed.
- But, more importantly, you can choose to use one of the pre-included templating
- languages, Succint and Velocity.
-\end_layout
-
-\begin_layout Standard
-Templating languages have far less features than any of the above programming
- languages, but this can be an advantage if you all you need is simple templatin
-g.
- They tend to be more readable for templates.
- Best of all, you can mix scriptlets from various languages in one page.
- Here's an example of using Velocity and Python: 
-\end_layout
-
-\begin_layout Standard
-/web/fragments/time.html:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<%python
-\end_layout
-
-\begin_layout Plain Layout
-
-from datetime import datetime
-\end_layout
-
-\begin_layout Plain Layout
-
-now = datetime.now()
-\end_layout
-
-\begin_layout Plain Layout
-
-clock = now.strftime('%H:%M')
-\end_layout
-
-\begin_layout Plain Layout
-
-seconds = now.strftime('%S')
-\end_layout
-
-\begin_layout Plain Layout
-
-%>
-\end_layout
-
-\begin_layout Plain Layout
-
-<%velocity It is currently $clock o' clock, and $seconds seconds %>
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-A Resource
-\end_layout
-
-\begin_layout Standard
-As stated earlier, where Prudence truly shines is in its support for REST
- resources.
- A resource is a piece of data associated with a URL, which clients can
- optionally create, read, update or delete.
- An HTML web page is an example of a resource which is usually read, and
- sometimes supports writing (for handling HTML forms).
- Prudence lets you create resources that support one or more formats, all
- create/read/update/delete (CRUD) operations, and advanced caching.
- 
-\end_layout
-
-\begin_layout Standard
-A resource-oriented architecture is perfect for ``AJAX'' and other rich
- client platforms (Flash, Silverlight, etc.).
- Another use is for a scalable backend conduit between servers.
- Depending on how you look at it, resources are either an online database,
- an API for your service, or both.
- 
-\end_layout
-
-\begin_layout Quote
-You might want to take a look at 
-\begin_inset CommandInset href
-LatexCommand href
-name "Making the Case for REST"
-target "../../rest/"
-
-\end_inset
-
- for a better understanding of REST and what it can do for you.
-\end_layout
-
-\begin_layout Standard
-Let's start with a resource that can be read for some plain text.
- Resources are put in the /resources/ subdirectory, and, like /web/dynamic/
- and /web/static/, the filename and directory tree define the URL:
-\end_layout
-
-\begin_layout Standard
-/resources/wiki.py:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-def handle_init(conversation):
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.addMediaTypeByName('text/plain')
-\end_layout
-
-\begin_layout Plain Layout
-
-def handle_get(conversation):
-\end_layout
-
-\begin_layout Plain Layout
-
-	return 'Nothing in the wiki yet.'
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-handleInit() always gets called first, before any of the other handler functions.
- 
-\end_layout
-
-\begin_layout Standard
-Try browsing to 
-\begin_inset CommandInset href
-LatexCommand href
-name "http://localhost:8080/wackiwiki/wiki/"
-target " http://localhost:8080/wackiwiki/wiki/"
-
-\end_inset
-
- to see your resource.
-\end_layout
-
-\begin_layout Standard
-Plain text is good for us humans to read.
- But, we might want to support formats that are more useful for client applicati
-ons, such as 
-\begin_inset CommandInset href
-LatexCommand href
-name "JSON"
-target "http://www.json.org/"
-
-\end_inset
-
- for browser-based JavaScript or Flash's ActiveScript.
- 
-\end_layout
-
-\begin_layout Standard
-Let's add support for JSON to our resource:
-\end_layout
-
-\begin_layout Standard
-/resources/wiki.py:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-wiki = 'Nothing in the wiki yet.'
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def handle_init(conversation):
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.addMediaTypeByName('text/plain')
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.addMediaTypeByName('application/json')
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def handle_get(conversation):
-\end_layout
-
-\begin_layout Plain Layout
-
-	if conversation.mediaTypeByName == 'text/plain':
-\end_layout
-
-\begin_layout Plain Layout
-
-		return wiki
-\end_layout
-
-\begin_layout Plain Layout
-
-	else:
-\end_layout
-
-\begin_layout Plain Layout
-
-		return '{"content": "%s"}' % wiki
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-[Add jQuery to dynamic page to test in browser.]
-\end_layout
-
-\begin_layout Standard
-Just as /web/fragments/ was a useful place for us to put reusable web fragments,
- we can use /libraries/ for reusable code for resources, as well as dynamic
- web scriptlets.
- Let's create a library to handle our wiki:
-\end_layout
-
-\begin_layout Standard
-/libraries/wiki.py:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-wiki = 'Nothing in the wiki yet.'
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def get_wiki():
-\end_layout
-
-\begin_layout Plain Layout
-
-	return wikiwiki = 'Nothing in the wiki yet.'
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def handle_init(conversation):
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.addMediaTypeByName('text/plain')
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.addMediaTypeByName('application/json')
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def handle_get(conversation):
-\end_layout
-
-\begin_layout Plain Layout
-
-	if conversation.mediaTypeByName == 'text/plain':
-\end_layout
-
-\begin_layout Plain Layout
-
-		return wiki
-\end_layout
-
-\begin_layout Plain Layout
-
-	else:
-\end_layout
-
-\begin_layout Plain Layout
-
-		return '{"content": "%s"}' % wiki
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Let's make use of our library in our resource: 
-\end_layout
-
-\begin_layout Standard
-/resources/wiki.py:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-from wiki import get_wiki
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def handle_init(conversation):
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.addMediaTypeByName('text/plain')
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.addMediaTypeByName('application/json')
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def handle_get(conversation):
-\end_layout
-
-\begin_layout Plain Layout
-
-	if conversation.mediaTypeByName == 'text/plain':
-\end_layout
-
-\begin_layout Plain Layout
-
-		return get_wiki()
-\end_layout
-
-\begin_layout Plain Layout
-
-	else:
-\end_layout
-
-\begin_layout Plain Layout
-
-		return '{"content": "%s"}' % get_wiki()
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-[Put, Post, Delete.]
-\end_layout
-
-\begin_layout Standard
-/libraries/wiki.py:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-from threading import RLock
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-wiki = 'Nothing in the wiki yet.'
-\end_layout
-
-\begin_layout Plain Layout
-
-wiki_lock = RLock()
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def get_wiki():
-\end_layout
-
-\begin_layout Plain Layout
-
-	wiki_lock.acquire()
-\end_layout
-
-\begin_layout Plain Layout
-
-	try:
-\end_layout
-
-\begin_layout Plain Layout
-
-		return wiki
-\end_layout
-
-\begin_layout Plain Layout
-
-	finally:
-\end_layout
-
-\begin_layout Plain Layout
-
-		wiki_lock.release()
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def set_wiki(content):
-\end_layout
-
-\begin_layout Plain Layout
-
-	wiki_lock.acquire()
-\end_layout
-
-\begin_layout Plain Layout
-
-	try:
-\end_layout
-
-\begin_layout Plain Layout
-
-		wiki = content
-\end_layout
-
-\begin_layout Plain Layout
-
-	finally:
-\end_layout
-
-\begin_layout Plain Layout
-
-		wiki_lock.release()
-\end_layout
-
-\end_inset
-
-[Fixing our form handling from earlier using doPost.]
-\end_layout
-
-\begin_layout Standard
-Remember how we supported client-side caching for our dynamic web pages?
- We have much more control over this process in resources.
- We can set explicit modification dates and ETags.
- 
-\end_layout
-
-\begin_layout Standard
-Let's give our wiki resources a modification date, so that clients can properly
- cache it:
-\end_layout
-
-\begin_layout Standard
-/libraries/wiki.py:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-from threading import RLock
-\end_layout
-
-\begin_layout Plain Layout
-
-from datetime import datetime
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def to_milliseconds(dt):
-\end_layout
-
-\begin_layout Plain Layout
-
-	return long(mktime(dt.timetuple()) * 1000)
-\end_layout
-
-\begin_layout Plain Layout
-
-	wiki = {content: 'Nothing in the wiki yet.', timestamp: datetime.now()}
-\end_layout
-
-\begin_layout Plain Layout
-
-	wiki_lock = RLock()
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def get_wiki():
-\end_layout
-
-\begin_layout Plain Layout
-
-	wiki_lock.acquire()
-\end_layout
-
-\begin_layout Plain Layout
-
-	try:
-\end_layout
-
-\begin_layout Plain Layout
-
-		# Note that we are returning a copy of our wiki dictionary!
-\end_layout
-
-\begin_layout Plain Layout
-
-		return {content: wiki['content'], timestamp: wiki['timestamp']}
-\end_layout
-
-\begin_layout Plain Layout
-
-	finally:
-\end_layout
-
-\begin_layout Plain Layout
-
-		wiki_lock.release()
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def set_wiki(content):
-\end_layout
-
-\begin_layout Plain Layout
-
-	wiki_lock.acquire()
-\end_layout
-
-\begin_layout Plain Layout
-
-	try:
-\end_layout
-
-\begin_layout Plain Layout
-
-		wiki['content'] = content
-\end_layout
-
-\begin_layout Plain Layout
-
-		wiki['timestamp'] = datetime.now()
-\end_layout
-
-\begin_layout Plain Layout
-
-	finally:
-\end_layout
-
-\begin_layout Plain Layout
-
-		wiki_lock.release()
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-/resources/wiki.py:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-from wiki import get_wiki, set_wiki, to_milliseconds
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def handle_init(conversation):
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.addMediaTypeByName('text/plain')
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.addMediaTypeByName('application/json')
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def handle_get(conversation):
-\end_layout
-
-\begin_layout Plain Layout
-
-	wiki = get_wiki()
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.modificationTimestamp = to_milliseconds(wiki['timestamp'])
-\end_layout
-
-\begin_layout Plain Layout
-
-	if conversation.mediaTypeByName == 'text/plain':
-\end_layout
-
-\begin_layout Plain Layout
-
-		return wiki['content']
-\end_layout
-
-\begin_layout Plain Layout
-
-	else:
-\end_layout
-
-\begin_layout Plain Layout
-
-		return '{"content": "%s"}' % wiki['content']
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Support for modification date can go a long way towards saving us bandwidth.
- However, note that we still have to fetch the entire wiki in order to get
- its modification date.
- This could potentially be a costly operation, say, if the wiki is stored
- in a database.
- 
-\end_layout
-
-\begin_layout Standard
-Prudence lets you optimize this by letting you check only the modification
- date (or ETag) before actually fetching the resource.
- 
-\end_layout
-
-\begin_layout Standard
-Let's add handleGetInfo():
-\end_layout
-
-\begin_layout Standard
-/resources/wiki.py:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-from wiki import get_wiki, set_wiki, to_milliseconds
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def handle_init(conversation):
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.addMediaTypeByName('text/plain')
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.addMediaTypeByName('application/json')
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def handle_get(conversation):
-\end_layout
-
-\begin_layout Plain Layout
-
-	wiki = get_wiki()
-\end_layout
-
-\begin_layout Plain Layout
-
-	conversation.modificationTimestamp = to_milliseconds(wiki['timestamp'])
-\end_layout
-
-\begin_layout Plain Layout
-
-	if conversation.mediaTypeByName == 'text/plain':
-\end_layout
-
-\begin_layout Plain Layout
-
-		return wiki['content']
-\end_layout
-
-\begin_layout Plain Layout
-
-	else:
-\end_layout
-
-\begin_layout Plain Layout
-
-		return '{"content": "%s"}' % wiki['content']
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-def handle_get_info(conversation):
-\end_layout
-
-\begin_layout Plain Layout
-
-	wiki = get_wiki()
-\end_layout
-
-\begin_layout Plain Layout
-
-	return to_milliseconds(wiki['timestamp'])
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Our trivial example didn't offer any significant savings.
- But, suppose our resource involved fetching lots of wiki pages at once?
- We could save computing power if you we only had to fetch a modification
- date.
- 
-\end_layout
-
-\begin_layout Standard
-As we said earlier, our resources can be seen as an API.
- Indeed, there's no reason to maintain two sets of APIs, one for ``the world''
- to access via your resources, and one for your application to use internally.
- You can use easily use your resources internally: 
-\end_layout
-
-\begin_layout Standard
-/fragments/wiki.html:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<%python
-\end_layout
-
-\begin_layout Plain Layout
-
-wiki = document.internal('wiki', 'application/json')
-\end_layout
-
-\begin_layout Plain Layout
-
-wiki = eval('(' + wiki.text + ')')
-\end_layout
-
-\begin_layout Plain Layout
-
-%>
-\end_layout
-
-\begin_layout Plain Layout
-
-Wiki content is: <%= wiki['content'] %>
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The above is wasteful because we are turning the wiki data into JSON and
- then back again.
- For internal API uses, it's possible to support direct access to the object:
- 
-\end_layout
-
-\begin_layout Standard
-[ObjectRepresentation]
-\end_layout
-
-\begin_layout Standard
-For completion, here's an example of how to access our resources from another
- Prudence-based application:
-\end_layout
-
-\begin_layout Standard
-/fragments/wiki.html:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<%python
-\end_layout
-
-\begin_layout Plain Layout
-
-wiki = document.external('http://192.168.1.2/wackywiki/wiki', 'application/json')
-\end_layout
-
-\begin_layout Plain Layout
-
-wiki = eval('(' + wiki.text + ')')
-\end_layout
-
-\begin_layout Plain Layout
-
-%>
-\end_layout
-
-\begin_layout Plain Layout
-
-Wiki content is: <%= wiki['content'] %>
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Advanced Routing
-\end_layout
-
-\begin_layout Standard
-Capturing URL patterns.
-\end_layout
-
-\begin_layout Standard
-Improve our resource above over the query params.
-\end_layout
-
-\begin_layout Quote
-
-\emph on
-By the way:
-\emph default
- Difference between URL and URI.
-\end_layout
-
-\begin_layout Standard
-Virtual hosting, multiple servers.
-\end_layout
-
-\begin_layout Standard
-Status handlers---custom 404.
-\end_layout
-
-\begin_layout Standard
-Just for fun: robots.txt, sitemap.xml.
-\end_layout
-
-\begin_layout Subsection
-Other Features
-\end_layout
-
-\begin_layout Standard
-Logging.
-\end_layout
-
-\begin_layout Standard
-Debug page.
-\end_layout
-
-\begin_layout Standard
-Defrosting and pre-heating.
-\end_layout
-
-\begin_layout Standard
-SSL.
- http://www.restlet.org/documentation/snapshot/jse/ext/index.html?org/restlet/ext/g
-rizzly/HttpsServerHelper.html
-\end_layout
-
-\begin_layout Standard
-Advanced representations.
- (Restlet extensions.)
 \end_layout
 
 \begin_layout Section
@@ -13643,7 +12413,214 @@ For 500 error capturing, you should prefer a /web/static/ page, which has
 \end_layout
 
 \begin_layout Subsubsection
+Static Redirection
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|static-redirection"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+By ``static'' here is meant that redirection is configured into the application'
+s /routing.* script.
+ (You can also call this API on a running application, though you should
+ realize that it essentially changed your application's routing.) ``Dynamic''
+ routing, from within /dynamic/web/ or /resources/, is described in the
+ 
+\bar under
+next section (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|dynamic-redirection"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+Because static redirection supports 
+\bar under
+URI patterns (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|uri-patterns"
+
+\end_inset
+
+)
+\bar default
+, this API can actually handle complex ``dynamic'' redirections.
+ For example, even though most clients will support relative URI paths for
+ redirection, you can force a complete URI using the ``{rp}'' pattern, which
+ equals is the request URI path.
+\end_layout
+
+\begin_layout Quote
+Behind the scenes, static redirection is handled by 
+\bar under
+attaching (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|attaching"
+
+\end_inset
+
+)
+\bar default
+ a 
+\begin_inset CommandInset href
+LatexCommand href
+name "Redirector restlet"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/routing/Redirector.html"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The following redirection status codes are supported:
+\end_layout
+
+\begin_layout Itemize
+301, permanent: Most clients will cache this redirection, thus avoiding
+ subsequent requests to the original URI
+\end_layout
+
+\begin_layout Itemize
+302, client found: This 
+\emph on
+should 
+\emph default
+be a temporary redirect, like 307, but many clients treat it as a 303.
+ Best to avoid, unless you enjoy confusion.
+\end_layout
+
+\begin_layout Itemize
+303, see other: Clients assume that you have processed their request, and
+ should send a GET to the new URI in order to receive the results of the
+ processing.
+ Use with care!
+\end_layout
+
+\begin_layout Itemize
+307, temporary: The default (because it's the safest)
+\end_layout
+
+\begin_layout Standard
+Here are a few examples (JavaScript):
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+// Implement defaults
+\end_layout
+
+\begin_layout Plain Layout
+
+document.execute('defaults/application/routing/')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// Simple redirection
+\end_layout
+
+\begin_layout Plain Layout
+
+router.redirectClient('bug/', 'http://wackywiki.org/contact-us/bug/')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// Redirection to add a query to the request URI
+\end_layout
+
+\begin_layout Plain Layout
+
+router.redirectClient('forum/', '{rp}?debug=true')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// Permanent redirection using URI segments
+\end_layout
+
+\begin_layout Plain Layout
+
+router.redirectClient('contact/{reason}/', 'http://wackywiki.org/contact-us/{reaso
+n}', 301)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// The above is all Prudence sugar.
+ Here's an example of what happens behind the scenes:
+\end_layout
+
+\begin_layout Plain Layout
+
+importClass(org.restlet.routing.Redirector)
+\end_layout
+
+\begin_layout Plain Layout
+
+router.attach('bug/',
+\end_layout
+
+\begin_layout Plain Layout
+
+	new Redirector(applicationInstance.context, 'http://wackywiki.org/contact-us/bug/
+',
+\end_layout
+
+\begin_layout Plain Layout
+
+	Redirector.MODE_CLIENT_SEE_OTHER))
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
 Dynamic Redirection
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|dynamic-redirection"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -13652,15 +12629,17 @@ You can handle redirection at either /resources/ or /web/dynamic/ with the
 \end_layout
 
 \begin_layout Itemize
-conversation.response.redirectSeeOther, for HTTP status 305
+For 301: conversation.response.redirectPermanent
 \end_layout
 
 \begin_layout Itemize
-conversation.response.redirectTemporary, for HTTP status 307
+For 305: conversation.response.redirectSeeOther (use this if you've already
+ processed the client's request, and want to redirect it to a new location
+ in order to GET the results)
 \end_layout
 
 \begin_layout Itemize
-conversation.response.redirectPermanent, for HTTP status 301
+For 307: conversation.response.redirectTemporary
 \end_layout
 
 \begin_layout Standard
@@ -13699,8 +12678,7 @@ conversation.stop()
 \end_layout
 
 \begin_layout Standard
-Note that most clients will support relative URI paths for redirection.
- Also, they will likely ignore any data in the redirected response, so you
+Also, they will likely ignore any data in the redirected response, so you
  can just return null in /resources/ or empty text in /web/dynamic/.
  This is the reason we call 
 \bar under
@@ -13717,7 +12695,7 @@ reference "../api/|conversation-stop"
 \end_layout
 
 \begin_layout Standard
-For other redirections in the 300 family, follow this example (JavaScript):
+For other redirections in the 300 family, follow this example:
 \end_layout
 
 \begin_layout Standard
@@ -13744,6 +12722,21 @@ conversation.stop()
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+See also 
+\bar under
+static redirection (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|static-redirection"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -14408,150 +13401,6 @@ authenticator.next = applicationInstance.inboundRoot
 \begin_layout Plain Layout
 
 applicationInstance.inboundRoot = authenticator
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection
-Static Redirection
-\end_layout
-
-\begin_layout Standard
-Static redirection is handled by 
-\bar under
-attaching (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../routing/|attaching"
-
-\end_inset
-
-)
-\bar default
- a 
-\begin_inset CommandInset href
-LatexCommand href
-name "Redirector restlet"
-target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/routing/Redirector.html"
-
-\end_inset
-
-.
- By ``static'' here is meant that redirection is configured into the application
-'s /routing.* script.
- However, because attachment supports 
-\bar under
-URI patterns (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../routing/|uri-patterns"
-
-\end_inset
-
-)
-\bar default
-, this method can actually handle complex ``dynamic'' redirection.
- 
-\end_layout
-
-\begin_layout Standard
-Here are a few examples (JavaScript):
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-// Implement defaults
-\end_layout
-
-\begin_layout Plain Layout
-
-document.execute('defaults/application/routing/')
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-importClass(org.restlet.routing.Redirector)
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-// Simple redirection
-\end_layout
-
-\begin_layout Plain Layout
-
-router.attach('bug/',
-\end_layout
-
-\begin_layout Plain Layout
-
-	new Redirector(applicationInstance.context, 'http://wackywiki.org/contact-us/bug/
-'))
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-// With a URI pattern
-\end_layout
-
-\begin_layout Plain Layout
-
-router.attachBase('forum/',
-\end_layout
-
-\begin_layout Plain Layout
-
-	new Redirector(applicationInstance.context,
-\end_layout
-
-\begin_layout Plain Layout
-
-	'{rp}?debug=true'))
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-// A URI pattern with URI segments
-\end_layout
-
-\begin_layout Plain Layout
-
-router.attach('contact/{reason}/',
-\end_layout
-
-\begin_layout Plain Layout
-
-	new Redirector(applicationInstance.context,
-\end_layout
-
-\begin_layout Plain Layout
-
-	'http://wackywiki.org/contact-us/{reason}'))
 \end_layout
 
 \end_inset
@@ -16803,8 +15652,8 @@ target "http://hc.apache.org/httpcomponents-client/index.html"
 
 \end_inset
 
- for high-performance access to external documents, with full support for
- secure connections (https:).
+ for high-performance access to external HTTP documents, with full support
+ for secure connections (prefixed with ``https:'').
 \end_layout
 
 \begin_layout Paragraph

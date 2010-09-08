@@ -266,7 +266,7 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
-	 * Redirects a URI to a new URI with HTTP status 303 ("see other"). You can
+	 * Redirects a URI to a new URI with HTTP status 307 ("temporary"). You can
 	 * use template variables in the URIs.
 	 * <p>
 	 * Enforces matching mode {@link Template#MODE_EQUALS}.
@@ -283,7 +283,7 @@ public class PrudenceRouter extends FallbackRouter
 	 */
 	public Route redirectClient( String uriTemplate, String targetUriTemplate )
 	{
-		return redirectClient( uriTemplate, targetUriTemplate, 303 );
+		return redirectClient( uriTemplate, targetUriTemplate, 307 );
 	}
 
 	/**
