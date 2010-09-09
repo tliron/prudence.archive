@@ -166,7 +166,7 @@ public class SourceCodeResource extends ServerResource
 		}
 		catch( DocumentException x )
 		{
-			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, document, x );
+			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, document );
 		}
 	}
 

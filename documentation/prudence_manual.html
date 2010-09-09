@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2010-09-08">
+<meta name="create-date" content="2010-09-09">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -133,7 +133,7 @@ Table of Contents
 <a class="Link" href="#toc-Subsection-28">Subsection: Hello, REST of the World</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsection-29">Subsection: What Next?</a>
+<a class="Link" href="#toc-Subsection-29">Subsection: What’s Next?</a>
 </div></div>
 
 <div class="toc">
@@ -1323,7 +1323,7 @@ Learn about <u>conversation locals and other ways of sharing state in Prudence (
 <a class="toc" name="toc-Subsubsection-13"></a>What’s REST?
 </h3>
 <div class="Unindented">
-Prudence is designed from the ground up around REST (‘‘Representational State Transfer’’) principles, a term coined by Roy Fielding in <a class="URL" href="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">Chapter 5 of his 2000 dissertation</a>. Fielding presented a perceptive analysis of what makes the Internet infrastructure so useful for distributed applications. Identifying the infrastructure’s key features helps us get the very best out of it.
+Prudence is designed from the ground up around REST (‘‘Representational State Transfer’’) principles, a term coined by Roy Fielding in <a class="URL" href="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">Chapter 5 of his 2000 dissertation</a>. Fielding’s analysis perceptively identifies the key features of the Internet infrastructure that have made the World Wide Web and email scale so well. His summary not only helps us make better use of the available infrastructure, but also inspires more practical approaches to the problem of sharing state in a diverse, distributed environment.
 </div>
 <div class="Indented">
 In <u>‘‘The Case for REST’’ (page <a class="Reference" href="#../../rest/">↑</a>)</u>, we show how REST suggests a ‘‘resource-oriented architecture.’’ The ‘‘resource’’ is the <i>thing</i> that lies behind the Internet URL: it could be an HTML web page or a picture, which is most of what we see in the World Wide Web, but it can also be a blog entry, a social networking profile, a book you want to purchase, or a business item stored in a database. A web page is just one way to ‘‘represent’’ the resource. In fact, we can represent it any format, whether it’s textual formats like XML and JSON, or proprietary binary formats. We can even compress and encrypt it.
@@ -1511,7 +1511,7 @@ P.S. You may have noticed that we’ve used semicolons at the end of statements 
 <a class="toc" name="toc-Subsubsection-17"></a>Reader Meets Author
 </h3>
 <div class="Unindented">
-We won’t cover it in this tutorial, but with Prudence---and HTTP, and AJAX---you can accept data from the client into your resource. Use handlePut to create entirely new resources at the URL identified by the client. For example, Wacky Wiki clients can send you JSON data via a PUT, which parse and save in the database as a new wiki entry. There’s also handlePost, used to update existing resources, and handleDelete for getting rid of them.
+We won’t cover it in this tutorial, but with Prudence---and HTTP, and AJAX---you can accept data from the client into your resource. Use handlePut to create entirely new resources at the URL identified by the client. For example, Wacky Wiki clients can send you JSON data via a PUT, which you can then parse and save in the database as a new wiki entry. There’s also handlePost, used to update existing resources, and handleDelete for getting rid of them.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-18"></a>Safe and Sound
@@ -1535,7 +1535,7 @@ Learn about <u>cookies (page <a class="Reference" href="#../api/|conversation-co
 </li>
 </ul>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-29"></a>What Next?
+<a class="toc" name="toc-Subsection-29"></a>What’s Next?
 </h2>
 <div class="Unindented">
 The best way to learn Prudence is by creating your own applications. Why not turn Wacky Wiki into the next Internet hit, or into an online discussion board for your organization?
@@ -1556,13 +1556,13 @@ Before you run off to play with Stickstick, we’ll mention just two important f
 <a class="toc" name="toc-Subsubsection-20"></a>Filters
 </h3>
 <div class="Unindented">
-Prudence lets you write code that will filter every incoming and outgoing request. This makes it easy to do a wide variery of general work such as authenticating, sanitizing, transformation/encoding, monitoring, throttling, caching, processing, etc. See <u>filters (page <a class="Reference" href="#../handlers/|filters">↓</a>)</u> for full information.
+Prudence lets you write code that will filter every incoming and outgoing request. This makes it easy to do a wide variery of general work such as authenticating, sanitizing, transformation/encoding, monitoring, throttling, caching, processing, etc. See <u>filters (page <a class="Reference" href="#../handlers/|filters">↓</a>)</u> for complete documentation.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-21"></a>Tasks
 </h3>
 <div class="Unindented">
-Prudence lets you write and run tasks asynchronously, and even to schedule them using a crontab-like configuration file. This is very useful for maintenance work such as releasing unused connections and sessions, for sending email reminders and administrative alterts, for monitoring services, etc. See <u>tasks (page <a class="Reference" href="#../tasks/">↓</a>)</u> for full information.
+Prudence lets you write and run tasks asynchronously, and even to schedule them using a crontab-like configuration file. This is very useful for maintenance work such as releasing unused connections and sessions, for sending email reminders and administrative alterts, for monitoring services, etc. See <u>tasks (page <a class="Reference" href="#../tasks/">↓</a>)</u> for complete documentation.
 </div>
 <h1 class="Section">
 <a class="toc" name="toc-Section-4"></a>The Prudence Instance<a class="Label" name="../instance/"> </a>
@@ -4474,10 +4474,7 @@ By ‘‘static’’ here is meant that redirection is configured into the appl
 <div class="Indented">
 Because static redirection supports <u>URI patterns (page <a class="Reference" href="#../routing/|uri-patterns">↓</a>)</u>, this API can actually handle complex ‘‘dynamic’’ redirections. For example, even though most clients will support relative URI paths for redirection, you can force a complete URI using the ‘‘{rp}’’ pattern, which equals is the request URI path.
 </div>
-<blockquote class="Quote">
-Behind the scenes, static redirection is handled by <u>attaching (page <a class="Reference" href="#../routing/|attaching">↓</a>)</u> a <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/routing/Redirector.html">Redirector restlet</a>.
-</blockquote>
-<div class="Unindented">
+<div class="Indented">
 The following redirection status codes are supported:
 </div>
 <ul>
@@ -4496,6 +4493,9 @@ The following redirection status codes are supported:
 </li>
 </ul>
 <div class="Unindented">
+Note that behind the scenes, static redirection is handled by <u>attaching (page <a class="Reference" href="#../routing/|attaching">↓</a>)</u> a <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/routing/Redirector.html">Redirector restlet</a>.
+</div>
+<div class="Indented">
 Here are a few examples (JavaScript):
 </div>
 <div class="Indented">

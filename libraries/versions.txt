@@ -6,7 +6,7 @@ commons-io			1.4
 commons-logging		1.1.1
 commons-pool		1.5.4
 cron4j				2.2.3
-grizzly				1.9.18-k
+grizzly				1.9.19
 groboutils			5 (note: we've removed the internal log4j distribution)
 groovy				1.7.4
 h2					1.2.142
@@ -28,7 +28,7 @@ mime4j				0.6
 mysqlconnector		5.1.8
 pygments			1.1.1
 quercus				4.0.8
-restlet (JSE)		2.0.0
+restlet (JSE)		2.0.1
 rhino				1.7R2
 servlet (tomcat)	6.0.26
 scripturian			1.0 (Revision 237)

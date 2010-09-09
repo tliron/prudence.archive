@@ -2610,10 +2610,11 @@ target "http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm"
 \end_inset
 
 .
- Fielding presented a perceptive analysis of what makes the Internet infrastruct
-ure so useful for distributed applications.
- Identifying the infrastructure's key features helps us get the very best
- out of it.
+ Fielding's analysis perceptively identifies the key features of the Internet
+ infrastructure that have made the World Wide Web and email scale so well.
+ His summary not only helps us make better use of the available infrastructure,
+ but also inspires more practical approaches to the problem of sharing state
+ in a diverse, distributed environment.
 \end_layout
 
 \begin_layout Standard
@@ -3273,7 +3274,7 @@ We won't cover it in this tutorial, but with Prudence---and HTTP, and AJAX---you
  Use handlePut to create entirely new resources at the URL identified by
  the client.
  For example, Wacky Wiki clients can send you JSON data via a PUT, which
- parse and save in the database as a new wiki entry.
+ you can then parse and save in the database as a new wiki entry.
  There's also handlePost, used to update existing resources, and handleDelete
  for getting rid of them.
 \end_layout
@@ -3338,7 +3339,7 @@ reference "../api/|conversation-cookies"
 \end_layout
 
 \begin_layout Subsection
-What Next?
+What's Next?
 \end_layout
 
 \begin_layout Standard
@@ -3411,7 +3412,7 @@ reference "../handlers/|filters"
 
 )
 \bar default
- for full information.
+ for complete documentation.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3435,7 +3436,7 @@ reference "../tasks/"
 
 )
 \bar default
- for full information.
+ for complete documentation.
 \end_layout
 
 \begin_layout Section
@@ -12461,29 +12462,6 @@ reference "../routing/|uri-patterns"
  equals is the request URI path.
 \end_layout
 
-\begin_layout Quote
-Behind the scenes, static redirection is handled by 
-\bar under
-attaching (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../routing/|attaching"
-
-\end_inset
-
-)
-\bar default
- a 
-\begin_inset CommandInset href
-LatexCommand href
-name "Redirector restlet"
-target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/routing/Redirector.html"
-
-\end_inset
-
-.
-\end_layout
-
 \begin_layout Standard
 The following redirection status codes are supported:
 \end_layout
@@ -12511,6 +12489,29 @@ be a temporary redirect, like 307, but many clients treat it as a 303.
 
 \begin_layout Itemize
 307, temporary: The default (because it's the safest)
+\end_layout
+
+\begin_layout Standard
+Note that behind the scenes, static redirection is handled by 
+\bar under
+attaching (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|attaching"
+
+\end_inset
+
+)
+\bar default
+ a 
+\begin_inset CommandInset href
+LatexCommand href
+name "Redirector restlet"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/routing/Redirector.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard

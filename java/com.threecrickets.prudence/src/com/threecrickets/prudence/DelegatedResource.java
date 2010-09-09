@@ -966,7 +966,7 @@ public class DelegatedResource extends ServerResource
 				}
 				catch( DocumentNotFoundException x )
 				{
-					throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
+					throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
 				}
 				catch( DocumentException x )
 				{
@@ -1505,7 +1505,7 @@ public class DelegatedResource extends ServerResource
 		}
 		catch( DocumentNotFoundException x )
 		{
-			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND, x );
+			throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
 		}
 		catch( DocumentException x )
 		{
