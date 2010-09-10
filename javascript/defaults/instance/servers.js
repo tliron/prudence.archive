@@ -44,24 +44,3 @@ defaultServer.context.parameters.add('useForwardedForHeader', 'true')
 //var worldServer = new Server(Protocol.HTTP, '192.168.1.2', 80)
 //worldServer.name = 'world'
 //component.servers.add(worldServer)
-
-//
-// Welcome
-//
-
-for(var i = 0; i < component.servers.size(); i++) {
-	var server = component.servers.get(i)
-	if(server.address) {
-		print('Listening on ' + server.address + ' port ' + server.port + ' for ')
-	} else {
-		print('Listening on port ' + server.port + ' for ')
-	}
-	for(var j = 0; j < server.protocols.size(); j++) {
-		var protocol = server.protocols.get(j)
-		if(j < server.protocols.size() - 1) {
-			print(', ')
-		}
-		print(protocol)
-	}
-	print('.\n')
-}

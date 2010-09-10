@@ -43,20 +43,3 @@ default_server.context.parameters.add('useForwardedForHeader', 'true')
 #world_server = Server(Protocol.HTTP, '192.168.1.2', 80)
 #world_server.name = 'world'
 #component.servers.add(world_server)
-
-#
-# Welcome
-#
-
-for i in range(len(component.servers)):
-	server = component.servers[i]
-	if server.address:
-		sys.stdout.write('Listening on %s port %s for ' % (server.address, server.port))
-	else:
-		sys.stdout.write('Listening on port %s for ' % server.port)
-	for j in range(len(server.protocols)):
-		protocol = server.protocols[j]
-		if j < len(server.protocols) - 1:
-			sys.stdout.write(', ')
-		sys.stdout.write(str(protocol))
-	print '.'

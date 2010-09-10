@@ -44,17 +44,3 @@
 ;(def world-server (Server. Protocol/HTTP "192.168.1.2" 80))
 ;(.setName world-server "world")
 ;(.. component getServers (add "world-server"))
-
-;
-; Welcome
-;
-
-(defn print-comma-delimited [s]
-	(print (apply str (interpose ", " (map str s)))))
-
-(doseq [server (.getServers component)]
-	(if-not (nil? (.getAddress server))
-		(print "Listening on" (.getAddress server) "port" (.getPort server) "for ")
-		(print "Listening on port" (.getPort server) "for "))
-	(print-comma-delimited (.getProtocols server))
-	(println "."))

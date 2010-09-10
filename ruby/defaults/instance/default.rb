@@ -115,7 +115,24 @@ execute_or_default 'instance/servers/'
 #
 
 $component.start
+
 puts 'Prudence is up!'
+for server in $component.servers
+	if server.address
+		print "Listening on #{server.address} port #{server.port} for "
+	else
+		print "Listening on port #{server.port} for "
+	end
+	j = 0
+	for protocol in server.protocols
+		if j < server.protocols.size - 1
+			print ', '
+		end
+		print protocol
+		j += 1
+	end
+	puts '.'
+end
 
 #
 # Scheduler

@@ -49,24 +49,3 @@ $default_server->context->parameters->add('useForwardedForHeader', 'true');
 //$world_server = new Server(Protocol::valueOf('HTTP'), '192.168.1.2', 80);
 //$world_server.name = 'world';
 //$component->servers->add($world_server);
-
-//
-// Welcome
-//
-
-for($i = 0; $i < $component->servers->size(); $i++) {
-	$server = $component->servers->get($i);
-	if($server->address) {
-		print 'Listening on ' . $server->address . ' port ' . $server->port . ' for ';
-	} else {
-		print 'Listening on port ' . $server->port . ' for ';
-	}
-	for($j = 0; $j < $server->protocols->size(); $j++) {
-		$protocol = $server->protocols->get($j);
-		if($j < $server->protocols->size() - 1) {
-			print ', ';
-		}
-		print($protocol);
-	}
-	print ".\n";
-}

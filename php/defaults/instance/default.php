@@ -106,7 +106,24 @@ execute_or_default('instance/servers/');
 //
 
 $component->start();
+
 print "Prudence is up!\n";
+for($i = 0; $i < $component->servers->size(); $i++) {
+	$server = $component->servers->get($i);
+	if($server->address) {
+		print 'Listening on ' . $server->address . ' port ' . $server->port . ' for ';
+	} else {
+		print 'Listening on port ' . $server->port . ' for ';
+	}
+	for($j = 0; $j < $server->protocols->size(); $j++) {
+		$protocol = $server->protocols->get($j);
+		if($j < $server->protocols->size() - 1) {
+			print ', ';
+		}
+		print($protocol);
+	}
+	print ".\n";
+}
 
 //
 // Scheduler

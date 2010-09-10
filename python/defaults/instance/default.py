@@ -98,7 +98,20 @@ execute_or_default('instance/servers/')
 #
 
 component.start()
+
 print 'Prudence is up!'
+for i in range(len(component.servers)):
+	server = component.servers[i]
+	if server.address:
+		sys.stdout.write('Listening on %s port %s for ' % (server.address, server.port))
+	else:
+		sys.stdout.write('Listening on port %s for ' % server.port)
+	for j in range(len(server.protocols)):
+		protocol = server.protocols[j]
+		if j < len(server.protocols) - 1:
+			sys.stdout.write(', ')
+		sys.stdout.write(str(protocol))
+	print '.'
 
 #
 # Scheduler

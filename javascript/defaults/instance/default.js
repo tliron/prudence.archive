@@ -101,7 +101,24 @@ executeOrDefault('instance/servers/')
 //
 
 component.start()
+
 print('Prudence is up!\n')
+for(var i = 0; i < component.servers.size(); i++) {
+	var server = component.servers.get(i)
+	if(server.address) {
+		print('Listening on ' + server.address + ' port ' + server.port + ' for ')
+	} else {
+		print('Listening on port ' + server.port + ' for ')
+	}
+	for(var j = 0; j < server.protocols.size(); j++) {
+		var protocol = server.protocols.get(j)
+		if(j < server.protocols.size() - 1) {
+			print(', ')
+		}
+		print(protocol)
+	}
+	print('.\n')
+}
 
 //
 // Scheduler

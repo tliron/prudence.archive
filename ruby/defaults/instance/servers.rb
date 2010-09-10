@@ -43,24 +43,3 @@ $default_server.context.parameters.add 'useForwardedForHeader', 'true'
 #$world_server = Server.new(Protocol::HTTP, '192.168.1.2', 80)
 #$world_server.name = 'world'
 #$component.servers.add $world_server
-
-#
-# Welcome
-#
-
-for server in $component.servers
-	if server.address
-		print "Listening on #{server.address} port #{server.port} for "
-	else
-		print "Listening on port #{server.port} for "
-	end
-	j = 0
-	for protocol in server.protocols
-		if j < server.protocols.size - 1
-			print ', '
-		end
-		print protocol
-		j += 1
-	end
-	puts '.'
-end

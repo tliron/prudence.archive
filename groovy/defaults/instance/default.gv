@@ -102,7 +102,23 @@ executeOrDefault('instance/servers/')
 //
 
 componentInstance.start()
+
 println('Prudence is up!')
+for(server in componentInstance.servers) {
+	if(server.address) {
+		print('Listening on ' + server.address + ' port ' + server.port + ' for ')
+	} else {
+		print('Listening on port ' + server.port + ' for ')
+	}
+	server.protocols.eachWithIndex { protocol, j ->
+		if(j < server.protocols.size() - 1) {
+			print(', ')
+		}
+		print(protocol)
+	}
+	println('.')
+	out.flush()
+}
 
 //
 // Scheduler
