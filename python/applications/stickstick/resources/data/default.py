@@ -19,23 +19,25 @@ def handle_get(conversation):
     board_list = []
     session = get_session(application, fresh)
     try:
-        boards = session.query(Board).all()
-        for board in boards:
-            board_list.append(board.id)
-            timestamp = board.timestamp
-            if max_timestamp is None or timestamp > max_timestamp:
-                max_timestamp = timestamp
-    except NoResultFound:
+        try:
+            boards = session.query(Board).all()
+            for board in boards:
+                board_list.append(board.id)
+                timestamp = board.timestamp
+                if max_timestamp is None or timestamp > max_timestamp:
+                    max_timestamp = timestamp
+        except NoResultFound:
+            return None
+    
+        note_list = []
+        try:
+            notes = session.query(Note).all()
+            for note in notes:
+                note_list.append(note.to_dict())
+        except NoResultFound:
+            pass
+    finally:
         session.close()
-        return None
-
-    note_list = []
-    try:
-        notes = session.query(Note).all()
-        for note in notes:
-            note_list.append(note.to_dict())
-    except NoResultFound:
-        pass
 
     if max_timestamp is not None:
         conversation.modificationTimestamp = datetime_to_milliseconds(max_timestamp)

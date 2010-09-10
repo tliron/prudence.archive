@@ -9,7 +9,7 @@ from time import time, mktime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-import logging
+import logging, os, os.path
 
 # SQLAlchemy logging
 logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
@@ -110,7 +110,12 @@ def get_engine(application, fresh=False):
     try:
         if engine is None or fresh:
             # Make sure logging is configured
-            logging.basicConfig(filename=application.globals['stickstick.log'])
+            log = application.globals['stickstick.log']
+            try:
+                os.makedirs(str(os.path.split(log)[0]))
+            except:
+                pass
+            logging.basicConfig(filename=log)
             
             # Make sure database exists
             if application.globals['stickstick.host']:
