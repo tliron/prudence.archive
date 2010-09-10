@@ -121,7 +121,7 @@
 		<attribute name="name" />
 		<sequential>
 			<zip destfile="prudence-@{name}-R${revision.max}.zip" level="9">
-				<fileset dir="@{dist}/content" excludes="logs/, h2/, lib/cachedir/" />
+				<fileset dir="@{dist}/content" excludes="cache/, logs/, data/, libraries/com.caucho.quercus.jar" />
 			</zip>
 		</sequential>
 	</macrodef>
