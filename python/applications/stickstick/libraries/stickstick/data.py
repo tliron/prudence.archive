@@ -12,7 +12,6 @@ from sqlalchemy.orm import sessionmaker
 import logging
 
 # SQLAlchemy logging
-logging.basicConfig(filename='logs/stickstick-python.log')
 logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 logging.getLogger('sqlalchemy.orm.attributes').setLevel(logging.DEBUG)
 logging.getLogger('sqlalchemy.orm.mapper').setLevel(logging.DEBUG)
@@ -110,6 +109,9 @@ def get_engine(application, fresh=False):
     engine = application.globals['engine']
     try:
         if engine is None or fresh:
+            # Make sure logging is configured
+            logging.basicConfig(filename=application.globals['stickstick.log'])
+            
             # Make sure database exists
             if application.globals['stickstick.host']:
                 root_engine = create_engine('%s://%s:%s@%s/' % (

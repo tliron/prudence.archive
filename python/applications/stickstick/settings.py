@@ -13,7 +13,8 @@ predefined_globals.update({
     'stickstick.username': 'root',
     'stickstick.password': 'root',
     'stickstick.host': '',
-    'stickstick.database': document.source.basePath.path + '/data/stickstick/stickstick'
+    'stickstick.database': document.source.basePath.path + '/data/stickstick/stickstick',
+    'stickstick.log': document.source.basePath.path + '/logs/stickstick.log'
     })
 
 show_debug_on_error = True
