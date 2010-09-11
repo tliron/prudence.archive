@@ -21,12 +21,25 @@
   `(binding [*err* (StringWriter.)]
     (with-connection ~db-spec ~@body)))
 
-; TODO: use settings 
 (defn get-url [application]
-	"jdbc:h2:data/h2/stickstick;MVCC=TRUE")
+  (let [url (str "jdbc:" (.. application getGlobals (get "stickstick.backend")) ":")]
+    (let [url
+          (if (not (= (.. application getGlobals (get "stickstick.host")) ""))
+            (if (= (.. application getGlobals (get "stickstick.backend")) "h2")
+              (str url "tcp:")
+              (str url "//" (.. application getGlobals (get "stickstick.host")) "/"))
+            url)]
+      (let [url
+            (if (not (= (.. application getGlobals (get "stickstick.database")) ""))
+              (str url (.. application getGlobals (get "stickstick.database")))
+              url)]
+        (if (= (.. application getGlobals (get "stickstick.backend")) "h2")
+          (str url ";MVCC=TRUE")
+          url)))))
 
 (defn get-data-source [application]
 	(let [data-source (org.h2.jdbcx.JdbcDataSource.)]
+   (print (get-url application))
 		(.setURL data-source (get-url application))
 		(.setUser data-source (.. application getGlobals (get "stickstick.username")))
 		(.setPassword data-source (.. application getGlobals (get "stickstick.password")))
