@@ -39,7 +39,6 @@
 
 (defn get-data-source [application]
 	(let [data-source (org.h2.jdbcx.JdbcDataSource.)]
-   (print (get-url application))
 		(.setURL data-source (get-url application))
 		(.setUser data-source (.. application getGlobals (get "stickstick.username")))
 		(.setPassword data-source (.. application getGlobals (get "stickstick.password")))
