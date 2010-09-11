@@ -56,6 +56,10 @@ The Prudence Manual
 \end_layout
 
 \begin_layout Author
+Version 1
+\begin_inset Newline newline
+\end_inset
+
 Main text written by Tal Liron
 \end_layout
 
@@ -66,7 +70,11 @@ Copyright 2009-2010 by Three Crickets LLC.
 \begin_inset Newline newline
 \end_inset
 
-This work is licensed under a 
+This work is licensed under a
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset CommandInset href
 LatexCommand href
 name "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License"
@@ -1363,6 +1371,7 @@ Let's create our first web page.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1480,6 +1489,7 @@ Create a /web/dynamic/ directory and move your ``index.html'' file to there.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1568,6 +1578,7 @@ We can fix this by adding caching to our page, specifically for 10 seconds
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1666,6 +1677,7 @@ For fun, let's purposely introduce an error into our JavaScript code: just
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1803,6 +1815,7 @@ Let's create a /web/fragments/ directory, and put these files in it.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1847,6 +1860,7 @@ Here's ``footer.html'':
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1871,6 +1885,7 @@ And here's ``entry.html'':
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1895,6 +1910,7 @@ We can now edit our original ``/web/dynamic/index.html'' to be this:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -1951,6 +1967,7 @@ All our fragments are reusable in other pages, too.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2038,6 +2055,7 @@ Here's the new ``header.html'':
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2097,6 +2115,7 @@ And ``footer.html'':
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2155,6 +2174,7 @@ Let's create an ``/applications/wackywiki/libraries/'' directory, and put
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2223,6 +2243,7 @@ function getWikiEntry(id) {
 \begin_layout Standard
 Here is our new ``index.html'' page:
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2360,6 +2381,7 @@ tions/wackywiki/routing.js'':
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2405,6 +2427,7 @@ all
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2477,6 +2500,7 @@ Our ``index.html'' file will be a simple stub to display the ``index'' wiki
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2611,8 +2635,9 @@ target "http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm"
 
 .
  Fielding's analysis perceptively identifies the key features of the Internet
- infrastructure that have made the World Wide Web and email scale so well.
- His summary not only helps us make better use of the available infrastructure,
+ infrastructure that have made the World Wide Web and email protocols scale
+ so well horizontally.
+ His summary not only helps us make better use of available technology,
  but also inspires more practical approaches to the problem of sharing state
  in a diverse, distributed environment.
 \end_layout
@@ -2634,24 +2659,27 @@ reference "../../rest/"
 \emph on
 thing
 \emph default
- that lies behind the Internet URL: it could be an HTML web page or a picture,
- which is most of what we see in the World Wide Web, but it can also be
- a blog entry, a social networking profile, a book you want to purchase,
- or a business item stored in a database.
- A web page is just one way to ``represent'' the resource.
- In fact, we can represent it any format, whether it's textual formats like
- XML and JSON, or proprietary binary formats.
- We can even compress and encrypt it.
+ that lies behind the Internet URL.
+ Familiar REST resources are HTML pages, images, videos, which is most of
+ what we see in the World Wide Web.
+ But resources can also be blog entres, social networking profiles, inventory
+ items in a store or warehouse, etc.
+ Moreover, you should think about resources as single things that can have
+ mulitple representations.
+ A web page might be one representation, but in fact we can represent it
+ any format, whether it's meant for direct human consumption, such as PDF
+ or plain text, or a format that can be consumed by software, such as XML,
+ JSON and proprietary binary formats.
+ The ubiquitous HTTP supports sophisticated negotiation of representational
+ formats.
 \end_layout
 
 \begin_layout Standard
-What you may not know is that the ubiquitous HTTP actually supports sophisticate
-d negotiation of representational formats and several possible operations
- on ``resources'': in addition to GET and POST, which are commonly used
- in HTML forms, you can also PUT new resources where none were before and
- DELETE existing resources.
- This makes HTTP an attractive protocol for distributed applications: mostly
- because it's already there, deployed and ready for you to use.
+It also support multiple operations on resources: in addition to GET and
+ POST, which are commonly used in HTML forms, you can also PUT new resources
+ where none were before and DELETE existing resources.
+ This makes HTTP an attractive protocol for distributed applications---and,
+ of course, it's already there, deployed and ready for you to build upon.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2659,7 +2687,7 @@ Your First Resource
 \end_layout
 
 \begin_layout Standard
-In Prudence, creating a RESTful resource can be easier than creating a dynamic
+In Prudence, creating a RESTful resource is as easy as creating a dynamic
  web page.
 \end_layout
 
@@ -2671,6 +2699,7 @@ Create an ``/applications/wackywiki/resources/'' directory to host your
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2737,6 +2766,7 @@ target "http://localhost:8080/wackywiki/entry/"
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2830,6 +2860,7 @@ d previously.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -2947,6 +2978,7 @@ For this to work for all wiki entry URLs, we also have to ``capture'' them,
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -3018,8 +3050,8 @@ target "http://www.json.org/"
 
 \end_inset
 
- format, so perhaps we should call it ``AJAJ''? Well, the end result is
- the same.
+ format over XML, so perhaps we should call it ``AJAJ''? Well, the end result
+ is the same.
 \end_layout
 
 \begin_layout Standard
@@ -3050,6 +3082,7 @@ Let's add some AJAX magic to our ``index.html'':
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "breaklines=true"
 inline false
 status open
 
@@ -3335,11 +3368,26 @@ reference "../api/|conversation-cookies"
 
 )
 \bar default
- and SSL (page ?).
+.
+\end_layout
+
+\begin_layout Itemize
+Learn about 
+\bar under
+secure connections (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/|secure-servers"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Subsection
-What's Next?
+What Next?
 \end_layout
 
 \begin_layout Standard
@@ -3384,6 +3432,15 @@ target "http://groups.google.com/group/prudence-community"
 
  online, to ask questions, contribute ideas and see how others are making
  good use of Prudence.
+ And please 
+\begin_inset CommandInset href
+LatexCommand href
+name "report any bugs and make suggestions for improvement"
+target "http://code.google.com/p/prudence/issues/list"
+
+\end_inset
+
+!
 \end_layout
 
 \begin_layout Standard
@@ -4231,6 +4288,288 @@ Creates an HTTP server on port 8080, with support for the X-FORWARDED-FOR
 
 \begin_layout Enumerate
 Prints out information about this server
+\end_layout
+
+\begin_layout Paragraph
+Secure Servers (https)
+\begin_inset CommandInset label
+LatexCommand label
+name "../instance/|secure-servers"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If you are using a 
+\bar under
+load balancer or another kind of proxy (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../http-proxy/"
+
+\end_inset
+
+)
+\bar default
+, it makes more sense to handle secure connections there.
+ See the example there on how to do this with Perlbal.
+\end_layout
+
+\begin_layout Standard
+Note, though, that if you want to handle secure requests differently in
+ Prudence, you must allow for some way to distinguish them.
+ This can easily be done by creating a separate non-secure server to which
+ the proxy would send secure requests.
+ You can then use 
+\bar under
+virtual hosts (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|virtual-hosts"
+
+\end_inset
+
+)
+\bar default
+ or other kinds of routing to send requests to different applications or
+ resources.
+ Alternatively, you could check for the 
+\bar under
+reference (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-reference"
+
+\end_inset
+
+)
+\bar default
+ in code.
+ For example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+if(conversation.reference.schemeProtocol.name == 'HTTPS') {
+\end_layout
+
+\begin_layout Plain Layout
+
+	...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Prudence can also handle secure connections itself.
+ Here's an example /instance/severs.js:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+// Implement defaults
+\end_layout
+
+\begin_layout Plain Layout
+
+document.execute('defaults/instance/servers/')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// Create secure server listening on the default HTTPS port (443)
+\end_layout
+
+\begin_layout Plain Layout
+
+var secureServer = new Server(Protocol.HTTPS, 443)
+\end_layout
+
+\begin_layout Plain Layout
+
+secureServer.name = 'secure'
+\end_layout
+
+\begin_layout Plain Layout
+
+component.servers.add(secureServer)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// Configure it to use our security keys
+\end_layout
+
+\begin_layout Plain Layout
+
+secureServer.context.parameters.add('keystorePath', '/path/prudence.jks')
+\end_layout
+
+\begin_layout Plain Layout
+
+secureServer.context.parameters.add('keystorePassword', 'mykeystorepassword')
+\end_layout
+
+\begin_layout Plain Layout
+
+//secureServer.context.parameters.add('keyPassword', 'mykeypassword')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// Add support for the X-FORWARDED-FOR header used by proxies
+\end_layout
+
+\begin_layout Plain Layout
+
+secureServer.context.parameters.add('useForwardedForHeader', 'true')
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+See the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet Grizzly HttpServerHelper documentation"
+target "http://www.restlet.org/documentation/2.0/jse/ext/index.html?org/restlet/ext/grizzly/HttpsServerHelper.html"
+
+\end_inset
+
+ for more configuration parameters.
+\end_layout
+
+\begin_layout Standard
+The above configuration script assumes the you have a JKS (``Java keystore'')
+ file at ``/path/prudence.jks'' with your security keys.
+ You can create one with the ``keytool'' command that is bundled with most
+ JVMs.
+ For example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+keytool -keystore /path/prudence.jks -alias mykey -genkey -keyalg RSA
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When creating the keystore, you will be asked provide a password for it,
+ and you may optionally provide a different password for your key, in which
+ case you need to comment out the relevant line in the servers.js above.
+ (The key alias and key password would be kept if you move the key to a
+ different keystore.)
+\end_layout
+
+\begin_layout Standard
+Such self-created keys may be useful for controlled intranet environments,
+ in which you can provide clients with the public key, but for Internet
+ applications you will likely want a key created by one of the ``certificate
+ authorities'' trusted by major browsers.
+ Some of these certificate authorities may let your get your key in JKS
+ format.
+ Otherwise, if they support PKCS12 format, you can use keytool (from version
+ 6) to convert it to JKS.
+ For example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+keytool -importkeystore -srcstoretype PKCS12 -srckeystore /path/prudence.pkcs12
+ -destkeystore /path/prudence.jks
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If you don't even have access to a PKCS12 file, you can create one from
+ your ``.key'' and ``.crt'' (or ``.pem'') files using 
+\begin_inset CommandInset href
+LatexCommand href
+name "OpenSSL"
+target "http://www.openssl.org/"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+openssl pkcs12 -inkey /path/mykey.key -in /path/mykey.crt -export -out /path/prude
+nce.pkcs12 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+(Note that you must give your PKCS12 a non-empty password, or else keytool
+ will fail with an unhelpful error message.)
 \end_layout
 
 \begin_layout Section
@@ -15859,6 +16198,13 @@ The Request
 
 \begin_layout Paragraph
 conversation.reference
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-reference"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -19356,8 +19702,20 @@ target "http://www.danga.com/perlbal/"
 \end_inset
 
 .
- Here's a sample perlbal.conf in which we use Perlbal to handle secure (SSL)
- connections for us:
+ Here's an example perlbal.conf in which we use Perlbal to handle secure
+ connections for us.
+ See 
+\bar under
+secure servers (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/|secure-servers"
+
+\end_inset
+
+)
+\bar default
+ on how to configure Prudence to handle secure connections directly.
 \end_layout
 
 \begin_layout Standard
@@ -23036,38 +23394,6 @@ Languages
 \end_layout
 
 \begin_layout Subsubsection
-Why mix languages?
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Subsubsection
-What are ``in-flow'' scriptlets?
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Subsubsection
-Can different languages share state?
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Subsubsection
-Can languages call each others' functions?
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Subsubsection
 How to avoid the ``Adapter not available for language: xml'' parsing exception
  for XML files?
 \end_layout
@@ -23111,26 +23437,6 @@ status open
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsection
-Concurrency
-\end_layout
-
-\begin_layout Subsubsection
-Should I be worried?
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Subsubsection
-How to make my code thread safe?
-\end_layout
-
-\begin_layout Standard
-TODO
 \end_layout
 
 \begin_layout Subsection
@@ -23187,14 +23493,6 @@ Performance
 \end_layout
 
 \begin_layout Subsubsection
-Which Prudence flavor performs best?
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Subsubsection
 How well does Prudence perform? How well does it scale?
 \end_layout
 
@@ -23202,7 +23500,7 @@ How well does Prudence perform? How well does it scale?
 First, recognize that there are two common uses for the term ``scale.'' REST
  is often referred to as an inherently scalable architecture, but that has
  more to do with project management than technical performance.
- This difference is address in the 
+ This difference is addressed in the 
 \bar under
 ``The Case for REST'' (page 
 \begin_inset CommandInset ref
@@ -23214,7 +23512,6 @@ reference "../rest/"
 )
 \bar default
 .
- 
 \end_layout
 
 \begin_layout Standard
@@ -23239,19 +23536,6 @@ target "https://grizzly.dev.java.net/"
 , an HTTP server based on the JVM's non-blocking I/O API.
  Grizzly handles concurrent HTTP requests very well, and serves static files
  at scales comparable to popular HTTP servers.
- See the 
-\bar under
-tutorial (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../manual/tutorial/"
-
-\end_inset
-
-)
-\bar default
- for more information.
- 
 \end_layout
 
 \begin_layout Paragraph
@@ -23260,59 +23544,21 @@ reference "../manual/tutorial/"
 \end_layout
 
 \begin_layout Standard
-Prudence supports two modes for generating HTML (and other textual formats),
- each with its own performance characteristics:
-\end_layout
-
-\begin_layout Subparagraph
-Caching mode:
-\end_layout
-
-\begin_layout Standard
-First, the entire document is run, with its output sent into a buffer.
- This buffer is then cached, and 
-\emph on
-only then
-\emph default
- sent to the client.
- This is the default mode and recommended for most documents.
- Scriptlets can be used to control the duration of the document's individual
- cache.
- 
-\end_layout
-
-\begin_layout Subparagraph
-Deferred mode:
-\end_layout
-
-\begin_layout Standard
-Output is sent to the client 
-\emph on
-while
-\emph default
- the document runs.
- This is recommended for documents that need to output a very large amount
- of text, which might take a long time, or that might otherwise encounter
- slow-downs while running.
- In either case, you want the client to receive ongoing output.
- The output of the document is not cached.
-  Scriptlets can switch between modes according to changing circumstances.
- For example, to increase caching duration during heavy loads, to decrease
- it during periods where data changes often, or to stream in the case of
- an expected large output.
- See the 
+Prudence implements what might be the most sophisticated caching system
+ of any web development framework.
+ Caching is truly the key to scalable software.
+ See 
 \bar under
-tutorial (page 
+``Scaling Tips'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../manual/tutorial/"
+reference "../scaling/|caching"
 
 \end_inset
 
 )
 \bar default
- for more information.
- 
+ for a comprehensive discussion.
 \end_layout
 
 \begin_layout Paragraph
@@ -23334,6 +23580,16 @@ on.
  of the application.
  The JVM learns and adapts as it runs, and performance can improve the more
  the application is used.
+\end_layout
+
+\begin_layout Standard
+All flavors of Prudence are generally very fast.
+ In some cases, the JVM language implementations are faster than their ``native'
+' equivalents.
+ This is demonstrable for Python, Ruby and PHP.
+ The reason is that the JVM, soon reaching version 7, is a very mature virtual
+ machine, and incorporates decades-worth of optimiziations for live production
+ environments.
 \end_layout
 
 \begin_layout Standard
@@ -23364,7 +23620,7 @@ If you're not doing intensive computation, then don't worry too much about
  rarely the bottleneck.
  The deciding factors are the usually performance of the backend data-driving
  technologies and architectures.
-  
+ 
 \end_layout
 
 \begin_layout Subsection
