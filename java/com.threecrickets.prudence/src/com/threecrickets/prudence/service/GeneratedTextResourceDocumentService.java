@@ -25,12 +25,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.apache.bcel.verifier.statics.StringRepresentation;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Encoding;
 import org.restlet.data.Reference;
 import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 import org.restlet.routing.Template;
 import org.restlet.routing.Variable;
@@ -69,14 +69,16 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 *        The resource
 	 * @param executionContext
 	 *        The execution context
-	 * @param conversationService
-	 *        The exposed conversation
+	 * @param entity
+	 *        The entity
+	 * @param preferences
+	 *        The negotiated client preferences or null
 	 */
-	public GeneratedTextResourceDocumentService( GeneratedTextResource resource, ExecutionContext executionContext, Representation entity, Variant variant )
+	public GeneratedTextResourceDocumentService( GeneratedTextResource resource, ExecutionContext executionContext, Representation entity, Variant preferences )
 	{
 		super( resource, resource.getDocumentSource() );
 		this.executionContext = executionContext;
-		conversationService = new GeneratedTextResourceConversationService( resource, entity, variant, resource.getDefaultCharacterSet() );
+		conversationService = new GeneratedTextResourceConversationService( resource, entity, preferences, resource.getDefaultCharacterSet() );
 	}
 
 	/**

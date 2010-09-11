@@ -236,13 +236,25 @@
 			<link href="http://java.sun.com/javase/6/docs/api/" />
 			<link href="http://threecrickets.com/scripturian/api/" />
 			<link href="http://www.restlet.org/documentation/2.0/jse/api/" />
+			<link href="http://commons.apache.org/dbcp/api-1.3/" />
+			<link href="http://commons.apache.org/pool/api-1.5.5/" />
 			<link href="http://commons.apache.org/fileupload/apidocs/" />
 			<link href="http://www.sauronsoftware.it/projects/cron4j/api/" />
+			<link href="http://www.h2database.com/javadoc/" />
+			<link href="http://hazelcast.googlecode.com/svn/javadoc/" />
+			<link href="http://dustin.github.com/java-memcached-client/apidocs/" />
 			<classpath>
-				<fileset dir="${lib}/restlet/lib" />
-				<fileset dir="${lib}/jsr223/lib" />
 				<fileset dir="${lib}/scripturian/lib" />
 				<fileset dir="${lib}/jygments/lib" />
+				<fileset dir="${lib}/restlet/lib" />
+				<fileset dir="${lib}/commons-dbcp/lib" />
+				<fileset dir="${lib}/commons-pool/lib" />
+				<fileset dir="${lib}/commons-fileupload/lib" />
+				<fileset dir="${lib}/cron4j/lib" />
+				<fileset dir="${lib}/h2/lib" />
+				<fileset dir="${lib}/hazelcast/lib" />
+				<fileset dir="${lib}/spymemcached/lib" />
+				<fileset dir="${lib}/jsr223/lib" />
 			</classpath>
 			<bottom>
 				<![CDATA[<i>Copyright &#169; 2009-2010 <a target="_top" href="http://threecrickets.com/">Three Crickets LLC</a>.</i>]]>

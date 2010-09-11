@@ -21,6 +21,7 @@ import java.io.Writer;
 
 import org.restlet.data.MediaType;
 import org.restlet.representation.CharacterRepresentation;
+import org.restlet.representation.Representation;
 
 /**
  * A {@link Representation} based on an array bytes.

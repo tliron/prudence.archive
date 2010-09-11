@@ -79,7 +79,7 @@ public class MemcachedCache implements Cache
 	 * @param tagPrefix
 	 *        Prefix to be added to tag keys
 	 * @throws IOException
-	 * @see {@link AddrUtil#getAddresses(String)}
+	 * @see AddrUtil#getAddresses(String)
 	 */
 	public MemcachedCache( String nodes, boolean waitForCompletion, boolean soleClient, String tagPrefix ) throws IOException
 	{
@@ -89,7 +89,7 @@ public class MemcachedCache implements Cache
 	/**
 	 * Construction.
 	 * 
-	 * @param memached
+	 * @param memcached
 	 *        The memcached client
 	 * @param waitForCompletion
 	 *        Whether to wait for all commands to be completed

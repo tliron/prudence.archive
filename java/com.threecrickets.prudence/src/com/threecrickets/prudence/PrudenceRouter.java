@@ -244,9 +244,8 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
-	 * As
-	 * {@link #filter(String, String, Restlet, DocumentSource, LanguageManager)}
-	 * , but enforces matching mode {@link Template#MODE_STARTS_WITH}.
+	 * As {@link #filter(String, String, Restlet)}, but enforces matching mode
+	 * {@link Template#MODE_STARTS_WITH}.
 	 * <p>
 	 * You must set {@link #setFilterDocumentSource(DocumentSource)} and
 	 * {@link #setFilterLanguageManager(LanguageManager)} for this to work.

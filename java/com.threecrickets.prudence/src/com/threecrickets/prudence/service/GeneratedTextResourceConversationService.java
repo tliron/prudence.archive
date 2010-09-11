@@ -36,14 +36,14 @@ public class GeneratedTextResourceConversationService extends ResourceConversati
 	 *        The resource
 	 * @param entity
 	 *        The entity or null
-	 * @param variant
-	 *        The variant or null
+	 * @param preferences
+	 *        The negotiated client preferences or null
 	 * @param defaultCharacterSet
 	 *        The character set to use if unspecified by variant
 	 */
-	public GeneratedTextResourceConversationService( GeneratedTextResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
+	public GeneratedTextResourceConversationService( GeneratedTextResource resource, Representation entity, Variant preferences, CharacterSet defaultCharacterSet )
 	{
-		super( resource, entity, variant, defaultCharacterSet, GeneratedTextResource.SUPPORTED_ENCODINGS, resource.getFileUploadSizeThreshold(), resource.getFileUploadDirectory() );
+		super( resource, entity, preferences, defaultCharacterSet, GeneratedTextResource.SUPPORTED_ENCODINGS, resource.getFileUploadSizeThreshold(), resource.getFileUploadDirectory() );
 	}
 
 	//

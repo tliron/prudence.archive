@@ -43,14 +43,14 @@ public class DelegatedResourceConversationService extends ResourceConversationSe
 	 *        The resource
 	 * @param entity
 	 *        The entity or null
-	 * @param variant
-	 *        The variant or null
+	 * @param preferences
+	 *        The negotiated client preferences or null
 	 * @param defaultCharacterSet
 	 *        The character set to use if unspecified by variant
 	 */
-	public DelegatedResourceConversationService( DelegatedResource resource, Representation entity, Variant variant, CharacterSet defaultCharacterSet )
+	public DelegatedResourceConversationService( DelegatedResource resource, Representation entity, Variant preferences, CharacterSet defaultCharacterSet )
 	{
-		super( resource, entity, variant, defaultCharacterSet, null, resource.getFileUploadSizeThreshold(), resource.getFileUploadDirectory() );
+		super( resource, entity, preferences, defaultCharacterSet, null, resource.getFileUploadSizeThreshold(), resource.getFileUploadDirectory() );
 	}
 
 	//
@@ -80,7 +80,7 @@ public class DelegatedResourceConversationService extends ResourceConversationSe
 
 	/**
 	 * @return The timestamp or 0 if not set
-	 * @see #setExpirationDate()
+	 * @see #setExpirationDate(Date)
 	 */
 	public long getExpirationTimestamp()
 	{
@@ -120,7 +120,7 @@ public class DelegatedResourceConversationService extends ResourceConversationSe
 
 	/**
 	 * @return The timestamp or 0 if not set
-	 * @see #setModificationDate()
+	 * @see #setModificationDate(Date)
 	 */
 	public long getModificationTimestamp()
 	{
@@ -219,7 +219,6 @@ public class DelegatedResourceConversationService extends ResourceConversationSe
 	 * 
 	 * @param mediaType
 	 *        The media type
-	 * @see #getVariants()
 	 */
 	public void addMediaType( MediaType mediaType )
 	{
@@ -231,7 +230,6 @@ public class DelegatedResourceConversationService extends ResourceConversationSe
 	 * 
 	 * @param mediaTypeName
 	 *        The media type name
-	 * @see #getVariants()
 	 */
 	public void addMediaTypeByName( String mediaTypeName )
 	{
@@ -243,7 +241,6 @@ public class DelegatedResourceConversationService extends ResourceConversationSe
 	 * 
 	 * @param mediaTypeExtension
 	 *        The media type extension
-	 * @see #getVariants()
 	 */
 	public void addMediaTypeByExtension( String mediaTypeExtension )
 	{

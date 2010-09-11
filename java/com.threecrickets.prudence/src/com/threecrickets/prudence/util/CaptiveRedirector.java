@@ -91,8 +91,8 @@ public class CaptiveRedirector extends Redirector
 	 * 
 	 * @param context
 	 *        The context
-	 * @param targetTemplate
-	 *        The target template
+	 * @param targetPattern
+	 *        The target pattern
 	 * @param mode
 	 *        The redirection mode
 	 * @param hostRoot

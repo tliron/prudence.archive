@@ -26,7 +26,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.DataSourceConnectionFactory;
@@ -40,8 +39,9 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Metadata;
 
 /**
- * A SQL-backed cache. Automatically uses a {@link MiniConnectionPoolManager}
- * for data sources that support the {@link ConnectionPoolDataSource} interface.
+ * A SQL-backed cache. Internally uses <a
+ * href="http://commons.apache.org/dbcp/">Apache Commons DBCP</a> for connection
+ * pooling.
  * <p>
  * This instance maintains a pool of read/write locks to guarantee atomicity of
  * storing, fetching and invalidating. It does not use SQL transactions. This
@@ -89,7 +89,7 @@ public class SqlCache implements Cache
 		this.maxSize = maxSize;
 
 		GenericObjectPool connectionPool = new GenericObjectPool( null, poolSize );
-		new PoolableConnectionFactory( new DataSourceConnectionFactory( (DataSource) dataSource ), connectionPool, null, null, false, true );
+		new PoolableConnectionFactory( new DataSourceConnectionFactory( dataSource ), connectionPool, null, null, false, true );
 		this.dataSource = new PoolingDataSource( connectionPool );
 	}
 
