@@ -1,3 +1,5 @@
+@echo off
+cd /d %0%\..\..
 
 set java=java
 set main=com.threecrickets.scripturian.Scripturian
