@@ -45,5 +45,5 @@ libraries/org.slf4j.jar
 
 %java% ^
 -cp %jars% ^
--Dscripturian.cache=cache \
+-Dscripturian.cache=cache ^
 %main% instance
