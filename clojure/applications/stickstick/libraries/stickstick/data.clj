@@ -45,7 +45,6 @@
 		data-source))
 		
 (defn create-connection-pool [application]
-	;(println "new pool")
   (let [connection-pool (GenericObjectPool. nil 10)]
     (PoolableConnectionFactory. (DataSourceConnectionFactory. (get-data-source application)) connection-pool nil nil false true)
     (PoolingDataSource. connection-pool)))
@@ -64,7 +63,6 @@
 				(do
 					(if fresh
 						(do
-							;(println "freshening")
 							(do-commands
 								"DROP TABLE board"
 								"DROP TABLE note")))
