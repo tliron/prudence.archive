@@ -114,6 +114,8 @@ public abstract class DistributionTest extends MultiTest
 
 	private static final boolean inProcess = "true".equals( System.getenv( "PRUDENCE_TEST_IN_PROCESS" ) );
 
+	private static final boolean isWindows = "true".equals( System.getenv( "PRUDENCE_TEST_IS_WINDOWS" ) );
+
 	private static final int defaultThreads;
 
 	private static final int defaultIterations;
@@ -157,15 +159,15 @@ public abstract class DistributionTest extends MultiTest
 
 	private void deleteWorkFiles()
 	{
-		File logs = new File( "build/" + name + "/content/logs" );
+		File logs = new File( name + "/content/logs" );
 		if( logs.exists() )
 			deleteDirectory( logs );
 
-		File cache = new File( "build/" + name + "/content/cache" );
+		File cache = new File( name + "/content/cache" );
 		if( cache.exists() )
 			deleteDirectory( cache );
 
-		File data = new File( "build/" + name + "/content/data" );
+		File data = new File( name + "/content/data" );
 		if( data.exists() )
 			deleteDirectory( data );
 	}
@@ -179,11 +181,11 @@ public abstract class DistributionTest extends MultiTest
 	{
 		System.out.println( "Starting Prudence instance in this process..." );
 
-		System.setProperty( LanguageManager.SCRIPTURIAN_CACHE_PATH, "build/" + name + "/content/cache" );
+		System.setProperty( LanguageManager.SCRIPTURIAN_CACHE_PATH, name + "/content/cache" );
 
 		Scripturian.main( new String[]
 		{
-			"instance", "--base-path=build/" + name + "/content/"
+			"instance", "--base-path=" + name + "/content/"
 		} );
 
 		try
@@ -222,7 +224,10 @@ public abstract class DistributionTest extends MultiTest
 
 		try
 		{
-			externalProcess = Runtime.getRuntime().exec( "build/" + name + "/content/bin/run.sh" );
+			File script = new File( name + ( isWindows ? "/content/bin/run.bat" : "/content/bin/run.sh" ) );
+			assertTrue( script.exists() );
+			externalProcess = Runtime.getRuntime().exec( script.getCanonicalPath() );
+
 			try
 			{
 				BufferedReader input = new BufferedReader( new InputStreamReader( externalProcess.getInputStream() ) );

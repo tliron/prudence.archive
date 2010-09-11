@@ -74,7 +74,7 @@ if cache is not None:
 
 router = PrudenceRouter(application_instance.context)
 router.routingMode = Router.MODE_BEST_MATCH
-application_instance.inboundRoot = router
+application_instance.setInboundRoot(router) # Must call setInboundRoot explicitly here
 
 #
 # Add trailing slashes

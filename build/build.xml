@@ -27,6 +27,13 @@
 	<property name="dist-groovy" value="./groovy" />
 	<property name="dist-ruby" value="./ruby" />
 	<property name="dist-php" value="./php" />
+	
+	<condition property="isUnix">
+		<os family="unix" />
+	</condition>
+	<condition property="isWindows">
+		<os family="windows" />
+	</condition>
 
 	<!-- Tasks -->
 
@@ -127,27 +134,32 @@
 	</macrodef>
 
 	<macrodef name="test">
+		<attribute name="dist" />
 		<attribute name="name" />
 		<sequential>
-			<junit dir=".." haltonfailure="true" fork="true" forkmode="perBatch" newenvironment="true" jvm="${test-jvm}">
+			<junit dir="." haltonfailure="true" fork="true" forkmode="perBatch" newenvironment="false" jvm="${test-jvm}">
 				<test name="com.threecrickets.prudence.test.@{name}" />
 				<classpath>
-					<fileset dir="${tmp}">
-						<include name="*.jar" />
-					</fileset>
 					<file file="${lib}/junit/lib/org.junit.jar" />
 					<file file="${lib}/groboutils/lib/net.sourceforge.groboutils.jar" />
 					<file file="${lib}/restlet/lib/org.restlet.jar" />
 					<file file="${lib}/log4j/lib/org.apache.log4j.jar" />
 					<file file="${tmp}/lib/com.threecrickets.prudence.test.jar" />
+					<!-- These are used for in-process mode -->
+					<fileset dir="@{dist}/content/libraries">
+						<include name="*.jar" />
+					</fileset>
 				</classpath>
+				<formatter type="plain" usefile="false" />
+				<env key="PRUDENCE_TEST_IN_PROCESS" value="${isWindows}" />
 				<env key="PRUDENCE_TEST_THREADS" value="${test-threads}" />
 				<env key="PRUDENCE_TEST_ITERATIONS" value="${test-iterations}" />
+				<env key="PRUDENCE_TEST_IS_WINDOWS" value="${isWindows}" />
+				<!-- These are used for in-process mode -->
+				<jvmarg value="-Dscripturian.cache=@{dist}/content/cache" />
+				<jvmarg value="-Dpython.home=@{dist}/content/libraries/python" />
+				<jvmarg value="-Dpython.verbose=warning" />
 				<jvmarg value="-Djava.library.path=${jepp-path}" />
-				<jvmarg value="-Dpython.home=libraries/python" />
-				<jvmarg value="-Dpython.cachedir=cache" />
-				<jvmarg value="-Dython.verbose=warning" />
-				<formatter type="plain" usefile="false" />
 			</junit>
 		</sequential>
 	</macrodef>
@@ -309,7 +321,7 @@
 	</target>
 	
 	<target name="test-javascript" depends="javascript" description="Unit tests">
-		<test name="JavaScript" />
+		<test dist="${dist-javascript}" name="JavaScript" />
 	</target>
 	
 	<!-- Python -->
@@ -370,7 +382,7 @@
 	</target>
 	
 	<target name="test-python" depends="python" description="Unit tests">
-		<test name="Python" />
+		<test dist="${dist-python}" name="Python" />
 	</target>
 	
 	<!-- Clojure -->
@@ -428,7 +440,7 @@
 	</target>
 	
 	<target name="test-clojure" depends="clojure" description="Unit tests">
-		<test name="Clojure" />
+		<test dist="${dist-clojure}" name="Clojure" />
 	</target>
 	
 	<!-- Groovy -->
@@ -486,7 +498,7 @@
 	</target>
 	
 	<target name="test-groovy" depends="groovy" description="Unit tests">
-		<test name="Groovy" />
+		<test dist="${dist-groovy}" name="Groovy" />
 	</target>
 	
 	<!-- Ruby -->
@@ -544,7 +556,7 @@
 	</target>
 	
 	<target name="test-ruby" depends="ruby" description="Unit tests">
-		<test name="Ruby" />
+		<test dist="${dist-ruby}" name="Ruby" />
 	</target>
 	
 	<!-- PHP -->
@@ -605,7 +617,7 @@
 	</target>
 	
 	<target name="test-php" depends="php" description="Unit tests">
-		<test name="PHP" />
+		<test dist="${dist-php}" name="PHP" />
 	</target>
 
 	<!-- Kitchensink -->
@@ -712,7 +724,7 @@
 	</target>
 	
 	<target name="test-kitchensink" depends="kitchensink" description="Unit tests">
-		<test name="KitchenSink" />
+		<test dist="${dist-kitchensink}" name="KitchenSink" />
 	</target>
 	
 	<!-- Standalone -->
