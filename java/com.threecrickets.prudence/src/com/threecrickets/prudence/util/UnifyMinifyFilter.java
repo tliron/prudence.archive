@@ -140,6 +140,11 @@ public abstract class UnifyMinifyFilter extends Filter
 
 		synchronized( unifiedSourceFile )
 		{
+			if( minify )
+				getLogger().info( "Unifying and minifying directory \"" + sourceDirectory + "\" into file \"" + unifiedSourceFile + "\"" );
+			else
+				getLogger().info( "Unifying directory \"" + sourceDirectory + "\" into file \"" + unifiedSourceFile + "\"" );
+
 			if( unifiedSourceFile.exists() )
 				if( !unifiedSourceFile.delete() )
 					throw new IOException( "Could not delete file: " + unifiedSourceFile );
@@ -197,6 +202,12 @@ public abstract class UnifyMinifyFilter extends Filter
 
 			if( !unifiedSourceFile.setLastModified( newLastModified ) )
 				throw new IOException( "Could not update timestamp on file: " + unifiedSourceFile );
+
+			if( minify )
+				getLogger().info( "Unified and minified directory \"" + sourceDirectory + "\" into file \"" + unifiedSourceFile + "\"" );
+			else
+				getLogger().info( "Unified directory \"" + sourceDirectory + "\" into file \"" + unifiedSourceFile + "\"" );
+
 		}
 	}
 
