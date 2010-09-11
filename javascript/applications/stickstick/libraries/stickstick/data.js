@@ -299,7 +299,7 @@ var Stickstick = Stickstick || function() {
 			url += application.globals.get('stickstick.database')
 		}
 		if(application.globals.get('stickstick.backend') == 'h2') {
-			url += 'MVCC=TRUE'
+			url += ';MVCC=TRUE'
 		}
 		return url
 	}
