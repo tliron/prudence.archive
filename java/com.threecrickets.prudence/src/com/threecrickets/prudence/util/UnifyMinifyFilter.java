@@ -141,7 +141,8 @@ public abstract class UnifyMinifyFilter extends Filter
 		synchronized( unifiedSourceFile )
 		{
 			if( unifiedSourceFile.exists() )
-				unifiedSourceFile.delete();
+				if( !unifiedSourceFile.delete() )
+					throw new IOException( "Could not delete file: " + unifiedSourceFile );
 
 			String[] sourceFilenames = sourceDirectory.list( sourceFilenameFilter );
 
