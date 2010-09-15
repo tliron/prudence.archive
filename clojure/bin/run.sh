@@ -1,14 +1,16 @@
 #!/bin/bash
+set -e
 
-here=$(readlink -f "$(dirname "$0")")
-cd $here/..
+SCRIPT=$(readlink -f "$0")
+HERE=$(readlink -f "$(dirname "$SCRIPT")")
+cd "$HERE/.."
 
-java=/usr/bin/java
-#java=/usr/lib/jvm/java-1.5.0-sun/bin/java
+JAVA=/usr/bin/java
+#JAVA=/usr/lib/jvm/java-1.5.0-sun/bin/java
 
-main=com.threecrickets.scripturian.Scripturian
+MAIN=com.threecrickets.scripturian.Scripturian
 
-jars=\
+JARS=\
 libraries/clojure.jar:\
 libraries/clojure.contrib.jar:\
 libraries/com.hazelcast.jar:\
@@ -49,7 +51,7 @@ libraries/org.slf4j.bridge.jar:\
 libraries/org.slf4j.impl.jar:\
 libraries/org.slf4j.jar
 
-exec "$java" \
--cp "$jars" \
+exec "$JAVA" \
+-cp "$JARS" \
 -Dscripturian.cache=cache \
-$main instance
+$MAIN instance

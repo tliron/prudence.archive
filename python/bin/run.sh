@@ -1,14 +1,16 @@
 #!/bin/bash
+set -e
 
-here=$(readlink -f "$(dirname "$0")")
-cd $here/..
+SCRIPT=$(readlink -f "$0")
+HERE=$(readlink -f "$(dirname "$SCRIPT")")
+cd "$HERE/.."
 
-java=/usr/bin/java
-#java=/usr/lib/jvm/java-1.5.0-sun/bin/java
+JAVA=/usr/bin/java
+#JAVA=/usr/lib/jvm/java-1.5.0-sun/bin/java
 
-main=com.threecrickets.scripturian.Scripturian
+MAIN=com.threecrickets.scripturian.Scripturian
 
-jars=\
+JARS=\
 libraries/com.hazelcast.jar:\
 libraries/com.mysql.jdbc.jar:\
 libraries/com.sun.grizzly.jar:\
@@ -51,10 +53,10 @@ libraries/org.slf4j.jar
 
 # We are setting java.library.path for Jepp
 
-exec "$java" \
--cp "$jars" \
+exec "$JAVA" \
+-cp "$JARS" \
 -Dscripturian.cache=cache \
 -Dpython.home=libraries/python \
 -Dpython.verbose=warning \
 -Djava.library.path=/usr/local/lib \
-$main instance
+$MAIN instance
