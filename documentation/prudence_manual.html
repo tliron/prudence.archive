@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2010-09-11">
+<meta name="create-date" content="2010-09-15">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -820,7 +820,7 @@ All the other Prudence flavors offer JVM interaction, but Groovy does it best. I
 The goal of this tutorial is to get you up and running with Prudence’s most basic features. Along the way, we’ll point you to those sections in the manual where you can explore some topics in depth.
 </div>
 <div class="Indented">
-We recommend going through this tutorial using the Firefox browser and the <a class="URL" href="http://getfirebug.com/">Firebug</a> add-on, which will let you see, in detail, exactly how Prudence responds to client requests.
+We recommend going through this tutorial using the Firefox browser and the <a class="URL" href="http://getfirebug.com/">Firebug</a> add-on, which will let you see in detail exactly how Prudence responds to client requests.
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-23"></a>First Things First
@@ -829,10 +829,13 @@ We recommend going through this tutorial using the Firefox browser and the <a cl
 <a class="toc" name="toc-Subsubsection-1"></a>Get It
 </h3>
 <div class="Unindented">
-Prudence is available in six flavors, so choose one and <a class="URL" href="http://threecrickets.com/prudence/download/">download it</a>! <u>A friendly page (page <a class="Reference" href="#../../flavors/">↑</a>)</u> is available to help you decide.
+Prudence is available in six flavors, so choose one and <a class="URL" href="http://threecrickets.com/prudence/download/">download it</a>!
 </div>
 <div class="Indented">
-For this tutorial, we’ll use the ‘‘Savory’’ JavaScript flavor, because we assume JavaScript would be the most widely known language among web developers. But, let’s be clear here: the JavaScript in this case runs on the <i>server</i>, not in the <i>browser</i>. Wrap your head around that for a minute… JavaScript is here used <i>not </i>for live manipulation of HTML elements, but to do the usual server-side work: communicating with data stores, rendering HTML pages to send to clients, etc. Of course, in your project, you might be writing JavaScript code to run on the <i>client</i>, too. We’ll even show you an example of it in this tutorial.
+<u>A friendly page (page <a class="Reference" href="#../../flavors/">↑</a>)</u> is available to help you decide.
+</div>
+<div class="Indented">
+For this tutorial, we’ll use the savory JavaScript flavor, under the assumption that JavaScript would be the most widely known. But, let’s be clear: the JavaScript in Prudence runs on the <i>server</i>, not in the <i>browser</i>. Wrap your head around that for a minute… JavaScript is here used <i>not </i>for live manipulation of HTML elements, but to do the usual server-side work: communicating with data stores, rendering HTML pages to send to clients, etc. Of course, in your project, you might be writing JavaScript code to run on the <i>client</i>, too. We’ll even show you an example of it in this tutorial.
 </div>
 <div class="Indented">
 It should be very easy to use any other flavor with this tutorial, since we’ll be keeping actual programming to a minimum. Just replace references to ‘‘JavaScript’’ with your flavor of choice.
@@ -850,10 +853,10 @@ A Java Runtime Environment (JRE) is enough for Prudence. You need a Java Develop
 <a class="toc" name="toc-Subsubsection-3"></a>Fire It Up
 </h3>
 <div class="Unindented">
-You can start up Prudence by running the appropriate ‘‘run’’ script in the /bin/ directory. Run /bin/run.sh for Unix-like systems (Linux, *BSD and OS X), or /bin/run.bat for Windows. Prudence should declare its version and list the installed demo applications. When it announces that it is listening on port 8080, it’s ready to go. You can quit Prudence by breaking (CTRL-C).
+You can start up Prudence with the appropriate ‘‘run’’ script in the /bin/ directory. Use ‘‘/bin/run.sh’’ for Unix-like systems (Linux, *BSD and OS X), and ‘‘/bin/run.bat’’ for Windows. Prudence should declare its version and list the installed demo applications. When it announces that it is listening on port 8080, it’s ready to go. You can quit Prudence at any time by breaking (CTRL-C).
 </div>
 <div class="Indented">
-Open your web browser to <a class="URL" href="http://localhost:8080/">http://localhost:8080/</a>. You should see the Prudence Administration application, where you can access the demos. Also, check out the /logs/ directory for running, ongoing logs.
+Open your web browser to <a class="URL" href="http://localhost:8080/">http://localhost:8080/</a>. You should see the Prudence Administration application, which will link you to the demos. Also, check out the /logs/ directory for running, ongoing logs.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-4"></a>Further Exploration
@@ -861,26 +864,26 @@ Open your web browser to <a class="URL" href="http://localhost:8080/">http://loc
 <ul>
 
 <li>
-The /bin/ scripts work fine, but for production environments you’re better off <u>running Prudence as a daemon (page <a class="Reference" href="#../daemon/">↓</a>)</u>.
+The /bin/ scripts work well enough, but for production environments you’re better off <u>running Prudence as a daemon (page <a class="Reference" href="#../daemon/">↓</a>)</u>.
 </li>
 <li>
 Learn how to <u>configure Prudence (page <a class="Reference" href="#../instance/">↓</a>)</u>.
 </li>
 <li>
-Logging is <u>fully configurable and very useful (page <a class="Reference" href="#../logging/">↓</a>)</u>.
+Prudence logging is <u>flexible and useful (page <a class="Reference" href="#../logging/">↓</a>)</u>.
 </li>
 <li>
-See the documentation for the <u>Prudence Administration application (page <a class="Reference" href="#../administration/">↓</a>)</u>.
+Learn more about the <u>Prudence Administration application (page <a class="Reference" href="#../administration/">↓</a>)</u>.
 </li>
 </ul>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-24"></a>Hello, World
 </h2>
 <div class="Unindented">
-The /applications/ directory is where you install your applications. You’ll see the demo applications there, but let’s create a new one, called ‘‘Wacky Wiki’’. Just create an ‘‘/applications/wackywiki/’’ directory, and restart Prudence. The Prudence Administration application should show your application listed under the <a class="URL" href="http://localhost:8080/wackywiki/">http://localhost:8080/wackywiki/</a> URL, but you won’t see anything when you click on it quite yet.
+The /applications/ directory is where you install your applications. You’ll find the demo applications there, but let’s create a new one, called ‘‘Wacky Wiki’’. Just create an ‘‘/applications/wackywiki/’’ directory and restart Prudence. The Prudence Administration application should show your application listed under the <a class="URL" href="http://localhost:8080/wackywiki/">http://localhost:8080/wackywiki/</a> URL, but you won’t see anything when you click on it quite yet.
 </div>
 <div class="Indented">
-Let’s create our first web page. Create ‘‘/applications/wackywiki/web/’’, and then ‘‘/applications/wackywiki/web/static/’’. By ‘‘static’’ here is meant that the contents do not change per user request. Your /web/static/ directory functions pretty much like a regular web server, and you can serve images, HTML, CSS files, etc., from it. Let’s create a ‘‘/web/static/index.html’’ file:
+Now, let’s create our first web page. Create ‘‘/applications/wackywiki/web/’’, and then ‘‘/applications/wackywiki/web/static/’’. By ‘‘static’’ here is meant that the contents do not change per user request. Your /web/static/ directory functions pretty much like a regular web server, from which you can serve images, HTML, CSS files, etc. Let’s create a ‘‘/web/static/index.html’’ file:
 </div>
 <div class="Indented">
 
@@ -897,7 +900,7 @@ Let’s create our first web page. Create ‘‘/applications/wackywiki/web/’�
 </div>
 </div>
 <div class="Indented">
-You should be able to see this page under <a class="URL" href="http://localhost:8080/wackywiki/">http://localhost:8080/wackywiki/</a>. If you’re using Firebug, you can see that the contents are compressed (using deflate, zip or gzip) and that conditional HTTP is also handled automatically, such that subsequent page visits return the 304 ‘‘the document has not been modified’’ status code. In such cases, the browser will use its cached version instead of downloading it from Prudence.
+You should be able to see this page under <a class="URL" href="http://localhost:8080/wackywiki/">http://localhost:8080/wackywiki/</a>. If you’re using Firebug, you can see that the contents are compressed (using deflate, zip or gzip) and that conditional HTTP is also handled automatically, such that subsequent page visits return the 304 ‘‘the document has not been modified’’ status code. When receiving a 304, the browser will use its cached version instead of downloading it from Prudence.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-5"></a>Further Exploration
@@ -908,17 +911,17 @@ You should be able to see this page under <a class="URL" href="http://localhost:
 Learn all about <u>configuring and deploying applications (page <a class="Reference" href="#../application/">↓</a>)</u>.
 </li>
 <li>
-Learn advanced configuration and use of <u>/web/static/ (page <a class="Reference" href="#../static-web/">↓</a>)</u>.
+Learn how to configure <u>/web/static/ (page <a class="Reference" href="#../static-web/">↓</a>)</u>.
 </li>
 </ul>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-25"></a>Hello, Dynamic World
 </h2>
 <blockquote class="Quote">
-We’re going to jump right into teaching you how to dynamically generate web pages. Prudence offers some terrific features for this, such as sophisticated caching, but if you’re more interested in how Prudence lets you to easily create RESTful resources, <u>just skip ahead (page <a class="Reference" href="#../tutorial/|rest-of-the-world">↓</a>)</u>.
+In this section, we’re going to teach you how to dynamically generate web pages. Prudence offers some terrific features for this, such as sophisticated caching, but if you’re more interested in how Prudence lets you to easily create RESTful resources, <u>just skip ahead (page <a class="Reference" href="#../tutorial/|rest-of-the-world">↓</a>)</u> and come back here later.
 </blockquote>
 <div class="Unindented">
-Create a /web/dynamic/ directory and move your ‘‘index.html’’ file to there. This directory does not work like a static web server: files you put here can be injected with programming language code. Edit ‘‘index.html’’, and add some code:
+Create a /web/dynamic/ directory and move your ‘‘index.html’’ file to there. Unlike /web/static/, you can put programming language code in these files. Edit ‘‘index.html’’, and add some code:
 </div>
 <div class="Indented">
 
@@ -940,16 +943,19 @@ var entry = {title: ’I Love Prudence’, contents: ’This is a love letter to
 </div>
 </div>
 <div class="Indented">
-Refresh your browser, and you should see the dynamically generated page. The ‘‘&lt;% … %&gt;’’ delimiters are used to insert ‘‘scriptlets’’ of pure JavaScript code. The ‘‘&lt;%= … %&gt;’’ delimiters accept a JavaScript expression, and print it out onto the HTML page.
+The ‘‘&lt;% … %&gt;’’ delimiters are used to insert ‘‘scriptlets’’ of pure JavaScript code. The ‘‘&lt;%= … %&gt;’’ delimiters accept a JavaScript expression, and print it out onto the HTML page.
+</div>
+<div class="Indented">
+Refresh your browser, and you should see the dynamically generated page. Hello!
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-6"></a>Caching
 </h3>
 <div class="Unindented">
-You’ll notice in Firebug that the contents are compressed, but there is no conditional HTTP. That’s because Prudence generates a new version of the page per every user request, such that clients should never expect their cached version to be correct.
+Look at how Firefox communicates with your dynamic page using Firebug: the contents are compressed, but there is no conditional HTTP. That’s because Prudence generates a new version of the page per every user request. Since each such version might be different from the last, the default behavior is that client’s should never expect their cached version to be correct.
 </div>
 <div class="Indented">
-We can fix this by adding caching to our page, specifically for 10 seconds (10,000 milliseconds):
+We can change this by adding caching to our page, specifically for 10 seconds (10,000 milliseconds):
 </div>
 <div class="Indented">
 
@@ -972,16 +978,22 @@ var entry = {title: ’I Love Prudence’, contents: ’This is a love letter to
 </div>
 </div>
 <div class="Indented">
-Keep refreshing the page, and you’ll see that for every 10 seconds, you are getting 304 status codes.
+Keep refreshing the page, and you’ll see that for every 10 seconds you are getting 304 status codes.
 </div>
 <div class="Indented">
-Actually, something far more important is happening: multiple browsers from multiple computers will see the same version of the page for those 10 seconds. Prudence caches and serves a static version of the page during that interval. In other words, when using that cached version, Prudence <i>does not run any of your JavaScript code</i>. Our code didn’t do much in this example, but what if it was fetching data for that wiki page from a database? Caching would allow you to serve a very large number of user requests without ever touching your database. That’s excellent scalability, easily accomplished.
+Actually, something far more important is happening: any browser from any computer would see the same version of the page for those 10 seconds. Prudence caches and serves a static version of the page during that interval<i> and does not run any of your JavaScript code</i>. We’ve effectively throttled execution of our code.
+</div>
+<div class="Indented">
+Our code didn’t do much in this example, but what if it were fetching data for that wiki page from a database? Caching would allow us to serve a very large number of user requests without ever touching the database. We could very precisely state that we want the database accessed only, at the most, every 10 seconds. That’s excellent scalability, easily accomplished.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-7"></a>Debugging
 </h3>
 <div class="Unindented">
-For fun, let’s purposely introduce an error into our JavaScript code: just type some nonsense into the scriptlet above. When you refresh the page, you’ll see a generic error. Let’s enable some debug information. Create a file named ‘‘/applications/wackywiki/settings.js’’:
+For fun, let’s purposely introduce an error into our JavaScript code: just type some nonsense into the scriptlet above. When you refresh the page, you’ll see a generic error.
+</div>
+<div class="Indented">
+Now, tet’s enable Prudence’s debug page. Create a file named ‘‘/applications/wackywiki/settings.js’’:
 </div>
 <div class="Indented">
 
@@ -995,7 +1007,7 @@ showDebugOnError = true
 </div>
 </div>
 <div class="Indented">
-Restart Prudence, and refresh the page. You’ll see Prudence’s friendly debug page, with lots of useful information to help you understand what went wrong, including a link directly to your source code. Of course, you wouldn’t want to enable this debug page for production systems, and you might want to show a custom error message instead.
+Restart Prudence, and refresh the page. You’ll see a lot of useful information to help you understand what went wrong, including a link directly to your source code. Of course, you wouldn’t want to enable this debug page for production systems. Moreover, you might want to show a custom error message instead: Prudence can do that.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-8"></a>Further Exploration
@@ -1003,7 +1015,7 @@ Restart Prudence, and refresh the page. You’ll see Prudence’s friendly debug
 <ul>
 
 <li>
-Learn <u>all about scriptlets (page <a class="Reference" href="#../generating-html/|scriptlets">↓</a>)</u>.
+Learn <u>more about scriptlets (page <a class="Reference" href="#../generating-html/|scriptlets">↓</a>)</u>.
 </li>
 <li>
 We’ve barely scratched the surface of Prudence’s <u>sophisticated caching system (page <a class="Reference" href="#../generating-html/|caching">↓</a>)</u>.
@@ -1012,7 +1024,7 @@ We’ve barely scratched the surface of Prudence’s <u>sophisticated caching sy
 Learn how to <u>accept data from the user via HTML forms (page <a class="Reference" href="#../generating-html/|handling-html-forms">↓</a>)</u>.
 </li>
 <li>
-Learn about the many <u>application settings and the /settings.js file (page <a class="Reference" href="#../application/|settings">↓</a>)</u>.
+Learn about other <u>application settings (page <a class="Reference" href="#../application/|settings">↓</a>)</u>.
 </li>
 <li>
 Learn more about <u>the debug page and other debugging features (page <a class="Reference" href="#../debugging/">↓</a>)</u>.
@@ -1028,7 +1040,7 @@ Learn how to show <u>custom error pages (page <a class="Reference" href="#../rou
 As your application grows, you’ll likely have a lot of reusable code. Prudence can help you manage it.
 </div>
 <div class="Indented">
-Let’s create a /web/fragments/ directory, and put these files in it. Here’s ‘‘header.html’’:
+Let’s create a /web/fragments/ directory, and put the following files in it. Here’s ‘‘header.html’’:
 </div>
 <div class="Indented">
 
@@ -1074,7 +1086,7 @@ And here’s ‘‘entry.html’’:
 </div>
 </div>
 <div class="Indented">
-We can now edit our original ‘‘/web/dynamic/index.html’’ to be this:
+We can now edit our original ‘‘/web/dynamic/index.html’’ using special ‘‘&lt;%&amp; … %&gt;’’ include scriptlets:
 </div>
 <div class="Indented">
 
@@ -1085,7 +1097,9 @@ We can now edit our original ‘‘/web/dynamic/index.html’’ to be this:
 &lt;p&gt;Hello, world! Welcome to Wacky Wiki.&lt;/p&gt;
 &lt;%
 document.cacheDuration = 10000
-var entry = {title: ’I Love Prudence’, contents: ’This is a love letter to Prudence (fragmented).’}
+var entry = {
+	title: ’I Love Prudence’,
+	contents: ’This is a love letter to Prudence (fragmented).’}
 %&gt;
 &lt;%&amp; ’entry/’ %&gt;
 &lt;%&amp; ’footer/’ %&gt;
@@ -1094,7 +1108,7 @@ var entry = {title: ’I Love Prudence’, contents: ’This is a love letter to
 </div>
 </div>
 <div class="Indented">
-All our fragments are reusable in other pages, too. Let’s create ‘‘/web/dynamic/home.html’’:
+We can use the same fragments in other pages, too. Let’s create ‘‘/web/dynamic/home.html’’:
 </div>
 <div class="Indented">
 
@@ -1105,7 +1119,9 @@ All our fragments are reusable in other pages, too. Let’s create ‘‘/web/dy
 &lt;p&gt;This is the home wiki.&lt;/p&gt;
 &lt;%
 document.cacheDuration = 10000
-var entry = {title: ’Wiki Home’, contents: ’This wiki page is empty.’}
+var entry = {
+	title: ’Wiki Home’,
+	contents: ’This wiki page is empty.’}
 %&gt;
 &lt;%&amp; ’entry/’ %&gt;
 &lt;%&amp; ’footer/’ %&gt;
@@ -1120,10 +1136,10 @@ Note that this page is available under the URL <a class="URL" href="http://local
 <a class="toc" name="toc-Subsubsection-9"></a>Caching Fragments
 </h3>
 <div class="Unindented">
-Other than reusability, fragments give you another advantage: in Prudence, fragments are each cached individually. You can thus have certain parts of pages cached longer than others. Moreover, you can alter the cache key to make sure that all requests share the same cached fragment. This is a more advanced topic, but we’ll provide a quick preview example below for our ‘‘header’’ and ‘‘footer’’ fragments. The cache key pattern ensures that the fragment is cached just once per application name and document name; there’s no need to cache these fragments separately for ‘‘index.html’’, ‘‘home.html’’ or all our other Wacky Wiki pages. Maximum efficiency here for maximum scalability.
+Fragments help organize your code, but they also offer another advantage: because Prudence caches each fragment individually, you can have certain parts of your pages cached longer than others. Moreover, you can alter the cache key to make sure that you are not caching different versions of the fragments per URL. This is a more advanced topic, but we’ll provide a quick preview of it example below for our ‘‘header’’ and ‘‘footer’’ fragments. The cache key pattern we will use ensures that the fragment is cached just once per application name (‘‘{an}’’) and document name (‘‘{dn}’’). This is appropriate for our case, because ‘‘index.html’’ and ‘‘home.html’’ never change their content for whatever Wacky Wiki page they’re in. If they did change, we could leave the cache pattern at its default, or otherwise tweak it. Maximum efficiency here for maximum scalability.
 </div>
 <div class="Indented">
-Here’s the new ‘‘header.html’’:
+So, here’s the new ‘‘header.html’’:
 </div>
 <div class="Indented">
 
@@ -1161,14 +1177,17 @@ document.cacheKeyPattern = ’{an}|{dn}’
 </div>
 </div>
 </div>
+<div class="Indented">
+You won’t see any significant difference in your application’s behavior with your single browser, but for heavy fragments in large production applications serving many thousands of concurrent users the savings can be dramatic.
+</div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-10"></a>Libraries
 </h3>
 <div class="Unindented">
-Another aspect of reusability is code libraries. These will have functions, classes, etc., that you’ll want to reuse in your scriptlets.
+Prudence further helps reusability by easily allowing code libraries. Libraries are source code files with functions, classes, etc., that you’ll want to reuse in your scriptlets and in other Prudence code.
 </div>
 <div class="Indented">
-Let’s create an ‘‘/applications/wackywiki/libraries/’’ directory, and put ‘‘wikidata.js’’ in it. This is just a silly example: in a real application, you’ll probably be fetching your wiki entries from a data store. Anyway:
+Let’s create an ‘‘/applications/wackywiki/libraries/’’ directory, and put ‘‘wikidata.js’’ in it:
 </div>
 <div class="Indented">
 
@@ -1176,14 +1195,24 @@ Let’s create an ‘‘/applications/wackywiki/libraries/’’ directory, and 
 
 <div class="listing">
 <code class="listing">function getWikiEntry(id) {
-	// (Note the forced conversation to JavaScript string)
+	// (Note the forced conversion to JavaScript string)
 	switch(String(id)) {
 		case ’index’:
-			return {title: ’I Love Prudence’, contents: ’This is a love letter to Prudence (from the database).’}
+			return {
+				title: ’I Love Prudence’,
+				contents: ’This is a love letter to Prudence (from the database).’}
 		case ’home’:
-			return {title: ’Wiki Home’, contents: ’This wiki page is empty (from the database).’}
+			return {
+				title: ’Wiki Home’,
+				contents: ’This wiki page is empty (from the database).’}
+		case ’todo’:
+			return {
+				title: ’Things to Do’,
+				contents: ’Nothing to do right now (from the database).’}
 		default:
-			return {title: ’’, contents: ’’}
+			return {
+				title: ’’,
+				contents: ’’}
 	}
 }
 </code>
@@ -1191,7 +1220,13 @@ Let’s create an ‘‘/applications/wackywiki/libraries/’’ directory, and 
 </div>
 </div>
 <div class="Indented">
+(This is just a silly example: in a real application, you’ll probably be fetching your wiki entries from a data store. )
+</div>
+<div class="Indented">
 Here is our new ‘‘index.html’’ page:
+</div>
+<div class="Indented">
+
 <div class="float">
 
 <div class="listing">
@@ -1211,7 +1246,7 @@ var entry = getWikiEntry(’index’)
 We’ll leave it as an exercize to you to make similar changes to ‘‘home.html’’.
 </div>
 <div class="Indented">
-Note the use of ‘‘document.execute’’ here: this is a Prudence API that lets you run code from /libraries/. We’re using it here, because the JavaScript language doesn’t have an include facility. However, if you’re using the other Prudence for Python, Ruby, PHP or Clojure, you can use the language’s include facilities: ‘‘import’’, ‘‘require’’, etc. The /libraries/ directory is automatically added to your inclusion path. (Groovy has the same limitation as JavaScript in this.)
+Note the use of ‘‘document.execute’’ here: this is a Prudence API that lets you run code from /libraries/. We’re using it here because the JavaScript language doesn’t have it’s own include facility. However, if you’re using Prudence for Python, Ruby, PHP or Clojure, you can use those language’s natural inclusion facilities: ‘‘import’’, ‘‘require’’, etc. The /libraries/ directory is automatically added to your inclusion path. Note that Groovy has the same limitation as JavaScript in this respect, so just use ‘‘document.execute’’ there.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-11"></a>Further Exploration
@@ -1219,43 +1254,26 @@ Note the use of ‘‘document.execute’’ here: this is a Prudence API that l
 <ul>
 
 <li>
-Learn all about <u>cache key patterns (page <a class="Reference" href="#../api/|document-cache-key-pattern">↓</a>)</u>.
+Learn more about <u>cache key patterns (page <a class="Reference" href="#../api/|document-cache-key-pattern">↓</a>)</u>.
 </li>
 <li>
-Learn about <u>document.execute (page <a class="Reference" href="#../api/|document-execute">↓</a>)</u>.
+Learn more about <u>document.execute (page <a class="Reference" href="#../api/|document-execute">↓</a>)</u>.
 </li>
 <li>
-Learn more about <u>pretty URLs (page <a class="Reference" href="#../routing/|pretty-uris">↓</a>)</u>.
+Learn more about <u>how Prudence makes your URLs pretty (page <a class="Reference" href="#../routing/|pretty-uris">↓</a>)</u>.
 </li>
 </ul>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-27"></a>Hello, Captured World
 </h2>
 <div class="Unindented">
-Creating a file per URL is obviously a bad idea. For example, in our Wacky Wiki we had ‘‘index.html’’ and ‘‘home.html’’, but they could obviously be handled by one file. One file, in fact, that would handle <i>all </i>our wiki pages.
+Creating a file per URL can only take you so far. For example, in our Wacky Wiki we had ‘‘index.html’’ and ‘‘home.html’’, but we wouldn’t want to create a file per wiki entry. What if we had a million entries?
 </div>
 <div class="Indented">
-In Prudence, this is called ‘‘capturing’’: we capture URLs that fit a generic URL pattern into a single file. To do this, we’ll create a file in our application’s root directory, ‘‘/applications/wackywiki/routing.js’’:
+The pages are generic enough that they could be generated by the same code. And so, Prudence has a feature called ‘‘capturing’’ that lets you use one file to handle many URLs: we can ‘‘capture’’ URLs that fit a generic URL pattern into a single file.
 </div>
 <div class="Indented">
-
-<div class="float">
-
-<div class="listing">
-<code class="listing">document.execute(’defaults/application/routing/’)
-router.capture(’wiki/{entryid}/’, ’wiki/’)
-</code>
-</div>
-</div>
-</div>
-<div class="Indented">
-Note that you have to restart Prudence in order for your routing.js to be used.
-</div>
-<div class="Indented">
-What we’ve done here is capture all URLs in the form of ‘‘wiki/…/’’, where the ellipsis would be any URL segment. We send all these URLs to one file, internally named ‘‘wiki/’’. (It’s actually ‘‘wiki.html’’: Prudence always ignores filename extensions and requires a trailing slash, remember?) That URL segment is also captured by Prudence and sent as a special ‘‘conversation local’’ value to the file. We’ll use it in the scriptlet below.
-</div>
-<div class="Indented">
-We can now delete our ‘‘home.html’’ file, and just create ‘‘/web/dynamic/wiki.html’’ instead, which will be used to display <i>all</i> wiki pages:
+Let’s capture our wiki URLs! First, let’s create the generic page, ‘‘/web/dynamic/wiki.html’’:
 </div>
 <div class="Indented">
 
@@ -1276,10 +1294,30 @@ var entry = getWikiEntry(entryID)
 </div>
 </div>
 <div class="Indented">
-Try to access <a class="URL" href="http://localhost:8080/wackywiki/wiki/home/">http://localhost:8080/wackywiki/wiki/home/</a>.
+You see that we’re expecting the ‘‘conversation locals’’ to contain the actual entry ID. This will be supplied by Prudence’s capturing.
 </div>
 <div class="Indented">
-Our ‘‘index.html’’ file will be a simple stub to display the ‘‘index’’ wiki page:
+Now, let’s capture by creating ‘‘/applications/wackywiki/routing.js’’ in our application’s root directory:
+</div>
+<div class="Indented">
+
+<div class="float">
+
+<div class="listing">
+<code class="listing">document.execute(’defaults/application/routing/’)
+router.capture(’wiki/{entryid}/’, ’wiki/’)
+</code>
+</div>
+</div>
+</div>
+<div class="Indented">
+Note that you have to restart Prudence in order for your routing.js to take effect. Then, try to access <a class="URL" href="http://localhost:8080/wackywiki/wiki/home/">http://localhost:8080/wackywiki/wiki/home/</a>, <a class="URL" href="http://localhost:8080/wackywiki/wiki/index/">http://localhost:8080/wackywiki/wiki/index/</a> and <a class="URL" href="http://localhost:8080/wackywiki/wiki/todo/">http://localhost:8080/wackywiki/wiki/todo/</a>.
+</div>
+<div class="Indented">
+We are capturing all URLs in the form of ‘‘wiki/…/’’ into ‘/web/dynamic/wiki.html’’, where the ellipsis could be any URL segment. We send all these URLs to one file, internally named ‘‘wiki/’’. (It’s actually our ‘‘wiki.html’’ from above: remember, Prudence always ignores filename extensions and requires a trailing slash.) That URL segment is also captured by Prudence and sent as a special conversation local value named ‘‘entryid’’.
+</div>
+<div class="Indented">
+We can also edit our ‘‘index.html’’ to be a simple stub to display the ‘‘index’’ wiki page:
 </div>
 <div class="Indented">
 
@@ -1300,13 +1338,13 @@ document.include(’wiki/’)
 <ul>
 
 <li>
-Learn how to write <u>URI patterns (page <a class="Reference" href="#../routing/|uri-patterns">↓</a>)</u>.
-</li>
-<li>
 Learn more about <u>capturing (page <a class="Reference" href="#../routing/|capturing">↓</a>)</u>.
 </li>
 <li>
 Learn more about <u>the /routing.js file (page <a class="Reference" href="#../application/|routing-file">↓</a>)</u>.
+</li>
+<li>
+Learn how to write <u>URI patterns for (page <a class="Reference" href="#../routing/|uri-patterns">↓</a>)</u>.
 </li>
 <li>
 Learn more generally about <u>Prudence’s elaborate routing system (page <a class="Reference" href="#../routing/">↓</a>)</u>.
@@ -1319,16 +1357,16 @@ Learn about <u>conversation locals and other ways of sharing state in Prudence (
 <a class="toc" name="toc-Subsection-28"></a>Hello, REST of the World<a class="Label" name="../tutorial/|rest-of-the-world"> </a>
 </h2>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-13"></a>What’s REST?
+<a class="toc" name="toc-Subsubsection-13"></a>Introduction: What’s REST?
 </h3>
 <div class="Unindented">
-Prudence is designed from the ground up around REST (‘‘Representational State Transfer’’) principles, a term coined by Roy Fielding in <a class="URL" href="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">Chapter 5 of his 2000 dissertation</a>. Fielding’s analysis perceptively identifies the key features of the Internet infrastructure that have made the World Wide Web and email protocols scale so well horizontally. His summary not only helps us make better use of available technology, but also inspires more practical approaches to the problem of sharing state in a diverse, distributed environment.
+Prudence is designed from the ground up around REST (‘‘Representational State Transfer’’) principles, a term coined by Roy Fielding in <a class="URL" href="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">Chapter 5 of his 2000 dissertation</a>. Fielding’s analysis perceptively identified the key features of the Internet infrastructure that have made the World Wide Web and email protocols scale so well horizontally. His conclusions have helped us make better use of available technology, and have generally inspired more practical approaches to the problem of sharing state in diverse, distributed environments.
 </div>
 <div class="Indented">
-In <u>‘‘The Case for REST’’ (page <a class="Reference" href="#../../rest/">↑</a>)</u>, we show how REST suggests a ‘‘resource-oriented architecture.’’ The ‘‘resource’’ is the <i>thing</i> that lies behind the Internet URL. Familiar REST resources are HTML pages, images, videos, which is most of what we see in the World Wide Web. But resources can also be blog entres, social networking profiles, inventory items in a store or warehouse, etc. Moreover, you should think about resources as single things that can have mulitple representations. A web page might be one representation, but in fact we can represent it any format, whether it’s meant for direct human consumption, such as PDF or plain text, or a format that can be consumed by software, such as XML, JSON and proprietary binary formats. The ubiquitous HTTP supports sophisticated negotiation of representational formats.
+In <u>‘‘The Case for REST’’ (page <a class="Reference" href="#../../rest/">↑</a>)</u>, we show how REST suggests a ‘‘resource-oriented architecture.’’ The ‘‘resource’’ is the <i>thing</i> that lies behind the Internet URL. REST resources you are already familiar with include HTML pages, images, videos---everything we see in the World Wide Web. But resources can also be thought of more logically as blog entries, social networking profiles, inventory items in a store or warehouse, etc. Moreover, you should think about resources as single things with multiple representations. An HTML web page might be one representation, but we can represent the same resources in any format, whether it’s meant for direct human consumption, such as PDF or plain text, or a format that can be consumed by software, such as XML, JSON and proprietary binary formats.
 </div>
 <div class="Indented">
-It also support multiple operations on resources: in addition to GET and POST, which are commonly used in HTML forms, you can also PUT new resources where none were before and DELETE existing resources. This makes HTTP an attractive protocol for distributed applications---and, of course, it’s already there, deployed and ready for you to build upon.
+The ubiquitous HTTP supports sophisticated negotiation of representational formats between the client and the server, and also multiple operations on resources: in addition to GET and POST, which are commonly used in HTML forms, you can also PUT new resources where none were before and DELETE existing resources. This makes HTTP an attractive protocol for distributed applications---and, of course, it’s already there, deployed and ready for you to build upon.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-14"></a>Your First Resource
@@ -1435,10 +1473,10 @@ router.capture(’wiki/{entryid}/’, ’wiki/’)
 </div>
 </div>
 <div class="Indented">
-You need to restart Prudence for this new routing.js to take effect. Then, you’ll be able to see HTML representations of your wiki entries at both <a class="URL" href="http://localhost:8080/wackywiki/entry/index/">http://localhost:8080/wackywiki/entry/index/</a> and <a class="URL" href="http://localhost:8080/wackywiki/entry/home/">http://localhost:8080/wackywiki/entry/home/</a>.
+You need to restart Prudence for this new routing.js to take effect. Then, you’ll be able to see HTML representations of your wiki entries at <a class="URL" href="http://localhost:8080/wackywiki/entry/index/">http://localhost:8080/wackywiki/entry/index/</a>, <a class="URL" href="http://localhost:8080/wackywiki/entry/home/">http://localhost:8080/wackywiki/entry/home/</a> and <a class="URL" href="http://localhost:8080/wackywiki/entry/todo/">http://localhost:8080/wackywiki/entry/todo/</a>.
 </div>
 <div class="Indented">
-But, what about that JSON representation?
+But, what about those JSON representations? We’ll get to them in the next section.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-16"></a>‘‘AJAX’’
@@ -1450,7 +1488,7 @@ Modern web browsers are more than consumers of HTML, images and other formats av
 Accessing RESTful resources from within web browsers is sometimes called AJAX, which stands for ‘‘Active JavaScript and XML.’’ In this example, we’re preferring the more compact <a class="URL" href="http://www.json.org/">JSON</a> format over XML, so perhaps we should call it ‘‘AJAJ’’? Well, the end result is the same.
 </div>
 <div class="Indented">
-If you’ve ever worked with JavaScript in web browsers, you know how painful it is to write code that runs on all popular, major web browsers. For this example, we’ll avoid that pain by using the cross-browser <a class="URL" href="http://jquery.com/">jQuery</a> library, which is freely hosted by <a class="URL" href="http://code.google.com/apis/libraries/">Google</a>.
+If you’ve ever worked with JavaScript in web browsers, you know how painful it is to write code that runs well on all major web browsers. For this example, we’ll avoid that pain by using the cross-browser <a class="URL" href="http://jquery.com/">jQuery</a> library, which is freely hosted by <a class="URL" href="http://code.google.com/apis/libraries/">Google</a>.
 </div>
 <div class="Indented">
 Let’s add some AJAX magic to our ‘‘index.html’’:
@@ -1492,25 +1530,25 @@ $(document).ready(function() {
 </div>
 </div>
 <div class="Indented">
-We currently support two entry names: ‘‘index’’ and ‘‘home’’. Type any of them into the input box, and click ‘‘Fetch!’’. You should see the results displayed in your browser. Make sure to use Firebug to see the browser communicating with your resource.
+We currently support three entry names: ‘‘index’’, ‘‘home’’ and ‘‘todo’’. Type any of them into the input box, and click ‘‘Fetch!’’. You should see the results displayed in your browser. Make sure to use Firebug to see the browser communicating with your resource.
 </div>
 <div class="Indented">
 This little example might not seem too exciting, but think of what’s going on here: Prudence is giving the web browser ‘‘raw’’ data, which it can then represent in sophisticated ways. The burden of rendering the user interface has moved from the server to the client, allowing for an improved user experience on modern browsers, and more room for your server to scale.
 </div>
 <div class="Indented">
-But there’s a lot more to REST than AJAX: clients for your raw JSON data can be full-blown desktop applications, mobile phone apps, and even other servers on the network (perhaps also based on Prudence). Taken together, your resources can be considered an API. In fact, a rich, RESTful API can be a valuable Internet product in itself. You can do great things without serving a single web page.
+But there’s a lot more to REST than AJAX: clients for your raw JSON data can be full-blown desktop applications, mobile phone apps, and even other servers on the network (perhaps also powered by Prudence). Taken together, your resources can be considered an API. In fact, a rich, RESTful API can be a valuable Internet product in itself. You can do great things without serving a single web page.
 </div>
 <blockquote class="Quote">
 We’ll repeat it, because it does get confusing: In the code segment above, the JavaScript is running <i>in your browser</i>, while in all the previous examples we had JavaScript running <i>in Prudence</i>. The language is the same, but the programming environment is vastly different. In the browser, you have access to the DOM and browser services. In Prudence, you have the <u>Prudence API (page <a class="Reference" href="#../api/">↓</a>)</u> as well everything in the JVM. We think it’s nice to be able to write your web application in a single language, whether it’s on the client or the server, but if you find it confusing, go ahead and use any of the other Prudence flavors: Python, Ruby, PHP, Clojure or Groovy.
 </blockquote>
 <blockquote class="Quote">
-P.S. You may have noticed that we’ve used semicolons at the end of statements on our client code. Semicolons are optional in the JavaScript language, but many experts recommend you use them anyway <i>in web browsers</i>, because many code analysis and compression tools expect them. Since there’s no need to compress your server-side code, we recommend you follow your own preference there.
+P.S. You may have noticed that we’ve used semicolons at the end of statements on our client code. Semicolons are optional in the JavaScript language, but many experts recommend you use them anyway <i>in web browsers</i>, because many code analysis and compression tools expect them. Since there’s no need to compress your server-side code, we recommend you follow your own preference there. We happen to prefer no semicolons.
 </blockquote>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-17"></a>Reader Meets Author
 </h3>
 <div class="Unindented">
-We won’t cover it in this tutorial, but with Prudence---and HTTP, and AJAX---you can accept data from the client into your resource. Use handlePut to create entirely new resources at the URL identified by the client. For example, Wacky Wiki clients can send you JSON data via a PUT, which you can then parse and save in the database as a new wiki entry. There’s also handlePost, used to update existing resources, and handleDelete for getting rid of them.
+Though we won’t cover it in this tutorial, with Prudence---and HTTP, and AJAX---you can also accept data from the client into your resource. Use handlePut to create entirely new resources at the URL identified by the client. For example, Wacky Wiki clients can send you JSON data via a PUT, which you can then parse and save in the database as a new wiki entry. There’s also handlePost, used to update existing resources, and handleDelete for getting rid of them.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-18"></a>Safe and Sound
@@ -1546,7 +1584,7 @@ The best way to learn Prudence is by creating your own applications. Why not tur
 Furthermore, Prudence comes with example code, and even a complete, data-driven, RESTful application: Stickstick. Stickstick is a shared, online bulletin board on which anyone can post notes for everyone else to see. You can move notes around and delete them. The Stickstick source code demonstrates how you can save your resource data into a SQL database, scalable handling of conditional HTTP, and even a few AJAX tricks.
 </div>
 <div class="Indented">
-And then there’s the Prudence Manual: very detailed, and available online in what we hope is a friendly, easy-to-use format. You can also <a class="URL" href="http://threecrickets.com/prudence/download/">download a PDF of it</a> to print out or read on your e-reader.
+And then there’s the Prudence Manual: very detailed, and available online in what we hope is a friendly, easy-to-use format. A PDF of it is included with all Prudence flavors, ready to print out or read on your e-reader.
 </div>
 <div class="Indented">
 Finally, make sure to join the <a class="URL" href="http://groups.google.com/group/prudence-community">Prudence Community</a> online, to ask questions, contribute ideas and see how others are making good use of Prudence. And please <a class="URL" href="http://code.google.com/p/prudence/issues/list">report any bugs and make suggestions for improvement</a>!
@@ -3440,7 +3478,7 @@ Other return values: If the <u>conversation.mediaType (page <a class="Reference"
 </li>
 </ul>
 <div class="Unindented">
-Beyond the return value, you can affect the response sent to the client by the response attributes in the ‘‘conversation’’ service (page ). In particular, the <u>conversation.modificationDate (page <a class="Reference" href="#../api/|conversation-modification-date">↓</a>)</u> and <u>conversation.tag (page <a class="Reference" href="#../api/|conversation-tag">↓</a>)</u> can be used to affect <u>conditional HTTP requests (page <a class="Reference" href="#../resources/|conditional-requests">↓</a>)</u>. For these, you may also consider implementing the <u>handleGetInfo entry point (page <a class="Reference" href="#../resources/|handle-get-info">↓</a>)</u> for more scalable handling of conditional requests.
+Beyond the return value, you can affect the response sent to the client by the response attributes in the <u>‘‘conversation’’ service (page <a class="Reference" href="#../api/|conversation">↓</a>)</u>. In particular, the <u>conversation.modificationDate (page <a class="Reference" href="#../api/|conversation-modification-date">↓</a>)</u> and <u>conversation.tag (page <a class="Reference" href="#../api/|conversation-tag">↓</a>)</u> can be used to affect <u>conditional HTTP requests (page <a class="Reference" href="#../resources/|conditional-requests">↓</a>)</u>. For these, you may also consider implementing the <u>handleGetInfo entry point (page <a class="Reference" href="#../resources/|handle-get-info">↓</a>)</u> for more scalable handling of conditional requests.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-75"></a>handlePost<a class="Label" name="../resources/|handle-post"> </a>
