@@ -202,6 +202,7 @@
 		<mkdir dir="${tmp}/classes" />
 		<javac srcdir="${java-src}" destdir="${tmp}/classes" target="1.5" debug="${debug}" includeAntRuntime="false">
 			<classpath>
+				<fileset dir="${lib}/commons-daemon/lib" />
 				<fileset dir="${lib}/commons-dbcp/lib" />
 				<fileset dir="${lib}/commons-fileupload/lib" />
 				<fileset dir="${lib}/commons-pool/lib" />
@@ -243,18 +244,19 @@
 			<link href="http://www.h2database.com/javadoc/" />
 			<link href="http://hazelcast.googlecode.com/svn/javadoc/" />
 			<link href="http://dustin.github.com/java-memcached-client/apidocs/" />
+			<link href="http://commons.apache.org/daemon/apidocs/" />
 			<classpath>
-				<fileset dir="${lib}/scripturian/lib" />
-				<fileset dir="${lib}/jygments/lib" />
-				<fileset dir="${lib}/restlet/lib" />
+				<fileset dir="${lib}/cron4j/lib" />
+				<fileset dir="${lib}/hazelcast/lib" />
+				<fileset dir="${lib}/h2/lib" />
+				<fileset dir="${lib}/commons-daemon/lib" />
 				<fileset dir="${lib}/commons-dbcp/lib" />
 				<fileset dir="${lib}/commons-pool/lib" />
 				<fileset dir="${lib}/commons-fileupload/lib" />
-				<fileset dir="${lib}/cron4j/lib" />
-				<fileset dir="${lib}/h2/lib" />
-				<fileset dir="${lib}/hazelcast/lib" />
+				<fileset dir="${lib}/jygments/lib" />
+				<fileset dir="${lib}/restlet/lib" />
+				<fileset dir="${lib}/scripturian/lib" />
 				<fileset dir="${lib}/spymemcached/lib" />
-				<fileset dir="${lib}/jsr223/lib" />
 			</classpath>
 			<bottom>
 				<![CDATA[<i>Copyright &#169; 2009-2010 <a target="_top" href="http://threecrickets.com/">Three Crickets LLC</a>.</i>]]>
@@ -293,6 +295,7 @@
 	
 	<target name="libraries-javascript" depends="jar-javascript" description="Fetch libraries">
 		<fetch-library dist="${dist-javascript}" library="commons-codec" />
+		<fetch-library dist="${dist-javascript}" library="commons-daemon" />
 		<fetch-library dist="${dist-javascript}" library="commons-dbcp" />
 		<fetch-library dist="${dist-javascript}" library="commons-fileupload" />
 		<fetch-library dist="${dist-javascript}" library="commons-io" />
@@ -350,6 +353,7 @@
 	
 	<target name="libraries-python" depends="jar-python" description="Fetch libraries">
 		<fetch-library dist="${dist-python}" library="commons-codec" />
+		<fetch-library dist="${dist-python}" library="commons-daemon" />
 		<fetch-library dist="${dist-python}" library="commons-dbcp" />
 		<fetch-library dist="${dist-python}" library="commons-fileupload" />
 		<fetch-library dist="${dist-python}" library="commons-io" />
@@ -412,6 +416,7 @@
 	<target name="libraries-clojure" depends="jar-clojure" description="Fetch libraries">
 		<fetch-library dist="${dist-clojure}" library="clojure" />
 		<fetch-library dist="${dist-clojure}" library="commons-codec" />
+		<fetch-library dist="${dist-clojure}" library="commons-daemon" />
 		<fetch-library dist="${dist-clojure}" library="commons-dbcp" />
 		<fetch-library dist="${dist-clojure}" library="commons-fileupload" />
 		<fetch-library dist="${dist-clojure}" library="commons-io" />
@@ -469,6 +474,7 @@
 	
 	<target name="libraries-groovy" depends="jar-groovy" description="Fetch libraries">
 		<fetch-library dist="${dist-groovy}" library="commons-codec" />
+		<fetch-library dist="${dist-groovy}" library="commons-daemon" />
 		<fetch-library dist="${dist-groovy}" library="commons-dbcp" />
 		<fetch-library dist="${dist-groovy}" library="commons-fileupload" />
 		<fetch-library dist="${dist-groovy}" library="commons-io" />
@@ -527,6 +533,7 @@
 	
 	<target name="libraries-ruby" depends="jar-ruby" description="Fetch libraries">
 		<fetch-library dist="${dist-ruby}" library="commons-codec" />
+		<fetch-library dist="${dist-ruby}" library="commons-daemon" />
 		<fetch-library dist="${dist-ruby}" library="commons-dbcp" />
 		<fetch-library dist="${dist-ruby}" library="commons-fileupload" />
 		<fetch-library dist="${dist-ruby}" library="commons-io" />
@@ -589,6 +596,7 @@
 	
 	<target name="libraries-php" depends="jar-php, libraries-php-quercus" description="Fetch libraries">
 		<fetch-library dist="${dist-php}" library="commons-codec" />
+		<fetch-library dist="${dist-php}" library="commons-daemon" />
 		<fetch-library dist="${dist-php}" library="commons-dbcp" />
 		<fetch-library dist="${dist-php}" library="commons-fileupload" />
 		<fetch-library dist="${dist-php}" library="commons-io" />
@@ -660,6 +668,7 @@
 	<target name="libraries-kitchensink" depends="jar-kitchensink, libraries-kitchensink-quercus" description="Fetch libraries">
 		<fetch-library dist="${dist-kitchensink}" library="clojure" />
 		<fetch-library dist="${dist-kitchensink}" library="commons-codec" />
+		<fetch-library dist="${dist-kitchensink}" library="commons-daemon" />
 		<fetch-library dist="${dist-kitchensink}" library="commons-dbcp" />
 		<fetch-library dist="${dist-kitchensink}" library="commons-fileupload" />
 		<fetch-library dist="${dist-kitchensink}" library="commons-io" />
