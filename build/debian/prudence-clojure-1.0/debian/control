@@ -8,7 +8,7 @@ Build-Depends: cdbs (>=0.4.49), debhelper (>=5)
 Package: prudence-clojure
 Architecture: any
 Homepage: http://threecrickets.com/prudence/
-Depends: java6-runtime | java6-runtime-headless | java5-runtime | java5-runtime-headeless
+Depends: java6-runtime | java6-runtime-headless | java5-runtime | java5-runtime-headeless, jsvc
 Suggests: openjdk-6-jdk
 Description: Prudence is an open source container and framework for scalable web frontends and network services.
  It comes in several flavors: Python, Ruby, Clojure, JavaScript, PHP and Groovy. Your applications can support
