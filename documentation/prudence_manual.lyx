@@ -1253,11 +1253,14 @@ Fire It Up
 \end_layout
 
 \begin_layout Standard
-You can start up Prudence with the appropriate ``run'' script in the /bin/
- directory.
+Start Prudence with the appropriate ``run'' script in the /bin/ directory.
  Use ``/bin/run.sh'' for Unix-like systems (Linux, *BSD and OS X), and ``/bin/run.
 bat'' for Windows.
- Prudence should declare its version and list the installed demo applications.
+ Use ``console'' as an argument to the script.
+\end_layout
+
+\begin_layout Standard
+Prudence should declare its version and list the installed demo applications.
  When it announces that it is listening on port 8080, it's ready to go.
  You can quit Prudence at any time by breaking (CTRL-C).
 \end_layout
@@ -1282,8 +1285,8 @@ Further Exploration
 \end_layout
 
 \begin_layout Itemize
-The /bin/ scripts work well enough, but for production environments you're
- better off 
+The ``console'' argument works well enough, but for production environments
+ you're better off 
 \bar under
 running Prudence as a daemon (page 
 \begin_inset CommandInset ref
@@ -19637,21 +19640,22 @@ name "../daemon/"
 \end_layout
 
 \begin_layout Standard
-Though you can start Prudence via the 
-\bar under
-/bin/ scripts (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../instance/|bin"
+Prudence can run as a daemon (called a ``service'' in Windows) via built-in
+ support for 
+\begin_inset CommandInset href
+LatexCommand href
+name "Apache Commons Daemon"
+target "http://commons.apache.org/daemon/"
 
 \end_inset
 
-)
-\bar default
-, in production environments it's best to run Prudence as a daemon.
- (Called a ``service'' in Windows).
- A lightweight daemon wrapper can provide proper process monitoring and
- control.
+.
+ However, in production environments it's best to run Prudence via a daemon
+ 
+\emph on
+wrapper
+\emph default
+, which can provide proper process monitoring and control.
  For example, if Prudence's JVM crashes for some reason, hangs, grabs too
  much CPU or RAM, the wrapper can automatically shut it down and even restart
  it.
@@ -19664,6 +19668,49 @@ y.
  The reason we haven't included them is different for each wrapper: Tanuki's
  JSW uses a restrictive license (GPL) that will not allow us to distribute
  it with Prudence, and YAJSW is just far too big.
+\end_layout
+
+\begin_layout Subsection
+Apache Commons Daemon
+\end_layout
+
+\begin_layout Standard
+If present, the 
+\bar under
+/bin/ scripts (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/|bin"
+
+\end_inset
+
+)
+\bar default
+ will automatically detect and make use of it, allowing you to start, stop,
+ restart and check the running status of the currently running daemon.
+\end_layout
+
+\begin_layout Standard
+Requirements:
+\end_layout
+
+\begin_layout Itemize
+You will need to install the native executable for 
+\begin_inset CommandInset href
+LatexCommand href
+name "Apache Commons Daemon"
+target "http://commons.apache.org/daemon/"
+
+\end_inset
+
+.
+ Note that it is likely already packaged for your operating system (package
+ ``jsvc'' on Ubuntu, for example).
+\end_layout
+
+\begin_layout Itemize
+A user named ``prudence'' must exist, which will be used by the running
+ Prudence instance.
 \end_layout
 
 \begin_layout Subsection
