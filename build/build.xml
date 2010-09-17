@@ -104,7 +104,7 @@
 				<fileset dir="${common}" excludes="bin/" />
 				<fileset dir="@{base}" excludes="bin/" />
 			</copy>
-			<pathconvert property="jars" pathsep=":">
+			<pathconvert property="@{dist}-jars" pathsep=":">
 				<fileset dir="@{dist}/content/libraries" includes="*.jar" />
 				<flattenmapper />
 			</pathconvert>
@@ -113,7 +113,7 @@
 				<config>
 					<context>
 						<property key="distribution" value="@{dist}" />
-						<property key="jars" value="${jars}" />
+						<property key="jars" value="${@{dist}-jars}" />
 					</context>
 				</config>
 			</vppcopy>
@@ -126,6 +126,21 @@
 				<fileset dir="${velocity}/applications/prudence-test/web" />
 			</copy>
 			<!--<replace dir="@{dist}/content/applications/prudence-test/web/dynamic/" includes="download.html" token="%REVISION%" value="${revision.max}" />-->
+		</sequential>
+	</macrodef>
+
+	<macrodef name="fetch-debian">
+		<attribute name="name" />
+		<sequential>
+			<mkdir dir="debian/prudence-@{name}-1.0/debian" />
+			<vppcopy todir="debian/prudence-@{name}-1.0/debian">
+				<fileset dir="debian/prudence-1.0" />
+				<config>
+					<context>
+						<property key="distribution" value="@{name}" />
+					</context>
+				</config>
+			</vppcopy>
 		</sequential>
 	</macrodef>
 
@@ -792,6 +807,18 @@
 		<copy todir="${dist-standalone}/content">
 			<fileset dir="${common}" excludes="log/, configuration/, applications/, bin/" />
 		</copy>
+	</target>
+	
+	<!-- Debian packagin -->
+	
+	<target name="debian">
+		<fetch-debian name="python" />
+		<fetch-debian name="ruby" />
+		<fetch-debian name="javascript" />
+		<fetch-debian name="php" />
+		<fetch-debian name="clojure" />
+		<fetch-debian name="groovy" />
+		<fetch-debian name="kitchensink" />
 	</target>
 
 </project>
