@@ -1,10 +1,10 @@
-../../ruby/content/*.txt                /usr/lib/prudence-ruby/
-../../ruby/content/bin/*                /usr/lib/prudence-ruby/bin/
-../../ruby/content/libraries/*          /usr/lib/prudence-ruby/libraries/
-../../ruby/content/defaults/*           /usr/lib/prudence-ruby/defaults/
-../../ruby/content/documentation/*      /usr/lib/prudence-ruby/documentation/
-../../ruby/content/licenses/*           /usr/lib/prudence-ruby/licenses/
-../../ruby/content/instance/*           /var/lib/prudence-ruby/instance/
-../../ruby/content/applications/*       /var/lib/prudence-ruby/applications/
-../../ruby/content/configuration/*      /etc/prudence-ruby/
+*.txt                /usr/lib/prudence-ruby/
+bin/*                /usr/lib/prudence-ruby/bin/
+libraries/*          /usr/lib/prudence-ruby/libraries/
+defaults/*           /usr/lib/prudence-ruby/defaults/
+documentation/*      /usr/lib/prudence-ruby/documentation/
+licenses/*           /usr/lib/prudence-ruby/licenses/
+instance/*           /var/lib/prudence-ruby/instance/
+applications/*       /var/lib/prudence-ruby/applications/
+configuration/*      /etc/prudence-ruby/
 

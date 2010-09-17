@@ -1,10 +1,10 @@
-../../${distribution}/content/*.txt                /usr/lib/prudence-${distribution}/
-../../${distribution}/content/bin/*                /usr/lib/prudence-${distribution}/bin/
-../../${distribution}/content/libraries/*          /usr/lib/prudence-${distribution}/libraries/
-../../${distribution}/content/defaults/*           /usr/lib/prudence-${distribution}/defaults/
-../../${distribution}/content/documentation/*      /usr/lib/prudence-${distribution}/documentation/
-../../${distribution}/content/licenses/*           /usr/lib/prudence-${distribution}/licenses/
-../../${distribution}/content/instance/*           /var/lib/prudence-${distribution}/instance/
-../../${distribution}/content/applications/*       /var/lib/prudence-${distribution}/applications/
-../../${distribution}/content/configuration/*      /etc/prudence-${distribution}/
+*.txt                /usr/lib/prudence-${distribution}/
+bin/*                /usr/lib/prudence-${distribution}/bin/
+libraries/*          /usr/lib/prudence-${distribution}/libraries/
+defaults/*           /usr/lib/prudence-${distribution}/defaults/
+documentation/*      /usr/lib/prudence-${distribution}/documentation/
+licenses/*           /usr/lib/prudence-${distribution}/licenses/
+instance/*           /var/lib/prudence-${distribution}/instance/
+applications/*       /var/lib/prudence-${distribution}/applications/
+configuration/*      /etc/prudence-${distribution}/
 

@@ -1,6 +1,6 @@
 Standards-Version: 3.8.0
 Source: prudence-${distribution}
-Section: development
+Section: devel
 Priority: optional
 Maintainer: Tal Liron <tal.liron@gmail.com>
 Build-Depends: cdbs (>=0.4.49), debhelper (>=5)

@@ -1,10 +1,10 @@
-../../clojure/content/*.txt                /usr/lib/prudence-clojure/
-../../clojure/content/bin/*                /usr/lib/prudence-clojure/bin/
-../../clojure/content/libraries/*          /usr/lib/prudence-clojure/libraries/
-../../clojure/content/defaults/*           /usr/lib/prudence-clojure/defaults/
-../../clojure/content/documentation/*      /usr/lib/prudence-clojure/documentation/
-../../clojure/content/licenses/*           /usr/lib/prudence-clojure/licenses/
-../../clojure/content/instance/*           /var/lib/prudence-clojure/instance/
-../../clojure/content/applications/*       /var/lib/prudence-clojure/applications/
-../../clojure/content/configuration/*      /etc/prudence-clojure/
+*.txt                /usr/lib/prudence-clojure/
+bin/*                /usr/lib/prudence-clojure/bin/
+libraries/*          /usr/lib/prudence-clojure/libraries/
+defaults/*           /usr/lib/prudence-clojure/defaults/
+documentation/*      /usr/lib/prudence-clojure/documentation/
+licenses/*           /usr/lib/prudence-clojure/licenses/
+instance/*           /var/lib/prudence-clojure/instance/
+applications/*       /var/lib/prudence-clojure/applications/
+configuration/*      /etc/prudence-clojure/
 

@@ -1,10 +1,10 @@
-../../python/content/*.txt                /usr/lib/prudence-python/
-../../python/content/bin/*                /usr/lib/prudence-python/bin/
-../../python/content/libraries/*          /usr/lib/prudence-python/libraries/
-../../python/content/defaults/*           /usr/lib/prudence-python/defaults/
-../../python/content/documentation/*      /usr/lib/prudence-python/documentation/
-../../python/content/licenses/*           /usr/lib/prudence-python/licenses/
-../../python/content/instance/*           /var/lib/prudence-python/instance/
-../../python/content/applications/*       /var/lib/prudence-python/applications/
-../../python/content/configuration/*      /etc/prudence-python/
+*.txt                /usr/lib/prudence-python/
+bin/*                /usr/lib/prudence-python/bin/
+libraries/*          /usr/lib/prudence-python/libraries/
+defaults/*           /usr/lib/prudence-python/defaults/
+documentation/*      /usr/lib/prudence-python/documentation/
+licenses/*           /usr/lib/prudence-python/licenses/
+instance/*           /var/lib/prudence-python/instance/
+applications/*       /var/lib/prudence-python/applications/
+configuration/*      /etc/prudence-python/
 

@@ -1,10 +1,10 @@
-../../php/content/*.txt                /usr/lib/prudence-php/
-../../php/content/bin/*                /usr/lib/prudence-php/bin/
-../../php/content/libraries/*          /usr/lib/prudence-php/libraries/
-../../php/content/defaults/*           /usr/lib/prudence-php/defaults/
-../../php/content/documentation/*      /usr/lib/prudence-php/documentation/
-../../php/content/licenses/*           /usr/lib/prudence-php/licenses/
-../../php/content/instance/*           /var/lib/prudence-php/instance/
-../../php/content/applications/*       /var/lib/prudence-php/applications/
-../../php/content/configuration/*      /etc/prudence-php/
+*.txt                /usr/lib/prudence-php/
+bin/*                /usr/lib/prudence-php/bin/
+libraries/*          /usr/lib/prudence-php/libraries/
+defaults/*           /usr/lib/prudence-php/defaults/
+documentation/*      /usr/lib/prudence-php/documentation/
+licenses/*           /usr/lib/prudence-php/licenses/
+instance/*           /var/lib/prudence-php/instance/
+applications/*       /var/lib/prudence-php/applications/
+configuration/*      /etc/prudence-php/
 

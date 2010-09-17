@@ -1,10 +1,10 @@
-../../groovy/content/*.txt                /usr/lib/prudence-groovy/
-../../groovy/content/bin/*                /usr/lib/prudence-groovy/bin/
-../../groovy/content/libraries/*          /usr/lib/prudence-groovy/libraries/
-../../groovy/content/defaults/*           /usr/lib/prudence-groovy/defaults/
-../../groovy/content/documentation/*      /usr/lib/prudence-groovy/documentation/
-../../groovy/content/licenses/*           /usr/lib/prudence-groovy/licenses/
-../../groovy/content/instance/*           /var/lib/prudence-groovy/instance/
-../../groovy/content/applications/*       /var/lib/prudence-groovy/applications/
-../../groovy/content/configuration/*      /etc/prudence-groovy/
+*.txt                /usr/lib/prudence-groovy/
+bin/*                /usr/lib/prudence-groovy/bin/
+libraries/*          /usr/lib/prudence-groovy/libraries/
+defaults/*           /usr/lib/prudence-groovy/defaults/
+documentation/*      /usr/lib/prudence-groovy/documentation/
+licenses/*           /usr/lib/prudence-groovy/licenses/
+instance/*           /var/lib/prudence-groovy/instance/
+applications/*       /var/lib/prudence-groovy/applications/
+configuration/*      /etc/prudence-groovy/
 
