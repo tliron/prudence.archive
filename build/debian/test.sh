@@ -4,10 +4,10 @@ DIST=$1
 HERE=$(readlink -f "$(dirname "$0")")
 
 cd $HERE
-rm *.changes
-rm *.deb
-rm *.dsc
-rm *.tar.gz
+rm prudence-$DIST*.changes
+rm prudence-$DIST*.deb
+rm prudence-$DIST*.dsc
+rm prudence-$DIST*.tar.gz
 
 cd prudence-$DIST-1.0
 rm files
