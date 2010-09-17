@@ -16,23 +16,23 @@ set -e
 
 case "$1" in
 	configure)
-		if ! id prudence > /dev/null 2>&1; then
-			useradd -rU prudence
+		if ! id prudence-clojure > /dev/null 2>&1; then
+			useradd -rU prudence-clojure
 		fi
 		
 		mkdir -p /var/log/prudence-clojure
-		mkdir -p /var/prudence-clojure/cache
+		mkdir -p /var/lib/prudence-clojure/cache
 		
-		chown -R prudence:prudence /var/prudence-clojure
-		chown -R prudence:prudence /var/log/prudence-clojure
-		chown -R prudence:prudence /etc/prudence-clojure
+		chown -R prudence-clojure:prudence-clojure /var/lib/prudence-clojure
+		chown -R prudence-clojure:prudence-clojure /var/log/prudence-clojure
+		chown -R prudence-clojure:prudence-clojure /etc/prudence-clojure
 		
-		ln -fs  /usr/lib/prudence-clojure/bin/run.sh    /etc/init.d/prudence-clojure
-		ln -fsT /var/prudence-clojure/instance/         /usr/lib/prudence-clojure/instance
-		ln -fsT /etc/prudence-clojure/                  /usr/lib/prudence-clojure/configuration
-		ln -fsT /var/prudence-clojure/applications/     /usr/lib/prudence-clojure/applications
-		ln -fsT /var/log/prudence-clojure/              /usr/lib/prudence-clojure/logs
-		ln -fsT /var/prudence-clojure/cache/            /usr/lib/prudence-clojure/cache
+		ln -fs  /usr/lib/prudence-clojure/bin/run.sh     /etc/init.d/prudence-clojure
+		ln -fsT /var/lib/prudence-clojure/instance/      /usr/lib/prudence-clojure/instance
+		ln -fsT /etc/prudence-clojure/                   /usr/lib/prudence-clojure/configuration
+		ln -fsT /var/lib/prudence-clojure/applications/  /usr/lib/prudence-clojure/applications
+		ln -fsT /var/log/prudence-clojure/               /usr/lib/prudence-clojure/logs
+		ln -fsT /var/lib/prudence-clojure/cache/         /usr/lib/prudence-clojure/cache
 	;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)

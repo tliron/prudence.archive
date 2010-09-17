@@ -4,7 +4,7 @@
 ../../ruby/content/defaults/*           /usr/lib/prudence-ruby/defaults/
 ../../ruby/content/documentation/*      /usr/lib/prudence-ruby/documentation/
 ../../ruby/content/licenses/*           /usr/lib/prudence-ruby/licenses/
-../../ruby/content/instance/*           /var/prudence-ruby/instance/
-../../ruby/content/applications/*       /var/prudence-ruby/applications/
+../../ruby/content/instance/*           /var/lib/prudence-ruby/instance/
+../../ruby/content/applications/*       /var/lib/prudence-ruby/applications/
 ../../ruby/content/configuration/*      /etc/prudence-ruby/
 

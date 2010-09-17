@@ -60,8 +60,8 @@ start () {
 		exit 1
 	fi
 
-	if ! id prudence > /dev/null 2>&1; then
-		echo "User 'prudence' must exist to start Prudence"
+	if ! id prudence-${distribution} > /dev/null 2>&1; then
+		echo "User 'prudence-${distribution}' must exist to start Prudence"
 		exit 1
 	fi
 
@@ -74,7 +74,7 @@ start () {
 	"$JSVC" \
 	-home "$JAVA_HOME" \
 	-pidfile "$PID" \
-	-user prudence \
+	-user prudence-${distribution} \
 	-procname prudence \
 	-outfile "$HERE/../logs/run.log" \
 	-errfile '&1' \

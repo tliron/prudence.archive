@@ -16,23 +16,23 @@ set -e
 
 case "$1" in
 	configure)
-		if ! id prudence > /dev/null 2>&1; then
-			useradd -rU prudence
+		if ! id prudence-php > /dev/null 2>&1; then
+			useradd -rU prudence-php
 		fi
 		
 		mkdir -p /var/log/prudence-php
-		mkdir -p /var/prudence-php/cache
+		mkdir -p /var/lib/prudence-php/cache
 		
-		chown -R prudence:prudence /var/prudence-php
-		chown -R prudence:prudence /var/log/prudence-php
-		chown -R prudence:prudence /etc/prudence-php
+		chown -R prudence-php:prudence-php /var/lib/prudence-php
+		chown -R prudence-php:prudence-php /var/log/prudence-php
+		chown -R prudence-php:prudence-php /etc/prudence-php
 		
-		ln -fs  /usr/lib/prudence-php/bin/run.sh    /etc/init.d/prudence-php
-		ln -fsT /var/prudence-php/instance/         /usr/lib/prudence-php/instance
-		ln -fsT /etc/prudence-php/                  /usr/lib/prudence-php/configuration
-		ln -fsT /var/prudence-php/applications/     /usr/lib/prudence-php/applications
-		ln -fsT /var/log/prudence-php/              /usr/lib/prudence-php/logs
-		ln -fsT /var/prudence-php/cache/            /usr/lib/prudence-php/cache
+		ln -fs  /usr/lib/prudence-php/bin/run.sh     /etc/init.d/prudence-php
+		ln -fsT /var/lib/prudence-php/instance/      /usr/lib/prudence-php/instance
+		ln -fsT /etc/prudence-php/                   /usr/lib/prudence-php/configuration
+		ln -fsT /var/lib/prudence-php/applications/  /usr/lib/prudence-php/applications
+		ln -fsT /var/log/prudence-php/               /usr/lib/prudence-php/logs
+		ln -fsT /var/lib/prudence-php/cache/         /usr/lib/prudence-php/cache
 	;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)

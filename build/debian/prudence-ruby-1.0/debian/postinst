@@ -16,23 +16,23 @@ set -e
 
 case "$1" in
 	configure)
-		if ! id prudence > /dev/null 2>&1; then
-			useradd -rU prudence
+		if ! id prudence-ruby > /dev/null 2>&1; then
+			useradd -rU prudence-ruby
 		fi
 		
 		mkdir -p /var/log/prudence-ruby
-		mkdir -p /var/prudence-ruby/cache
+		mkdir -p /var/lib/prudence-ruby/cache
 		
-		chown -R prudence:prudence /var/prudence-ruby
-		chown -R prudence:prudence /var/log/prudence-ruby
-		chown -R prudence:prudence /etc/prudence-ruby
+		chown -R prudence-ruby:prudence-ruby /var/lib/prudence-ruby
+		chown -R prudence-ruby:prudence-ruby /var/log/prudence-ruby
+		chown -R prudence-ruby:prudence-ruby /etc/prudence-ruby
 		
-		ln -fs  /usr/lib/prudence-ruby/bin/run.sh    /etc/init.d/prudence-ruby
-		ln -fsT /var/prudence-ruby/instance/         /usr/lib/prudence-ruby/instance
-		ln -fsT /etc/prudence-ruby/                  /usr/lib/prudence-ruby/configuration
-		ln -fsT /var/prudence-ruby/applications/     /usr/lib/prudence-ruby/applications
-		ln -fsT /var/log/prudence-ruby/              /usr/lib/prudence-ruby/logs
-		ln -fsT /var/prudence-ruby/cache/            /usr/lib/prudence-ruby/cache
+		ln -fs  /usr/lib/prudence-ruby/bin/run.sh     /etc/init.d/prudence-ruby
+		ln -fsT /var/lib/prudence-ruby/instance/      /usr/lib/prudence-ruby/instance
+		ln -fsT /etc/prudence-ruby/                   /usr/lib/prudence-ruby/configuration
+		ln -fsT /var/lib/prudence-ruby/applications/  /usr/lib/prudence-ruby/applications
+		ln -fsT /var/log/prudence-ruby/               /usr/lib/prudence-ruby/logs
+		ln -fsT /var/lib/prudence-ruby/cache/         /usr/lib/prudence-ruby/cache
 	;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)

@@ -16,23 +16,23 @@ set -e
 
 case "$1" in
 	configure)
-		if ! id prudence > /dev/null 2>&1; then
-			useradd -rU prudence
+		if ! id prudence-groovy > /dev/null 2>&1; then
+			useradd -rU prudence-groovy
 		fi
 		
 		mkdir -p /var/log/prudence-groovy
-		mkdir -p /var/prudence-groovy/cache
+		mkdir -p /var/lib/prudence-groovy/cache
 		
-		chown -R prudence:prudence /var/prudence-groovy
-		chown -R prudence:prudence /var/log/prudence-groovy
-		chown -R prudence:prudence /etc/prudence-groovy
+		chown -R prudence-groovy:prudence-groovy /var/lib/prudence-groovy
+		chown -R prudence-groovy:prudence-groovy /var/log/prudence-groovy
+		chown -R prudence-groovy:prudence-groovy /etc/prudence-groovy
 		
-		ln -fs  /usr/lib/prudence-groovy/bin/run.sh    /etc/init.d/prudence-groovy
-		ln -fsT /var/prudence-groovy/instance/         /usr/lib/prudence-groovy/instance
-		ln -fsT /etc/prudence-groovy/                  /usr/lib/prudence-groovy/configuration
-		ln -fsT /var/prudence-groovy/applications/     /usr/lib/prudence-groovy/applications
-		ln -fsT /var/log/prudence-groovy/              /usr/lib/prudence-groovy/logs
-		ln -fsT /var/prudence-groovy/cache/            /usr/lib/prudence-groovy/cache
+		ln -fs  /usr/lib/prudence-groovy/bin/run.sh     /etc/init.d/prudence-groovy
+		ln -fsT /var/lib/prudence-groovy/instance/      /usr/lib/prudence-groovy/instance
+		ln -fsT /etc/prudence-groovy/                   /usr/lib/prudence-groovy/configuration
+		ln -fsT /var/lib/prudence-groovy/applications/  /usr/lib/prudence-groovy/applications
+		ln -fsT /var/log/prudence-groovy/               /usr/lib/prudence-groovy/logs
+		ln -fsT /var/lib/prudence-groovy/cache/         /usr/lib/prudence-groovy/cache
 	;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)

@@ -16,23 +16,23 @@ set -e
 
 case "$1" in
 	configure)
-		if ! id prudence > /dev/null 2>&1; then
-			useradd -rU prudence
+		if ! id prudence-python > /dev/null 2>&1; then
+			useradd -rU prudence-python
 		fi
 		
 		mkdir -p /var/log/prudence-python
-		mkdir -p /var/prudence-python/cache
+		mkdir -p /var/lib/prudence-python/cache
 		
-		chown -R prudence:prudence /var/prudence-python
-		chown -R prudence:prudence /var/log/prudence-python
-		chown -R prudence:prudence /etc/prudence-python
+		chown -R prudence-python:prudence-python /var/lib/prudence-python
+		chown -R prudence-python:prudence-python /var/log/prudence-python
+		chown -R prudence-python:prudence-python /etc/prudence-python
 		
-		ln -fs  /usr/lib/prudence-python/bin/run.sh    /etc/init.d/prudence-python
-		ln -fsT /var/prudence-python/instance/         /usr/lib/prudence-python/instance
-		ln -fsT /etc/prudence-python/                  /usr/lib/prudence-python/configuration
-		ln -fsT /var/prudence-python/applications/     /usr/lib/prudence-python/applications
-		ln -fsT /var/log/prudence-python/              /usr/lib/prudence-python/logs
-		ln -fsT /var/prudence-python/cache/            /usr/lib/prudence-python/cache
+		ln -fs  /usr/lib/prudence-python/bin/run.sh     /etc/init.d/prudence-python
+		ln -fsT /var/lib/prudence-python/instance/      /usr/lib/prudence-python/instance
+		ln -fsT /etc/prudence-python/                   /usr/lib/prudence-python/configuration
+		ln -fsT /var/lib/prudence-python/applications/  /usr/lib/prudence-python/applications
+		ln -fsT /var/log/prudence-python/               /usr/lib/prudence-python/logs
+		ln -fsT /var/lib/prudence-python/cache/         /usr/lib/prudence-python/cache
 	;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)

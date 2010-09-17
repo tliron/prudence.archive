@@ -4,7 +4,7 @@
 ../../${distribution}/content/defaults/*           /usr/lib/prudence-${distribution}/defaults/
 ../../${distribution}/content/documentation/*      /usr/lib/prudence-${distribution}/documentation/
 ../../${distribution}/content/licenses/*           /usr/lib/prudence-${distribution}/licenses/
-../../${distribution}/content/instance/*           /var/prudence-${distribution}/instance/
-../../${distribution}/content/applications/*       /var/prudence-${distribution}/applications/
+../../${distribution}/content/instance/*           /var/lib/prudence-${distribution}/instance/
+../../${distribution}/content/applications/*       /var/lib/prudence-${distribution}/applications/
 ../../${distribution}/content/configuration/*      /etc/prudence-${distribution}/
 

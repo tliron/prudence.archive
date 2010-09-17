@@ -4,7 +4,7 @@
 ../../clojure/content/defaults/*           /usr/lib/prudence-clojure/defaults/
 ../../clojure/content/documentation/*      /usr/lib/prudence-clojure/documentation/
 ../../clojure/content/licenses/*           /usr/lib/prudence-clojure/licenses/
-../../clojure/content/instance/*           /var/prudence-clojure/instance/
-../../clojure/content/applications/*       /var/prudence-clojure/applications/
+../../clojure/content/instance/*           /var/lib/prudence-clojure/instance/
+../../clojure/content/applications/*       /var/lib/prudence-clojure/applications/
 ../../clojure/content/configuration/*      /etc/prudence-clojure/
 

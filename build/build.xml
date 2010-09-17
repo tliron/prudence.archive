@@ -133,7 +133,7 @@
 		<sequential>
 			<mkdir dir="debian/prudence-@{name}-1.0/debian" />
 			<vppcopy todir="debian/prudence-@{name}-1.0/debian">
-				<fileset dir="debian/prudence-1.0" />
+				<fileset dir="debian/common" />
 				<config>
 					<context>
 						<property key="distribution" value="@{name}" />

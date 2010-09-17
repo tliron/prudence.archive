@@ -16,23 +16,23 @@ set -e
 
 case "$1" in
 	configure)
-		if ! id prudence > /dev/null 2>&1; then
-			useradd -rU prudence
+		if ! id prudence-kitchensink > /dev/null 2>&1; then
+			useradd -rU prudence-kitchensink
 		fi
 		
 		mkdir -p /var/log/prudence-kitchensink
-		mkdir -p /var/prudence-kitchensink/cache
+		mkdir -p /var/lib/prudence-kitchensink/cache
 		
-		chown -R prudence:prudence /var/prudence-kitchensink
-		chown -R prudence:prudence /var/log/prudence-kitchensink
-		chown -R prudence:prudence /etc/prudence-kitchensink
+		chown -R prudence-kitchensink:prudence-kitchensink /var/lib/prudence-kitchensink
+		chown -R prudence-kitchensink:prudence-kitchensink /var/log/prudence-kitchensink
+		chown -R prudence-kitchensink:prudence-kitchensink /etc/prudence-kitchensink
 		
-		ln -fs  /usr/lib/prudence-kitchensink/bin/run.sh    /etc/init.d/prudence-kitchensink
-		ln -fsT /var/prudence-kitchensink/instance/         /usr/lib/prudence-kitchensink/instance
-		ln -fsT /etc/prudence-kitchensink/                  /usr/lib/prudence-kitchensink/configuration
-		ln -fsT /var/prudence-kitchensink/applications/     /usr/lib/prudence-kitchensink/applications
-		ln -fsT /var/log/prudence-kitchensink/              /usr/lib/prudence-kitchensink/logs
-		ln -fsT /var/prudence-kitchensink/cache/            /usr/lib/prudence-kitchensink/cache
+		ln -fs  /usr/lib/prudence-kitchensink/bin/run.sh     /etc/init.d/prudence-kitchensink
+		ln -fsT /var/lib/prudence-kitchensink/instance/      /usr/lib/prudence-kitchensink/instance
+		ln -fsT /etc/prudence-kitchensink/                   /usr/lib/prudence-kitchensink/configuration
+		ln -fsT /var/lib/prudence-kitchensink/applications/  /usr/lib/prudence-kitchensink/applications
+		ln -fsT /var/log/prudence-kitchensink/               /usr/lib/prudence-kitchensink/logs
+		ln -fsT /var/lib/prudence-kitchensink/cache/         /usr/lib/prudence-kitchensink/cache
 	;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)

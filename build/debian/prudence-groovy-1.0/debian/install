@@ -4,7 +4,7 @@
 ../../groovy/content/defaults/*           /usr/lib/prudence-groovy/defaults/
 ../../groovy/content/documentation/*      /usr/lib/prudence-groovy/documentation/
 ../../groovy/content/licenses/*           /usr/lib/prudence-groovy/licenses/
-../../groovy/content/instance/*           /var/prudence-groovy/instance/
-../../groovy/content/applications/*       /var/prudence-groovy/applications/
+../../groovy/content/instance/*           /var/lib/prudence-groovy/instance/
+../../groovy/content/applications/*       /var/lib/prudence-groovy/applications/
 ../../groovy/content/configuration/*      /etc/prudence-groovy/
 

@@ -16,23 +16,23 @@ set -e
 
 case "$1" in
 	configure)
-		if ! id prudence > /dev/null 2>&1; then
-			useradd -rU prudence
+		if ! id prudence-javascript > /dev/null 2>&1; then
+			useradd -rU prudence-javascript
 		fi
 		
 		mkdir -p /var/log/prudence-javascript
-		mkdir -p /var/prudence-javascript/cache
+		mkdir -p /var/lib/prudence-javascript/cache
 		
-		chown -R prudence:prudence /var/prudence-javascript
-		chown -R prudence:prudence /var/log/prudence-javascript
-		chown -R prudence:prudence /etc/prudence-javascript
+		chown -R prudence-javascript:prudence-javascript /var/lib/prudence-javascript
+		chown -R prudence-javascript:prudence-javascript /var/log/prudence-javascript
+		chown -R prudence-javascript:prudence-javascript /etc/prudence-javascript
 		
-		ln -fs  /usr/lib/prudence-javascript/bin/run.sh    /etc/init.d/prudence-javascript
-		ln -fsT /var/prudence-javascript/instance/         /usr/lib/prudence-javascript/instance
-		ln -fsT /etc/prudence-javascript/                  /usr/lib/prudence-javascript/configuration
-		ln -fsT /var/prudence-javascript/applications/     /usr/lib/prudence-javascript/applications
-		ln -fsT /var/log/prudence-javascript/              /usr/lib/prudence-javascript/logs
-		ln -fsT /var/prudence-javascript/cache/            /usr/lib/prudence-javascript/cache
+		ln -fs  /usr/lib/prudence-javascript/bin/run.sh     /etc/init.d/prudence-javascript
+		ln -fsT /var/lib/prudence-javascript/instance/      /usr/lib/prudence-javascript/instance
+		ln -fsT /etc/prudence-javascript/                   /usr/lib/prudence-javascript/configuration
+		ln -fsT /var/lib/prudence-javascript/applications/  /usr/lib/prudence-javascript/applications
+		ln -fsT /var/log/prudence-javascript/               /usr/lib/prudence-javascript/logs
+		ln -fsT /var/lib/prudence-javascript/cache/         /usr/lib/prudence-javascript/cache
 	;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)

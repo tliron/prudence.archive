@@ -4,7 +4,7 @@
 ../../php/content/defaults/*           /usr/lib/prudence-php/defaults/
 ../../php/content/documentation/*      /usr/lib/prudence-php/documentation/
 ../../php/content/licenses/*           /usr/lib/prudence-php/licenses/
-../../php/content/instance/*           /var/prudence-php/instance/
-../../php/content/applications/*       /var/prudence-php/applications/
+../../php/content/instance/*           /var/lib/prudence-php/instance/
+../../php/content/applications/*       /var/lib/prudence-php/applications/
 ../../php/content/configuration/*      /etc/prudence-php/
 

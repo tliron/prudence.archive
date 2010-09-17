@@ -4,7 +4,7 @@
 ../../javascript/content/defaults/*           /usr/lib/prudence-javascript/defaults/
 ../../javascript/content/documentation/*      /usr/lib/prudence-javascript/documentation/
 ../../javascript/content/licenses/*           /usr/lib/prudence-javascript/licenses/
-../../javascript/content/instance/*           /var/prudence-javascript/instance/
-../../javascript/content/applications/*       /var/prudence-javascript/applications/
+../../javascript/content/instance/*           /var/lib/prudence-javascript/instance/
+../../javascript/content/applications/*       /var/lib/prudence-javascript/applications/
 ../../javascript/content/configuration/*      /etc/prudence-javascript/
 
