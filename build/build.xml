@@ -125,7 +125,6 @@
 			<copy todir="@{dist}/content/applications/prudence-test/web">
 				<fileset dir="${velocity}/applications/prudence-test/web" />
 			</copy>
-			<!--<replace dir="@{dist}/content/applications/prudence-test/web/dynamic/" includes="download.html" token="%REVISION%" value="${revision.max}" />-->
 		</sequential>
 	</macrodef>
 
@@ -141,16 +140,6 @@
 					</context>
 				</config>
 			</vppcopy>
-		</sequential>
-	</macrodef>
-
-	<macrodef name="fetch-syntaxhighlighter">
-		<attribute name="dist" />
-		<attribute name="application" />
-		<sequential>
-			<copy todir="@{dist}/content/applications/@{application}/web/static/syntaxhighlighter">
-				<fileset dir="${lib}/syntaxhighlighter/lib" />
-			</copy>
 		</sequential>
 	</macrodef>
 
@@ -363,7 +352,6 @@
 	
 	<target name="content-javascript" depends="javadoc-javascript, revision" description="Fetch content">
 		<fetch-common-content dist="${dist-javascript}" base="${javascript}" />
-		<!-- <fetch-syntaxhighlighter dist="${dist-javascript}" application="prudence-test" /> -->
 	</target>
 	
 	<target name="test-javascript" depends="javascript" description="Unit tests">
@@ -424,8 +412,6 @@
 	
 	<target name="content-python" depends="javadoc-python, revision" description="Fetch content">
 		<fetch-common-content dist="${dist-python}" base="${python}" />
-		<!-- <fetch-syntaxhighlighter dist="${dist-python}" application="prudence-test" />
-			<fetch-syntaxhighlighter dist="${dist-python}" application="stickstick" /> -->
 	</target>
 	
 	<target name="test-python" depends="python" description="Unit tests">
@@ -483,8 +469,6 @@
 	
 	<target name="content-clojure" depends="javadoc-clojure, revision" description="Fetch content">
 		<fetch-common-content dist="${dist-clojure}" base="${clojure}" />
-		<!-- <fetch-syntaxhighlighter dist="${dist-clojure}" application="prudence-test" />
-			<fetch-syntaxhighlighter dist="${dist-clojure}" application="stickstick" /> -->
 	</target>
 	
 	<target name="test-clojure" depends="clojure" description="Unit tests">
@@ -542,8 +526,6 @@
 	
 	<target name="content-groovy" depends="javadoc-groovy, revision" description="Fetch content">
 		<fetch-common-content dist="${dist-groovy}" base="${groovy}" />
-		<!-- <fetch-syntaxhighlighter dist="${dist-groovy}" application="prudence-test" />
-			<fetch-syntaxhighlighter dist="${dist-groovy}" application="stickstick" /> -->
 	</target>
 	
 	<target name="test-groovy" depends="groovy" description="Unit tests">
@@ -601,8 +583,6 @@
 	
 	<target name="content-ruby" depends="javadoc-ruby, revision" description="Fetch content">
 		<fetch-common-content dist="${dist-ruby}" base="${ruby}" />
-		<!-- <fetch-syntaxhighlighter dist="${dist-ruby}" application="prudence-test" />
-			<fetch-syntaxhighlighter dist="${dist-ruby}" application="stickstick" /> -->
 	</target>
 	
 	<target name="test-ruby" depends="ruby" description="Unit tests">
@@ -663,8 +643,6 @@
 	
 	<target name="content-php" depends="javadoc-php, revision" description="Fetch content">
 		<fetch-common-content dist="${dist-php}" base="${php}" />
-		<!-- <fetch-syntaxhighlighter dist="${dist-php}" application="prudence-test" />
-			<fetch-syntaxhighlighter dist="${dist-php}" application="stickstick" /> -->
 	</target>
 	
 	<target name="test-php" depends="php" description="Unit tests">
@@ -767,12 +745,6 @@
 			<fileset dir="${php}/applications/prudence-test/libraries" />
 		</copy>
 		<fetch-common-content dist="${dist-kitchensink}" base="${kitchensink-base}" />
-		<!-- <fetch-syntaxhighlighter dist="${dist-kitchensink}" application="prudence-test" /> -->
-		<!-- Fetch other applications -->
-		<!--<copy todir="${dist-kitchensink}/content/applications/stickstick">
-				<fileset dir="${python}/applications/stickstick" excludes="*" />
-			</copy>-->
-		<!-- <fetch-syntaxhighlighter dist="${dist-kitchensink}" application="stickstick" /> -->
 	</target>
 	
 	<target name="test-kitchensink" depends="kitchensink" description="Unit tests">
@@ -809,7 +781,7 @@
 		</copy>
 	</target>
 	
-	<!-- Debian packagin -->
+	<!-- Debian packaging -->
 	
 	<target name="debian">
 		<fetch-debian name="python" />
