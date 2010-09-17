@@ -49,7 +49,7 @@ public abstract class DistributionTest extends MultiTest
 	//
 
 	@Before
-	public void startPrudence()
+	public synchronized void startPrudence()
 	{
 		if( started || ( ( threads == 0 ) && ( iterations == 0 ) ) )
 			return;
@@ -70,7 +70,7 @@ public abstract class DistributionTest extends MultiTest
 	}
 
 	@AfterClass
-	public static void stopPrudence()
+	public static synchronized void stopPrudence()
 	{
 		if( !started )
 			return;
@@ -226,7 +226,10 @@ public abstract class DistributionTest extends MultiTest
 		{
 			File script = new File( name + ( isWindows ? "/content/bin/run.bat" : "/content/bin/run.sh" ) );
 			assertTrue( script.exists() );
-			externalProcess = Runtime.getRuntime().exec( script.getCanonicalPath() );
+			externalProcess = Runtime.getRuntime().exec( new String[]
+			{
+				script.getCanonicalPath(), "console"
+			} );
 
 			try
 			{
