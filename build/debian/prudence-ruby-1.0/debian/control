@@ -1,0 +1,16 @@
+Standards-Version: 3.8.0
+Source: prudence-ruby
+Section: development
+Priority: optional
+Maintainer: Tal Liron <tal.liron@gmail.com>
+Build-Depends: cdbs (>=0.4.49), debhelper (>=5)
+
+Package: prudence-ruby
+Architecture: any
+Homepage: http://threecrickets.com/prudence/
+Depends: java6-runtime | java6-runtime-headless | java5-runtime | java5-runtime-headeless, jsvc
+Suggests: openjdk-6-jdk
+Description: Prudence is an open source container and framework for scalable web frontends and network services.
+ It comes in several flavors: Python, Ruby, Clojure, JavaScript, PHP and Groovy. Your applications can support
+ rich clients (AJAX), thin clients (pure HTML), and happy mixes between the two. Prudence addresses real-world,
+ practical concerns, from virtual hosting and URI rewriting to flexible server- and client-side caching.

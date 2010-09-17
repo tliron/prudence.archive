@@ -1,0 +1,10 @@
+../../javascript/content/*.txt                /usr/lib/prudence-javascript/
+../../javascript/content/bin/*                /usr/lib/prudence-javascript/bin/
+../../javascript/content/libraries/*          /usr/lib/prudence-javascript/libraries/
+../../javascript/content/defaults/*           /usr/lib/prudence-javascript/defaults/
+../../javascript/content/documentation/*      /usr/lib/prudence-javascript/documentation/
+../../javascript/content/licenses/*           /usr/lib/prudence-javascript/licenses/
+../../javascript/content/instance/*           /var/prudence-javascript/instance/
+../../javascript/content/applications/*       /var/prudence-javascript/applications/
+../../javascript/content/configuration/*      /etc/prudence-javascript/
+

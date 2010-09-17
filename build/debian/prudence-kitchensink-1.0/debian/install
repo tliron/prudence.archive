@@ -1,0 +1,10 @@
+../../kitchensink/content/*.txt                /usr/lib/prudence-kitchensink/
+../../kitchensink/content/bin/*                /usr/lib/prudence-kitchensink/bin/
+../../kitchensink/content/libraries/*          /usr/lib/prudence-kitchensink/libraries/
+../../kitchensink/content/defaults/*           /usr/lib/prudence-kitchensink/defaults/
+../../kitchensink/content/documentation/*      /usr/lib/prudence-kitchensink/documentation/
+../../kitchensink/content/licenses/*           /usr/lib/prudence-kitchensink/licenses/
+../../kitchensink/content/instance/*           /var/prudence-kitchensink/instance/
+../../kitchensink/content/applications/*       /var/prudence-kitchensink/applications/
+../../kitchensink/content/configuration/*      /etc/prudence-kitchensink/
+
