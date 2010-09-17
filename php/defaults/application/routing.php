@@ -20,7 +20,7 @@ import com.threecrickets.prudence.util.PreheatTask;
 import com.threecrickets.prudence.util.PhpExecutionController;
 
 global $executable, $component, $tasks, $application_instance, $application_globals, $language_manager;
-global $application_internal_name, $application_logger_name, $application_base_path, $application_default_url;
+global $application_internal_name, $application_logger_name, $application_base, $application_base_path, $application_default_url;
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $show_debug_on_error, $show_source_code_url;
 global $hosts;
