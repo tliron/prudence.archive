@@ -8,7 +8,7 @@ if [ -z "$DIST" ]; then
 	exit 1
 fi
 
-HERE=$(readlink -f "$(dirname "$0")")
+HERE=$(cd "${0%/*}" 2>/dev/null; echo "$PWD")
 
 cd $HERE/prudence-$DIST-1.0
 rm -rf content

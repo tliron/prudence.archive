@@ -8,7 +8,7 @@ if [ -z "$DIST" ]; then
 	exit 1
 fi
 
-HERE=$(readlink -f "$(dirname "$0")")
+HERE=$(cd "${0%/*}" 2>/dev/null; echo "$PWD")
 
 cd $HERE
 rm -f prudence-$DIST*.changes
@@ -26,4 +26,4 @@ cp -r ../../$DIST/content .
 dpkg-buildpackage -b
 
 cd ..
-#sudo dpkg -i prudence-${DIST}*.deb
+sudo dpkg -i prudence-${DIST}*.deb
