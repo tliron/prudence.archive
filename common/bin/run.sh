@@ -8,19 +8,26 @@ libraries/${jar}#if($velocityHasNext):\
 #end
 
 
-PID=/tmp/prudence-${distribution}.pid
 HERE=$(cd "${0%/*}" 2>/dev/null; echo "$PWD")
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m)
+JSVC=/usr/bin/jsvc
+PID=/tmp/prudence-${distribution}.pid
+DAEMON_USER=prudence-${distribution}
+LOGS="$HERE/../logs"
 
-if [ "$OS" == 'darwin' ]; then
-	# Darwin has a universal binary
-	JSVC="$HERE/commons-daemon/$OS/jsvc"
-else
-	JSVC="$HERE/commons-daemon/$OS/$ARCH/jsvc"
+if [ ! -f "$JSVC" ]; then
+	# Use our jsvc binary
+	if [ "$OS" == 'darwin' ]; then
+		# Darwin has a universal binary
+		JSVC="$HERE/commons-daemon/$OS/jsvc"
+	else
+		JSVC="$HERE/commons-daemon/$OS/$ARCH/jsvc"
+	fi
 fi
 
 if [ -z "$JAVA_HOME" ]; then
+	# Common defaults for JAVA_HOME
 	if [ "$OS" == 'darwin' ]; then
 		JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
 	else
@@ -39,7 +46,7 @@ console () {
 		echo You must correctly set JAVA_HOME or have a /usr/bin/java to start Prudence in console mode
 		exit 1
 	fi
-	
+
 	cd "$HERE/.."
 
 	exec \
@@ -56,40 +63,49 @@ console () {
 
 start () {
 	if [ ! -f "$JSVC" ]; then
-		echo Prudence can only be started in console mode on this system
+		echo You must have Apache Commons Daemon installed in order to start Prudence as a daemon
 		exit 1
 	fi
 
 	if [ $EUID -ne 0 ]; then
-		echo You must have root privileges to start Prudence
+		echo You must have root privileges in order to start Prudence
 		exit 1
 	fi
-	
+
 	if [ -f "$PID" ]; then
 		echo "Prudence is already running (pid $(cat "$PID"))"
 		exit 1
 	fi
 
-	if ! id prudence-${distribution} > /dev/null 2>&1; then
-		echo "User 'prudence-${distribution}' must exist to start Prudence"
-		exit 1
-	fi
-
 	if [ -z "$JAVA_HOME" ]; then
-		echo You must correctly set JAVA_HOME to start Prudence
+		echo You must correctly set JAVA_HOME in order to start Prudence
 		exit 1
 	fi
 
-	echo Starting Prudence...
+	if ! id "$DAEMON_USER" > /dev/null 2>&1; then
+		# Default to executing user
+		DAEMON_USER="$SUDO_USER"
+		if [ -z "$DAEMON_USER" ]; then
+			DAEMON_USER="$USER"
+		fi
+	fi
 	
+	if [ ! -d "$LOGS" ]; then
+		mkdir -p "$LOGS"
+		DAEMON_USER_ID=$(id -u "$DAEMON_USER")
+		chown $DAEMON_USER_ID "$LOGS"
+	fi
+
+	echo Starting Prudence with user \"$DAEMON_USER\"...
+
 	cd "$HERE/.."
 
 	"$JSVC" \
 	-home "$JAVA_HOME" \
 	-pidfile "$PID" \
-	-user prudence-${distribution} \
+	-user "$DAEMON_USER" \
 	-procname prudence \
-	-outfile "$HERE/../logs/run.log" \
+	-outfile "$LOGS/run.log" \
 	-errfile '&1' \
 	-cp "$JARS" \
 	-Dscripturian.cache=cache \
@@ -103,12 +119,12 @@ start () {
 
 stop () {
 	if [ ! -f "$JSVC" ]; then
-		echo Prudence can only be started in console mode on this system
+		echo You must have Apache Commons Daemon installed in order to stop Prudence
 		exit 1
 	fi
 
 	if [ $EUID -ne 0 ]; then
-		echo You must be have root privileges to stop Prudence
+		echo You must have root privileges in order to stop Prudence
 		exit 1
 	fi
 
@@ -118,22 +134,18 @@ stop () {
 	fi
 
 	echo Stopping Prudence...
+
 	"$JSVC" \
 	-pidfile "$PID" \
-	-outfile "$HERE/../logs/run.log" \
+	-outfile "$LOGS/run.log" \
 	-errfile '&1' \
 	-stop \
 	com.threecrickets.prudence.PrudenceDaemon
 }
 
 status () {
-	if [ ! -f "$JSVC" ]; then
-		echo Prudence can only be started in console mode on this system
-		exit 1
-	fi
-
 	if [ $EUID -ne 0 ]; then
-		echo "You must be have root privileges to check Prudence's status"
+		echo "You must be have root privileges in order to check Prudence's status"
 		exit 1
 	fi
 
