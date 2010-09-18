@@ -101,15 +101,15 @@
 		<attribute name="base" />
 		<sequential>
 			<copy todir="@{dist}/content">
-				<fileset dir="${common}" excludes="bin/" />
-				<fileset dir="@{base}" excludes="bin/" />
+				<fileset dir="${common}" excludes="bin/run.sh, bin/run.bat" />
+				<fileset dir="@{base}" />
 			</copy>
 			<pathconvert property="@{dist}-jars" pathsep=":">
 				<fileset dir="@{dist}/content/libraries" includes="*.jar" />
 				<flattenmapper />
 			</pathconvert>
 			<vppcopy todir="@{dist}/content/bin">
-				<fileset dir="${common}/bin" />
+				<fileset dir="${common}/bin" includes="run.sh, run.bat" />
 				<config>
 					<context>
 						<property key="distribution" value="@{dist}" />
@@ -117,7 +117,9 @@
 					</context>
 				</config>
 			</vppcopy>
-			<chmod file="@{dist}/content/bin/run.sh" perm="ugo+rx" />
+			<chmod perm="ugo+rx">
+				<fileset dir="@{dist}/content/bin" includes="**/run.sh, **/jsvc" />
+			</chmod>
 			<copy todir="@{dist}/content/documentation">
 				<fileset dir="${documentation}" excludes="*~,*.emergency" />
 			</copy>
@@ -192,8 +194,7 @@
 
 	<target name="test" depends="test-kitchensink, test-javascript, test-python, test-clojure, test-groovy, test-ruby, test-php" description="Test all distributions" />
 
-	<target name="clean" description="Clean">
-		<delete dir="${tmp}" />
+	<target name="clean-distributions" description="Clean">
 		<delete dir="${dist-kitchensink}" />
 		<delete dir="${dist-standalone}" />
 		<delete dir="${dist-javascript}" />
@@ -205,6 +206,10 @@
 		<delete>
 			<fileset dir="." includes="*.zip" />
 		</delete>
+	</target>
+
+	<target name="clean" depends="clean-distributions" description="Clean">
+		<delete dir="${tmp}" />
 	</target>
 
 	<target name="rebuild" depends="clean, build" description="Rebuild all distributions" />

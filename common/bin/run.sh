@@ -9,13 +9,23 @@ libraries/${jar}#if($velocityHasNext):\
 
 
 PID=/tmp/prudence-${distribution}.pid
-JSVC=/usr/bin/jsvc
-SCRIPT=$(readlink -f "$0")
-HERE=$(readlink -f "$(dirname "$SCRIPT")")
+HERE=$(cd "${0%/*}" 2>/dev/null; echo "$PWD")
+OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+ARCH=$(uname -m)
+
+if [ "$OS" == 'darwin' ]; then
+	# Darwin has a universal binary
+	JSVC="$HERE/commons-daemon/$OS/jsvc"
+else
+	JSVC="$HERE/commons-daemon/$OS/$ARCH/jsvc"
+fi
 
 if [ -z "$JAVA_HOME" ]; then
-	JAVA_HOME=/usr/lib/jvm/java-6-openjdk
-	#JAVA_HOME=/usr/lib/jvm/java-1.5.0-sun
+	if [ "$OS" == 'darwin' ]; then
+		JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
+	else
+		JAVA_HOME=/usr/lib/jvm/java-6-openjdk
+	fi
 fi
 
 JAVA="$JAVA_HOME/bin/java"
@@ -24,14 +34,14 @@ if [ ! -f "$JAVA" ]; then
 	JAVA=/usr/bin/java
 fi
 
-cd "$HERE/.."
-
 console () {
 	if [ ! -f "$JAVA" ]; then
-		echo You must correctly set JAVA_HOME to start Prudence
+		echo You must correctly set JAVA_HOME or have a /usr/bin/java to start Prudence in console mode
 		exit 1
 	fi
 	
+	cd "$HERE/.."
+
 	exec \
 	"$JAVA" \
 	-cp "$JARS" \
@@ -71,6 +81,9 @@ start () {
 	fi
 
 	echo Starting Prudence...
+	
+	cd "$HERE/.."
+
 	"$JSVC" \
 	-home "$JAVA_HOME" \
 	-pidfile "$PID" \
@@ -89,6 +102,11 @@ start () {
 }
 
 stop () {
+	if [ ! -f "$JSVC" ]; then
+		echo Prudence can only be started in console mode on this system
+		exit 1
+	fi
+
 	if [ $EUID -ne 0 ]; then
 		echo You must be have root privileges to stop Prudence
 		exit 1
@@ -109,6 +127,11 @@ stop () {
 }
 
 status () {
+	if [ ! -f "$JSVC" ]; then
+		echo Prudence can only be started in console mode on this system
+		exit 1
+	fi
+
 	if [ $EUID -ne 0 ]; then
 		echo "You must be have root privileges to check Prudence's status"
 		exit 1
