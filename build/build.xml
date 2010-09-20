@@ -99,6 +99,7 @@
 	<macrodef name="fetch-common-content">
 		<attribute name="dist" />
 		<attribute name="base" />
+		<attribute name="name" />
 		<sequential>
 			<copy todir="@{dist}/content">
 				<fileset dir="${common}" excludes="bin/run.sh, bin/run.bat" />
@@ -113,6 +114,7 @@
 				<config>
 					<context>
 						<property key="distribution" value="@{dist}" />
+						<property key="service" value="@{name}" />
 						<property key="jars" value="${@{dist}-jars}" />
 					</context>
 				</config>
@@ -356,7 +358,7 @@
 	</target>
 	
 	<target name="content-javascript" depends="javadoc-javascript, revision" description="Fetch content">
-		<fetch-common-content dist="${dist-javascript}" base="${javascript}" />
+		<fetch-common-content dist="${dist-javascript}" base="${javascript}" name="JavaScript" />
 	</target>
 	
 	<target name="test-javascript" depends="javascript" description="Unit tests">
@@ -416,7 +418,7 @@
 	</target>
 	
 	<target name="content-python" depends="javadoc-python, revision" description="Fetch content">
-		<fetch-common-content dist="${dist-python}" base="${python}" />
+		<fetch-common-content dist="${dist-python}" base="${python}" name="Python" />
 	</target>
 	
 	<target name="test-python" depends="python" description="Unit tests">
@@ -473,7 +475,7 @@
 	</target>
 	
 	<target name="content-clojure" depends="javadoc-clojure, revision" description="Fetch content">
-		<fetch-common-content dist="${dist-clojure}" base="${clojure}" />
+		<fetch-common-content dist="${dist-clojure}" base="${clojure}" name="Clojure" />
 	</target>
 	
 	<target name="test-clojure" depends="clojure" description="Unit tests">
@@ -530,7 +532,7 @@
 	</target>
 	
 	<target name="content-groovy" depends="javadoc-groovy, revision" description="Fetch content">
-		<fetch-common-content dist="${dist-groovy}" base="${groovy}" />
+		<fetch-common-content dist="${dist-groovy}" base="${groovy}" name="Groovy" />
 	</target>
 	
 	<target name="test-groovy" depends="groovy" description="Unit tests">
@@ -587,7 +589,7 @@
 	</target>
 	
 	<target name="content-ruby" depends="javadoc-ruby, revision" description="Fetch content">
-		<fetch-common-content dist="${dist-ruby}" base="${ruby}" />
+		<fetch-common-content dist="${dist-ruby}" base="${ruby}" name="Ruby" />
 	</target>
 	
 	<target name="test-ruby" depends="ruby" description="Unit tests">
@@ -647,7 +649,7 @@
 	</target>
 	
 	<target name="content-php" depends="javadoc-php, revision" description="Fetch content">
-		<fetch-common-content dist="${dist-php}" base="${php}" />
+		<fetch-common-content dist="${dist-php}" base="${php}" name="PHP" />
 	</target>
 	
 	<target name="test-php" depends="php" description="Unit tests">
@@ -749,7 +751,7 @@
 			<fileset dir="${javascript}/applications/prudence-test/libraries" />
 			<fileset dir="${php}/applications/prudence-test/libraries" />
 		</copy>
-		<fetch-common-content dist="${dist-kitchensink}" base="${kitchensink-base}" />
+		<fetch-common-content dist="${dist-kitchensink}" base="${kitchensink-base}" name="KitchenSink" />
 	</target>
 	
 	<target name="test-kitchensink" depends="kitchensink" description="Unit tests">

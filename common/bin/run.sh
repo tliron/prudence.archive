@@ -1,4 +1,15 @@
 #!/bin/bash
+#
+# Copyright 2009-2010 Three Crickets LLC.
+#
+# The contents of this file are subject to the terms of the LGPL version 3.0:
+# http://www.opensource.org/licenses/lgpl-3.0.html
+#
+# Alternatively, you can obtain a royalty free commercial license with less
+# limitations, transferable or non-transferable, directly from Three Crickets
+# at http://threecrickets.com/
+#
+
 set -e
 
 JARS=\
@@ -8,7 +19,21 @@ libraries/${jar}#if($velocityHasNext):\
 #end
 
 
-HERE=$(cd "${0%/*}" 2>/dev/null; echo "$PWD")
+set +e
+SCRIPT=$(readlink -f "$0" 2>/dev/null)
+if [ "$?" == 0 ]; then
+	set -e
+	HERE=$(dirname "$(readlink -f "$SCRIPT")")
+else
+	set -e
+	# "readlink -f" isn't supported on all platforms
+	SCRIPT="$0"
+	OLD_PWD="$PWD"
+	cd $(dirname "$SCRIPT")
+	HERE="$PWD"
+	cd "$OLD_PWD"
+fi
+
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m)
 JSVC=/usr/bin/jsvc

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2010-09-16">
+<meta name="create-date" content="2010-09-18">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -6780,29 +6780,42 @@ applicationInstance.inboundRoot = authenticator
 <a class="toc" name="toc-Section-16"></a>Prudence As a Daemon<a class="Label" name="../daemon/"> </a>
 </h1>
 <div class="Unindented">
-Prudence can run as a daemon (called a ‘‘service’’ in Windows) via built-in support for <a class="URL" href="http://commons.apache.org/daemon/">Apache Commons Daemon</a>. However, in production environments it’s best to run Prudence via a daemon <i>wrapper</i>, which can provide proper process monitoring and control. For example, if Prudence’s JVM crashes for some reason, hangs, grabs too much CPU or RAM, the wrapper can automatically shut it down and even restart it.
+Prudence comes with built-in support Apache Commons Daemon. However, in production environments, you might prefer to use one of the daemon <i>wrappers</i>, which provide process monitoring and control. For example, if Prudence’s JVM crashes for some reason, hangs, grabs too much CPU or RAM, the wrapper can automatically shut it down and even restart it.
 </div>
 <div class="Indented">
-While Prudence comes with the necessary configuration files for wrappers, it does not include an actual wrapper, which you will need to install separately. The reason we haven’t included them is different for each wrapper: Tanuki’s JSW uses a restrictive license (GPL) that will not allow us to distribute it with Prudence, and YAJSW is just far too big.
+Though Prudence comes with the necessary configuration files for wrappers, it does not include the actual wrappers, which you will need to install separately. The reason we haven’t included them is different for each wrapper: Tanuki’s JSW uses a restrictive license (GPL) that will not allow us to distribute it with Prudence, and YAJSW is just far too big.
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-79"></a>Apache Commons Daemon
 </h2>
 <div class="Unindented">
-If present, the <u>/bin/ scripts (page <a class="Reference" href="#../instance/|bin">↑</a>)</u> will automatically detect and make use of it, allowing you to start, stop, restart and check the running status of the currently running daemon.
+The <u>/bin/ scripts (page <a class="Reference" href="#../instance/|bin">↑</a>)</u> allow you to ‘‘start’’, ‘‘stop’’, ‘‘restart’’ and check the running ‘‘status’’ for the Prudence daemon (called a ‘‘service’’ in Windows). The daemon will write its log to ‘‘/logs/run.log’’.
 </div>
 <div class="Indented">
-Requirements:
+Though you need root privileges (sudo) to start or stop the daemon, the daemon itself will attempt to run under user ‘‘prudence-X’’, where ‘‘X’’ is the name of the flavor you are using. For example, ‘‘prudence-python’’ is used for the Python flavor. If that user doesn’t exist, the daemon will run under <i>your </i>user.
 </div>
-<ul>
+<div class="Indented">
+In any case, it’s up to you to make sure that the daemon’s user has the necessary read and write privileges for the Prudence files. In particular, it needs to be able to write to /logs/ and to /cache/.
+</div>
+<div class="Indented">
+If you get an error about a missing JAVA_HOME, you can set it like so:
+</div>
+<div class="Indented">
 
-<li>
-You will need to install the native executable for <a class="URL" href="http://commons.apache.org/daemon/">Apache Commons Daemon</a>. Note that it is likely already packaged for your operating system (package ‘‘jsvc’’ on Ubuntu, for example).
-</li>
-<li>
-A user named ‘‘prudence’’ must exist, which will be used by the running Prudence instance.
-</li>
-</ul>
+<div class="float">
+
+<div class="listing">
+<code class="listing">sudo JAVA_HOME=/var/lib/jvm bin/run.sh start
+</code>
+</div>
+</div>
+</div>
+<div class="Indented">
+The scripts work by detecting your running environment and attempting to use the appropriate <a class="URL" href="http://commons.apache.org/daemon/">Apache Commons Daemon</a> binary. Prudence comes with binaries for Linux, Solaris, Darwin (OS X) and Windows, for both 32bit and 64bit architectures.
+</div>
+<blockquote class="Quote">
+Note for Linux: Newer operating systems may give you an error about a missing ‘‘libcap.so.1’’ library. In such cases, you will need to install your operating system’s Apache Commons Daemon package. In Ubuntu, for example, it is package ‘‘jsvc’’. The /bin/run.sh script will always try to use your operating system’s jsvc before falling back to the binary that comes with Prudence.
+</blockquote>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-80"></a>JSW
 </h2>
@@ -6840,7 +6853,7 @@ The copyright for JSW is held by its original developer, Tanuki Software. For th
 <a class="URL" href="http://yajsw.sourceforge.net/">YAJSW</a> is written in 100% Java, using <a class="URL" href="https://jna.dev.java.net/">JNA</a> to handle the native operating-system-dependent features.
 </div>
 <div class="Indented">
-See /configuration/yajsw.conf for a sample JSW configuration. The wrapper will log to /logs/yajsw.log.
+See /configuration/yajsw.conf for a sample JAJSW configuration. The wrapper will log to /logs/yajsw.log.
 </div>
 <div class="Indented">
 Change yasjw.conf in the same way as described for wrapper.conf, above.
