@@ -32,6 +32,11 @@ public class PrudenceDaemon extends ScripturianDaemon
 	@Override
 	public void stop() throws Exception
 	{
+		PrudenceDaemon.stop( null );
+	}
+
+	static void stop( String[] args ) throws Exception
+	{
 		Component component = (Component) GlobalScope.getInstance().getAttributes().get( "com.threecrickets.prudence.component" );
 		if( component != null )
 			component.stop();
