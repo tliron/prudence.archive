@@ -19640,31 +19640,22 @@ name "../daemon/"
 \end_layout
 
 \begin_layout Standard
-Prudence can run as a daemon (called a ``service'' in Windows) via built-in
- support for 
-\begin_inset CommandInset href
-LatexCommand href
-name "Apache Commons Daemon"
-target "http://commons.apache.org/daemon/"
-
-\end_inset
-
-.
- However, in production environments it's best to run Prudence via a daemon
- 
+Prudence comes with built-in support Apache Commons Daemon.
+ However, in production environments, you might prefer to use one of the
+ daemon 
 \emph on
-wrapper
+wrappers
 \emph default
-, which can provide proper process monitoring and control.
+, which provide process monitoring and control.
  For example, if Prudence's JVM crashes for some reason, hangs, grabs too
  much CPU or RAM, the wrapper can automatically shut it down and even restart
  it.
 \end_layout
 
 \begin_layout Standard
-While Prudence comes with the necessary configuration files for wrappers,
- it does not include an actual wrapper, which you will need to install separatel
-y.
+Though Prudence comes with the necessary configuration files for wrappers,
+ it does not include the actual wrappers, which you will need to install
+ separately.
  The reason we haven't included them is different for each wrapper: Tanuki's
  JSW uses a restrictive license (GPL) that will not allow us to distribute
  it with Prudence, and YAJSW is just far too big.
@@ -19675,7 +19666,7 @@ Apache Commons Daemon
 \end_layout
 
 \begin_layout Standard
-If present, the 
+The 
 \bar under
 /bin/ scripts (page 
 \begin_inset CommandInset ref
@@ -19686,16 +19677,32 @@ reference "../instance/|bin"
 
 )
 \bar default
- will automatically detect and make use of it, allowing you to start, stop,
- restart and check the running status of the currently running daemon.
+ allow you to ``start'', ``stop'', ``restart'' and check the running ``status''
+ for the Prudence daemon (called a ``service'' in Windows).
+ The daemon will write its log to ``/logs/run.log''.
 \end_layout
 
 \begin_layout Standard
-Requirements:
+Though you need root privileges (sudo) to start or stop the daemon, the
+ daemon itself will attempt to run under user ``prudence-X'', where ``X''
+ is the name of the flavor you are using.
+ For example, ``prudence-python'' is used for the Python flavor.
+ If that user doesn't exist, the daemon will run under 
+\emph on
+your 
+\emph default
+user.
 \end_layout
 
-\begin_layout Itemize
-You will need to install the native executable for 
+\begin_layout Standard
+In any case, it's up to you to make sure that the daemon's user has the
+ necessary read and write privileges for the Prudence files.
+ In particular, it needs to be able to write to /logs/ and to /cache/.
+\end_layout
+
+\begin_layout Standard
+The scripts work by detecting your running environment and attempting to
+ use the appropriate 
 \begin_inset CommandInset href
 LatexCommand href
 name "Apache Commons Daemon"
@@ -19703,14 +19710,113 @@ target "http://commons.apache.org/daemon/"
 
 \end_inset
 
-.
- Note that it is likely already packaged for your operating system (package
- ``jsvc'' on Ubuntu, for example).
+ binary.
+ Prudence comes with binaries for Linux, Solaris, Darwin (OS X) and Windows,
+ for both 32bit and 64bit architectures.
+\end_layout
+
+\begin_layout Subsubsection
+Notes for Linux
 \end_layout
 
 \begin_layout Itemize
-A user named ``prudence'' must exist, which will be used by the running
- Prudence instance.
+We maintain a 
+\begin_inset CommandInset href
+LatexCommand href
+name "repository for Ubuntu"
+target "https://launchpad.net/~emblem-parade/+archive/prudence/"
+
+\end_inset
+
+ where everything just works.
+\end_layout
+
+\begin_layout Itemize
+The /bin/run.sh script can be installed as an /etc/init.d/ script, so it can
+ also be run via Upstart, like so:
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo service prudence-X start
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+If you get an error about a missing JAVA_HOME, you can set it like so:
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo JAVA_HOME=/var/lib/jvm bin/run.sh start
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Newer Linux operating systems might give you an error about a missing ``libcap.so.
+1'' library.
+ In such cases, you will need to install your operating system's Apache
+ Commons Daemon package.
+ In Ubuntu, for example, it is package ``jsvc''.
+ The /bin/run.sh script will always try to use your operating system's jsvc
+ before falling back to the binary that comes with Prudence.
+\end_layout
+
+\begin_layout Subsubsection
+Notes for Windows
+\end_layout
+
+\begin_layout Itemize
+You need to ``install'' the service before you can ``start'' it.
+ Use ``uninstall'' if you need to remove it.
+\end_layout
+
+\begin_layout Itemize
+Note that Windows requires your service executable (in the /commons-daemon/
+ subdirectory) to be on a local drive.
+ It will fail on network drives.
+\end_layout
+
+\begin_layout Itemize
+Prudence is installed as a standard Windows service, so you can also use
+ Control Panel > Administrative Tools > Services or the ``net'' command
+ line tool to start and stop it.
+ For example:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+net start PrudenceX
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+You can edit the settings using ``settings''.
+\end_layout
+
+\begin_layout Itemize
+Windows does not support ``status'', but you can use ``monitor'' to add
+ a nice little tray icon that lets you manage the daemon.
 \end_layout
 
 \begin_layout Subsection
@@ -19801,7 +19907,7 @@ target "https://jna.dev.java.net/"
 \end_layout
 
 \begin_layout Standard
-See /configuration/yajsw.conf for a sample JSW configuration.
+See /configuration/yajsw.conf for a sample JAJSW configuration.
  The wrapper will log to /logs/yajsw.log.
 \end_layout
 
