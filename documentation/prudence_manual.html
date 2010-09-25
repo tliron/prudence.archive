@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2010-09-21">
+<meta name="create-date" content="2010-09-24">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -7560,14 +7560,11 @@ Filtering actually implements a kind of partitioning, but one that is vertical r
 </li>
 </ol>
 <div class="Unindented">
-Unfortunately, there is a use case relevant for newer web frameworks, too: if you’ve designed your application poorly, and you have many requests that could take a long time to complete, then your thread pools could get saturated when many users are concurrently making those requests. When saturated, you cannot handle even the super-quick cache requests. An upstream cache band-aid could, at least, keep cached pages working, even though your application servers are at full capacity. This creates an illusion of scalability: some users will see your web site behaving fine, while others will see it hanging.
+Unfortunately, there is a use case relevant for newer web frameworks, too: if you’ve designed your application poorly, and you have many requests that could take a long time to complete, then your thread pools could get saturated when many users are concurrently making those requests. When saturated, you cannot handle even the super-quick cache requests. An upstream cache band-aid could, at least, keep serving its cached pages, even though your application servers are at full capacity. This creates an illusion of scalability: some users will see your web site behaving fine, while others will see it hanging.
 </div>
 <div class="Indented">
-The real solution would be to re-factor your application so that it does not have long request. Below are tips on how to do this.
+The real solution would be to re-factor your application so that it does not have long requests, guaranteeing that you’re never too saturated to handle tiny requests. Below are tips on how to do this.
 </div>
-<blockquote class="Quote">
-While upstream caching doesn’t really help you scale, it can provide useful redundancy: in case all your application servers are down, it can continue serving cached pages. Again, non-cached pages will not be available, making this an inadequate ‘‘solution,’’ but it might be better than nothing.
-</blockquote>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-89"></a>Dealing with Lengthy Requests
 </h2>

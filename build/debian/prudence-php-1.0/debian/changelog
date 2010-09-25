@@ -1,3 +1,9 @@
+prudence-php (1.0-4) lucid; urgency=medium
+
+  * Version bump.
+
+ -- Tal Liron <tal.liron@gmail.com>  Tue, 21 Sep 2010 01:16:38 -0600
+
 prudence-php (1.0-0) lucid; urgency=medium
 
   * Initial packaging (revision 742).

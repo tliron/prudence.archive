@@ -22326,7 +22326,7 @@ Unfortunately, there is a use case relevant for newer web frameworks, too:
  that could take a long time to complete, then your thread pools could get
  saturated when many users are concurrently making those requests.
  When saturated, you cannot handle even the super-quick cache requests.
- An upstream cache band-aid could, at least, keep cached pages working,
+ An upstream cache band-aid could, at least, keep serving its cached pages,
  even though your application servers are at full capacity.
  This creates an illusion of scalability: some users will see your web site
  behaving fine, while others will see it hanging.
@@ -22334,16 +22334,9 @@ Unfortunately, there is a use case relevant for newer web frameworks, too:
 
 \begin_layout Standard
 The real solution would be to re-factor your application so that it does
- not have long request.
+ not have long requests, guaranteeing that you're never too saturated to
+ handle tiny requests.
  Below are tips on how to do this.
-\end_layout
-
-\begin_layout Quote
-While upstream caching doesn't really help you scale, it can provide useful
- redundancy: in case all your application servers are down, it can continue
- serving cached pages.
- Again, non-cached pages will not be available, making this an inadequate
- ``solution,'' but it might be better than nothing.
 \end_layout
 
 \begin_layout Subsection
