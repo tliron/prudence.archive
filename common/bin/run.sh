@@ -41,29 +41,60 @@ PID=/tmp/prudence-${distribution}.pid
 DAEMON_USER=prudence-${distribution}
 LOGS="$HERE/../logs"
 
-if [ ! -f "$JSVC" ]; then
-	# Use our jsvc binary
-	if [ "$OS" == 'darwin' ]; then
-		# Darwin has a universal binary
-		JSVC="$HERE/commons-daemon/$OS/jsvc"
-	else
-		JSVC="$HERE/commons-daemon/$OS/$ARCH/jsvc"
+if [ "$OS" == 'sunos' ]; then
+	ARCH=$(uname -p)
+	if [ "$ARCH" = "i386" ]; then
+		BITS=$(isainfo -b)
+		if [ "$BITS" == 64 ]; then
+			ARCH=x86_64
+		fi
 	fi
 fi
 
 if [ -z "$JAVA_HOME" ]; then
 	# Common defaults for JAVA_HOME
-	if [ "$OS" == 'darwin' ]; then
-		JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
-	else
-		JAVA_HOME=/usr/lib/jvm/java-6-openjdk
-	fi
+	case "$OS" in
+		linux)
+			JAVA_HOME=/usr/lib/jvm/java-6-openjdk
+			;;
+		darwin)
+			JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
+			;;
+		sunos)
+			JAVA_HOME=/usr/jdk/latest
+			;;
+	esac
 fi
 
 JAVA="$JAVA_HOME/bin/java"
 
 if [ ! -f "$JAVA" ]; then
 	JAVA=/usr/bin/java
+fi
+
+if [ ! -f "$JSVC" ]; then
+	# Use our jsvc binary
+	case "$OS" in
+		darwin)
+			# Darwin has a universal binary
+			JSVC="$HERE/commons-daemon/$OS/jsvc"
+			;;
+		sunos)
+			if [ "$ARCH" == 'x86_64' ]; then
+				# Some distributions of 64bit OpenSolaris do not have a 64bit JVM
+				set +e
+				$JAVA -d64 > /dev/null 2>&1
+				if [ "$?" != 0 ]; then
+					ARCH=i386
+				fi
+				set -e
+			fi
+			JSVC="$HERE/commons-daemon/$OS/$ARCH/jsvc"
+			;;
+		*)
+			JSVC="$HERE/commons-daemon/$OS/$ARCH/jsvc"
+			;;
+	esac
 fi
 
 console () {
@@ -76,6 +107,7 @@ console () {
 
 	exec \
 	"$JAVA" \
+	-server \
 	-cp "$JARS" \
 	-Dscripturian.cache=cache \
 #if(($distribution == 'python') || ($distribution == 'kitchensink'))
@@ -132,6 +164,7 @@ start () {
 	-procname prudence \
 	-outfile "$LOGS/run.log" \
 	-errfile '&1' \
+	-jvm server \
 	-cp "$JARS" \
 	-Dscripturian.cache=cache \
 #if(($distribution == 'python') || ($distribution == 'kitchensink'))
