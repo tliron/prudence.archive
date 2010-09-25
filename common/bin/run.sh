@@ -83,7 +83,7 @@ if [ ! -f "$JSVC" ]; then
 			if [ "$ARCH" == 'x86_64' ]; then
 				# Some distributions of 64bit OpenSolaris do not have a 64bit JVM
 				set +e
-				$JAVA -d64 > /dev/null 2>&1
+				"$JAVA" -d64 > /dev/null 2>&1
 				if [ "$?" != 0 ]; then
 					ARCH=i386
 				fi
