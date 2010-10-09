@@ -1467,7 +1467,7 @@ public class DelegatedResource extends ServerResource
 				if( libraryDirectory != null )
 					executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
 
-				executionContext.getServices().put( getDocumentServiceName(), new DelegatedResourceDocumentService( this ) );
+				executionContext.getServices().put( getDocumentServiceName(), new DelegatedResourceDocumentService( this, documentDescriptor ) );
 				executionContext.getServices().put( getApplicationServiceName(), new ApplicationService() );
 
 				try
