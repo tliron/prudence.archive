@@ -30,7 +30,7 @@ $save_properties = false
 $application_files = $applications_dir.list_files
 for application_file in $application_files
 	last_modified = application_file.last_modified.to_s
-	if not application_file.is_directory and application_file.name =~ /.zip$/ and $properties.get_property(application_file.name, '') != last_modified
+	if not application_file.directory and application_file.name =~ /.zip$/ and $properties.get_property(application_file.name, '') != last_modified
 		puts "Unpacking \"#{application_file.name}\"..."
 		IoUtil::unzip application_file, $applications_dir
 		$properties.set_property application_file.name, last_modified
@@ -43,7 +43,7 @@ end
 
 $application_dirs = $applications_dir.list_files
 for application_dir in $application_dirs
-	if application_dir.is_directory
+	if application_dir.directory and !application_dir.hidden
 		$application_name = application_dir.name
 		$application_internal_name = application_dir.name
 		$application_logger_name = application_dir.name

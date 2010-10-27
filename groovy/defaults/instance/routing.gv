@@ -43,7 +43,7 @@ if(saveProperties) {
 
 applicationDirs = applicationsDir.listFiles()
 for(applicationDir in applicationDirs) {
-	if(applicationDir.directory) {
+	if(applicationDir.directory && !applicationDir.hidden) {
 		applicationName = applicationDir.name
 		applicationInternalName = applicationDir.name
 		applicationLoggerName = applicationDir.name

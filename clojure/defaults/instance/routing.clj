@@ -39,7 +39,7 @@
   (IoUtil/saveProperties properties properties-file))
 
 (def application-dirs (.listFiles applications-dir))
-(doseq [application-dir (filter #(.isDirectory %) application-dirs)]
+(doseq [application-dir (filter #(and (.isDirectory %) (not (.isHidden %))) application-dirs)]
 	(def application-name (.getName application-dir))
   (def application-internal-name (.getName application-dir))
 	(def application-logger-name (.getName application-dir))

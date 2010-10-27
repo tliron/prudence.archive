@@ -40,7 +40,7 @@ if save_properties:
 
 application_dirs = applications_dir.listFiles()
 for application_dir in application_dirs:
-    if application_dir.isDirectory():
+    if application_dir.directory and not application_dir.hidden:
         application_name = application_dir.name
         application_internal_name = application_dir.name;
         application_logger_name = application_dir.name

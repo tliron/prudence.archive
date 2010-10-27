@@ -46,7 +46,7 @@ if(saveProperties) {
 var applicationDirs = applicationsDir.listFiles()
 for(var i in applicationDirs) {
 	var applicationDir = applicationDirs[i]
-	if(applicationDir.directory) {
+	if(applicationDir.directory && !applicationDir.hidden) {
 		var applicationName = applicationDir.name
 		var applicationInternalName = applicationDir.name
 		var applicationLoggerName = applicationDir.name

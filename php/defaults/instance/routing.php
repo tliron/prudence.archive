@@ -46,7 +46,7 @@ if($save_properties) {
 
 $application_dirs = $applications_dir->listFiles();
 foreach($application_dirs as $application_dir) {
-	if($application_dir->directory) {
+	if($application_dir->directory && !$application_dir->hidden) {
 		$application_name = $application_dir->name;
 		$application_internal_name = $application_dir->name;
 		$application_logger_name = $application_dir->name;
