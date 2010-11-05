@@ -14,6 +14,8 @@ package com.threecrickets.prudence.service;
 import java.io.File;
 import java.util.List;
 
+import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Encoding;
 import org.restlet.data.Language;
@@ -331,6 +333,32 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	public Representation getEntity()
 	{
 		return entity;
+	}
+
+	//
+	// ConversationServiceBase
+	//
+
+	/**
+	 * A shortcut to the resource request.
+	 * 
+	 * @return The request
+	 */
+	@Override
+	public Request getRequest()
+	{
+		return getResource().getRequest();
+	}
+
+	/**
+	 * A shortcut to the resource response.
+	 * 
+	 * @return The response
+	 */
+	@Override
+	public Response getResponse()
+	{
+		return getResource().getResponse();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
