@@ -25,6 +25,8 @@ from org.python.core.util import FileUtil
 from org.python.tests import (BeanImplementation, Child, Child2,
                               CustomizableMapHolder, Listenable, ToUnicode)
 from org.python.tests.mro import (ConfusedOnGetitemAdd, FirstPredefinedGetitem, GetitemAdder)
+from javatests.ProxyTests import Person
+
 
 class InstantiationTest(unittest.TestCase):
     def test_cant_instantiate_abstract(self):
@@ -523,6 +525,12 @@ class SerializationTest(unittest.TestCase):
         serialized_code = roundtrip_serialization(universal_answer.func_code)
         self.assertEqual(eval(serialized_code), universal_answer())
 
+    def test_builtin_names(self):
+        import __builtin__
+        names = [x for x in dir(__builtin__)]
+        self.assertEqual(names, roundtrip_serialization(names))
+
+
 
 class CopyTest(unittest.TestCase):
     
@@ -540,6 +548,34 @@ class CopyTest(unittest.TestCase):
         self.assertNotEqual(id(items), id(items_copy))
         self.assertNotEqual(id(items[0]), id(items_copy[0]))
         self.assertNotEqual(id(items[1]), id(items_copy[1]))
+
+    def test_copy_when_not_cloneable(self):
+        bdfl = Person("Guido", "von Rossum")
+        self.assertRaises(TypeError, copy.copy, bdfl)
+
+        # monkeypatching in a __copy__ should now work
+        Person.__copy__ = lambda p: Person(p.firstName, p.lastName)
+        copy_bdfl = copy.copy(bdfl)
+        self.assertEqual(str(bdfl), str(copy_bdfl))
+
+    def test_copy_when_not_serializable(self):
+        bdfl = Person("Guido", "von Rossum")
+        self.assertRaises(TypeError, copy.deepcopy, bdfl)
+
+        # monkeypatching in a __deepcopy__ should now work
+        Person.__deepcopy__ = lambda p, memo: Person(p.firstName, p.lastName)
+        copy_bdfl = copy.deepcopy(bdfl)
+        self.assertEqual(str(bdfl), str(copy_bdfl))
+
+    def test_immutable(self):
+        abc = String("abc")
+        abc_copy = copy.copy(abc)
+        self.assertEqual(id(abc), id(abc_copy))
+        
+        fruits = ArrayList([String("apple"), String("banana")])
+        fruits_copy = copy.copy(fruits)
+        self.assertEqual(fruits, fruits_copy)
+        self.assertNotEqual(id(fruits), id(fruits_copy))
 
 
 class UnicodeTest(unittest.TestCase):

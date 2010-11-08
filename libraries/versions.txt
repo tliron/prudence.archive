@@ -7,37 +7,37 @@ commons-io			1.4
 commons-logging		1.1.1
 commons-pool		1.5.5
 cron4j				2.2.3
-grizzly				1.9.19
+grizzly				1.9.21
 groboutils			5 (note: we've removed the internal log4j distribution)
-groovy				1.7.4
+groovy				1.7.5
 h2					1.2.145
-hazelcast			1.8.5
-httpclient			4.0.1
+hazelcast			1.9
+httpclient			4.0.3
 httpcore			4.0.1 (blocking version)
-httpmime			4.0.1
-jackson				1.3.0
+httpmime			4.0.3
+jackson				1.6.2
 jcip-annotations
 jepp				2.4
-jruby				1.5.1
+jruby				1.5.3
 json				
 jsr-223				
-junit				4.8.1
-jython				2.5.2 beta 1
+junit				4.8.2
+jython				2.5.2 RC2
 jygments			1.0 (Revision 21)
-log4j				1.2.15
+log4j				1.2.16
 mime4j				0.6
 mysqlconnector		5.1.8
 pygments			1.1.1
-quercus				4.0.8
-restlet (JSE)		2.0.2
+quercus				4.0.11
+restlet (JSE)		2.0.3
 rhino				1.7R2
 servlet (tomcat)	6.0.26
 scripturian			1.0 (Revision 244)
-slf4j				1.5.8
+slf4j				1.6.1
 spymemcached		2.5
 sqlalchemy			0.6 (Revision 6720 + H2 patch)
 succinct			1.0 (Revision 21)
 svnant				1.3.0
 syntaxhighlighter	2.1.364
-velocity			1.6.2
+velocity			1.6.4
 vpp					2.2.1 (note: we've removed the internal Velocity distribution)

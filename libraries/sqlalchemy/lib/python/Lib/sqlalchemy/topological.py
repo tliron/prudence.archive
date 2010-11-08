@@ -138,7 +138,11 @@ class _EdgeCollection(object):
         given node, and have no further parents.
         """
 
-        children = self.parent_to_children.pop(node, None)
+        try:
+            # PRUDENCE: patch for Jython 2.5.2 RC2 -- this might throw an NPE!
+            children = self.parent_to_children.pop(node, None)
+        except:
+            children = None
         if children is not None:
             for child in children:
                 self.child_to_parents[child].remove(node)

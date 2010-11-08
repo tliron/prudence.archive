@@ -115,6 +115,7 @@ console () {
 	-Dpython.verbose=warning \
 	-Djava.library.path=/usr/local/lib \
 #end
+	-Djava.util.logging.config.file=none \
 	com.threecrickets.scripturian.Scripturian instance
 }
 
@@ -172,6 +173,7 @@ start () {
 	-Dpython.verbose=warning \
 	-Djava.library.path=/usr/local/lib \
 #end
+	-Djava.util.logging.config.file=none \
 	com.threecrickets.prudence.PrudenceDaemon instance
 }
 
