@@ -1,15 +1,4 @@
 <?php
-//
-// This script implements and handles a REST resource. Simply put, it is a state,
-// addressed by a URL, that responds to verbs. Verbs represent logical operations
-// on the state, such as create, read, update and delete (CRUD). They are primitive
-// communications, which include very minimal session and no transaction state. As such,
-// they are very straightforward to implement, and can lead to very scalable
-// applications. 
-//
-// The exact URL of this resource depends on its its filename and/or its location in
-// your directory structure. See your settings.php for more information.
-//
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.restlet.ext.json.JsonRepresentation;
@@ -45,35 +34,12 @@ function set_state($conversation, $value) {
 	$conversation->resource->context->attributes->put('quercus.state', $value); 
 }
 
-// This function is called when the resource is initialized. We will use it to set
-// general characteristics for the resource.
-
 function handle_init($conversation) {
-	// The order in which we add the variants is their order of preference.
-	// Note that clients often include a wildcard (such as "*/*") in the
-	// "Accept" attribute of their request header, specifying that any media type
-	// will do, in which case the first one we add will be used.
-	
     $conversation->addMediaTypeByName('application/json');
     $conversation->addMediaTypeByName('text/plain');
 }
 
-// This function is called for the GET verb, which is expected to behave as a
-// logical "read" of the resource's state.
-//
-// The expectation is that it return one representation, out of possibly many, of the
-// resource's state. Returned values can be of any explicit sub-class of
-// org.restlet.representation.Representation. Other types will be automatically converted to
-// string representation using the client's requested media type and character set.
-// These, and the language of the representation (defaulting to NULL), can be read and
-// changed via $conversation->mediaType, $conversation->characterSet, and
-// $conversation->language.
-//
-// Additionally, you can use $conversation->variant to interrogate the client's provided
-// list of supported languages and encoding.
-
 function handle_get($conversation) {
-
 	$state_lock = get_stack_lock($conversation);
 	$state =& get_state($conversation);
 
@@ -103,20 +69,7 @@ function handle_get($conversation) {
 	return $r;
 }
 
-// This function is called for the POST verb, which is expected to behave as a
-// logical "update" of the resource's state.
-//
-// The expectation is that $conversation->entity represents an update to the state,
-// that will affect future calls to handle_get(). As such, it may be possible
-// to accept logically partial representations of the state.
-//
-// You may optionally return a representation, in the same way as handle_get().
-// Because PHP functions return the last statement's value by default,
-// you must explicitly return a NULL if you do not want to return a representation
-// to the client.
-
 function handle_post($conversation) {
-	
 	// Note: we must call ->getText() explicitly; ->text will not work
 
 	$update = json_decode($conversation->entity->getText(), true);
@@ -139,20 +92,7 @@ function handle_post($conversation) {
 	return handle_get($conversation);
 }
 
-// This function is called for the PUT verb, which is expected to behave as a
-// logical "create" of the resource's state.
-//
-// The expectation is that $conversation->entity represents an entirely new state,
-// that will affect future calls to handle_get(). Unlike handle_post(),
-// it is expected that the representation be logically complete.
-//
-// You may optionally return a representation, in the same way as handle_get().
-// Because PHP functions return the last statement's value by default,
-// you must explicitly return a NULL if you do not want to return a representation
-// to the client.
-
 function handle_put($conversation) {
-
 	// Note: we must call ->getText() explicitly; ->text will not work
 	
 	$update = json_decode($conversation->entity->getText(), true);
@@ -161,15 +101,7 @@ function handle_put($conversation) {
 	return handle_get($conversation);
 }
 
-// This function is called for the DELETE verb, which is expected to behave as a
-// logical "delete" of the resource's state.
-//
-// The expectation is that subsequent calls to handle_get() will fail. As such,
-// it doesn't make sense to return a representation, and any returned value will
-// ignored. Still, it's a good idea to return NULL to avoid any passing of value.
-
 function handle_delete($conversation) {
-
 	set_state($conversation, array());
 
 	return NULL;
