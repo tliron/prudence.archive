@@ -23,6 +23,7 @@ import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
+import org.restlet.engine.Engine;
 
 import com.threecrickets.prudence.ApplicationTask;
 import com.threecrickets.prudence.DelegatedResource;
@@ -134,7 +135,7 @@ public class ApplicationService
 	 */
 	public Logger getSubLogger( String name )
 	{
-		return Logger.getLogger( getLogger().getName() + "." + name );
+		return Engine.getLogger( getLogger().getName() + "." + name );
 	}
 
 	/**
