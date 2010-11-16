@@ -329,7 +329,6 @@
 		<fetch-library dist="${dist-javascript}" library="commons-logging" />
 		<fetch-library dist="${dist-javascript}" library="commons-pool" />
 		<fetch-library dist="${dist-javascript}" library="cron4j" />
-		<fetch-library dist="${dist-javascript}" library="grizzly" />
 		<fetch-library dist="${dist-javascript}" library="h2" />
 		<fetch-library dist="${dist-javascript}" library="hazelcast" />
 		<fetch-library dist="${dist-javascript}" library="httpclient" />
@@ -350,6 +349,7 @@
 		<fetch-library dist="${dist-javascript}" library="spymemcached" />
 		<fetch-library dist="${dist-javascript}" library="succinct" />
 		<fetch-library dist="${dist-javascript}" library="velocity" />
+		<fetch-library dist="${dist-javascript}" library="${http-server}" />
 		<fetch-library-versions dist="${dist-javascript}" />
 	</target>
 	
@@ -386,7 +386,6 @@
 		<fetch-library dist="${dist-python}" library="commons-logging" />
 		<fetch-library dist="${dist-python}" library="commons-pool" />
 		<fetch-library dist="${dist-python}" library="cron4j" />
-		<fetch-library dist="${dist-python}" library="grizzly" />
 		<fetch-library dist="${dist-python}" library="h2" />
 		<fetch-library dist="${dist-python}" library="hazelcast" />
 		<fetch-library dist="${dist-python}" library="httpclient" />
@@ -410,6 +409,7 @@
 		<fetch-library dist="${dist-python}" library="sqlalchemy" />
 		<fetch-library dist="${dist-python}" library="succinct" />
 		<fetch-library dist="${dist-python}" library="velocity" />
+		<fetch-library dist="${dist-python}" library="${http-server}" />
 		<fetch-library-versions dist="${dist-python}" />
 	</target>
 	
@@ -447,7 +447,6 @@
 		<fetch-library dist="${dist-clojure}" library="commons-logging" />
 		<fetch-library dist="${dist-clojure}" library="commons-pool" />
 		<fetch-library dist="${dist-clojure}" library="cron4j" />
-		<fetch-library dist="${dist-clojure}" library="grizzly" />
 		<fetch-library dist="${dist-clojure}" library="h2" />
 		<fetch-library dist="${dist-clojure}" library="hazelcast" />
 		<fetch-library dist="${dist-clojure}" library="httpclient" />
@@ -467,6 +466,7 @@
 		<fetch-library dist="${dist-clojure}" library="spymemcached" />
 		<fetch-library dist="${dist-clojure}" library="succinct" />
 		<fetch-library dist="${dist-clojure}" library="velocity" />
+		<fetch-library dist="${dist-clojure}" library="${http-server}" />
 		<fetch-library-versions dist="${dist-clojure}" />
 	</target>
 	
@@ -503,7 +503,6 @@
 		<fetch-library dist="${dist-groovy}" library="commons-logging" />
 		<fetch-library dist="${dist-groovy}" library="commons-pool" />
 		<fetch-library dist="${dist-groovy}" library="cron4j" />
-		<fetch-library dist="${dist-groovy}" library="grizzly" />
 		<fetch-library dist="${dist-groovy}" library="groovy" />
 		<fetch-library dist="${dist-groovy}" library="h2" />
 		<fetch-library dist="${dist-groovy}" library="hazelcast" />
@@ -524,6 +523,7 @@
 		<fetch-library dist="${dist-groovy}" library="spymemcached" />
 		<fetch-library dist="${dist-groovy}" library="succinct" />
 		<fetch-library dist="${dist-groovy}" library="velocity" />
+		<fetch-library dist="${dist-groovy}" library="${http-server}" />
 		<fetch-library-versions dist="${dist-groovy}" />
 	</target>
 	
@@ -560,7 +560,6 @@
 		<fetch-library dist="${dist-ruby}" library="commons-logging" />
 		<fetch-library dist="${dist-ruby}" library="commons-pool" />
 		<fetch-library dist="${dist-ruby}" library="cron4j" />
-		<fetch-library dist="${dist-ruby}" library="grizzly" />
 		<fetch-library dist="${dist-ruby}" library="h2" />
 		<fetch-library dist="${dist-ruby}" library="hazelcast" />
 		<fetch-library dist="${dist-ruby}" library="httpclient" />
@@ -581,6 +580,7 @@
 		<fetch-library dist="${dist-ruby}" library="spymemcached" />
 		<fetch-library dist="${dist-ruby}" library="succinct" />
 		<fetch-library dist="${dist-ruby}" library="velocity" />
+		<fetch-library dist="${dist-ruby}" library="${http-server}" />
 		<fetch-library-versions dist="${dist-ruby}" />
 	</target>
 	
@@ -621,7 +621,6 @@
 		<fetch-library dist="${dist-php}" library="commons-logging" />
 		<fetch-library dist="${dist-php}" library="commons-pool" />
 		<fetch-library dist="${dist-php}" library="cron4j" />
-		<fetch-library dist="${dist-php}" library="grizzly" />
 		<fetch-library dist="${dist-php}" library="h2" />
 		<fetch-library dist="${dist-php}" library="hazelcast" />
 		<fetch-library dist="${dist-php}" library="httpclient" />
@@ -641,6 +640,7 @@
 		<fetch-library dist="${dist-php}" library="spymemcached" />
 		<fetch-library dist="${dist-php}" library="succinct" />
 		<fetch-library dist="${dist-php}" library="velocity" />
+		<fetch-library dist="${dist-php}" library="${http-server}" />
 		<fetch-library-versions dist="${dist-php}" />
 	</target>
 	
@@ -691,7 +691,6 @@
 		<fetch-library dist="${dist-kitchensink}" library="commons-logging" />
 		<fetch-library dist="${dist-kitchensink}" library="commons-pool" />
 		<fetch-library dist="${dist-kitchensink}" library="cron4j" />
-		<fetch-library dist="${dist-kitchensink}" library="grizzly" />
 		<fetch-library dist="${dist-kitchensink}" library="groboutils" />
 		<fetch-library dist="${dist-kitchensink}" library="groovy" />
 		<fetch-library dist="${dist-kitchensink}" library="h2" />
@@ -720,6 +719,7 @@
 		<fetch-library dist="${dist-kitchensink}" library="sqlalchemy" />
 		<fetch-library dist="${dist-kitchensink}" library="succinct" />
 		<fetch-library dist="${dist-kitchensink}" library="velocity" />
+		<fetch-library dist="${dist-kitchensink}" library="${http-server}" />
 		<fetch-library-versions dist="${dist-kitchensink}" />
 	</target>
 	
