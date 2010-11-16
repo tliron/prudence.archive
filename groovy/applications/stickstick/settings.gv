@@ -15,7 +15,7 @@ predefinedGlobals['stickstick.backend'] = 'h2'
 predefinedGlobals['stickstick.username'] = 'root'
 predefinedGlobals['stickstick.password'] = 'root'
 predefinedGlobals['stickstick.host'] = ''
-predefinedGlobals['stickstick.database'] = applicationBase + 'data/stickstick'
+predefinedGlobals['stickstick.database'] = applicationBasePath + '/data/stickstick'
 
 showDebugOnError = true
 
