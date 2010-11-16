@@ -12,7 +12,10 @@
 
 set -e
 
-JARS=\
+JARS=libraries/*
+
+# JVM version 1.5 does not support wildcards for the classpath, so we need to list them explicitly 
+JVM5_JARS=\
 #foreach($jar in $jars.split(':'))
 libraries/${jar}#if($velocityHasNext):\
 #end
@@ -72,6 +75,18 @@ if [ ! -f "$JAVA" ]; then
 	JAVA=/usr/bin/java
 fi
 
+if [ ! -f "$JAVA" ]; then
+	echo You must correctly set JAVA_HOME or have a /usr/bin/java to start Prudence
+	exit 1
+fi
+
+JAVA_VERSION=$("$JAVA" -version 2>&1 | awk 'NR==1{gsub(/"/,""); print $3}')
+JAVA_VERSION=$${leftbracket}JAVA_VERSION:0:3}
+
+if [ "$JAVA_VERSION" == '1.5' ]; then
+	JARS="$JVM5_JARS"
+fi
+
 if [ ! -f "$JSVC" ]; then
 	# Use our jsvc binary
 	case "$OS" in
@@ -98,11 +113,6 @@ if [ ! -f "$JSVC" ]; then
 fi
 
 console () {
-	if [ ! -f "$JAVA" ]; then
-		echo You must correctly set JAVA_HOME or have a /usr/bin/java to start Prudence in console mode
-		exit 1
-	fi
-
 	cd "$HERE/.."
 
 	exec \

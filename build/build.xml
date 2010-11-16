@@ -116,6 +116,7 @@
 						<property key="distribution" value="@{dist}" />
 						<property key="service" value="@{name}" />
 						<property key="jars" value="${@{dist}-jars}" />
+						<property key="leftbracket" value="{" />
 					</context>
 				</config>
 			</vppcopy>
