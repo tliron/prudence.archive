@@ -12,15 +12,6 @@
 
 set -e
 
-function join() {
-	local IFS="$1"
-	shift
-	echo "$*"
-}
-
-JARS_PATH=libraries/*
-JARS=$(join ':' libraries/*.jar)
-
 set +e
 SCRIPT=$(readlink -f "$0" 2>/dev/null)
 if [ "$?" == 0 ]; then
@@ -42,6 +33,16 @@ JSVC=/usr/bin/jsvc
 PID=/tmp/prudence-${distribution}.pid
 DAEMON_USER=prudence-${distribution}
 LOGS="$HERE/../logs"
+
+function join() {
+	local IFS="$1"
+	shift
+	echo "$*"
+}
+
+cd "$HERE/.."
+JARS_PATH=libraries/*
+JARS=$(join ':' libraries/*.jar)
 
 if [ "$OS" == 'sunos' ]; then
 	ARCH=$(uname -p)
@@ -113,8 +114,6 @@ if [ ! -f "$JSVC" ]; then
 fi
 
 console () {
-	cd "$HERE/.."
-
 	exec \
 	"$JAVA" \
 	-server \
