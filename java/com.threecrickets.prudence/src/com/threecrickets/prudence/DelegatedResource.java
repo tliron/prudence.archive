@@ -1118,8 +1118,8 @@ public class DelegatedResource extends ServerResource
 	public Representation delete( Variant variant ) throws ResourceException
 	{
 		DelegatedResourceConversationService conversationService = new DelegatedResourceConversationService( this, null, variant, getDefaultCharacterSet() );
-		enter( getEntryPointNameForDelete(), conversationService );
-		return null;
+		Object r = enter( getEntryPointNameForDelete(), conversationService );
+		return getRepresentation( r, conversationService );
 	}
 
 	/**
