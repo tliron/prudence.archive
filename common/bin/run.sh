@@ -12,15 +12,14 @@
 
 set -e
 
-JARS=libraries/*
+function join() {
+	local IFS="$1"
+	shift
+	echo "$*"
+}
 
-# JVM version 1.5 does not support wildcards for the classpath, so we need to list them explicitly 
-JVM5_JARS=\
-#foreach($jar in $jars.split(':'))
-libraries/${jar}#if($velocityHasNext):\
-#end
-#end
-
+JARS_PATH=libraries/*
+JARS=$(join ':' libraries/*.jar)
 
 set +e
 SCRIPT=$(readlink -f "$0" 2>/dev/null)
@@ -83,8 +82,9 @@ fi
 JAVA_VERSION=$("$JAVA" -version 2>&1 | awk 'NR==1{gsub(/"/,""); print $3}')
 JAVA_VERSION=$${leftbracket}JAVA_VERSION:0:3}
 
+CP="$JARS_PATH"
 if [ "$JAVA_VERSION" == '1.5' ]; then
-	JARS="$JVM5_JARS"
+	CP="$JARS"
 fi
 
 if [ ! -f "$JSVC" ]; then
@@ -118,7 +118,7 @@ console () {
 	exec \
 	"$JAVA" \
 	-server \
-	-cp "$JARS" \
+	-cp "$CP" \
 	-Dscripturian.cache=cache \
 #if(($distribution == 'python') || ($distribution == 'kitchensink'))
 	-Dpython.home=libraries/python \
