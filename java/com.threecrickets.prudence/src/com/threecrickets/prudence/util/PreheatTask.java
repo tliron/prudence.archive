@@ -14,10 +14,13 @@ package com.threecrickets.prudence.util;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.data.LocalReference;
 import org.restlet.data.Status;
+import org.restlet.engine.Engine;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
@@ -47,19 +50,23 @@ public class PreheatTask implements Runnable
 	 * 
 	 * @param documentSource
 	 *        The document source
-	 * @param context
-	 *        The context
 	 * @param applicationInternalName
 	 *        The internal application name
+	 * @param application
+	 *        The application
+	 * @param loggerName
+	 *        The logger name
 	 * @return An array of tasks
 	 */
-	public static PreheatTask[] forDocumentSource( DocumentSource<Executable> documentSource, Context context, String applicationInternalName )
+	public static PreheatTask[] forDocumentSource( DocumentSource<Executable> documentSource, String applicationInternalName, Application application, String loggerName )
 	{
 		Collection<DocumentDescriptor<Executable>> documentDescriptors = documentSource.getDocuments();
 		PreheatTask[] preheatTasks = new PreheatTask[documentDescriptors.size()];
 		int i = 0;
+		Context context = application.getContext().createChildContext();
+		Logger logger = Engine.getLogger( loggerName );
 		for( DocumentDescriptor<Executable> documentDescriptor : documentDescriptors )
-			preheatTasks[i++] = new PreheatTask( context, applicationInternalName, documentDescriptor.getDefaultName() );
+			preheatTasks[i++] = new PreheatTask( applicationInternalName, documentDescriptor.getDefaultName(), context, logger );
 
 		return preheatTasks;
 	}
@@ -71,18 +78,38 @@ public class PreheatTask implements Runnable
 	/**
 	 * Construction.
 	 * 
-	 * @param context
-	 *        The context
 	 * @param applicationInternalName
 	 *        The internal application name
 	 * @param resourceUri
 	 *        The internal URI
+	 * @param application
+	 *        The application
+	 * @param loggerName
+	 *        The logger name
 	 */
-	public PreheatTask( Context context, String applicationInternalName, String resourceUri )
+	public PreheatTask( String applicationInternalName, String resourceUri, Application application, String loggerName )
 	{
-		this.context = context.createChildContext();
+		this( applicationInternalName, resourceUri, application.getContext().createChildContext(), Engine.getLogger( loggerName ) );
+	}
+
+	/**
+	 * Construction.
+	 * 
+	 * @param applicationInternalName
+	 *        The internal application name
+	 * @param resourceUri
+	 *        The internal URI
+	 * @param context
+	 *        The context
+	 * @param logger
+	 *        The logger
+	 */
+	public PreheatTask( String applicationInternalName, String resourceUri, Context context, Logger logger )
+	{
 		this.applicationInternalName = applicationInternalName;
 		this.resourceUri = resourceUri;
+		this.context = context;
+		this.logger = logger;
 	}
 
 	//
@@ -96,28 +123,28 @@ public class PreheatTask implements Runnable
 		ClientResource clientResource = new ClientResource( context, LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, uri ) );
 		try
 		{
-			context.getLogger().fine( "Preheating: " + uri );
+			logger.fine( "Preheating: " + uri );
 			Representation representation = clientResource.get();
 			if( representation != null )
 				representation.exhaust();
-			context.getLogger().fine( "Preheated: " + uri );
+			logger.fine( "Preheated: " + uri );
 		}
 		catch( ResourceException x )
 		{
 			if( x.getStatus().equals( Status.CLIENT_ERROR_NOT_FOUND ) )
 			{
-				context.getLogger().warning( "Could not find resource to preheat: " + uri );
+				logger.warning( "Could not find resource to preheat: " + uri );
 			}
 			else
 			{
-				context.getLogger().log( Level.SEVERE, "Preheating error: " + uri, x );
+				logger.log( Level.SEVERE, "Preheating error: " + uri, x );
 				System.err.print( clientResource.getReference() + " - " );
 				x.printStackTrace();
 			}
 		}
 		catch( IOException x )
 		{
-			context.getLogger().log( Level.SEVERE, "Preheating error: " + uri, x );
+			logger.log( Level.SEVERE, "Preheating error: " + uri, x );
 			System.err.print( clientResource.getReference() + " - " );
 			x.printStackTrace();
 		}
@@ -140,11 +167,6 @@ public class PreheatTask implements Runnable
 	// Private
 
 	/**
-	 * The context.
-	 */
-	private final Context context;
-
-	/**
 	 * The internal application name.
 	 */
 	private final String applicationInternalName;
@@ -153,4 +175,14 @@ public class PreheatTask implements Runnable
 	 * The internal URI.
 	 */
 	private final String resourceUri;
+
+	/**
+	 * The context.
+	 */
+	private final Context context;
+
+	/**
+	 * The logger.
+	 */
+	private final Logger logger;
 }

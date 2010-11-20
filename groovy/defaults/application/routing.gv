@@ -204,12 +204,12 @@ if(showDebugOnError) {
 //
 
 if(dynamicWebPreheat) {
-	preheatTasks = PreheatTask.forDocumentSource(dynamicWebDocumentSource, componentInstance.context, applicationInternalName)
+	preheatTasks = PreheatTask.forDocumentSource(dynamicWebDocumentSource, applicationInternalName, applicationInstance, applicationLoggerName)
 	for(preheatTask in preheatTasks) {
 		tasks.push(preheatTask)
 	}
 }
 
 for(preheatResource in preheatResources) {
-	tasks.push(new PreheatTask(componentInstance.context, applicationInternalName, preheatResource))
+	tasks.push(new PreheatTask(applicationInternalName, preheatResource, applicationInstance, applicationLoggerName))
 }

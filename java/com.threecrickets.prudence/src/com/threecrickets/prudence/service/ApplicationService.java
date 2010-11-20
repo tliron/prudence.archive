@@ -121,7 +121,18 @@ public class ApplicationService
 	 */
 	public Logger getLogger()
 	{
-		return getApplication().getLogger();
+		if( logger == null )
+		{
+			logger = application.getLogger();
+			String name = logger.getName();
+			if( name.endsWith( ".restlet" ) )
+			{
+				name = name.substring( 0, name.length() - ".restlet".length() );
+				logger = Engine.getLogger( name );
+			}
+		}
+
+		return logger;
 	}
 
 	/**
@@ -252,4 +263,9 @@ public class ApplicationService
 	 * The executor service.
 	 */
 	private ExecutorService globalExecutor;
+
+	/**
+	 * The logger.
+	 */
+	private Logger logger;
 }
