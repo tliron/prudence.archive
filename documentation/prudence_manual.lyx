@@ -879,7 +879,18 @@ target "http://www.python.org/"
 
 \begin_layout Standard
 Python presents a unique challenge in a scriptlet environment, due to its
- reliance on indentation.
+ 
+\bar under
+reliance on indentation (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|python"
+
+\end_inset
+
+)
+\bar default
+.
  However, because HTML is loose with whitespace, it's possible to force
  the whole file to adhere to Python's scheme.
  In fact, as many Python enthusiasts would argue, forcing your code to adhere
@@ -888,7 +899,7 @@ Python presents a unique challenge in a scriptlet environment, due to its
 \end_layout
 
 \begin_layout Standard
-In Stickstick, the included example application we show how to use 
+In Stickstick, the included example application, we show how to use 
 \begin_inset CommandInset href
 LatexCommand href
 name "SQLAlchemy"
@@ -1567,6 +1578,21 @@ The ``<% \SpecialChar \ldots{}
 \begin_layout Standard
 Refresh your browser, and you should see the dynamically generated page.
  Hello!
+\end_layout
+
+\begin_layout Quote
+Make sure you understand the significance of 
+\bar under
+newlines and whitespace in scriptlets (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|newlines-and-whitespace"
+
+\end_inset
+
+)
+\bar default
+, especially if you're using Python!
 \end_layout
 
 \begin_layout Subsubsection
@@ -4339,16 +4365,16 @@ Servers do the low-level work of listening to a port, accepting requests,
  
 \begin_inset CommandInset href
 LatexCommand href
-name "Grizzly"
-target "https://grizzly.dev.java.net/"
+name "Jetty"
+target "http://jetty.codehaus.org/jetty/"
 
 \end_inset
 
 , 
 \begin_inset CommandInset href
 LatexCommand href
-name "Jetty"
-target "http://jetty.codehaus.org/jetty/"
+name "Grizzly"
+target "https://grizzly.dev.java.net/"
 
 \end_inset
 
@@ -4591,8 +4617,8 @@ secureServer.context.parameters.add('useForwardedForHeader', 'true')
 See the 
 \begin_inset CommandInset href
 LatexCommand href
-name "Restlet Grizzly HttpServerHelper documentation"
-target "http://www.restlet.org/documentation/2.0/jse/ext/index.html?org/restlet/ext/grizzly/HttpsServerHelper.html"
+name "Restlet Jetty HttpServerHelper documentation"
+target "http://www.restlet.org/documentation/2.0/jse/ext/index.html?org/restlet/ext/jetty/HttpsServerHelper.html"
 
 \end_inset
 
@@ -6425,6 +6451,376 @@ print('out of 10.<br/>');
 print('</body>
 \backslash
 n</html>');
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Newlines and Whitespace
+\begin_inset CommandInset label
+LatexCommand label
+name "../generating-html/|newlines-and-whitespace"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It's important to remember that non-scriptlet text turns into ``print''
+ statements in your scriptlet language: these statements can have an effect
+ on your code blocks, such as if/then blocks, loops, try/catch, closures,
+ etc.
+ Careless use of scriptlets can lead to syntax errors or, worse, to unexpected
+ behavior.
+\end_layout
+
+\begin_layout Standard
+For example, this JavaScript code will generate a syntax error:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<% var x = 0 %>You won't see this text!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The reason is that it produces the following mangled JavaScript code:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+var x = 0 print('You won't see this text!')
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Another example can show possibly unexpected results:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<% for(var i = 0; i < 10; i++) %>This line appears 10 times<br>
+\end_layout
+
+\begin_layout Plain Layout
+
+And so does this line!<br>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If you expect the first line to appear 10 times and second line to appear
+ once, you are wrong.
+ The reason is that the newline is part of the ``print'', not part of your
+ scriptlet code.
+ It produces this JavaScript code:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+for(var i = 0; i < 10; i++) print('This line appears 10 times<br>
+\backslash
+nAnd so does this line!<br>')
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Two methods to avoid this problem are:
+\end_layout
+
+\begin_layout Enumerate
+Always put newlines in the beginning and end of your scriptlets, so that
+ it's clear at a glance where statements begin and end:
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+var x = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+You WILL see this text!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Alternatively, you can explicitly put end-of-statement marks, if your language
+ supports them.
+ For example:
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<% var x = 0; %>
+\end_layout
+
+\begin_layout Plain Layout
+
+You WILL see this text!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Special Note for Python
+\begin_inset CommandInset label
+LatexCommand label
+name "../generating-html/|python"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Python represents a special challenge in a scriptlet environment due to
+ its reliance on significant whitespace for blocks.
+ This means taking special care in mixing scriptlets with text.
+ For example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+for x in range(0,10):
+\end_layout
+
+\begin_layout Plain Layout
+
+  %>
+\end_layout
+
+\begin_layout Plain Layout
+
+This line appears 10 times<br>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+But this line appears once<br>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You'll notice that we put the end delimiter of the first scriptlet after
+ an indentation.
+ This tells Python that whatever follows (the ``print'' statement for the
+ non-scriptlet text) will be in that for loop.
+ We then used a scriptlet with only a newline to end the for loop.
+\end_layout
+
+\begin_layout Standard
+A more complex example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+for x in range(0,10):
+\end_layout
+
+\begin_layout Plain Layout
+
+  for y in range(0,2):
+\end_layout
+
+\begin_layout Plain Layout
+
+    %>
+\end_layout
+
+\begin_layout Plain Layout
+
+This line appears 20 times<br>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+  %>
+\end_layout
+
+\begin_layout Plain Layout
+
+This appears every third line<br>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+But this line appears once<br>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The trick here was using a scriptlet with an indentation to end the inner
+ for loop, while keeping us in the outer for loop.
+\end_layout
+
+\begin_layout Standard
+Tricky indeed, and definitely not easy to decipher at a glance.
+ It may make more sense to use Python's ``print'' statement in such situations:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+for x in range(0,10):
+\end_layout
+
+\begin_layout Plain Layout
+
+  for y in range(0,2):
+\end_layout
+
+\begin_layout Plain Layout
+
+    print 'This line appears 20 times<br>'
+\end_layout
+
+\begin_layout Plain Layout
+
+  print 'This appears every third line<br>'
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+But this line appears once<br>
 \end_layout
 
 \end_inset
@@ -9322,7 +9718,7 @@ reference "../../rest/"
 
 )
 \bar default
-, POST is the ``update'' operation.
+, POST is the ``update'' operation (well, not exactly: see note below).
  Clients will expect the resource to already exist for the POST operation
  to succeed.
  That is, a call to GET before the POST may succeed.
@@ -9396,6 +9792,36 @@ reference "../resources/|handle-get"
  for creating the representation.
 \end_layout
 
+\begin_layout Quote
+POST is the only HTTP operation that is not ``idempotent,'' which means
+ that multiple 
+\emph on
+identical
+\emph default
+ POST operations on a resource 
+\emph on
+may
+\emph default
+ yield different results from a single POST operation.
+ This is why web browsers warn you if you try to refresh a web page that
+ is the result of a POST operation.
+ As such, POST is the correct operation to use for manipulations of a resource
+ that 
+\emph on
+cannot be repeated
+\emph default
+.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "this blog post by John Calcote"
+target "http://jcalcote.wordpress.com/2008/10/16/put-or-post-the-rest-of-the-story/"
+
+\end_inset
+
+ for an in-depth explanation.
+\end_layout
+
 \begin_layout Subsubsection
 handlePut
 \begin_inset CommandInset label
@@ -9423,7 +9849,7 @@ reference "../../rest/"
 
 )
 \bar default
-, PUT is the ``create'' operation.
+, PUT is the ``create'' operation (well, not exactly: see note below).
  Clients will expect whatever current data exists in the resource to be
  discarded, and for you to return a representation of the new resource in
  the selected media type.
@@ -9491,6 +9917,22 @@ reference "../resources/|handle-get"
  for supported return types.
  In fact, you may want handlePut to share the same code path as handleGet
  for creating the representation.
+\end_layout
+
+\begin_layout Quote
+PUT, like most HTTP operations, is ``idempotent,'' which means that multiple
+ 
+\emph on
+identical
+\emph default
+ PUT operations on a resource are expected to yield the same result as a
+ single PUT operation.
+ If you are implementing a ``create'' operation that 
+\emph on
+cannot
+\emph default
+ be repeated, then you should use POST instead.
+ See note in POST.
 \end_layout
 
 \begin_layout Subsubsection
@@ -11147,20 +11589,10 @@ reference "../application/|default-file"
 \end_layout
 
 \begin_layout Subsection
-Replacing Grizzly
+Replacing Jetty
 \end_layout
 
 \begin_layout Standard
-Grizzly can be replaced with 
-\begin_inset CommandInset href
-LatexCommand href
-name "Netty"
-target "http://jboss.org/netty"
-
-\end_inset
-
-, a non-blocking I/O HTTP server with different performance characteristics,
- and 
 \begin_inset CommandInset href
 LatexCommand href
 name "Jetty"
@@ -11168,7 +11600,23 @@ target "http://www.mortbay.org/jetty/"
 
 \end_inset
 
-, which offers similar performance and many more features.
+ can be replaced with 
+\begin_inset CommandInset href
+LatexCommand href
+name "Netty"
+target "http://jboss.org/netty"
+
+\end_inset
+
+ or 
+\begin_inset CommandInset href
+LatexCommand href
+name "Grizzly"
+target "https://grizzly.dev.java.net/"
+
+\end_inset
+
+, non-blocking I/O HTTP servers with different performance characteristics.
  See the 
 \begin_inset CommandInset href
 LatexCommand href
@@ -17988,8 +18436,8 @@ target "http://wiki.restlet.org/docs_2.0/13-restlet/27-restlet/325-restlet/37-re
 \end_inset
 
 .
- For other connectors (such as Grizzly, the default), a successful call
- to defer will cause the page to be executed again in the same thread.
+ For other connectors (such as Jetty, the default), a successful call to
+ defer will cause the page to be executed again in the same thread.
 \end_layout
 
 \begin_layout Paragraph
@@ -23411,16 +23859,16 @@ It's a clean abstraction of HTTP requests, responses and headers over best-of-br
 eed HTTP engines, such as 
 \begin_inset CommandInset href
 LatexCommand href
-name "Grizzly"
-target "https://grizzly.dev.java.net/"
+name "Jetty"
+target "http://jetty.codehaus.org/jetty/"
 
 \end_inset
 
 , 
 \begin_inset CommandInset href
 LatexCommand href
-name "Jetty"
-target "http://jetty.codehaus.org/jetty/"
+name "Grizzly"
+target "https://grizzly.dev.java.net/"
 
 \end_inset
 
@@ -23805,13 +24253,13 @@ From the perspective of the ability to respond to user requests, there are
 Prudence comes with 
 \begin_inset CommandInset href
 LatexCommand href
-name "Grizzly"
-target "https://grizzly.dev.java.net/"
+name "Jetty"
+target "http://www.mortbay.org/jetty/"
 
 \end_inset
 
 , an HTTP server based on the JVM's non-blocking I/O API.
- Grizzly handles concurrent HTTP requests very well, and serves static files
+ Jetty handles concurrent HTTP requests very well, and serves static files
  at scales comparable to popular HTTP servers.
 \end_layout
 
