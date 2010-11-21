@@ -1,10 +1,16 @@
+prudence-clojure (1.0-8) lucid; urgency=medium
+
+  * RC7 (revision 774)
+
+ -- Tal Liron <tal.liron@gmail.com>  Sat, 20 Nov 2010 01:16:38 -0600
+
 prudence-clojure (1.0-7) lucid; urgency=medium
 
   * RC6 (revision 757)
 
  -- Tal Liron <tal.liron@gmail.com>  Mon, 8 Nov 2010 01:16:38 -0600
 
- prudence-clojure (1.0-6) lucid; urgency=medium
+prudence-clojure (1.0-6) lucid; urgency=medium
 
   * RC5 (revision 754)
 

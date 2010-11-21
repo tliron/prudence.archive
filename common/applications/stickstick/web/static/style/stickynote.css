@@ -1,19 +1,19 @@
 .stickynote-large {
-	background: transparent url(../images/stickynote-large.png) no-repeat top left;
+	background: transparent url(../media/stickynote-large.png) no-repeat top left;
 	width: 225px;
 	height: 228px;
 	position:  absolute;
 	z-index: 999999;
 }
 .stickynote-small {
-	background: transparent url(../images/stickynote-small.png) no-repeat top left;
+	background: transparent url(../media/stickynote-small.png) no-repeat top left;
 	width: 160px;
 	height: 162px;
 	position:  absolute;
 	z-index: 999999;
 }
 .stickynote-delete {
-	background: transparent url(../images/delete.png) no-repeat top left;
+	background: transparent url(../media/delete.png) no-repeat top left;
 	height: 14px;
 	width: 14px;
 	position: absolute;
@@ -53,7 +53,7 @@
 	float: right;
 	width: 14px;
 	height: 14px;
-	background: transparent url(../images/ok.png) no-repeat top left;
+	background: transparent url(../media/ok.png) no-repeat top left;
 	margin-right: 1px;
 	margin-top: 185px;
 	cursor: pointer;
@@ -62,7 +62,7 @@
 	float: right;
 	width: 14px;
 	height: 14px;
-	background: transparent url(../images/ok.png) no-repeat top left;
+	background: transparent url(../media/ok.png) no-repeat top left;
 	margin-right: 1px;
 	margin-top: 80%;
 	cursor: pointer;
