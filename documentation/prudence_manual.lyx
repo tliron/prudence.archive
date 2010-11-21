@@ -3744,14 +3744,6 @@ Start the JVM
 Delegate to your /instance/ script
 \end_layout
 
-\begin_layout Quote
-Note that if you're using JVM version 6 or above, you can use wildcards
- for specifying the classpath in run.sh and run.bat, instead of having to
- list individual JAR files.
- So, you can just use ``/libraries/*.jar''! Since Prudence supports JVMs
- from version 5, all JARs are explicitly listed.
-\end_layout
-
 \begin_layout Subsubsection
 /instance/
 \end_layout
