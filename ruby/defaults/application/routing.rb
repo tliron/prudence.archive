@@ -203,12 +203,12 @@ end
 #
 
 if $dynamic_web_preheat
-	preheat_tasks = PreheatTask::for_document_source $dynamic_web_document_source, $application_internal_name, $application_instance, $application_logger_name
+	preheat_tasks = PreheatTask::for_document_source $dynamic_web_document_source, $application_internal_name, $application_instance, 'prudence.' + $application_logger_name
 	for preheat_task in preheat_tasks
 		$tasks << preheat_task
 	end
 end
 
 for preheat_resource in $preheat_resources
-	$tasks << PreheatTask.new($application_internal_name, preheat_resource, $application_instance, $application_logger_name)
+	$tasks << PreheatTask.new($application_internal_name, preheat_resource, $application_instance, 'prudence.' + $application_logger_name)
 end

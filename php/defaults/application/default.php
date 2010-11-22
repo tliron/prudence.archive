@@ -67,7 +67,7 @@ execute_or_default($application_base . '/routing/', 'defaults/application/routin
 // Logging
 //
 
-$application_instance->context->setLogger($application_logger_name . '.restlet');
+$application_instance->context->setLogger('org.restlet.Application.' . $application_logger_name);
 
 //
 // Predefined Globals

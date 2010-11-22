@@ -58,7 +58,7 @@
 ; Logging
 ;
 
-(.. application-instance getContext (setLogger (str application-logger-name ".restlet")))
+(.. application-instance getContext (setLogger (str "org.restlet.Application." application-logger-name)))
 
 ;
 ; Predefined Globals

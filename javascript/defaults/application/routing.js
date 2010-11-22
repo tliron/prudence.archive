@@ -209,7 +209,7 @@ if(showDebugOnError) {
 //
 
 if(dynamicWebPreheat) {
-	var preheatTasks = PreheatTask.forDocumentSource(dynamicWebDocumentSource, applicationInternalName, applicationInstance, applicationLoggerName)
+	var preheatTasks = PreheatTask.forDocumentSource(dynamicWebDocumentSource, applicationInternalName, applicationInstance, 'prudence.' + applicationLoggerName)
 	for(var i in preheatTasks) {
 		tasks.push(preheatTasks[i])
 	}
@@ -217,5 +217,5 @@ if(dynamicWebPreheat) {
 
 for(var i in preheatResources) {
 	var preheatResource = preheatResources[i]
-	tasks.push(new PreheatTask(applicationInternalName, preheatResource, applicationInstance, applicationLoggerName))
+	tasks.push(new PreheatTask(applicationInternalName, preheatResource, applicationInstance, 'prudence.' + applicationLoggerName))
 }

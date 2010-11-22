@@ -125,9 +125,9 @@ public class ApplicationService
 		{
 			logger = application.getLogger();
 			String name = logger.getName();
-			if( name.endsWith( ".restlet" ) )
+			if( name.startsWith( RESTLET_LOGGER_PREFIX ) )
 			{
-				name = name.substring( 0, name.length() - ".restlet".length() );
+				name = LOGGER_PREFIX + name.substring( RESTLET_LOGGER_PREFIX_LENGTH );
 				logger = Engine.getLogger( name );
 			}
 		}
@@ -255,6 +255,21 @@ public class ApplicationService
 	// Private
 
 	/**
+	 * Prefix used for the Restlet logger for the application.
+	 */
+	private final String RESTLET_LOGGER_PREFIX = "org.restlet.Application.";
+
+	/**
+	 * Length of Restlet logger prefix.
+	 */
+	private final int RESTLET_LOGGER_PREFIX_LENGTH = RESTLET_LOGGER_PREFIX.length();
+
+	/**
+	 * Prefix used for the Prudence logger for the application.
+	 */
+	private final String LOGGER_PREFIX = "prudence.";
+
+	/**
 	 * The application.
 	 */
 	private final Application application;
@@ -268,4 +283,5 @@ public class ApplicationService
 	 * The logger.
 	 */
 	private Logger logger;
+
 }

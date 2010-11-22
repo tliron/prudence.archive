@@ -59,7 +59,7 @@ executeOrDefault(applicationBase + '/routing/', 'defaults/application/routing/')
 // Logging
 //
 
-applicationInstance.context.setLogger(applicationLoggerName + '.restlet')
+applicationInstance.context.setLogger('org.restlet.Application.' + applicationLoggerName )
 
 //
 // Predefined Globals

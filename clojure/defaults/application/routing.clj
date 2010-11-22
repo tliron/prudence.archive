@@ -185,8 +185,8 @@
 ;
 
 (if dynamic-web-preheat
-	(doseq [preheat-task (PreheatTask/forDocumentSource dynamic-web-document-source application-internal-name application-instance application-logger-name)]
+	(doseq [preheat-task (PreheatTask/forDocumentSource dynamic-web-document-source application-internal-name application-instance (str "prudence." application-logger-name))]
 		(def tasks (conj tasks preheat-task))))
 
 (doseq [preheat-resource preheat-resources]
-	(def tasks (conj tasks (PreheatTask. application-internal-name preheat-resource application-instance application-logger-name))))
+	(def tasks (conj tasks (PreheatTask. application-internal-name preheat-resource application-instance (str "prudence." application-logger-name)))))
