@@ -15,7 +15,8 @@ importClass(
 	org.restlet.data.Reference,
 	org.restlet.data.MediaType,
 	com.threecrickets.prudence.DelegatedStatusService,
-	com.threecrickets.prudence.ApplicationTaskCollector)
+	com.threecrickets.prudence.ApplicationTaskCollector,
+	com.threecrickets.prudence.util.LoggingUtil)
 
 //
 // Settings
@@ -59,7 +60,7 @@ executeOrDefault(applicationBase + '/routing/', 'defaults/application/routing/')
 // Logging
 //
 
-applicationInstance.context.setLogger('org.restlet.Application.' + applicationLoggerName )
+applicationInstance.context.logger = LoggingUtil.getRestletLogger(applicationLoggerName)
 
 //
 // Predefined Globals

@@ -227,13 +227,13 @@ if($show_debug_on_error) {
 //
 
 if($dynamic_web_preheat) {
-	$preheat_tasks = PreheatTask::forDocumentSource($dynamic_web_document_source, $application_internal_name, $application_instance, 'prudence.' . $application_logger_name);
+	$preheat_tasks = PreheatTask::forDocumentSource($dynamic_web_document_source, $application_internal_name, $application_instance, $application_logger_name);
 	foreach($preheat_tasks as $preheat_task) {
 		$tasks[] = $preheat_task;
 	}
 }
 
 foreach($preheat_resources as $preheat_resource) {
-	$tasks[] = new PreheatTask($application_internal_name, $preheat_resource, $application_instance, 'prudence.' . $application_logger_name);
+	$tasks[] = new PreheatTask($application_internal_name, $preheat_resource, $application_instance, $application_logger_name);
 }
 ?>

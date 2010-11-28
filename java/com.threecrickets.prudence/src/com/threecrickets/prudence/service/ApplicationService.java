@@ -23,11 +23,11 @@ import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
-import org.restlet.engine.Engine;
 
 import com.threecrickets.prudence.ApplicationTask;
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.prudence.GeneratedTextResource;
+import com.threecrickets.prudence.util.LoggingUtil;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
@@ -122,15 +122,7 @@ public class ApplicationService
 	public Logger getLogger()
 	{
 		if( logger == null )
-		{
-			logger = application.getLogger();
-			String name = logger.getName();
-			if( name.startsWith( RESTLET_LOGGER_PREFIX ) )
-			{
-				name = LOGGER_PREFIX + name.substring( RESTLET_LOGGER_PREFIX_LENGTH );
-				logger = Engine.getLogger( name );
-			}
-		}
+			logger = LoggingUtil.getLogger( application );
 
 		return logger;
 	}
@@ -146,7 +138,7 @@ public class ApplicationService
 	 */
 	public Logger getSubLogger( String name )
 	{
-		return Engine.getLogger( getLogger().getName() + "." + name );
+		return LoggingUtil.getSubLogger( getLogger(), name );
 	}
 
 	/**
@@ -255,21 +247,6 @@ public class ApplicationService
 	// Private
 
 	/**
-	 * Prefix used for the Restlet logger for the application.
-	 */
-	private final String RESTLET_LOGGER_PREFIX = "org.restlet.Application.";
-
-	/**
-	 * Length of Restlet logger prefix.
-	 */
-	private final int RESTLET_LOGGER_PREFIX_LENGTH = RESTLET_LOGGER_PREFIX.length();
-
-	/**
-	 * Prefix used for the Prudence logger for the application.
-	 */
-	private final String LOGGER_PREFIX = "prudence.";
-
-	/**
 	 * The application.
 	 */
 	private final Application application;
@@ -283,5 +260,4 @@ public class ApplicationService
 	 * The logger.
 	 */
 	private Logger logger;
-
 }

@@ -15,7 +15,8 @@
  'org.restlet.data.Reference
  'org.restlet.data.MediaType
  'com.threecrickets.prudence.DelegatedStatusService
- 'com.threecrickets.prudence.ApplicationTaskCollector)
+ 'com.threecrickets.prudence.ApplicationTaskCollector
+ 'com.threecrickets.prudence.util.LoggingUtil)
 
 ;
 ; Settings
@@ -58,7 +59,7 @@
 ; Logging
 ;
 
-(.. application-instance getContext (setLogger (str "org.restlet.Application." application-logger-name)))
+(.. application-instance getContext (setLogger (LoggingUtil/getRestletLogger application-logger-name)))
 
 ;
 ; Predefined Globals

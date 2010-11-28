@@ -20,7 +20,6 @@ import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.data.LocalReference;
 import org.restlet.data.Status;
-import org.restlet.engine.Engine;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
@@ -45,6 +44,18 @@ public class PreheatTask implements Runnable
 	//
 
 	/**
+	 * Gets the logger used for preheating an application.
+	 * 
+	 * @param applicationLoggerName
+	 *        The application logger name
+	 * @return The logger
+	 */
+	public static Logger getLogger( String applicationLoggerName )
+	{
+		return LoggingUtil.getSubLogger( LoggingUtil.getLogger( applicationLoggerName ), LOGGER_NAME );
+	}
+
+	/**
 	 * Creates a preheat task for each document descriptor in a document source.
 	 * URIs are assumed to simply be the document names.
 	 * 
@@ -54,17 +65,17 @@ public class PreheatTask implements Runnable
 	 *        The internal application name
 	 * @param application
 	 *        The application
-	 * @param loggerName
-	 *        The logger name
+	 * @param applicationLoggerName
+	 *        The application logger name
 	 * @return An array of tasks
 	 */
-	public static PreheatTask[] forDocumentSource( DocumentSource<Executable> documentSource, String applicationInternalName, Application application, String loggerName )
+	public static PreheatTask[] forDocumentSource( DocumentSource<Executable> documentSource, String applicationInternalName, Application application, String applicationLoggerName )
 	{
 		Collection<DocumentDescriptor<Executable>> documentDescriptors = documentSource.getDocuments();
 		PreheatTask[] preheatTasks = new PreheatTask[documentDescriptors.size()];
 		int i = 0;
 		Context context = application.getContext().createChildContext();
-		Logger logger = Engine.getLogger( loggerName );
+		Logger logger = getLogger( applicationLoggerName );
 		for( DocumentDescriptor<Executable> documentDescriptor : documentDescriptors )
 			preheatTasks[i++] = new PreheatTask( applicationInternalName, documentDescriptor.getDefaultName(), context, logger );
 
@@ -84,12 +95,12 @@ public class PreheatTask implements Runnable
 	 *        The internal URI
 	 * @param application
 	 *        The application
-	 * @param loggerName
-	 *        The logger name
+	 * @param applicationLoggerName
+	 *        The application logger name
 	 */
-	public PreheatTask( String applicationInternalName, String resourceUri, Application application, String loggerName )
+	public PreheatTask( String applicationInternalName, String resourceUri, Application application, String applicationLoggerName )
 	{
-		this( applicationInternalName, resourceUri, application.getContext().createChildContext(), Engine.getLogger( loggerName ) );
+		this( applicationInternalName, resourceUri, application.getContext().createChildContext(), getLogger( applicationLoggerName ) );
 	}
 
 	/**
@@ -165,6 +176,11 @@ public class PreheatTask implements Runnable
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
+
+	/**
+	 * The preheat logger name.
+	 */
+	private static final String LOGGER_NAME = "preheat";
 
 	/**
 	 * The internal application name.

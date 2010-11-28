@@ -179,8 +179,8 @@ if show_debug_on_error:
 #
 
 if dynamic_web_preheat:
-	for preheat_task in PreheatTask.forDocumentSource(dynamic_web_document_source, application_internal_name, application_instance, 'prudence.' + application_logger_name):
+	for preheat_task in PreheatTask.forDocumentSource(dynamic_web_document_source, application_internal_name, application_instance, application_logger_name):
 		tasks.append(preheat_task)
 
 for preheat_resource in preheat_resources:
-	tasks.append(PreheatTask(application_internal_name, preheat_resource, application_instance, 'prudence.' + application_logger_name))
+	tasks.append(PreheatTask(application_internal_name, preheat_resource, application_instance, application_logger_name))

@@ -12019,36 +12019,39 @@ name "../routing/"
 \end_layout
 
 \begin_layout Standard
-``Routing'' refers to the decision-making process by which an incoming client
- request reaches its server handler.
- Usually, it's information in the request itself that is used to make the
- decision, such as the URI, cookies, the client type, capabilities and geolocati
-on.
+In Prudence, ``routing'' refers to the decision-making process by which
+ an incoming client request reaches its handler on the server.
+ Usually, information in the request itself is used to make the decision,
+ such as the URI, cookies, the client type, capabilities and geolocation.
  But routing can also take server-side and other circumstances into account.
  For example, a round-robin load-balancing router might send each incoming
- request to a different destination in sequence.
+ request to a different handler in sequence.
+ The decision on which handler to use has nothing to do with the a client's
+ particular request.
 \end_layout
 
 \begin_layout Standard
 A request normally goes through many routers before reaching its handler.
  Filters along the way can change information in the request, which could
  also affect routing.
- Filtering is thus also a routing tool.
+ Filtering should thus also be thought of as a routing tool.
 \end_layout
 
 \begin_layout Standard
 This abstract, flexible routing mechanism is one of Prudence's most powerful
- features, but it's important to understand its basic structure.
+ features, but it's important to understand these basic principles.
  A common misconception is that routing is based on the hierarchical structure
- of URIs.
+ of URIs, such that a child URI's routing is somehow affected by its parent
+ URI.
  While it's possible to route by parent URI in Prudence, routing is primarily
  to be understood in terms of the order of routers and filters along the
  way.
+ A parent and child URI could thus use entirely different handlers.
 \end_layout
 
 \begin_layout Standard
-In writing applications for Prudence, you will mostly be interested in applicati
-on-level routing, which we will cover in-depth below.
+When writing applications for Prudence, you will mostly be interested in
+ application-level routing, which we will cover in-depth below.
  However, to give you a better understanding of how Prudence routing works,
  let's follow the journey of a request, starting with routing at the instance
  level.
@@ -12073,8 +12076,8 @@ Requests come in from servers.
  one.
  Each server listens at a particular HTTP port, and multiple servers may
  in turn be restricted to particular network interfaces on your machine.
- By default, Prudence has a single server that listen to HTTP requests on
- port 8080.
+ By default, Prudence has a single server that listens to HTTP requests
+ on port 8080 coming in from all network interfaces.
 \end_layout
 
 \begin_layout Standard
@@ -12118,18 +12121,18 @@ name "../routing/|virtual-hosts"
 
 \begin_layout Standard
 The component's router decides which virtual host should receive the request.
- The decision is often made according the domain name in the URL, but can
- also take into account which server it came from.
- Nominally, virtual hosting is a tool to let you host multiple sites on
- the same Prudence instance, but it can do all kinds of subtle routing.
+ The decision is often made according to the domain name in the URL, but
+ can also take into account which server it came from.
+ Virtual hosting is a tool to let you host multiple sites on the same Prudence
+ instance, but it can be used for more subtle kinds of routing, too.
 \end_layout
 
 \begin_layout Standard
 At the minimum you must have one virtual host.
- By default, Prudence has one that routes all incoming requests, no matter
- which server they come from.
+ By default, Prudence has one that accepts all incoming requests from all
+ servers.
  If you have multiple servers and want to treat them differently, you can
- create virtual hosts for each.
+ create a virtual host for each.
 \end_layout
 
 \begin_layout Standard
@@ -12154,7 +12157,7 @@ Step 4: Applications
 \begin_layout Standard
 Using 
 \bar under
-``hosts'' your application's /settings.* (page 
+``hosts'' in your application's /settings.* (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../application/|hosts"
@@ -12164,9 +12167,8 @@ reference "../application/|hosts"
 )
 \bar default
 , you can configure which virtual hosts your application will be attached
- to, and the base URI for each.
- An application can thus be accepting requests from several virtual hosts
- at once.
+ to, and the base URI for the application on each virtual host.
+ An application can accept requests from several virtual hosts at once.
 \end_layout
 
 \begin_layout Standard
@@ -21021,22 +21023,13 @@ name "../restlet-container/"
 \end_layout
 
 \begin_layout Standard
-Why Prudence?
-\end_layout
-
-\begin_layout Standard
-Prudence brings the power of REST and the JVM to programmers in six dynamic
- languages, but also has a lot to offer to Java/Restlet developers.
+Why use Prudence for a Restlet application that already works?
 \end_layout
 
 \begin_layout Standard
 Though applications can be written in Prudence without a single line of
  Java code, Prudence also acts as a useful container for existing Restlet
  applications, Restlet resources or restlets written in Java.
-\end_layout
-
-\begin_layout Standard
-Why use Prudence for a Restlet application that already works?
 \end_layout
 
 \begin_layout Standard

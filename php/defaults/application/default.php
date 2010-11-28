@@ -24,6 +24,7 @@ import org.restlet.data.Reference;
 import org.restlet.data.MediaType;
 import com.threecrickets.prudence.DelegatedStatusService;
 import com.threecrickets.prudence.ApplicationTaskCollector;
+import com.threecrickets.prudence.util.LoggingUtil;
 
 //
 // Settings
@@ -67,7 +68,7 @@ execute_or_default($application_base . '/routing/', 'defaults/application/routin
 // Logging
 //
 
-$application_instance->context->setLogger('org.restlet.Application.' . $application_logger_name);
+$application_instance->context->logger = LoggingUtil::getRestletLogger($application_logger_name);
 
 //
 // Predefined Globals
