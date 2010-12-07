@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2010-11-20">
+<meta name="create-date" content="2010-12-06">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -4000,16 +4000,16 @@ You can definitely use JavaScriptUnifyMinifyFilter and CssUnifyMinifyFilter toge
 <a class="toc" name="toc-Section-11"></a>Routing<a class="Label" name="../routing/"> </a>
 </h1>
 <div class="Unindented">
-‘‘Routing’’ refers to the decision-making process by which an incoming client request reaches its server handler. Usually, it’s information in the request itself that is used to make the decision, such as the URI, cookies, the client type, capabilities and geolocation. But routing can also take server-side and other circumstances into account. For example, a round-robin load-balancing router might send each incoming request to a different destination in sequence.
+In Prudence, ‘‘routing’’ refers to the decision-making process by which an incoming client request reaches its handler on the server. Usually, information in the request itself is used to make the decision, such as the URI, cookies, the client type, capabilities and geolocation. But routing can also take server-side and other circumstances into account. For example, a round-robin load-balancing router might send each incoming request to a different handler in sequence. The decision on which handler to use has nothing to do with the a client’s particular request.
 </div>
 <div class="Indented">
-A request normally goes through many routers before reaching its handler. Filters along the way can change information in the request, which could also affect routing. Filtering is thus also a routing tool.
+A request normally goes through many routers before reaching its handler. Filters along the way can change information in the request, which could also affect routing. Filtering should thus also be thought of as a routing tool.
 </div>
 <div class="Indented">
-This abstract, flexible routing mechanism is one of Prudence’s most powerful features, but it’s important to understand its basic structure. A common misconception is that routing is based on the hierarchical structure of URIs. While it’s possible to route by parent URI in Prudence, routing is primarily to be understood in terms of the order of routers and filters along the way.
+This abstract, flexible routing mechanism is one of Prudence’s most powerful features, but it’s important to understand these basic principles. A common misconception is that routing is based on the hierarchical structure of URIs, such that a child URI’s routing is somehow affected by its parent URI. While it’s possible to route by parent URI in Prudence, routing is primarily to be understood in terms of the order of routers and filters along the way. A parent and child URI could thus use entirely different handlers.
 </div>
 <div class="Indented">
-In writing applications for Prudence, you will mostly be interested in application-level routing, which we will cover in-depth below. However, to give you a better understanding of how Prudence routing works, let’s follow the journey of a request, starting with routing at the instance level.
+When writing applications for Prudence, you will mostly be interested in application-level routing, which we will cover in-depth below. However, to give you a better understanding of how Prudence routing works, let’s follow the journey of a request, starting with routing at the instance level.
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-60"></a>Instance Routing
@@ -4021,7 +4021,7 @@ Before a request reaches your application, it is routed by your Prudence instanc
 <a class="toc" name="toc-Subsubsection-84"></a>Step 1: Servers
 </h3>
 <div class="Unindented">
-Requests come in from servers. Prudence instances have at the minimum one server, but can have more than one. Each server listens at a particular HTTP port, and multiple servers may in turn be restricted to particular network interfaces on your machine. By default, Prudence has a single server that listen to HTTP requests on port 8080.
+Requests come in from servers. Prudence instances have at the minimum one server, but can have more than one. Each server listens at a particular HTTP port, and multiple servers may in turn be restricted to particular network interfaces on your machine. By default, Prudence has a single server that listens to HTTP requests on port 8080 coming in from all network interfaces.
 </div>
 <div class="Indented">
 You can configure your servers in <u>/instance/servers.* (page <a class="Reference" href="#../application/|dynamic-web-client-caching-mode">1↑</a>)</u>.
@@ -4036,10 +4036,10 @@ There is only one component per Prudence instance, and <i>all </i>servers route 
 <a class="toc" name="toc-Subsubsection-86"></a>Step 3: Virtual Hosts<a class="Label" name="../routing/|virtual-hosts"> </a>
 </h3>
 <div class="Unindented">
-The component’s router decides which virtual host should receive the request. The decision is often made according the domain name in the URL, but can also take into account which server it came from. Nominally, virtual hosting is a tool to let you host multiple sites on the same Prudence instance, but it can do all kinds of subtle routing.
+The component’s router decides which virtual host should receive the request. The decision is often made according to the domain name in the URL, but can also take into account which server it came from. Virtual hosting is a tool to let you host multiple sites on the same Prudence instance, but it can be used for more subtle kinds of routing, too.
 </div>
 <div class="Indented">
-At the minimum you must have one virtual host. By default, Prudence has one that routes all incoming requests, no matter which server they come from. If you have multiple servers and want to treat them differently, you can create virtual hosts for each.
+At the minimum you must have one virtual host. By default, Prudence has one that accepts all incoming requests from all servers. If you have multiple servers and want to treat them differently, you can create a virtual host for each.
 </div>
 <div class="Indented">
 You can configure your virtual hosts in <u>/instance/hosts.* (page <a class="Reference" href="#../instance/|hosts-file">1↑</a>)</u>.
@@ -4048,7 +4048,7 @@ You can configure your virtual hosts in <u>/instance/hosts.* (page <a class="Ref
 <a class="toc" name="toc-Subsubsection-87"></a>Step 4: Applications
 </h3>
 <div class="Unindented">
-Using <u>‘‘hosts’’ your application’s /settings.* (page <a class="Reference" href="#../application/|hosts">1↑</a>)</u>, you can configure which virtual hosts your application will be attached to, and the base URI for each. An application can thus be accepting requests from several virtual hosts at once.
+Using <u>‘‘hosts’’ in your application’s /settings.* (page <a class="Reference" href="#../application/|hosts">1↑</a>)</u>, you can configure which virtual hosts your application will be attached to, and the base URI for the application on each virtual host. An application can accept requests from several virtual hosts at once.
 </div>
 <div class="Indented">
 To put it another way, there’s a many-to-many relationship between virtual hosts and applications: one host can have many applications, and the same application can be attached to many hosts.
@@ -4219,7 +4219,7 @@ The following will make sure that the given URI always returns a 404, even if th
 <div class="Indented">
 
 <div class="listing">
-<pre class="listing">router.hide(’administration/’);
+<pre class="listing">router.hide(’administration/’)
 </pre>
 </div>
 </div>
@@ -4242,9 +4242,9 @@ For example, in /routing.* (JavaScript flavor):
 
 <div class="listing">
 <pre class="listing">// Implement defaults
-document.execute(’defaults/application/routing/’);
+document.execute(’defaults/application/routing/’)
 ​
-router.capture(’forum/help/{topic}/’, ’forum/help/’);
+router.capture(’forum/help/{topic}/’, ’forum/help/’)
 </pre>
 </div>
 </div>
@@ -4281,7 +4281,19 @@ It’s important to understand this distinction: the client might be seeing an e
 </div>
 </div>
 <div class="Indented">
-Capturing in this manner is often used in conjunction with <u>URI hiding (page <a class="Reference" href="#../routing/|hiding">1↑</a>)</u>. By hiding ‘‘/forum/help/’’, users would be able to access ‘‘/forum/help/faq/’’ via HTTP, but not ‘‘/forum/help/’’. This lets you effectively control the exposed URI space.
+Capturing in this manner is often used in conjunction with <u>URI hiding (page <a class="Reference" href="#../routing/|hiding">1↑</a>)</u>. By hiding ‘‘/forum/help/’’, users would be able to access ‘‘/forum/help/faq/’’ via HTTP, but not ‘‘/forum/help/’’. This lets you effectively control the exposed URI space. In fact, capturing and hiding is common enough that it has its own shortcut API:
+</div>
+<div class="Indented">
+
+<div class="listing">
+<pre class="listing">router.captureAndHide(’forum/help/{topic}/’, ’forum/help/’)
+​
+The above is identical to:
+​
+router.capture(’forum/help/{topic}/’, ’forum/help/’)
+router.hide(’forum/help/’)
+</pre>
+</div>
 </div>
 <div class="Indented">
 Another feature of internal redirection is that your code you can check for internal access and enforce it. As an example, let’s implement URI hiding via a scriptlet:
@@ -6817,16 +6829,10 @@ Here’s a sample Apache configuration that proxies all URLs beginning with ‘�
 <a class="toc" name="toc-Section-18"></a>Prudence As a Restlet Container<a class="Label" name="../restlet-container/"> </a>
 </h1>
 <div class="Unindented">
-Why Prudence?
-</div>
-<div class="Indented">
-Prudence brings the power of REST and the JVM to programmers in six dynamic languages, but also has a lot to offer to Java/Restlet developers.
+Why use Prudence for a Restlet application that already works?
 </div>
 <div class="Indented">
 Though applications can be written in Prudence without a single line of Java code, Prudence also acts as a useful container for existing Restlet applications, Restlet resources or restlets written in Java.
-</div>
-<div class="Indented">
-Why use Prudence for a Restlet application that already works?
 </div>
 <div class="Indented">
 Prudence makes it easy to handle the bootstrapping and <u>routing (page <a class="Reference" href="#../application/|routing-file">1↑</a>)</u> of your applications, and the <u>Administration Application (page <a class="Reference" href="#../administration/">1↑</a>)</u>, <u>debugging (page <a class="Reference" href="#../debugging/">1↑</a>)</u> and <u>logging (page <a class="Reference" href="#../logging/">1↑</a>)</u> features make it easier to deploy and manage multiple applications together. These issues have more to do with your application’s configuration, rather than its functionality, and it can be useful to handle them outside of the Java build process, using live, dynamic languages in simple text source that you can modify on the fly. Deploying your Restlet application to a Prudence instance can be as simple as copying a zip file to a Prudence container.
@@ -7825,7 +7831,7 @@ Note that the LGPL version 3 has a clause allowing you to ‘‘upgrade’’ Pr
 Copyright (C) 2010 Version 1
 </div>
 <div class="footer" id="generated-by">
-Document generated by <a href="http://elyxer.nongnu.org/">eLyXer 0.98 (2010-05-13)</a> on <span class="create-date">2010-11-20T18:32:02.637111</span>
+Document generated by <a href="http://elyxer.nongnu.org/">eLyXer 0.98 (2010-05-13)</a> on <span class="create-date">2010-12-06T21:54:22.025286</span>
 </div>
 </div>
 </body>

@@ -8,8 +8,7 @@ importClass(
 	com.threecrickets.prudence.util.CssUnifyMinifyFilter,
 	com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter)
 
-router.capture(resourcesBaseURL + 'data/note/{id}/', 'data/note/')
-router.hide('data/note/')
+router.captureAndHide(resourcesBaseURL + 'data/note/{id}/', 'data/note/')
 
 // Wrap the static web with unify-minify filters
 var cssFilter = new CssUnifyMinifyFilter(null, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks)

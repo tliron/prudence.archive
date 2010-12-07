@@ -354,6 +354,25 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
+	 * Shortcut for calling {@link #capture(String, String)} and
+	 * {@link #hide(String)}.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param internalUriTemplate
+	 *        The internal URI path to which we will redirect
+	 * @return The created route (for the capture, not the hide)
+	 * @see CaptiveRedirector
+	 */
+	public Route captureAndHide( String uriTemplate, String internalUriTemplate )
+	{
+		Route route = capture( uriTemplate, internalUriTemplate );
+		hide( internalUriTemplate );
+		return route;
+	}
+
+	/**
 	 * Internally redirects a URI to a new URI within any application installed
 	 * in this router's component. You can use template variables in the URIs.
 	 * <p>

@@ -12601,7 +12601,7 @@ status open
 
 \begin_layout Plain Layout
 
-router.hide('administration/');
+router.hide('administration/')
 \end_layout
 
 \end_inset
@@ -12684,7 +12684,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/');
+document.execute('defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -12693,7 +12693,7 @@ document.execute('defaults/application/routing/');
 
 \begin_layout Plain Layout
 
-router.capture('forum/help/{topic}/', 'forum/help/');
+router.capture('forum/help/{topic}/', 'forum/help/')
 \end_layout
 
 \end_inset
@@ -12839,6 +12839,47 @@ reference "../routing/|hiding"
  By hiding ``/forum/help/'', users would be able to access ``/forum/help/faq/''
  via HTTP, but not ``/forum/help/''.
  This lets you effectively control the exposed URI space.
+ In fact, capturing and hiding is common enough that it has its own shortcut
+ API:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+router.captureAndHide('forum/help/{topic}/', 'forum/help/')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+The above is identical to:
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+router.capture('forum/help/{topic}/', 'forum/help/')
+\end_layout
+
+\begin_layout Plain Layout
+
+router.hide('forum/help/')
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard

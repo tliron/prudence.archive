@@ -308,10 +308,13 @@ public class ConversationServiceBase
 	//
 
 	/**
-	 * Throws a runtime exception.
+	 * Abruptly ends the conversation.
+	 * <p>
+	 * Works by throwing a {@link RuntimeException}.
 	 * 
 	 * @return Always throws an exception, so nothing is ever returned (some
 	 *         templating languages require a return value anyway)
+	 * @see #exception(int, String)
 	 */
 	public boolean stop()
 	{
