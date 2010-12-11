@@ -34,6 +34,9 @@ import com.threecrickets.prudence.internal.ApplicationCronTask;
  * becomes a {@link ApplicationTask}, which executes that document.
  * <p>
  * Empty lines and comment lines (beginning with a "#") are ignored.
+ * <p>
+ * <i>"Restlet" is a registered trademark of <a
+ * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
  * @author Tal Liron
  * @see ApplicationTask
@@ -44,6 +47,14 @@ public class ApplicationTaskCollector implements TaskCollector
 	// Construction
 	//
 
+	/**
+	 * Construction.
+	 * 
+	 * @param crontab
+	 *        The crontab file
+	 * @param application
+	 *        The Restlet application in which tasks will execute
+	 */
 	public ApplicationTaskCollector( File crontab, Application application )
 	{
 		this.crontab = crontab;
@@ -152,11 +163,23 @@ public class ApplicationTaskCollector implements TaskCollector
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * The crontab file.
+	 */
 	private final File crontab;
 
+	/**
+	 * The Restlet application in which tasks will execute.
+	 */
 	private final Application application;
 
+	/**
+	 * The task table.
+	 */
 	private TaskTable taskTable;
 
+	/**
+	 * Timestamp of last parsing of the crontab file.
+	 */
 	private long lastParsed;
 }

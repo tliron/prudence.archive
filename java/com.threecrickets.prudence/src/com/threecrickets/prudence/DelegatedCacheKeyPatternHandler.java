@@ -17,7 +17,7 @@ import com.threecrickets.scripturian.document.DocumentSource;
 
 /**
  * <p>
- * Supported entry points are:
+ * A {@link DelegatedHandler} with the following supported entry points:
  * <ul>
  * <li><code>handleCacheKeyPattern()</code></li>
  * </ul>

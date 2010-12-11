@@ -13,6 +13,8 @@ package com.threecrickets.prudence;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Application;
@@ -24,6 +26,7 @@ import com.threecrickets.prudence.service.ApplicationService;
 import com.threecrickets.prudence.service.ApplicationTaskDocumentService;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
+import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentSource;
@@ -33,7 +36,65 @@ import com.threecrickets.scripturian.exception.ParsingException;
 import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
- * TODO
+ * A {@link Runnable} wrapper for a Scripturian {@link Executable}.
+ * <p>
+ * <code>document</code> and <code>application</code> services are available as
+ * global variables. See {@link ApplicationTaskDocumentService} and
+ * {@link ApplicationService}.
+ * <p>
+ * Before using this class, make sure to configure a valid document source in
+ * the application's {@link Context}; see {@link #getDocumentSource()}. This
+ * document source is exposed to the executable as <code>document.source</code>.
+ * <p>
+ * Instances are not thread-safe.
+ * <p>
+ * Summary of settings configured via the application's {@link Context}:
+ * <ul>
+ * <li>
+ * <code>com.threecrickets.prudence.ApplicationTask.applicationServiceName</code>
+ * : The name of the global variable with which to access the application
+ * service. Defaults to "application". See {@link #getApplicationServiceName()}.
+ * </li>
+ * <li>
+ * <code>com.threecrickets.prudence.ApplicationTask.defaultLanguageTag:</code>
+ * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
+ * <li><code>com.threecrickets.prudence.ApplicationTask.defaultName:</code>
+ * {@link String}, defaults to "default". See {@link #getDefaultName()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.ApplicationTask.documentServiceName</code> :
+ * The name of the global variable with which to access the document service.
+ * Defaults to "document". See {@link #getDocumentServiceName()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.ApplicationTask.documentSource:</code>
+ * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
+ * <li><code>com.threecrickets.prudence.ApplicationTask.errorWriter:</code>
+ * {@link Writer}, defaults to standard error. See {@link #getErrorWriter()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.ApplicationTask.executionController:</code>
+ * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.ApplicationTask.libraryDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../libraries/". See {@link #getLibraryDirectory()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.ApplicationTask.languageManager:</code>
+ * {@link LanguageManager}, defaults to a new instance. See
+ * {@link #getLanguageManager()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.ApplicationTask.prepare:</code>
+ * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.ApplicationTask.trailingSlashRequired:</code>
+ * {@link Boolean}, defaults to true. See {@link #isTrailingSlashRequired()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.ApplicationTask.writer:</code>
+ * {@link Writer}, defaults to standard output. See {@link #getWriter()}.</li>
+ * </ul>
+ * <p>
+ * For a simpler delegate, see {@link DelegatedHandler}.
+ * <p>
+ * <i>"Restlet" is a registered trademark of <a
+ * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
  * @author Tal Liron
  */
@@ -44,7 +105,7 @@ public class ApplicationTask implements Runnable
 	//
 
 	/**
-	 * Construction using current application.
+	 * Construction using current Restlet application.
 	 * 
 	 * @param documentName
 	 *        The document name
@@ -59,7 +120,7 @@ public class ApplicationTask implements Runnable
 	 * Construction.
 	 * 
 	 * @param application
-	 *        The application in which this task will execute.
+	 *        The Restlet application in which this task will execute
 	 * @param documentName
 	 *        The document name
 	 */
@@ -74,7 +135,7 @@ public class ApplicationTask implements Runnable
 	//
 
 	/**
-	 * The application in which this task will execute.
+	 * The Restlet application in which this task will execute.
 	 * 
 	 * @return The application
 	 */
@@ -91,6 +152,75 @@ public class ApplicationTask implements Runnable
 	public String getDocumentName()
 	{
 		return documentName;
+	}
+
+	/**
+	 * The {@link Writer} used by the {@link Executable}. Defaults to standard
+	 * output.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.ApplicationTask.writer</code> in the
+	 * application's {@link Context}.
+	 * 
+	 * @return The writer
+	 */
+	public Writer getWriter()
+	{
+		if( writer == null )
+		{
+			ConcurrentMap<String, Object> attributes = application.getContext().getAttributes();
+			writer = (Writer) attributes.get( "com.threecrickets.prudence.ApplicationTask.writer" );
+
+			if( writer == null )
+				writer = new OutputStreamWriter( System.out );
+		}
+
+		return writer;
+	}
+
+	/**
+	 * Same as {@link #getWriter()}, for standard error. Defaults to standard
+	 * error.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.ApplicationTask.errorWriter</code> in
+	 * the application's {@link Context}.
+	 * 
+	 * @return The error writer
+	 */
+	public Writer getErrorWriter()
+	{
+		if( errorWriter == null )
+		{
+			ConcurrentMap<String, Object> attributes = application.getContext().getAttributes();
+			errorWriter = (Writer) attributes.get( "com.threecrickets.prudence.ApplicationTask.errorWriter" );
+
+			if( errorWriter == null )
+				errorWriter = new OutputStreamWriter( System.err );
+		}
+
+		return errorWriter;
+	}
+
+	/**
+	 * An optional {@link ExecutionController} to be used with the executable.
+	 * Useful for exposing your own global variables to the executable.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.ApplicationTask.executionController</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The execution controller or null if none used
+	 */
+	public ExecutionController getExecutionController()
+	{
+		if( executionController == null )
+		{
+			ConcurrentMap<String, Object> attributes = application.getContext().getAttributes();
+			executionController = (ExecutionController) attributes.get( "com.threecrickets.prudence.ApplicationTask.executionController" );
+		}
+
+		return executionController;
 	}
 
 	/**
@@ -394,7 +524,7 @@ public class ApplicationTask implements Runnable
 			{
 				Executable executable = Executable.createOnce( documentName, getDocumentSource(), false, getLanguageManager(), getDefaultLanguageTag(), isPrepare() ).getDocument();
 
-				ExecutionContext executionContext = new ExecutionContext();
+				ExecutionContext executionContext = new ExecutionContext( getWriter(), getErrorWriter() );
 
 				File libraryDirectory = getLibraryDirectory();
 				if( libraryDirectory != null )
@@ -403,7 +533,7 @@ public class ApplicationTask implements Runnable
 				executionContext.getServices().put( getDocumentServiceName(), new ApplicationTaskDocumentService( this, getDocumentSource() ) );
 				executionContext.getServices().put( getApplicationServiceName(), new ApplicationService( application ) );
 
-				executable.execute( executionContext );
+				executable.execute( executionContext, this, getExecutionController() );
 			}
 			catch( DocumentException x )
 			{
@@ -432,7 +562,7 @@ public class ApplicationTask implements Runnable
 	// Private
 
 	/**
-	 * The application.
+	 * The Restlet application in which this task will execute.
 	 */
 	private final Application application;
 
@@ -440,6 +570,21 @@ public class ApplicationTask implements Runnable
 	 * The document name.
 	 */
 	private final String documentName;
+
+	/**
+	 * The {@link Writer} used by the {@link Executable}.
+	 */
+	private Writer writer = new OutputStreamWriter( System.out );
+
+	/**
+	 * Same as {@link #writer}, for standard error.
+	 */
+	private Writer errorWriter = new OutputStreamWriter( System.err );
+
+	/**
+	 * An optional {@link ExecutionController} to be used with the scripts.
+	 */
+	private ExecutionController executionController;
 
 	/**
 	 * The document service name.

@@ -22,16 +22,13 @@ import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentSource;
 
 /**
- * A Restlet {@link Filter} that wraps an underlying {@link DelegatedHandler}.
+ * A {@link Filter} that wraps an underlying {@link DelegatedHandler}.
  * <p>
  * Supported entry points are:
  * <ul>
  * <li><code>handleBefore()</code></li>
  * <li><code>handleAfter()</code></li>
  * </ul>
- * <p>
- * <i>"Restlet" is a registered trademark of <a
- * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
  * @author Tal Liron
  */

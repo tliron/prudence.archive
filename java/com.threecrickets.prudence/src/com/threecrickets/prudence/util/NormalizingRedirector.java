@@ -22,6 +22,9 @@ import org.restlet.routing.Redirector;
  * <p>
  * This may be unnecessary in future versions of Restlet. See <a
  * href="http://restlet.tigris.org/issues/show_bug.cgi?id=1056">issue 1056</a>.
+ * <p>
+ * <i>"Restlet" is a registered trademark of <a
+ * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
  * @author Tal Liron
  */

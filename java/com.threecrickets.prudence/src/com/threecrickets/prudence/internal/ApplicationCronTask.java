@@ -22,6 +22,9 @@ import com.threecrickets.prudence.ApplicationTaskCollector;
 /**
  * A <a href="http://www.sauronsoftware.it/projects/cron4j/">cron4j</a>
  * {@link Task} wrapper for an {@link ApplicationTask}.
+ * <p>
+ * <i>"Restlet" is a registered trademark of <a
+ * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
  * @author Tal Liron
  * @see ApplicationTaskCollector
@@ -33,8 +36,12 @@ public class ApplicationCronTask extends Task
 	//
 
 	/**
+	 * Construction.
+	 * 
 	 * @param application
+	 *        The Restlet application in which this task will execute
 	 * @param documentName
+	 *        The document name
 	 */
 	public ApplicationCronTask( Application application, String documentName )
 	{
@@ -42,7 +49,10 @@ public class ApplicationCronTask extends Task
 	}
 
 	/**
+	 * Construction.
+	 * 
 	 * @param applicationTask
+	 *        The application task
 	 */
 	public ApplicationCronTask( ApplicationTask applicationTask )
 	{
@@ -63,7 +73,7 @@ public class ApplicationCronTask extends Task
 	// Private
 
 	/**
-	 * 
+	 * The application task.
 	 */
 	private final ApplicationTask applicationTask;
 }

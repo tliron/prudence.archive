@@ -62,7 +62,7 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * output to a {@link StringRepresentation}.
  * <p>
  * <code>document</code>, <code>application</code> and <code>conversation</code>
- * are available as global services in scriptlets. See
+ * services are available as global variables in scriptlets. See
  * {@link GeneratedTextResourceDocumentService}, {@link ApplicationService} and
  * {@link GeneratedTextResourceConversationService}.
  * <p>

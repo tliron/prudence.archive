@@ -74,7 +74,7 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <p>
  * A <code>conversation</code> service is sent as an argument to all entry
  * points. Additionally, <code>document</code> and <code>application</code>
- * services are available as global services. See
+ * services are available as global variables. See
  * {@link DelegatedResourceConversationService},
  * {@link DelegatedResourceDocumentService} and {@link ApplicationService}.
  * <p>

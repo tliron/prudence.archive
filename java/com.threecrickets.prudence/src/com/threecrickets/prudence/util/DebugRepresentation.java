@@ -39,6 +39,9 @@ import com.threecrickets.scripturian.exception.StackFrame;
 /**
  * An HTML representation of lots of Prudence and Restlet state useful for
  * debugging.
+ * <p>
+ * <i>"Restlet" is a registered trademark of <a
+ * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
  * @author Tal Liron
  * @see DelegatedStatusService

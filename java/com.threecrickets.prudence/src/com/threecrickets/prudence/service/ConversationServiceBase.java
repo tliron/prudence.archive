@@ -313,8 +313,7 @@ public class ConversationServiceBase
 	 * Works by throwing a {@link RuntimeException}.
 	 * 
 	 * @return Always throws an exception, so nothing is ever returned (some
-	 *         templating languages require a return value anyway)
-	 * @see #exception(int, String)
+	 *         language engines require a return value defined in the signature)
 	 */
 	public boolean stop()
 	{
