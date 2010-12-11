@@ -14,6 +14,7 @@
 from org.restlet.data import Reference, MediaType
 from com.threecrickets.prudence import DelegatedStatusService, ApplicationTaskCollector
 from com.threecrickets.prudence.util import LoggingUtil
+from com.threecrickets.prudence.service import ApplicationService
 
 #
 # Settings
@@ -75,3 +76,9 @@ application_globals['com.threecrickets.prudence.ApplicationTask.defaultLanguageT
 application_globals['com.threecrickets.prudence.ApplicationTask.defaultName'] = tasks_default_name
 application_globals['com.threecrickets.prudence.ApplicationTask.documentSource'] = tasks_document_source
 scheduler.addTaskCollector(ApplicationTaskCollector(File(application_base_path + '/crontab'), application_instance))
+
+#
+# ApplicationService
+#
+
+application_service = ApplicationService(application_instance)

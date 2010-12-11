@@ -16,6 +16,7 @@ import org.restlet.data.MediaType
 import com.threecrickets.prudence.DelegatedStatusService
 import com.threecrickets.prudence.ApplicationTaskCollector
 import com.threecrickets.prudence.util.LoggingUtil
+import com.threecrickets.prudence.service.ApplicationService
 
 #
 # Settings
@@ -79,3 +80,9 @@ $application_globals['com.threecrickets.prudence.ApplicationTask.defaultLanguage
 $application_globals['com.threecrickets.prudence.ApplicationTask.defaultName'] = $tasks_default_name
 $application_globals['com.threecrickets.prudence.ApplicationTask.documentSource'] = $tasks_document_source
 $scheduler.add_task_collector ApplicationTaskCollector.new(java.io.File.new($application_base_path + '/crontab'), $application_instance)
+
+#
+# ApplicationService
+#
+
+$application_service = ApplicationService.new $application_instance

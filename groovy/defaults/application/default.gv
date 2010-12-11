@@ -17,6 +17,7 @@ import com.threecrickets.scripturian.document.DocumentFileSource
 import com.threecrickets.prudence.DelegatedStatusService
 import com.threecrickets.prudence.ApplicationTaskCollector
 import com.threecrickets.prudence.util.LoggingUtil
+import com.threecrickets.prudence.service.ApplicationService
 
 //
 // Settings
@@ -80,3 +81,9 @@ applicationGlobals['com.threecrickets.prudence.ApplicationTask.defaultLanguageTa
 applicationGlobals['com.threecrickets.prudence.ApplicationTask.defaultName'] = tasksDefaultName
 applicationGlobals['com.threecrickets.prudence.ApplicationTask.documentSource'] = tasksDocumentSource
 scheduler.addTaskCollector(new ApplicationTaskCollector(new File(applicationBasePath + '/crontab'), applicationInstance))
+
+//
+// ApplicationService
+//
+
+applicationService = new ApplicationService(ApplicationInstance)

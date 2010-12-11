@@ -48,11 +48,9 @@ public class ApplicationTask implements Runnable
 	 * 
 	 * @param documentName
 	 *        The document name
-	 * @throws ParsingException
-	 * @throws DocumentException
 	 * @see Application#getCurrent()
 	 */
-	public ApplicationTask( String documentName ) throws ParsingException, DocumentException
+	public ApplicationTask( String documentName )
 	{
 		this( Application.getCurrent(), documentName );
 	}
@@ -61,22 +59,39 @@ public class ApplicationTask implements Runnable
 	 * Construction.
 	 * 
 	 * @param application
-	 *        The application
+	 *        The application in which this task will execute.
 	 * @param documentName
 	 *        The document name
-	 * @throws DocumentException
-	 * @throws ParsingException
 	 */
-	public ApplicationTask( Application application, String documentName ) throws ParsingException, DocumentException
+	public ApplicationTask( Application application, String documentName )
 	{
 		this.application = application;
-
-		executable = Executable.createOnce( documentName, getDocumentSource(), false, getLanguageManager(), getDefaultLanguageTag(), isPrepare() ).getDocument();
+		this.documentName = documentName;
 	}
 
 	//
 	// Attributes
 	//
+
+	/**
+	 * The application in which this task will execute.
+	 * 
+	 * @return The application
+	 */
+	public Application getApplication()
+	{
+		return application;
+	}
+
+	/**
+	 * The document name to execute for this task.
+	 * 
+	 * @return The document name
+	 */
+	public String getDocumentName()
+	{
+		return documentName;
+	}
 
 	/**
 	 * The name of the global variable with which to access the document
@@ -375,18 +390,24 @@ public class ApplicationTask implements Runnable
 		{
 			Application.setCurrent( application );
 
-			ExecutionContext executionContext = new ExecutionContext();
-
-			File libraryDirectory = getLibraryDirectory();
-			if( libraryDirectory != null )
-				executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
-
-			executionContext.getServices().put( getDocumentServiceName(), new ApplicationTaskDocumentService( this, getDocumentSource() ) );
-			executionContext.getServices().put( getApplicationServiceName(), new ApplicationService( application ) );
-
 			try
 			{
+				Executable executable = Executable.createOnce( documentName, getDocumentSource(), false, getLanguageManager(), getDefaultLanguageTag(), isPrepare() ).getDocument();
+
+				ExecutionContext executionContext = new ExecutionContext();
+
+				File libraryDirectory = getLibraryDirectory();
+				if( libraryDirectory != null )
+					executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
+
+				executionContext.getServices().put( getDocumentServiceName(), new ApplicationTaskDocumentService( this, getDocumentSource() ) );
+				executionContext.getServices().put( getApplicationServiceName(), new ApplicationService( application ) );
+
 				executable.execute( executionContext );
+			}
+			catch( DocumentException x )
+			{
+				throw new RuntimeException( x );
 			}
 			catch( ParsingException x )
 			{
@@ -411,14 +432,14 @@ public class ApplicationTask implements Runnable
 	// Private
 
 	/**
-	 * The executable.
-	 */
-	private final Executable executable;
-
-	/**
 	 * The application.
 	 */
 	private final Application application;
+
+	/**
+	 * The document name.
+	 */
+	private final String documentName;
 
 	/**
 	 * The document service name.

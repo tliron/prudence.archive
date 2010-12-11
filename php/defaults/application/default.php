@@ -12,7 +12,7 @@
 // at http://threecrickets.com/
 //
 
-global $application_instance, $application_globals, $language_manager;
+global $application_instance, $application_globals, $language_manager, $application_service;
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $tasks_base_path, $tasks_default_name, $tasks_minimum_time_between_validity_checks;
 global $show_debug_on_error, $show_source_code_url;
@@ -25,6 +25,7 @@ import org.restlet.data.MediaType;
 import com.threecrickets.prudence.DelegatedStatusService;
 import com.threecrickets.prudence.ApplicationTaskCollector;
 import com.threecrickets.prudence.util.LoggingUtil;
+import com.threecrickets.prudence.service.ApplicationService;
 
 //
 // Settings
@@ -88,4 +89,10 @@ $application_globals['com.threecrickets.prudence.ApplicationTask.defaultLanguage
 $application_globals['com.threecrickets.prudence.ApplicationTask.defaultName'] = $tasks_default_name;
 $application_globals['com.threecrickets.prudence.ApplicationTask.documentSource'] = $tasks_document_source;
 $scheduler->addTaskCollector(new ApplicationTaskCollector(new File($application_base_path . '/crontab'), $application_instance));
+
+//
+// ApplicationService
+//
+
+$application_service = new ApplicationService($application_instance)
 ?>

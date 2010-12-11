@@ -24,8 +24,6 @@ import java.io.IOException;
 import org.restlet.Application;
 
 import com.threecrickets.prudence.internal.ApplicationCronTask;
-import com.threecrickets.scripturian.exception.DocumentException;
-import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
  * A <a href="http://www.sauronsoftware.it/projects/cron4j/">cron4j</a>
@@ -127,15 +125,7 @@ public class ApplicationTaskCollector implements TaskCollector
 			}
 			catch( IOException x )
 			{
-				x.printStackTrace();
-			}
-			catch( ParsingException x )
-			{
-				x.printStackTrace();
-			}
-			catch( DocumentException x )
-			{
-				x.printStackTrace();
+				throw new RuntimeException( x );
 			}
 			finally
 			{

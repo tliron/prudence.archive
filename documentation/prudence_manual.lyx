@@ -11307,6 +11307,35 @@ reference "../application/"
  maintenance, monitor resource availability, send out email reminders, etc.
 \end_layout
 
+\begin_layout Standard
+Here is an example default.js (note the use of ``applicationService'' instead
+ of ``application''):
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+document.execute('defaults/application/')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+applicationService.task('poll/', 1000, 1000, false) 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 crontab
 \begin_inset CommandInset label
@@ -14782,6 +14811,14 @@ The same ``application'' service is shared between all code in a single
 \begin_layout Standard
 The ``application'' service is a good place to store shared state for the
  application.
+\end_layout
+
+\begin_layout Quote
+Though the ``application'' service of the configuration scripts is different
+ from that of your Prudence application, you can access the Prudence ``applicati
+on'' service in that application's default.* script as ``applicationService''.
+ For example, you can access the application logger as ``applicationService.logge
+r''.
 \end_layout
 
 \begin_layout Paragraph

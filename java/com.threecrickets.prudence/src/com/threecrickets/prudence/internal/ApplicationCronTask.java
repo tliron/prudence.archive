@@ -18,8 +18,6 @@ import org.restlet.Application;
 
 import com.threecrickets.prudence.ApplicationTask;
 import com.threecrickets.prudence.ApplicationTaskCollector;
-import com.threecrickets.scripturian.exception.DocumentException;
-import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
  * A <a href="http://www.sauronsoftware.it/projects/cron4j/">cron4j</a>
@@ -37,10 +35,8 @@ public class ApplicationCronTask extends Task
 	/**
 	 * @param application
 	 * @param documentName
-	 * @throws ParsingException
-	 * @throws DocumentException
 	 */
-	public ApplicationCronTask( Application application, String documentName ) throws ParsingException, DocumentException
+	public ApplicationCronTask( Application application, String documentName )
 	{
 		this( new ApplicationTask( application, documentName ) );
 	}

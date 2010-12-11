@@ -16,7 +16,8 @@
  'org.restlet.data.MediaType
  'com.threecrickets.prudence.DelegatedStatusService
  'com.threecrickets.prudence.ApplicationTaskCollector
- 'com.threecrickets.prudence.util.LoggingUtil)
+ 'com.threecrickets.prudence.util.LoggingUtil
+ 'com.threecrickets.prudence.service.ApplicationService)
 
 ;
 ; Settings
@@ -77,3 +78,9 @@
 (.put application-globals "com.threecrickets.prudence.ApplicationTask.defaultName" tasks-default-name)
 (.put application-globals "com.threecrickets.prudence.ApplicationTask.documentSource" tasks-document-source)
 (.addTaskCollector scheduler (ApplicationTaskCollector. (File. (str application-base-path "/crontab")) application-instance))
+
+;
+; ApplicationService
+;
+
+(def application-service (ApplicationService. application-instance))

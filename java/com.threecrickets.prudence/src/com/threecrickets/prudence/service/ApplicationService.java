@@ -170,8 +170,7 @@ public class ApplicationService
 	{
 		if( globalExecutor == null )
 		{
-			Application application = Application.getCurrent();
-			ConcurrentMap<String, Object> attributes = application.getContext().getAttributes();
+			ConcurrentMap<String, Object> attributes = getApplication().getContext().getAttributes();
 			Component component = (Component) attributes.get( "com.threecrickets.prudence.component" );
 
 			if( component == null )
@@ -232,15 +231,15 @@ public class ApplicationService
 			if( repeatEvery > 0 )
 			{
 				if( fixedRepeat )
-					return scheduledExecutor.scheduleAtFixedRate( new ApplicationTask( documentName ), delay, repeatEvery, TimeUnit.MILLISECONDS );
+					return scheduledExecutor.scheduleAtFixedRate( new ApplicationTask( application, documentName ), delay, repeatEvery, TimeUnit.MILLISECONDS );
 				else
-					return scheduledExecutor.scheduleWithFixedDelay( new ApplicationTask( documentName ), delay, repeatEvery, TimeUnit.MILLISECONDS );
+					return scheduledExecutor.scheduleWithFixedDelay( new ApplicationTask( application, documentName ), delay, repeatEvery, TimeUnit.MILLISECONDS );
 			}
 			else
-				return scheduledExecutor.schedule( new ApplicationTask( documentName ), delay, TimeUnit.MILLISECONDS );
+				return scheduledExecutor.schedule( new ApplicationTask( application, documentName ), delay, TimeUnit.MILLISECONDS );
 		}
 		else
-			return executor.submit( new ApplicationTask( documentName ) );
+			return executor.submit( new ApplicationTask( application, documentName ) );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
