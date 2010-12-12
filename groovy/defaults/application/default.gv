@@ -86,4 +86,4 @@ scheduler.addTaskCollector(new ApplicationTaskCollector(new File(applicationBase
 // ApplicationService
 //
 
-applicationService = new ApplicationService(ApplicationInstance)
+applicationService = new ApplicationService(applicationInstance)
