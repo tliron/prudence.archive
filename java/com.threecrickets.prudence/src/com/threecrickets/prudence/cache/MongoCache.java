@@ -170,7 +170,7 @@ public class MongoCache implements Cache
 		// dump, however we need it here, too, to allow for fast pruning.
 		set.put( "expirationDate", entry.getExpirationDate() );
 
-		if( tags != null )
+		if( ( tags != null ) && tags.iterator().hasNext() )
 			set.put( "tags", tags );
 
 		if( isBinary )
