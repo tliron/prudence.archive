@@ -94,5 +94,5 @@ $scheduler->addTaskCollector(new ApplicationTaskCollector(new File($application_
 // ApplicationService
 //
 
-$application_service = new ApplicationService($application_instance)
+$application_service = new ApplicationService($application_instance);
 ?>
