@@ -90,7 +90,7 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <code>com.threecrickets.prudence.ApplicationTask.writer:</code>
  * {@link Writer}, defaults to standard output. See {@link #getWriter()}.</li>
  * </ul>
-F * <p>
+ * <p>
  * <i>"Restlet" is a registered trademark of <a
  * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
