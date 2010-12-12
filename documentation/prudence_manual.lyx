@@ -15855,11 +15855,19 @@ target "http://memcached.org/"
 
 \end_inset
 
- and 
+, 
 \begin_inset CommandInset href
 LatexCommand href
 name "Hazelcast"
 target "http://www.hazelcast.com/"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset href
+LatexCommand href
+name "MongoDB"
+target "http://www.mongodb.org/"
 
 \end_inset
 
@@ -15886,7 +15894,12 @@ importClass(
 
 \begin_layout Plain Layout
 
-	com.threecrickets.prudence.cache.HazelcastCache)
+	com.threecrickets.prudence.cache.HazelcastCache,
+\end_layout
+
+\begin_layout Plain Layout
+
+	com.threecrickets.prudence.cache.MongoCache)
 \end_layout
 
 \begin_layout Plain Layout
@@ -15935,7 +15948,7 @@ component.context.attributes.put('com.threecrickets.prudence.cache',
 
 \begin_layout Plain Layout
 
-	new MemcachedCache("127.0.0.1:11211, 192.168.1.12:11211"))
+	new MemcachedCache('127.0.0.1:11211, 192.168.1.12:11211'))
 \end_layout
 
 \begin_layout Plain Layout
@@ -15955,6 +15968,25 @@ component.context.attributes.put('com.threecrickets.prudence.cache',
 \begin_layout Plain Layout
 
 	new HazelcastCache())
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// MongoDB
+\end_layout
+
+\begin_layout Plain Layout
+
+component.context.attributes.put('com.threecrickets.prudence.cache',
+\end_layout
+
+\begin_layout Plain Layout
+
+	new MongoCache())
 \end_layout
 
 \end_inset
@@ -23655,7 +23687,7 @@ target "http://code.google.com/p/mongodb-rhino/"
 \end_inset
 
 .
- Check it out!
+ It is included in the ``Savory JavaScript'' edition.
 \end_layout
 
 \begin_layout Subsubsection

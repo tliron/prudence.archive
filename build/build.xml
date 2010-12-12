@@ -240,6 +240,7 @@
 				<fileset dir="${lib}/h2/lib" />
 				<fileset dir="${lib}/junit/lib" />
 				<fileset dir="${lib}/jygments/lib" />
+				<fileset dir="${lib}/mongo-java-driver/lib" />
 				<fileset dir="${lib}/restlet/lib" />
 				<fileset dir="${lib}/scripturian/lib" />
 				<fileset dir="${lib}/servlet/lib" />
@@ -273,6 +274,7 @@
 			<link href="http://hazelcast.googlecode.com/svn/javadoc/" />
 			<link href="http://dustin.github.com/java-memcached-client/apidocs/" />
 			<link href="http://commons.apache.org/daemon/apidocs/" />
+			<link href="http://api.mongodb.org/java/2.3/" />
 			<classpath>
 				<fileset dir="${lib}/cron4j/lib" />
 				<fileset dir="${lib}/hazelcast/lib" />
@@ -282,6 +284,7 @@
 				<fileset dir="${lib}/commons-pool/lib" />
 				<fileset dir="${lib}/commons-fileupload/lib" />
 				<fileset dir="${lib}/jygments/lib" />
+				<fileset dir="${lib}/mongo-java-driver/lib" />
 				<fileset dir="${lib}/restlet/lib" />
 				<fileset dir="${lib}/scripturian/lib" />
 				<fileset dir="${lib}/spymemcached/lib" />
@@ -341,6 +344,8 @@
 		<fetch-library dist="${dist-javascript}" library="jygments" />
 		<fetch-library dist="${dist-javascript}" library="log4j" />
 		<fetch-library dist="${dist-javascript}" library="mime4j" />
+		<fetch-library dist="${dist-javascript}" library="mongo-java-driver" />
+		<fetch-library dist="${dist-javascript}" library="mongo-rhino-driver" />
 		<fetch-library dist="${dist-javascript}" library="mysqlconnector" />
 		<fetch-library dist="${dist-javascript}" library="restlet" />
 		<fetch-library dist="${dist-javascript}" library="rhino" />
@@ -401,6 +406,7 @@
 		<fetch-library dist="${dist-python}" library="jython" />
 		<fetch-library dist="${dist-python}" library="log4j" />
 		<fetch-library dist="${dist-python}" library="mime4j" />
+		<fetch-library dist="${dist-python}" library="mongo-java-driver" />
 		<fetch-library dist="${dist-python}" library="mysqlconnector" />
 		<fetch-library dist="${dist-python}" library="restlet" />
 		<fetch-library dist="${dist-python}" library="scripturian" />
@@ -459,6 +465,7 @@
 		<fetch-library dist="${dist-clojure}" library="jygments" />
 		<fetch-library dist="${dist-clojure}" library="log4j" />
 		<fetch-library dist="${dist-clojure}" library="mime4j" />
+		<fetch-library dist="${dist-clojure}" library="mongo-java-driver" />
 		<fetch-library dist="${dist-clojure}" library="mysqlconnector" />
 		<fetch-library dist="${dist-clojure}" library="restlet" />
 		<fetch-library dist="${dist-clojure}" library="scripturian" />
@@ -516,6 +523,7 @@
 		<fetch-library dist="${dist-groovy}" library="jygments" />
 		<fetch-library dist="${dist-groovy}" library="log4j" />
 		<fetch-library dist="${dist-groovy}" library="mime4j" />
+		<fetch-library dist="${dist-groovy}" library="mongo-java-driver" />
 		<fetch-library dist="${dist-groovy}" library="mysqlconnector" />
 		<fetch-library dist="${dist-groovy}" library="restlet" />
 		<fetch-library dist="${dist-groovy}" library="scripturian" />
@@ -573,6 +581,7 @@
 		<fetch-library dist="${dist-ruby}" library="jygments" />
 		<fetch-library dist="${dist-ruby}" library="log4j" />
 		<fetch-library dist="${dist-ruby}" library="mime4j" />
+		<fetch-library dist="${dist-ruby}" library="mongo-java-driver" />
 		<fetch-library dist="${dist-ruby}" library="mysqlconnector" />
 		<fetch-library dist="${dist-ruby}" library="restlet" />
 		<fetch-library dist="${dist-ruby}" library="scripturian" />
@@ -633,6 +642,7 @@
 		<fetch-library dist="${dist-php}" library="jygments" />
 		<fetch-library dist="${dist-php}" library="log4j" />
 		<fetch-library dist="${dist-php}" library="mime4j" />
+		<fetch-library dist="${dist-php}" library="mongo-java-driver" />
 		<fetch-library dist="${dist-php}" library="mysqlconnector" />
 		<fetch-library dist="${dist-php}" library="restlet" />
 		<fetch-library dist="${dist-php}" library="scripturian" />
@@ -710,6 +720,7 @@
 		<fetch-library dist="${dist-kitchensink}" library="jython" />
 		<fetch-library dist="${dist-kitchensink}" library="log4j" />
 		<fetch-library dist="${dist-kitchensink}" library="mime4j" />
+		<fetch-library dist="${dist-kitchensink}" library="mongo-java-driver" />
 		<fetch-library dist="${dist-kitchensink}" library="mysqlconnector" />
 		<fetch-library dist="${dist-kitchensink}" library="restlet" />
 		<fetch-library dist="${dist-kitchensink}" library="rhino" />

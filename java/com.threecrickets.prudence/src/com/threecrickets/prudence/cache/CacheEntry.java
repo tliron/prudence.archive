@@ -11,10 +11,14 @@
 
 package com.threecrickets.prudence.cache;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.Date;
 
 import org.restlet.data.CharacterSet;
@@ -194,6 +198,35 @@ public class CacheEntry implements Externalizable
 		this( bytes, mediaType, language, characterSet, encoding, new Date( docmuentModificationTimestamp ), expirationTimestamp > 0 ? new Date( expirationTimestamp ) : null );
 	}
 
+	/**
+	 * Deserializing construction.
+	 * 
+	 * @param bytes
+	 *        An array of bytes
+	 * @throws ClassNotFoundException
+	 * @see #toBytes()
+	 */
+	public CacheEntry( byte[] bytes ) throws IOException, ClassNotFoundException
+	{
+		ByteArrayInputStream byteStream = new ByteArrayInputStream( bytes );
+		try
+		{
+			ObjectInputStream stream = new ObjectInputStream( byteStream );
+			try
+			{
+				readExternal( stream );
+			}
+			finally
+			{
+				stream.close();
+			}
+		}
+		finally
+		{
+			byteStream.close();
+		}
+	}
+
 	//
 	// Attributes
 	//
@@ -322,6 +355,36 @@ public class CacheEntry implements Externalizable
 		return new RepresentationInfo( mediaType, modificationDate );
 	}
 
+	/**
+	 * Serialize into a byte array.
+	 * 
+	 * @return An array of bytes
+	 * @throws IOException
+	 * @see {@link #CacheEntry(byte[])}
+	 */
+	public byte[] toBytes() throws IOException
+	{
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		try
+		{
+			ObjectOutputStream stream = new ObjectOutputStream( byteStream );
+			try
+			{
+				writeExternal( stream );
+			}
+			finally
+			{
+				stream.close();
+			}
+		}
+		finally
+		{
+			byteStream.close();
+		}
+
+		return byteStream.toByteArray();
+	}
+
 	//
 	// Externalizable
 	//
@@ -329,8 +392,11 @@ public class CacheEntry implements Externalizable
 	public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
 	{
 		int byteSize = in.readInt();
-		bytes = new byte[byteSize];
-		in.readFully( bytes );
+		if( byteSize > 0 )
+		{
+			bytes = new byte[byteSize];
+			in.readFully( bytes );
+		}
 		string = in.readUTF();
 		mediaType = MediaType.valueOf( in.readUTF() );
 		language = Language.valueOf( in.readUTF() );
@@ -343,8 +409,13 @@ public class CacheEntry implements Externalizable
 
 	public void writeExternal( ObjectOutput out ) throws IOException
 	{
-		out.writeInt( bytes.length );
-		out.write( bytes );
+		if( ( bytes != null ) && bytes.length > 0 )
+		{
+			out.writeInt( bytes.length );
+			out.write( bytes );
+		}
+		else
+			out.writeInt( 0 );
 		out.writeUTF( nonNull( string ) );
 		out.writeUTF( nonNull( mediaType ) );
 		out.writeUTF( nonNull( language ) );
