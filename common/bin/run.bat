@@ -13,7 +13,7 @@ REM #
 CD /D "%0%\..\.."
 
 SET JARS=#foreach($jar in $jars.split(':'))
-%CD%/libraries/${jar}#if($velocityHasNext);^
+%CD%/libraries/${jar}#if($foreach.hasNext);^
 #end
 #end
 
