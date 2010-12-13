@@ -8,7 +8,7 @@ body {
 	margin-top: 0px;
 	margin-bottom: 0px;
 	__background-color: #e0ffe0;
-	background: url(../images/background.png); /* From: http://www.eosdev.com/Backgrounds/Back_Tilework/EosTilework2h.htm */
+	background: url(../media/background.png); /* From: http://www.eosdev.com/Backgrounds/Back_Tilework/EosTilework2h.htm */
 	font-family: 'Lucida Sans Unicode', 'Lucida Grande', Verdana, Arial, sans-serif;
 	font-size: 12px;
 }
@@ -16,7 +16,7 @@ body {
 div#main {
 	padding-left: 22px;
 	padding-right: 22px;
-	_background-image: url(../../images/background-footer.png);
+	_background-image: url(../../media/background-footer.png);
 	background-color: #ffd8d0;
 }
 div#main-content {
@@ -62,7 +62,7 @@ ul {
 
 div.hr {
   height: 57px;
-  background-image: url(../images/ruler.png);
+  background-image: url(../media/ruler.png);
   background-repeat: no-repeat;
   background-position: center;
 }

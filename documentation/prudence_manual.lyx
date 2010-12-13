@@ -4963,7 +4963,7 @@ reference "../tasks/"
 
 )
 \bar default
-are straightforward scripts that can be run on-demand or scheduled to run
+ are straightforward scripts that can be run on-demand or scheduled to run
  and specific times.
  They are straightforward in that, upon execution, the code is simply run
  as is.
@@ -16626,6 +16626,17 @@ There are many, many use cases for document.external, and they keep growing
  Perhaps, with Prudence, you will create the next one.
 \end_layout
 
+\begin_layout Quote
+Imortant: The semantics of document.external require you to explicitly release
+ the document's response as soon as you're done using the resource, which
+ will in turn release the thread used to stream the response to you.
+ Though these threads will eventually be reclaimed, leaving them hanging
+ could lead to starvation, and hang your application! It's probably best
+ to employ a try-finally paradigm, where the try clause contains as little
+ code as possible.
+ See the example below.
+\end_layout
+
 \begin_layout Standard
 This is a good place to remind you that REST is not just HTTP.
  By default, Prudence supports http: and file: scheme URIs for document.external,
@@ -16656,12 +16667,51 @@ status open
 
 \begin_layout Plain Layout
 
-var fixture =
+var fixture
 \end_layout
 
 \begin_layout Plain Layout
 
-	document.external('file:///myfiles/fixture.json', 'application/json').get().text
+var doc = document.external('file:///myfiles/fixture.json', 'application/json')
+\end_layout
+
+\begin_layout Plain Layout
+
+try {
+\end_layout
+
+\begin_layout Plain Layout
+
+	fixture = doc.get().text
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+finally {
+\end_layout
+
+\begin_layout Plain Layout
+
+	doc.response.release()
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// Do something with the fixture here...
 \end_layout
 
 \end_inset

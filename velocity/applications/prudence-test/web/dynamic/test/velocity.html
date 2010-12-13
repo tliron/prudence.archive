@@ -44,12 +44,11 @@
 
 #macro(printAdapter $adapter)
 	<p>
-	<i>Adapter:</i> $adapter.attributes.get('name') version $adapter.attributes.get('version') <br />
-	<i>Language:</i> $adapter.attributes.get('language.name') version $adapter.attributes.get('language.version') <br />
+	<i>Adapter:</i> $adapter.attributes.name version $adapter.attributes.version <br />
+	<i>Language:</i> $adapter.attributes['language.name'] version $adapter.attributes['language.version'] <br />
 	<i>Tags:</i> 
-	#set($size = $adapter.attributes.get('tags').size())
-	#foreach($tag in $adapter.attributes.get('tags'))
-		$tag#if($velocityCount < $size),#end
+	#foreach($tag in $adapter.attributes.tags)
+		$tag#if($foreach.hasNext),#end
 	#end
 #end
 

@@ -1,10 +1,10 @@
 <%velocity
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-#set($component = $application.globals.get('com.threecrickets.prudence.component'))
-#set($applications = $component.context.attributes.get('com.threecrickets.prudence.applications'))
-#set($version = $component.context.attributes.get('com.threecrickets.prudence.version'))
-#set($revision = $component.context.attributes.get('com.threecrickets.prudence.revision'))
-#set($flavor = $component.context.attributes.get('com.threecrickets.prudence.flavor'))
+#set($component = $application.globals['com.threecrickets.prudence.component'])
+#set($applications = $component.context.attributes['com.threecrickets.prudence.applications'])
+#set($version = $component.context.attributes['com.threecrickets.prudence.version'])
+#set($revision = $component.context.attributes['com.threecrickets.prudence.revision'])
+#set($flavor = $component.context.attributes['com.threecrickets.prudence.flavor'])
 
 #set($action = $conversation.query.action)
 #set($item = $conversation.query.item)
@@ -13,11 +13,11 @@
 	#set($Integer = 0)
 	#set($index = $Integer.valueOf($index) - 1)
 	#if($item == 'host')
-		#set($item = $component.hosts.get($index))
+		#set($item = $component.hosts[$index])
 	#elseif($item == 'server')
-		#set($item = $component.servers.get($index))
+		#set($item = $component.servers[$index])
 	#elseif($item == 'application')
-		#set($item = $applications.get($index))
+		#set($item = $applications[$index])
 	#else
 		#set($item = '')
 	#end
@@ -84,7 +84,7 @@
 								<b>Author:</b> $application.author
 							</p>
 							<p align="right">
-						 		#if($application.started)<span style="color: green;">Running</span> (<a href="?action=stop&item=application&index=$velocityCount">stop</a>)#else <span style="color: red;">Stopped</span> (<a href="?action=start&item=application&index=$velocityCount">start</a>)#end
+						 		#if($application.started)<span style="color: green;">Running</span> (<a href="?action=stop&item=application&index=$foreach.index">stop</a>)#else <span style="color: red;">Stopped</span> (<a href="?action=start&item=application&index=$foreach.index">start</a>)#end
 						 	</p>
 						</div>
 						#end
@@ -120,7 +120,7 @@
 							</ul>
 							</p>
 							<p align="right">
-						 		#if($host.started)<span style="color: green;">Running</span> (<a href="?action=stop&item=host&index=$velocityCount">stop</a>)#else <span style="color: red;">Stopped</span> (<a href="?action=start&item=host&index=$velocityCount">start</a>)#end
+						 		#if($host.started)<span style="color: green;">Running</span> (<a href="?action=stop&item=host&index=$foreach.index">stop</a>)#else <span style="color: red;">Stopped</span> (<a href="?action=start&item=host&index=$foreach.index">start</a>)#end
 						 	</p>
 						</div>
 						#end
@@ -135,7 +135,7 @@
 								<b>For protocols:</b> $server.protocols
 							</p>
 							<p align="right">
-						 		#if($server.started)<span style="color: green;">Running</span> (<a href="?action=stop&item=server&index=$velocityCount">stop</a>)#else <span style="color: red;">Stopped</span> (<a href="?action=start&item=server&index=$velocityCount">start</a>)#end
+						 		#if($server.started)<span style="color: green;">Running</span> (<a href="?action=stop&item=server&index=$foreach.index">stop</a>)#else <span style="color: red;">Stopped</span> (<a href="?action=start&item=server&index=$foreach.index">start</a>)#end
 						 	</p>
 						</div>
 						#end
