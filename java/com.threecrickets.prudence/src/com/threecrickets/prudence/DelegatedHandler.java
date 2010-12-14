@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.restlet.Context;
 import org.restlet.resource.ResourceException;
 
 import com.threecrickets.prudence.service.ApplicationService;
@@ -53,7 +54,62 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * Most likely, you will not want to output anything from the executable.
  * However, this redirection is provided as a debugging convenience.
  * <p>
- * For a more sophisticated resource delegate, see {@link DelegatedResource}.
+ * For a more sophisticated resource delegate, see
+ * {@link DelegatedResourceHandler}.
+ * <p>
+ * Instances are not thread-safe.
+ * <p>
+ * Summary of settings configured via the application's {@link Context}:
+ * <ul>
+ * <li><code>com.threecrickets.prudence.commonLibraryDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedHandler.applicationServiceName</code>
+ * : The name of the global variable with which to access the application
+ * service. Defaults to "application". See {@link #getApplicationServiceName()}.
+ * </li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag:</code>
+ * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
+ * <li><code>com.threecrickets.prudence.DelegatedHandler.defaultName:</code>
+ * {@link String}, defaults to "default". See {@link #getDefaultName()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedHandler.documentServiceName</code>
+ * : The name of the global variable with which to access the document service.
+ * Defaults to "document". See {@link #getDocumentServiceName()}.</li>
+ * <li><code>com.threecrickets.prudence.DelegatedHandler.errorWriter:</code>
+ * {@link Writer}, defaults to standard error. See {@link #getErrorWriter()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedHandler.entryPointValidityCache:</code>
+ * {@link ConcurrentMap}, default to a new {@link ConcurrentHashMap}. See
+ * {@link #getEntryPointValidityCache(Executable)}.
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.fileUploadDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../uploads/". See {@link #getFileUploadDirectory()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold:</code>
+ * {@link Integer}, defaults to zero. See {@link #getFileUploadSizeThreshold()}.
+ * </li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedHandler.executionController:</code>
+ * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedHandler.libraryDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../libraries/". See {@link #getLibraryDirectory()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedHandler.languageManager:</code>
+ * {@link LanguageManager}, defaults to a new instance. See
+ * {@link #getLanguageManager()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedHandler.prepare:</code>
+ * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedHandler.writer:</code>
+ * {@link Writer}, defaults to standard output. See {@link #getWriter()}.</li>
+ * </ul>
  * 
  * @author Tal Liron
  */
@@ -72,19 +128,15 @@ public class DelegatedHandler
 	 *        The document source
 	 * @param languageManager
 	 *        The language manager
+	 * @param context
+	 *        The context used to configure the handler
 	 */
-	public DelegatedHandler( String documentName, DocumentSource<Executable> documentSource, LanguageManager languageManager )
+	public DelegatedHandler( String documentName, DocumentSource<Executable> documentSource, LanguageManager languageManager, Context context )
 	{
 		this.documentSource = documentSource;
 		this.documentName = documentName;
 		this.languageManager = languageManager;
-
-		if( documentSource instanceof DocumentFileSource<?> )
-		{
-			DocumentFileSource<?> documentFileSource = (DocumentFileSource<?>) documentSource;
-			libraryDirectory = new File( documentFileSource.getBasePath(), "../libraries/" );
-			fileUploadDirectory = new File( documentFileSource.getBasePath(), "../uploads/" );
-		}
+		this.context = context;
 	}
 
 	//
@@ -100,7 +152,7 @@ public class DelegatedHandler
 	}
 
 	/**
-	 * @return The documentName
+	 * @return The document name
 	 */
 	public String getDocumentName()
 	{
@@ -108,242 +160,383 @@ public class DelegatedHandler
 	}
 
 	/**
-	 * @return The languageManager
+	 * The context used to configure the handler.
+	 * 
+	 * @return The context
+	 */
+	public Context getContext()
+	{
+		return context;
+	}
+
+	/**
+	 * The {@link LanguageManager} used to create the language adapters. Uses a
+	 * default instance, but can be set to something else.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedHandler.languageManager</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The language manager
 	 */
 	public LanguageManager getLanguageManager()
 	{
+		if( languageManager == null )
+		{
+			ConcurrentMap<String, Object> attributes = context.getAttributes();
+			languageManager = (LanguageManager) attributes.get( "com.threecrickets.prudence.DelegatedHandler.languageManager" );
+
+			if( languageManager == null )
+			{
+				languageManager = new LanguageManager();
+
+				LanguageManager existing = (LanguageManager) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedHandler.languageManager", languageManager );
+				if( existing != null )
+					languageManager = existing;
+			}
+		}
+
 		return languageManager;
 	}
 
 	/**
-	 * Defaults to "javascript".
+	 * The default language tag name to be used if the script doesn't specify
+	 * one. Defaults to "js".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag</code>
+	 * in the application's {@link Context}.
 	 * 
 	 * @return The default language tag
-	 * @see #setDefaultLanguageTag(String)
 	 */
 	public String getDefaultLanguageTag()
 	{
+		if( defaultLanguageTag == null )
+		{
+			ConcurrentMap<String, Object> attributes = context.getAttributes();
+			defaultLanguageTag = (String) attributes.get( "com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag" );
+
+			if( defaultLanguageTag == null )
+				defaultLanguageTag = "js";
+		}
+
 		return defaultLanguageTag;
 	}
 
 	/**
-	 * @param defaultLanguageTag
-	 *        The default language tag
-	 * @see #getDefaultLanguageTag()
-	 */
-	public void setDefaultLanguageTag( String defaultLanguageTag )
-	{
-		this.defaultLanguageTag = defaultLanguageTag;
-	}
-
-	/**
-	 * Defaults to true.
+	 * Whether to prepare the executables. Preparation increases initialization
+	 * time and reduces execution time. Note that not all languages support
+	 * preparation as a separate operation. Defaults to true.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedHandler.prepare</code> in the
+	 * application's {@link Context}.
 	 * 
 	 * @return Whether to prepare executables
-	 * @see #setPrepare(boolean)
 	 */
 	public boolean isPrepare()
 	{
+		if( prepare == null )
+		{
+			ConcurrentMap<String, Object> attributes = context.getAttributes();
+			prepare = (Boolean) attributes.get( "com.threecrickets.prudence.DelegatedHandler.prepare" );
+
+			if( prepare == null )
+				prepare = true;
+		}
+
 		return prepare;
 	}
 
 	/**
-	 * @param prepare
-	 *        Whether to prepare executables
-	 * @see #isPrepare()
-	 */
-	public void setPrepare( boolean prepare )
-	{
-		this.prepare = prepare;
-	}
-
-	/**
-	 * Defaults to standard output.
+	 * The {@link Writer} used by the {@link Executable}. Defaults to standard
+	 * output.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedHandler.writer</code> in the
+	 * application's {@link Context}.
 	 * 
 	 * @return The writer
-	 * @see #setWriter(Writer)
 	 */
 	public Writer getWriter()
 	{
+		if( writer == null )
+		{
+			ConcurrentMap<String, Object> attributes = context.getAttributes();
+			writer = (Writer) attributes.get( "com.threecrickets.prudence.DelegatedHandler.writer" );
+
+			if( writer == null )
+				writer = new OutputStreamWriter( System.out );
+		}
+
 		return writer;
 	}
 
 	/**
-	 * @param writer
-	 *        The writer
-	 * @see #getWriter()
-	 */
-	public void setWriter( Writer writer )
-	{
-		this.writer = writer;
-	}
-
-	/**
-	 * Defaults to standard error.
+	 * Same as {@link #getWriter()}, for standard error. Defaults to standard
+	 * error.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedHandler.errorWriter</code> in
+	 * the application's {@link Context}.
 	 * 
 	 * @return The error writer
-	 * @see #setErrorWriter(Writer)
 	 */
 	public Writer getErrorWriter()
 	{
+		if( errorWriter == null )
+		{
+			ConcurrentMap<String, Object> attributes = context.getAttributes();
+			errorWriter = (Writer) attributes.get( "com.threecrickets.prudence.DelegatedHandler.errorWriter" );
+
+			if( errorWriter == null )
+				errorWriter = new OutputStreamWriter( System.err );
+		}
+
 		return errorWriter;
 	}
 
 	/**
-	 * @param errorWriter
-	 *        The error writer
-	 * @see #getErrorWriter()
-	 */
-	public void setErrorWriter( Writer errorWriter )
-	{
-		this.errorWriter = errorWriter;
-	}
-
-	/**
-	 * Defaults to the {@link DocumentFileSource#getBasePath()} plus
-	 * "../library/".
+	 * Executables might use this directory for importing libraries. If the
+	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
+	 * will default to the {@link DocumentFileSource#getBasePath()} plus
+	 * "../libraries/".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedHandler.libraryDirectory</code>
+	 * in the application's {@link Context}.
 	 * 
-	 * @return The library directory
-	 * @see #setLibraryDirectory(File)
+	 * @return The library directory or null
+	 * @see ExecutionContext#getLibraryLocations()
 	 */
 	public File getLibraryDirectory()
 	{
+		if( libraryDirectory == null )
+		{
+			ConcurrentMap<String, Object> attributes = context.getAttributes();
+			libraryDirectory = (File) attributes.get( "com.threecrickets.prudence.DelegatedHandler.libraryDirectory" );
+
+			if( libraryDirectory == null )
+			{
+				if( documentSource instanceof DocumentFileSource<?> )
+				{
+					libraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../libraries/" );
+
+					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedHandler.libraryDirectory", libraryDirectory );
+					if( existing != null )
+						libraryDirectory = existing;
+				}
+			}
+		}
+
 		return libraryDirectory;
 	}
 
 	/**
-	 * @param libraryDirectory
-	 *        The library directory
-	 * @see #getLibraryDirectory()
+	 * Executables from all applications might use this directory for importing
+	 * libraries. If the {@link #getDocumentSource()} is a
+	 * {@link DocumentFileSource}, then this will default to the
+	 * {@link DocumentFileSource#getBasePath()} plus "../../../libraries/".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.commonLibraryDirectory</code> in the
+	 * application's {@link Context}.
+	 * 
+	 * @return The common library directory or null
+	 * @see ExecutionContext#getLibraryLocations()
 	 */
-	public void setLibraryDirectory( File libraryDirectory )
+	public File getCommonLibraryDirectory()
 	{
-		this.libraryDirectory = libraryDirectory;
+		if( commonLibraryDirectory == null )
+		{
+			ConcurrentMap<String, Object> attributes = context.getAttributes();
+			commonLibraryDirectory = (File) attributes.get( "com.threecrickets.prudence.commonLibraryDirectory" );
+
+			if( commonLibraryDirectory == null )
+			{
+				DocumentSource<Executable> documentSource = getDocumentSource();
+				if( documentSource instanceof DocumentFileSource<?> )
+				{
+					commonLibraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../../libraries/" );
+
+					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.commonLibraryDirectory", commonLibraryDirectory );
+					if( existing != null )
+						commonLibraryDirectory = existing;
+				}
+			}
+		}
+
+		return commonLibraryDirectory;
 	}
 
 	/**
 	 * If the {@link #getDocumentSource()} is a {@link DocumentFileSource}, then
-	 * this is the library directory relative to the
-	 * {@link DocumentFileSource#getBasePath()}. Otherwise, it's null.
+	 * this is the file relative to the {@link DocumentFileSource#getBasePath()}
+	 * . Otherwise, it's null.
 	 * 
 	 * @return The relative library directory or null
 	 */
-	public File getLibraryDirectoryRelative()
+	public File getRelativeFile( File file )
 	{
-		DocumentSource<Executable> documentSource = getDocumentSource();
-		if( documentSource instanceof DocumentFileSource<?> )
+		if( file != null )
 		{
-			File libraryDirectory = getLibraryDirectory();
-			if( libraryDirectory != null )
-				return ScripturianUtil.getRelativeFile( libraryDirectory, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
+			DocumentSource<Executable> documentSource = getDocumentSource();
+			if( documentSource instanceof DocumentFileSource<?> )
+				return ScripturianUtil.getRelativeFile( file, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
 		}
 		return null;
 	}
 
 	/**
-	 * Defaults to "document".
+	 * The name of the global variable with which to access the document
+	 * service. Defaults to "document".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedHandler.documentServiceName</code>
+	 * in the application's {@link Context}.
 	 * 
 	 * @return The document service name
-	 * @see #setDocumentServiceName(String)
 	 */
 	public String getDocumentServiceName()
 	{
+		if( documentServiceName == null )
+		{
+			ConcurrentMap<String, Object> attributes = context.getAttributes();
+			documentServiceName = (String) attributes.get( "com.threecrickets.prudence.DelegatedHandler.documentServiceName" );
+
+			if( documentServiceName == null )
+				documentServiceName = "document";
+		}
+
 		return documentServiceName;
 	}
 
 	/**
-	 * @param documentServiceName
-	 *        The document service name
-	 * @see #getDocumentServiceName()
-	 */
-	public void setDocumentServiceName( String documentServiceName )
-	{
-		this.documentServiceName = documentServiceName;
-	}
-
-	/**
-	 * Defaults to "application".
+	 * The name of the global variable with which to access the application
+	 * service. Defaults to "application".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedHandler.applicationServiceName</code>
+	 * in the application's {@link Context}.
 	 * 
 	 * @return The application service name
-	 * @see #setApplicationServiceName(String)
 	 */
 	public String getApplicationServiceName()
 	{
+		if( applicationServiceName == null )
+		{
+			ConcurrentMap<String, Object> attributes = context.getAttributes();
+			applicationServiceName = (String) attributes.get( "com.threecrickets.prudence.DelegatedHandler.applicationServiceName" );
+
+			if( applicationServiceName == null )
+				applicationServiceName = "application";
+		}
+
 		return applicationServiceName;
 	}
 
 	/**
-	 * @param applicationServiceName
-	 *        The application service name
-	 * @see #getApplicationServiceName()
-	 */
-	public void setApplicationServiceName( String applicationServiceName )
-	{
-		this.applicationServiceName = applicationServiceName;
-	}
-
-	/**
-	 * Defaults to null.
+	 * An optional {@link ExecutionController} to be used with the executable.
+	 * Useful for exposing your own global variables to the executable.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedHandler.executionController</code>
+	 * in the application's {@link Context}.
 	 * 
-	 * @return The execution controller
-	 * @see #setExecutionController(ExecutionController)
+	 * @return The execution controller or null if none used
 	 */
 	public ExecutionController getExecutionController()
 	{
+		if( executionController == null )
+		{
+			ConcurrentMap<String, Object> attributes = context.getAttributes();
+			executionController = (ExecutionController) attributes.get( "com.threecrickets.prudence.DelegatedHandler.executionController" );
+		}
+
 		return executionController;
 	}
 
 	/**
-	 * @param executionController
-	 *        The execution controller
-	 * @see #getExecutionController()
-	 */
-	public void setExecutionController( ExecutionController executionController )
-	{
-		this.executionController = executionController;
-	}
-
-	/**
-	 * Defaults to zero.
-	 * 
-	 * @return The file upload size threshold
-	 * @see #setFileUploadSizeThreshold(int)
-	 */
-	public int getFileUploadSizeThreshold()
-	{
-		return fileUploadSizeThreshold;
-	}
-
-	/**
-	 * @param fileUploadSizeThreshold
-	 *        The file upload size threshold
-	 * @see #getFileUploadSizeThreshold()
-	 */
-	public void setFileUploadSizeThreshold( int fileUploadSizeThreshold )
-	{
-		this.fileUploadSizeThreshold = fileUploadSizeThreshold;
-	}
-
-	/**
-	 * Defaults to the {@link DocumentFileSource#getBasePath()} plus
+	 * The directory in which to place uploaded files. If the
+	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
+	 * will default to the {@link DocumentFileSource#getBasePath()} plus
 	 * "../uploads/".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedHandler.fileUploadDirectory</code>
+	 * in the application's {@link Context}.
 	 * 
-	 * @return The file upload directory
-	 * @see #setFileUploadDirectory(File)
+	 * @return The file upload directory or null
 	 */
 	public File getFileUploadDirectory()
 	{
+		if( fileUploadDirectory == null )
+		{
+			ConcurrentMap<String, Object> attributes = context.getAttributes();
+			fileUploadDirectory = (File) attributes.get( "com.threecrickets.prudence.DelegatedHandler.fileUploadDirectory" );
+
+			if( fileUploadDirectory == null )
+			{
+				DocumentSource<Executable> documentSource = getDocumentSource();
+				if( documentSource instanceof DocumentFileSource<?> )
+				{
+					fileUploadDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../uploads/" );
+
+					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedHandler.fileUploadDirectory", fileUploadDirectory );
+					if( existing != null )
+						fileUploadDirectory = existing;
+				}
+			}
+		}
+
 		return fileUploadDirectory;
 	}
 
 	/**
-	 * @param fileUploadDirectory
-	 *        The file upload directory
-	 * @see #getFileUploadDirectory()
+	 * The size in bytes beyond which uploaded files will be stored to disk.
+	 * Defaults to zero, meaning that all uploaded files will be stored to disk.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.DelegatedHandler.fileUploadSizeThreshold</code>
+	 * in the application's {@link Context}.
+	 * 
+	 * @return The file upload size threshold
 	 */
-	public void setFileUploadDirectory( File fileUploadDirectory )
+	public int getFileUploadSizeThreshold()
 	{
-		this.fileUploadDirectory = fileUploadDirectory;
+		if( fileUploadSizeThreshold == null )
+		{
+			ConcurrentMap<String, Object> attributes = context.getAttributes();
+			fileUploadSizeThreshold = ( (Number) attributes.get( "com.threecrickets.prudence.DelegatedHandler.fileUploadSizeThreshold" ) ).intValue();
+
+			if( fileUploadSizeThreshold == null )
+				fileUploadSizeThreshold = 0;
+		}
+
+		return fileUploadSizeThreshold;
+	}
+
+	/**
+	 * A cache for entry point validity.
+	 * 
+	 * @param executable
+	 *        The executable
+	 * @return The entry point validity cache
+	 */
+	@SuppressWarnings("unchecked")
+	public ConcurrentMap<String, Boolean> getEntryPointValidityCache( Executable executable )
+	{
+		ConcurrentMap<String, Object> attributes = executable.getAttributes();
+		ConcurrentMap<String, Boolean> entryPointValidityCache = (ConcurrentMap<String, Boolean>) attributes.get( "com.threecrickets.prudence.DelegatedHandler.entryPointValidityCache" );
+		if( entryPointValidityCache == null )
+		{
+			entryPointValidityCache = new ConcurrentHashMap<String, Boolean>();
+			ConcurrentMap<String, Boolean> existing = (ConcurrentMap<String, Boolean>) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedHandler.entryPointValidityCache", entryPointValidityCache );
+			if( existing != null )
+				entryPointValidityCache = existing;
+		}
+
+		return entryPointValidityCache;
 	}
 
 	//
@@ -367,22 +560,27 @@ public class DelegatedHandler
 
 		try
 		{
-			DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, documentSource, false, languageManager, defaultLanguageTag, prepare );
+			DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( getDocumentName(), getDocumentSource(), false, getLanguageManager(), getDefaultLanguageTag(), isPrepare() );
 			Executable executable = documentDescriptor.getDocument();
 
 			if( executable.getEnterableExecutionContext() == null )
 			{
-				ExecutionContext executionContext = new ExecutionContext( writer, errorWriter );
+				ExecutionContext executionContext = new ExecutionContext( getWriter(), getErrorWriter() );
 
+				// Add library locations
+				File libraryDirectory = getLibraryDirectory();
+				if( libraryDirectory != null )
+					executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
+				libraryDirectory = getCommonLibraryDirectory();
 				if( libraryDirectory != null )
 					executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
 
-				executionContext.getServices().put( documentServiceName, new DelegatedHandlerDocumentService( this, documentSource ) );
-				executionContext.getServices().put( applicationServiceName, new ApplicationService() );
+				executionContext.getServices().put( getDocumentServiceName(), new DelegatedHandlerDocumentService( this, getDocumentSource() ) );
+				executionContext.getServices().put( getApplicationServiceName(), new ApplicationService() );
 
 				try
 				{
-					if( !executable.makeEnterable( executionContext, this, executionController ) )
+					if( !executable.makeEnterable( executionContext, this, getExecutionController() ) )
 						executionContext.release();
 				}
 				catch( ParsingException x )
@@ -413,13 +611,13 @@ public class DelegatedHandler
 			if( arguments != null )
 			{
 				ArrayList<Object> argumentList = new ArrayList<Object>( arguments.length + 1 );
-				argumentList.add( new DelegatedHandlerConversationService( fileUploadSizeThreshold, fileUploadDirectory ) );
+				argumentList.add( new DelegatedHandlerConversationService( getFileUploadSizeThreshold(), getFileUploadDirectory() ) );
 				for( Object argument : arguments )
 					argumentList.add( argument );
 				r = executable.enter( entryPointName, argumentList.toArray() );
 			}
 			else
-				r = executable.enter( entryPointName, new DelegatedHandlerConversationService( fileUploadSizeThreshold, fileUploadDirectory ) );
+				r = executable.enter( entryPointName, new DelegatedHandlerConversationService( getFileUploadSizeThreshold(), getFileUploadDirectory() ) );
 
 			return r;
 		}
@@ -474,83 +672,71 @@ public class DelegatedHandler
 	private final String documentName;
 
 	/**
+	 * The context used to configure the handler.
+	 */
+	private final Context context;
+
+	/**
 	 * The {@link LanguageManager} used to create the language adapters.
 	 */
-	private final LanguageManager languageManager;
+	private LanguageManager languageManager;
 
 	/**
 	 * The default language tag to be used if the executable doesn't specify
 	 * one.
 	 */
-	private volatile String defaultLanguageTag = "javascript";
+	private String defaultLanguageTag;
 
 	/**
 	 * Whether to prepare executables.
 	 */
-	private volatile boolean prepare = true;
+	private Boolean prepare;
 
 	/**
 	 * The {@link Writer} used by the {@link Executable}.
 	 */
-	private Writer writer = new OutputStreamWriter( System.out );
+	private Writer writer;
 
 	/**
 	 * Same as {@link #writer}, for standard error.
 	 */
-	private volatile Writer errorWriter = new OutputStreamWriter( System.err );
+	private Writer errorWriter;
 
 	/**
 	 * Executables might use directory this for importing libraries.
 	 */
-	private volatile File libraryDirectory;
+	private File libraryDirectory;
+
+	/**
+	 * Executables from all applications might use this directory for importing
+	 * libraries.
+	 */
+	private File commonLibraryDirectory;
 
 	/**
 	 * The name of the global variable with which to access the document
 	 * service.
 	 */
-	private volatile String documentServiceName = "document";
+	private String documentServiceName;
 
 	/**
 	 * The name of the global variable with which to access the application
 	 * service.
 	 */
-	private volatile String applicationServiceName = "application";
+	private String applicationServiceName;
 
 	/**
 	 * An optional {@link ExecutionController} to be used with the scripts.
 	 */
-	private volatile ExecutionController executionController;
+	private ExecutionController executionController;
 
 	/**
 	 * The size in bytes beyond which uploaded files will be stored to disk.
 	 */
-	private volatile int fileUploadSizeThreshold = 0;
+	private Integer fileUploadSizeThreshold;
 
 	/**
 	 * The directory in which to place uploaded files.
 	 */
-	private volatile File fileUploadDirectory;
-
-	/**
-	 * A cache for entry point validity.
-	 * 
-	 * @param executable
-	 *        The executable
-	 * @return The entry point validity cache
-	 */
-	@SuppressWarnings("unchecked")
-	private ConcurrentMap<String, Boolean> getEntryPointValidityCache( Executable executable )
-	{
-		ConcurrentMap<String, Object> attributes = executable.getAttributes();
-		ConcurrentMap<String, Boolean> entryPointValidityCache = (ConcurrentMap<String, Boolean>) attributes.get( "com.threecrickets.prudence.DelegatedHandler.entryPointValidityCache" );
-		if( entryPointValidityCache == null )
-		{
-			entryPointValidityCache = new ConcurrentHashMap<String, Boolean>();
-			ConcurrentMap<String, Boolean> existing = (ConcurrentMap<String, Boolean>) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedHandler.entryPointValidityCache", entryPointValidityCache );
-			if( existing != null )
-				entryPointValidityCache = existing;
-		}
-
-		return entryPointValidityCache;
-	}
+	private File fileUploadDirectory;
 }

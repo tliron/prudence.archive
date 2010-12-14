@@ -91,6 +91,9 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <li>
  * <code>com.threecrickets.prudence.cache:</code> {@link Cache}. See
  * {@link #getCache()}.</li>
+ * <li><code>com.threecrickets.prudence.commonLibraryDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.applicationServiceName</code>
  * : The name of the global variable with which to access the application
@@ -668,20 +671,56 @@ public class DelegatedResource extends ServerResource
 	}
 
 	/**
+	 * Executables from all applications might use this directory for importing
+	 * libraries. If the {@link #getDocumentSource()} is a
+	 * {@link DocumentFileSource}, then this will default to the
+	 * {@link DocumentFileSource#getBasePath()} plus "../../../libraries/".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.commonLibraryDirectory</code> in the
+	 * application's {@link Context}.
+	 * 
+	 * @return The common library directory or null
+	 * @see ExecutionContext#getLibraryLocations()
+	 */
+	public File getCommonLibraryDirectory()
+	{
+		if( commonLibraryDirectory == null )
+		{
+			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
+			commonLibraryDirectory = (File) attributes.get( "com.threecrickets.prudence.commonLibraryDirectory" );
+
+			if( commonLibraryDirectory == null )
+			{
+				DocumentSource<Executable> documentSource = getDocumentSource();
+				if( documentSource instanceof DocumentFileSource<?> )
+				{
+					commonLibraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../../libraries/" );
+
+					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.commonLibraryDirectory", commonLibraryDirectory );
+					if( existing != null )
+						commonLibraryDirectory = existing;
+				}
+			}
+		}
+
+		return commonLibraryDirectory;
+	}
+
+	/**
 	 * If the {@link #getDocumentSource()} is a {@link DocumentFileSource}, then
-	 * this is the library directory relative to the
-	 * {@link DocumentFileSource#getBasePath()}. Otherwise, it's null.
+	 * this is the file relative to the {@link DocumentFileSource#getBasePath()}
+	 * . Otherwise, it's null.
 	 * 
 	 * @return The relative library directory or null
 	 */
-	public File getLibraryDirectoryRelative()
+	public File getRelativeFile( File file )
 	{
-		DocumentSource<Executable> documentSource = getDocumentSource();
-		if( documentSource instanceof DocumentFileSource<?> )
+		if( file != null )
 		{
-			File libraryDirectory = getLibraryDirectory();
-			if( libraryDirectory != null )
-				return ScripturianUtil.getRelativeFile( libraryDirectory, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
+			DocumentSource<Executable> documentSource = getDocumentSource();
+			if( documentSource instanceof DocumentFileSource<?> )
+				return ScripturianUtil.getRelativeFile( file, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
 		}
 		return null;
 	}
@@ -1205,6 +1244,12 @@ public class DelegatedResource extends ServerResource
 	private volatile File libraryDirectory;
 
 	/**
+	 * Executables from all applications might use this directory for importing
+	 * libraries.
+	 */
+	private volatile File commonLibraryDirectory;
+
+	/**
 	 * The directory in which to place uploaded files.
 	 */
 	private volatile File fileUploadDirectory;
@@ -1463,7 +1508,11 @@ public class DelegatedResource extends ServerResource
 			{
 				ExecutionContext executionContext = new ExecutionContext( getWriter(), getErrorWriter() );
 
+				// Add library locations
 				File libraryDirectory = getLibraryDirectory();
+				if( libraryDirectory != null )
+					executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
+				libraryDirectory = getCommonLibraryDirectory();
 				if( libraryDirectory != null )
 					executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
 

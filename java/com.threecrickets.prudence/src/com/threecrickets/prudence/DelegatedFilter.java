@@ -68,7 +68,7 @@ public class DelegatedFilter extends Filter
 	public DelegatedFilter( Context context, Restlet next, String documentName, DocumentSource<Executable> documentSource, LanguageManager languageManager )
 	{
 		super( context, next );
-		delegatedHandler = new DelegatedHandler( documentName, documentSource, languageManager );
+		delegatedHandler = new DelegatedHandler( documentName, documentSource, languageManager, context );
 	}
 
 	//

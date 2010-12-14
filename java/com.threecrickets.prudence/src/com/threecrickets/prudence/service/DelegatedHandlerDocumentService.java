@@ -58,10 +58,25 @@ public class DelegatedHandlerDocumentService extends DocumentServiceBase
 		catch( DocumentNotFoundException x )
 		{
 			// Try the library directory
-			File libraryDirectory = delegatedHandler.getLibraryDirectoryRelative();
+			File libraryDirectory = delegatedHandler.getRelativeFile( delegatedHandler.getLibraryDirectory() );
 			if( libraryDirectory != null )
-				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, delegatedHandler.getLanguageManager(), delegatedHandler.getDefaultLanguageTag(),
-					delegatedHandler.isPrepare() );
+			{
+				try
+				{
+					documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, delegatedHandler.getLanguageManager(), delegatedHandler.getDefaultLanguageTag(),
+						delegatedHandler.isPrepare() );
+				}
+				catch( DocumentNotFoundException xx )
+				{
+					// Try the common library directory
+					libraryDirectory = delegatedHandler.getRelativeFile( delegatedHandler.getCommonLibraryDirectory() );
+					if( libraryDirectory != null )
+						documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, delegatedHandler.getLanguageManager(), delegatedHandler.getDefaultLanguageTag(),
+							delegatedHandler.isPrepare() );
+					else
+						throw xx;
+				}
+			}
 			else
 				throw x;
 		}

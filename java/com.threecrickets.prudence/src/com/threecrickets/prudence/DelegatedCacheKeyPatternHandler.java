@@ -11,6 +11,8 @@
 
 package com.threecrickets.prudence;
 
+import org.restlet.Context;
+
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentSource;
@@ -39,10 +41,12 @@ public class DelegatedCacheKeyPatternHandler extends DelegatedHandler
 	 *        The document source
 	 * @param languageManager
 	 *        The language manager
+	 * @param context
+	 *        The context used to configure the handler
 	 */
-	public DelegatedCacheKeyPatternHandler( String documentName, DocumentSource<Executable> documentSource, LanguageManager languageManager )
+	public DelegatedCacheKeyPatternHandler( String documentName, DocumentSource<Executable> documentSource, LanguageManager languageManager, Context context )
 	{
-		super( documentName, documentSource, languageManager );
+		super( documentName, documentSource, languageManager, context );
 	}
 
 	//

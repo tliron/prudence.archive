@@ -348,10 +348,25 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		}
 		catch( DocumentNotFoundException x )
 		{
-			File libraryDirectory = resource.getLibraryDirectoryRelative();
+			// Try the library directory
+			File libraryDirectory = resource.getRelativeFile( resource.getLibraryDirectory() );
 			if( libraryDirectory != null )
-				// Try the library directory
-				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
+			{
+				try
+				{
+					documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
+				}
+				catch( DocumentNotFoundException xx )
+				{
+					// Try the common library directory
+					libraryDirectory = resource.getRelativeFile( resource.getCommonLibraryDirectory() );
+					if( libraryDirectory != null )
+						documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
+							resource.isPrepare() );
+					else
+						throw xx;
+				}
+			}
 			else
 				throw x;
 		}
@@ -594,7 +609,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 					for( Map.Entry<String, Set<String>> entry : delegatedHandlers.entrySet() )
 					{
-						DelegatedCacheKeyPatternHandler delegatedHandler = new DelegatedCacheKeyPatternHandler( entry.getKey(), handlersDocumentSource, languageManager );
+						DelegatedCacheKeyPatternHandler delegatedHandler = new DelegatedCacheKeyPatternHandler( entry.getKey(), handlersDocumentSource, languageManager, resource.getContext() );
 						delegatedHandler.handleCacheKeyPattern( entry.getValue().toArray( new String[] {} ) );
 					}
 				}

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2010-12-12">
+<meta name="create-date" content="2010-12-14">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -1591,7 +1591,7 @@ This is where your rolling logs will appear. Prudence logs are highly configurab
 See <u>logging (page <a class="Reference" href="#../logging/">1↓</a>)</u>.
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-27"></a>/configuration/<a class="Label" name="../application/|configuration"> </a>
+<a class="toc" name="toc-Subsubsection-27"></a>/configuration/<a class="Label" name="../instance/|configuration"> </a>
 </h3>
 <div class="Unindented">
 There are a few essential configuration files here.
@@ -1612,10 +1612,13 @@ hazelcast.conf: for <a class="URL" href="http://www.hazelcast.com/">Hazelcast</a
 </li>
 </ul>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-28"></a>/libraries/
+<a class="toc" name="toc-Subsubsection-28"></a>/libraries/<a class="Label" name="../instance/|libraries"> </a>
 </h3>
 <div class="Unindented">
 Here you will find Prudence’s main libraries as well as support libraries. The main /libraries/ subdirectory is for Java archives (JARs), but you may find subdirectories for libraries in other languages, such as /libraries/python/ for Python.
+</div>
+<div class="Indented">
+This directory also serves as a common /libraries/ directory for all applications, similarly to how an <u>individual application’s /libraries/ directory (page <a class="Reference" href="#../application/|libraries">1↓</a>)</u> works. You can thus put source code here that you want to share for all your applications.
 </div>
 <div class="Indented">
 If you add your own JARs, make sure to edit the scripts in /bin/ to accommodate your additions.
@@ -1994,13 +1997,16 @@ See <u>resources (page <a class="Reference" href="#../resources/">1↓</a>)</u> 
 <u>Tasks (page <a class="Reference" href="#../tasks/">1↓</a>)</u> are straightforward scripts that can be run on-demand or scheduled to run and specific times. They are straightforward in that, upon execution, the code is simply run as is. There is no particular entry point as with /resources/ or /handlers/.
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-43"></a>/libraries/
+<a class="toc" name="toc-Subsubsection-43"></a>/libraries/<a class="Label" name="../application/|libraries"> </a>
 </h3>
 <div class="Unindented">
 All your code, whether it’s in /resources/, /handlers/, /tasks/ or in scriptlets embedded in /web/dynamic/ and /fragments/, can include code from /libraries/.
 </div>
 <div class="Indented">
 Use whatever mechanism is appropriate for your language: ‘‘import’’ for Python or Ruby, ‘‘use’’ for Clojure, etc. For languages that don’t have inclusion mechanisms—Groovy, JavaScript—you can use Prudence’s inclusion mechanism, <u>document.execute (page <a class="Reference" href="#../api/|document-execute">1↓</a>)</u>.
+</div>
+<div class="Indented">
+To share source code with all your applications, use the <u>instance’s /libraries/ directory (page <a class="Reference" href="#../instance/|libraries">1↑</a>)</u>.
 </div>
 <h3 class="Subsubsection">
 <a class="toc" name="toc-Subsubsection-44"></a>/uploads/
@@ -5440,7 +5446,7 @@ There are many, many use cases for document.external, and they keep growing as R
 </li>
 </ol>
 <blockquote class="Quote">
-Imortant: The semantics of document.external require you to explicitly release the document’s response as soon as you’re done using the resource, which will in turn release the thread used to stream the response to you. Though these threads will eventually be reclaimed, leaving them hanging could lead to starvation, and hang your application! It’s probably best to employ a try-finally paradigm, where the try clause contains as little code as possible. See the example below.
+Imortant: The semantics of ClientResource require you to explicitly release the response as soon as you’re done using it, which will in turn release the thread used to stream the response to you. (Though these threads might eventually be reclaimed by a built-in garbage collection mechanism, leaving them hanging could lead to starvation, such that further uses of document.external will block until threads return to the pool.) It’s probably best to employ a try-finally paradigm, where the try clause contains as little code as possible, and the finally clause releases the response. See the example below.
 </blockquote>
 <div class="Unindented">
 This is a good place to remind you that REST is not just HTTP. By default, Prudence supports http: and file: scheme URIs for document.external, and you can add more protocols via your <u>/instance/clients.* configuration script (page <a class="Reference" href="#../instance/|clients-file">1↑</a>)</u>.
@@ -5452,12 +5458,12 @@ Here’s an example of using document.external to read a JSON representation fro
 
 <div class="listing">
 <pre class="listing">var fixture
-var doc = document.external(’file:///myfiles/fixture.json’, ’application/json’)
+var resource = document.external(’file:///myfiles/fixture.json’, ’application/json’)
 try {
-	fixture = doc.get().text
+	fixture = resource.get().text
 }
 finally {
-	doc.response.release()
+	resource.response.release()
 }
 ​
 // Do something with the fixture here...
@@ -7862,7 +7868,7 @@ Note that the LGPL version 3 has a clause allowing you to ‘‘upgrade’’ Pr
 Copyright (C) 2010 Version 1
 </div>
 <div class="footer" id="generated-by">
-Document generated by <a href="http://elyxer.nongnu.org/">eLyXer 0.98 (2010-05-13)</a> on <span class="create-date">2010-12-12T23:53:24.226188</span>
+Document generated by <a href="http://elyxer.nongnu.org/">eLyXer 0.98 (2010-05-13)</a> on <span class="create-date">2010-12-14T02:47:09.664967</span>
 </div>
 </div>
 </body>

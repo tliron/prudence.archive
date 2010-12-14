@@ -3814,7 +3814,7 @@ reference "../logging/"
 /configuration/
 \begin_inset CommandInset label
 LatexCommand label
-name "../application/|configuration"
+name "../instance/|configuration"
 
 \end_inset
 
@@ -3895,6 +3895,13 @@ reference "../api/|document-cache"
 
 \begin_layout Subsubsection
 /libraries/
+\begin_inset CommandInset label
+LatexCommand label
+name "../instance/|libraries"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3902,6 +3909,24 @@ Here you will find Prudence's main libraries as well as support libraries.
  The main /libraries/ subdirectory is for Java archives (JARs), but you
  may find subdirectories for libraries in other languages, such as /libraries/py
 thon/ for Python.
+\end_layout
+
+\begin_layout Standard
+This directory also serves as a common /libraries/ directory for all application
+s, similarly to how an 
+\bar under
+individual application's /libraries/ directory (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|libraries"
+
+\end_inset
+
+)
+\bar default
+ works.
+ You can thus put source code here that you want to share for all your applicati
+ons.
 \end_layout
 
 \begin_layout Standard
@@ -4972,6 +4997,13 @@ reference "../tasks/"
 
 \begin_layout Subsubsection
 /libraries/
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|libraries"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4989,6 +5021,21 @@ document.execute (page
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../api/|document-execute"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+To share source code with all your applications, use the 
+\bar under
+instance's /libraries/ directory (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/|libraries"
 
 \end_inset
 
@@ -16627,13 +16674,15 @@ There are many, many use cases for document.external, and they keep growing
 \end_layout
 
 \begin_layout Quote
-Imortant: The semantics of document.external require you to explicitly release
- the document's response as soon as you're done using the resource, which
- will in turn release the thread used to stream the response to you.
- Though these threads will eventually be reclaimed, leaving them hanging
- could lead to starvation, and hang your application! It's probably best
- to employ a try-finally paradigm, where the try clause contains as little
- code as possible.
+Imortant: The semantics of ClientResource require you to explicitly release
+ the response as soon as you're done using it, which will in turn release
+ the thread used to stream the response to you.
+ (Though these threads might eventually be reclaimed by a built-in garbage
+ collection mechanism, leaving them hanging could lead to starvation, such
+ that further uses of document.external will block until threads return to
+ the pool.) It's probably best to employ a try-finally paradigm, where the
+ try clause contains as little code as possible, and the finally clause
+ releases the response.
  See the example below.
 \end_layout
 
@@ -16672,7 +16721,8 @@ var fixture
 
 \begin_layout Plain Layout
 
-var doc = document.external('file:///myfiles/fixture.json', 'application/json')
+var resource = document.external('file:///myfiles/fixture.json', 'application/json
+')
 \end_layout
 
 \begin_layout Plain Layout
@@ -16682,7 +16732,7 @@ try {
 
 \begin_layout Plain Layout
 
-	fixture = doc.get().text
+	fixture = resource.get().text
 \end_layout
 
 \begin_layout Plain Layout
@@ -16697,7 +16747,7 @@ finally {
 
 \begin_layout Plain Layout
 
-	doc.response.release()
+	resource.response.release()
 \end_layout
 
 \begin_layout Plain Layout

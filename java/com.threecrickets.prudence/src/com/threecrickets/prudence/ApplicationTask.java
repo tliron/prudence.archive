@@ -50,6 +50,9 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <p>
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
+ * <li><code>com.threecrickets.prudence.commonLibraryDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.ApplicationTask.applicationServiceName</code>
  * : The name of the global variable with which to access the application
@@ -411,6 +414,43 @@ public class ApplicationTask implements Runnable
 	}
 
 	/**
+	 * Executables from all applications might use this directory for importing
+	 * libraries. If the {@link #getDocumentSource()} is a
+	 * {@link DocumentFileSource}, then this will default to the
+	 * {@link DocumentFileSource#getBasePath()} plus "../../../libraries/".
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>com.threecrickets.prudence.commonLibraryDirectory</code> in the
+	 * application's {@link Context}.
+	 * 
+	 * @return The common library directory or null
+	 * @see ExecutionContext#getLibraryLocations()
+	 */
+	public File getCommonLibraryDirectory()
+	{
+		if( commonLibraryDirectory == null )
+		{
+			ConcurrentMap<String, Object> attributes = application.getContext().getAttributes();
+			commonLibraryDirectory = (File) attributes.get( "com.threecrickets.prudence.commonLibraryDirectory" );
+
+			if( commonLibraryDirectory == null )
+			{
+				DocumentSource<Executable> documentSource = getDocumentSource();
+				if( documentSource instanceof DocumentFileSource<?> )
+				{
+					commonLibraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../../libraries/" );
+
+					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.commonLibraryDirectory", commonLibraryDirectory );
+					if( existing != null )
+						commonLibraryDirectory = existing;
+				}
+			}
+		}
+
+		return commonLibraryDirectory;
+	}
+
+	/**
 	 * If the {@link #getDocumentSource()} is a {@link DocumentFileSource}, then
 	 * this is the library directory relative to the
 	 * {@link DocumentFileSource#getBasePath()}. Otherwise, it's null.
@@ -524,7 +564,11 @@ public class ApplicationTask implements Runnable
 
 				ExecutionContext executionContext = new ExecutionContext( getWriter(), getErrorWriter() );
 
+				// Add library locations
 				File libraryDirectory = getLibraryDirectory();
+				if( libraryDirectory != null )
+					executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
+				libraryDirectory = getCommonLibraryDirectory();
 				if( libraryDirectory != null )
 					executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
 
@@ -572,12 +616,12 @@ public class ApplicationTask implements Runnable
 	/**
 	 * The {@link Writer} used by the {@link Executable}.
 	 */
-	private Writer writer = new OutputStreamWriter( System.out );
+	private Writer writer;
 
 	/**
 	 * Same as {@link #writer}, for standard error.
 	 */
-	private Writer errorWriter = new OutputStreamWriter( System.err );
+	private Writer errorWriter;
 
 	/**
 	 * An optional {@link ExecutionController} to be used with the scripts.
@@ -615,6 +659,12 @@ public class ApplicationTask implements Runnable
 	 * Executables might use directory this for importing libraries.
 	 */
 	private File libraryDirectory;
+
+	/**
+	 * Executables from all applications might use this directory for importing
+	 * libraries.
+	 */
+	private File commonLibraryDirectory;
 
 	/**
 	 * Whether or not trailing slashes are required for all requests.

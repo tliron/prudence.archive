@@ -66,9 +66,24 @@ public class DelegatedResourceDocumentService extends ResourceDocumentServiceBas
 		catch( DocumentNotFoundException x )
 		{
 			// Try the library directory
-			File libraryDirectory = resource.getLibraryDirectoryRelative();
+			File libraryDirectory = resource.getRelativeFile( resource.getLibraryDirectory() );
 			if( libraryDirectory != null )
-				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
+			{
+				try
+				{
+					documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
+				}
+				catch( DocumentNotFoundException xx )
+				{
+					// Try the common library directory
+					libraryDirectory = resource.getRelativeFile( resource.getCommonLibraryDirectory() );
+					if( libraryDirectory != null )
+						documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
+							resource.isPrepare() );
+					else
+						throw xx;
+				}
+			}
 			else
 				throw x;
 		}
