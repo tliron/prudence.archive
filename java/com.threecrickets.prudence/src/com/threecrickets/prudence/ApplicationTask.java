@@ -439,7 +439,7 @@ public class ApplicationTask implements Runnable
 				DocumentSource<Executable> documentSource = getDocumentSource();
 				if( documentSource instanceof DocumentFileSource<?> )
 				{
-					commonLibraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath().getParentFile().getParentFile().getParentFile(), "libraries" );
+					commonLibraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../../libraries/" );
 
 					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.ApplicationTask.commonLibraryDirectory", commonLibraryDirectory );
 					if( existing != null )
