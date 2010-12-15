@@ -60,10 +60,25 @@ public class ApplicationTaskDocumentService extends DocumentServiceBase
 		catch( DocumentNotFoundException x )
 		{
 			// Try the library directory
-			File libraryDirectory = applicationTask.getLibraryDirectoryRelative();
+			File libraryDirectory = applicationTask.getRelativeFile( applicationTask.getLibraryDirectory() );
 			if( libraryDirectory != null )
-				documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, applicationTask.getLanguageManager(), applicationTask.getDefaultLanguageTag(),
-					applicationTask.isPrepare() );
+			{
+				try
+				{
+					documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, applicationTask.getLanguageManager(), applicationTask.getDefaultLanguageTag(),
+						applicationTask.isPrepare() );
+				}
+				catch( DocumentNotFoundException xx )
+				{
+					// Try the common library directory
+					libraryDirectory = applicationTask.getRelativeFile( applicationTask.getCommonLibraryDirectory() );
+					if( libraryDirectory != null )
+						documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, applicationTask.getLanguageManager(), applicationTask.getDefaultLanguageTag(),
+							applicationTask.isPrepare() );
+					else
+						throw xx;
+				}
+			}
 			else
 				throw x;
 		}

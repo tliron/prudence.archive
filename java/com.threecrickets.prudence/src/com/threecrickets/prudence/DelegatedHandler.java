@@ -61,14 +61,15 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <p>
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
- * <li><code>com.threecrickets.prudence.commonLibraryDirectory:</code>
- * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
- * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedHandler.applicationServiceName</code>
  * : The name of the global variable with which to access the application
  * service. Defaults to "application". See {@link #getApplicationServiceName()}.
  * </li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedHandler.commonLibraryDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag:</code>
  * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
@@ -339,8 +340,8 @@ public class DelegatedHandler
 	 * {@link DocumentFileSource#getBasePath()} plus "../../../libraries/".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.commonLibraryDirectory</code> in the
-	 * application's {@link Context}.
+	 * <code>com.threecrickets.prudence.DelegatedHandler.commonLibraryDirectory</code>
+	 * in the application's {@link Context}.
 	 * 
 	 * @return The common library directory or null
 	 * @see ExecutionContext#getLibraryLocations()
@@ -350,7 +351,7 @@ public class DelegatedHandler
 		if( commonLibraryDirectory == null )
 		{
 			ConcurrentMap<String, Object> attributes = context.getAttributes();
-			commonLibraryDirectory = (File) attributes.get( "com.threecrickets.prudence.commonLibraryDirectory" );
+			commonLibraryDirectory = (File) attributes.get( "com.threecrickets.prudence.DelegatedHandler.commonLibraryDirectory" );
 
 			if( commonLibraryDirectory == null )
 			{
@@ -359,7 +360,7 @@ public class DelegatedHandler
 				{
 					commonLibraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../../libraries/" );
 
-					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.commonLibraryDirectory", commonLibraryDirectory );
+					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedHandler.commonLibraryDirectory", commonLibraryDirectory );
 					if( existing != null )
 						commonLibraryDirectory = existing;
 				}

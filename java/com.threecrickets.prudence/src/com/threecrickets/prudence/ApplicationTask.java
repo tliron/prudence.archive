@@ -50,14 +50,15 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <p>
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
- * <li><code>com.threecrickets.prudence.commonLibraryDirectory:</code>
- * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
- * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.ApplicationTask.applicationServiceName</code>
  * : The name of the global variable with which to access the application
  * service. Defaults to "application". See {@link #getApplicationServiceName()}.
  * </li>
+ * <li>
+ * <code>com.threecrickets.prudence.ApplicationTask.commonLibraryDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.ApplicationTask.defaultLanguageTag:</code>
  * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
@@ -420,8 +421,8 @@ public class ApplicationTask implements Runnable
 	 * {@link DocumentFileSource#getBasePath()} plus "../../../libraries/".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.commonLibraryDirectory</code> in the
-	 * application's {@link Context}.
+	 * <code>com.threecrickets.prudence.ApplicationTask.commonLibraryDirectory</code>
+	 * in the application's {@link Context}.
 	 * 
 	 * @return The common library directory or null
 	 * @see ExecutionContext#getLibraryLocations()
@@ -431,7 +432,7 @@ public class ApplicationTask implements Runnable
 		if( commonLibraryDirectory == null )
 		{
 			ConcurrentMap<String, Object> attributes = application.getContext().getAttributes();
-			commonLibraryDirectory = (File) attributes.get( "com.threecrickets.prudence.commonLibraryDirectory" );
+			commonLibraryDirectory = (File) attributes.get( "com.threecrickets.prudence.ApplicationTask.commonLibraryDirectory" );
 
 			if( commonLibraryDirectory == null )
 			{
@@ -440,7 +441,7 @@ public class ApplicationTask implements Runnable
 				{
 					commonLibraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../../libraries/" );
 
-					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.commonLibraryDirectory", commonLibraryDirectory );
+					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.ApplicationTask.commonLibraryDirectory", commonLibraryDirectory );
 					if( existing != null )
 						commonLibraryDirectory = existing;
 				}
@@ -452,19 +453,18 @@ public class ApplicationTask implements Runnable
 
 	/**
 	 * If the {@link #getDocumentSource()} is a {@link DocumentFileSource}, then
-	 * this is the library directory relative to the
-	 * {@link DocumentFileSource#getBasePath()}. Otherwise, it's null.
+	 * this is the file relative to the {@link DocumentFileSource#getBasePath()}
+	 * . Otherwise, it's null.
 	 * 
 	 * @return The relative library directory or null
 	 */
-	public File getLibraryDirectoryRelative()
+	public File getRelativeFile( File file )
 	{
-		DocumentSource<Executable> documentSource = getDocumentSource();
-		if( documentSource instanceof DocumentFileSource<?> )
+		if( file != null )
 		{
-			File libraryDirectory = getLibraryDirectory();
-			if( libraryDirectory != null )
-				return ScripturianUtil.getRelativeFile( libraryDirectory, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
+			DocumentSource<Executable> documentSource = getDocumentSource();
+			if( documentSource instanceof DocumentFileSource<?> )
+				return ScripturianUtil.getRelativeFile( file, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
 		}
 		return null;
 	}

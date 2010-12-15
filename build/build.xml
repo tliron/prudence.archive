@@ -721,6 +721,7 @@
 		<fetch-library dist="${dist-kitchensink}" library="log4j" />
 		<fetch-library dist="${dist-kitchensink}" library="mime4j" />
 		<fetch-library dist="${dist-kitchensink}" library="mongo-java-driver" />
+		<fetch-library dist="${dist-kitchensink}" library="mongo-rhino-driver" />
 		<fetch-library dist="${dist-kitchensink}" library="mysqlconnector" />
 		<fetch-library dist="${dist-kitchensink}" library="restlet" />
 		<fetch-library dist="${dist-kitchensink}" library="rhino" />

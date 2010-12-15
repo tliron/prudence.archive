@@ -89,9 +89,6 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <li>
  * <code>com.threecrickets.prudence.cache:</code> {@link Cache}. See
  * {@link #getCache()}.</li>
- * <li><code>com.threecrickets.prudence.commonLibraryDirectory:</code>
- * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
- * "../../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.applicationServiceName</code>
  * : The name of the global variable with which to access the application
@@ -101,6 +98,10 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <code>com.threecrickets.prudence.GeneratedTextResource.clientCachingMode:</code>
  * {@link Integer}, defaults to {@link #CLIENT_CACHING_MODE_CONDITIONAL}. See
  * {@link #getClientCachingMode()}.</li>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.commonLibraryDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.conversationServiceName</code>
  * : The name of the global variable with which to access the conversation
@@ -607,8 +608,8 @@ public class GeneratedTextResource extends ServerResource
 	 * {@link DocumentFileSource#getBasePath()} plus "../../../../libraries/".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.commonLibraryDirectory</code> in the
-	 * application's {@link Context}.
+	 * <code>com.threecrickets.prudence.GeneratedTextResource.commonLibraryDirectory</code>
+	 * in the application's {@link Context}.
 	 * 
 	 * @return The common library directory or null
 	 * @see ExecutionContext#getLibraryLocations()
@@ -618,7 +619,7 @@ public class GeneratedTextResource extends ServerResource
 		if( commonLibraryDirectory == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			commonLibraryDirectory = (File) attributes.get( "com.threecrickets.prudence.commonLibraryDirectory" );
+			commonLibraryDirectory = (File) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.commonLibraryDirectory" );
 
 			if( commonLibraryDirectory == null )
 			{
@@ -627,7 +628,7 @@ public class GeneratedTextResource extends ServerResource
 				{
 					commonLibraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../../../libraries/" );
 
-					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.commonLibraryDirectory", commonLibraryDirectory );
+					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.commonLibraryDirectory", commonLibraryDirectory );
 					if( existing != null )
 						commonLibraryDirectory = existing;
 				}

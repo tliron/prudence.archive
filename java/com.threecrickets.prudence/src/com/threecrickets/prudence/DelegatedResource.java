@@ -91,14 +91,15 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * <li>
  * <code>com.threecrickets.prudence.cache:</code> {@link Cache}. See
  * {@link #getCache()}.</li>
- * <li><code>com.threecrickets.prudence.commonLibraryDirectory:</code>
- * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
- * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.applicationServiceName</code>
  * : The name of the global variable with which to access the application
  * service. Defaults to "application". See {@link #getApplicationServiceName()}.
  * </li>
+ * <li>
+ * <code>com.threecrickets.prudence.DelegatedResource.commonLibraryDirectory:</code>
+ * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
+ * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.defaultCharacterSet:</code>
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
@@ -677,8 +678,8 @@ public class DelegatedResource extends ServerResource
 	 * {@link DocumentFileSource#getBasePath()} plus "../../../libraries/".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.commonLibraryDirectory</code> in the
-	 * application's {@link Context}.
+	 * <code>com.threecrickets.prudence.DelegatedResource.commonLibraryDirectory</code>
+	 * in the application's {@link Context}.
 	 * 
 	 * @return The common library directory or null
 	 * @see ExecutionContext#getLibraryLocations()
@@ -688,7 +689,7 @@ public class DelegatedResource extends ServerResource
 		if( commonLibraryDirectory == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			commonLibraryDirectory = (File) attributes.get( "com.threecrickets.prudence.commonLibraryDirectory" );
+			commonLibraryDirectory = (File) attributes.get( "com.threecrickets.prudence.DelegatedResource.commonLibraryDirectory" );
 
 			if( commonLibraryDirectory == null )
 			{
@@ -697,7 +698,7 @@ public class DelegatedResource extends ServerResource
 				{
 					commonLibraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../../libraries/" );
 
-					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.commonLibraryDirectory", commonLibraryDirectory );
+					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.commonLibraryDirectory", commonLibraryDirectory );
 					if( existing != null )
 						commonLibraryDirectory = existing;
 				}
