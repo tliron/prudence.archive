@@ -11,6 +11,7 @@
 
 package com.threecrickets.prudence.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -29,6 +30,7 @@ import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
+import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * Document service exposed to executables.
@@ -143,8 +145,9 @@ public abstract class DocumentServiceBase
 	 * 
 	 * @throws DocumentException
 	 * @throws ParsingException
+	 * @throws IOException
 	 */
-	public void invalidate( String documentName ) throws ParsingException, DocumentException
+	public void invalidate( String documentName ) throws ParsingException, DocumentException, IOException
 	{
 		DocumentDescriptor<Executable> documentDescriptor = getDocumentDescriptor( documentName );
 		documentDescriptor.invalidate();
@@ -266,6 +269,23 @@ public abstract class DocumentServiceBase
 		return documentDescriptorStack.removeLast();
 	}
 
+	/**
+	 * If the {@link #getSource()} is a {@link DocumentFileSource}, then this is
+	 * the file relative to the {@link DocumentFileSource#getBasePath()} .
+	 * Otherwise, it's null.
+	 * 
+	 * @return The relative library directory or null
+	 */
+	protected File getRelativeFile( File file )
+	{
+		if( file != null )
+		{
+			if( documentSource instanceof DocumentFileSource<?> )
+				return ScripturianUtil.getRelativeFile( file, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
+		}
+		return null;
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
@@ -309,4 +329,5 @@ public abstract class DocumentServiceBase
 		else
 			throw new DocumentException( "File document descriptors only available for DocumentFileSource" );
 	}
+
 }

@@ -33,7 +33,6 @@ import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
-import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * A {@link Runnable} wrapper for a Scripturian {@link Executable}.
@@ -61,7 +60,8 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.ApplicationTask.defaultLanguageTag:</code>
- * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
+ * {@link String}, defaults to "javascript". See
+ * {@link #getDefaultLanguageTag()}.</li>
  * <li><code>com.threecrickets.prudence.ApplicationTask.defaultName:</code>
  * {@link String}, defaults to "default". See {@link #getDefaultName()}.</li>
  * <li>
@@ -275,7 +275,7 @@ public class ApplicationTask implements Runnable
 
 	/**
 	 * The default language tag name to be used if the script doesn't specify
-	 * one. Defaults to "js".
+	 * one. Defaults to "javascript".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.ApplicationTask.defaultLanguageTag</code>
@@ -291,7 +291,7 @@ public class ApplicationTask implements Runnable
 			defaultLanguageTag = (String) attributes.get( "com.threecrickets.prudence.ApplicationTask.defaultLanguageTag" );
 
 			if( defaultLanguageTag == null )
-				defaultLanguageTag = "js";
+				defaultLanguageTag = "javascript";
 		}
 
 		return defaultLanguageTag;
@@ -439,7 +439,7 @@ public class ApplicationTask implements Runnable
 				DocumentSource<Executable> documentSource = getDocumentSource();
 				if( documentSource instanceof DocumentFileSource<?> )
 				{
-					commonLibraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../../libraries/" );
+					commonLibraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath().getParentFile().getParentFile().getParentFile(), "libraries" );
 
 					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.ApplicationTask.commonLibraryDirectory", commonLibraryDirectory );
 					if( existing != null )
@@ -449,24 +449,6 @@ public class ApplicationTask implements Runnable
 		}
 
 		return commonLibraryDirectory;
-	}
-
-	/**
-	 * If the {@link #getDocumentSource()} is a {@link DocumentFileSource}, then
-	 * this is the file relative to the {@link DocumentFileSource#getBasePath()}
-	 * . Otherwise, it's null.
-	 * 
-	 * @return The relative library directory or null
-	 */
-	public File getRelativeFile( File file )
-	{
-		if( file != null )
-		{
-			DocumentSource<Executable> documentSource = getDocumentSource();
-			if( documentSource instanceof DocumentFileSource<?> )
-				return ScripturianUtil.getRelativeFile( file, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
-		}
-		return null;
 	}
 
 	/**

@@ -80,6 +80,13 @@
 (.addTaskCollector scheduler (ApplicationTaskCollector. (File. (str application-base-path "/crontab")) application-instance))
 
 ;
+; Handlers
+;
+
+(.put application-globals "com.threecrickets.prudence.DelegatedHandler.languageManager" language-manager)
+(.put application-globals "com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag" "clojure")
+
+;
 ; ApplicationService
 ;
 

@@ -91,6 +91,13 @@ $application_globals['com.threecrickets.prudence.ApplicationTask.documentSource'
 $scheduler->addTaskCollector(new ApplicationTaskCollector(new File($application_base_path . '/crontab'), $application_instance));
 
 //
+// Handlers
+//
+
+$application_globals['com.threecrickets.prudence.DelegatedHandler.languageManager'] = $language_manager;
+$application_globals['com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag'] = 'php';
+
+//
 // ApplicationService
 //
 

@@ -36,7 +36,6 @@ import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
-import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * A general-purpose delegate used to enter defined entry points in a
@@ -72,7 +71,7 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag:</code>
- * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
+ * {@link String}, defaults to "javascript". See {@link #getDefaultLanguageTag()}.</li>
  * <li><code>com.threecrickets.prudence.DelegatedHandler.defaultName:</code>
  * {@link String}, defaults to "default". See {@link #getDefaultName()}.</li>
  * <li>
@@ -202,7 +201,7 @@ public class DelegatedHandler
 
 	/**
 	 * The default language tag name to be used if the script doesn't specify
-	 * one. Defaults to "js".
+	 * one. Defaults to "javascript".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag</code>
@@ -218,7 +217,7 @@ public class DelegatedHandler
 			defaultLanguageTag = (String) attributes.get( "com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag" );
 
 			if( defaultLanguageTag == null )
-				defaultLanguageTag = "js";
+				defaultLanguageTag = "javascript";
 		}
 
 		return defaultLanguageTag;
@@ -368,24 +367,6 @@ public class DelegatedHandler
 		}
 
 		return commonLibraryDirectory;
-	}
-
-	/**
-	 * If the {@link #getDocumentSource()} is a {@link DocumentFileSource}, then
-	 * this is the file relative to the {@link DocumentFileSource#getBasePath()}
-	 * . Otherwise, it's null.
-	 * 
-	 * @return The relative library directory or null
-	 */
-	public File getRelativeFile( File file )
-	{
-		if( file != null )
-		{
-			DocumentSource<Executable> documentSource = getDocumentSource();
-			if( documentSource instanceof DocumentFileSource<?> )
-				return ScripturianUtil.getRelativeFile( file, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
-		}
-		return null;
 	}
 
 	/**

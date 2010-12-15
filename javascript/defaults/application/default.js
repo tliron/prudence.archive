@@ -83,6 +83,13 @@ applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.documentSourc
 scheduler.addTaskCollector(new ApplicationTaskCollector(new File(applicationBasePath + '/crontab'), applicationInstance))
 
 //
+// Handlers
+//
+
+applicationGlobals.put('com.threecrickets.prudence.DelegatedHandler.languageManager', languageManager)
+applicationGlobals.put('com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag', 'javascript')
+
+//
 // ApplicationService
 //
 

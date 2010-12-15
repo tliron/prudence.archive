@@ -82,6 +82,13 @@ $application_globals['com.threecrickets.prudence.ApplicationTask.documentSource'
 $scheduler.add_task_collector ApplicationTaskCollector.new(java.io.File.new($application_base_path + '/crontab'), $application_instance)
 
 #
+# Handlers
+#
+
+$application_globals['com.threecrickets.prudence.DelegatedHandler.languageManager'] = $language_manager
+$application_globals['com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag'] = 'ruby'
+
+#
 # ApplicationService
 #
 

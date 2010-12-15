@@ -60,7 +60,7 @@ public class ApplicationTaskDocumentService extends DocumentServiceBase
 		catch( DocumentNotFoundException x )
 		{
 			// Try the library directory
-			File libraryDirectory = applicationTask.getRelativeFile( applicationTask.getLibraryDirectory() );
+			File libraryDirectory = getRelativeFile( applicationTask.getLibraryDirectory() );
 			if( libraryDirectory != null )
 			{
 				try
@@ -71,7 +71,7 @@ public class ApplicationTaskDocumentService extends DocumentServiceBase
 				catch( DocumentNotFoundException xx )
 				{
 					// Try the common library directory
-					libraryDirectory = applicationTask.getRelativeFile( applicationTask.getCommonLibraryDirectory() );
+					libraryDirectory = getRelativeFile( applicationTask.getCommonLibraryDirectory() );
 					if( libraryDirectory != null )
 						documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, applicationTask.getLanguageManager(), applicationTask.getDefaultLanguageTag(),
 							applicationTask.isPrepare() );

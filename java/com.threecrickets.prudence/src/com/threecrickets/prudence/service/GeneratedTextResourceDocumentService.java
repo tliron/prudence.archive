@@ -235,7 +235,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				if( currentDocumentDescriptor != null )
 				{
 					// Try the fragment directory
-					File fragmentDirectory = resource.getFragmentDirectoryRelative();
+					File fragmentDirectory = getRelativeFile( resource.getFragmentDirectory() );
 					if( fragmentDirectory != null )
 						documentDescriptor = Executable.createOnce( fragmentDirectory.getPath() + "/" + documentName, getSource(), true, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
 							resource.isPrepare() );
@@ -349,7 +349,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		catch( DocumentNotFoundException x )
 		{
 			// Try the library directory
-			File libraryDirectory = resource.getRelativeFile( resource.getLibraryDirectory() );
+			File libraryDirectory = getRelativeFile( resource.getLibraryDirectory() );
 			if( libraryDirectory != null )
 			{
 				try
@@ -359,7 +359,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				catch( DocumentNotFoundException xx )
 				{
 					// Try the common library directory
-					libraryDirectory = resource.getRelativeFile( resource.getCommonLibraryDirectory() );
+					libraryDirectory = getRelativeFile( resource.getCommonLibraryDirectory() );
 					if( libraryDirectory != null )
 						documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
 							resource.isPrepare() );

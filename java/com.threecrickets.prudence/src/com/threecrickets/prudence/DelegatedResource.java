@@ -53,7 +53,6 @@ import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
-import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * A Restlet resource that delegates functionality to a Scripturian
@@ -106,7 +105,7 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * {@link #getDefaultCharacterSet()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.defaultLanguageTag:</code>
- * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
+ * {@link String}, defaults to "javascript". See {@link #getDefaultLanguageTag()}.</li>
  * <li><code>com.threecrickets.prudence.DelegatedResource.defaultName:</code>
  * {@link String}, defaults to "default". See {@link #getDefaultName()}.</li>
  * <li>
@@ -369,7 +368,7 @@ public class DelegatedResource extends ServerResource
 
 	/**
 	 * The default language tag name to be used if the script doesn't specify
-	 * one. Defaults to "js".
+	 * one. Defaults to "javascript".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.DelegatedResource.defaultLanguageTag</code>
@@ -385,7 +384,7 @@ public class DelegatedResource extends ServerResource
 			defaultLanguageTag = (String) attributes.get( "com.threecrickets.prudence.DelegatedResource.defaultLanguageTag" );
 
 			if( defaultLanguageTag == null )
-				defaultLanguageTag = "js";
+				defaultLanguageTag = "javascript";
 		}
 
 		return defaultLanguageTag;
@@ -706,24 +705,6 @@ public class DelegatedResource extends ServerResource
 		}
 
 		return commonLibraryDirectory;
-	}
-
-	/**
-	 * If the {@link #getDocumentSource()} is a {@link DocumentFileSource}, then
-	 * this is the file relative to the {@link DocumentFileSource#getBasePath()}
-	 * . Otherwise, it's null.
-	 * 
-	 * @return The relative library directory or null
-	 */
-	public File getRelativeFile( File file )
-	{
-		if( file != null )
-		{
-			DocumentSource<Executable> documentSource = getDocumentSource();
-			if( documentSource instanceof DocumentFileSource<?> )
-				return ScripturianUtil.getRelativeFile( file, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
-		}
-		return null;
 	}
 
 	/**

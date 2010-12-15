@@ -54,7 +54,6 @@ import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
-import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * A Restlet resource which executes a "text with scriptlets" Scripturian
@@ -117,7 +116,8 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * {@link #getDefaultCharacterSet()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag:</code>
- * {@link String}, defaults to "js". See {@link #getDefaultLanguageTag()}.</li>
+ * {@link String}, defaults to "javascript". See
+ * {@link #getDefaultLanguageTag()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultName:</code>
  * {@link String}, defaults to "index". See {@link #getDefaultName()}.</li>
@@ -344,7 +344,7 @@ public class GeneratedTextResource extends ServerResource
 
 	/**
 	 * The default language tag to use if the first scriptlet doesn't specify
-	 * one. Defaults to "js".
+	 * one. Defaults to "javascript".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag</code>
@@ -360,7 +360,7 @@ public class GeneratedTextResource extends ServerResource
 			defaultLanguageTag = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag" );
 
 			if( defaultLanguageTag == null )
-				defaultLanguageTag = "js";
+				defaultLanguageTag = "javascript";
 		}
 
 		return defaultLanguageTag;
@@ -546,25 +546,6 @@ public class GeneratedTextResource extends ServerResource
 	}
 
 	/**
-	 * If the {@link #getDocumentSource()} is a {@link DocumentFileSource}, then
-	 * this is the fragment directory relative to the
-	 * {@link DocumentFileSource#getBasePath()}. Otherwise, it's null.
-	 * 
-	 * @return The relative fragment directory or null
-	 */
-	public File getFragmentDirectoryRelative()
-	{
-		DocumentSource<Executable> documentSource = getDocumentSource();
-		if( documentSource instanceof DocumentFileSource<?> )
-		{
-			File fragmentDirectory = getFragmentDirectory();
-			if( fragmentDirectory != null )
-				return ScripturianUtil.getRelativeFile( fragmentDirectory, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
-		}
-		return null;
-	}
-
-	/**
 	 * Executables might use this directory for importing libraries. If the
 	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
 	 * will default to the {@link DocumentFileSource#getBasePath()} plus
@@ -636,24 +617,6 @@ public class GeneratedTextResource extends ServerResource
 		}
 
 		return commonLibraryDirectory;
-	}
-
-	/**
-	 * If the {@link #getDocumentSource()} is a {@link DocumentFileSource}, then
-	 * this is the file relative to the {@link DocumentFileSource#getBasePath()}
-	 * . Otherwise, it's null.
-	 * 
-	 * @return The relative library directory or null
-	 */
-	public File getRelativeFile( File file )
-	{
-		if( file != null )
-		{
-			DocumentSource<Executable> documentSource = getDocumentSource();
-			if( documentSource instanceof DocumentFileSource<?> )
-				return ScripturianUtil.getRelativeFile( file, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
-		}
-		return null;
 	}
 
 	/**

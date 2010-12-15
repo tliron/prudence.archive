@@ -58,7 +58,7 @@ public class DelegatedHandlerDocumentService extends DocumentServiceBase
 		catch( DocumentNotFoundException x )
 		{
 			// Try the library directory
-			File libraryDirectory = delegatedHandler.getRelativeFile( delegatedHandler.getLibraryDirectory() );
+			File libraryDirectory = getRelativeFile( delegatedHandler.getLibraryDirectory() );
 			if( libraryDirectory != null )
 			{
 				try
@@ -69,7 +69,7 @@ public class DelegatedHandlerDocumentService extends DocumentServiceBase
 				catch( DocumentNotFoundException xx )
 				{
 					// Try the common library directory
-					libraryDirectory = delegatedHandler.getRelativeFile( delegatedHandler.getCommonLibraryDirectory() );
+					libraryDirectory = getRelativeFile( delegatedHandler.getCommonLibraryDirectory() );
 					if( libraryDirectory != null )
 						documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, delegatedHandler.getLanguageManager(), delegatedHandler.getDefaultLanguageTag(),
 							delegatedHandler.isPrepare() );
