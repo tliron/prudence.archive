@@ -29,10 +29,10 @@ log4j				1.2.16
 mime4j				0.6
 mongo-java-driver	2.3
 mongo-rhino-driver	1.0 (Revision 44)
-mysqlconnector		5.1.8
+mysqlconnector		5.1.14
 pygments			1.1.1
 quercus				4.0.11
-restlet (JSE)		2.0.3
+restlet (JSE)		2.0.4
 rhino				1.7R2
 servlet (jetty)		2.5
 scripturian			1.0 (Revision 252)
