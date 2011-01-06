@@ -15,6 +15,7 @@ import java.lang.System
 import java.util.logging.LogManager
 import java.util.concurrent.Executors
 import com.threecrickets.scripturian.exception.DocumentNotFoundException
+import com.threecrickets.prudence.service.ApplicationService
 
 executeOrDefault = { name, deflt = null ->
 	try {
@@ -153,4 +154,10 @@ if(tasks.size() > 0) {
 	}
 	println('Finished all startup tasks in ' + ((System.currentTimeMillis() - startTime) / 1000) + ' seconds.')
 	out.flush()
+}
+
+
+for(application in applications) {
+	applicationService = new ApplicationService(application)
+	applicationService.task('startup/', 0, 0, false)
 }

@@ -15,6 +15,7 @@ require 'java'
 import java.lang.System
 import java.util.logging.LogManager
 import com.threecrickets.scripturian.exception.DocumentNotFoundException
+import com.threecrickets.prudence.service.ApplicationService
 
 def execute_or_default(name, default=nil)
 	begin
@@ -165,4 +166,9 @@ if $tasks.length > 0
 		future.get
 	end
 	puts "Finished all startup tasks in #{(System::current_time_millis - start_time) / 1000.0} seconds."
+end
+
+for application in $applications
+	application_service = ApplicationService.new application
+	application_service.task 'startup/', 0, 0, false
 end

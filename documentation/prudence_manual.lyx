@@ -11322,8 +11322,64 @@ reference "../api/|application-globals"
 At Startup
 \end_layout
 
+\begin_layout Subsubsection
+Startup Task
+\end_layout
+
 \begin_layout Standard
-Use 
+Prudence will automatically run the task called ``startup/'' upon startup.
+ Note that it will run after all the other startup tasks (defrosting, preheating
+) finish, in order to make sure your application is ``hot'' first.
+ If you need multiple tasks running---usually repeating tasks, such as those
+ that do general maintenance, monitor resource availability, send out email
+ reminders, etc.---you can start them from your startup task using 
+\bar under
+application.task
+\bar default
+ 
+\bar under
+(page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-task"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+For example, here is an application's ``/tasks/startup.js'' file:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+application.logger.info('Scheduling monitor task to repeat every second')
+\end_layout
+
+\begin_layout Plain Layout
+
+application.task('monitor/', 1000, 1000, false) 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Custom Startup Tasks
+\end_layout
+
+\begin_layout Standard
+You can also use 
 \bar under
 application.task
 \bar default
@@ -11350,8 +11406,6 @@ reference "../application/"
 )
 \bar default
 .
- This is especially useful for repeating tasks, such as those that do general
- maintenance, monitor resource availability, send out email reminders, etc.
 \end_layout
 
 \begin_layout Standard
@@ -16674,7 +16728,7 @@ There are many, many use cases for document.external, and they keep growing
 \end_layout
 
 \begin_layout Quote
-Imortant: The semantics of ClientResource require you to explicitly release
+Important: The semantics of ClientResource require you to explicitly release
  the response as soon as you're done using it, which will in turn release
  the thread used to stream the response to you.
  (Though these threads might eventually be reclaimed by a built-in garbage
@@ -19386,6 +19440,24 @@ reference "../handlers/|cache-key-pattern-handlers"
 )
 \bar default
 .
+\end_layout
+
+\begin_layout Subsubsection
+Sharing State Between Prudence Instances
+\end_layout
+
+\begin_layout Standard
+Prudence comes with 
+\begin_inset CommandInset href
+LatexCommand href
+name "Hazelcast"
+target "http://www.hazelcast.com/"
+
+\end_inset
+
+, which does an excellent job at sharing standard JVM maps, lists, locks
+ and other state facilities.
+ See the Hazelcast documentation for complete information.
 \end_layout
 
 \begin_layout Section

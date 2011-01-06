@@ -12,11 +12,12 @@
 // at http://threecrickets.com/
 //
 
-global $tasks, $scheduler, $component, $prudence_version, $prudence_revision, $prudence_flavor;
+global $tasks, $scheduler, $component, $prudence_version, $prudence_revision, $prudence_flavor, $applications;
 
 import java.lang.System;
 import java.util.logging.LogManager;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
+import com.threecrickets.prudence.service.ApplicationService;
 
 function execute_or_default($name, $def=NULL) {
 	global $document;
@@ -156,5 +157,10 @@ if(count($tasks) > 0) {
 		$future->get();
 	}
 	print 'Finished all startup tasks in ' . ((System::currentTimeMillis() - $start_time) / 1000) . " seconds.\n";
+}
+
+for($i = 0; $i < $applications->size(); $i++) {
+	$application_service = new ApplicationService($applications->get($i));
+	$application_service->task('startup/', 0, 0, FALSE);
 }
 ?>

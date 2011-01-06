@@ -12,7 +12,7 @@
 // at http://threecrickets.com/
 //
 
-global $component, $application_name, $application_internal_name, $application_logger_name, $application_base_path, $application_default_url, $application_base, $application_instance;
+global $component, $application_name, $application_internal_name, $application_logger_name, $application_base_path, $application_default_url, $application_base, $application_instance, $applications;
 
 import java.io.File;
 import java.util.ArrayList;

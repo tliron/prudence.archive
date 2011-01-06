@@ -12,8 +12,9 @@
 ;
 
 (import
-	'java.util.logging.LogManager
-	'com.threecrickets.scripturian.exception.DocumentNotFoundException)
+ 'java.util.logging.LogManager
+ 'com.threecrickets.scripturian.exception.DocumentNotFoundException
+ 'com.threecrickets.prudence.service.ApplicationService)
 
 (defn execute-or-default
 	([name default]
@@ -138,3 +139,7 @@
 		(let [futures (for [task tasks] (.submit fixed-executor task))]
 			(dorun (for [future futures] (.get future)))
 			(println "Finished all startup tasks in" (/ (- (System/currentTimeMillis) start-time) 1000.0) "seconds."))))
+
+(doseq [application applications]
+  (let [application-service (ApplicationService. application)]
+    (.task application-service "startup/" 0 0 false)))

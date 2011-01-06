@@ -14,6 +14,7 @@
 from java.lang import System
 from java.util.logging import LogManager
 from com.threecrickets.scripturian.exception import DocumentNotFoundException
+from com.threecrickets.prudence.service import ApplicationService
 
 def execute_or_default(name, default=None):
 	try:
@@ -142,3 +143,7 @@ if len(tasks) > 0:
 	for future in futures:
 		future.get()
 	print 'Finished all startup tasks in %s seconds.' % ((System.currentTimeMillis() - start_time) / 1000.0)
+
+for application in applications:
+	applicationService = ApplicationService(application)
+	applicationService.task('startup/', 0, 0, False)

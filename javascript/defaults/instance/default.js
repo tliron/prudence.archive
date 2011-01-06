@@ -14,7 +14,8 @@
 importClass(
 	java.lang.System,
 	java.util.logging.LogManager,
-	com.threecrickets.scripturian.exception.DocumentNotFoundException)
+	com.threecrickets.scripturian.exception.DocumentNotFoundException,
+	com.threecrickets.prudence.service.ApplicationService)
 
 function executeOrDefault(name, def) {
 	try {
@@ -153,4 +154,9 @@ if(tasks.length > 0) {
 		future.get()
 	}
 	print('Finished all startup tasks in ' + ((System.currentTimeMillis() - startTime) / 1000) + ' seconds.\n')
+}
+
+for(var i = applications.iterator(); i.hasNext(); ) {
+	var applicationService = new ApplicationService(i.next())
+	applicationService.task('startup/', 0, 0, false)
 }
