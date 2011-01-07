@@ -66,7 +66,7 @@ Main text written by Tal Liron
 \begin_layout Standard
 \noindent
 \align center
-Copyright 2009-2010 by Three Crickets LLC.
+Copyright 2009-2011 by Three Crickets LLC.
 \begin_inset Newline newline
 \end_inset
 
@@ -22073,17 +22073,6 @@ name "../scaling/"
 \end_layout
 
 \begin_layout Standard
-If you want your application to handle many concurrent users, then you're
- fighting this fact: a request will get queued in the best case or discarded
- in the worst case if there is no thread available to serve it.
-\end_layout
-
-\begin_layout Standard
-Your challenge is to make sure that a thread is always available.
- And it's not easy, as you'll find out as you read through this article.
-\end_layout
-
-\begin_layout Standard
 Scalability is the ability to respond to a growing number of user requests
  without degradation in response time.
  Two variables influence it: 1) your total number of threads and 2) the
@@ -22096,27 +22085,19 @@ Scalability is the ability to respond to a growing number of user requests
 \end_layout
 
 \begin_layout Standard
-Let's ignore the first variable, because the challenge of getting more machines
- is mostly financial.
- It's the second that we can do something about as engineers: minimizing
- the time per request becomes an architectural challenge that encompasses
- the entire structure of your application.
+Let's ignore the first variable here, because the challenge of getting more
+ machines is mostly financial.
+ It's the second that you can do something about as an engineer.
 \end_layout
 
 \begin_layout Standard
-Meanwhile, feel free to frame these inspirational slogans on your wall:
-\end_layout
-
-\begin_layout Quote
-Requests are hot potatoes: Pass them on!
-\end_layout
-
-\begin_layout Standard
-And:
-\end_layout
-
-\begin_layout Quote
-It's better to have many short requests than one long one.
+If you want your application to handle many concurrent users, then you're
+ fighting this fact: a request will get queued in the best case or discarded
+ in the worst case if there is no thread available to serve it.
+ Your challenge is to make sure that a thread is always available.
+ And it's not easy, as you'll find out as you read through this article.
+ Minimizing the time per request becomes an architectural challenge that
+ encompasses the entire structure of your application
 \end_layout
 
 \begin_layout Subsection
@@ -22223,60 +22204,30 @@ And, perhaps more seriously, it demonstrates a fundamental misunderstanding
 \end_layout
 
 \begin_layout Subsubsection
-Optimizing for Scalability
+Pitfalls
 \end_layout
 
 \begin_layout Standard
-So, what can
-\emph on
- 
-\emph default
-you do?
-\end_layout
-
-\begin_layout Standard
-First, study the problem field carefully.
+Study the problem field carefully.
  Understand the challenges and potential pitfalls.
- You don't have to apply every single strategy up-front, but at least make
- sure you're not making a fatal mistake, such as binding yourself strongly
- to a technology or product with poor scalability.
- A poor decision can mean that when you need to scale up in the future,
- no amount of money and engineering effort will be able to save you in time.
+ You don't have to apply every single scalability strategy up-front, but
+ at least make sure you're not making a fatal mistake, such as binding yourself
+ strongly to a technology or product with poor scalability.
+ A bad decision can mean that when you need to scale up in the future, no
+ amount of money and engineering effort would be able to save you before
+ you lose customers and tarnish your brand.
 \end_layout
 
 \begin_layout Standard
-Moreover, be very careful of blindly applying strategies used by other people
- to your own application.
+Moreover, be very careful of blindly applying ``successful'' strategies
+ used and recommended by others to your product.
  What worked for them might not work for you.
  In fact, there's a chance that their strategy doesn't even work for them,
  and they just think it did because of a combination of seemingly unrelated
  factors.
  The realm of web scalability is still young, full of guesswork, intuition
  and magical thinking.
-\end_layout
-
-\begin_layout Standard
-Be especially careful of applying a solution before you know if you even
- have a problem.
-\end_layout
-
-\begin_layout Standard
-How to identify the problems? You can create simulations and measurements
- of scalability rather than performance.
- You need to model actual user behavior patterns, allow for a diversity
- of such behaviors to happen concurrently, and replicate this diversity
- on a massive scale.
-\end_layout
-
-\begin_layout Standard
-Creating such a simulation is a difficult and expensive, as is monitoring
- and interpreting the results and identifying potential bottlenecks.
- This is the main reason for the lack of good data and good judgment about
- how to scale.
- Most of what we know comes from tweaking real live web sites, which either
- comes at the expense of user experience, or allows for very limited experimenta
-tion.
- Your best bet is to hire a team who's already been through this before.
+ Even the experts are often making it up as they're going along.
 \end_layout
 
 \begin_layout Standard
@@ -22289,11 +22240,11 @@ Generally, be very suspicious of products or technologies being touted as
 \emph default
  Is a certain database engine ``fast''? That's important for certain application
 s, no doubt.
- But maybe it's missing important clustering features, making it a poor
- choice for large applications.
+ But maybe the database is missing important clustering features, such that
+ it would be a poor choice for scalable applications.
  Does a certain programming language execute faster than another? That's
  great if you're doing video compression, but speed of execution might not
- be your bottleneck at all.
+ have have noticeable effect on scalability.
  Web applications mostly do I/O, not computation.
  The same web application might have very similar performance characteristics
  whether it's written in C++ or PHP.
@@ -22306,13 +22257,12 @@ Moreover, if the faster language is difficult to work with, has poor debugging
 \end_layout
 
 \begin_layout Quote
-Speed of execution can actually help scalability in one respect: If your
- application servers are constantly at maximum CPU load, then a faster execution
- platform would let you cram more web threads into each server.
+Speed of execution can actually help scalability in its financial aspect:
+ If your application servers are constantly at maximum CPU load, then a
+ faster execution platform would let you cram more web threads into each
+ server.
  This will help you reduce costs.
- Because Prudence is built on the fast JVM platform, you're in good hands
- in this respect.
- Also see 
+ For example, see 
 \begin_inset CommandInset href
 LatexCommand href
 name "Facebook's HipHop"
@@ -22320,24 +22270,15 @@ target "http://developers.facebook.com/blog/post/358"
 
 \end_inset
 
-.
- Note, however, that there's a cost to high performance: more threads threads
- per machine would also mean more RAM requirements per machine, which also
- costs money.
- Once again, performance does not equal scalability, and you need to optimize
- specifically for scalability.
-\end_layout
-
-\begin_layout Standard
-In summary, your architectural objective is to increase concurrency, not
- necessarily performance.
- Optimizing for concurrency means breaking up tasks into as many pieces
- as possible, and possibly even breaking requests into smaller pieces.
- We'll cover numerous strategies here, from frontend to backend.
-\end_layout
-
-\begin_layout Subsubsection
-Project Scalability
+: they saved millions by translating their PHP code to C.
+ Because Prudence is built on the fast JVM platform, you're in good hands
+ in this respect.
+ Note, however, that there's a potential pitfall to high performance: more
+ threads threads per machine would also mean more RAM requirements per machine,
+ which also costs money.
+ Crunch the numbers and make sure that you're actually saving money by increasin
+g performance.
+ Once again, performance does not equal scalability.
 \end_layout
 
 \begin_layout Standard
@@ -22352,8 +22293,8 @@ That last point about programming languages is worth some elaboration.
 \end_layout
 
 \begin_layout Standard
-Beware especially of languages described as ``agile,'' as if they somehow
- embody the spirit of the popular 
+Beware especially of languages and platforms described as ``agile,'' as
+ if they somehow embody the spirit of the popular 
 \begin_inset CommandInset href
 LatexCommand href
 name "Agile Manifesto"
@@ -22362,18 +22303,19 @@ target "http://agilemanifesto.org/"
 \end_inset
 
 .
- Often, this epithet seems to emphasize the following aspects fo code: forgivene
-ss for syntax slips, light or no type checking, automatic memory management
- and concurrency---all features that could just as well be used for sloppy,
- error-prone, hard-to-debug, and hard-to-fix code.
- Beware, too, of the cult of ``productivity'': if you're reading this article,
- then your goal is likely not to create a quick demo, but a stable application
- with a long, evolving life span.
+ Often, ``agile'' seems to emphasize the following features: forgiveness
+ for syntax slips, light or no type checking, automatic memory management
+ and automatic concurrency---all features that seem to speed up development,
+ but could just as well be used for sloppy, error-prone, hard-to-debug,
+ and hard-to-fix code, slowing down development in the long run.
+ If you're reading this article, then your goal is likely not to create
+ a quick demo, but a stable application with a long, evolving life span.
 \end_layout
 
 \begin_layout Standard
-Ignore the buzzwords, and instead make sure you're choosing technology that
- you can control, instead of technology that will control you.
+Ignore the buzzwords (``productivity'', ``fast''), and instead make sure
+ you're choosing technology that you can control, instead of technology
+ that will control you.
 \end_layout
 
 \begin_layout Standard
@@ -22391,6 +22333,59 @@ reference "../rest/"
 .
  By building on the existing web infrastructure, Prudence can make large
  Internet projects easier to manage.
+\end_layout
+
+\begin_layout Subsubsection
+Analysis
+\end_layout
+
+\begin_layout Standard
+Be especially careful of applying a solution before you know if you even
+ have a problem.
+\end_layout
+
+\begin_layout Standard
+How to identify your scalability bottlenecks? You can create simulations
+ and measurements of scalability rather than performance.
+ You need to model actual user behavior patterns, allow for a diversity
+ of such behaviors to happen concurrently, and replicate this diversity
+ on a massive scale.
+\end_layout
+
+\begin_layout Standard
+Creating such a simulation is a difficult and expensive, as is monitoring
+ and interpreting the results and identifying potential bottlenecks.
+ This is the main reason for the lack of good data and good judgment about
+ how to scale.
+ Most of what we know comes from tweaking real live web sites, which either
+ comes at the expense of user experience, or allows for very limited experimenta
+tion.
+ Your best bet is to hire a team who's already been through this before.
+\end_layout
+
+\begin_layout Subsubsection
+Optimizing for Scalability
+\end_layout
+
+\begin_layout Standard
+In summary, your architectural objective is to increase concurrency, not
+ necessarily performance.
+ Optimizing for concurrency means breaking up tasks into as many pieces
+ as possible, and possibly even breaking requests into smaller pieces.
+ We'll cover numerous strategies here, from frontend to backend.
+ Meanwhile, feel free to frame these inspirational slogans on your wall:
+\end_layout
+
+\begin_layout Quote
+Requests are hot potatoes: Pass them on!
+\end_layout
+
+\begin_layout Standard
+And:
+\end_layout
+
+\begin_layout Quote
+It's better to have many short requests than one long one.
 \end_layout
 
 \begin_layout Subsection

@@ -1,8 +1,8 @@
 //
 // MongoDB API for Prudence
-// Version 1.15
+// Version 1.18
 //
-// Copyright 2010 Three Crickets LLC.
+// Copyright 2010-2011 Three Crickets LLC.
 //
 // The contents of this file are subject to the terms of the Apache License
 // version 2.0: http://www.opensource.org/licenses/apache2.0.php
@@ -40,17 +40,20 @@
 //   Most of the methods should be familiar from the common MongoDB APIs. A few changes
 //   and additions:
 //
-//     update(query, update, multi):
+//     update(query, update, multi, writeConcern):
 //       Is a multi-document update when multi (optional) is true, otherwise
-//       single-document.
+//       single-document. The writeConcern (optional) can be a boolean (fsync),
+//       a number (w) or a combined object in the form {w: number, timout: number,
+//       fsync: boolean}, where fsync is optional. Make sure that 'w' is at least
+//       1 if you want to receive the update results.
 //
-//     upsert(query, update, multi):
+//     upsert(query, update, multi, writeConcern):
 //       As above, but is an upsert.
 //
 //     nextID():
 //       Returns the next serial integer reserved for this collection, allowing you
 //       to create unique integer IDs as an alternative or supplement to MongoDB's
-//       default use of ObjectIDs for the _id. Note that the IDs are increased
+//       default use of ObjectIds for the _id. Note that the IDs are increased
 //       atomically, guaranteeing that all calls to nextID() return unique numbers.
 //
 //       This feature works by storing counters per collection in a specially
@@ -115,11 +118,17 @@
 //     connection.getDB().
 //
 //   Mongo.newID():
-//     Created a unique MongoDB ObjectID instance.
+//     Created a unique MongoDB ObjectId instance.
 //
 //   Mongo.id(string):
-//     Turns a correctly formatted string into a MongoDB ObjectID instance. Note
+//     Turns a correctly formatted string into a MongoDB ObjectId instance. Note
 //     that the reverse is achieved via the regular JavaScript String(id) casting.
+//
+//   Mongo.writeConcern(object):
+//     Creates a write result (see collection's update(), above).
+//
+//   Mongo.result(CommandResult):
+//     Converts the result of a JVM driver command to a JavaScript object.
 //
 // JSON API:
 //
@@ -191,9 +200,30 @@ var Mongo = Mongo || function() {
 		id: function(id) {
 			return id ? new org.bson.types.ObjectId(id) : null
 		},
+
+		writeConcern: function(writeConcern) {
+			var type = typeof writeConcern
+			if ((type == 'boolean') || (type == 'number')) {
+				return new com.mongodb.WriteConcern(writeConcern)
+			}
+			else {
+				var w = writeConcern.w
+				var timeout = writeConcern.timeout
+				var fsync = writeConcern.fsync
+				if (fsync !== undefined) {
+					return new com.mongodb.WriteConcern(w, timeout, fsync)
+				}
+				else {
+					return new com.mongodb.WriteConcern(w, timeout)
+				}
+			}
+		},
 		
-		idToString: function(id) {
-			return id ? String(id.toStringMongod()) : null
+		result: function(result) {
+			if (result) {
+				return BSON.from(result.lastError)
+			}
+			return null
 		},
 		
 		Cursor: function(cursor) {
@@ -278,32 +308,41 @@ var Mongo = Mongo || function() {
 			}
 			
 			this.save = function(doc) {
-				return this.collection.save(BSON.to(doc))
+				return Mongo.result(this.collection.save(BSON.to(doc)))
 			}
 			
 			this.insert = function(doc) {
-				return this.collection.insert(BSON.to(doc))
+				return Mongo.result(this.collection.insert(BSON.to(doc)))
 			}
 			
-			this.update = function(query, update, multi) {
-				return this.collection.update(BSON.to(query), BSON.to(update), false, multi == true)
+			this.update = function(query, update, multi, writeConcern) {
+				if (writeConcern) {
+					return Mongo.result(this.collection.update(BSON.to(query), BSON.to(update), false, multi == true, Mongo.writeConcern(writeConcern)))
+				}
+				else {
+					return Mongo.result(this.collection.update(BSON.to(query), BSON.to(update), false, multi == true))
+				}
 			}
 			
-			this.upsert = function(query, update, multi) {
-				return this.collection.update(BSON.to(query), BSON.to(update), true, multi == true)
+			this.upsert = function(query, update, multi, writeConcern) {
+				if (writeConcern) {
+					return Mongo.result(this.collection.update(BSON.to(query), BSON.to(update), true, multi == true, Mongo.writeConcern(writeConcern)))
+				}
+				else {
+					return Mongo.result(this.collection.update(BSON.to(query), BSON.to(update), true, multi == true))
+				}
 			}
 			
 			this.remove = function(query) {
-				return this.collection.remove(BSON.to(query))
+				return Mongo.result(this.collection.remove(BSON.to(query)))
 			}
 			
 			this.findAndModify = function(query, update) {
-				var r = BSON.from(this.collection.getDB().command(BSON.to({
-					findandmodify: this.collection.name,
-					query: query,
-					update: update
-				})))
-				return r.ok ? r.value : null
+				return Mongo.result(this.collection.findAndModify(BSON.to(query), BSON.to(update)))
+			}
+			
+			this.findAndRemove = function(query) {
+				return Mongo.result(this.collection.findAndRemove(BSON.to(query)))
 			}
 			
 			this.nextID = function() {
@@ -328,7 +367,7 @@ var Mongo = Mongo || function() {
 			
 			this.insertNext = function(doc) {
 				doc.id = this.nextID()
-				return this.collection.insert(BSON.to(doc))
+				return Mongo.result(this.collection.insert(BSON.to(doc)))
 			}
 			
 			// //////////////////////////////////////////////////////////////////////////
@@ -368,9 +407,11 @@ var Mongo = Mongo || function() {
 	Public.defaultConnection = application.globals.get('mongo.defaults.connection')
 	if (!Public.defaultConnection) {
 		var defaultServers = application.globals.get('mongo.defaultServers')
-		Public.defaultConnection = application.getGlobal('mongo.defaults.connection', Public.connect(defaultServers, {
-			autoConnectRetry: true
-		}))
+		if (defaultServers) {
+			Public.defaultConnection = application.getGlobal('mongo.defaults.connection', Public.connect(defaultServers, {
+				autoConnectRetry: true
+			}))
+		}
 	}
 	
 	if (Public.defaultConnection) {

@@ -1,7 +1,7 @@
 #
 # Prudence Servers
 #
-# Copyright 2009-2010 Three Crickets LLC.
+# Copyright 2009-2011 Three Crickets LLC.
 #
 # The contents of this file are subject to the terms of the LGPL version 3.0:
 # http://www.opensource.org/licenses/lgpl-3.0.html

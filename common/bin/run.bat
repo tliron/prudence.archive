@@ -1,6 +1,6 @@
 @ECHO OFF
 REM #
-REM # Copyright 2009-2010 Three Crickets LLC.
+REM # Copyright 2009-2011 Three Crickets LLC.
 REM #
 REM # The contents of this file are subject to the terms of the LGPL version 3.0:
 REM # http://www.opensource.org/licenses/lgpl-3.0.html
