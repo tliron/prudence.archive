@@ -12,16 +12,13 @@
 
 set -e
 
-DIST=$1
-
-if [ -z "$DIST" ]; then
-	echo Must supply distribution name
-	exit 1
-fi
-
 HERE=$(cd "${0%/*}" 2>/dev/null; echo "$PWD")
+cd $HERE
 
-cd $HERE/prudence-$DIST-1.0
-rm -rf content
-cp -r ../../$DIST/content .
-dpkg-buildpackage -S -kC11D6BA2 
+./build.sh clojure
+./build.sh groovy
+./build.sh javascript
+./build.sh kitchensink
+./build.sh php
+./build.sh python
+./build.sh ruby
