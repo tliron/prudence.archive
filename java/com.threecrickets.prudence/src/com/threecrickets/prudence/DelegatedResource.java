@@ -105,7 +105,8 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * {@link #getDefaultCharacterSet()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.defaultLanguageTag:</code>
- * {@link String}, defaults to "javascript". See {@link #getDefaultLanguageTag()}.</li>
+ * {@link String}, defaults to "javascript". See
+ * {@link #getDefaultLanguageTag()}.</li>
  * <li><code>com.threecrickets.prudence.DelegatedResource.defaultName:</code>
  * {@link String}, defaults to "default". See {@link #getDefaultName()}.</li>
  * <li>
@@ -758,7 +759,9 @@ public class DelegatedResource extends ServerResource
 		if( fileUploadSizeThreshold == null )
 		{
 			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			fileUploadSizeThreshold = ( (Number) attributes.get( "com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold" ) ).intValue();
+			Number number = (Number) attributes.get( "com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold" );
+			if( number != null )
+				fileUploadSizeThreshold = number.intValue();
 
 			if( fileUploadSizeThreshold == null )
 				fileUploadSizeThreshold = 0;

@@ -71,7 +71,8 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag:</code>
- * {@link String}, defaults to "javascript". See {@link #getDefaultLanguageTag()}.</li>
+ * {@link String}, defaults to "javascript". See
+ * {@link #getDefaultLanguageTag()}.</li>
  * <li><code>com.threecrickets.prudence.DelegatedHandler.defaultName:</code>
  * {@link String}, defaults to "default". See {@link #getDefaultName()}.</li>
  * <li>
@@ -489,7 +490,9 @@ public class DelegatedHandler
 		if( fileUploadSizeThreshold == null )
 		{
 			ConcurrentMap<String, Object> attributes = context.getAttributes();
-			fileUploadSizeThreshold = ( (Number) attributes.get( "com.threecrickets.prudence.DelegatedHandler.fileUploadSizeThreshold" ) ).intValue();
+			Number number = (Number) attributes.get( "com.threecrickets.prudence.DelegatedHandler.fileUploadSizeThreshold" );
+			if( number != null )
+				fileUploadSizeThreshold = number.intValue();
 
 			if( fileUploadSizeThreshold == null )
 				fileUploadSizeThreshold = 0;
@@ -631,8 +634,10 @@ public class DelegatedHandler
 		{
 			try
 			{
-				writer.flush();
-				errorWriter.flush();
+				if( writer != null )
+					writer.flush();
+				if( errorWriter != null )
+					errorWriter.flush();
 			}
 			catch( IOException x )
 			{
