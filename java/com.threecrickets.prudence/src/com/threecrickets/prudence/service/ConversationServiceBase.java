@@ -234,7 +234,7 @@ public class ConversationServiceBase
 	}
 
 	/**
-	 * The URI query as a map. In the case of duplicate keys, only the last one
+	 * The URI query as a map. In the case of duplicate keys, only the first one
 	 * will appear.
 	 * <p>
 	 * This value is cached locally.
