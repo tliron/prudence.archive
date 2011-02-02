@@ -161,11 +161,11 @@ staticWeb.listingAllowed = staticWebDirectoryListingAllowed
 staticWeb.negotiatingContent = true
 staticWebBaseURL = fixURL(staticWebBaseURL)
 if(staticWebCompress) {
-	router.filterBase(staticWebBaseURL, new Encoder(null), staticWeb)
+	var encoder = new Encoder(applicationInstance.context)
+	encoder.next = staticWeb
+	staticWeb = encoder
 }
-else {
-	router.attachBase(staticWebBaseURL, staticWeb)
-} 
+router.attachBase(staticWebBaseURL, staticWeb)
 
 //
 // Resources

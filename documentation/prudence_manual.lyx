@@ -14181,12 +14181,7 @@ ValidityChecks)
 
 \begin_layout Plain Layout
 
-router.detach(staticWeb)
-\end_layout
-
-\begin_layout Plain Layout
-
-router.attachBase(staticWebBaseURL)
+router.reattachBase(staticWebBaseURL,staticWeb)
 \end_layout
 
 \end_inset
@@ -14261,7 +14256,8 @@ status open
 
 \begin_layout Plain Layout
 
-router.filterBase(dynamicWebBaseURL, 'remove-foul-language/', dynamicWebBase)
+router.filterBase(dynamicWebBaseURL, 'remove-foul-language/', applicationInstance.
+context, dynamicWebBase)
 \end_layout
 
 \end_inset
@@ -14315,7 +14311,7 @@ var cleanupFilter = new DelegatedFilter(applicationInstance.context,
 
 \begin_layout Plain Layout
 
-router.filterBase(dynamicWebBaseURL, cleanupFilter, dynamicWebBase)
+router.filterBase(dynamicWebBaseURL, cleanupFilter, dynamicWeb)
 \end_layout
 
 \end_inset

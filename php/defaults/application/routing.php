@@ -179,11 +179,11 @@ $static_web->listingAllowed = $static_web_directory_listing_allowed;
 $static_web->negotiatingContent = TRUE;
 $static_web_base_url = fix_url($static_web_base_url);
 if ($static_web_compress) {
-	$router->filterBase($static_web_base_url, new Encoder(NULL), $static_web)
+	$encoder = new Encoder($application_instance->context);
+	$encoder->next = $static_web;
+	$static_web = $encoder;
 }
-else {
-	$router->attachBase($static_web_base_url, $static_web);
-} 
+$router->attachBase($static_web_base_url, $static_web);
 
 //
 // Resources

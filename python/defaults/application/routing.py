@@ -140,9 +140,10 @@ static_web.listingAllowed = static_web_directory_listing_allowed
 static_web.negotiateContent = True
 static_web_base_url = fix_url(static_web_base_url)
 if static_web_compress:
-	router.filterBase(static_web_base_url, Encoder(None), static_web)
-else:
-	router.attachBase(static_web_base_url, static_web)
+	encoder = Encoder(application_instance.context)
+	encoder.next = static_web
+	static_web = encoder
+router.attachBase(static_web_base_url, static_web)
 
 #
 # Resources

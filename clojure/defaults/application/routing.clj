@@ -145,8 +145,10 @@
 (.setNegotiateContent static-web true)
 (def static-web-base-url (fix-url static-web-base-url))
 (if static-web-compress
-  (.filterBase router static-web-base-url (Encoder. nil) static-web)
-  (.attachBase router static-web-base-url static-web))
+  (let [encoder (Encoder. (.getContext application-instance))]
+    (.setNext encoder static-web)
+    (def static-web encoder)))
+(.attachBase router static-web-base-url static-web)
 
 ;
 ; Resources

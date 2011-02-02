@@ -159,10 +159,11 @@ $static_web.listing_allowed = $static_web_directory_listing_allowed
 $static_web.negotiating_content = true
 $static_web_base_url = fix_url $static_web_base_url
 if $static_web_compress
-	$router.filter_base $static_web_base_url, Encoder.new(nil), $static_web
-else
-	$router.attach_base $static_web_base_url, $static_web
+	encoder = Encoder.new($application_instance.context)
+	encoder.next = $static_web
+	$static_web = encoder
 end
+$router.attach_base $static_web_base_url, $static_web
 
 #
 # Resources
