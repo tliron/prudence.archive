@@ -11,8 +11,6 @@
 
 package com.threecrickets.prudence.util;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.routing.Route;
@@ -65,7 +63,7 @@ public class FallbackRouter extends Router
 		setAuthor( "Tal Liron" );
 		setName( "FallbackRouter" );
 		setDescription( "A router that takes care to bunch identical routes under Fallback restlets" );
-		this.cacheDuration = new AtomicInteger( cacheDuration );
+		this.cacheDuration = cacheDuration;
 	}
 
 	//
@@ -81,7 +79,7 @@ public class FallbackRouter extends Router
 	 */
 	public int getCacheDuration()
 	{
-		return cacheDuration.get();
+		return cacheDuration;
 	}
 
 	/**
@@ -94,7 +92,7 @@ public class FallbackRouter extends Router
 	 */
 	public void setCacheDuration( int cacheDuration )
 	{
-		this.cacheDuration.set( cacheDuration );
+		this.cacheDuration = cacheDuration;
 	}
 
 	//
@@ -184,5 +182,5 @@ public class FallbackRouter extends Router
 	 * The default cache duration for {@link Fallback} instances, in
 	 * milliseconds.
 	 */
-	private final AtomicInteger cacheDuration;
+	private volatile int cacheDuration;
 }

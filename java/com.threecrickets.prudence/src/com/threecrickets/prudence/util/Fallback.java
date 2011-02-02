@@ -14,7 +14,6 @@ package com.threecrickets.prudence.util;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.restlet.Context;
 import org.restlet.Request;
@@ -61,7 +60,7 @@ public class Fallback extends Restlet
 	 */
 	public Fallback( Context context, Restlet... targets )
 	{
-		this( context, new AtomicInteger( 5000 ), targets );
+		this( context, 5000, targets );
 	}
 
 	/**
@@ -74,7 +73,7 @@ public class Fallback extends Restlet
 	 * @param targets
 	 *        The target restlets
 	 */
-	public Fallback( Context context, AtomicInteger cacheDuration, Restlet... targets )
+	public Fallback( Context context, int cacheDuration, Restlet... targets )
 	{
 		super( context );
 		setOwner( "Prudence" );
@@ -118,7 +117,7 @@ public class Fallback extends Restlet
 	 */
 	public int getCacheDuration()
 	{
-		return cacheDuration.get();
+		return cacheDuration;
 	}
 
 	/**
@@ -129,7 +128,7 @@ public class Fallback extends Restlet
 	 */
 	public void setCacheDuration( int cacheDuration )
 	{
-		this.cacheDuration.set( cacheDuration );
+		this.cacheDuration = cacheDuration;
 	}
 
 	//
@@ -148,7 +147,7 @@ public class Fallback extends Restlet
 		Node node = cache.get( reference );
 		if( node != null )
 		{
-			if( System.currentTimeMillis() - node.timestamp > cacheDuration.get() )
+			if( System.currentTimeMillis() - node.timestamp > cacheDuration )
 			{
 				// Invalidate
 				cache.remove( reference );
@@ -178,7 +177,7 @@ public class Fallback extends Restlet
 				if( wasHandled( request, response ) )
 				{
 					// Found a good one
-					if( cacheDuration.get() > 0 )
+					if( cacheDuration > 0 )
 					{
 						// Cache this target
 						// (erasing any previously cached one)
@@ -241,7 +240,7 @@ public class Fallback extends Restlet
 	/**
 	 * The cache duration, in milliseconds.
 	 */
-	private final AtomicInteger cacheDuration;
+	private volatile int cacheDuration;
 
 	/**
 	 * The cache (references mapped to nodes).

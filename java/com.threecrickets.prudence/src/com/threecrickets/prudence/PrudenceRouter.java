@@ -176,6 +176,41 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
+	 * As {@link #attach(String, Restlet)}, but detaches the target first. The
+	 * URI path template that must match the relative part of the resource URI
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param target
+	 *        The target Restlet to attach
+	 * @return The created route
+	 */
+	public Route reattach( String uriTemplate, Restlet target )
+	{
+		detach( target );
+		return attach( uriTemplate, target );
+	}
+
+	/**
+	 * As {@link #reattach(String, Restlet)}, but enforces matching mode
+	 * {@link Template#MODE_STARTS_WITH}.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param target
+	 *        The target Restlet to attach
+	 * @return The created route
+	 */
+	public Route reattachBase( String uriTemplate, Restlet target )
+	{
+		Route route = reattach( uriTemplate, target );
+		route.setMatchingMode( Template.MODE_STARTS_WITH );
+		return route;
+	}
+
+	/**
 	 * Detaches the target restlet, and attaches the filter instead with the
 	 * target chained after it.
 	 * <p>
@@ -212,13 +247,15 @@ public class PrudenceRouter extends FallbackRouter
 	 *        resource URI
 	 * @param documentName
 	 *        The filter document name
+	 * @param context
+	 *        The context for the delegated filter
 	 * @param target
 	 *        The target Restlet to attach
 	 * @return The created route
 	 */
-	public Route filter( String uriTemplate, String documentName, Restlet target )
+	public Route filter( String uriTemplate, String documentName, Context context, Restlet target )
 	{
-		return filter( uriTemplate, new DelegatedFilter( null, documentName, filterDocumentSource, filterLanguageManager ), target );
+		return filter( uriTemplate, new DelegatedFilter( context, documentName, filterDocumentSource, filterLanguageManager ), target );
 	}
 
 	/**
@@ -244,8 +281,8 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
-	 * As {@link #filter(String, String, Restlet)}, but enforces matching mode
-	 * {@link Template#MODE_STARTS_WITH}.
+	 * As {@link #filter(String, String, Context, Restlet)}, but enforces
+	 * matching mode {@link Template#MODE_STARTS_WITH}.
 	 * <p>
 	 * You must set {@link #setFilterDocumentSource(DocumentSource)} and
 	 * {@link #setFilterLanguageManager(LanguageManager)} for this to work.
@@ -255,13 +292,15 @@ public class PrudenceRouter extends FallbackRouter
 	 *        resource URI
 	 * @param documentName
 	 *        The filter document name
+	 * @param context
+	 *        The context for the delegated filter
 	 * @param target
 	 *        The target Restlet to attach
 	 * @return The created route
 	 */
-	public Route filterBase( String uriTemplate, String documentName, Restlet target )
+	public Route filterBase( String uriTemplate, String documentName, Context context, Restlet target )
 	{
-		return filterBase( uriTemplate, new DelegatedFilter( null, documentName, filterDocumentSource, filterLanguageManager ), target );
+		return filterBase( uriTemplate, new DelegatedFilter( context, documentName, filterDocumentSource, filterLanguageManager ), target );
 	}
 
 	/**
