@@ -107,6 +107,14 @@ executeOrDefault('instance/routing/')
 executeOrDefault('instance/servers/')
 
 //
+// Predefined Shared Globals
+//
+
+for(var key in predefinedSharedGlobals) {
+	component.context.attributes.put(key, predefinedSharedGlobals[key])
+}
+
+//
 // Start
 //
 

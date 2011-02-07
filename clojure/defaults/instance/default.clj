@@ -106,6 +106,14 @@
 (execute-or-default "instance/servers/")
 
 ;
+; Predefined Shared Globals
+;
+; These will be available to your code via application.sharedGlobals.
+;
+
+(.. component getContext getAttributes (putAll predefined-shared-globals))
+
+;
 ; Start
 ;
 

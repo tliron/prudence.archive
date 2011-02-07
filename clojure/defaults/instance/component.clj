@@ -61,3 +61,11 @@
 ;
 
 (.. component getContext getAttributes (put "com.threecrickets.prudence.cache" (InProcessMemoryCache.)))
+
+;
+; Predefined Shared Globals
+;
+; These will be available to your code via application.sharedGlobals.
+;
+
+(def predefined-shared-globals {})

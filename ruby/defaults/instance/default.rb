@@ -121,6 +121,16 @@ execute_or_default 'instance/routing/'
 execute_or_default 'instance/servers/'
 
 #
+# Predefined Shared Globals
+#
+# These will be available to your code via application.sharedGlobals.
+#
+
+for key in $predefined_shared_globals.keys
+	$component.context.attributes[key] = $predefined_shared_globals[key]
+end
+
+#
 # Start
 #
 

@@ -61,3 +61,11 @@ component.context.attributes['com.threecrickets.prudence.scheduler'] = scheduler
 #
 
 component.context.attributes['com.threecrickets.prudence.cache'] = InProcessMemoryCache()
+
+#
+# Predefined Shared Globals
+#
+# These will be available to your code via application.sharedGlobals.
+#
+
+predefined_shared_globals = {}

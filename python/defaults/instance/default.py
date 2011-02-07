@@ -104,6 +104,12 @@ execute_or_default('instance/routing/')
 execute_or_default('instance/servers/')
 
 #
+# Predefined Shared Globals
+#
+
+component.context.attributes.putAll(predefined_shared_globals)
+
+#
 # Start
 #
 

@@ -12,7 +12,7 @@
 // at http://threecrickets.com/
 //
 
-global $tasks, $scheduler, $component, $prudence_version, $prudence_revision, $prudence_flavor, $applications;
+global $tasks, $scheduler, $component, $prudence_version, $prudence_revision, $prudence_flavor, $applications, $predefined_shared_globals;
 
 import java.lang.System;
 import java.util.logging.LogManager;
@@ -110,6 +110,14 @@ execute_or_default('instance/routing/');
 //
 
 execute_or_default('instance/servers/');
+
+//
+// Predefined Shared Globals
+//
+
+foreach($predefined_shared_globals as $key => $value) {
+	$component->context->attributes[$key] = $value;
+}
 
 //
 // Start

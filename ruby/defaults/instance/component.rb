@@ -62,3 +62,11 @@ $component.context.attributes['com.threecrickets.prudence.scheduler'] = $schedul
 #
 
 $component.context.attributes['com.threecrickets.prudence.cache'] = InProcessMemoryCache.new
+
+#
+# Predefined Shared Globals
+#
+# These will be available to your code via application.sharedGlobals.
+#
+
+$predefined_shared_globals = {}

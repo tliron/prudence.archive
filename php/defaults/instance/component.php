@@ -20,7 +20,7 @@ import com.threecrickets.prudence.cache.InProcessMemoryCache;
 import it.sauronsoftware.cron4j.Scheduler;
 
 global $executable;
-global $component, $executor, $scheduler, $prudence_version, $prudence_revision, $prudence_flavor;
+global $component, $executor, $scheduler, $prudence_version, $prudence_revision, $prudence_flavor, $predefined_shared_globals;
 
 //
 // Component
@@ -65,4 +65,12 @@ $component->context->attributes['com.threecrickets.prudence.scheduler'] = $sched
 //
 
 $component->context->attributes['com.threecrickets.prudence.cache'] = new InProcessMemoryCache();
+
+//
+// Predefined Shared Globals
+//
+// These will be available to your code via application.sharedGlobals.
+//
+
+$predefined_shared_globals = array();
 ?>
