@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2011-02-01">
+<meta name="create-date" content="2011-02-07">
 <link rel="stylesheet" href="http://www.nongnu.org/elyxer/lyx.css" type="text/css" media="screen">
 <title>Prudence Manual</title>
 </head>
@@ -5014,13 +5014,33 @@ Names can be any string, but the convention is to use ‘‘.’’ paths to all
 Though application.globals is thread safe, it’s important to understand how to use it properly. Make sure you read the <u>section on concurrency in ‘‘sharing state’’ (page <a class="Reference" href="#../api/|concurrency">1↓</a>)</u>.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-68"></a>application.arguments
+<a class="toc" name="toc-Paragraph-68"></a>application.sharedGlobals, application.getSharedGlobal<a class="Label" name="../api/|application-shared-globals"> </a>
+</div>
+<div class="Unindented">
+These are similar to <u>application.globals (page <a class="Reference" href="#../api/|application-globals">1↑</a>)</u>, but are in fact shared by all Prudence applications running in the instance.
+</div>
+<div class="Indented">
+Note that some secure Prudence deployments may disable sharing between applications, in which case there will be no shared globals. It is thus best to test that they exist before using them:
+</div>
+<div class="Indented">
+
+<div class="listing">
+<pre class="listing">var dbConnection = application.globals.get(’db.connection’)
+if((dbConnection === null) &amp;&amp; (application.sharedGlobals !== null)) {
+	// Was not in application globals, so try shared globals
+	dbConnection = application.sharedGlobals.get(’db.connection’)
+}
+</pre>
+</div>
+</div>
+<div class="Paragraph">
+<a class="toc" name="toc-Paragraph-69"></a>application.arguments
 </div>
 <div class="Unindented">
 Available only in configuration scripts. This is a list of command-line arguments provided to the Prudence instance script.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-69"></a>application.application<a class="Label" name="../api/|application-application"> </a>
+<a class="toc" name="toc-Paragraph-70"></a>application.application<a class="Label" name="../api/|application-application"> </a>
 </div>
 <div class="Unindented">
 This is a reference to the underlying <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/Application.html">Restlet application instance</a>. Here you can access some information defined in /settings.*, such as application.application.owner, application.application.author, application.application.statusService.contactEmail, etc.
@@ -5029,7 +5049,7 @@ This is a reference to the underlying <a class="URL" href="http://www.restlet.or
 You can configure the underlying application instance via <u>/application.* (page <a class="Reference" href="#../application/|application-file">1↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-70"></a>application.logger<a class="Label" name="../api/|application-logger"> </a>
+<a class="toc" name="toc-Paragraph-71"></a>application.logger<a class="Label" name="../api/|application-logger"> </a>
 </div>
 <div class="Unindented">
 Use the logger to print messages in the log files. The messages are prefixed by the <u>applicationLoggerName setting (page <a class="Reference" href="#../application/|application-logger-name">1↑</a>)</u>, which defaults to the application’s subdirectory name.
@@ -5041,7 +5061,7 @@ By default, all log messages from all applications will be sent to prudence.log,
 See <u>logging.conf (page <a class="Reference" href="#../logging/|logging-conf">1↓</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-71"></a>application.getSubLogger<a class="Label" name="../api/|application-get-sub-logger"> </a>
+<a class="toc" name="toc-Paragraph-72"></a>application.getSubLogger<a class="Label" name="../api/|application-get-sub-logger"> </a>
 </div>
 <div class="Unindented">
 Uses a logger that inherits the application.logger configuration by default. The name you use will be appended to your base logger name with a ‘‘.’’.
@@ -5050,7 +5070,7 @@ Uses a logger that inherits the application.logger configuration by default. The
 See <u>logging.conf (page <a class="Reference" href="#../logging/|logging-conf">1↓</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-72"></a>application.getMediaType<a class="Label" name="../api/|application-get-media-type"> </a>
+<a class="toc" name="toc-Paragraph-73"></a>application.getMediaType<a class="Label" name="../api/|application-get-media-type"> </a>
 </div>
 <div class="Unindented">
 Utility to get a <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/MediaType.html">Restlet MediaType instance</a> from a MIME type name or filename extension.
@@ -5059,7 +5079,7 @@ Utility to get a <a class="URL" href="http://www.restlet.org/documentation/2.0/j
 Note that each application has its own <u>mappings (page <a class="Reference" href="#../application/|default-file">1↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-73"></a>application.task<a class="Label" name="../api/|application-task"> </a>
+<a class="toc" name="toc-Paragraph-74"></a>application.task<a class="Label" name="../api/|application-task"> </a>
 </div>
 <div class="Unindented">
 Spawns or schedules asynchronous tasks from the application’s /tasks/ subdirectory. See <u>tasks (page <a class="Reference" href="#../tasks/">1↑</a>)</u> for more information.
@@ -5136,7 +5156,7 @@ Many of these attributes have to do with caching. Caching is your best tool to m
 Note: Passing the ‘‘document’’ global variable as an argument to a function in another document will not let that other document access attributes for the calling document. In fact, all documents in the current thread share the same ‘‘document’’ service, which internally gets and sets attributes for the document in which it is accessed. If you do have a need for a function in one document to manipulate the ‘‘document’’ attributes of another document, you will have to return the values and have code in the owning document explicitly set the attributes there.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-74"></a>document.cacheDuration<a class="Label" name="../api/|document-cache-duration"> </a>
+<a class="toc" name="toc-Paragraph-75"></a>document.cacheDuration<a class="Label" name="../api/|document-cache-duration"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
@@ -5151,7 +5171,7 @@ See the <u>section on caching in HTML generation (page <a class="Reference" href
 Note that if you edit the source file such as that it would be reloaded, within the limits defined by the <u>dynamicWebMinimumTimeBetweenValidityChecks setting (page <a class="Reference" href="#../application/|dynamic-web-minimum-time-between-validity-checks">1↑</a>)</u>, then any cache entries would not be used for the next request. This feature lets you see your changes on the fly, even if the document has been cached. Note, too, that updates to documents executed by your source file will also trigger this feature. See <u>document.execute (page <a class="Reference" href="#../api/|document-execute">1↓</a>)</u>.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-75"></a>document.cacheKeyPattern<a class="Label" name="../api/|document-cache-key-pattern"> </a><a class="Label" name="../manual/api/|document-cache-key-pattern"> </a>
+<a class="toc" name="toc-Paragraph-76"></a>document.cacheKeyPattern<a class="Label" name="../api/|document-cache-key-pattern"> </a><a class="Label" name="../manual/api/|document-cache-key-pattern"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
@@ -5184,7 +5204,7 @@ Rule of thumb: Set document.cacheKeyPattern to be as short as you possibly can, 
 The default cache key pattern can be changed by setting the ‘‘com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern’’ application global.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-76"></a>document.cacheKeyPatternHandlers<a class="Label" name="../api/|document-cache-key-pattern-handlers"> </a>
+<a class="toc" name="toc-Paragraph-77"></a>document.cacheKeyPatternHandlers<a class="Label" name="../api/|document-cache-key-pattern-handlers"> </a>
 </div>
 <div class="Unindented">
 A map of <u>cache key pattern (page <a class="Reference" href="#../api/|document-cache-key-pattern">1↑</a>)</u> variable names (without the curly brackets) to <u>cache key pattern handlers (page <a class="Reference" href="#../handlers/|cache-key-pattern-handlers">1↑</a>)</u> names. Use this to override global handlers, or to otherwise set handlers specific to this document.
@@ -5193,13 +5213,13 @@ A map of <u>cache key pattern (page <a class="Reference" href="#../api/|document
 See <u>cache key pattern handlers (page <a class="Reference" href="#../handlers/|cache-key-pattern-handlers">1↑</a>)</u> for a complete reference.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-77"></a>document.cacheKey<a class="Label" name="../api/|document-cache-key"> </a>
+<a class="toc" name="toc-Paragraph-78"></a>document.cacheKey<a class="Label" name="../api/|document-cache-key"> </a>
 </div>
 <div class="Unindented">
 This is the actual cache key: <u>document.cacheKeyPattern (page <a class="Reference" href="#../api/|document-cache-key-pattern">1↑</a>)</u>, cast for the current conversation. The value is read-only, and made available mostly for debugging purposes.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-78"></a>document.cacheTags<a class="Label" name="../api/|document-cache-tags"> </a><a class="Label" name="../manual/api/|document-cache-tags"> </a>
+<a class="toc" name="toc-Paragraph-79"></a>document.cacheTags<a class="Label" name="../api/|document-cache-tags"> </a><a class="Label" name="../manual/api/|document-cache-tags"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
@@ -5217,7 +5237,7 @@ See <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../../scaling/
 Important! Using <u>document.include (page <a class="Reference" href="#../api/|document-include">1↓</a>)</u>, or the &lt;%&amp; .. %&gt; inclusion scriptlet, will cause the cache tags of the included document to be applied to the current document, and to documents that have included the current document, and so on. This is a useful feature: if a fragment included somewhere down the line is invalidated, you likely want the containing document to also be invalidated. If you wish to disable cache tag propagation, prefix the cache tag with an underscore when adding it to document.cacheTags. The tag is <i>not </i>stored with the underscore, and so should be referenced <i>without</i> the underscore when calling <u>document.cache.invalidate (page <a class="Reference" href="#../api/|document-cache-invalidate">1↓</a>)</u>.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-79"></a>document.cache<a class="Label" name="../api/|document-cache"> </a>
+<a class="toc" name="toc-Paragraph-80"></a>document.cache<a class="Label" name="../api/|document-cache"> </a>
 </div>
 <div class="Unindented">
 (note that the same cache instance is accessible in both /web/dynamic/ and /resources/)
@@ -5282,7 +5302,7 @@ component.context.attributes.put(’com.threecrickets.prudence.cache’,
 </div>
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-80"></a>document.cache.invalidate<a class="Label" name="../api/|document-cache-invalidate"> </a>
+<a class="toc" name="toc-Paragraph-81"></a>document.cache.invalidate<a class="Label" name="../api/|document-cache-invalidate"> </a>
 </div>
 <div class="Unindented">
 This lets you remove entries, zero or many, from your cache at once. It is useful for when your application state changes in such a way that certain pages must be regenerated. The argument is a cache tag, as defined by <u>document.cacheTags (page <a class="Reference" href="#../api/|document-cache-tags">1↑</a>)</u>.
@@ -5294,7 +5314,7 @@ A common use case is to invalidate display pages when a user posts new data. For
 See <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../../scaling/|caching">1↓</a>)</u> for more information on how caching can help you scale.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-81"></a>document.source<a class="Label" name="../api/|document-source"> </a>
+<a class="toc" name="toc-Paragraph-82"></a>document.source<a class="Label" name="../api/|document-source"> </a>
 </div>
 <div class="Unindented">
 This provides access to the underlying Scripturian DocumentSource instance used for this document.
@@ -5306,7 +5326,7 @@ Scripturian is Prudence’s mechanism for loading, caching and executing source 
 Refer to <a class="URL" href="http://threecrickets.com/scripturian/">Scripturian</a>’s documentation for a complete reference.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-82"></a>document.invalidateCurrent<a class="Label" name="../api/|document-invalidate-current"> </a>
+<a class="toc" name="toc-Paragraph-83"></a>document.invalidateCurrent<a class="Label" name="../api/|document-invalidate-current"> </a>
 </div>
 <div class="Unindented">
 Forces the current document to be marked as invalid, which would trigger the current and dependent documents to be refreshed. See <u>document.addDependency (page <a class="Reference" href="#../api/|document-add-dependency">1↓</a>)</u> and <u>document.invalidate (page <a class="Reference" href="#../api/|document-invalidate">1↓</a>)</u>.
@@ -5315,7 +5335,7 @@ Forces the current document to be marked as invalid, which would trigger the cur
 <a class="toc" name="toc-Subsubsection-109"></a><i>Other</i> Documents
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-83"></a>document.include<a class="Label" name="../api/|document-include"> </a>
+<a class="toc" name="toc-Paragraph-84"></a>document.include<a class="Label" name="../api/|document-include"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
@@ -5348,7 +5368,7 @@ Scriptlets in the fragments can include re-usable code, such as function and cla
 </li>
 </ol>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-84"></a>document.execute<a class="Label" name="../api/|document-execute"> </a>
+<a class="toc" name="toc-Paragraph-85"></a>document.execute<a class="Label" name="../api/|document-execute"> </a>
 </div>
 <div class="Unindented">
 Executes a program defined by source code in another document. Global variables, function definitions, class definitions, etc., in the other document would be made available locally.
@@ -5390,7 +5410,7 @@ Use document.execute as an alternative to document.include if you prefer not to 
 </li>
 </ol>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-85"></a>document.addDependency<a class="Label" name="../api/|document-add-dependency"> </a>
+<a class="toc" name="toc-Paragraph-86"></a>document.addDependency<a class="Label" name="../api/|document-add-dependency"> </a>
 </div>
 <div class="Unindented">
 Explicitly adds a dependency to this document. The dependency is an internal document URI, identical to what would be used in <u>document.execute (page <a class="Reference" href="#../api/|document-execute">1↑</a>)</u>.
@@ -5402,7 +5422,7 @@ If the dependency changes, the current document would be reloaded when accessed.
 Note that <u>document.execute (page <a class="Reference" href="#../api/|document-execute">1↑</a>)</u> automatically adds the executed document as dependency. You would want to call document.addDependency explicitly only if you are not using document.execute. For example, if you are using your language’s built-in library inclusion mechanisms.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-86"></a>document.addFileDependency
+<a class="toc" name="toc-Paragraph-87"></a>document.addFileDependency
 </div>
 <div class="Unindented">
 Like <u>document.addDependency (page <a class="Reference" href="#../api/|document-add-dependency">1↑</a>)</u>, except that any file path can be added as a dependency. The contents of such files is ignored.
@@ -5411,13 +5431,13 @@ Like <u>document.addDependency (page <a class="Reference" href="#../api/|documen
 For constructing the file path, you may want to use <u>document.source.basePath (page <a class="Reference" href="#../api/|document-source">1↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-87"></a>document.invalidate<a class="Label" name="../api/|document-invalidate"> </a>
+<a class="toc" name="toc-Paragraph-88"></a>document.invalidate<a class="Label" name="../api/|document-invalidate"> </a>
 </div>
 <div class="Unindented">
 Forces the provided document to be marked as invalid, which would trigger the document and dependent documents to be refreshed. See <u>document.addDependency (page <a class="Reference" href="#../api/|document-add-dependency">1↑</a>)</u> and <u>document.invalidateCurrent (page <a class="Reference" href="#../api/|document-invalidate-current">1↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-88"></a>document.internal<a class="Label" name="../api/|document-internal"> </a><a class="Label" name="../manual/api/|document-internal"> </a>
+<a class="toc" name="toc-Paragraph-89"></a>document.internal<a class="Label" name="../api/|document-internal"> </a><a class="Label" name="../manual/api/|document-internal"> </a>
 </div>
 <div class="Unindented">
 Creates a <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/resource/ClientResource.html">ClientResource</a> proxy for a resource in the current application, or in other applications in your component. You can perform all the usual REST verbs via the proxy: GET, PUT, POST, DELETE, etc.
@@ -5441,7 +5461,7 @@ The defrosting mechanism uses document.internal to load resources.
 </li>
 </ol>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-89"></a>document.external<a class="Label" name="../api/|document-external"> </a><a class="Label" name="../manual/api/|document-external"> </a>
+<a class="toc" name="toc-Paragraph-90"></a>document.external<a class="Label" name="../api/|document-external"> </a><a class="Label" name="../manual/api/|document-external"> </a>
 </div>
 <div class="Unindented">
 Creates a <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/resource/ClientResource.html">ClientResource</a> proxy for a resource. You can perform all the usual REST verbs via the proxy: GET, PUT, POST, DELETE, etc.
@@ -5493,7 +5513,7 @@ finally {
 In case you’re interested, Prudence internally uses <a class="URL" href="http://hc.apache.org/httpcomponents-client/index.html">Apache's HTTP client</a> for high-performance access to external HTTP documents, with full support for secure connections (prefixed with ‘‘https:’’).
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-90"></a>document.preferredExtension
+<a class="toc" name="toc-Paragraph-91"></a>document.preferredExtension
 </div>
 <div class="Unindented">
 (only available in configuration scripts)
@@ -5514,13 +5534,13 @@ The ‘‘executable’’ is the low-level equivalent of <u>‘‘this document
 A feature that you might want to use here is the executable globals. These are similar to the <u>application globals (page <a class="Reference" href="#../api/|application-globals">1↑</a>)</u>, except that they are global to the entire Prudence instance (in fact, to the virtual machine). It’s a good place to store state that you want shared between Prudence applications.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-91"></a>executable.globals, executable.getGlobal<a class="Label" name="../api/|executable-globals"> </a>
+<a class="toc" name="toc-Paragraph-92"></a>executable.globals, executable.getGlobal<a class="Label" name="../api/|executable-globals"> </a>
 </div>
 <div class="Unindented">
 These are similar in use to application.globals, but are shared by all applications on the VM. See <u>‘‘sharing state’’ (page <a class="Reference" href="#../api/|sharing-state">1↓</a>)</u> for more information.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-92"></a>executable.context
+<a class="toc" name="toc-Paragraph-93"></a>executable.context
 </div>
 <div class="Unindented">
 The context is used for communication between the Prudence container and the executable.
@@ -5538,13 +5558,13 @@ executable.context.attributes: for use by the language engines
 </li>
 </ul>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-93"></a>executable.manager
+<a class="toc" name="toc-Paragraph-94"></a>executable.manager
 </div>
 <div class="Unindented">
 This is the <a class="URL" href="http://threecrickets.com/scripturian/api/index.html?com/threecrickets/scripturian/LanguageManager.html">Scripturian LanguageManager</a> used to create executables in many languages. Here you can query which languages are supported by the current Prudence instance: executable.manager.adapters.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-94"></a>executable.container
+<a class="toc" name="toc-Paragraph-95"></a>executable.container
 </div>
 <div class="Unindented">
 This is identical to the <u>‘‘document’’ service (page <a class="Reference" href="#../api/|document">1↑</a>)</u>. For example, ‘‘document.include’’ is the same as ‘‘executable.container.include’’.
@@ -5568,7 +5588,7 @@ Note that in /web/dynamic/ ‘‘conversation’’ is available as a global var
 <a class="toc" name="toc-Subsubsection-110"></a>The Request
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-95"></a>conversation.reference<a class="Label" name="../api/|conversation-reference"> </a>
+<a class="toc" name="toc-Paragraph-96"></a>conversation.reference<a class="Label" name="../api/|conversation-reference"> </a>
 </div>
 <div class="Unindented">
 This is the URI used by the client. Refer to the <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/Reference.html">Restlet Reference documentation</a> for complete details.
@@ -5601,7 +5621,7 @@ conversation.reference.relativeRef: a new reference relative to the base URI (us
 </li>
 </ul>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-96"></a>conversation.pathToBase<a class="Label" name="../api/|conversation-path-to-base"> </a>
+<a class="toc" name="toc-Paragraph-97"></a>conversation.pathToBase<a class="Label" name="../api/|conversation-path-to-base"> </a>
 </div>
 <div class="Unindented">
 This is a URI path relative to the base URI, which is usually the application root URI on the current virtual host.
@@ -5620,7 +5640,7 @@ This is very useful to allow for relative references in HTML. It’s especially 
 Note: If you are caching a document that relies on conversation.pathToBase, you likely also want to include ‘‘{ptb}’’ or some other path reference in the <u>document.cacheKeyPattern (page <a class="Reference" href="#../api/|document-cache-key-pattern">1↑</a>)</u>.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-97"></a>conversation.form, conversation.formAll<a class="Label" name="../api/|conversation-form"> </a><a class="Label" name="../manual/api/|conversation-form"> </a>
+<a class="toc" name="toc-Paragraph-98"></a>conversation.form, conversation.formAll<a class="Label" name="../api/|conversation-form"> </a><a class="Label" name="../manual/api/|conversation-form"> </a>
 </div>
 <div class="Unindented">
 Use these to access data sent via HTML forms, or any other request with a data entity of the ‘‘application/x-www-form-urlencoded’’ MIME type.
@@ -5659,7 +5679,7 @@ Note that either ‘‘data’’ or ‘‘file’’ are valid, but not both. O
 Prudence allows you to keep smaller files in memory. See the <u>fileUploadSizeThreshold setting (page <a class="Reference" href="#../application/|file-upload-size-threshold">1↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-98"></a>conversation.query, conversation.queryAll<a class="Label" name="../api/|conversation-query"> </a>
+<a class="toc" name="toc-Paragraph-99"></a>conversation.query, conversation.queryAll<a class="Label" name="../api/|conversation-query"> </a>
 </div>
 <div class="Unindented">
 Use these to access data sent via the URI query.
@@ -5671,7 +5691,7 @@ conversation.query is a map of query parameter names to values. In case the URI 
 conversation.queryAll is a list of parameters. Use this if you need to support multiple values for the same name.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-99"></a>conversation.entity
+<a class="toc" name="toc-Paragraph-100"></a>conversation.entity
 </div>
 <div class="Unindented">
 (only available in HTTP PUT and POST commands)
@@ -5704,7 +5724,7 @@ conversation.entity.size: the size of the data in bytes, or -1 if unknown
 Note: Client data is provided as a stream that can only be ‘‘consumed’’ once. Attributes that cause consumption are marked with a ‘‘*’’ above. <i>Note that conversation.entity.text is one of them! </i>If you want to access conversation.entity.text more than once, save it to a variable first.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-100"></a>conversation.preferences<a class="Label" name="../api/|conversation-preferences"> </a>
+<a class="toc" name="toc-Paragraph-101"></a>conversation.preferences<a class="Label" name="../api/|conversation-preferences"> </a>
 </div>
 <div class="Unindented">
 Provides you with low-level access to the <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/representation/Variant.html">Restlet Variant instance</a> negotiated with the client. You will usually not have to use this, because <u>response attributes (page <a class="Reference" href="#../api/|the-response">1↓</a>)</u> are set accordingly.
@@ -5725,7 +5745,7 @@ In /web/dynamic/ (and /web/static/), our supported <u>media type will be set acc
 By default, Prudence initializes all response attributes according to the <u>client’s preferences (page <a class="Reference" href="#../api/|conversation-preferences">1↑</a>)</u>. However, you may want to explicitly change them. Also note that some clients to not specify preferences, in which case the response attributes will be undefined.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-101"></a>conversation.statusCode, conversation.status<a class="Label" name="../api/|conversation-status-code"> </a>
+<a class="toc" name="toc-Paragraph-102"></a>conversation.statusCode, conversation.status<a class="Label" name="../api/|conversation-status-code"> </a>
 </div>
 <div class="Unindented">
 This is the HTTP status code returned to the client. The default status code is 200 (‘‘OK’’).
@@ -5743,7 +5763,7 @@ conversation.statusCode is an HTTP status code as an integer.
 conversation.status is the underlying <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/Status.html">Status instance</a>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-102"></a>conversation.mediaTypeName, conversation.mediaTypeExtension, conversation.mediaType<a class="Label" name="../api/|conversation-media-type"> </a>
+<a class="toc" name="toc-Paragraph-103"></a>conversation.mediaTypeName, conversation.mediaTypeExtension, conversation.mediaType<a class="Label" name="../api/|conversation-media-type"> </a>
 </div>
 <div class="Unindented">
 In /resources/, the ‘‘application/java’’ media type is <u>treated specially</u> <u>(page <a class="Reference" href="#../resources/|handle-get">1↑</a>)</u>.
@@ -5764,7 +5784,7 @@ conversation.mediaType is the underlying <a class="URL" href="http://www.restlet
 The default media type will be set according to <u>conversation.preferences (page <a class="Reference" href="#../api/|conversation-preferences">1↑</a>)</u>. Use <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/ClientInfo.html">conversation.request.clientInfo.acceptedMediaTypes</a> to find out more generally which media types the client supports.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-103"></a>conversation.characterSetName, conversation.characterSetShortName, conversation.characterSet<a class="Label" name="../api/|conversation-character-set"> </a>
+<a class="toc" name="toc-Paragraph-104"></a>conversation.characterSetName, conversation.characterSetShortName, conversation.characterSet<a class="Label" name="../api/|conversation-character-set"> </a>
 </div>
 <div class="Unindented">
 These three variants all represent the same value, letting you access the value in different ways.
@@ -5785,7 +5805,7 @@ The default character set will be set according to <u>conversation.preferences (
 If the client does not specify a preferred character set, then the character set will fall back to a default determined by the ‘‘com.threecrickets.prudence.GeneratedTextResource.defaultCharacterSet’’ application global. It not explicitly set, it will be UTF-8.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-104"></a>conversation.languageName, conversation.language<a class="Label" name="../api/|conversation-language"> </a>
+<a class="toc" name="toc-Paragraph-105"></a>conversation.languageName, conversation.language<a class="Label" name="../api/|conversation-language"> </a>
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -5803,7 +5823,7 @@ The default language will be set according to <u>conversation.preferences (page 
 Note that the language can be a null value, and that responses do not have to specify a language.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-105"></a>conversation.encodingName, conversation.encoding<a class="Label" name="../api/|conversation-encoding"> </a>
+<a class="toc" name="toc-Paragraph-106"></a>conversation.encodingName, conversation.encoding<a class="Label" name="../api/|conversation-encoding"> </a>
 </div>
 <div class="Unindented">
 In /web/dynamic/, this value is read-only. If it is ‘‘zip’’, ‘‘gzip’’ or ‘‘deflate,’’ Prudence will compress the output text. Cache entries are stored in their compressed state, such that subsequent cache retrievals will not involve this additional overhead. See <u>caching and encoding (page <a class="Reference" href="#../generating-html/|caching-and-compression">1↑</a>)</u> for a detailed discussion
@@ -5827,7 +5847,7 @@ The default encoding will be set according to <u>conversation.preferences (page 
 <a class="toc" name="toc-Subsubsection-112"></a>Cookies
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-106"></a>conversation.cookies<a class="Label" name="../api/|conversation-cookies"> </a>
+<a class="toc" name="toc-Paragraph-107"></a>conversation.cookies<a class="Label" name="../api/|conversation-cookies"> </a>
 </div>
 <div class="Unindented">
 This is initialized as a list (not a map) of cookies sent from the client. Use <u>conversation.getCookie (page <a class="Reference" href="#../api/|conversation-get-cookie">1↓</a>)</u> as a shortcut to retrieve a cookie by name.
@@ -5878,13 +5898,13 @@ cookie.comment: some clients store this, some discard it
 </li>
 </ul>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-107"></a>conversation.getCookie<a class="Label" name="../api/|conversation-get-cookie"> </a>
+<a class="toc" name="toc-Paragraph-108"></a>conversation.getCookie<a class="Label" name="../api/|conversation-get-cookie"> </a>
 </div>
 <div class="Unindented">
 Gets a cookie by its name, or returns null if it doesn’t exist. See <u>conversation.cookies (page <a class="Reference" href="#../api/|conversation-cookies">1↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-108"></a>conversation.createCookie
+<a class="toc" name="toc-Paragraph-109"></a>conversation.createCookie
 </div>
 <div class="Unindented">
 You must provide the cookie name as an argument. Returns a new cookie instance if the cookie doesn’t exist yet, or the existing cookie if it does. The cookie is added to <u>conversation.cookies (page <a class="Reference" href="#../api/|conversation-cookies">1↑</a>)</u>.
@@ -5902,7 +5922,7 @@ These attributes are only available for /resources/. See <u>conditional requests
 For /web/dynamic/, these attributes are indirectly set according to <u>document.cacheDuration (page <a class="Reference" href="#../api/|document-cache-duration">1↑</a>)</u> and <u>dynamicWebClientCachingMode setting (page <a class="Reference" href="#../application/|dynamic-web-client-caching-mode">1↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-109"></a>conversation.modificationTimestamp, conversation.modificationDate<a class="Label" name="../api/|conversation-modification-date"> </a>
+<a class="toc" name="toc-Paragraph-110"></a>conversation.modificationTimestamp, conversation.modificationDate<a class="Label" name="../api/|conversation-modification-date"> </a>
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -5914,7 +5934,7 @@ conversation.modificationTimestamp is a long integer value representing the numb
 conversation.modificationDate is the underlying JVM Date instance. Refer to the Java API documentation for details.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-110"></a>conversation.httpTag, conversation.tag<a class="Label" name="../api/|conversation-tag"> </a>
+<a class="toc" name="toc-Paragraph-111"></a>conversation.httpTag, conversation.tag<a class="Label" name="../api/|conversation-tag"> </a>
 </div>
 <div class="Unindented">
 These two variants represent the same value, letting you access the value in different ways.
@@ -5935,7 +5955,7 @@ These attributes are only available for /resources/. See <u>conditional requests
 For /web/dynamic/, these attributes are indirectly set according to <u>document.cacheDuration (page <a class="Reference" href="#../api/|document-cache-duration">1↑</a>)</u> and <u>dynamicWebClientCachingMode setting (page <a class="Reference" href="#../application/|dynamic-web-client-caching-mode">1↑</a>)</u>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-111"></a>conversation.maxAge<a class="Label" name="../api/|conversation-max-age"> </a>
+<a class="toc" name="toc-Paragraph-112"></a>conversation.maxAge<a class="Label" name="../api/|conversation-max-age"> </a>
 </div>
 <div class="Unindented">
 Clients are asked not to use cached versions of the response entity for more than this number of seconds <i>and </i>not to perform conditional requests until then. You can also use <u>conversation.expirationDate (page <a class="Reference" href="#../api/|conversation-expiration-date">1↓</a>)</u> instead of this value (for most clients, this value supercedes conversation.expirationDate).
@@ -5950,7 +5970,7 @@ A value of -1 is special: it signifies that Prudence should use the ‘‘no-cac
 Cache expiration can be used either alone or in conjunction with <u>conditional requests (page <a class="Reference" href="#../resources/|conditional-requests">1↑</a>)</u>. See the <u>dynamicWebClientCachingMode setting (page <a class="Reference" href="#../application/|dynamic-web-client-caching-mode">1↑</a>)</u> for further discussion.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-112"></a>conversation.expirationTimestamp, conversation.expirationDate<a class="Label" name="../api/|conversation-expiration-date"> </a>
+<a class="toc" name="toc-Paragraph-113"></a>conversation.expirationTimestamp, conversation.expirationDate<a class="Label" name="../api/|conversation-expiration-date"> </a>
 </div>
 <div class="Unindented">
 Clients are asked not to use cached versions of the response entity after this date <i>and </i>not to perform conditional requests until then. You can also use <u>conversation.maxAge (page <a class="Reference" href="#../api/|conversation-max-age">1↑</a>)</u> instead of this value (for most clients, conversation.maxAge supercedes this value).
@@ -5971,7 +5991,7 @@ conversation.expirationDate is the underlying JVM Date instance. Refer to the Ja
 <a class="toc" name="toc-Subsubsection-115"></a>Resource Initialization
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-113"></a>conversation.addMediaTypeByName, conversation.addMediaTypeByExtension, conversation.addMediaType<a class="Label" name="../api/|conversation-add-media-type"> </a>
+<a class="toc" name="toc-Paragraph-114"></a>conversation.addMediaTypeByName, conversation.addMediaTypeByExtension, conversation.addMediaType<a class="Label" name="../api/|conversation-add-media-type"> </a>
 </div>
 <div class="Unindented">
 These three variants all do the same thing, letting you add a media type to the list of media types you can support in the response. After negotiation with the client’s preferences, the preferred media type will be found in <u>conversation.preferences (page <a class="Reference" href="#../api/|conversation-preferences">1↑</a>)</u> and in <u>conversation.mediaType (page <a class="Reference" href="#../api/|conversation-media-type">1↑</a>)</u>.
@@ -5992,13 +6012,13 @@ conversation.addMediaType accepts the underlying <a class="URL" href="http://www
 <a class="toc" name="toc-Subsubsection-116"></a>Conversation Flow
 </h3>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-114"></a>conversation.stop<a class="Label" name="../api/|conversation-stop"> </a>
+<a class="toc" name="toc-Paragraph-115"></a>conversation.stop<a class="Label" name="../api/|conversation-stop"> </a>
 </div>
 <div class="Unindented">
 Throws an exception, thereby ending execution of your code, and hence the conversation—unless you have deferred it: see <u>conversation.defer (page <a class="Reference" href="#../api/|conversation-defer">1↓</a>)</u>. Note that the client will still get a response, so you can set attributes (conversation.statusCode, conversation.expirationTimestamp, etc.) before calling conversation.stop.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-115"></a>conversation.internal
+<a class="toc" name="toc-Paragraph-116"></a>conversation.internal
 </div>
 <div class="Unindented">
 True if the client’s request was internal, false if it was external.
@@ -6016,7 +6036,7 @@ The <u>document.internal API (page <a class="Reference" href="#../api/|document-
 </li>
 </ol>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-116"></a>conversation.locals<a class="Label" name="../api/|conversation-locals"> </a>
+<a class="toc" name="toc-Paragraph-117"></a>conversation.locals<a class="Label" name="../api/|conversation-locals"> </a>
 </div>
 <div class="Unindented">
 A map of general purpose attributes that is destroyed at the end of the conversation. Importantly, conversation.locals are maintained even if the conversation has been deferred via <u>conversation.defer (page <a class="Reference" href="#../api/|conversation-defer">1↓</a>)</u>.
@@ -6025,7 +6045,7 @@ A map of general purpose attributes that is destroyed at the end of the conversa
 See <u>‘‘sharing state’’ (page <a class="Reference" href="#../api/|sharing-state">1↓</a>)</u> for more information.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-117"></a>conversation.defer<a class="Label" name="../api/|conversation-defer"> </a><a class="Label" name="../manual/api/|conversation-defer"> </a>
+<a class="toc" name="toc-Paragraph-118"></a>conversation.defer<a class="Label" name="../api/|conversation-defer"> </a><a class="Label" name="../manual/api/|conversation-defer"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
@@ -6052,7 +6072,7 @@ Note that calling conversation.defer does not stop the current execution. You’
 This is an experimental feature in Prudence 1.0. The use of a separate thread pool is only supported when using the <a class="URL" href="http://wiki.restlet.org/docs_2.0/13-restlet/27-restlet/325-restlet/37-restlet.html">internal Restlet connector</a>. For other connectors (such as Jetty, the default), a successful call to defer will cause the page to be executed again in the same thread.
 </blockquote>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-118"></a>conversation.deferred<a class="Label" name="../api/|conversation-deferred"> </a>
+<a class="toc" name="toc-Paragraph-119"></a>conversation.deferred<a class="Label" name="../api/|conversation-deferred"> </a>
 </div>
 <div class="Unindented">
 (only available in /web/dynamic/ and /web/fragments/)
@@ -6070,19 +6090,19 @@ Use these to access the Restlet instances underlying the conversation. This is u
 For more information, refer to Prudence’s Java API documentation and also Restlet’s API documentation.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-119"></a>conversation.resource
+<a class="toc" name="toc-Paragraph-120"></a>conversation.resource
 </div>
 <div class="Unindented">
 The <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/resource/ServerResource.html">Restlet resource instance</a>. In the case of /web/dynamic/, this will be <a class="URL" href="http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/GeneratedTextResource.html">Prudence's GeneratedTextResource</a>. In the case of /resources/, this will be <a class="URL" href="http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/DelegatedResource.html">DelegatedResource</a>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-120"></a>conversation.request
+<a class="toc" name="toc-Paragraph-121"></a>conversation.request
 </div>
 <div class="Unindented">
 Equivalent to <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/Request.html">conversation.resource.request</a>.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-121"></a>conversation.response
+<a class="toc" name="toc-Paragraph-122"></a>conversation.response
 </div>
 <div class="Unindented">
 Equivalent to <a class="URL" href="http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/Response.html">conversation.resource.response</a>.
@@ -6181,7 +6201,7 @@ Use this code instead:
 The getGlobal call is an atomic compare-and-set operation. It guarantees that the returned value is the unique one.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-122"></a>Optimizing for Performance
+<a class="toc" name="toc-Paragraph-123"></a>Optimizing for Performance
 </div>
 <div class="Unindented">
 You may have noticed, in the code above, that if another thread had already set the global value, then our created data source would be discarded. If data source creation is heavy and slow, then this could significantly affect our performance. The only way to guarantee that this would not happen would be to make the entire operation atomic, by synchronizing it with a lock:
@@ -6274,6 +6294,9 @@ They can be used as <u>document.cacheKeyPattern (page <a class="Reference" href=
 <a class="toc" name="toc-Subsubsection-122"></a>Sharing State Between Prudence Instances
 </h3>
 <div class="Unindented">
+The <u>shared globals (page <a class="Reference" href="#../api/|application-shared-globals">1↑</a>)</u> allow you share state between applications in a Prudence instance, but what if you need to share state between instances?
+</div>
+<div class="Indented">
 Prudence comes with <a class="URL" href="http://www.hazelcast.com/">Hazelcast</a>, which does an excellent job at sharing standard JVM maps, lists, locks and other state facilities. See the Hazelcast documentation for complete information.
 </div>
 <h1 class="Section">
@@ -7816,19 +7839,19 @@ First, recognize that there are two common uses for the term ‘‘scale.’’ 
 From the perspective of the ability to respond to user requests, there are three aspects to consider: 
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-123"></a>1. Serving HTTP
+<a class="toc" name="toc-Paragraph-124"></a>1. Serving HTTP
 </div>
 <div class="Unindented">
 Prudence comes with <a class="URL" href="http://www.mortbay.org/jetty/">Jetty</a>, an HTTP server based on the JVM’s non-blocking I/O API. Jetty handles concurrent HTTP requests very well, and serves static files at scales comparable to popular HTTP servers.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-124"></a>2. Generating HTML
+<a class="toc" name="toc-Paragraph-125"></a>2. Generating HTML
 </div>
 <div class="Unindented">
 Prudence implements what might be the most sophisticated caching system of any web development framework. Caching is truly the key to scalable software. See <u>‘‘Scaling Tips’’ (page <a class="Reference" href="#../scaling/|caching">1↑</a>)</u> for a comprehensive discussion.
 </div>
 <div class="Paragraph">
-<a class="toc" name="toc-Paragraph-125"></a>3. Running code
+<a class="toc" name="toc-Paragraph-126"></a>3. Running code
 </div>
 <div class="Unindented">
 There may be a delay when starting up a specific language engine in Prudence for the first time in an application, as it loads and initializes itself. Then, there may be a delay when accessing a dynamic web page or resource for the first time, or after it has been changed, as it might require compilation. Once it’s up and running, though, your code performs and scale very well—as well as you’ve written it. You need to understand concurrency and make sure you make good choices to handle coordination between threads accessing the same data. If all is good, your code will actually perform better throughout the life of the application. The JVM learns and adapts as it runs, and performance can improve the more the application is used.
@@ -7887,7 +7910,7 @@ Note that the LGPL version 3 has a clause allowing you to ‘‘upgrade’’ Pr
 Copyright (C) 2011 Version 1
 </div>
 <div class="footer" id="generated-by">
-Document generated by <a href="http://elyxer.nongnu.org/">eLyXer 0.98 (2010-05-13)</a> on <span class="create-date">2011-02-01T19:15:15.530195</span>
+Document generated by <a href="http://elyxer.nongnu.org/">eLyXer 0.98 (2010-05-13)</a> on <span class="create-date">2011-02-07T16:05:15.595662</span>
 </div>
 </div>
 </body>

@@ -14960,6 +14960,74 @@ reference "../api/|concurrency"
 \end_layout
 
 \begin_layout Paragraph
+application.sharedGlobals, application.getSharedGlobal
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|application-shared-globals"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These are similar to 
+\bar under
+application.globals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-globals"
+
+\end_inset
+
+)
+\bar default
+, but are in fact shared by all Prudence applications running in the instance.
+\end_layout
+
+\begin_layout Standard
+Note that some secure Prudence deployments may disable sharing between applicati
+ons, in which case there will be no shared globals.
+ It is thus best to test that they exist before using them:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+var dbConnection = application.globals.get('db.connection')
+\end_layout
+
+\begin_layout Plain Layout
+
+if((dbConnection === null) && (application.sharedGlobals !== null)) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	// Was not in application globals, so try shared globals
+\end_layout
+
+\begin_layout Plain Layout
+
+	dbConnection = application.sharedGlobals.get('db.connection')
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
 application.arguments
 \end_layout
 
@@ -19440,6 +19508,22 @@ reference "../handlers/|cache-key-pattern-handlers"
 
 \begin_layout Subsubsection
 Sharing State Between Prudence Instances
+\end_layout
+
+\begin_layout Standard
+The 
+\bar under
+shared globals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-shared-globals"
+
+\end_inset
+
+)
+\bar default
+ allow you share state between applications in a Prudence instance, but
+ what if you need to share state between instances?
 \end_layout
 
 \begin_layout Standard
