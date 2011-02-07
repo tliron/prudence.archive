@@ -1,6 +1,6 @@
 //
 // MongoDB API for Prudence
-// Version 1.23
+// Version 1.24
 //
 // Copyright 2010-2011 Three Crickets LLC.
 //
@@ -220,7 +220,7 @@ var Mongo = Mongo || function() {
 		},
 		
 		result: function(result) {
-			if (result) {
+			if (result !== null) {
 				return BSON.from(result.cachedLastError)
 			}
 			return null
@@ -397,7 +397,7 @@ var Mongo = Mongo || function() {
 						next: 1
 					}
 				})
-				if (id) {
+				if (id !== null) {
 					return id.next
 				}
 				else {
@@ -422,14 +422,15 @@ var Mongo = Mongo || function() {
 			//
 			
 			config = config || {}
-			this.connection = config.connection || Public.defaultConnection
-			this.db = config.db || Public.defaultDB
-			this.idsCollection = config.idsCollection || Public.defaultIdsCollection
+			this.connection = ((config.connection !== undefined) && (config.connection !== null)) ? config.connection : Public.defaultConnection
+			this.db = ((config.db !== undefined) && (config.db !== null)) ? config.db : Public.defaultDB
+			this.idsCollection = ((config.idsCollection !== undefined) && (config.idsCollection !== null)) ? config.idsCollection : Public.defaultIdsCollection
 
-			if (this.db instanceof String) {
+			if ((typeof this.db == 'string') || (this.db instanceof String)) {
 				this.db = this.connection.getDB(this.db)
 			}
-			this.collection = config.collection || this.db.getCollection(name)
+
+			this.collection = ((config.collection !== undefined) && (config.collection !== null)) ? config.collection : this.db.getCollection(name)
 			
 			if (config.uniqueID) {
 				var index = {}
@@ -477,7 +478,7 @@ var Mongo = Mongo || function() {
 		if (Public.defaultDB !== null) {
 			// Initialize default ID collection from globals
 			Public.defaultIdsCollection = application.globals.get('mongo.defaults.idsCollection')
-			if (Public.defaultIdsCollection == null) {
+			if (Public.defaultIdsCollection === null) {
 				var defaultIdsCollectionName = application.globals.get('mongo.defaultIdsCollectionName')
 				if (defaultIdsCollectionName !== null) {
 					Public.defaultIdsCollection = application.getGlobal('mongo.defaults.idsCollection', new Public.Collection(defaultIdsCollectionName))
