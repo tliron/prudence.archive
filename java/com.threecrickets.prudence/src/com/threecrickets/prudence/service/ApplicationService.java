@@ -68,6 +68,20 @@ public class ApplicationService
 	//
 	// Attributes
 	//
+	/**
+	 * The underlying application.
+	 * 
+	 * @return The application
+	 */
+	public Application getApplication()
+	{
+		return application;
+	}
+
+	public Component getComponent()
+	{
+		return (Component) getGlobals().get( "com.threecrickets.prudence.component" );
+	}
 
 	/**
 	 * A map of all values global to the current application.
@@ -93,24 +107,71 @@ public class ApplicationService
 	{
 		ConcurrentMap<String, Object> globals = getGlobals();
 		Object value = globals.get( name );
-		if( ( value == null ) && ( defaultValue != null ) )
+
+		if( defaultValue != null )
 		{
 			value = defaultValue;
 			Object existing = globals.putIfAbsent( name, value );
 			if( existing != null )
 				value = existing;
 		}
+		else
+			globals.remove( name );
+
 		return value;
 	}
 
 	/**
-	 * The underlying application.
+	 * A map of all values global to all running applications.
+	 * <p>
+	 * Note that this could be null if shared globals are not set up.
 	 * 
-	 * @return The application
+	 * @return The shared globals or null
 	 */
-	public Application getApplication()
+	public ConcurrentMap<String, Object> getSharedGlobals()
 	{
-		return application;
+		Component component = getComponent();
+		if( component != null )
+			return component.getContext().getAttributes();
+		else
+			return null;
+	}
+
+	/**
+	 * Gets a value global to all running applications, atomically setting it to
+	 * a default value if it doesn't exist.
+	 * <p>
+	 * If shared globals are not set up, does nothing and returns null.
+	 * 
+	 * @param name
+	 *        The name of the shared global
+	 * @param defaultValue
+	 *        The default value
+	 * @return The shared global's current value
+	 */
+	public Object getSharedGlobal( String name, Object defaultValue )
+	{
+		ConcurrentMap<String, Object> globals = getSharedGlobals();
+
+		if( globals == null )
+			return null;
+
+		Object value = globals.get( name );
+
+		if( value == null )
+		{
+			if( defaultValue != null )
+			{
+				value = defaultValue;
+				Object existing = globals.putIfAbsent( name, value );
+				if( existing != null )
+					value = existing;
+			}
+			else
+				globals.remove( name );
+		}
+
+		return value;
 	}
 
 	/**
@@ -157,8 +218,10 @@ public class ApplicationService
 	}
 
 	/**
-	 * Gets the executor service for the component, creating one if it doesn't
-	 * exist.
+	 * Gets the shared executor service, creating one if it doesn't exist.
+	 * <p>
+	 * If shared globals are not set up, gets the application's executor
+	 * service.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>com.threecrickets.prudence.executor</code> in the component's
@@ -166,35 +229,30 @@ public class ApplicationService
 	 * 
 	 * @return The executor service
 	 */
-	public ExecutorService getGlobalExecutor()
+	public ExecutorService getExecutor()
 	{
-		if( globalExecutor == null )
+		if( executor == null )
 		{
-			ConcurrentMap<String, Object> attributes = getApplication().getContext().getAttributes();
-			Component component = (Component) attributes.get( "com.threecrickets.prudence.component" );
+			ConcurrentMap<String, Object> attributes = getSharedGlobals();
 
-			if( component == null )
+			if( attributes != null )
 			{
-				globalExecutor = application.getTaskService();
-			}
-			else
-			{
-				attributes = component.getContext().getAttributes();
+				executor = (ExecutorService) attributes.get( "com.threecrickets.prudence.executor" );
 
-				globalExecutor = (ExecutorService) attributes.get( "com.threecrickets.prudence.executor" );
-
-				if( globalExecutor == null )
+				if( executor == null )
 				{
-					globalExecutor = Executors.newScheduledThreadPool( Runtime.getRuntime().availableProcessors() * 2 + 1 );
+					executor = Executors.newScheduledThreadPool( Runtime.getRuntime().availableProcessors() * 2 + 1 );
 
-					ExecutorService existing = (ExecutorService) attributes.putIfAbsent( "com.threecrickets.prudence.executor", globalExecutor );
+					ExecutorService existing = (ExecutorService) attributes.putIfAbsent( "com.threecrickets.prudence.executor", executor );
 					if( existing != null )
-						globalExecutor = existing;
+						executor = existing;
 				}
 			}
+			else
+				executor = application.getTaskService();
 		}
 
-		return globalExecutor;
+		return executor;
 	}
 
 	//
@@ -202,7 +260,7 @@ public class ApplicationService
 	//
 
 	/**
-	 * Submits or schedules an {@link ApplicationTask} on the the component's
+	 * Submits or schedules an {@link ApplicationTask} on the the shared
 	 * executor service.
 	 * 
 	 * @param documentName
@@ -217,15 +275,15 @@ public class ApplicationService
 	 * @return A future for the task
 	 * @throws ParsingException
 	 * @throws DocumentException
-	 * @see #getGlobalExecutor()
+	 * @see #getExecutor()
 	 */
 	public Future<?> task( String documentName, int delay, int repeatEvery, boolean fixedRepeat ) throws ParsingException, DocumentException
 	{
-		ExecutorService executor = getGlobalExecutor();
+		ExecutorService executor = getExecutor();
 		if( ( delay > 0 ) || ( repeatEvery > 0 ) )
 		{
 			if( !( executor instanceof ScheduledExecutorService ) )
-				throw new RuntimeException( "Global executor must implement the ScheduledExecutorService interface to allow for delayed tasks" );
+				throw new RuntimeException( "Executor must implement the ScheduledExecutorService interface to allow for delayed tasks" );
 
 			ScheduledExecutorService scheduledExecutor = (ScheduledExecutorService) executor;
 			if( repeatEvery > 0 )
@@ -253,7 +311,7 @@ public class ApplicationService
 	/**
 	 * The executor service.
 	 */
-	private ExecutorService globalExecutor;
+	private ExecutorService executor;
 
 	/**
 	 * The logger.

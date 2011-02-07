@@ -325,6 +325,25 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
+	 * As {@link #redirectClient(String, String)}, but enforces matching mode
+	 * {@link Template#MODE_STARTS_WITH}.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param targetUriTemplate
+	 *        The target URI template
+	 * @return The created route
+	 * @see NormalizingRedirector
+	 */
+	public Route redirectClientBase( String uriTemplate, String targetUriTemplate )
+	{
+		Route route = redirectClient( uriTemplate, targetUriTemplate );
+		route.setMatchingMode( Template.MODE_STARTS_WITH );
+		return route;
+	}
+
+	/**
 	 * Redirects a URI to a new URI. You can use template variables in the URIs.
 	 * <p>
 	 * Enforces matching mode {@link Template#MODE_EQUALS}.
@@ -364,6 +383,27 @@ public class PrudenceRouter extends FallbackRouter
 
 		Route route = attach( uriTemplate, new NormalizingRedirector( getContext(), targetUriTemplate, mode ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
+		return route;
+	}
+
+	/**
+	 * As {@link #redirectClient(String, String,int)}, but enforces matching
+	 * mode {@link Template#MODE_STARTS_WITH}.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param targetUriTemplate
+	 *        The target URI template
+	 * @param statusCode
+	 *        HTTP status code (must be 301, 302, 303 or 307)
+	 * @return The created route
+	 * @see NormalizingRedirector
+	 */
+	public Route redirectClientBase( String uriTemplate, String targetUriTemplate, int statusCode )
+	{
+		Route route = redirectClient( uriTemplate, targetUriTemplate, statusCode );
+		route.setMatchingMode( Template.MODE_STARTS_WITH );
 		return route;
 	}
 
