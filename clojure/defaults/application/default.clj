@@ -4,11 +4,11 @@
 ; Copyright 2009-2011 Three Crickets LLC.
 ;
 ; The contents of this file are subject to the terms of the LGPL version 3.0:
-; http:;www.opensource.org/licenses/lgpl-3.0.html
+; http://www.opensource.org/licenses/lgpl-3.0.html
 ;
 ; Alternatively, you can obtain a royalty free commercial license with less
 ; limitations, transferable or non-transferable, directly from Three Crickets
-; at http:;threecrickets.com/
+; at http://threecrickets.com/
 ;
 
 (import
@@ -69,22 +69,38 @@
 (.putAll application-globals predefined-globals)
 
 ;
-; Tasks
-;
-
-(def tasks-document-source (DocumentFileSource. (str application-base tasks-base-path) (str application-base-path tasks-base-path) tasks-default-name "clj" (.longValue tasks-minimum-time-between-validity-checks)))
-(.put application-globals "com.threecrickets.prudence.ApplicationTask.languageManager" language-manager)
-(.put application-globals "com.threecrickets.prudence.ApplicationTask.defaultLanguageTag" "clojure")
-(.put application-globals "com.threecrickets.prudence.ApplicationTask.defaultName" tasks-default-name)
-(.put application-globals "com.threecrickets.prudence.ApplicationTask.documentSource" tasks-document-source)
-(.addTaskCollector scheduler (ApplicationTaskCollector. (File. (str application-base-path "/crontab")) application-instance))
-
-;
 ; Handlers
 ;
 
-(.put application-globals "com.threecrickets.prudence.DelegatedHandler.languageManager" language-manager)
-(.put application-globals "com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag" "clojure")
+(def handlers-document-source (DocumentFileSource. (str application-base handlers-base-path) (str application-base-path handlers-base-path) documents-default-name "clj" (.longValue minimum-time-between-validity-checks)))
+(.put application-globals "com.threecrickets.prudence.DelegatedHandler.documentSource" handlers-document-source)
+
+;
+; Tasks
+;
+
+(def tasks-document-source (DocumentFileSource. (str application-base tasks-base-path) (str application-base-path tasks-base-path) documents-default-name "clj" (.longValue minimum-time-between-validity-checks)))
+(.put application-globals "com.threecrickets.prudence.ApplicationTask.documentSource" tasks-document-source)
+
+(.addTaskCollector scheduler (ApplicationTaskCollector. (File. (str application-base-path "/crontab")) application-instance))
+
+;
+; Common Configurations
+;
+
+(defn configure-common [prefix]
+ (.put application-globals (str prefix ".languageManager") language-manager)
+ (.put application-globals (str prefix ".defaultName") documents-default-name)
+ (.put application-globals (str prefix ".defaultLanguageTag") "clojure")
+ (.put application-globals (str prefix ".librariesDocumentSource") libraries-document-source)
+ (.put application-globals (str prefix ".commonLibrariesDocumentSource") common-libraries-document-source)
+ (.put application-globals (str prefix ".fileUploadSizeThreshold") file-upload-size-threshold)
+ (.put application-globals (str prefix ".sourceViewable") source-viewable))
+
+(configure-common "com.threecrickets.prudence.GeneratedTextResource")
+(configure-common "com.threecrickets.prudence.DelegatedResource")
+(configure-common "com.threecrickets.prudence.DelegatedHandler")
+(configure-common "com.threecrickets.prudence.ApplicationTask")
 
 ;
 ; ApplicationService

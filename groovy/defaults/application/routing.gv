@@ -115,28 +115,22 @@ for(url in urlAddTrailingSlash) {
 languageManager = executable.manager
 
 //
-// Handlers
+// Libraries
 //
 
-handlersDocumentSource = new DocumentFileSource(applicationBase + handlersBasePath, applicationBasePath + handlersBasePath, handlersDefaultName, 'gv', handlersMinimumTimeBetweenValidityChecks)
-router.filterDocumentSource = handlersDocumentSource
-router.filterLanguageManager = languageManager
+librariesDocumentSource = new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
+commonLibrariesDocumentSource = new DocumentFileSource(applicationBase + '/../../libraries/', applicationBasePath + '/../../libraries/', documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
 
 //
 // Dynamic web
 //
 
-dynamicWebDocumentSource = new DocumentFileSource(applicationBase + dynamicWebBasePath, applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'gv', dynamicWebMinimumTimeBetweenValidityChecks)
+dynamicWebDocumentSource = new DocumentFileSource(applicationBase + dynamicWebBasePath, applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'gv', minimumTimeBetweenValidityChecks)
 cacheKeyPatternHandlers = new ConcurrentHashMap()
-applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = languageManager
-applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'groovy'
-applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamicWebDefaultDocument
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamicWebDocumentSource
-applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamicWebSourceViewable
+applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = dynamicWebDefaultDocument
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController() // Adds PHP predefined variables
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamicWebClientCachingMode
-applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold'] = fileUploadSizeThreshold
-applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource'] = handlersDocumentSource
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers'] = cacheKeyPatternHandlers
 
 dynamicWeb = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
@@ -169,13 +163,8 @@ router.attachBase(staticWebBaseURL, staticWeb)
 // Resources
 //
 
-resourcesDocumentSource = new DocumentFileSource(applicationBase + resourcesBasePath, applicationBasePath + resourcesBasePath, resourcesDefaultName, 'gv', resourcesMinimumTimeBetweenValidityChecks)
-applicationGlobals['com.threecrickets.prudence.DelegatedResource.languageManager'] = languageManager
-applicationGlobals['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'groovy'
-applicationGlobals['com.threecrickets.prudence.DelegatedResource.defaultName'] = resourcesDefaultName
+resourcesDocumentSource = new DocumentFileSource(applicationBase + resourcesBasePath, applicationBasePath + resourcesBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
 applicationGlobals['com.threecrickets.prudence.DelegatedResource.documentSource'] = resourcesDocumentSource
-applicationGlobals['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resourcesSourceViewable
-applicationGlobals['com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold'] = fileUploadSizeThreshold
 
 resources = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 resourcesBaseURL = fixURL(resourcesBaseURL)

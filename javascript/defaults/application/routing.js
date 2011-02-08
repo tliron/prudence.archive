@@ -117,28 +117,22 @@ for(var i in urlAddTrailingSlash) {
 var languageManager = executable.manager
 
 //
-// Handlers
+// Libraries
 //
 
-var handlersDocumentSource = new DocumentFileSource(applicationBase + handlersBasePath, applicationBasePath + handlersBasePath, handlersDefaultName, 'js', handlersMinimumTimeBetweenValidityChecks)
-router.filterDocumentSource = handlersDocumentSource
-router.filterLanguageManager = languageManager
+var librariesDocumentSource = new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'js', minimumTimeBetweenValidityChecks)
+var commonLibrariesDocumentSource = new DocumentFileSource(applicationBase + '/../../libraries/', applicationBasePath + '/../../libraries/', documentsDefaultName, 'js', minimumTimeBetweenValidityChecks)
 
 //
 // Dynamic web
 //
 
-var dynamicWebDocumentSource = new DocumentFileSource(applicationBase + dynamicWebBasePath, applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'js', dynamicWebMinimumTimeBetweenValidityChecks)
+var dynamicWebDocumentSource = new DocumentFileSource(applicationBase + dynamicWebBasePath, applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'js', minimumTimeBetweenValidityChecks)
 var cacheKeyPatternHandlers = new ConcurrentHashMap()
-applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.languageManager', languageManager)
-applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag', 'javascript')
-applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.defaultName', dynamicWebDefaultDocument)
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource)
-applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.sourceViewable', dynamicWebSourceViewable)
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName', dynamicWebDefaultDocument)
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.executionController', new PhpExecutionController()) // Adds PHP predefined variables
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.clientCachingMode', dynamicWebClientCachingMode)
-applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold', fileUploadSizeThreshold)
-applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource', handlersDocumentSource)
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers', cacheKeyPatternHandlers)
 
 var dynamicWeb = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
@@ -171,13 +165,8 @@ router.attachBase(staticWebBaseURL, staticWeb)
 // Resources
 //
 
-var resourcesDocumentSource = new DocumentFileSource(applicationBase + resourcesBasePath, applicationBasePath + resourcesBasePath, resourcesDefaultName, 'js', resourcesMinimumTimeBetweenValidityChecks)
-applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.languageManager', languageManager)
-applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.defaultLanguageTag', 'javascript')
-applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.defaultName', resourcesDefaultName)
+var resourcesDocumentSource = new DocumentFileSource(applicationBase + resourcesBasePath, applicationBasePath + resourcesBasePath, documentsDefaultName, 'js', minimumTimeBetweenValidityChecks)
 applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource)
-applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.sourceViewable', resourcesSourceViewable)
-applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold', fileUploadSizeThreshold)
 
 resources = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 resourcesBaseURL = fixURL(resourcesBaseURL)

@@ -99,28 +99,22 @@ for url in url_add_trailing_slash:
 language_manager = executable.manager
 
 #
-# Handlers
+# Libraries
 #
 
-handlers_document_source = DocumentFileSource(application_base + handlers_base_path, application_base_path + handlers_base_path, handlers_default_name, 'py', handlers_minimum_time_between_validity_checks)
-router.filterDocumentSource = handlers_document_source
-router.filterLanguageManager = language_manager
+libraries_document_source = DocumentFileSource(application_base + libraries_base_path, application_base + libraries_base_path, documents_default_name, 'py', minimum_time_between_validity_checks)
+common_libraries_document_source = DocumentFileSource(application_base + '/../../libraries/', application_base + '/../../libraries/', documents_default_name, 'py', minimum_time_between_validity_checks)
 
 #
 # Dynamic web
 #
 
-dynamic_web_document_source = DocumentFileSource(application_base + dynamic_web_base_path, application_base_path + dynamic_web_base_path, dynamic_web_default_document, 'py', dynamic_web_minimum_time_between_validity_checks)
+dynamic_web_document_source = DocumentFileSource(application_base + dynamic_web_base_path, application_base_path + dynamic_web_base_path, dynamic_web_default_document, 'py', minimum_time_between_validity_checks)
 cache_key_pattern_handlers = ConcurrentHashMap()
-application_globals['com.threecrickets.prudence.GeneratedTextResource.languageManager'] = language_manager
-application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag'] = 'python'
-application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultName'] = dynamic_web_default_document
 application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamic_web_document_source
-application_globals['com.threecrickets.prudence.GeneratedTextResource.sourceViewable'] = dynamic_web_source_viewable
+application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = dynamic_web_default_document
 application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController() # Adds PHP predefined variables
 application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamic_web_client_caching_mode
-application_globals['com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold'] = file_upload_size_threshold
-application_globals['com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource'] = handlers_document_source
 application_globals['com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers'] = cache_key_pattern_handlers
 
 dynamic_web = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
@@ -149,13 +143,8 @@ router.attachBase(static_web_base_url, static_web)
 # Resources
 #
 
-resources_document_source = DocumentFileSource(application_base + resources_base_path, application_base_path + resources_base_path, resources_default_name, 'py', resources_minimum_time_between_validity_checks)
-application_globals['com.threecrickets.prudence.DelegatedResource.languageManager'] = language_manager
-application_globals['com.threecrickets.prudence.DelegatedResource.defaultLanguageTag'] = 'python'
-application_globals['com.threecrickets.prudence.DelegatedResource.defaultName'] = resources_default_name
+resources_document_source = DocumentFileSource(application_base + resources_base_path, application_base_path + resources_base_path, documents_default_name, 'py', minimum_time_between_validity_checks)
 application_globals['com.threecrickets.prudence.DelegatedResource.documentSource'] = resources_document_source
-application_globals['com.threecrickets.prudence.DelegatedResource.sourceViewable'] = resources_source_viewable
-application_globals['com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold'] = file_upload_size_threshold
 
 resources = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 resources_base_url = fix_url(resources_base_url)

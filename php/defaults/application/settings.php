@@ -16,13 +16,13 @@ global $component;
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $show_debug_on_error, $show_source_code_url;
 global $application_logger_name;
-global $hosts;
-global $resources_base_url, $resources_base_path, $resources_default_name, $resources_defrost, $resources_source_viewable, $resources_minimum_time_between_validity_checks;
-global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_source_viewable, $dynamic_web_minimum_time_between_validity_checks, $dynamic_web_client_caching_mode;
+global $hosts, $documents_default_name, $minimum_time_between_validity_checks, $source_viewable, $libraries_base_path;
+global $resources_base_url, $resources_base_path, $resources_defrost;
+global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_client_caching_mode;
 global $static_web_base_url, $static_web_base_path, $static_web_compress, $static_web_directory_listing_allowed;
 global $file_upload_size_threshold;
-global $handlers_base_path, $handlers_default_name, $handlers_minimum_time_between_validity_checks;
-global $tasks_base_path, $tasks_default_name, $tasks_minimum_time_between_validity_checks;
+global $handlers_base_path;
+global $tasks_base_path;
 global $preheat_resources;
 global $url_add_trailing_slash;
 global $predefined_globals;
@@ -51,6 +51,37 @@ $show_debug_on_error = FALSE;
 // The base URL for showing source code (only relevant when showDebugOnError is TRUE). 
 
 $show_source_code_url = '/sourcecode/';
+
+// This is so we can see the source code for scripts by adding ?source=true
+// to the URL. You probably wouldn't want this for most applications.
+
+$source_viewable = TRUE;
+
+//
+// Performance
+//
+
+// This is the time (in milliseconds) allowed to pass until a script file
+// is tested to see if it was changed. During development, you'd want this
+// to be low, but during production, it should be high in order to avoid
+// unnecessary hits on the filesystem.
+
+$minimum_time_between_validity_checks = 1000;
+
+//
+// Documents
+//
+
+// If a document name points to a directory rather than a file, and that directory
+// contains a file with this name, then it will be used. This allows
+// you to use the directory structure to create nice URLs without relying
+// on filenames.
+
+$documents_default_name = 'default';
+
+// Documents will always be looked for here.
+
+$libraries_base_path = '/libraries/';
 
 //
 // Logging
@@ -83,29 +114,10 @@ $hosts = array(array($component->defaultHost, null));
 $resources_base_url = '/';
 $resources_base_path = '/resources/';
 
-// If the URL points to a directory rather than a file, and that directory
-// contains a file with this name, then it will be used. This allows
-// you to use the directory structure to create nice URLs without relying
-// on filenames.
-
-$resources_default_name = 'default';
-
 // Set this to TRUE if you want to start to load and compile your
 // resources as soon as Prudence starts.
 
 $resources_defrost = TRUE;
-
-// This is so we can see the source code for scripts by adding ?source=TRUE
-// to the URL. You probably wouldn't want this for most applications.
-
-$resources_source_viewable = TRUE;
-
-// This is the time (in milliseconds) allowed to pass until a script file
-// is tested to see if it was changed. During development, you'd want this
-// to be low, but during production, it should be high in order to avoid
-// unnecessary hits on the filesystem.
-
-$resources_minimum_time_between_validity_checks = 1000;
 
 //
 // Dynamic Web
@@ -133,18 +145,6 @@ $dynamic_web_defrost = TRUE;
 // as Prudence starts.
 
 $dynamic_web_preheat = TRUE;
-
-// This is so we can see the source code for scripts by adding ?source=TRUE
-// to the URL. You probably wouldn't want this for most applications.
-
-$dynamic_web_source_viewable = TRUE;
-
-// This is the time (in milliseconds) allowed to pass until a script file
-// is tested to see if it was changed. During development, you'd want this
-// to be low, but during production, it should be high in order to avoid
-// unnecessary hits on the filesystem.
-
-$dynamic_web_minimum_time_between_validity_checks = 1000;
 
 // Client caching mode: 0=disabled, 1=conditional, 2=offline
 
@@ -188,20 +188,6 @@ $file_upload_size_threshold = 0;
 
 $handlers_base_path = '/handlers/';
 
-// If the handler name points to a directory rather than a file, and that directory
-// contains a file with this name, then it will be used. This allows
-// you to use the directory structure to create nice URLs without relying
-// on filenames.
-
-$handlers_default_name = 'default';
-
-// This is the time (in milliseconds) allowed to pass until a script file
-// is tested to see if it was changed. During development, you'd want this
-// to be low, but during production, it should be high in order to avoid
-// unnecessary hits on the filesystem.
-
-$handlers_minimum_time_between_validity_checks = 0;
-
 //
 // Tasks
 //
@@ -210,20 +196,6 @@ $handlers_minimum_time_between_validity_checks = 0;
 //
 
 $tasks_base_path = '/tasks/';
-
-// If the task name points to a directory rather than a file, and that directory
-// contains a file with this name, then it will be used. This allows
-// you to use the directory structure to create nice URLs without relying
-// on filenames.
-
-$tasks_default_name = 'default';
-
-// This is the time (in milliseconds) allowed to pass until a script file
-// is tested to see if it was changed. During development, you'd want this
-// to be low, but during production, it should be high in order to avoid
-// unnecessary hits on the filesystem.
-
-$tasks_minimum_time_between_validity_checks = 1000;
 
 //
 // Preheater

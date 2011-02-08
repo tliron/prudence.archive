@@ -36,6 +36,37 @@ $show_debug_on_error = false
 
 $show_source_code_url = '/sourcecode/'
 
+// This is so we can see the source code for scripts by adding ?source=true
+// to the URL. You probably wouldn't want this for most applications.
+
+$source_viewable = true
+
+#
+# Performance
+#
+
+# This is the time (in milliseconds) allowed to pass until a script file
+# is tested to see if it was changed. During development, you'd want this
+# to be low, but during production, it should be high in order to avoid
+# unnecessary hits on the filesystem.
+
+$minimum_time_between_validity_checks = 1000
+
+#
+# Documents
+#
+
+# If a document name points to a directory rather than a file, and that directory
+# contains a file with this name, then it will be used. This allows
+# you to use the directory structure to create nice URLs without relying
+# on filenames.
+
+$documents_default_name = 'default'
+
+# Documents will always be looked for here.
+
+$libraries_base_path = '/libraries/'
+
 #
 # Logging
 #
@@ -67,29 +98,10 @@ $hosts = [[$component.default_host, nil]]
 $resources_base_url = '/'
 $resources_base_path = '/resources/'
 
-# If the URL points to a directory rather than a file, and that directory
-# contains a file with this name, then it will be used. This allows
-# you to use the directory structure to create nice URLs without relying
-# on filenames.
-
-$resources_default_name = 'default'
-
 # Set this to true if you want to start to load and compile your
 # resources as soon as Prudence starts.
 
 $resources_defrost = true
-
-# This is so we can see the source code for scripts by adding ?source=true
-# to the URL. You probably wouldn't want this for most applications.
-
-$resources_source_viewable = true
-
-# This is the time (in milliseconds) allowed to pass until a script file
-# is tested to see if it was changed. During development, you'd want this
-# to be low, but during production, it should be high in order to avoid
-# unnecessary hits on the filesystem.
-
-$resources_minimum_time_between_validity_checks = 1000
 
 #
 # Dynamic Web
@@ -117,18 +129,6 @@ $dynamic_web_defrost = true
 # as Prudence starts.
 
 $dynamic_web_preheat = true
-
-# This is so we can see the source code for scripts by adding ?source=true
-# to the URL. You probably wouldn't want this for most applications.
-
-$dynamic_web_source_viewable = true
-
-# This is the time (in milliseconds) allowed to pass until a script file
-# is tested to see if it was changed. During development, you'd want this
-# to be low, but during production, it should be high in order to avoid
-# unnecessary hits on the filesystem.
-
-$dynamic_web_minimum_time_between_validity_checks = 1000
 
 # Client caching mode: 0=disabled, 1=conditional, 2=offline
 
@@ -172,20 +172,6 @@ $file_upload_size_threshold = 0
 
 $handlers_base_path = '/handlers/'
 
-# If the handler name points to a directory rather than a file, and that directory
-# contains a file with this name, then it will be used. This allows
-# you to use the directory structure to create nice URLs without relying
-# on filenames.
-
-$handlers_default_name = 'default'
-
-# This is the time (in milliseconds) allowed to pass until a script file
-# is tested to see if it was changed. During development, you'd want this
-# to be low, but during production, it should be high in order to avoid
-# unnecessary hits on the filesystem.
-
-$handlers_minimum_time_between_validity_checks = 0
-
 #
 # Tasks
 #
@@ -194,20 +180,6 @@ $handlers_minimum_time_between_validity_checks = 0
 #
 
 $tasks_base_path = '/tasks/'
-
-# If the task name points to a directory rather than a file, and that directory
-# contains a file with this name, then it will be used. This allows
-# you to use the directory structure to create nice URLs without relying
-# on filenames.
-
-$tasks_default_name = 'default'
-
-# This is the time (in milliseconds) allowed to pass until a script file
-# is tested to see if it was changed. During development, you'd want this
-# to be low, but during production, it should be high in order to avoid
-# unnecessary hits on the filesystem.
-
-$tasks_minimum_time_between_validity_checks = 1000
 
 #
 # Preheater

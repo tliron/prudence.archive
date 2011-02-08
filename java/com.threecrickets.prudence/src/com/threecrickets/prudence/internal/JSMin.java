@@ -1,8 +1,8 @@
 /**
  * JSMin.java 2006-02-13
- *<p>
+ * <p>
  * Updated 2007-08-20 with updates from jsmin.c (2007-05-22)
- *<p>
+ * <p>
  * Copyright (c) 2006 John Reilly (www.inconspicuous.org)
  * <p>
  * This work is a translation from C to Java of jsmin.c published by Douglas

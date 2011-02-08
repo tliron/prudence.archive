@@ -4,11 +4,11 @@
 ; Copyright 2009-2011 Three Crickets LLC.
 ;
 ; The contents of this file are subject to the terms of the LGPL version 3.0:
-; http:;www.opensource.org/licenses/lgpl-3.0.html
+; http://www.opensource.org/licenses/lgpl-3.0.html
 ;
 ; Alternatively, you can obtain a royalty free commercial license with less
 ; limitations, transferable or non-transferable, directly from Three Crickets
-; at http:;threecrickets.com/
+; at http://threecrickets.com/
 ;
 
 (import
@@ -104,28 +104,22 @@
 (def language-manager (.. executable getManager))
 
 ;
-; Handlers
+; Libraries
 ;
 
-(def handlers-document-source (DocumentFileSource. (str application-base handlers-base-path) (str application-base-path handlers-base-path) handlers-default-name "clj" (.longValue handlers-minimum-time-between-validity-checks)))
-(.setFilterDocumentSource router handlers-document-source)
-(.setFilterLanguageManager router language-manager)
+(def libraries-document-source (DocumentFileSource. (str application-base libraries-base-path) (str application-base libraries-base-path) documents-default-name "clj" minimum-time-between-validity-checks))
+(def common-libraries-document-source (DocumentFileSource. (str application-base "/../../libraries/") (str application-base "/../../libraries/") documents-default-name "clj" minimum-time-between-validity-checks))
 
 ;
 ; Dynamic web
 ;
 
-(def dynamic-web-document-source (DocumentFileSource. (str application-base dynamic-web-base-path) (str application-base-path dynamic-web-base-path) dynamic-web-default-document "clj" (.longValue dynamic-web-minimum-time-between-validity-checks)))
+(def dynamic-web-document-source (DocumentFileSource. (str application-base dynamic-web-base-path) (str application-base-path dynamic-web-base-path) dynamic-web-default-document "clj" (.longValue minimum-time-between-validity-checks)))
 (def cache-key-pattern-handlers (ConcurrentHashMap.))
-(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.languageManager" language-manager)
-(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag" "clojure")
-(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.defaultName" dynamic-web-default-document)
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.documentSource" dynamic-web-document-source)
-(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" dynamic-web-source-viewable)
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName" dynamic-web-default-document)
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.executionController" (PhpExecutionController.)) ; Adds PHP predefined variables
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.clientCachingMode" dynamic-web-client-caching-mode)
-(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold" file-upload-size-threshold)
-(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource" handlers-document-source)
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers" cache-key-pattern-handlers)
 
 (def dynamic-web (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.GeneratedTextResource")))
@@ -154,13 +148,8 @@
 ; Resources
 ;
 
-(def resources-document-source (DocumentFileSource. (str application-base resources-base-path) (str application-base-path resources-base-path) resources-default-name "clj" (.longValue resources-minimum-time-between-validity-checks))) 
-(.put application-globals "com.threecrickets.prudence.DelegatedResource.languageManager" language-manager)
-(.put application-globals "com.threecrickets.prudence.DelegatedResource.defaultLanguageTag" "clojure")
-(.put application-globals "com.threecrickets.prudence.DelegatedResource.defaultName" resources-default-name)
+(def resources-document-source (DocumentFileSource. (str application-base resources-base-path) (str application-base-path resources-base-path) documents-default-name "clj" (.longValue minimum-time-between-validity-checks))) 
 (.put application-globals "com.threecrickets.prudence.DelegatedResource.documentSource" resources-document-source)
-(.put application-globals "com.threecrickets.prudence.DelegatedResource.sourceViewable" resources-source-viewable)
-(.put application-globals "com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold" file-upload-size-threshold)
 
 (def resources (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
 (def resources-base-url (fix-url resources-base-url))

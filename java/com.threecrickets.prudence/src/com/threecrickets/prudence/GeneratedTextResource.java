@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Context;
 import org.restlet.Request;
@@ -37,6 +36,7 @@ import org.restlet.resource.ServerResource;
 import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.CacheEntry;
 import com.threecrickets.prudence.internal.GeneratedTextDeferredRepresentation;
+import com.threecrickets.prudence.internal.GeneratedTextResourceAttributes;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.prudence.service.ApplicationService;
 import com.threecrickets.prudence.service.GeneratedTextResourceConversationService;
@@ -115,12 +115,16 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
  * {@link #getDefaultCharacterSet()}.</li>
  * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.defaultExecutedName:</code>
+ * {@link String}, defaults to "default". See {@link #getDefaultExecutedName()}.
+ * </li>
+ * <li>
+ * <code>com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName:</code>
+ * {@link String}, defaults to "index". See {@link #getDefaultIncludedName()}.</li>
+ * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag:</code>
  * {@link String}, defaults to "javascript". See
  * {@link #getDefaultLanguageTag()}.</li>
- * <li>
- * <code>com.threecrickets.prudence.GeneratedTextResource.defaultName:</code>
- * {@link String}, defaults to "index". See {@link #getDefaultName()}.</li>
  * <li>
  * <code>com.threecrickets.prudence.GeneratedTextResource.documentFormatter:</code>
  * {@link DocumentFormatter}. Defaults to a {@link JygmentsDocumentFormatter}.
@@ -195,679 +199,9 @@ public class GeneratedTextResource extends ServerResource
 	// Attributes
 	//
 
-	/**
-	 * The name of the global variable with which to access the document
-	 * service. Defaults to "document".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.documentServiceName</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The document service name
-	 */
-	public String getDocumentServiceName()
+	public GeneratedTextResourceAttributes getAttributes()
 	{
-		if( documentServiceName == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			documentServiceName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentServiceName" );
-
-			if( documentServiceName == null )
-				documentServiceName = "document";
-		}
-
-		return documentServiceName;
-	}
-
-	/**
-	 * The name of the global variable with which to access the application
-	 * service. Defaults to "application".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.applicationServiceName</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The application service name
-	 */
-	public String getApplicationServiceName()
-	{
-		if( applicationServiceName == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			applicationServiceName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.applicationServiceName" );
-
-			if( applicationServiceName == null )
-				applicationServiceName = "application";
-		}
-
-		return applicationServiceName;
-	}
-
-	/**
-	 * The name of the global variable with which to access the conversation
-	 * service. Defaults to "conversation".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.conversationServiceName</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The conversation service name
-	 */
-	public String getConversationServiceName()
-	{
-		if( conversationServiceName == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			conversationServiceName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.conversationServiceName" );
-
-			if( conversationServiceName == null )
-				conversationServiceName = "conversation";
-		}
-
-		return conversationServiceName;
-	}
-
-	/**
-	 * Cache used for caching mode. It is stored in the application's
-	 * {@link Context} for persistence across requests and for sharing among
-	 * instances of {@link GeneratedTextResource}.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.cache</code> in the application's
-	 * {@link Context}.
-	 * <p>
-	 * Note that this instance is shared with {@link DelegatedResource}.
-	 * 
-	 * @return The cache or null
-	 * @see DelegatedResource#getCache()
-	 */
-	public Cache getCache()
-	{
-		if( cache == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			cache = (Cache) attributes.get( "com.threecrickets.prudence.cache" );
-		}
-
-		return cache;
-	}
-
-	/**
-	 * The default character set to be used if the client does not specify it.
-	 * Defaults to {@link CharacterSet#UTF_8}.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCharacterSet</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The default character set
-	 */
-	public CharacterSet getDefaultCharacterSet()
-	{
-		if( defaultCharacterSet == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			defaultCharacterSet = (CharacterSet) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultCharacterSet" );
-
-			if( defaultCharacterSet == null )
-				defaultCharacterSet = CharacterSet.UTF_8;
-		}
-
-		return defaultCharacterSet;
-	}
-
-	/**
-	 * If a URL points to a directory rather than a file, and that directory
-	 * contains a file with this name, then it will be used. This allows you to
-	 * use the directory structure to create nice URLs that do not contain
-	 * filenames. Defaults to "index".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultName</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The default name
-	 */
-	public String getDefaultName()
-	{
-		if( defaultName == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			defaultName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultName" );
-
-			if( defaultName == null )
-				defaultName = "index";
-		}
-
-		return defaultName;
-	}
-
-	/**
-	 * The default language tag to use if the first scriptlet doesn't specify
-	 * one. Defaults to "javascript".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The language tag
-	 */
-	public String getDefaultLanguageTag()
-	{
-		if( defaultLanguageTag == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			defaultLanguageTag = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultLanguageTag" );
-
-			if( defaultLanguageTag == null )
-				defaultLanguageTag = "javascript";
-		}
-
-		return defaultLanguageTag;
-	}
-
-	/**
-	 * The default cache key pattern to use if the executable doesn't specify
-	 * one. Defaults to "{ri}|{dn}|{ptb}".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The default cache key
-	 */
-	public String getDefaultCacheKeyPattern()
-	{
-		if( defaultCacheKeyPattern == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			defaultCacheKeyPattern = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.defaultCacheKeyPattern" );
-
-			if( defaultCacheKeyPattern == null )
-				defaultCacheKeyPattern = "{ri}|{dn}|{ptb}";
-		}
-
-		return defaultCacheKeyPattern;
-	}
-
-	/**
-	 * The cache key pattern handlers.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The cache key pattern handlers or null
-	 */
-	@SuppressWarnings("unchecked")
-	public ConcurrentMap<String, String> getCacheKeyPatternHandlers()
-	{
-		if( cacheKeyPatternHandlers == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			cacheKeyPatternHandlers = (ConcurrentMap<String, String>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers" );
-		}
-
-		return cacheKeyPatternHandlers;
-	}
-
-	/**
-	 * An optional {@link ExecutionController} to be used with the scriptlets.
-	 * Useful for exposing your own global variables to the scriptlets.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.executionController</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The execution controller or null if none used
-	 */
-	public ExecutionController getExecutionController()
-	{
-		if( executionController == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			executionController = (ExecutionController) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.executionController" );
-		}
-
-		return executionController;
-	}
-
-	/**
-	 * The {@link LanguageManager} used to create the language adapters. Uses a
-	 * default instance, but can be set to something else.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.languageManager</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The language manager
-	 */
-	public LanguageManager getLanguageManager()
-	{
-		if( languageManager == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			languageManager = (LanguageManager) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.languageManager" );
-
-			if( languageManager == null )
-			{
-				languageManager = new LanguageManager();
-
-				LanguageManager existing = (LanguageManager) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.languageManager", languageManager );
-				if( existing != null )
-					languageManager = existing;
-			}
-		}
-
-		return languageManager;
-	}
-
-	/**
-	 * The {@link DocumentSource} used to fetch documents. This must be set to a
-	 * valid value before this class is used!
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.documentSource</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The document source
-	 */
-	@SuppressWarnings("unchecked")
-	public DocumentSource<Executable> getDocumentSource()
-	{
-		if( documentSource == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			documentSource = (DocumentSource<Executable>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentSource" );
-
-			if( documentSource == null )
-				throw new RuntimeException( "Attribute com.threecrickets.prudence.GeneratedTextResource.documentSource must be set in context to use GeneratedTextResource" );
-		}
-
-		return documentSource;
-	}
-
-	/**
-	 * The {@link DocumentSource} used to fetch {@link DelegatedHandler}
-	 * documents. Can be null if delegated handlers are not supported.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The handlers document source or null
-	 */
-	@SuppressWarnings("unchecked")
-	public DocumentSource<Executable> getHandlersDocumentSource()
-	{
-		if( handlersDocumentSource == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			handlersDocumentSource = (DocumentSource<Executable>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.handlersDocumentSource" );
-		}
-
-		return handlersDocumentSource;
-	}
-
-	/**
-	 * Executables might use this directory for including fragments. If the
-	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
-	 * will default to the {@link DocumentFileSource#getBasePath()} plus
-	 * "../fragments/".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.fragmentDirectory</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The fragment directory or null
-	 */
-	public File getFragmentDirectory()
-	{
-		if( fragmentDirectory == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			fragmentDirectory = (File) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.fragmentDirectory" );
-
-			if( fragmentDirectory == null )
-			{
-				DocumentSource<Executable> documentSource = getDocumentSource();
-				if( documentSource instanceof DocumentFileSource<?> )
-				{
-					fragmentDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../fragments/" );
-
-					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.fragmentDirectory", fragmentDirectory );
-					if( existing != null )
-						fragmentDirectory = existing;
-				}
-			}
-		}
-
-		return fragmentDirectory;
-	}
-
-	/**
-	 * Executables might use this directory for importing libraries. If the
-	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
-	 * will default to the {@link DocumentFileSource#getBasePath()} plus
-	 * "../../libraries/".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.libraryDirectory</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The library directory or null
-	 * @see ExecutionContext#getLibraryLocations()
-	 */
-	public File getLibraryDirectory()
-	{
-		if( libraryDirectory == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			libraryDirectory = (File) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.libraryDirectory" );
-
-			if( libraryDirectory == null )
-			{
-				DocumentSource<Executable> documentSource = getDocumentSource();
-				if( documentSource instanceof DocumentFileSource<?> )
-				{
-					libraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../libraries/" );
-
-					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.libraryDirectory", libraryDirectory );
-					if( existing != null )
-						libraryDirectory = existing;
-				}
-			}
-		}
-
-		return libraryDirectory;
-	}
-
-	/**
-	 * Executables from all applications might use this directory for importing
-	 * libraries. If the {@link #getDocumentSource()} is a
-	 * {@link DocumentFileSource}, then this will default to the
-	 * {@link DocumentFileSource#getBasePath()} plus "../../../../libraries/".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.commonLibraryDirectory</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The common library directory or null
-	 * @see ExecutionContext#getLibraryLocations()
-	 */
-	public File getCommonLibraryDirectory()
-	{
-		if( commonLibraryDirectory == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			commonLibraryDirectory = (File) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.commonLibraryDirectory" );
-
-			if( commonLibraryDirectory == null )
-			{
-				DocumentSource<Executable> documentSource = getDocumentSource();
-				if( documentSource instanceof DocumentFileSource<?> )
-				{
-					commonLibraryDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../../../libraries/" );
-
-					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.commonLibraryDirectory", commonLibraryDirectory );
-					if( existing != null )
-						commonLibraryDirectory = existing;
-				}
-			}
-		}
-
-		return commonLibraryDirectory;
-	}
-
-	/**
-	 * The directory in which to place uploaded files. If the
-	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
-	 * will default to the {@link DocumentFileSource#getBasePath()} plus
-	 * "../../uploads/".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.fileUploadDirectory</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The file upload directory or null
-	 */
-	public File getFileUploadDirectory()
-	{
-		if( fileUploadDirectory == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			fileUploadDirectory = (File) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.fileUploadDirectory" );
-
-			if( fileUploadDirectory == null )
-			{
-				DocumentSource<Executable> documentSource = getDocumentSource();
-				if( documentSource instanceof DocumentFileSource<?> )
-				{
-					fileUploadDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../uploads/" );
-
-					File existing = (File) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.fileUploadDirectory", fileUploadDirectory );
-					if( existing != null )
-						fileUploadDirectory = existing;
-				}
-			}
-		}
-
-		return fileUploadDirectory;
-	}
-
-	/**
-	 * The size in bytes beyond which uploaded files will be stored to disk.
-	 * Defaults to zero, meaning that all uploaded files will be stored to disk.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The file upload size threshold
-	 */
-	public int getFileUploadSizeThreshold()
-	{
-		if( fileUploadSizeThreshold == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			Number number = (Number) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.fileUploadSizeThreshold" );
-			if( number != null )
-				fileUploadSizeThreshold = number.intValue();
-
-			if( fileUploadSizeThreshold == null )
-				fileUploadSizeThreshold = 0;
-		}
-
-		return fileUploadSizeThreshold;
-	}
-
-	/**
-	 * Whether or not trailing slashes are required. Defaults to true.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.trailingSlashRequired</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return Whether to allow client caching
-	 */
-	public boolean isTrailingSlashRequired()
-	{
-		if( trailingSlashRequired == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			trailingSlashRequired = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.trailingSlashRequired" );
-
-			if( trailingSlashRequired == null )
-				trailingSlashRequired = true;
-		}
-
-		return trailingSlashRequired;
-	}
-
-	/**
-	 * Whether or not to negotiate encoding by default. Defaults to true.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.negotiateEncoding</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return Whether to allow client caching
-	 */
-	public boolean isNegotiateEncoding()
-	{
-		if( negotiateEncoding == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			negotiateEncoding = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.negotiateEncoding" );
-
-			if( negotiateEncoding == null )
-				negotiateEncoding = true;
-		}
-
-		return negotiateEncoding;
-	}
-
-	/**
-	 * Whether or not to send information to the client about cache expiration.
-	 * Defaults to {@link #CLIENT_CACHING_MODE_CONDITIONAL}.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.clientCachingMode</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The client caching mode
-	 */
-	public int getClientCachingMode()
-	{
-		if( clientCachingMode == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			Number number = (Number) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.clientCachingMode" );
-
-			if( number != null )
-				clientCachingMode = number.intValue();
-
-			if( clientCachingMode == null )
-				clientCachingMode = CLIENT_CACHING_MODE_CONDITIONAL;
-		}
-
-		return clientCachingMode;
-	}
-
-	/**
-	 * Whether to prepare the executables. Preparation increases initialization
-	 * time and reduces execution time. Note that not all languages support
-	 * preparation as a separate operation. Defaults to true.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.prepare</code> in
-	 * the application's {@link Context}.
-	 * 
-	 * @return Whether to prepare executables
-	 */
-	public boolean isPrepare()
-	{
-		if( prepare == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			prepare = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.prepare" );
-
-			if( prepare == null )
-				prepare = true;
-		}
-
-		return prepare;
-	}
-
-	/**
-	 * This is so we can see the source code for documents by adding
-	 * <code>?source=true</code> to the URL. You probably wouldn't want this for
-	 * most applications. Defaults to false.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedTextResource.sourceViewable</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return Whether to allow viewing of source code
-	 */
-	public boolean isSourceViewable()
-	{
-		if( sourceViewable == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			sourceViewable = (Boolean) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.sourceViewable" );
-
-			if( sourceViewable == null )
-				sourceViewable = false;
-		}
-
-		return sourceViewable;
-	}
-
-	/**
-	 * An optional {@link DocumentFormatter} to use for representing source
-	 * code. Defaults to a {@link JygmentsDocumentFormatter}.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedtextResource.documentFormatter</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The document formatter or null
-	 * @see #isSourceViewable()
-	 */
-	@SuppressWarnings("unchecked")
-	public DocumentFormatter<Executable> getDocumentFormatter()
-	{
-		if( documentFormatter == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			documentFormatter = (DocumentFormatter<Executable>) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentFormatter" );
-
-			if( documentFormatter == null )
-			{
-				documentFormatter = new JygmentsDocumentFormatter<Executable>();
-
-				DocumentFormatter<Executable> existing = (DocumentFormatter<Executable>) attributes.putIfAbsent( "com.threecrickets.prudence.GeneratedTextResource.documentFormatter", documentFormatter );
-				if( existing != null )
-					documentFormatter = existing;
-			}
-		}
-
-		return documentFormatter;
-	}
-
-	//
-	// Operations
-	//
-
-	/**
-	 * Throws an exception if the document name is not valid. Uses
-	 * {@link #getDefaultName()} if no name is given, and respect
-	 * {@link #isTrailingSlashRequired()}.
-	 * 
-	 * @param documentName
-	 *        The document name
-	 * @return The valid document name
-	 * @throws ResourceException
-	 */
-	public String validateDocumentName( String documentName ) throws ResourceException
-	{
-		// Allows allow in-flow scriptlets
-		if( documentName.startsWith( Executable.IN_FLOW_PREFIX ) )
-			return documentName;
-
-		if( isTrailingSlashRequired() )
-			if( ( documentName != null ) && ( documentName.length() != 0 ) && !documentName.endsWith( "/" ) )
-				throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-
-		if( ( documentName == null ) || ( documentName.length() == 0 ) || ( documentName.equals( "/" ) ) )
-		{
-			documentName = getDefaultName();
-			if( isTrailingSlashRequired() && !documentName.endsWith( "/" ) )
-				documentName += "/";
-		}
-
-		return documentName;
+		return attributes;
 	}
 
 	//
@@ -891,18 +225,18 @@ public class GeneratedTextResource extends ServerResource
 		if( documentName == null )
 		{
 			documentName = request.getResourceRef().getRemainingPart( true, false );
-			documentName = validateDocumentName( documentName );
+			documentName = this.attributes.validateDocumentName( documentName, this.attributes.getDefaultIncludedName() );
 			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentName", documentName );
 		}
 
 		try
 		{
-			DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocument( documentName );
+			DocumentDescriptor<Executable> documentDescriptor = this.attributes.getDocumentSource().getDocument( documentName );
 
 			// Media type is chosen according to the document descriptor tag
 			MediaType mediaType = getMetadataService().getMediaType( documentDescriptor.getTag() );
 
-			if( isNegotiateEncoding() )
+			if( this.attributes.isNegotiateEncoding() )
 			{
 				// Add a variant for each supported encoding
 				if( mediaType != null )
@@ -1014,7 +348,7 @@ public class GeneratedTextResource extends ServerResource
 		if( documentName == null )
 		{
 			documentName = request.getResourceRef().getRemainingPart( true, false );
-			documentName = validateDocumentName( documentName );
+			documentName = this.attributes.validateDocumentName( documentName, this.attributes.getDefaultIncludedName() );
 			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentName", documentName );
 		}
 
@@ -1067,133 +401,9 @@ public class GeneratedTextResource extends ServerResource
 	private static final String TRUE = "true";
 
 	/**
-	 * The {@link LanguageManager} used to create the language adapters.
+	 * Volatile attributes.
 	 */
-	private volatile LanguageManager languageManager;
-
-	/**
-	 * The {@link DocumentSource} used to fetch scripts.
-	 */
-	private volatile DocumentSource<Executable> documentSource;
-
-	/**
-	 * The {@link DocumentSource} used to fetch {@link DelegatedHandler}
-	 * documents. Can be null if delegated handlers are not supported.
-	 */
-	private volatile DocumentSource<Executable> handlersDocumentSource;
-
-	/**
-	 * Executables might use this directory for including fragments.
-	 */
-	private volatile File fragmentDirectory;
-
-	/**
-	 * Executables might use this directory for importing libraries.
-	 */
-	private volatile File libraryDirectory;
-
-	/**
-	 * Executables from all applications might use this directory for importing
-	 * libraries.
-	 */
-	private volatile File commonLibraryDirectory;
-
-	/**
-	 * The directory in which to place uploaded files.
-	 */
-	private volatile File fileUploadDirectory;
-
-	/**
-	 * The size in bytes beyond which uploaded files will be stored to disk.
-	 */
-	private volatile Integer fileUploadSizeThreshold;
-
-	/**
-	 * If the URL points to a directory rather than a file, and that directory
-	 * contains a file with this name, then it will be used.
-	 */
-	private volatile String defaultName;
-
-	/**
-	 * The default language tag to be used if the executable doesn't specify
-	 * one.
-	 */
-	private volatile String defaultLanguageTag;
-
-	/**
-	 * The default cache key pattern to use if the executable doesn't specify
-	 * one.
-	 */
-	private volatile String defaultCacheKeyPattern;
-
-	/**
-	 * The cache key pattern handlers.
-	 */
-	private volatile ConcurrentMap<String, String> cacheKeyPatternHandlers;
-
-	/**
-	 * The default character set to be used if the client does not specify it.
-	 */
-	private volatile CharacterSet defaultCharacterSet;
-
-	/**
-	 * An optional {@link ExecutionController} to be used with the scripts.
-	 */
-	private volatile ExecutionController executionController;
-
-	/**
-	 * Whether or not trailing slashes are required for all requests.
-	 */
-	private volatile Boolean trailingSlashRequired;
-
-	/**
-	 * Whether or not to negotiate encoding by default.
-	 */
-	private volatile Boolean negotiateEncoding;
-
-	/**
-	 * Whether or not to send information to the client about cache expiration.
-	 */
-	private volatile Integer clientCachingMode;
-
-	/**
-	 * Whether to prepare executables.
-	 */
-	private volatile Boolean prepare;
-
-	/**
-	 * This is so we can see the source code for scripts by adding
-	 * <code>?source=true</code> to the URL.
-	 */
-	private volatile Boolean sourceViewable;
-
-	/**
-	 * Cache used for caching mode.
-	 */
-	private volatile Cache cache;
-
-	/**
-	 * The name of the global variable with which to access the document
-	 * service.
-	 */
-	private volatile String documentServiceName;
-
-	/**
-	 * The name of the global variable with which to access the application
-	 * service.
-	 */
-	private volatile String applicationServiceName;
-
-	/**
-	 * The name of the global variable with which to access the conversation
-	 * service.
-	 */
-	private volatile String conversationServiceName;
-
-	/**
-	 * The document formatter.
-	 */
-	private volatile DocumentFormatter<Executable> documentFormatter;
+	private final GeneratedTextResourceAttributes attributes = new GeneratedTextResourceAttributes( this );
 
 	/**
 	 * Flag for asynchronous support (experimental).
@@ -1223,13 +433,13 @@ public class GeneratedTextResource extends ServerResource
 		if( documentName == null )
 		{
 			documentName = request.getResourceRef().getRemainingPart( true, false );
-			documentName = validateDocumentName( documentName );
+			documentName = this.attributes.validateDocumentName( documentName, this.attributes.getDefaultIncludedName() );
 			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentName", documentName );
 		}
 
 		try
 		{
-			if( isSourceViewable() )
+			if( this.attributes.isSourceViewable() )
 			{
 				Form query = request.getResourceRef().getQueryAsForm();
 				if( TRUE.equals( query.getFirstValue( SOURCE ) ) )
@@ -1247,8 +457,8 @@ public class GeneratedTextResource extends ServerResource
 						}
 					}
 
-					DocumentDescriptor<Executable> documentDescriptor = getDocumentSource().getDocument( documentName );
-					DocumentFormatter<Executable> documentFormatter = getDocumentFormatter();
+					DocumentDescriptor<Executable> documentDescriptor = this.attributes.getDocumentSource().getDocument( documentName );
+					DocumentFormatter<Executable> documentFormatter = this.attributes.getDocumentFormatter();
 					if( documentFormatter != null )
 						return new StringRepresentation( documentFormatter.format( documentDescriptor, documentName, lineNumber ), MediaType.TEXT_HTML );
 					else
@@ -1257,14 +467,7 @@ public class GeneratedTextResource extends ServerResource
 			}
 
 			ExecutionContext executionContext = new ExecutionContext();
-
-			// Add library locations
-			File libraryDirectory = getLibraryDirectory();
-			if( libraryDirectory != null )
-				executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
-			libraryDirectory = getCommonLibraryDirectory();
-			if( libraryDirectory != null )
-				executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
+			this.attributes.addLibraryLocations( executionContext );
 
 			GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this, executionContext, entity, variant );
 			Representation representation = null;
@@ -1274,7 +477,7 @@ public class GeneratedTextResource extends ServerResource
 				representation = documentService.include( documentName );
 
 				List<CacheDirective> cacheDirectives = getResponse().getCacheDirectives();
-				switch( getClientCachingMode() )
+				switch( this.attributes.getClientCachingMode() )
 				{
 					case CLIENT_CACHING_MODE_DISABLED:
 					{

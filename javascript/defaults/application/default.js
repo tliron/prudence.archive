@@ -72,22 +72,39 @@ for(var key in predefinedGlobals) {
 }
 
 //
-// Tasks
-//
-
-var tasksDocumentSource = new DocumentFileSource(applicationBase + tasksBasePath, applicationBasePath + tasksBasePath, tasksDefaultName, 'js', tasksMinimumTimeBetweenValidityChecks)
-applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.languageManager', languageManager)
-applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.defaultLanguageTag', 'javascript')
-applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.defaultName', tasksDefaultName)
-applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.documentSource', tasksDocumentSource)
-scheduler.addTaskCollector(new ApplicationTaskCollector(new File(applicationBasePath + '/crontab'), applicationInstance))
-
-//
 // Handlers
 //
 
-applicationGlobals.put('com.threecrickets.prudence.DelegatedHandler.languageManager', languageManager)
-applicationGlobals.put('com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag', 'javascript')
+var handlersDocumentSource = new DocumentFileSource(applicationBase + handlersBasePath, applicationBasePath + handlersBasePath, documentsDefaultName, 'js', minimumTimeBetweenValidityChecks)
+applicationGlobals.put('com.threecrickets.prudence.DelegatedHandler.documentSource', handlersDocumentSource)
+
+//
+// Tasks
+//
+
+var tasksDocumentSource = new DocumentFileSource(applicationBase + tasksBasePath, applicationBasePath + tasksBasePath, documentsDefaultName, 'js', minimumTimeBetweenValidityChecks)
+applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.documentSource', tasksDocumentSource)
+
+scheduler.addTaskCollector(new ApplicationTaskCollector(new File(applicationBasePath + '/crontab'), applicationInstance))
+
+//
+// Common Configurations
+//
+
+function configureCommon(prefix) {
+	applicationGlobals.put(prefix + '.languageManager', languageManager)
+	applicationGlobals.put(prefix + '.defaultName', documentsDefaultName)
+	applicationGlobals.put(prefix + '.defaultLanguageTag', 'javascript')
+	applicationGlobals.put(prefix + '.librariesDocumentSource', librariesDocumentSource)
+	applicationGlobals.put(prefix + '.commonLibrariesDocumentSource', commonLibrariesDocumentSource)
+	applicationGlobals.put(prefix + '.fileUploadSizeThreshold', fileUploadSizeThreshold)
+	applicationGlobals.put(prefix + '.sourceViewable', sourceViewable)
+}
+
+configureCommon('com.threecrickets.prudence.GeneratedTextResource')
+configureCommon('com.threecrickets.prudence.DelegatedResource')
+configureCommon('com.threecrickets.prudence.DelegatedHandler')
+configureCommon('com.threecrickets.prudence.ApplicationTask')
 
 //
 // ApplicationService

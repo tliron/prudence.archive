@@ -36,6 +36,37 @@ var showDebugOnError = false
 
 var showSourceCodeURL = '/sourcecode/'
 
+// This is so we can see the source code for scripts by adding ?source=true
+// to the URL. You probably wouldn't want this for most applications.
+
+var sourceViewable = true
+
+//
+// Performance
+//
+
+// This is the time (in milliseconds) allowed to pass until a script file
+// is tested to see if it was changed. During development, you'd want this
+// to be low, but during production, it should be high in order to avoid
+// unnecessary hits on the filesystem.
+
+var minimumTimeBetweenValidityChecks = 1000
+
+//
+// Documents
+//
+
+// If a document name points to a directory rather than a file, and that directory
+// contains a file with this name, then it will be used. This allows
+// you to use the directory structure to create nice URLs without relying
+// on filenames.
+
+var documentsDefaultName = 'default'
+
+// Documents will always be looked for here.
+
+var librariesBasePath = '/libraries/'
+
 //
 // Logging
 //
@@ -67,29 +98,10 @@ var hosts = [[component.defaultHost, null]]
 var resourcesBaseURL = '/'
 var resourcesBasePath = '/resources/'
 
-// If the URL points to a directory rather than a file, and that directory
-// contains a file with this name, then it will be used. This allows
-// you to use the directory structure to create nice URLs without relying
-// on filenames.
-
-var resourcesDefaultName = 'default'
-
 // Set this to true if you want to start to load and compile your
 // resources as soon as Prudence starts.
 
 var resourcesDefrost = true
-
-// This is so we can see the source code for scripts by adding ?source=true
-// to the URL. You probably wouldn't want this for most applications.
-
-var resourcesSourceViewable = true
-
-// This is the time (in milliseconds) allowed to pass until a script file
-// is tested to see if it was changed. During development, you'd want this
-// to be low, but during production, it should be high in order to avoid
-// unnecessary hits on the filesystem.
-
-var resourcesMinimumTimeBetweenValidityChecks = 1000
 
 //
 // Dynamic Web
@@ -117,18 +129,6 @@ var dynamicWebDefrost = true
 // as Prudence starts.
 
 var dynamicWebPreheat = true
-
-// This is so we can see the source code for scripts by adding ?source=true
-// to the URL. You probably wouldn't want this for most applications.
-
-var dynamicWebSourceViewable = true
-
-// This is the time (in milliseconds) allowed to pass until a script file
-// is tested to see if it was changed. During development, you'd want this
-// to be low, but during production, it should be high in order to avoid
-// unnecessary hits on the filesystem.
-
-var dynamicWebMinimumTimeBetweenValidityChecks = 1000
 
 // Client caching mode: 0=disabled, 1=conditional, 2=offline
 
@@ -172,20 +172,6 @@ var fileUploadSizeThreshold = 0
 
 var handlersBasePath = '/handlers/'
 
-// If the handler name points to a directory rather than a file, and that directory
-// contains a file with this name, then it will be used. This allows
-// you to use the directory structure to create nice URLs without relying
-// on filenames.
-
-var handlersDefaultName = 'default'
-
-// This is the time (in milliseconds) allowed to pass until a script file
-// is tested to see if it was changed. During development, you'd want this
-// to be low, but during production, it should be high in order to avoid
-// unnecessary hits on the filesystem.
-
-var handlersMinimumTimeBetweenValidityChecks = 0
-
 //
 // Tasks
 //
@@ -194,20 +180,6 @@ var handlersMinimumTimeBetweenValidityChecks = 0
 //
 
 var tasksBasePath = '/tasks/'
-
-// If the task name points to a directory rather than a file, and that directory
-// contains a file with this name, then it will be used. This allows
-// you to use the directory structure to create nice URLs without relying
-// on filenames.
-
-var tasksDefaultName = 'default'
-
-// This is the time (in milliseconds) allowed to pass until a script file
-// is tested to see if it was changed. During development, you'd want this
-// to be low, but during production, it should be high in order to avoid
-// unnecessary hits on the filesystem.
-
-var tasksMinimumTimeBetweenValidityChecks = 1000
 
 //
 // Preheater

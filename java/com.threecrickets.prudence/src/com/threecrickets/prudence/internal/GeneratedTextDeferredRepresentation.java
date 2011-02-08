@@ -106,7 +106,7 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 		executionContext.setWriter( writer );
 		try
 		{
-			executable.execute( executionContext, documentService, resource.getExecutionController() );
+			executable.execute( executionContext, documentService, resource.getAttributes().getExecutionController() );
 		}
 		catch( ParsingException x )
 		{

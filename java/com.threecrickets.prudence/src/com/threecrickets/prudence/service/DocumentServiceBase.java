@@ -23,11 +23,13 @@ import org.restlet.data.Preference;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 
+import com.threecrickets.prudence.internal.DocumentExecutionAttributes;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
+import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 import com.threecrickets.scripturian.internal.ScripturianUtil;
@@ -48,10 +50,13 @@ public abstract class DocumentServiceBase
 	 * 
 	 * @param documentSource
 	 *        The document source
+	 * @param attributes
+	 *        The attributes
 	 */
-	public DocumentServiceBase( DocumentSource<Executable> documentSource )
+	public DocumentServiceBase( DocumentSource<Executable> documentSource, DocumentExecutionAttributes attributes )
 	{
 		this.documentSource = documentSource;
+		this.attributes = attributes;
 	}
 
 	//
@@ -218,20 +223,14 @@ public abstract class DocumentServiceBase
 	// Protected
 
 	/**
+	 * The attributes.
+	 */
+	protected final DocumentExecutionAttributes attributes;
+
+	/**
 	 * The document stack.
 	 */
 	protected LinkedList<DocumentDescriptor<Executable>> documentDescriptorStack = new LinkedList<DocumentDescriptor<Executable>>();
-
-	/**
-	 * Gets a document descriptor.
-	 * 
-	 * @param documentName
-	 *        The document name
-	 * @return The document descriptor
-	 * @throws ParsingException
-	 * @throws DocumentException
-	 */
-	protected abstract DocumentDescriptor<Executable> getDocumentDescriptor( String documentName ) throws ParsingException, DocumentException;
 
 	/**
 	 * The currently executing document (the one at the top of the stack).
@@ -284,6 +283,43 @@ public abstract class DocumentServiceBase
 				return ScripturianUtil.getRelativeFile( file, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
 		}
 		return null;
+	}
+
+	protected DocumentDescriptor<Executable> getDocumentDescriptor( String documentName ) throws ParsingException, DocumentException
+	{
+		documentName = attributes.validateDocumentName( documentName );
+
+		DocumentNotFoundException x;
+
+		try
+		{
+			return Executable.createOnce( documentName, getSource(), false, attributes.getLanguageManager(), attributes.getDefaultLanguageTag(), attributes.isPrepare() );
+		}
+		catch( DocumentNotFoundException xx )
+		{
+			x = xx;
+
+			// Try the library source
+			DocumentSource<Executable> source = attributes.getLibrariesDocumentSource();
+			if( source != null )
+			{
+				try
+				{
+					return Executable.createOnce( documentName, source, false, attributes.getLanguageManager(), attributes.getDefaultLanguageTag(), attributes.isPrepare() );
+				}
+				catch( DocumentNotFoundException xxx )
+				{
+					x = xxx;
+				}
+			}
+
+			// Try the common library source
+			source = attributes.getCommonLibrariesDocumentSource();
+			if( source != null )
+				return Executable.createOnce( documentName, source, false, attributes.getLanguageManager(), attributes.getDefaultLanguageTag(), attributes.isPrepare() );
+		}
+
+		throw x;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

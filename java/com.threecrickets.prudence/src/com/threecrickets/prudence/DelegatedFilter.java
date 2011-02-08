@@ -17,10 +17,6 @@ import org.restlet.Response;
 import org.restlet.Restlet;
 import org.restlet.routing.Filter;
 
-import com.threecrickets.scripturian.Executable;
-import com.threecrickets.scripturian.LanguageManager;
-import com.threecrickets.scripturian.document.DocumentSource;
-
 /**
  * A {@link Filter} that wraps an underlying {@link DelegatedHandler}.
  * <p>
@@ -41,14 +37,10 @@ public class DelegatedFilter extends Filter
 	 *        The context
 	 * @param documentName
 	 *        The document name
-	 * @param documentSource
-	 *        The document source
-	 * @param languageManager
-	 *        The language manager
 	 */
-	public DelegatedFilter( Context context, String documentName, DocumentSource<Executable> documentSource, LanguageManager languageManager )
+	public DelegatedFilter( Context context, String documentName )
 	{
-		this( context, null, documentName, documentSource, languageManager );
+		this( context, null, documentName );
 	}
 
 	/**
@@ -60,15 +52,11 @@ public class DelegatedFilter extends Filter
 	 *        The next restlet
 	 * @param documentName
 	 *        The document name
-	 * @param documentSource
-	 *        The document source
-	 * @param languageManager
-	 *        The language manager
 	 */
-	public DelegatedFilter( Context context, Restlet next, String documentName, DocumentSource<Executable> documentSource, LanguageManager languageManager )
+	public DelegatedFilter( Context context, Restlet next, String documentName )
 	{
 		super( context, next );
-		delegatedHandler = new DelegatedHandler( documentName, documentSource, languageManager, context );
+		delegatedHandler = new DelegatedHandler( documentName, context );
 	}
 
 	//

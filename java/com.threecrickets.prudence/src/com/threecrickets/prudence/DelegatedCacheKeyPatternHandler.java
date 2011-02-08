@@ -13,10 +13,6 @@ package com.threecrickets.prudence;
 
 import org.restlet.Context;
 
-import com.threecrickets.scripturian.Executable;
-import com.threecrickets.scripturian.LanguageManager;
-import com.threecrickets.scripturian.document.DocumentSource;
-
 /**
  * <p>
  * A {@link DelegatedHandler} with the following supported entry points:
@@ -37,16 +33,12 @@ public class DelegatedCacheKeyPatternHandler extends DelegatedHandler
 	 * 
 	 * @param documentName
 	 *        The document name
-	 * @param documentSource
-	 *        The document source
-	 * @param languageManager
-	 *        The language manager
 	 * @param context
 	 *        The context used to configure the handler
 	 */
-	public DelegatedCacheKeyPatternHandler( String documentName, DocumentSource<Executable> documentSource, LanguageManager languageManager, Context context )
+	public DelegatedCacheKeyPatternHandler( String documentName, Context context )
 	{
-		super( documentName, documentSource, languageManager, context );
+		super( documentName, context );
 	}
 
 	//

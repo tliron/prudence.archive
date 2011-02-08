@@ -13,6 +13,7 @@ package com.threecrickets.prudence.service;
 
 import org.restlet.resource.ServerResource;
 
+import com.threecrickets.prudence.internal.VolatileContextualAttributes;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentSource;
 
@@ -36,9 +37,9 @@ public abstract class ResourceDocumentServiceBase<R extends ServerResource> exte
 	 * @param documentSource
 	 *        The document source
 	 */
-	public ResourceDocumentServiceBase( R resource, DocumentSource<Executable> documentSource )
+	public ResourceDocumentServiceBase( R resource, DocumentSource<Executable> documentSource, VolatileContextualAttributes<R> attributes )
 	{
-		super( documentSource );
+		super( documentSource, attributes );
 		this.resource = resource;
 	}
 
@@ -49,4 +50,5 @@ public abstract class ResourceDocumentServiceBase<R extends ServerResource> exte
 	 * The resource.
 	 */
 	protected final R resource;
+
 }

@@ -11,14 +11,9 @@
 
 package com.threecrickets.prudence.service;
 
-import java.io.File;
-
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
-import com.threecrickets.scripturian.exception.DocumentException;
-import com.threecrickets.scripturian.exception.DocumentNotFoundException;
-import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
  * Document service exposed to executables.
@@ -42,52 +37,7 @@ public class DelegatedResourceDocumentService extends ResourceDocumentServiceBas
 	 */
 	public DelegatedResourceDocumentService( DelegatedResource resource, DocumentDescriptor<Executable> documentDescriptor )
 	{
-		super( resource, resource.getDocumentSource() );
+		super( resource, resource.getAttributes().getDocumentSource(), resource.getAttributes() );
 		pushDocumentDescriptor( documentDescriptor );
-	}
-
-	// //////////////////////////////////////////////////////////////////////////
-	// Protected
-
-	//
-	// DocumentServiceBase
-	//
-
-	@Override
-	protected DocumentDescriptor<Executable> getDocumentDescriptor( String documentName ) throws ParsingException, DocumentException
-	{
-		documentName = resource.validateDocumentName( documentName );
-
-		DocumentDescriptor<Executable> documentDescriptor;
-		try
-		{
-			documentDescriptor = Executable.createOnce( documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
-		}
-		catch( DocumentNotFoundException x )
-		{
-			// Try the library directory
-			File libraryDirectory = getRelativeFile( resource.getLibraryDirectory() );
-			if( libraryDirectory != null )
-			{
-				try
-				{
-					documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(), resource.isPrepare() );
-				}
-				catch( DocumentNotFoundException xx )
-				{
-					// Try the common library directory
-					libraryDirectory = getRelativeFile( resource.getCommonLibraryDirectory() );
-					if( libraryDirectory != null )
-						documentDescriptor = Executable.createOnce( libraryDirectory.getPath() + "/" + documentName, getSource(), false, resource.getLanguageManager(), resource.getDefaultLanguageTag(),
-							resource.isPrepare() );
-					else
-						throw xx;
-				}
-			}
-			else
-				throw x;
-		}
-
-		return documentDescriptor;
 	}
 }

@@ -4,11 +4,11 @@
 ; Copyright 2009-2011 Three Crickets LLC.
 ;
 ; The contents of this file are subject to the terms of the LGPL version 3.0:
-; http:;www.opensource.org/licenses/lgpl-3.0.html
+; http://www.opensource.org/licenses/lgpl-3.0.html
 ;
 ; Alternatively, you can obtain a royalty free commercial license with less
 ; limitations, transferable or non-transferable, directly from Three Crickets
-; at http:;threecrickets.com/
+; at http://threecrickets.com/
 ;
 
 ;
@@ -35,6 +35,37 @@
 ; The base URL for showing source code (only relevant when show-debug-on-error is true). 
 
 (def show-source-code-url "/sourcecode/")
+
+; This is so we can see the source code for scripts by adding ?source=true
+; to the URL. You probably wouldn't want this for most applications.
+
+(def source-viewable true)
+
+;
+; Performance
+;
+
+; This is the time (in milliseconds) allowed to pass until a script file
+; is tested to see if it was changed. During development, you'd want this
+; to be low, but during production, it should be high in order to avoid
+; unnecessary hits on the filesystem.
+
+(def minimum-time-between-validity-checks 1000)
+
+;
+; Documents
+;
+
+; If a document name points to a directory rather than a file, and that directory
+; contains a file with this name, then it will be used. This allows
+; you to use the directory structure to create nice URLs without relying
+; on filenames.
+
+(def documents-default-name "default")
+
+; Documents will always be looked for here.
+
+(def libraries-base-path "/libraries/")
 
 ;
 ; Logging
@@ -66,29 +97,10 @@
 (def resources-base-url "/")
 (def resources-base-path "/resources/")
 
-; If the URL points to a directory rather than a file, and that directory
-; contains a file with this name, then it will be used. This allows
-; you to use the directory structure to create nice URLs without relying
-; on filenames.
-
-(def resources-default-name "default")
-
 ; Set this to True if you want to start to load and compile your
 ; resources as soon as Prudence starts.
 
 (def resources-defrost true)
-
-; This is so we can see the source code for scripts by adding ?source=true
-; to the URL. You probably wouldn't want this for most applications.
-
-(def resources-source-viewable true)
-
-; This is the time (in milliseconds) allowed to pass until a script file
-; is tested to see if it was changed. During development, you'd want this
-; to be low, but during production, it should be high in order to avoid
-; unnecessary hits on the filesystem.
-
-(def resources-minimum-time-between-validity-checks 1000)
 
 ;
 ; Dynamic Web
@@ -116,18 +128,6 @@
 ; as Prudence starts.
 
 (def dynamic-web-preheat true)
-
-; This is so we can see the source code for scripts by adding ?source=true
-; to the URL. You probably wouldn't want this for most applications.
-
-(def dynamic-web-source-viewable true)
-
-; This is the time (in milliseconds) allowed to pass until a script file
-; is tested to see if it was changed. During development, you'd want this
-; to be low, but during production, it should be high in order to avoid
-; unnecessary hits on the filesystem.
-
-(def dynamic-web-minimum-time-between-validity-checks 1000)
 
 ; Client caching mode: 0=disabled, 1=conditional, 2=offline
 
@@ -171,20 +171,6 @@
 
 (def handlers-base-path "/handlers/")
 
-; If the handler name points to a directory rather than a file, and that directory
-; contains a file with this name, then it will be used. This allows
-; you to use the directory structure to create nice URLs without relying
-; on filenames.
-
-(def handlers-default-name "default")
-
-; This is the time (in milliseconds) allowed to pass until a script file
-; is tested to see if it was changed. During development, you'd want this
-; to be low, but during production, it should be high in order to avoid
-; unnecessary hits on the filesystem.
-
-(def handlers-minimum-time-between-validity-checks 0)
-
 ;
 ; Tasks
 ;
@@ -193,20 +179,6 @@
 ;
 
 (def tasks-base-path "/tasks/")
-
-; If the task name points to a directory rather than a file, and that directory
-; contains a file with this name, then it will be used. This allows
-; you to use the directory structure to create nice URLs without relying
-; on filenames.
-
-(def tasks-default-name "default")
-
-; This is the time (in milliseconds) allowed to pass until a script file
-; is tested to see if it was changed. During development, you'd want this
-; to be low, but during production, it should be high in order to avoid
-; unnecessary hits on the filesystem.
-
-(def tasks-minimum-time-between-validity-checks 1000)
 
 ;
 ; Preheater

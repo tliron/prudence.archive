@@ -25,7 +25,6 @@ import com.threecrickets.prudence.util.Fallback;
 import com.threecrickets.prudence.util.FallbackRouter;
 import com.threecrickets.prudence.util.NormalizingRedirector;
 import com.threecrickets.prudence.util.StatusRestlet;
-import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentSource;
 
@@ -69,48 +68,6 @@ public class PrudenceRouter extends FallbackRouter
 		setAuthor( "Tal Liron" );
 		setName( "PrudenceRouter" );
 		setDescription( "A FallbackRouter with shortcut methods for common routing tasks" );
-	}
-
-	//
-	// Attributes
-	//
-
-	/**
-	 * @return The filter document source
-	 * @see #setFilterDocumentSource(DocumentSource)
-	 */
-	public DocumentSource<Executable> getFilterDocumentSource()
-	{
-		return filterDocumentSource;
-	}
-
-	/**
-	 * @param filterDocumentSource
-	 *        The filter document source
-	 * @see #getFilterDocumentSource()
-	 */
-	public void setFilterDocumentSource( DocumentSource<Executable> filterDocumentSource )
-	{
-		this.filterDocumentSource = filterDocumentSource;
-	}
-
-	/**
-	 * @return The filter language manager
-	 * @see #setFilterLanguageManager(LanguageManager)
-	 */
-	public LanguageManager getFilterLanguageManager()
-	{
-		return filterLanguageManager;
-	}
-
-	/**
-	 * @param filterLanguageManager
-	 *        The filter language manager
-	 * @see #getFilterLanguageManager()
-	 */
-	public void setFilterLanguageManager( LanguageManager filterLanguageManager )
-	{
-		this.filterLanguageManager = filterLanguageManager;
 	}
 
 	//
@@ -255,7 +212,7 @@ public class PrudenceRouter extends FallbackRouter
 	 */
 	public Route filter( String uriTemplate, String documentName, Context context, Restlet target )
 	{
-		return filter( uriTemplate, new DelegatedFilter( context, documentName, filterDocumentSource, filterLanguageManager ), target );
+		return filter( uriTemplate, new DelegatedFilter( context, documentName ), target );
 	}
 
 	/**
@@ -300,7 +257,7 @@ public class PrudenceRouter extends FallbackRouter
 	 */
 	public Route filterBase( String uriTemplate, String documentName, Context context, Restlet target )
 	{
-		return filterBase( uriTemplate, new DelegatedFilter( context, documentName, filterDocumentSource, filterLanguageManager ), target );
+		return filterBase( uriTemplate, new DelegatedFilter( context, documentName ), target );
 	}
 
 	/**
@@ -496,17 +453,4 @@ public class PrudenceRouter extends FallbackRouter
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}
-
-	// //////////////////////////////////////////////////////////////////////////
-	// Private
-
-	/**
-	 * Document source for delegated filters.
-	 */
-	private volatile DocumentSource<Executable> filterDocumentSource;
-
-	/**
-	 * Language manager for delegated filters.
-	 */
-	private volatile LanguageManager filterLanguageManager;
 }
