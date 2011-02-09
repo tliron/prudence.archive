@@ -78,112 +78,91 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * {@link DelegatedResourceDocumentService} and {@link ApplicationService}.
  * <p>
  * Before using this resource, make sure to configure a valid document source in
- * the application's {@link Context}; see {@link #getDocumentSource()}. This
+ * the application's {@link Context} as
+ * <code>com.threecrickets.prudence.DelegatedResource.documentSource</code. This
  * document source is exposed to the executable as <code>document.source</code>.
  * <p>
- * Note that the executable's output is sent to the system's standard output.
- * Most likely, you will not want to output anything from the executable.
- * However, this redirection is provided as a debugging convenience.
+ * For a simpler delegate, see {@link DelegatedHandler}.
  * <p>
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
  * <li>
- * <code>com.threecrickets.prudence.cache:</code> {@link Cache}. See
- * {@link #getCache()}.</li>
+ * <code>com.threecrickets.prudence.cache:</code> {@link Cache}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.applicationServiceName</code>
- * : The name of the global variable with which to access the application
- * service. Defaults to "application". See {@link #getApplicationServiceName()}.
- * </li>
+ * : Defaults to "application".</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.commonLibraryDirectory:</code>
- * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
- * "../../../libraries/". See {@link #getCommonLibrariesDocumentSource()}.</li>
+ * <code>com.threecrickets.prudence.DelegatedResource.commonLibraryDocumentSource:</code>
+ * {@link DocumentSource}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.defaultCharacterSet:</code>
- * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}. See
- * {@link #getDefaultCharacterSet()}.</li>
+ * {@link CharacterSet}, defaults to {@link CharacterSet#UTF_8}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.defaultLanguageTag:</code>
- * {@link String}, defaults to "javascript". See
- * {@link #getDefaultLanguageTag()}.</li>
+ * {@link String}, defaults to "javascript".</li>
  * <li><code>com.threecrickets.prudence.DelegatedResource.defaultName:</code>
- * {@link String}, defaults to "default". See {@link #getDefaultName()}.</li>
+ * {@link String}, defaults to "default".</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.documentFormatter:</code>
- * {@link DocumentFormatter}. Defaults to a {@link JygmentsDocumentFormatter}.
- * See {@link #getDocumentFormatter()}.</li>
+ * {@link DocumentFormatter}. Defaults to a {@link JygmentsDocumentFormatter}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.documentServiceName</code>
- * : The name of the global variable with which to access the document service.
- * Defaults to "document". See {@link #getDocumentServiceName()}.</li>
+ * : Defaults to "document".</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.documentSource:</code>
- * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
+ * {@link DocumentSource}. <b>Required.</b></li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForDelete:</code>
- * {@link String}, defaults to "handleDelete". See
- * {@link #getEntryPointNameForDelete()}.</li>
+ * {@link String}, defaults to "handleDelete".</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForGet:</code>
- * {@link String}, defaults to "handleGet". See
- * {@link #getEntryPointNameForGet()}.</li>
+ * {@link String}, defaults to "handleGet".</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForGetInfo:</code>
- * {@link String}, defaults to "handleGetInfo". See
- * {@link #getEntryPointNameForGetInfo()}.</li>
+ * {@link String}, defaults to "handleGetInfo".</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForInit:</code>
- * {@link String}, defaults to "handleInit". See
- * {@link #getEntryPointNameForInit()}.</li>
+ * {@link String}, defaults to "handleInit".</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForOptions:</code>
- * {@link String}, defaults to "handleOptions". See
- * {@link #getEntryPointNameForOptions()}.</li>
+ * {@link String}, defaults to "handleOptions".</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForPost:</code>
- * {@link String}, defaults to "handlePost". See
- * {@link #getEntryPointNameForPost()}.</li>
+ * {@link String}, defaults to "handlePost".</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.entryPointNameForPut:</code>
- * {@link String}, defaults to "handlePut". See
- * {@link #getEntryPointNameForPut()}.</li>
+ * {@link String}, defaults to "handlePut".</li>
  * <li><code>com.threecrickets.prudence.DelegatedResource.errorWriter:</code>
- * {@link Writer}, defaults to standard error. See {@link #getErrorWriter()}.</li>
+ * {@link Writer}, defaults to standard error.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.executionController:</code>
- * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
+ * {@link ExecutionController}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.fileUploadDirectory:</code>
  * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
- * "../uploads/". See {@link #getFileUploadDirectory()}.</li>
+ * "../uploads/".</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold:</code>
- * {@link Integer}, defaults to zero. See {@link #getFileUploadSizeThreshold()}.
- * </li>
+ * {@link Integer}, defaults to zero.</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedResource.libraryDirectory:</code>
- * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
- * "../libraries/". See {@link #getLibrariesDocumentSource()}.</li>
+ * <code>com.threecrickets.prudence.DelegatedResource.libraryDocumentSource:</code>
+ * {@link DocumentSource}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.languageManager:</code>
- * {@link LanguageManager}, defaults to a new instance. See
- * {@link #getLanguageManager()}.</li>
+ * {@link LanguageManager}, defaults to a new instance.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.prepare:</code>
- * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
+ * {@link Boolean}, defaults to true.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.sourceViewable:</code>
- * {@link Boolean}, defaults to false. See {@link #isSourceViewable()}.</li>
+ * {@link Boolean}, defaults to false.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.trailingSlashRequired:</code>
- * {@link Boolean}, defaults to true. See {@link #isTrailingSlashRequired()}.</li>
+ * {@link Boolean}, defaults to true.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.writer:</code>
- * {@link Writer}, defaults to standard output. See {@link #getWriter()}.</li>
+ * {@link Writer}, defaults to standard output.</li>
  * </ul>
- * <p>
- * For a simpler delegate, see {@link DelegatedHandler}.
  * <p>
  * <i>"Restlet" is a registered trademark of <a
  * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
@@ -208,8 +187,6 @@ public class DelegatedResource extends ServerResource
 	/**
 	 * Initializes the resource, and delegates to the <code>handleInit()</code>
 	 * entry point in the executable.
-	 * 
-	 * @see #getEntryPointNameForInit()
 	 */
 	@Override
 	protected void doInit() throws ResourceException
@@ -235,7 +212,6 @@ public class DelegatedResource extends ServerResource
 	 * 
 	 * @return The optional result entity
 	 * @throws ResourceException
-	 * @see #getEntryPointNameForGet()
 	 */
 	@Override
 	public Representation get() throws ResourceException
@@ -250,7 +226,6 @@ public class DelegatedResource extends ServerResource
 	 *        The variant of the response entity
 	 * @return The optional result entity
 	 * @throws ResourceException
-	 * @see #getEntryPointNameForGet()
 	 */
 	@Override
 	public Representation get( Variant variant ) throws ResourceException
@@ -306,7 +281,6 @@ public class DelegatedResource extends ServerResource
 	 * 
 	 * @return The optional result info
 	 * @throws ResourceException
-	 * @see #getEntryPointNameForGetInfo()
 	 */
 	@Override
 	public RepresentationInfo getInfo() throws ResourceException
@@ -322,7 +296,6 @@ public class DelegatedResource extends ServerResource
 	 *        The variant of the response entity
 	 * @return The optional result info
 	 * @throws ResourceException
-	 * @see #getEntryPointNameForGetInfo()
 	 */
 	@Override
 	public RepresentationInfo getInfo( Variant variant ) throws ResourceException
@@ -349,7 +322,6 @@ public class DelegatedResource extends ServerResource
 	 *        The posted entity
 	 * @return The optional result entity
 	 * @throws ResourceException
-	 * @see #getEntryPointNameForPost()
 	 */
 	@Override
 	public Representation post( Representation entity ) throws ResourceException
@@ -366,7 +338,6 @@ public class DelegatedResource extends ServerResource
 	 *        The variant of the response entity
 	 * @return The optional result entity
 	 * @throws ResourceException
-	 * @see #getEntryPointNameForPost()
 	 */
 	@Override
 	public Representation post( Representation entity, Variant variant ) throws ResourceException
@@ -383,7 +354,6 @@ public class DelegatedResource extends ServerResource
 	 *        The posted entity
 	 * @return The optional result entity
 	 * @throws ResourceException
-	 * @see #getEntryPointNameForPut()
 	 */
 	@Override
 	public Representation put( Representation entity ) throws ResourceException
@@ -400,7 +370,6 @@ public class DelegatedResource extends ServerResource
 	 *        The variant of the response entity
 	 * @return The optional result entity
 	 * @throws ResourceException
-	 * @see #getEntryPointNameForPut()
 	 */
 	@Override
 	public Representation put( Representation entity, Variant variant ) throws ResourceException
@@ -416,7 +385,6 @@ public class DelegatedResource extends ServerResource
 	 * 
 	 * @return The optional result entity
 	 * @throws ResourceException
-	 * @see #getEntryPointNameForDelete()
 	 */
 	@Override
 	public Representation delete() throws ResourceException
@@ -432,7 +400,6 @@ public class DelegatedResource extends ServerResource
 	 *        The variant of the response entity
 	 * @return The optional result entity
 	 * @throws ResourceException
-	 * @see #getEntryPointNameForDelete()
 	 */
 	@Override
 	public Representation delete( Variant variant ) throws ResourceException
@@ -448,7 +415,6 @@ public class DelegatedResource extends ServerResource
 	 * 
 	 * @return The optional result entity
 	 * @throws ResourceException
-	 * @see #getEntryPointNameForOptions()
 	 */
 	@Override
 	public Representation options() throws ResourceException
@@ -464,7 +430,6 @@ public class DelegatedResource extends ServerResource
 	 *        The variant of the response entity
 	 * @return The optional result entity
 	 * @throws ResourceException
-	 * @see #getEntryPointNameForOptions()
 	 */
 	@Override
 	public Representation options( Variant variant ) throws ResourceException

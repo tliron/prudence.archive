@@ -360,7 +360,7 @@ public class CacheEntry implements Externalizable
 	 * 
 	 * @return An array of bytes
 	 * @throws IOException
-	 * @see {@link #CacheEntry(byte[])}
+	 * @see #CacheEntry(byte[])
 	 */
 	public byte[] toBytes() throws IOException
 	{

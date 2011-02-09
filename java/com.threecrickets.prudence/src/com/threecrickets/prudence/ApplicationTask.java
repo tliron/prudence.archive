@@ -11,7 +11,6 @@
 
 package com.threecrickets.prudence;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -25,7 +24,6 @@ import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageManager;
-import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.ExecutionException;
@@ -35,11 +33,11 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * A {@link Runnable} wrapper for a Scripturian {@link Executable}.
  * <p>
  * <code>document</code> and <code>application</code> services are available as
- * global variables. See {@link ApplicationTaskDocumentService} and
- * {@link ApplicationService}.
+ * global variables. See {@link DocumentService} and {@link ApplicationService}.
  * <p>
  * Before using this class, make sure to configure a valid document source in
- * the application's {@link Context}; see {@link #getDocumentSource()}. This
+ * the application's {@link Context} as
+ * <code>com.threecrickets.prudence.ApplicationTask.documentSource</code>. This
  * document source is exposed to the executable as <code>document.source</code>.
  * <p>
  * Instances are not thread-safe.
@@ -48,48 +46,42 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * <ul>
  * <li>
  * <code>com.threecrickets.prudence.ApplicationTask.applicationServiceName</code>
- * : The name of the global variable with which to access the application
- * service. Defaults to "application". See {@link #getApplicationServiceName()}.
- * </li>
+ * : Defaults to "application".</li>
  * <li>
- * <code>com.threecrickets.prudence.ApplicationTask.commonLibraryDirectory:</code>
- * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
- * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
+ * <code>com.threecrickets.prudence.ApplicationTask.commonLibraryDocumentSource:</code>
+ * {@link DocumentSource}.</li>
  * <li>
  * <code>com.threecrickets.prudence.ApplicationTask.defaultLanguageTag:</code>
- * {@link String}, defaults to "javascript". See
- * {@link #getDefaultLanguageTag()}.</li>
+ * {@link String}, defaults to "javascript".</li>
  * <li><code>com.threecrickets.prudence.ApplicationTask.defaultName:</code>
- * {@link String}, defaults to "default". See {@link #getDefaultName()}.</li>
+ * {@link String}, defaults to "default".</li>
  * <li>
  * <code>com.threecrickets.prudence.ApplicationTask.documentServiceName</code> :
  * The name of the global variable with which to access the document service.
- * Defaults to "document". See {@link #getDocumentServiceName()}.</li>
+ * Defaults to "document".</li>
  * <li>
  * <code>com.threecrickets.prudence.ApplicationTask.documentSource:</code>
- * {@link DocumentSource}. <b>Required.</b> See {@link #getDocumentSource()}.</li>
+ * {@link DocumentSource}. <b>Required.</b></li>
  * <li><code>com.threecrickets.prudence.ApplicationTask.errorWriter:</code>
- * {@link Writer}, defaults to standard error. See {@link #getErrorWriter()}.</li>
+ * {@link Writer}, defaults to standard error.</li>
  * <li>
  * <code>com.threecrickets.prudence.ApplicationTask.executionController:</code>
- * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
+ * {@link ExecutionController}.</li>
  * <li>
- * <code>com.threecrickets.prudence.ApplicationTask.libraryDirectory:</code>
- * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
- * "../libraries/". See {@link #getLibraryDirectory()}.</li>
+ * <code>com.threecrickets.prudence.ApplicationTask.libraryDocumentSource:</code>
+ * {@link DocumentSource}.</li>
  * <li>
  * <code>com.threecrickets.prudence.ApplicationTask.languageManager:</code>
- * {@link LanguageManager}, defaults to a new instance. See
- * {@link #getLanguageManager()}.</li>
+ * {@link LanguageManager}, defaults to a new instance.</li>
  * <li>
  * <code>com.threecrickets.prudence.ApplicationTask.prepare:</code>
- * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
+ * {@link Boolean}, defaults to true.</li>
  * <li>
  * <code>com.threecrickets.prudence.ApplicationTask.trailingSlashRequired:</code>
- * {@link Boolean}, defaults to true. See {@link #isTrailingSlashRequired()}.</li>
+ * {@link Boolean}, defaults to true.</li>
  * <li>
  * <code>com.threecrickets.prudence.ApplicationTask.writer:</code>
- * {@link Writer}, defaults to standard output. See {@link #getWriter()}.</li>
+ * {@link Writer}, defaults to standard output.</li>
  * </ul>
  * <p>
  * <i>"Restlet" is a registered trademark of <a

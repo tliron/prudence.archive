@@ -31,6 +31,7 @@ import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFileSource;
+import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
@@ -45,15 +46,15 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * A <code>conversation</code> service is sent as the first argument to all
  * entry points. Additionally, <code>document</code> and
  * <code>application</code> services are available as global services. See
- * {@link DelegatedHandlerConversationService},
- * {@link DelegatedHandlerDocumentService} and {@link ApplicationService}.
+ * {@link ConversationService}, {@link DocumentService} and
+ * {@link ApplicationService}.
  * <p>
- * Note that the executable's output is sent to the system's standard output.
- * Most likely, you will not want to output anything from the executable.
- * However, this redirection is provided as a debugging convenience.
+ * Before using this class, make sure to configure a valid document source in
+ * the application's {@link Context} as
+ * <code>com.threecrickets.prudence.DelegatedHandler.documentSource</code>. This
+ * document source is exposed to the executable as <code>document.source</code>.
  * <p>
- * For a more sophisticated resource delegate, see
- * {@link DelegatedResourceHandler}.
+ * For a more sophisticated resource delegate, see {@link DelegatedResource}.
  * <p>
  * Instances are thread-safe.
  * <p>
@@ -61,55 +62,45 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * <ul>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedHandler.applicationServiceName</code>
- * : The name of the global variable with which to access the application
- * service. Defaults to "application". See {@link #getApplicationServiceName()}.
- * </li>
+ * : Defaults to "application"..</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedHandler.commonLibraryDirectory:</code>
- * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
- * "../../../libraries/". See {@link #getCommonLibraryDirectory()}.</li>
+ * <code>com.threecrickets.prudence.DelegatedHandler.commonLibraryDocumentSource:</code>
+ * {@link DocumentSource}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedHandler.defaultLanguageTag:</code>
- * {@link String}, defaults to "javascript". See
- * {@link #getDefaultLanguageTag()}.</li>
+ * {@link String}, defaults to "javascript".</li>
  * <li><code>com.threecrickets.prudence.DelegatedHandler.defaultName:</code>
- * {@link String}, defaults to "default". See {@link #getDefaultIncludedName()}.
- * </li>
+ * {@link String}, defaults to "default".</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedHandler.documentServiceName</code>
- * : The name of the global variable with which to access the document service.
- * Defaults to "document". See {@link #getDocumentServiceName()}.</li>
+ * <code>com.threecrickets.prudence.DelegatedHandler.documentServiceName</code>:
+ * Defaults to "document"..</li>
  * <li><code>com.threecrickets.prudence.DelegatedHandler.errorWriter:</code>
- * {@link Writer}, defaults to standard error. See {@link #getErrorWriter()}.</li>
+ * {@link Writer}, defaults to standard error.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedHandler.entryPointValidityCache:</code>
- * {@link ConcurrentMap}, default to a new {@link ConcurrentHashMap}. See
- * {@link #getEntryPointValidityCache(Executable)}.
+ * {@link ConcurrentMap}, default to a new {@link ConcurrentHashMap}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.fileUploadDirectory:</code>
  * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
- * "../uploads/". See {@link #getFileUploadDirectory()}.</li>
+ * "../uploads/".</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedResource.fileUploadSizeThreshold:</code>
- * {@link Integer}, defaults to zero. See {@link #getFileUploadSizeThreshold()}.
- * </li>
+ * {@link Integer}, defaults to zero.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedHandler.executionController:</code>
- * {@link ExecutionController}. See {@link #getExecutionController()}.</li>
+ * {@link ExecutionController}</li>
  * <li>
- * <code>com.threecrickets.prudence.DelegatedHandler.libraryDirectory:</code>
- * {@link File}. Defaults to the {@link DocumentFileSource#getBasePath()} plus
- * "../libraries/". See {@link #getLibraryDirectory()}.</li>
+ * <code>com.threecrickets.prudence.DelegatedHandler.libraryDocumentSource:</code>
+ * {@link DocumentSource}.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedHandler.languageManager:</code>
- * {@link LanguageManager}, defaults to a new instance. See
- * {@link #getLanguageManager()}.</li>
+ * {@link LanguageManager}, defaults to a new instance.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedHandler.prepare:</code>
- * {@link Boolean}, defaults to true. See {@link #isPrepare()}.</li>
+ * {@link Boolean}, defaults to true.</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedHandler.writer:</code>
- * {@link Writer}, defaults to standard output. See {@link #getWriter()}.</li>
+ * {@link Writer}, defaults to standard output.</li>
  * </ul>
  * 
  * @author Tal Liron

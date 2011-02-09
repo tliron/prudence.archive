@@ -25,8 +25,6 @@ import com.threecrickets.prudence.util.Fallback;
 import com.threecrickets.prudence.util.FallbackRouter;
 import com.threecrickets.prudence.util.NormalizingRedirector;
 import com.threecrickets.prudence.util.StatusRestlet;
-import com.threecrickets.scripturian.LanguageManager;
-import com.threecrickets.scripturian.document.DocumentSource;
 
 /**
  * A {@link FallbackRouter} with shortcut methods for common routing tasks.
@@ -195,9 +193,6 @@ public class PrudenceRouter extends FallbackRouter
 	/**
 	 * As {@link #filter(String, Filter, Restlet)}, but internally uses a
 	 * {@link DelegatedFilter}.
-	 * <p>
-	 * You must set {@link #setFilterDocumentSource(DocumentSource)} and
-	 * {@link #setFilterLanguageManager(LanguageManager)} for this to work.
 	 * 
 	 * @param uriTemplate
 	 *        The URI path template that must match the relative part of the
@@ -240,9 +235,6 @@ public class PrudenceRouter extends FallbackRouter
 	/**
 	 * As {@link #filter(String, String, Context, Restlet)}, but enforces
 	 * matching mode {@link Template#MODE_STARTS_WITH}.
-	 * <p>
-	 * You must set {@link #setFilterDocumentSource(DocumentSource)} and
-	 * {@link #setFilterLanguageManager(LanguageManager)} for this to work.
 	 * 
 	 * @param uriTemplate
 	 *        The URI path template that must match the relative part of the

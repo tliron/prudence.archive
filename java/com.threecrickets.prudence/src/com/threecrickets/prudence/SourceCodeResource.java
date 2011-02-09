@@ -38,19 +38,17 @@ import com.threecrickets.scripturian.exception.DocumentNotFoundException;
  * format the source code, but custom formatters can be plugged in instead.
  * <p>
  * Before using this resource, make sure to configure a valid list of document
- * sources in the application's {@link Context}; see
- * {@link #getDocumentSources()}.
+ * sources in the application's {@link Context} as
+ * <code>com.threecrickets.prudence.SourceCodeResource.documentSources</code.
  * <p>
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
  * <li>
  * <code>com.threecrickets.prudence.SourceCodeResource.documentFormatter:</code>
- * {@link DocumentFormatter}. Defaults to a {@link JygmentsDocumentFormatter}.
- * See {@link #getDocumentFormatter()}.</li>
+ * {@link DocumentFormatter}. Defaults to a {@link JygmentsDocumentFormatter}.</li>
  * <li>
  * <code>com.threecrickets.prudence.SourceCodeResource.documentSources:</code>
- * an iterable of {@link DocumentSource}. <b>Required.</b> See
- * {@link #getDocumentSources()}.</li>
+ * an {@link Iterable} of {@link DocumentSource}. <b>Required.</b></li>
  * </ul>
  * <p>
  * <i>"Restlet" is a registered trademark of <a
