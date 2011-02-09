@@ -15,7 +15,6 @@ import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
-import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
@@ -25,11 +24,21 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 	//
 	// Construction
 	//
-	
+
+	/**
+	 * Construction.
+	 * 
+	 * @param prefix
+	 *        The prefix for attribute keys
+	 */
 	public ContextualAttributes( String prefix )
 	{
 		this.prefix = prefix;
 	}
+
+	//
+	// Attributes
+	//
 
 	/**
 	 * The contextual attributes.
@@ -61,45 +70,6 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 	public abstract Writer getErrorWriter();
 
 	/**
-	 * The {@link DocumentSource} used to fetch documents. This must be set to a
-	 * valid value before this class is used!
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>documentSource</code> in the application's {@link Context}.
-	 * 
-	 * @return The document source
-	 */
-	public abstract DocumentSource<Executable> getDocumentSource();
-
-	/**
-	 * Executables might use this directory for importing libraries. If the
-	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
-	 * will default to the {@link DocumentFileSource#getBasePath()} plus
-	 * "../libraries/".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>libraryDirectory</code> in the application's {@link Context}.
-	 * 
-	 * @return The library directory or null
-	 * @see ExecutionContext#getLibraryLocations()
-	 */
-	public abstract DocumentSource<Executable> getLibrariesDocumentSource();
-
-	/**
-	 * Executables from all applications might use this directory for importing
-	 * libraries. If the {@link #getDocumentSource()} is a
-	 * {@link DocumentFileSource}, then this will default to the
-	 * {@link DocumentFileSource#getBasePath()} plus "../../../libraries/".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>commonLibraryDirectory</code> in the application's {@link Context}.
-	 * 
-	 * @return The common library directory or null
-	 * @see ExecutionContext#getLibraryLocations()
-	 */
-	public abstract DocumentSource<Executable> getCommonLibrariesDocumentSource();
-
-	/**
 	 * If the URL points to a directory rather than a file, and that directory
 	 * contains a file with this name, then it will be used. This allows you to
 	 * use the directory structure to create nice URLs without relying on
@@ -111,17 +81,6 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 	 * @return The default name
 	 */
 	public abstract String getDefaultName();
-
-	/**
-	 * The default language tag name to be used if the script doesn't specify
-	 * one. Defaults to "javascript".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>defaultLanguageTag</code> in the application's {@link Context}.
-	 * 
-	 * @return The default language tag
-	 */
-	public abstract String getDefaultLanguageTag();
 
 	/**
 	 * Whether or not trailing slashes are required. Defaults to true.
@@ -154,29 +113,6 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 	 * @return The application service name
 	 */
 	public abstract String getApplicationServiceName();
-
-	/**
-	 * The {@link LanguageManager} used to create the language adapters. Uses a
-	 * default instance, but can be set to something else.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>languageManager</code> in the application's {@link Context}.
-	 * 
-	 * @return The language manager
-	 */
-	public abstract LanguageManager getLanguageManager();
-
-	/**
-	 * Whether to prepare the executables. Preparation increases initialization
-	 * time and reduces execution time. Note that not all languages support
-	 * preparation as a separate operation. Defaults to true.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>prepare</code> in the application's {@link Context}.
-	 * 
-	 * @return Whether to prepare executables
-	 */
-	public abstract boolean isPrepare();
 
 	/**
 	 * An optional {@link ExecutionController} to be used with the executable.
@@ -287,16 +223,10 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 		}
 	}
 
-	/**
-	 * Throws an exception if the document name is invalid. Uses
-	 * {@link #getDefaultName()} if no name is given, and respects
-	 * {@link #isTrailingSlashRequired()}.
-	 * 
-	 * @param documentName
-	 *        The document name
-	 * @return The valid document name
-	 * @throws ResourceException
-	 */
+	//
+	// DocumentExecutionAttributes
+	//
+
 	public String validateDocumentName( String documentName ) throws ResourceException
 	{
 		return validateDocumentName( documentName, getDefaultName() );

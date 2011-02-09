@@ -17,12 +17,18 @@ import org.restlet.Application;
 
 import com.threecrickets.prudence.ApplicationTask;
 
-public class ApplicationTaskAttributes extends ContextualAttributesNonVolatile
+public class ApplicationTaskAttributes extends NonVolatileContextualAttributes
 {
 	//
 	// Construction
 	//
 
+	/**
+	 * Construction.
+	 * 
+	 * @param application
+	 *        The application
+	 */
 	public ApplicationTaskAttributes( Application application )
 	{
 		super( ApplicationTask.class.getCanonicalName() );
@@ -42,5 +48,8 @@ public class ApplicationTaskAttributes extends ContextualAttributesNonVolatile
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * The application.
+	 */
 	private final Application application;
 }

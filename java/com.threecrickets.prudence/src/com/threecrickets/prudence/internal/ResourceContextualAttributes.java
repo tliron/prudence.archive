@@ -4,13 +4,13 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.resource.ServerResource;
 
-public class ResourceContextualAttributes<R extends ServerResource> extends VolatileContextualAttributes
+public class ResourceContextualAttributes extends NonVolatileContextualAttributes
 {
 	//
 	// Construction
 	//
 
-	public ResourceContextualAttributes( R resource )
+	public ResourceContextualAttributes( ServerResource resource )
 	{
 		super( resource.getClass().getCanonicalName() );
 		this.resource = resource;
@@ -23,7 +23,9 @@ public class ResourceContextualAttributes<R extends ServerResource> extends Vola
 	@Override
 	public ConcurrentMap<String, Object> getAttributes()
 	{
-		return resource.getContext().getAttributes();
+		if( attributes == null )
+			attributes = resource.getContext().getAttributes();
+		return attributes;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -32,5 +34,10 @@ public class ResourceContextualAttributes<R extends ServerResource> extends Vola
 	/**
 	 * The resource.
 	 */
-	private final R resource;
+	private final ServerResource resource;
+
+	/**
+	 * The attributes.
+	 */
+	private ConcurrentMap<String, Object> attributes;
 }

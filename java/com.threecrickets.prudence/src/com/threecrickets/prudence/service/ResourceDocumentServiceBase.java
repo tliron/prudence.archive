@@ -35,7 +35,7 @@ public abstract class ResourceDocumentServiceBase<R extends ServerResource> exte
 	 * @param attributes
 	 *        The attributes
 	 */
-	public ResourceDocumentServiceBase( R resource, ResourceContextualAttributes<R> attributes )
+	public ResourceDocumentServiceBase( R resource, ResourceContextualAttributes attributes )
 	{
 		super( attributes );
 		this.resource = resource;

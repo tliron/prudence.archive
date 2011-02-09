@@ -19,12 +19,18 @@ import org.restlet.Context;
 import com.threecrickets.prudence.DelegatedHandler;
 import com.threecrickets.scripturian.Executable;
 
-public class DelegatedHandlerAttributes extends ContextualAttributesNonVolatile
+public class DelegatedHandlerAttributes extends VolatileContextualAttributes
 {
 	//
 	// Construction
 	//
 
+	/**
+	 * Construction.
+	 * 
+	 * @param context
+	 *        The context
+	 */
 	public DelegatedHandlerAttributes( Context context )
 	{
 		super( DelegatedHandler.class.getCanonicalName() );
@@ -79,5 +85,5 @@ public class DelegatedHandlerAttributes extends ContextualAttributesNonVolatile
 	/**
 	 * A cache for entry point validity.
 	 */
-	private ConcurrentMap<String, Boolean> entryPointValidityCache;
+	private volatile ConcurrentMap<String, Boolean> entryPointValidityCache;
 }

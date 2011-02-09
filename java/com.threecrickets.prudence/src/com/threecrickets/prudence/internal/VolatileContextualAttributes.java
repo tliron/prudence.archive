@@ -22,6 +22,12 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 	// Construction
 	//
 
+	/**
+	 * Construction.
+	 * 
+	 * @param prefix
+	 *        The prefix for attribute keys
+	 */
 	public VolatileContextualAttributes( String prefix )
 	{
 		super( prefix );
@@ -60,7 +66,6 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public DocumentSource<Executable> getDocumentSource()
 	{
 		if( documentSource == null )
@@ -75,7 +80,6 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public DocumentSource<Executable> getLibrariesDocumentSource()
 	{
 		if( librariesDocumentSource == null )
@@ -85,7 +89,6 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public DocumentSource<Executable> getCommonLibrariesDocumentSource()
 	{
 		if( commonLibrariesDocumentSource == null )
@@ -117,7 +120,6 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 	 * 
 	 * @return The default language tag
 	 */
-	@Override
 	public String getDefaultLanguageTag()
 	{
 		if( defaultLanguageTag == null )
@@ -173,7 +175,6 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 		return applicationServiceName;
 	}
 
-	@Override
 	public LanguageManager getLanguageManager()
 	{
 		if( languageManager == null )
@@ -194,7 +195,6 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 		return languageManager;
 	}
 
-	@Override
 	public boolean isPrepare()
 	{
 		if( prepare == null )

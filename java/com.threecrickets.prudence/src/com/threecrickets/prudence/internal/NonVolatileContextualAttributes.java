@@ -27,13 +27,19 @@ import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
 
-public abstract class ContextualAttributesNonVolatile extends ContextualAttributes
+public abstract class NonVolatileContextualAttributes extends ContextualAttributes
 {
 	//
 	// Construction
 	//
 
-	public ContextualAttributesNonVolatile( String prefix )
+	/**
+	 * Construction.
+	 * 
+	 * @param prefix
+	 *        The prefix for attribute keys
+	 */
+	public NonVolatileContextualAttributes( String prefix )
 	{
 		super( prefix );
 	}
@@ -71,7 +77,6 @@ public abstract class ContextualAttributesNonVolatile extends ContextualAttribut
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public DocumentSource<Executable> getDocumentSource()
 	{
 		if( documentSource == null )
@@ -86,7 +91,6 @@ public abstract class ContextualAttributesNonVolatile extends ContextualAttribut
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public DocumentSource<Executable> getLibrariesDocumentSource()
 	{
 		if( librariesDocumentSource == null )
@@ -96,7 +100,6 @@ public abstract class ContextualAttributesNonVolatile extends ContextualAttribut
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public DocumentSource<Executable> getCommonLibrariesDocumentSource()
 	{
 		if( commonLibrariesDocumentSource == null )
@@ -128,7 +131,6 @@ public abstract class ContextualAttributesNonVolatile extends ContextualAttribut
 	 * 
 	 * @return The default language tag
 	 */
-	@Override
 	public String getDefaultLanguageTag()
 	{
 		if( defaultLanguageTag == null )
@@ -184,7 +186,6 @@ public abstract class ContextualAttributesNonVolatile extends ContextualAttribut
 		return applicationServiceName;
 	}
 
-	@Override
 	public LanguageManager getLanguageManager()
 	{
 		if( languageManager == null )
@@ -205,7 +206,6 @@ public abstract class ContextualAttributesNonVolatile extends ContextualAttribut
 		return languageManager;
 	}
 
-	@Override
 	public boolean isPrepare()
 	{
 		if( prepare == null )

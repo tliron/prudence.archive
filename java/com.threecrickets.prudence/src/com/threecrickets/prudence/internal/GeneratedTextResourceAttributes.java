@@ -21,12 +21,18 @@ import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentSource;
 
-public class GeneratedTextResourceAttributes extends ResourceContextualAttributes<GeneratedTextResource>
+public class GeneratedTextResourceAttributes extends ResourceContextualAttributes
 {
 	//
 	// Resource
 	//
 
+	/**
+	 * Construction.
+	 * 
+	 * @param resource
+	 *        The resource
+	 */
 	public GeneratedTextResourceAttributes( GeneratedTextResource resource )
 	{
 		super( resource );
@@ -209,37 +215,37 @@ public class GeneratedTextResourceAttributes extends ResourceContextualAttribute
 	 * If the URL points to a directory rather than a file, and that directory
 	 * contains a file with this name, then it will be used.
 	 */
-	private volatile String defaultIncludedName;
+	private String defaultIncludedName;
 
 	/**
 	 * The name of the global variable with which to access the conversation
 	 * service.
 	 */
-	private volatile String conversationServiceName;
+	private String conversationServiceName;
 
 	/**
 	 * The default cache key pattern to use if the executable doesn't specify
 	 * one.
 	 */
-	private volatile String defaultCacheKeyPattern;
+	private String defaultCacheKeyPattern;
 
 	/**
 	 * The cache key pattern handlers.
 	 */
-	private volatile ConcurrentMap<String, String> cacheKeyPatternHandlers;
+	private ConcurrentMap<String, String> cacheKeyPatternHandlers;
 
 	/**
 	 * Executables might use this directory for including fragments.
 	 */
-	private volatile File fragmentDirectory;
+	private File fragmentDirectory;
 
 	/**
 	 * Whether or not to negotiate encoding by default.
 	 */
-	private volatile Boolean negotiateEncoding;
+	private Boolean negotiateEncoding;
 
 	/**
 	 * Whether or not to send information to the client about cache expiration.
 	 */
-	private volatile Integer clientCachingMode;
+	private Integer clientCachingMode;
 }

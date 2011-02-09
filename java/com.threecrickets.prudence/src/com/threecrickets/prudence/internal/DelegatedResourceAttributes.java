@@ -17,12 +17,18 @@ import org.restlet.Context;
 
 import com.threecrickets.prudence.DelegatedResource;
 
-public class DelegatedResourceAttributes extends ResourceContextualAttributes<DelegatedResource>
+public class DelegatedResourceAttributes extends ResourceContextualAttributes
 {
 	//
 	// Construction
 	//
 
+	/**
+	 * Construction.
+	 * 
+	 * @param resource
+	 *        The resource
+	 */
 	public DelegatedResourceAttributes( DelegatedResource resource )
 	{
 		super( resource );
@@ -201,38 +207,38 @@ public class DelegatedResourceAttributes extends ResourceContextualAttributes<De
 	/**
 	 * The name of the <code>handleInit()</code> entry point in the executable.
 	 */
-	private volatile String entryPointNameForInit;
+	private String entryPointNameForInit;
 
 	/**
 	 * The name of the <code>handleGet()</code> entry point in the executable.
 	 */
-	private volatile String entryPointNameForGet;
+	private String entryPointNameForGet;
 
 	/**
 	 * The name of the <code>handleGetInfo()</code> entry point in the
 	 * executable.
 	 */
-	private volatile String entryPointNameForGetInfo;
+	private String entryPointNameForGetInfo;
 
 	/**
 	 * The name of the <code>handleOptions()</code> entry point in the
 	 * executable.
 	 */
-	private volatile String entryPointNameForOptions;
+	private String entryPointNameForOptions;
 
 	/**
 	 * The name of the <code>handlePost()</code> entry point in the executable.
 	 */
-	private volatile String entryPointNameForPost;
+	private String entryPointNameForPost;
 
 	/**
 	 * The name of the <code>handlePut()</code> entry point in the executable.
 	 */
-	private volatile String entryPointNameForPut;
+	private String entryPointNameForPut;
 
 	/**
 	 * The name of the <code>handleDelete()</code> entry point in the
 	 * executable.
 	 */
-	private volatile String entryPointNameForDelete;
+	private String entryPointNameForDelete;
 }

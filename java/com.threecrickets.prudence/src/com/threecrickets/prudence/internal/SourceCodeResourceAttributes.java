@@ -6,7 +6,7 @@ import com.threecrickets.prudence.SourceCodeResource;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentSource;
 
-public class SourceCodeResourceAttributes extends ResourceContextualAttributes<SourceCodeResource>
+public class SourceCodeResourceAttributes extends ResourceContextualAttributes
 {
 	//
 	// Construction
@@ -50,5 +50,5 @@ public class SourceCodeResourceAttributes extends ResourceContextualAttributes<S
 	/**
 	 * The document sources.
 	 */
-	private volatile Iterable<DocumentSource<Executable>> documentSources;
+	private Iterable<DocumentSource<Executable>> documentSources;
 }

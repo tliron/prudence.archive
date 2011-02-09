@@ -55,7 +55,7 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * For a more sophisticated resource delegate, see
  * {@link DelegatedResourceHandler}.
  * <p>
- * Instances are not thread-safe.
+ * Instances are thread-safe.
  * <p>
  * Summary of settings configured via the application's {@link Context}:
  * <ul>
