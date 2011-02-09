@@ -19,7 +19,7 @@ import org.restlet.Context;
 import com.threecrickets.prudence.DelegatedHandler;
 import com.threecrickets.scripturian.Executable;
 
-public class DelegatedHandlerAttributes extends ContextualAttributes
+public class DelegatedHandlerAttributes extends ContextualAttributesNonVolatile
 {
 	//
 	// Construction
@@ -27,7 +27,7 @@ public class DelegatedHandlerAttributes extends ContextualAttributes
 
 	public DelegatedHandlerAttributes( Context context )
 	{
-		super( DelegatedHandler.class );
+		super( DelegatedHandler.class.getCanonicalName() );
 		this.context = context;
 	}
 
@@ -62,15 +62,10 @@ public class DelegatedHandlerAttributes extends ContextualAttributes
 	// ContextualAttributes
 	//
 
-	/**
-	 * The context.
-	 * 
-	 * @return The context
-	 */
 	@Override
-	public Context getContext()
+	public ConcurrentMap<String, Object> getAttributes()
 	{
-		return context;
+		return context.getAttributes();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

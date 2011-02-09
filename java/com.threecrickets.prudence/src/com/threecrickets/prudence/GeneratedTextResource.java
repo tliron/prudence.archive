@@ -401,7 +401,7 @@ public class GeneratedTextResource extends ServerResource
 	private static final String TRUE = "true";
 
 	/**
-	 * Volatile attributes.
+	 * The attributes.
 	 */
 	private final GeneratedTextResourceAttributes attributes = new GeneratedTextResourceAttributes( this );
 

@@ -11,8 +11,6 @@
 
 package com.threecrickets.prudence;
 
-import java.util.concurrent.ConcurrentMap;
-
 import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -24,6 +22,7 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
+import com.threecrickets.prudence.internal.SourceCodeResourceAttributes;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFormatter;
@@ -76,69 +75,6 @@ public class SourceCodeResource extends ServerResource
 	public static final String HIGHLIGHT = "highlight";
 
 	//
-	// Attributes
-	//
-
-	/**
-	 * The {@link DocumentSource} used to fetch documents. This must be set to a
-	 * valid value before this class is used!
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.SourceCodeResource.documentSources</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The document source
-	 */
-	@SuppressWarnings("unchecked")
-	public Iterable<DocumentSource<Executable>> getDocumentSources()
-	{
-		if( documentSources == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			documentSources = (Iterable<DocumentSource<Executable>>) attributes.get( "com.threecrickets.prudence.SourceCodeResource.documentSources" );
-
-			if( documentSources == null )
-				throw new RuntimeException( "Attribute com.threecrickets.prudence.SourceCodeResource.documentSources must be set in context to use SourceCodeResource" );
-		}
-
-		return documentSources;
-	}
-
-	/**
-	 * An optional {@link DocumentFormatter} to use for formatting the source
-	 * code. Defaults to a {@link JygmentsDocumentFormatter}.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>com.threecrickets.prudence.GeneratedtextResource.documentFormatter</code>
-	 * in the application's {@link Context}.
-	 * 
-	 * @return The document formatter or null
-	 */
-	@SuppressWarnings("unchecked")
-	public DocumentFormatter<Executable> getDocumentFormatter()
-	{
-		if( documentFormatter == null )
-		{
-			ConcurrentMap<String, Object> attributes = getContext().getAttributes();
-			documentFormatter = (DocumentFormatter<Executable>) attributes.get( "com.threecrickets.prudence.SourceCodeResource.documentFormatter" );
-
-			if( documentFormatter == null )
-			{
-				// documentFormatter = new SyntaxHighlighterDocumentFormatter();
-				// documentFormatter = new
-				// PygmentsDocumentFormatter<Document>();
-				documentFormatter = new JygmentsDocumentFormatter<Executable>();
-
-				DocumentFormatter<Executable> existing = (DocumentFormatter<Executable>) attributes.putIfAbsent( "com.threecrickets.prudence.SourceCodeResource.documentFormatter", documentFormatter );
-				if( existing != null )
-					documentFormatter = existing;
-			}
-		}
-
-		return documentFormatter;
-	}
-
-	//
 	// ServerResource
 	//
 
@@ -174,14 +110,9 @@ public class SourceCodeResource extends ServerResource
 	// Private
 
 	/**
-	 * The document sources.
+	 * The attributes.
 	 */
-	private volatile Iterable<DocumentSource<Executable>> documentSources;
-
-	/**
-	 * The document formatter.
-	 */
-	private volatile DocumentFormatter<Executable> documentFormatter;
+	private final SourceCodeResourceAttributes attributes = new SourceCodeResourceAttributes( this );
 
 	/**
 	 * Gets a document from the sources.
@@ -196,7 +127,7 @@ public class SourceCodeResource extends ServerResource
 		if( name.startsWith( "/" ) )
 			name = name.substring( 1 );
 
-		Iterable<DocumentSource<Executable>> documentSources = getDocumentSources();
+		Iterable<DocumentSource<Executable>> documentSources = attributes.getDocumentSources();
 		if( documentSources != null )
 		{
 			for( DocumentSource<Executable> documentSource : documentSources )
@@ -227,7 +158,7 @@ public class SourceCodeResource extends ServerResource
 	 */
 	private String format( DocumentDescriptor<Executable> documentDescriptor, int highlightLineNumber )
 	{
-		DocumentFormatter<Executable> documentFormatter = getDocumentFormatter();
+		DocumentFormatter<Executable> documentFormatter = attributes.getDocumentFormatter();
 		if( documentFormatter != null )
 			return documentFormatter.format( documentDescriptor, documentDescriptor.getDefaultName(), highlightLineNumber );
 		else

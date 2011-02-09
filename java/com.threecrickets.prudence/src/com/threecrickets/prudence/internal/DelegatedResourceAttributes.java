@@ -17,7 +17,7 @@ import org.restlet.Context;
 
 import com.threecrickets.prudence.DelegatedResource;
 
-public class DelegatedResourceAttributes extends VolatileContextualAttributes<DelegatedResource>
+public class DelegatedResourceAttributes extends ResourceContextualAttributes<DelegatedResource>
 {
 	//
 	// Construction
@@ -45,7 +45,7 @@ public class DelegatedResourceAttributes extends VolatileContextualAttributes<De
 	{
 		if( entryPointNameForInit == null )
 		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
+			ConcurrentMap<String, Object> attributes = getAttributes();
 			entryPointNameForInit = (String) attributes.get( prefix + ".entryPointNameForInit" );
 
 			if( entryPointNameForInit == null )
@@ -68,7 +68,7 @@ public class DelegatedResourceAttributes extends VolatileContextualAttributes<De
 	{
 		if( entryPointNameForGet == null )
 		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
+			ConcurrentMap<String, Object> attributes = getAttributes();
 			entryPointNameForGet = (String) attributes.get( prefix + ".entryPointNameForGet" );
 
 			if( entryPointNameForGet == null )
@@ -92,7 +92,7 @@ public class DelegatedResourceAttributes extends VolatileContextualAttributes<De
 	{
 		if( entryPointNameForGetInfo == null )
 		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
+			ConcurrentMap<String, Object> attributes = getAttributes();
 			entryPointNameForGetInfo = (String) attributes.get( prefix + ".entryPointNameForGetInfo" );
 
 			if( entryPointNameForGetInfo == null )
@@ -116,7 +116,7 @@ public class DelegatedResourceAttributes extends VolatileContextualAttributes<De
 	{
 		if( entryPointNameForOptions == null )
 		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
+			ConcurrentMap<String, Object> attributes = getAttributes();
 			entryPointNameForOptions = (String) attributes.get( prefix + ".entryPointNameForOptions" );
 
 			if( entryPointNameForOptions == null )
@@ -139,7 +139,7 @@ public class DelegatedResourceAttributes extends VolatileContextualAttributes<De
 	{
 		if( entryPointNameForPost == null )
 		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
+			ConcurrentMap<String, Object> attributes = getAttributes();
 			entryPointNameForPost = (String) attributes.get( prefix + ".entryPointNameForPost" );
 
 			if( entryPointNameForPost == null )
@@ -162,7 +162,7 @@ public class DelegatedResourceAttributes extends VolatileContextualAttributes<De
 	{
 		if( entryPointNameForPut == null )
 		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
+			ConcurrentMap<String, Object> attributes = getAttributes();
 			entryPointNameForPut = (String) attributes.get( prefix + ".entryPointNameForPut" );
 
 			if( entryPointNameForPut == null )
@@ -185,7 +185,7 @@ public class DelegatedResourceAttributes extends VolatileContextualAttributes<De
 	{
 		if( entryPointNameForDelete == null )
 		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
+			ConcurrentMap<String, Object> attributes = getAttributes();
 			entryPointNameForDelete = (String) attributes.get( prefix + ".entryPointNameForDelete" );
 
 			if( entryPointNameForDelete == null )

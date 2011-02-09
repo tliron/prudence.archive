@@ -19,9 +19,8 @@ import org.restlet.Application;
 import org.restlet.Context;
 
 import com.threecrickets.prudence.internal.ApplicationTaskAttributes;
-import com.threecrickets.prudence.internal.ContextualAttributes;
 import com.threecrickets.prudence.service.ApplicationService;
-import com.threecrickets.prudence.service.ApplicationTaskDocumentService;
+import com.threecrickets.prudence.service.DocumentService;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
@@ -136,16 +135,6 @@ public class ApplicationTask implements Runnable
 	//
 
 	/**
-	 * The attributes.
-	 * 
-	 * @return The attributes
-	 */
-	public ContextualAttributes getAttributes()
-	{
-		return attributes;
-	}
-
-	/**
 	 * The Restlet application in which this task will execute.
 	 * 
 	 * @return The application
@@ -184,7 +173,7 @@ public class ApplicationTask implements Runnable
 				ExecutionContext executionContext = new ExecutionContext( attributes.getWriter(), attributes.getErrorWriter() );
 				attributes.addLibraryLocations( executionContext );
 
-				executionContext.getServices().put( attributes.getDocumentServiceName(), new ApplicationTaskDocumentService( this ) );
+				executionContext.getServices().put( attributes.getDocumentServiceName(), new DocumentService( attributes ) );
 				executionContext.getServices().put( attributes.getApplicationServiceName(), new ApplicationService( application ) );
 
 				executable.execute( executionContext, this, attributes.getExecutionController() );

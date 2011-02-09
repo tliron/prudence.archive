@@ -74,7 +74,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public GeneratedTextResourceDocumentService( GeneratedTextResource resource, ExecutionContext executionContext, Representation entity, Variant preferences )
 	{
-		super( resource, resource.getAttributes().getDocumentSource(), resource.getAttributes() );
+		super( resource, resource.getAttributes() );
 		this.executionContext = executionContext;
 		conversationService = new GeneratedTextResourceConversationService( resource, entity, preferences, resource.getAttributes().getDefaultCharacterSet() );
 	}
@@ -88,7 +88,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public GeneratedTextResourceDocumentService( GeneratedTextResourceDocumentService documentService )
 	{
-		super( documentService.resource, documentService.resource.getAttributes().getDocumentSource(), documentService.resource.getAttributes() );
+		super( documentService.resource, documentService.resource.getAttributes() );
 		conversationService = documentService.conversationService;
 		pushDocumentDescriptor( documentService.getCurrentDocumentDescriptor() );
 		executionContext = new ExecutionContext();

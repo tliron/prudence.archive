@@ -11,12 +11,13 @@
 
 package com.threecrickets.prudence.internal;
 
+import java.util.concurrent.ConcurrentMap;
+
 import org.restlet.Application;
-import org.restlet.Context;
 
 import com.threecrickets.prudence.ApplicationTask;
 
-public class ApplicationTaskAttributes extends ContextualAttributes
+public class ApplicationTaskAttributes extends ContextualAttributesNonVolatile
 {
 	//
 	// Construction
@@ -24,7 +25,7 @@ public class ApplicationTaskAttributes extends ContextualAttributes
 
 	public ApplicationTaskAttributes( Application application )
 	{
-		super( ApplicationTask.class );
+		super( ApplicationTask.class.getCanonicalName() );
 		this.application = application;
 	}
 
@@ -32,15 +33,10 @@ public class ApplicationTaskAttributes extends ContextualAttributes
 	// ContextualAttributes
 	//
 
-	/**
-	 * The context.
-	 * 
-	 * @return The context
-	 */
 	@Override
-	public Context getContext()
+	public ConcurrentMap<String, Object> getAttributes()
 	{
-		return application.getContext();
+		return application.getContext().getAttributes();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

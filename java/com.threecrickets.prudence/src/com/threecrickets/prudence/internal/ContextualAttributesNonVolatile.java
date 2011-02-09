@@ -1,3 +1,14 @@
+/**
+ * Copyright 2009-2011 Three Crickets LLC.
+ * <p>
+ * The contents of this file are subject to the terms of the LGPL version 3.0:
+ * http://www.opensource.org/licenses/lgpl-3.0.html
+ * <p>
+ * Alternatively, you can obtain a royalty free commercial license with less
+ * limitations, transferable or non-transferable, directly from Three Crickets
+ * at http://threecrickets.com/
+ */
+
 package com.threecrickets.prudence.internal;
 
 import java.io.File;
@@ -16,13 +27,13 @@ import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
 
-public abstract class VolatileContextualAttributes extends ContextualAttributes
+public abstract class ContextualAttributesNonVolatile extends ContextualAttributes
 {
 	//
 	// Construction
 	//
 
-	public VolatileContextualAttributes( String prefix )
+	public ContextualAttributesNonVolatile( String prefix )
 	{
 		super( prefix );
 	}
@@ -324,102 +335,102 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 	/**
 	 * The {@link Writer} used by the {@link Executable}.
 	 */
-	private volatile Writer writer = new OutputStreamWriter( System.out );
+	private Writer writer = new OutputStreamWriter( System.out );
 
 	/**
 	 * Same as {@link #writer}, for standard error.
 	 */
-	private volatile Writer errorWriter = new OutputStreamWriter( System.err );
+	private Writer errorWriter = new OutputStreamWriter( System.err );
 
 	/**
 	 * The document source.
 	 */
-	private volatile DocumentSource<Executable> documentSource;
+	private DocumentSource<Executable> documentSource;
 
 	/**
 	 * Executables might use directory this {@link DocumentSource} for importing
 	 * libraries.
 	 */
-	private volatile DocumentSource<Executable> librariesDocumentSource;
+	private DocumentSource<Executable> librariesDocumentSource;
 
 	/**
 	 * Executables from all applications might use this {@link DocumentSource}
 	 * for importing libraries.
 	 */
-	private volatile DocumentSource<Executable> commonLibrariesDocumentSource;
+	private DocumentSource<Executable> commonLibrariesDocumentSource;
 
 	/**
 	 * If the URL points to a directory rather than a file, and that directory
 	 * contains a file with this name, then it will be used.
 	 */
-	private volatile String defaultName;
+	private String defaultName;
 
 	/**
 	 * The default language tag to be used if the executable doesn't specify
 	 * one.
 	 */
-	private volatile String defaultLanguageTag;
+	private String defaultLanguageTag;
 
 	/**
 	 * Whether or not trailing slashes are required for all requests.
 	 */
-	private volatile Boolean trailingSlashRequired;
+	private Boolean trailingSlashRequired;
 
 	/**
 	 * The name of the global variable with which to access the document
 	 * service.
 	 */
-	private volatile String documentServiceName;
+	private String documentServiceName;
 
 	/**
 	 * The name of the global variable with which to access the application
 	 * service.
 	 */
-	private volatile String applicationServiceName;
+	private String applicationServiceName;
 
 	/**
 	 * The {@link LanguageManager} used to create the language adapters.
 	 */
-	private volatile LanguageManager languageManager;
+	private LanguageManager languageManager;
 
 	/**
 	 * Whether to prepare executables.
 	 */
-	private volatile Boolean prepare;
+	private Boolean prepare;
 
 	/**
 	 * An optional {@link ExecutionController} to be used with the scripts.
 	 */
-	private volatile ExecutionController executionController;
+	private ExecutionController executionController;
 
 	/**
 	 * This is so we can see the source code for scripts by adding
 	 * <code>?source=true</code> to the URL.
 	 */
-	private volatile Boolean sourceViewable;
+	private Boolean sourceViewable;
 
 	/**
 	 * The document formatter.
 	 */
-	private volatile DocumentFormatter<Executable> documentFormatter;
+	private DocumentFormatter<Executable> documentFormatter;
 
 	/**
 	 * The default character set to be used if the client does not specify it.
 	 */
-	private volatile CharacterSet defaultCharacterSet;
+	private CharacterSet defaultCharacterSet;
 
 	/**
 	 * The directory in which to place uploaded files.
 	 */
-	private static volatile File fileUploadDirectory;
+	private File fileUploadDirectory;
 
 	/**
 	 * The size in bytes beyond which uploaded files will be stored to disk.
 	 */
-	private static volatile Integer fileUploadSizeThreshold;
+	private Integer fileUploadSizeThreshold;
 
 	/**
 	 * Cache used for caching mode.
 	 */
-	private static volatile Cache cache;
+	private Cache cache;
 }

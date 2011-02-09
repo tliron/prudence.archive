@@ -35,7 +35,7 @@ import com.threecrickets.prudence.util.FormWithFiles;
  * 
  * @author Tal Liron
  */
-public class ConversationServiceBase
+public class ConversationService
 {
 	//
 	// Construction
@@ -50,7 +50,7 @@ public class ConversationServiceBase
 	 * @param fileUploadDirectory
 	 *        The directory in which to place uploaded files
 	 */
-	public ConversationServiceBase( int fileUploadSizeThreshold, File fileUploadDirectory )
+	public ConversationService( int fileUploadSizeThreshold, File fileUploadDirectory )
 	{
 		this.fileUploadSizeThreshold = fileUploadSizeThreshold;
 		this.fileUploadDirectory = fileUploadDirectory;

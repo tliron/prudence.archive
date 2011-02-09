@@ -39,7 +39,7 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
  * 
  * @author Tal Liron
  */
-public abstract class DocumentServiceBase
+public class DocumentService
 {
 	//
 	// Construction
@@ -48,14 +48,11 @@ public abstract class DocumentServiceBase
 	/**
 	 * Construction.
 	 * 
-	 * @param documentSource
-	 *        The document source
 	 * @param attributes
 	 *        The attributes
 	 */
-	public DocumentServiceBase( DocumentSource<Executable> documentSource, DocumentExecutionAttributes attributes )
+	public DocumentService( DocumentExecutionAttributes attributes )
 	{
-		this.documentSource = documentSource;
 		this.attributes = attributes;
 	}
 
@@ -70,7 +67,7 @@ public abstract class DocumentServiceBase
 	 */
 	public DocumentSource<Executable> getSource()
 	{
-		return documentSource;
+		return attributes.getDocumentSource();
 	}
 
 	//
@@ -279,6 +276,7 @@ public abstract class DocumentServiceBase
 	{
 		if( file != null )
 		{
+			DocumentSource<Executable> documentSource = getSource();
 			if( documentSource instanceof DocumentFileSource<?> )
 				return ScripturianUtil.getRelativeFile( file, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
 		}
@@ -326,11 +324,6 @@ public abstract class DocumentServiceBase
 	// Private
 
 	/**
-	 * The document source.
-	 */
-	private final DocumentSource<Executable> documentSource;
-
-	/**
 	 * Get a media type by its MIME type name.
 	 * 
 	 * @param name
@@ -357,6 +350,7 @@ public abstract class DocumentServiceBase
 	 */
 	private DocumentDescriptor<Executable> getFileDocumentDescriptor( String documentName ) throws ParsingException, DocumentException
 	{
+		DocumentSource<Executable> documentSource = getSource();
 		if( documentSource instanceof DocumentFileSource<?> )
 		{
 			DocumentFileSource<Executable> documentFileSource = (DocumentFileSource<Executable>) documentSource;

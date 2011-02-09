@@ -21,7 +21,7 @@ import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentSource;
 
-public class GeneratedTextResourceAttributes extends VolatileContextualAttributes<GeneratedTextResource>
+public class GeneratedTextResourceAttributes extends ResourceContextualAttributes<GeneratedTextResource>
 {
 	//
 	// Resource
@@ -51,8 +51,7 @@ public class GeneratedTextResourceAttributes extends VolatileContextualAttribute
 	{
 		if( defaultIncludedName == null )
 		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
-			defaultIncludedName = (String) attributes.get( prefix + ".defaultIncludedName" );
+			defaultIncludedName = (String) getAttributes().get( prefix + ".defaultIncludedName" );
 
 			if( defaultIncludedName == null )
 				defaultIncludedName = "index";
@@ -74,8 +73,7 @@ public class GeneratedTextResourceAttributes extends VolatileContextualAttribute
 	{
 		if( conversationServiceName == null )
 		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
-			conversationServiceName = (String) attributes.get( prefix + ".conversationServiceName" );
+			conversationServiceName = (String) getAttributes().get( prefix + ".conversationServiceName" );
 
 			if( conversationServiceName == null )
 				conversationServiceName = "conversation";
@@ -97,8 +95,7 @@ public class GeneratedTextResourceAttributes extends VolatileContextualAttribute
 	{
 		if( defaultCacheKeyPattern == null )
 		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
-			defaultCacheKeyPattern = (String) attributes.get( prefix + ".defaultCacheKeyPattern" );
+			defaultCacheKeyPattern = (String) getAttributes().get( prefix + ".defaultCacheKeyPattern" );
 
 			if( defaultCacheKeyPattern == null )
 				defaultCacheKeyPattern = "{ri}|{dn}|{ptb}";
@@ -119,10 +116,7 @@ public class GeneratedTextResourceAttributes extends VolatileContextualAttribute
 	public ConcurrentMap<String, String> getCacheKeyPatternHandlers()
 	{
 		if( cacheKeyPatternHandlers == null )
-		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
-			cacheKeyPatternHandlers = (ConcurrentMap<String, String>) attributes.get( prefix + ".cacheKeyPatternHandlers" );
-		}
+			cacheKeyPatternHandlers = (ConcurrentMap<String, String>) getAttributes().get( prefix + ".cacheKeyPatternHandlers" );
 
 		return cacheKeyPatternHandlers;
 	}
@@ -142,7 +136,7 @@ public class GeneratedTextResourceAttributes extends VolatileContextualAttribute
 	{
 		if( fragmentDirectory == null )
 		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
+			ConcurrentMap<String, Object> attributes = getAttributes();
 			fragmentDirectory = (File) attributes.get( prefix + ".fragmentDirectory" );
 
 			if( fragmentDirectory == null )
@@ -174,8 +168,7 @@ public class GeneratedTextResourceAttributes extends VolatileContextualAttribute
 	{
 		if( negotiateEncoding == null )
 		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
-			negotiateEncoding = (Boolean) attributes.get( prefix + ".negotiateEncoding" );
+			negotiateEncoding = (Boolean) getAttributes().get( prefix + ".negotiateEncoding" );
 
 			if( negotiateEncoding == null )
 				negotiateEncoding = true;
@@ -197,8 +190,7 @@ public class GeneratedTextResourceAttributes extends VolatileContextualAttribute
 	{
 		if( clientCachingMode == null )
 		{
-			ConcurrentMap<String, Object> attributes = resource.getContext().getAttributes();
-			Number number = (Number) attributes.get( prefix + ".clientCachingMode" );
+			Number number = (Number) getAttributes().get( prefix + ".clientCachingMode" );
 
 			if( number != null )
 				clientCachingMode = number.intValue();

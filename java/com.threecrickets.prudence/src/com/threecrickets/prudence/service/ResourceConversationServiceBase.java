@@ -29,7 +29,7 @@ import org.restlet.resource.ServerResource;
  * 
  * @author Tal Liron
  */
-public class ResourceConversationServiceBase<R extends ServerResource> extends ConversationServiceBase
+public class ResourceConversationServiceBase<R extends ServerResource> extends ConversationService
 {
 	//
 	// Construction

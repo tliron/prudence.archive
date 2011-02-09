@@ -37,7 +37,7 @@ public class DelegatedResourceDocumentService extends ResourceDocumentServiceBas
 	 */
 	public DelegatedResourceDocumentService( DelegatedResource resource, DocumentDescriptor<Executable> documentDescriptor )
 	{
-		super( resource, resource.getAttributes().getDocumentSource(), resource.getAttributes() );
+		super( resource, resource.getAttributes() );
 		pushDocumentDescriptor( documentDescriptor );
 	}
 }

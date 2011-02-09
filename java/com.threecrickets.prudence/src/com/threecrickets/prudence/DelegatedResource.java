@@ -500,7 +500,7 @@ public class DelegatedResource extends ServerResource
 	private static final String TRUE = "true";
 
 	/**
-	 * Volatile attributes.
+	 * The attributes.
 	 */
 	private final DelegatedResourceAttributes attributes = new DelegatedResourceAttributes( this );
 

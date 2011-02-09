@@ -21,6 +21,8 @@ public interface DocumentExecutionAttributes
 	// Attributes
 	//
 
+	public DocumentSource<Executable> getDocumentSource();
+
 	public LanguageManager getLanguageManager();
 
 	public String getDefaultLanguageTag();

@@ -21,11 +21,10 @@ import java.util.concurrent.ConcurrentMap;
 import org.restlet.Context;
 import org.restlet.resource.ResourceException;
 
-import com.threecrickets.prudence.internal.ContextualAttributes;
 import com.threecrickets.prudence.internal.DelegatedHandlerAttributes;
 import com.threecrickets.prudence.service.ApplicationService;
-import com.threecrickets.prudence.service.DelegatedHandlerConversationService;
-import com.threecrickets.prudence.service.DelegatedHandlerDocumentService;
+import com.threecrickets.prudence.service.ConversationService;
+import com.threecrickets.prudence.service.DocumentService;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
@@ -140,16 +139,6 @@ public class DelegatedHandler
 	//
 
 	/**
-	 * The attributes.
-	 * 
-	 * @return The attributes
-	 */
-	public ContextualAttributes getAttributes()
-	{
-		return attributes;
-	}
-
-	/**
 	 * @return The document name
 	 */
 	public String getDocumentName()
@@ -178,7 +167,7 @@ public class DelegatedHandler
 
 		try
 		{
-			DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( getDocumentName(), attributes.getDocumentSource(), false, attributes.getLanguageManager(), attributes.getDefaultLanguageTag(),
+			DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, attributes.getDocumentSource(), false, attributes.getLanguageManager(), attributes.getDefaultLanguageTag(),
 				attributes.isPrepare() );
 			Executable executable = documentDescriptor.getDocument();
 
@@ -187,7 +176,7 @@ public class DelegatedHandler
 				ExecutionContext executionContext = new ExecutionContext( attributes.getWriter(), attributes.getErrorWriter() );
 				attributes.addLibraryLocations( executionContext );
 
-				executionContext.getServices().put( attributes.getDocumentServiceName(), new DelegatedHandlerDocumentService( this ) );
+				executionContext.getServices().put( attributes.getDocumentServiceName(), new DocumentService( attributes ) );
 				executionContext.getServices().put( attributes.getApplicationServiceName(), new ApplicationService() );
 
 				try
@@ -223,13 +212,13 @@ public class DelegatedHandler
 			if( arguments != null )
 			{
 				ArrayList<Object> argumentList = new ArrayList<Object>( arguments.length + 1 );
-				argumentList.add( new DelegatedHandlerConversationService( attributes.getFileUploadSizeThreshold(), attributes.getFileUploadDirectory() ) );
+				argumentList.add( new ConversationService( attributes.getFileUploadSizeThreshold(), attributes.getFileUploadDirectory() ) );
 				for( Object argument : arguments )
 					argumentList.add( argument );
 				r = executable.enter( entryPointName, argumentList.toArray() );
 			}
 			else
-				r = executable.enter( entryPointName, new DelegatedHandlerConversationService( attributes.getFileUploadSizeThreshold(), attributes.getFileUploadDirectory() ) );
+				r = executable.enter( entryPointName, new ConversationService( attributes.getFileUploadSizeThreshold(), attributes.getFileUploadDirectory() ) );
 
 			return r;
 		}
