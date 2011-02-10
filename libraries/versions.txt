@@ -32,7 +32,7 @@ mongo-rhino-driver	1.0 (Revision 56)
 mysqlconnector		5.1.14
 pygments			1.1.1
 quercus				4.0.11
-restlet (JSE)		2.0.4
+restlet (JSE)		2.0.5
 rhino				1.7R2
 servlet (jetty)		2.5
 scripturian			1.0 (Revision 257)
