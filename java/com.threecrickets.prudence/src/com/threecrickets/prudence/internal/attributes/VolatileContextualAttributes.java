@@ -320,101 +320,101 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
-	// Private
+	// Protected
 
 	/**
 	 * The {@link Writer} used by the {@link Executable}.
 	 */
-	private volatile Writer writer = new OutputStreamWriter( System.out );
+	protected volatile Writer writer = new OutputStreamWriter( System.out );
 
 	/**
 	 * Same as {@link #writer}, for standard error.
 	 */
-	private volatile Writer errorWriter = new OutputStreamWriter( System.err );
+	protected volatile Writer errorWriter = new OutputStreamWriter( System.err );
 
 	/**
 	 * The document source.
 	 */
-	private volatile DocumentSource<Executable> documentSource;
+	protected volatile DocumentSource<Executable> documentSource;
 
 	/**
 	 * Executables might use these {@link DocumentSource} instances for
 	 * importing libraries.
 	 */
-	private volatile Iterable<DocumentSource<Executable>> libraryDocumentSources;
+	protected volatile Iterable<DocumentSource<Executable>> libraryDocumentSources;
 
 	/**
 	 * If the URL points to a directory rather than a file, and that directory
 	 * contains a file with this name, then it will be used.
 	 */
-	private volatile String defaultName;
+	protected volatile String defaultName;
 
 	/**
 	 * The default language tag to be used if the executable doesn't specify
 	 * one.
 	 */
-	private volatile String defaultLanguageTag;
+	protected volatile String defaultLanguageTag;
 
 	/**
 	 * Whether or not trailing slashes are required for all requests.
 	 */
-	private volatile Boolean trailingSlashRequired;
+	protected volatile Boolean trailingSlashRequired;
 
 	/**
 	 * The name of the global variable with which to access the document
 	 * service.
 	 */
-	private volatile String documentServiceName;
+	protected volatile String documentServiceName;
 
 	/**
 	 * The name of the global variable with which to access the application
 	 * service.
 	 */
-	private volatile String applicationServiceName;
+	protected volatile String applicationServiceName;
 
 	/**
 	 * The {@link LanguageManager} used to create the language adapters.
 	 */
-	private volatile LanguageManager languageManager;
+	protected volatile LanguageManager languageManager;
 
 	/**
 	 * Whether to prepare executables.
 	 */
-	private volatile Boolean prepare;
+	protected volatile Boolean prepare;
 
 	/**
 	 * An optional {@link ExecutionController} to be used with the scripts.
 	 */
-	private volatile ExecutionController executionController;
+	protected volatile ExecutionController executionController;
 
 	/**
 	 * This is so we can see the source code for scripts by adding
 	 * <code>?source=true</code> to the URL.
 	 */
-	private volatile Boolean sourceViewable;
+	protected volatile Boolean sourceViewable;
 
 	/**
 	 * The document formatter.
 	 */
-	private volatile DocumentFormatter<Executable> documentFormatter;
+	protected volatile DocumentFormatter<Executable> documentFormatter;
 
 	/**
 	 * The default character set to be used if the client does not specify it.
 	 */
-	private volatile CharacterSet defaultCharacterSet;
+	protected volatile CharacterSet defaultCharacterSet;
 
 	/**
 	 * The directory in which to place uploaded files.
 	 */
-	private static volatile File fileUploadDirectory;
+	protected static volatile File fileUploadDirectory;
 
 	/**
 	 * The size in bytes beyond which uploaded files will be stored to disk.
 	 */
-	private static volatile Integer fileUploadSizeThreshold;
+	protected static volatile Integer fileUploadSizeThreshold;
 
 	/**
 	 * Cache used for caching mode.
 	 */
-	private static volatile Cache cache;
+	protected static volatile Cache cache;
 }

@@ -42,6 +42,31 @@ public class GeneratedTextResourceAttributes extends ResourceContextualAttribute
 	// Attributes
 	//
 
+	@Override
+	public File getFileUploadDirectory()
+	{
+		if( fileUploadDirectory == null )
+		{
+			ConcurrentMap<String, Object> attributes = getAttributes();
+			fileUploadDirectory = (File) attributes.get( prefix + ".fileUploadDirectory" );
+
+			if( fileUploadDirectory == null )
+			{
+				DocumentSource<Executable> documentSource = getDocumentSource();
+				if( documentSource instanceof DocumentFileSource<?> )
+				{
+					fileUploadDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../../uploads/" );
+
+					File existing = (File) attributes.putIfAbsent( prefix + ".fileUploadDirectory", fileUploadDirectory );
+					if( existing != null )
+						fileUploadDirectory = existing;
+				}
+			}
+		}
+
+		return fileUploadDirectory;
+	}
+
 	/**
 	 * If the URL points to a directory rather than a file, and that directory
 	 * contains a file with this name, then it will be used. This allows you to

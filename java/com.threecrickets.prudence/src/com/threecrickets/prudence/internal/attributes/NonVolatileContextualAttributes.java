@@ -320,101 +320,101 @@ public abstract class NonVolatileContextualAttributes extends ContextualAttribut
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
-	// Private
+	// Protected
 
 	/**
 	 * The {@link Writer} used by the {@link Executable}.
 	 */
-	private Writer writer = new OutputStreamWriter( System.out );
+	protected Writer writer = new OutputStreamWriter( System.out );
 
 	/**
 	 * Same as {@link #writer}, for standard error.
 	 */
-	private Writer errorWriter = new OutputStreamWriter( System.err );
+	protected Writer errorWriter = new OutputStreamWriter( System.err );
 
 	/**
 	 * The document source.
 	 */
-	private DocumentSource<Executable> documentSource;
+	protected DocumentSource<Executable> documentSource;
 
 	/**
 	 * Executables might use these {@link DocumentSource} instances for
 	 * importing libraries.
 	 */
-	private Iterable<DocumentSource<Executable>> libraryDocumentSources;
+	protected Iterable<DocumentSource<Executable>> libraryDocumentSources;
 
 	/**
 	 * If the URL points to a directory rather than a file, and that directory
 	 * contains a file with this name, then it will be used.
 	 */
-	private String defaultName;
+	protected String defaultName;
 
 	/**
 	 * The default language tag to be used if the executable doesn't specify
 	 * one.
 	 */
-	private String defaultLanguageTag;
+	protected String defaultLanguageTag;
 
 	/**
 	 * Whether or not trailing slashes are required for all requests.
 	 */
-	private Boolean trailingSlashRequired;
+	protected Boolean trailingSlashRequired;
 
 	/**
 	 * The name of the global variable with which to access the document
 	 * service.
 	 */
-	private String documentServiceName;
+	protected String documentServiceName;
 
 	/**
 	 * The name of the global variable with which to access the application
 	 * service.
 	 */
-	private String applicationServiceName;
+	protected String applicationServiceName;
 
 	/**
 	 * The {@link LanguageManager} used to create the language adapters.
 	 */
-	private LanguageManager languageManager;
+	protected LanguageManager languageManager;
 
 	/**
 	 * Whether to prepare executables.
 	 */
-	private Boolean prepare;
+	protected Boolean prepare;
 
 	/**
 	 * An optional {@link ExecutionController} to be used with the scripts.
 	 */
-	private ExecutionController executionController;
+	protected ExecutionController executionController;
 
 	/**
 	 * This is so we can see the source code for scripts by adding
 	 * <code>?source=true</code> to the URL.
 	 */
-	private Boolean sourceViewable;
+	protected Boolean sourceViewable;
 
 	/**
 	 * The document formatter.
 	 */
-	private DocumentFormatter<Executable> documentFormatter;
+	protected DocumentFormatter<Executable> documentFormatter;
 
 	/**
 	 * The default character set to be used if the client does not specify it.
 	 */
-	private CharacterSet defaultCharacterSet;
+	protected CharacterSet defaultCharacterSet;
 
 	/**
 	 * The directory in which to place uploaded files.
 	 */
-	private File fileUploadDirectory;
+	protected File fileUploadDirectory;
 
 	/**
 	 * The size in bytes beyond which uploaded files will be stored to disk.
 	 */
-	private Integer fileUploadSizeThreshold;
+	protected Integer fileUploadSizeThreshold;
 
 	/**
 	 * Cache used for caching mode.
 	 */
-	private Cache cache;
+	protected Cache cache;
 }
