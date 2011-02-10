@@ -139,7 +139,7 @@ $language_manager = $executable->manager;
 
 $library_document_sources = new ArrayList(2);
 $library_document_sources->add(new DocumentFileSource($application_base . $libraries_base_path, $application_base . $libraries_base_path, $documents_default_name, 'php', $minimum_time_between_validity_checks));
-$library_document_sources->add(new DocumentFileSource($application_base . '/../../libraries/', $application_base . '/../../libraries/', $documents_default_name, 'php', $minimum_time_between_validity_checks);
+$library_document_sources->add(new DocumentFileSource($application_base . '/../../libraries/php/', $application_base . '/../../libraries/php/', $documents_default_name, 'php', $minimum_time_between_validity_checks);
 
 //
 // Dynamic web

@@ -120,7 +120,7 @@ languageManager = executable.manager
 
 libraryDocumentSources = [
 	new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks),
-	new DocumentFileSource(applicationBase + '/../../libraries/', applicationBasePath + '/../../libraries/', documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
+	new DocumentFileSource(applicationBase + '/../../libraries/groovy/', applicationBasePath + '/../../libraries/groovy/', documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
 ]
 
 //

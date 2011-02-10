@@ -109,7 +109,7 @@
 
 (def library-document-sources [
   (DocumentFileSource. (str application-base libraries-base-path) (str application-base libraries-base-path) documents-default-name "clj" minimum-time-between-validity-checks)
-  (DocumentFileSource. (str application-base "/../../libraries/") (str application-base "/../../libraries/") documents-default-name "clj" minimum-time-between-validity-checks)]
+  (DocumentFileSource. (str application-base "/../../libraries/clojure/") (str application-base "/../../libraries/clojure/") documents-default-name "clj" minimum-time-between-validity-checks)]
 
 ;
 ; Dynamic web

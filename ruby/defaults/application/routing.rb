@@ -120,7 +120,7 @@ $language_manager = $executable.manager
 
 $library_document_sources = [
 	DocumentFileSource.new($application_base + $libraries_base_path, $application_base + $libraries_base_path, $documents_default_name, 'rb', $minimum_time_between_validity_checks)
-	DocumentFileSource.new($application_base + '/../../libraries/', $application_base + '/../../libraries/', $documents_default_name, 'rb', $minimum_time_between_validity_checks)
+	DocumentFileSource.new($application_base + '/../../libraries/ruby/', $application_base + '/../../libraries/ruby/', $documents_default_name, 'rb', $minimum_time_between_validity_checks)
 ]
 
 #

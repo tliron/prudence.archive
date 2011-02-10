@@ -122,7 +122,7 @@ var languageManager = executable.manager
 
 var libraryDocumentSources = new ArrayList(2)
 libraryDocumentSources.add(new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'js', minimumTimeBetweenValidityChecks))
-libraryDocumentSources.add(new DocumentFileSource(applicationBase + '/../../libraries/', applicationBasePath + '/../../libraries/', documentsDefaultName, 'js', minimumTimeBetweenValidityChecks))
+libraryDocumentSources.add(new DocumentFileSource(applicationBase + '/../../libraries/javascript/', applicationBasePath + '/../../libraries/javascript/', documentsDefaultName, 'js', minimumTimeBetweenValidityChecks))
 
 //
 // Dynamic web
