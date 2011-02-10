@@ -90,8 +90,7 @@ def configure_common(prefix):
     application_globals[prefix + '.languageManager'] = language_manager
     application_globals[prefix + '.defaultName'] = documents_default_name
     application_globals[prefix + '.defaultLanguageTag'] = 'python'
-    application_globals[prefix + '.librariesDocumentSource'] = libraries_document_source
-    application_globals[prefix + '.commonLibrariesDocumentSource'] = common_libraries_document_source
+    application_globals[prefix + '.libraryDocumentSources'] = library_document_sources
     application_globals[prefix + '.fileUploadSizeThreshold'] = file_upload_size_threshold
     application_globals[prefix + '.sourceViewable'] = source_viewable
 

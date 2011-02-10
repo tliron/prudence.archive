@@ -33,7 +33,7 @@ global $application_internal_name, $application_logger_name, $application_base, 
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $show_debug_on_error, $show_source_code_url;
 global $hosts, $documents_default_name, $minimum_time_between_validity_checks;
-global $common_libraries_document_source, $libraries_document_source, $libraries_base_path;
+global $library_document_sources, $libraries_base_path;
 global $resources_base_url, $resources_base_path, $resources_defrost;
 global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_client_caching_mode;
 global $cache_key_pattern_handlers;
@@ -137,8 +137,9 @@ $language_manager = $executable->manager;
 // Libraries
 //
 
-$libraries_document_source = new DocumentFileSource($application_base . $libraries_base_path, $application_base . $libraries_base_path, $documents_default_name, 'php', $minimum_time_between_validity_checks)
-$common_libraries_document_source = new DocumentFileSource($application_base . '/../../libraries/', $application_base . '/../../libraries/', $documents_default_name, 'php', $minimum_time_between_validity_checks)
+$library_document_sources = new ArrayList(2);
+$library_document_sources->add(new DocumentFileSource($application_base . $libraries_base_path, $application_base . $libraries_base_path, $documents_default_name, 'php', $minimum_time_between_validity_checks));
+$library_document_sources->add(new DocumentFileSource($application_base . '/../../libraries/', $application_base . '/../../libraries/', $documents_default_name, 'php', $minimum_time_between_validity_checks);
 
 //
 // Dynamic web
@@ -201,7 +202,7 @@ if($resources_defrost) {
 //
 
 if($show_debug_on_error) {
-	$document_sources = new ArrayList();
+	$document_sources = new ArrayList(2);
 	$document_sources->add($dynamic_web_document_source);
 	$document_sources->add($resources_document_source);
 	$application_globals['com.threecrickets.prudence.SourceCodeResource.documentSources'] = $document_sources;

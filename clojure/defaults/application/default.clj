@@ -92,8 +92,7 @@
  (.put application-globals (str prefix ".languageManager") language-manager)
  (.put application-globals (str prefix ".defaultName") documents-default-name)
  (.put application-globals (str prefix ".defaultLanguageTag") "clojure")
- (.put application-globals (str prefix ".librariesDocumentSource") libraries-document-source)
- (.put application-globals (str prefix ".commonLibrariesDocumentSource") common-libraries-document-source)
+ (.put application-globals (str prefix ".libraryDocumentSources") library-document-sources)
  (.put application-globals (str prefix ".fileUploadSizeThreshold") file-upload-size-threshold)
  (.put application-globals (str prefix ".sourceViewable") source-viewable))
 

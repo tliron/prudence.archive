@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.internal.attributes;
 
 import org.restlet.Context;
 import org.restlet.resource.ResourceException;
@@ -17,7 +17,6 @@ import org.restlet.resource.ResourceException;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.LanguageManager;
-import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentSource;
 
 public interface DocumentExecutionAttributes
@@ -72,32 +71,38 @@ public interface DocumentExecutionAttributes
 	public boolean isPrepare();
 
 	/**
-	 * Executables might use this directory for importing libraries. If the
-	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
-	 * will default to the {@link DocumentFileSource#getBasePath()} plus
-	 * "../libraries/".
+	 * Executables might use these document sources for importing libraries.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>libraryDirectory</code> in the application's {@link Context}.
+	 * <code>libraryDocumentSources</code> in the application's {@link Context}.
 	 * 
 	 * @return The library directory or null
 	 * @see ExecutionContext#getLibraryLocations()
 	 */
-	public DocumentSource<Executable> getLibrariesDocumentSource();
+	public Iterable<DocumentSource<Executable>> getLibraryDocumentSources();
 
 	/**
-	 * Executables from all applications might use this directory for importing
-	 * libraries. If the {@link #getDocumentSource()} is a
-	 * {@link DocumentFileSource}, then this will default to the
-	 * {@link DocumentFileSource#getBasePath()} plus "../../../libraries/".
+	 * If the URL points to a directory rather than a file, and that directory
+	 * contains a file with this name, then it will be used. This allows you to
+	 * use the directory structure to create nice URLs without relying on
+	 * filenames. Defaults to "default".
 	 * <p>
 	 * This setting can be configured by setting an attribute named
-	 * <code>commonLibraryDirectory</code> in the application's {@link Context}.
+	 * <code>defaultName</code> in the application's {@link Context}.
 	 * 
-	 * @return The common library directory or null
-	 * @see ExecutionContext#getLibraryLocations()
+	 * @return The default name
 	 */
-	public DocumentSource<Executable> getCommonLibrariesDocumentSource();
+	public String getDefaultName();
+
+	/**
+	 * Whether or not trailing slashes are required. Defaults to true.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>trailingSlashRequired</code> in the application's {@link Context}.
+	 * 
+	 * @return Whether to allow client caching
+	 */
+	public boolean isTrailingSlashRequired();
 
 	//
 	// Operations
@@ -114,4 +119,18 @@ public interface DocumentExecutionAttributes
 	 * @throws ResourceException
 	 */
 	public String validateDocumentName( String documentName );
+
+	/**
+	 * Throws an exception if the document name is invalid. Uses the default
+	 * given document name if no name is given, and respects
+	 * {@link #isTrailingSlashRequired()}.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @param defaultDocumentName
+	 *        The default document name
+	 * @return The valid document name
+	 * @throws ResourceException
+	 */
+	public String validateDocumentName( String documentName, String defaultDocumentName ) throws ResourceException;
 }

@@ -107,8 +107,9 @@
 ; Libraries
 ;
 
-(def libraries-document-source (DocumentFileSource. (str application-base libraries-base-path) (str application-base libraries-base-path) documents-default-name "clj" minimum-time-between-validity-checks))
-(def common-libraries-document-source (DocumentFileSource. (str application-base "/../../libraries/") (str application-base "/../../libraries/") documents-default-name "clj" minimum-time-between-validity-checks))
+(def library-document-sources [
+  (DocumentFileSource. (str application-base libraries-base-path) (str application-base libraries-base-path) documents-default-name "clj" minimum-time-between-validity-checks)
+  (DocumentFileSource. (str application-base "/../../libraries/") (str application-base "/../../libraries/") documents-default-name "clj" minimum-time-between-validity-checks)]
 
 ;
 ; Dynamic web

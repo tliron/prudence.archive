@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.internal.attributes;
 
 import java.io.File;
 import java.io.Writer;
@@ -79,29 +79,6 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 	 * @return The error writer
 	 */
 	public abstract Writer getErrorWriter();
-
-	/**
-	 * If the URL points to a directory rather than a file, and that directory
-	 * contains a file with this name, then it will be used. This allows you to
-	 * use the directory structure to create nice URLs without relying on
-	 * filenames. Defaults to "default".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>defaultName</code> in the application's {@link Context}.
-	 * 
-	 * @return The default name
-	 */
-	public abstract String getDefaultName();
-
-	/**
-	 * Whether or not trailing slashes are required. Defaults to true.
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>trailingSlashRequired</code> in the application's {@link Context}.
-	 * 
-	 * @return Whether to allow client caching
-	 */
-	public abstract boolean isTrailingSlashRequired();
 
 	/**
 	 * The name of the global variable with which to access the document
@@ -216,21 +193,18 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 
 	public void addLibraryLocations( ExecutionContext executionContext )
 	{
-		// Add library locations
-		DocumentSource<Executable> source = getLibrariesDocumentSource();
-		if( source instanceof DocumentFileSource<?> )
+		Iterable<DocumentSource<Executable>> sources = getLibraryDocumentSources();
+		if( sources != null )
 		{
-			File libraryDirectory = ( (DocumentFileSource<Executable>) source ).getBasePath();
-			if( libraryDirectory != null )
-				executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
-		}
-
-		source = getCommonLibrariesDocumentSource();
-		if( source instanceof DocumentFileSource<?> )
-		{
-			File libraryDirectory = ( (DocumentFileSource<Executable>) source ).getBasePath();
-			if( libraryDirectory != null )
-				executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
+			for( DocumentSource<Executable> source : sources )
+			{
+				if( source instanceof DocumentFileSource<?> )
+				{
+					File libraryDirectory = ( (DocumentFileSource<Executable>) source ).getBasePath();
+					if( libraryDirectory != null )
+						executionContext.getLibraryLocations().add( libraryDirectory.toURI() );
+				}
+			}
 		}
 	}
 
@@ -243,18 +217,6 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 		return validateDocumentName( documentName, getDefaultName() );
 	}
 
-	/**
-	 * Throws an exception if the document name is invalid. Uses the default
-	 * given document name if no name is given, and respects
-	 * {@link #isTrailingSlashRequired()}.
-	 * 
-	 * @param documentName
-	 *        The document name
-	 * @param defaultDocumentName
-	 *        The default document name
-	 * @return The valid document name
-	 * @throws ResourceException
-	 */
 	public String validateDocumentName( String documentName, String defaultDocumentName ) throws ResourceException
 	{
 		if( isTrailingSlashRequired() )

@@ -22,7 +22,7 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
-import com.threecrickets.prudence.internal.SourceCodeResourceAttributes;
+import com.threecrickets.prudence.internal.attributes.SourceCodeResourceAttributes;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFormatter;

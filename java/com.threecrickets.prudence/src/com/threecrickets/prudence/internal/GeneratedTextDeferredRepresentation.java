@@ -73,7 +73,7 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 	 * @param conversationService
 	 *        The conversation service
 	 * @param delay
-	 *        Delay in millseconds before committing response (for concurrency
+	 *        Delay in milliseconds before committing response (for concurrency
 	 *        testing purposes)
 	 */
 	public GeneratedTextDeferredRepresentation( GeneratedTextResource resource, Executable executable, ExecutionContext executionContext, GeneratedTextResourceDocumentService documentService,

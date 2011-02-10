@@ -17,7 +17,7 @@ import java.io.Writer;
 import org.restlet.Application;
 import org.restlet.Context;
 
-import com.threecrickets.prudence.internal.ApplicationTaskAttributes;
+import com.threecrickets.prudence.internal.attributes.ApplicationTaskAttributes;
 import com.threecrickets.prudence.service.ApplicationService;
 import com.threecrickets.prudence.service.DocumentService;
 import com.threecrickets.scripturian.Executable;

@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.internal.attributes;
 
 import org.restlet.Context;
 

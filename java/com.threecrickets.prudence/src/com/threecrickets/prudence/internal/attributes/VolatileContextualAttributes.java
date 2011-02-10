@@ -9,7 +9,7 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.internal.attributes;
 
 import java.io.File;
 import java.io.OutputStreamWriter;
@@ -20,6 +20,7 @@ import org.restlet.Context;
 import org.restlet.data.CharacterSet;
 
 import com.threecrickets.prudence.cache.Cache;
+import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageManager;
@@ -27,7 +28,7 @@ import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
 
-public abstract class NonVolatileContextualAttributes extends ContextualAttributes
+public abstract class VolatileContextualAttributes extends ContextualAttributes
 {
 	//
 	// Construction
@@ -39,7 +40,7 @@ public abstract class NonVolatileContextualAttributes extends ContextualAttribut
 	 * @param prefix
 	 *        The prefix for attribute keys
 	 */
-	public NonVolatileContextualAttributes( String prefix )
+	public VolatileContextualAttributes( String prefix )
 	{
 		super( prefix );
 	}
@@ -91,24 +92,14 @@ public abstract class NonVolatileContextualAttributes extends ContextualAttribut
 	}
 
 	@SuppressWarnings("unchecked")
-	public DocumentSource<Executable> getLibrariesDocumentSource()
+	public Iterable<DocumentSource<Executable>> getLibraryDocumentSources()
 	{
-		if( librariesDocumentSource == null )
-			librariesDocumentSource = (DocumentSource<Executable>) getAttributes().get( prefix + ".librariesDocumentSource" );
+		if( libraryDocumentSources == null )
+			libraryDocumentSources = (Iterable<DocumentSource<Executable>>) getAttributes().get( prefix + ".libraryDocumentSources" );
 
-		return librariesDocumentSource;
+		return libraryDocumentSources;
 	}
 
-	@SuppressWarnings("unchecked")
-	public DocumentSource<Executable> getCommonLibrariesDocumentSource()
-	{
-		if( commonLibrariesDocumentSource == null )
-			commonLibrariesDocumentSource = (DocumentSource<Executable>) getAttributes().get( prefix + ".commonLibrariesDocumentSource" );
-
-		return commonLibrariesDocumentSource;
-	}
-
-	@Override
 	public String getDefaultName()
 	{
 		if( defaultName == null )
@@ -144,7 +135,6 @@ public abstract class NonVolatileContextualAttributes extends ContextualAttribut
 		return defaultLanguageTag;
 	}
 
-	@Override
 	public boolean isTrailingSlashRequired()
 	{
 		if( trailingSlashRequired == null )
@@ -335,102 +325,96 @@ public abstract class NonVolatileContextualAttributes extends ContextualAttribut
 	/**
 	 * The {@link Writer} used by the {@link Executable}.
 	 */
-	private Writer writer = new OutputStreamWriter( System.out );
+	private volatile Writer writer = new OutputStreamWriter( System.out );
 
 	/**
 	 * Same as {@link #writer}, for standard error.
 	 */
-	private Writer errorWriter = new OutputStreamWriter( System.err );
+	private volatile Writer errorWriter = new OutputStreamWriter( System.err );
 
 	/**
 	 * The document source.
 	 */
-	private DocumentSource<Executable> documentSource;
+	private volatile DocumentSource<Executable> documentSource;
 
 	/**
-	 * Executables might use directory this {@link DocumentSource} for importing
-	 * libraries.
+	 * Executables might use these {@link DocumentSource} instances for
+	 * importing libraries.
 	 */
-	private DocumentSource<Executable> librariesDocumentSource;
-
-	/**
-	 * Executables from all applications might use this {@link DocumentSource}
-	 * for importing libraries.
-	 */
-	private DocumentSource<Executable> commonLibrariesDocumentSource;
+	private volatile Iterable<DocumentSource<Executable>> libraryDocumentSources;
 
 	/**
 	 * If the URL points to a directory rather than a file, and that directory
 	 * contains a file with this name, then it will be used.
 	 */
-	private String defaultName;
+	private volatile String defaultName;
 
 	/**
 	 * The default language tag to be used if the executable doesn't specify
 	 * one.
 	 */
-	private String defaultLanguageTag;
+	private volatile String defaultLanguageTag;
 
 	/**
 	 * Whether or not trailing slashes are required for all requests.
 	 */
-	private Boolean trailingSlashRequired;
+	private volatile Boolean trailingSlashRequired;
 
 	/**
 	 * The name of the global variable with which to access the document
 	 * service.
 	 */
-	private String documentServiceName;
+	private volatile String documentServiceName;
 
 	/**
 	 * The name of the global variable with which to access the application
 	 * service.
 	 */
-	private String applicationServiceName;
+	private volatile String applicationServiceName;
 
 	/**
 	 * The {@link LanguageManager} used to create the language adapters.
 	 */
-	private LanguageManager languageManager;
+	private volatile LanguageManager languageManager;
 
 	/**
 	 * Whether to prepare executables.
 	 */
-	private Boolean prepare;
+	private volatile Boolean prepare;
 
 	/**
 	 * An optional {@link ExecutionController} to be used with the scripts.
 	 */
-	private ExecutionController executionController;
+	private volatile ExecutionController executionController;
 
 	/**
 	 * This is so we can see the source code for scripts by adding
 	 * <code>?source=true</code> to the URL.
 	 */
-	private Boolean sourceViewable;
+	private volatile Boolean sourceViewable;
 
 	/**
 	 * The document formatter.
 	 */
-	private DocumentFormatter<Executable> documentFormatter;
+	private volatile DocumentFormatter<Executable> documentFormatter;
 
 	/**
 	 * The default character set to be used if the client does not specify it.
 	 */
-	private CharacterSet defaultCharacterSet;
+	private volatile CharacterSet defaultCharacterSet;
 
 	/**
 	 * The directory in which to place uploaded files.
 	 */
-	private File fileUploadDirectory;
+	private static volatile File fileUploadDirectory;
 
 	/**
 	 * The size in bytes beyond which uploaded files will be stored to disk.
 	 */
-	private Integer fileUploadSizeThreshold;
+	private static volatile Integer fileUploadSizeThreshold;
 
 	/**
 	 * Cache used for caching mode.
 	 */
-	private Cache cache;
+	private static volatile Cache cache;
 }

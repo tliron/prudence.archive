@@ -9,13 +9,15 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.internal.lazy;
 
 import java.util.HashMap;
-import java.util.Map;
+
+import org.restlet.Request;
+import org.restlet.data.Cookie;
 
 /**
- * A PHP-style $_REQUEST map.
+ * A PHP-style $_COOKIE map.
  * <p>
  * See PHP's <a
  * href="http://www.php.net/manual/en/reserved.variables.php">predefined
@@ -23,7 +25,7 @@ import java.util.Map;
  * 
  * @author Tal Liron
  */
-public class LazyInitializationRequest extends LazyInitializationMap<String, String>
+public class LazyInitializationCookie extends LazyInitializationMap<String, String>
 {
 	//
 	// Construction
@@ -32,19 +34,13 @@ public class LazyInitializationRequest extends LazyInitializationMap<String, Str
 	/**
 	 * Construction.
 	 * 
-	 * @param getMap
-	 *        The get map to use
-	 * @param postMap
-	 *        The post map to use
-	 * @param cookieMap
-	 *        The cookie map to use
+	 * @param request
+	 *        The request
 	 */
-	public LazyInitializationRequest( Map<String, String> getMap, Map<String, String> postMap, Map<String, String> cookieMap )
+	public LazyInitializationCookie( Request request )
 	{
 		super( new HashMap<String, String>() );
-		this.getMap = getMap;
-		this.postMap = postMap;
-		this.cookieMap = cookieMap;
+		this.request = request;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -57,26 +53,15 @@ public class LazyInitializationRequest extends LazyInitializationMap<String, Str
 	@Override
 	protected void initialize()
 	{
-		map.putAll( getMap );
-		map.putAll( postMap );
-		map.putAll( cookieMap );
+		for( Cookie cookie : request.getCookies() )
+			map.put( cookie.getName(), cookie.getValue() );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
 	/**
-	 * The get map to use.
+	 * The request.
 	 */
-	private final Map<String, String> getMap;
-
-	/**
-	 * The post map to use.
-	 */
-	private final Map<String, String> postMap;
-
-	/**
-	 * The cookie map to use.
-	 */
-	private final Map<String, String> cookieMap;
+	private final Request request;
 }

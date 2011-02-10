@@ -120,8 +120,9 @@ var languageManager = executable.manager
 // Libraries
 //
 
-var librariesDocumentSource = new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'js', minimumTimeBetweenValidityChecks)
-var commonLibrariesDocumentSource = new DocumentFileSource(applicationBase + '/../../libraries/', applicationBasePath + '/../../libraries/', documentsDefaultName, 'js', minimumTimeBetweenValidityChecks)
+var libraryDocumentSources = new ArrayList(2)
+libraryDocumentSources.add(new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'js', minimumTimeBetweenValidityChecks))
+libraryDocumentSources.add(new DocumentFileSource(applicationBase + '/../../libraries/', applicationBasePath + '/../../libraries/', documentsDefaultName, 'js', minimumTimeBetweenValidityChecks))
 
 //
 // Dynamic web
@@ -184,7 +185,7 @@ if(resourcesDefrost) {
 //
 
 if(showDebugOnError) {
-	var documentSources = new ArrayList()
+	var documentSources = new ArrayList(2)
 	documentSources.add(dynamicWebDocumentSource)
 	documentSources.add(resourcesDocumentSource)
 	applicationGlobals.put('com.threecrickets.prudence.SourceCodeResource.documentSources', documentSources)

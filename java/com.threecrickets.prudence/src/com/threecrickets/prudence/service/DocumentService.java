@@ -13,6 +13,7 @@ package com.threecrickets.prudence.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
@@ -23,7 +24,7 @@ import org.restlet.data.Preference;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 
-import com.threecrickets.prudence.internal.DocumentExecutionAttributes;
+import com.threecrickets.prudence.internal.attributes.DocumentExecutionAttributes;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFileSource;
@@ -287,37 +288,38 @@ public class DocumentService
 	{
 		documentName = attributes.validateDocumentName( documentName );
 
-		DocumentNotFoundException x;
+		DocumentNotFoundException x = null;
+		Iterator<DocumentSource<Executable>> iterator = null;
 
-		try
+		DocumentSource<Executable> source = getSource();
+		while( source != null )
 		{
-			return Executable.createOnce( documentName, getSource(), false, attributes.getLanguageManager(), attributes.getDefaultLanguageTag(), attributes.isPrepare() );
-		}
-		catch( DocumentNotFoundException xx )
-		{
-			x = xx;
-
-			// Try the library source
-			DocumentSource<Executable> source = attributes.getLibrariesDocumentSource();
-			if( source != null )
+			try
 			{
-				try
-				{
-					return Executable.createOnce( documentName, source, false, attributes.getLanguageManager(), attributes.getDefaultLanguageTag(), attributes.isPrepare() );
-				}
-				catch( DocumentNotFoundException xxx )
-				{
-					x = xxx;
-				}
-			}
-
-			// Try the common library source
-			source = attributes.getCommonLibrariesDocumentSource();
-			if( source != null )
 				return Executable.createOnce( documentName, source, false, attributes.getLanguageManager(), attributes.getDefaultLanguageTag(), attributes.isPrepare() );
+			}
+			catch( DocumentNotFoundException xx )
+			{
+				x = xx;
+
+				source = null;
+
+				if( iterator == null )
+				{
+					Iterable<DocumentSource<Executable>> sources = attributes.getLibraryDocumentSources();
+					if( sources != null )
+						iterator = sources.iterator();
+				}
+
+				if( ( iterator != null ) && iterator.hasNext() )
+					source = iterator.next();
+			}
 		}
 
-		throw x;
+		if( x != null )
+			throw x;
+		else
+			throw new DocumentNotFoundException( documentName );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

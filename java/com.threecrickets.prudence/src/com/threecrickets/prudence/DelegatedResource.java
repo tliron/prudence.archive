@@ -36,8 +36,8 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.cache.Cache;
-import com.threecrickets.prudence.internal.DelegatedResourceAttributes;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
+import com.threecrickets.prudence.internal.attributes.DelegatedResourceAttributes;
 import com.threecrickets.prudence.service.ApplicationService;
 import com.threecrickets.prudence.service.DelegatedResourceConversationService;
 import com.threecrickets.prudence.service.DelegatedResourceDocumentService;

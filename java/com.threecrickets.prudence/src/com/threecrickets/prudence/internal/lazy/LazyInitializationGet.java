@@ -9,15 +9,17 @@
  * at http://threecrickets.com/
  */
 
-package com.threecrickets.prudence.internal;
+package com.threecrickets.prudence.internal.lazy;
 
 import java.util.HashMap;
 
 import org.restlet.Request;
-import org.restlet.data.Cookie;
+import org.restlet.data.Form;
+import org.restlet.data.Method;
+import org.restlet.data.Parameter;
 
 /**
- * A PHP-style $_COOKIE map.
+ * A PHP-style $_GET map.
  * <p>
  * See PHP's <a
  * href="http://www.php.net/manual/en/reserved.variables.php">predefined
@@ -25,7 +27,7 @@ import org.restlet.data.Cookie;
  * 
  * @author Tal Liron
  */
-public class LazyInitializationCookie extends LazyInitializationMap<String, String>
+public class LazyInitializationGet extends LazyInitializationMap<String, String>
 {
 	//
 	// Construction
@@ -37,7 +39,7 @@ public class LazyInitializationCookie extends LazyInitializationMap<String, Stri
 	 * @param request
 	 *        The request
 	 */
-	public LazyInitializationCookie( Request request )
+	public LazyInitializationGet( Request request )
 	{
 		super( new HashMap<String, String>() );
 		this.request = request;
@@ -53,8 +55,12 @@ public class LazyInitializationCookie extends LazyInitializationMap<String, Stri
 	@Override
 	protected void initialize()
 	{
-		for( Cookie cookie : request.getCookies() )
-			map.put( cookie.getName(), cookie.getValue() );
+		if( request.getMethod().equals( Method.GET ) )
+		{
+			Form form = request.getResourceRef().getQueryAsForm();
+			for( Parameter parameter : form )
+				map.put( parameter.getName(), parameter.getValue() );
+		}
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

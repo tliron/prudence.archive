@@ -13,7 +13,7 @@ package com.threecrickets.prudence.service;
 
 import org.restlet.resource.ServerResource;
 
-import com.threecrickets.prudence.internal.ResourceContextualAttributes;
+import com.threecrickets.prudence.internal.attributes.ResourceContextualAttributes;
 
 /**
  * Document service exposed to executables.

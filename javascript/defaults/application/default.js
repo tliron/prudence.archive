@@ -95,8 +95,7 @@ function configureCommon(prefix) {
 	applicationGlobals.put(prefix + '.languageManager', languageManager)
 	applicationGlobals.put(prefix + '.defaultName', documentsDefaultName)
 	applicationGlobals.put(prefix + '.defaultLanguageTag', 'javascript')
-	applicationGlobals.put(prefix + '.librariesDocumentSource', librariesDocumentSource)
-	applicationGlobals.put(prefix + '.commonLibrariesDocumentSource', commonLibrariesDocumentSource)
+	applicationGlobals.put(prefix + '.libraryDocumentSources', libraryDocumentSources)
 	applicationGlobals.put(prefix + '.fileUploadSizeThreshold', fileUploadSizeThreshold)
 	applicationGlobals.put(prefix + '.sourceViewable', sourceViewable)
 }

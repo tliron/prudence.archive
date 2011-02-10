@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.restlet.Context;
 import org.restlet.resource.ResourceException;
 
-import com.threecrickets.prudence.internal.DelegatedHandlerAttributes;
+import com.threecrickets.prudence.internal.attributes.DelegatedHandlerAttributes;
 import com.threecrickets.prudence.service.ApplicationService;
 import com.threecrickets.prudence.service.ConversationService;
 import com.threecrickets.prudence.service.DocumentService;

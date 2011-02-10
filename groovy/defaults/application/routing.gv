@@ -118,8 +118,10 @@ languageManager = executable.manager
 // Libraries
 //
 
-librariesDocumentSource = new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
-commonLibrariesDocumentSource = new DocumentFileSource(applicationBase + '/../../libraries/', applicationBasePath + '/../../libraries/', documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
+libraryDocumentSources = [
+	new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks),
+	new DocumentFileSource(applicationBase + '/../../libraries/', applicationBasePath + '/../../libraries/', documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
+]
 
 //
 // Dynamic web

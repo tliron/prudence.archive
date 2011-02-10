@@ -102,8 +102,10 @@ language_manager = executable.manager
 # Libraries
 #
 
-libraries_document_source = DocumentFileSource(application_base + libraries_base_path, application_base + libraries_base_path, documents_default_name, 'py', minimum_time_between_validity_checks)
-common_libraries_document_source = DocumentFileSource(application_base + '/../../libraries/', application_base + '/../../libraries/', documents_default_name, 'py', minimum_time_between_validity_checks)
+library_document_sources = [
+	DocumentFileSource(application_base + libraries_base_path, application_base + libraries_base_path, documents_default_name, 'py', minimum_time_between_validity_checks),
+	DocumentFileSource(application_base + '/../../libraries/', application_base + '/../../libraries/', documents_default_name, 'py', minimum_time_between_validity_checks)
+]
 
 #
 # Dynamic web

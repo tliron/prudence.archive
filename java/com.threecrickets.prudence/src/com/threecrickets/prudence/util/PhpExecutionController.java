@@ -18,11 +18,11 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.restlet.Request;
 
-import com.threecrickets.prudence.internal.LazyInitializationCookie;
-import com.threecrickets.prudence.internal.LazyInitializationFile;
-import com.threecrickets.prudence.internal.LazyInitializationGet;
-import com.threecrickets.prudence.internal.LazyInitializationPost;
-import com.threecrickets.prudence.internal.LazyInitializationRequest;
+import com.threecrickets.prudence.internal.lazy.LazyInitializationCookie;
+import com.threecrickets.prudence.internal.lazy.LazyInitializationFile;
+import com.threecrickets.prudence.internal.lazy.LazyInitializationGet;
+import com.threecrickets.prudence.internal.lazy.LazyInitializationPost;
+import com.threecrickets.prudence.internal.lazy.LazyInitializationRequest;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.exception.ExecutionException;

@@ -96,8 +96,7 @@ configureCommon = { prefix ->
 	applicationGlobals[prefix + '.languageManager'] = languageManager
 	applicationGlobals[prefix + '.defaultName'] = documentsDefaultName
 	applicationGlobals[prefix + '.defaultLanguageTag'] = 'groovy'
-	applicationGlobals[prefix + '.librariesDocumentSource'] = librariesDocumentSource
-	applicationGlobals[prefix + '.commonLibrariesDocumentSource'] = commonLibrariesDocumentSource
+	applicationGlobals[prefix + '.libraryDocumentSources'] = libraryDocumentSources
 	applicationGlobals[prefix + '.fileUploadSizeThreshold'] = fileUploadSizeThreshold
 	applicationGlobals[prefix + '.sourceViewable'] = sourceViewable
 }
