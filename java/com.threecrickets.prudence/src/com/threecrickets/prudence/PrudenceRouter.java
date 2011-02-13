@@ -382,6 +382,25 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
+	 * As {@link #capture(String, String)}, but enforces matching mode
+	 * {@link Template#MODE_STARTS_WITH}.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param internalUriTemplate
+	 *        The internal URI path to which we will redirect
+	 * @return The created route
+	 * @see CaptiveRedirector
+	 */
+	public Route captureBase( String uriTemplate, String internalUriTemplate )
+	{
+		Route route = capture( uriTemplate, internalUriTemplate );
+		route.setMatchingMode( Template.MODE_STARTS_WITH );
+		return route;
+	}
+
+	/**
 	 * Shortcut for calling {@link #capture(String, String)} and
 	 * {@link #hide(String)}.
 	 * 
