@@ -17,7 +17,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -32,6 +35,7 @@ import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 import org.restlet.routing.Template;
 
+import com.threecrickets.prudence.DelegatedCacheKeyPatternHandler;
 import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.CacheEntry;
@@ -475,6 +479,57 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			return cacheKey;
 	}
 
+	private void callCacheKeyPatternHandlers( Template template, DocumentDescriptor<Executable> documentDescriptor )
+	{
+		Map<String, String> resourceCacheKeyPatternHandlers = resource.getAttributes().getCacheKeyPatternHandlers();
+		Map<String, String> documentCacheKeyPatternHandlers = getCacheKeyPatternHandlers( documentDescriptor.getDocument(), false );
+
+		// Make sure we have handlers
+		if( ( ( resourceCacheKeyPatternHandlers == null ) || resourceCacheKeyPatternHandlers.isEmpty() ) && ( ( documentCacheKeyPatternHandlers == null ) || documentCacheKeyPatternHandlers.isEmpty() ) )
+			return;
+
+		// Merge all handlers
+		Map<String, String> cacheKeyPatternHandlers = new HashMap<String, String>();
+		if( resourceCacheKeyPatternHandlers != null )
+			cacheKeyPatternHandlers.putAll( resourceCacheKeyPatternHandlers );
+		if( documentCacheKeyPatternHandlers != null )
+			cacheKeyPatternHandlers.putAll( documentCacheKeyPatternHandlers );
+
+		// Group variables together per handler
+		Map<String, Set<String>> delegatedHandlers = new HashMap<String, Set<String>>();
+		List<String> variableNames = template.getVariableNames();
+		for( Map.Entry<String, String> entry : cacheKeyPatternHandlers.entrySet() )
+		{
+			String name = entry.getKey();
+			String documentName = entry.getValue();
+
+			if( variableNames.contains( name ) )
+			{
+				Set<String> variables = delegatedHandlers.get( documentName );
+				if( variables == null )
+				{
+					variables = new HashSet<String>();
+					delegatedHandlers.put( documentName, variables );
+				}
+
+				variables.add( name );
+			}
+		}
+
+		// Call handlers
+		if( !delegatedHandlers.isEmpty() )
+		{
+			for( Map.Entry<String, Set<String>> entry : delegatedHandlers.entrySet() )
+			{
+				String documentName = entry.getKey();
+				String[] variableNamesArray = entry.getValue().toArray( new String[] {} );
+
+				DelegatedCacheKeyPatternHandler delegatedHandler = new DelegatedCacheKeyPatternHandler( documentName, resource.getContext() );
+				delegatedHandler.handleCacheKeyPattern( variableNamesArray );
+			}
+		}
+	}
+
 	/**
 	 * Casts the cache key pattern for an executable.
 	 * 
@@ -499,7 +554,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			CacheKeyPatternResolver resolver = new CacheKeyPatternResolver( documentDescriptor, resource, conversationService, request, response );
 
 			// Cache key pattern handlers
-			resolver.callHandlers( template, getCacheKeyPatternHandlers( documentDescriptor.getDocument(), false ) );
+			callCacheKeyPatternHandlers( template, documentDescriptor );
 
 			// Use captive reference as the resource reference
 			Reference captiveReference = CaptiveRedirector.getCaptiveReference( request );

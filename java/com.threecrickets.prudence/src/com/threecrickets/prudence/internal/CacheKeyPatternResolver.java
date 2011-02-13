@@ -11,15 +11,8 @@
 
 package com.threecrickets.prudence.internal;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.restlet.Request;
 import org.restlet.Response;
-import org.restlet.routing.Template;
 import org.restlet.util.Resolver;
 
 import com.threecrickets.prudence.DelegatedCacheKeyPatternHandler;
@@ -29,8 +22,7 @@ import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 
 /**
- * Resolves a few special Prudence variables, and also supports calling the
- * cache key pattern handlers.
+ * Resolves a few special Prudence variables.
  * 
  * @author Tal Liron
  * @see DelegatedCacheKeyPatternHandler
@@ -57,60 +49,6 @@ public class CacheKeyPatternResolver extends Resolver<Object>
 		this.resource = resource;
 		this.conversationService = conversationService;
 		this.callResolver = callResolver;
-	}
-
-	//
-	// Operations
-	//
-
-	public void callHandlers( Template template, Map<String, String> documentCacheKeyPatternHandlers )
-	{
-		Map<String, String> resourceCacheKeyPatternHandlers = resource.getAttributes().getCacheKeyPatternHandlers();
-
-		// Make sure we have handlers
-		if( ( ( resourceCacheKeyPatternHandlers == null ) || resourceCacheKeyPatternHandlers.isEmpty() ) && ( ( documentCacheKeyPatternHandlers == null ) || documentCacheKeyPatternHandlers.isEmpty() ) )
-			return;
-
-		// Merge all handlers
-		Map<String, String> cacheKeyPatternHandlers = new HashMap<String, String>();
-		if( resourceCacheKeyPatternHandlers != null )
-			cacheKeyPatternHandlers.putAll( resourceCacheKeyPatternHandlers );
-		if( documentCacheKeyPatternHandlers != null )
-			cacheKeyPatternHandlers.putAll( documentCacheKeyPatternHandlers );
-
-		// Group variables together per handler
-		Map<String, Set<String>> delegatedHandlers = new HashMap<String, Set<String>>();
-		List<String> variableNames = template.getVariableNames();
-		for( Map.Entry<String, String> entry : cacheKeyPatternHandlers.entrySet() )
-		{
-			String name = entry.getKey();
-			String documentName = entry.getValue();
-
-			if( variableNames.contains( name ) )
-			{
-				Set<String> variables = delegatedHandlers.get( documentName );
-				if( variables == null )
-				{
-					variables = new HashSet<String>();
-					delegatedHandlers.put( documentName, variables );
-				}
-
-				variables.add( name );
-			}
-		}
-
-		// Call handlers
-		if( !delegatedHandlers.isEmpty() )
-		{
-			for( Map.Entry<String, Set<String>> entry : delegatedHandlers.entrySet() )
-			{
-				String documentName = entry.getKey();
-				String[] variableNamesArray = entry.getValue().toArray( new String[] {} );
-
-				DelegatedCacheKeyPatternHandler delegatedHandler = new DelegatedCacheKeyPatternHandler( documentName, resource.getContext() );
-				delegatedHandler.handleCacheKeyPattern( variableNamesArray );
-			}
-		}
 	}
 
 	//
