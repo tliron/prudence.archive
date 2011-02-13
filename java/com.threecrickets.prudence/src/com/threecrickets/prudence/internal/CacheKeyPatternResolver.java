@@ -29,7 +29,11 @@ import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 
 /**
+ * Resolves a few special Prudence variables, and also supports calling the
+ * cache key pattern handlers.
+ * 
  * @author Tal Liron
+ * @see DelegatedCacheKeyPatternHandler
  */
 public class CacheKeyPatternResolver extends Resolver<Object>
 {
@@ -63,10 +67,9 @@ public class CacheKeyPatternResolver extends Resolver<Object>
 	{
 		Map<String, String> resourceCacheKeyPatternHandlers = resource.getAttributes().getCacheKeyPatternHandlers();
 
+		// Make sure we have handlers
 		if( ( ( resourceCacheKeyPatternHandlers == null ) || resourceCacheKeyPatternHandlers.isEmpty() ) && ( ( documentCacheKeyPatternHandlers == null ) || documentCacheKeyPatternHandlers.isEmpty() ) )
 			return;
-
-		List<String> variableNames = template.getVariableNames();
 
 		// Merge all handlers
 		Map<String, String> cacheKeyPatternHandlers = new HashMap<String, String>();
@@ -77,10 +80,12 @@ public class CacheKeyPatternResolver extends Resolver<Object>
 
 		// Group variables together per handler
 		Map<String, Set<String>> delegatedHandlers = new HashMap<String, Set<String>>();
+		List<String> variableNames = template.getVariableNames();
 		for( Map.Entry<String, String> entry : cacheKeyPatternHandlers.entrySet() )
 		{
 			String name = entry.getKey();
 			String documentName = entry.getValue();
+
 			if( variableNames.contains( name ) )
 			{
 				Set<String> variables = delegatedHandlers.get( documentName );
@@ -89,6 +94,7 @@ public class CacheKeyPatternResolver extends Resolver<Object>
 					variables = new HashSet<String>();
 					delegatedHandlers.put( documentName, variables );
 				}
+
 				variables.add( name );
 			}
 		}
@@ -100,7 +106,7 @@ public class CacheKeyPatternResolver extends Resolver<Object>
 			{
 				String documentName = entry.getKey();
 				String[] variableNamesArray = entry.getValue().toArray( new String[] {} );
-				
+
 				DelegatedCacheKeyPatternHandler delegatedHandler = new DelegatedCacheKeyPatternHandler( documentName, resource.getContext() );
 				delegatedHandler.handleCacheKeyPattern( variableNamesArray );
 			}
@@ -115,23 +121,13 @@ public class CacheKeyPatternResolver extends Resolver<Object>
 	public Object resolve( String name )
 	{
 		if( name.equals( DOCUMENT_NAME_VARIABLE ) )
-		{
 			return documentDescriptor.getDefaultName();
-		}
 		else if( name.equals( APPLICATION_NAME_VARIABLE ) )
-		{
 			return resource.getApplication().getName();
-		}
 		else if( name.equals( PATH_TO_BASE_VARIABLE ) )
-		{
 			return conversationService.getPathToBase();
-		}
 
-		Object result = callResolver.resolve( name );
-		if( result != null )
-			return result;
-
-		return null;
+		return callResolver.resolve( name );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
