@@ -19,6 +19,9 @@ import org.restlet.Context;
 import com.threecrickets.prudence.DelegatedHandler;
 import com.threecrickets.scripturian.Executable;
 
+/**
+ * @author Tal Liron
+ */
 public class DelegatedHandlerAttributes extends VolatileContextualAttributes
 {
 	//

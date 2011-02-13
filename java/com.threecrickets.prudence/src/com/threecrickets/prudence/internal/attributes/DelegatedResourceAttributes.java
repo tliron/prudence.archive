@@ -17,6 +17,9 @@ import org.restlet.Context;
 
 import com.threecrickets.prudence.DelegatedResource;
 
+/**
+ * @author Tal Liron
+ */
 public class DelegatedResourceAttributes extends ResourceContextualAttributes
 {
 	//

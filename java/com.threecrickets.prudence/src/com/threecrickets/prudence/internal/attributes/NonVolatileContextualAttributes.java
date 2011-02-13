@@ -28,6 +28,9 @@ import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
 
+/**
+ * @author Tal Liron
+ */
 public abstract class NonVolatileContextualAttributes extends ContextualAttributes
 {
 	//

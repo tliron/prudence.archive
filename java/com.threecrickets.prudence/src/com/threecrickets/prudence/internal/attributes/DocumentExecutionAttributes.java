@@ -19,6 +19,9 @@ import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentSource;
 
+/**
+ * @author Tal Liron
+ */
 public interface DocumentExecutionAttributes
 {
 	//

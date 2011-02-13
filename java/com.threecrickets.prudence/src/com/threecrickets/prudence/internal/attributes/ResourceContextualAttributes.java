@@ -15,6 +15,9 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.resource.ServerResource;
 
+/**
+ * @author Tal Liron
+ */
 public class ResourceContextualAttributes extends NonVolatileContextualAttributes
 {
 	//

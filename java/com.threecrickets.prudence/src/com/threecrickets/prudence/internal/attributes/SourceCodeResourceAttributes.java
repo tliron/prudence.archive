@@ -17,6 +17,9 @@ import com.threecrickets.prudence.SourceCodeResource;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentSource;
 
+/**
+ * @author Tal Liron
+ */
 public class SourceCodeResourceAttributes extends ResourceContextualAttributes
 {
 	//

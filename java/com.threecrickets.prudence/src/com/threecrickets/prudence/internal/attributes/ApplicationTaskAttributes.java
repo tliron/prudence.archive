@@ -17,6 +17,9 @@ import org.restlet.Application;
 
 import com.threecrickets.prudence.ApplicationTask;
 
+/**
+ * @author Tal Liron
+ */
 public class ApplicationTaskAttributes extends NonVolatileContextualAttributes
 {
 	//

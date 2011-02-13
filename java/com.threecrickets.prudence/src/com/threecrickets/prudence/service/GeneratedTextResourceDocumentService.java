@@ -17,9 +17,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -33,12 +31,11 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 import org.restlet.routing.Template;
-import org.restlet.routing.Variable;
 
-import com.threecrickets.prudence.DelegatedCacheKeyPatternHandler;
 import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.CacheEntry;
+import com.threecrickets.prudence.internal.CacheKeyPatternResolver;
 import com.threecrickets.prudence.internal.GeneratedTextDeferredRepresentation;
 import com.threecrickets.prudence.util.CaptiveRedirector;
 import com.threecrickets.scripturian.Executable;
@@ -335,18 +332,6 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
-	private static final String DOCUMENT_NAME_VARIABLE = "dn";
-
-	private static final String DOCUMENT_NAME_VARIABLE_FULL = "{" + DOCUMENT_NAME_VARIABLE + "}";
-
-	private static final String APPLICATION_NAME_VARIABLE = "an";
-
-	private static final String APPLICATION_NAME_VARIABLE_FULL = "{" + APPLICATION_NAME_VARIABLE + "}";
-
-	private static final String PATH_TO_BASE_VARIABLE = "ptb";
-
-	private static final String PATH_TO_BASE_VARIABLE_FULL = "{" + PATH_TO_BASE_VARIABLE + "}";
-
 	private static final String ENCODING_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.encoding";
 
 	private static final String CACHE_DURATION_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheDuration";
@@ -506,77 +491,26 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			return null;
 		else
 		{
-			Template template = new Template( cacheKeyPattern );
-
-			Reference captiveReference = CaptiveRedirector.getCaptiveReference( resource.getRequest() );
-			Reference resourceReference = resource.getRequest().getResourceRef();
-
-			// {dn}
-			if( cacheKeyPattern.contains( DOCUMENT_NAME_VARIABLE_FULL ) )
-				template.getVariables().put( DOCUMENT_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, documentDescriptor.getDefaultName(), true, true ) );
-
-			// {an}
-			if( cacheKeyPattern.contains( APPLICATION_NAME_VARIABLE_FULL ) )
-				template.getVariables().put( APPLICATION_NAME_VARIABLE, new Variable( Variable.TYPE_ALL, resource.getApplication().getName(), true, true ) );
-
-			// {ptb}
-			if( cacheKeyPattern.contains( PATH_TO_BASE_VARIABLE_FULL ) )
-				template.getVariables().put( PATH_TO_BASE_VARIABLE, new Variable( Variable.TYPE_ALL, conversationService.getPathToBase(), true, true ) );
-
-			Map<String, String> cacheKeyPatternHandlers = new HashMap<String, String>();
-
-			// Resource handlers
-			Map<String, String> resourceCacheKeyPatternHandlers = resource.getAttributes().getCacheKeyPatternHandlers();
-			if( resourceCacheKeyPatternHandlers != null )
-				cacheKeyPatternHandlers.putAll( resourceCacheKeyPatternHandlers );
-
-			// Merge document handlers over resource handlers
-			Map<String, String> documentCacheKeyPatternHandlers = getCacheKeyPatternHandlers( documentDescriptor.getDocument(), false );
-			if( documentCacheKeyPatternHandlers != null )
-				cacheKeyPatternHandlers.putAll( documentCacheKeyPatternHandlers );
-
-			// Handlers
-			if( !cacheKeyPatternHandlers.isEmpty() )
-			{
-				// Group variables together for handlers
-				Map<String, Set<String>> delegatedHandlers = new HashMap<String, Set<String>>();
-				for( Map.Entry<String, String> entry : cacheKeyPatternHandlers.entrySet() )
-				{
-					String variable = entry.getKey();
-					String documentName = entry.getValue();
-					if( cacheKeyPattern.contains( "{" + variable + "}" ) )
-					{
-						Set<String> variables = delegatedHandlers.get( documentName );
-						if( variables == null )
-						{
-							variables = new HashSet<String>();
-							delegatedHandlers.put( documentName, variables );
-						}
-						variables.add( variable );
-					}
-				}
-
-				// Call handlers
-				if( !delegatedHandlers.isEmpty() )
-				{
-					for( Map.Entry<String, Set<String>> entry : delegatedHandlers.entrySet() )
-					{
-						DelegatedCacheKeyPatternHandler delegatedHandler = new DelegatedCacheKeyPatternHandler( entry.getKey(), resource.getContext() );
-						delegatedHandler.handleCacheKeyPattern( entry.getValue().toArray( new String[] {} ) );
-					}
-				}
-			}
-
 			Request request = resource.getRequest();
 			Response response = resource.getResponse();
 
+			// Template and its resolver
+			Template template = new Template( cacheKeyPattern );
+			CacheKeyPatternResolver resolver = new CacheKeyPatternResolver( documentDescriptor, resource, conversationService, request, response );
+
+			// Cache key pattern handlers
+			resolver.callHandlers( template, getCacheKeyPatternHandlers( documentDescriptor.getDocument(), false ) );
+
 			// Use captive reference as the resource reference
+			Reference captiveReference = CaptiveRedirector.getCaptiveReference( request );
+			Reference resourceReference = request.getResourceRef();
 			if( captiveReference != null )
 				request.setResourceRef( captiveReference );
+
 			try
 			{
 				// Cast it
-				return template.format( request, response );
+				return template.format( resolver );
 			}
 			finally
 			{
@@ -623,25 +557,6 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 		return cleanedCacheTags;
 	}
-
-	/*
-	 * private Object x( Executable executable ) { // Filter before handling
-	 * List<DelegatedFilter> filters = getFilters( executable, false );
-	 * ListIterator<DelegatedFilter> documentFilterIterator = null; boolean skip
-	 * = false; if( filters != null ) { documentFilterIterator =
-	 * filters.listIterator(); while( documentFilterIterator.hasNext() ) {
-	 * DelegatedFilter delegatedFilter = documentFilterIterator.next(); int
-	 * action = delegatedFilter.handleBefore( resource.getRequest(),
-	 * resource.getResponse() ); switch( action ) { case Filter.STOP: return
-	 * null; case Filter.SKIP: skip = true; break; } } } // Filter after
-	 * handling if( documentFilterIterator != null ) { while(
-	 * documentFilterIterator.hasPrevious() ) { DelegatedFilter delegatedFilter
-	 * = documentFilterIterator.previous(); delegatedFilter.handleAfter(
-	 * resource.getRequest(), resource.getResponse() ); } } if( filters != null
-	 * ) for( ListIterator<DelegatedFilter> i = filters.listIterator(
-	 * filters.size() ); i.hasPrevious(); ) i.previous().handleAfter(
-	 * resource.getRequest(), resource.getResponse() ); return null; }
-	 */
 
 	/**
 	 * Represents a cache entry, making sure to re-encode it (and store the

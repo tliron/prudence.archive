@@ -21,6 +21,9 @@ import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentSource;
 
+/**
+ * @author Tal Liron
+ */
 public class GeneratedTextResourceAttributes extends ResourceContextualAttributes
 {
 	//
