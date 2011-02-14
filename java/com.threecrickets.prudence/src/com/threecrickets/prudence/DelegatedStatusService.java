@@ -11,6 +11,7 @@
 
 package com.threecrickets.prudence;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -190,7 +191,9 @@ public class DelegatedStatusService extends StatusService
 	{
 		if( isEnabled() )
 		{
-			if( request.getAttributes().containsKey( PASSTHROUGH_ATTRIBUTE ) )
+			Map<String, Object> attributes = request.getAttributes();
+
+			if( attributes.containsKey( PASSTHROUGH_ATTRIBUTE ) )
 				// Pass through
 				return response.getEntity();
 
@@ -201,6 +204,9 @@ public class DelegatedStatusService extends StatusService
 				// Reset the response
 				response.setStatus( Status.SUCCESS_OK );
 				response.setEntity( null );
+
+				// Clean up for generated text resource
+				attributes.remove( "com.threecrickets.prudence.GeneratedTextResource.documentName" );
 
 				// Delegate
 				errorHandler.handle( request, response );
@@ -216,13 +222,13 @@ public class DelegatedStatusService extends StatusService
 				representation.setModificationDate( null );
 				representation.setTag( null );
 
-				request.getAttributes().put( PASSTHROUGH_ATTRIBUTE, true );
+				attributes.put( PASSTHROUGH_ATTRIBUTE, true );
 				return representation;
 			}
 
 			if( isDebugging() && ( status.getThrowable() != null ) )
 			{
-				request.getAttributes().put( PASSTHROUGH_ATTRIBUTE, true );
+				attributes.put( PASSTHROUGH_ATTRIBUTE, true );
 				return new DebugRepresentation( status, request, response, sourceCodeUri );
 			}
 		}
