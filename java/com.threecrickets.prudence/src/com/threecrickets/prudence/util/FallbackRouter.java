@@ -143,7 +143,7 @@ public class FallbackRouter extends ResolvingRouter
 				if( ( (Fallback) current ).replaceTarget( target, filter ) )
 				{
 					// Make sure our route is still relevant
-					if( getRoutes().contains( existingRoute ) )
+					if( getRoutes().contains( existingRoute ) && ( existingRoute.getNext() == current ) )
 						return existingRoute;
 				}
 			}
