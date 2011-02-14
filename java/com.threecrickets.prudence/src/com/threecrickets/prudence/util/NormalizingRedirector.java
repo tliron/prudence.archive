@@ -28,7 +28,7 @@ import org.restlet.routing.Redirector;
  * 
  * @author Tal Liron
  */
-public class NormalizingRedirector extends Redirector
+public class NormalizingRedirector extends ResolvingRedirector
 {
 	//
 	// Construction

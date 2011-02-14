@@ -19,13 +19,11 @@ import org.restlet.routing.Filter;
 import org.restlet.routing.Redirector;
 import org.restlet.routing.Route;
 import org.restlet.routing.Template;
-import org.restlet.routing.Variable;
 
 import com.threecrickets.prudence.util.CaptiveRedirector;
 import com.threecrickets.prudence.util.Fallback;
 import com.threecrickets.prudence.util.FallbackRouter;
 import com.threecrickets.prudence.util.NormalizingRedirector;
-import com.threecrickets.prudence.util.ResolvingTemplate;
 import com.threecrickets.prudence.util.StatusRestlet;
 
 /**
@@ -465,23 +463,5 @@ public class PrudenceRouter extends FallbackRouter
 		Route route = attach( uriTemplate, new StatusRestlet( Status.CLIENT_ERROR_NOT_FOUND ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
-	}
-
-	// //////////////////////////////////////////////////////////////////////////
-	// Protected
-
-	//
-	// Router
-	//
-
-	@Override
-	protected Route createRoute( String uriPattern, Restlet target, int matchingMode )
-	{
-		// We are overriding the default Router class so it will use
-		// ResolvingTemplate for all routes
-
-		Route result = new Route( this, new ResolvingTemplate( uriPattern, matchingMode, Variable.TYPE_URI_SEGMENT, "", true, false ), target );
-		result.setMatchingQuery( getDefaultMatchingQuery() );
-		return result;
 	}
 }

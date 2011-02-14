@@ -130,6 +130,16 @@ public class DelegatedHandler
 	//
 
 	/**
+	 * The attributes.
+	 * 
+	 * @return The attributes
+	 */
+	public DelegatedHandlerAttributes getAttributes()
+	{
+		return attributes;
+	}
+
+	/**
 	 * @return The document name
 	 */
 	public String getDocumentName()

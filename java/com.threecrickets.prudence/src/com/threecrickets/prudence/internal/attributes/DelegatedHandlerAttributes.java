@@ -45,6 +45,16 @@ public class DelegatedHandlerAttributes extends VolatileContextualAttributes
 	//
 
 	/**
+	 * The context.
+	 * 
+	 * @return The context
+	 */
+	public Context getContext()
+	{
+		return context;
+	}
+
+	/**
 	 * A cache for entry point validity.
 	 * 
 	 * @param executable

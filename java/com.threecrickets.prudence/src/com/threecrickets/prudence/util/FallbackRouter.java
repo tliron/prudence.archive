@@ -30,7 +30,7 @@ import org.restlet.routing.Router;
  * @author Tal Liron
  */
 @SuppressWarnings("deprecation")
-public class FallbackRouter extends Router
+public class FallbackRouter extends ResolvingRouter
 {
 	//
 	// Construction

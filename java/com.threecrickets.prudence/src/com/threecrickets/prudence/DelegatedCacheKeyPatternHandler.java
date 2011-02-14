@@ -17,7 +17,7 @@ import org.restlet.Context;
  * <p>
  * A {@link DelegatedHandler} with the following supported entry points:
  * <ul>
- * <li><code>handleCacheKeyPattern()</code></li>
+ * <li><code>handleCacheKeyPattern(conversation, variables)</code></li>
  * </ul>
  * 
  * @author Tal Liron

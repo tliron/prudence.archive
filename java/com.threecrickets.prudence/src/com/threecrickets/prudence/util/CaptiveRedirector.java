@@ -22,7 +22,7 @@ import org.restlet.routing.Redirector;
  * 
  * @author Tal Liron
  */
-public class CaptiveRedirector extends Redirector
+public class CaptiveRedirector extends ResolvingRedirector
 {
 	//
 	// Constants

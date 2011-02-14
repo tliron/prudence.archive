@@ -16,14 +16,19 @@ import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.Restlet;
 import org.restlet.routing.Filter;
+import org.restlet.routing.Redirector;
+
+import com.threecrickets.prudence.service.RedirectorService;
+import com.threecrickets.prudence.util.CaptiveRedirector;
+import com.threecrickets.prudence.util.ResolvingRedirector;
 
 /**
  * A {@link Filter} that wraps an underlying {@link DelegatedHandler}.
  * <p>
  * Supported entry points are:
  * <ul>
- * <li><code>handleBefore()</code></li>
- * <li><code>handleAfter()</code></li>
+ * <li><code>handleBefore(conversation)</code></li>
+ * <li><code>handleAfter(conversation)</code></li>
  * </ul>
  * 
  * @author Tal Liron
@@ -132,7 +137,9 @@ public class DelegatedFilter extends Filter
 	@Override
 	protected int beforeHandle( Request request, Response response )
 	{
-		Object r = delegatedHandler.handle( entryPointNameForBefore );
+		RedirectorService redirectorService = new RedirectorService( Redirector.MODE_SERVER_OUTBOUND );
+		Object r = delegatedHandler.handle( entryPointNameForBefore, redirectorService );
+
 		if( r instanceof Number )
 			// Handle number
 			return ( (Number) r ).intValue();
@@ -149,6 +156,19 @@ public class DelegatedFilter extends Filter
 					return SKIP;
 				else if( action.equals( "STOP" ) )
 					return STOP;
+				else if( action.equals( "REDIRECT" ) )
+				{
+					Redirector redirector = new ResolvingRedirector( delegatedHandler.getAttributes().getContext(), redirectorService.getReference(), redirectorService.getMode() );
+					redirector.handle( request, response );
+					return STOP;
+				}
+				else if( action.equals( "CAPTURE" ) )
+				{
+					String reference = "riap://application/" + redirectorService.getReference() + "?{rq}";
+					Redirector redirector = new CaptiveRedirector( delegatedHandler.getAttributes().getContext(), reference, false );
+					redirector.handle( request, response );
+					return STOP;
+				}
 			}
 		}
 
