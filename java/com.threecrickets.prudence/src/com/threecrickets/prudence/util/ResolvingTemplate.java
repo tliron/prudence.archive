@@ -79,23 +79,18 @@ public class ResolvingTemplate extends Template
 		return getMapResolverConstructor( Application.getCurrent() );
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Constructor<Resolver<?>> getMapResolverConstructor( Application application )
 	{
-		return getMapResolverConstructor( application.getContext() );
+		return (Constructor<Resolver<?>>) application.getContext().getAttributes().get( MAP_RESOLVER_CONSTRUCTOR );
 	}
 
-	@SuppressWarnings("unchecked")
-	public static Constructor<Resolver<?>> getMapResolverConstructor( Context context )
-	{
-		return (Constructor<Resolver<?>>) context.getAttributes().get( MAP_RESOLVER_CONSTRUCTOR );
-	}
-
-	public static void setMapResolverClass( Context context, Class<Resolver<?>> theClass ) throws SecurityException, NoSuchMethodException
+	public static void setMapResolverClass( Application application, Class<Resolver<?>> theClass ) throws SecurityException, NoSuchMethodException
 	{
 		if( theClass == null )
-			context.getAttributes().remove( MAP_RESOLVER_CONSTRUCTOR );
+			application.getContext().getAttributes().remove( MAP_RESOLVER_CONSTRUCTOR );
 		else
-			context.getAttributes().put( MAP_RESOLVER_CONSTRUCTOR, theClass.getConstructor( Map.class ) );
+			application.getContext().getAttributes().put( MAP_RESOLVER_CONSTRUCTOR, theClass.getConstructor( Map.class ) );
 	}
 
 	public static Constructor<Resolver<?>> getCallResolverConstructor()
@@ -103,23 +98,18 @@ public class ResolvingTemplate extends Template
 		return getCallResolverConstructor( Application.getCurrent() );
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Constructor<Resolver<?>> getCallResolverConstructor( Application application )
 	{
-		return getCallResolverConstructor( application.getContext() );
+		return (Constructor<Resolver<?>>) application.getContext().getAttributes().get( CALL_RESOLVER_CONSTRUCTOR );
 	}
 
-	@SuppressWarnings("unchecked")
-	public static Constructor<Resolver<?>> getCallResolverConstructor( Context context )
-	{
-		return (Constructor<Resolver<?>>) context.getAttributes().get( CALL_RESOLVER_CONSTRUCTOR );
-	}
-
-	public static void setCallResolverClass( Context context, Class<Resolver<?>> theClass ) throws SecurityException, NoSuchMethodException
+	public static void setCallResolverClass( Application application, Class<Resolver<?>> theClass ) throws SecurityException, NoSuchMethodException
 	{
 		if( theClass == null )
-			context.getAttributes().remove( CALL_RESOLVER_CONSTRUCTOR );
+			application.getContext().getAttributes().remove( CALL_RESOLVER_CONSTRUCTOR );
 		else
-			context.getAttributes().put( CALL_RESOLVER_CONSTRUCTOR, theClass.getConstructor( Request.class, Response.class ) );
+			application.getContext().getAttributes().put( CALL_RESOLVER_CONSTRUCTOR, theClass.getConstructor( Request.class, Response.class ) );
 	}
 
 	//
