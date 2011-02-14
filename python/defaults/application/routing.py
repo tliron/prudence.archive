@@ -81,7 +81,7 @@ if cache is not None:
 # Inbound root
 #
 
-router = PrudenceRouter(application_instance.context)
+router = PrudenceRouter(application_instance.context, minimum_time_between_validity_checks)
 router.routingMode = Router.MODE_BEST_MATCH
 application_instance.setInboundRoot(router) # Must call setInboundRoot explicitly here
 

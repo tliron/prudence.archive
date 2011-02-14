@@ -93,7 +93,7 @@ end
 # Inbound root
 #
 
-$router = PrudenceRouter.new $application_instance.context
+$router = PrudenceRouter.new($application_instance.context, $minimum_time_between_validity_checks)
 $router.routing_mode = Router::MODE_BEST_MATCH
 $application_instance.inbound_root = $router
 

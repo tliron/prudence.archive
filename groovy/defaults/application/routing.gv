@@ -93,7 +93,7 @@ if(cache) {
 // Inbound root
 //
 
-router = new PrudenceRouter(applicationInstance.context)
+router = new PrudenceRouter(applicationInstance.context, minimumTimeBetweenValidityChecks)
 router.routingMode = Router.MODE_BEST_MATCH
 applicationInstance.inboundRoot = router
 

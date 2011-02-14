@@ -112,7 +112,7 @@ if($cache) {
 // Inbound root
 //
 
-$router = new PrudenceRouter($application_instance->context);
+$router = new PrudenceRouter($application_instance->context, $minimum_time_between_validity_checks);
 $router->routingMode = Router::MODE_BEST_MATCH;
 $application_instance->inboundRoot = $router;
 

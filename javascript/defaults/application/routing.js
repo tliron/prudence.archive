@@ -95,7 +95,7 @@ if(cache) {
 // Inbound root
 //
 
-var router = new PrudenceRouter(applicationInstance.context)
+var router = new PrudenceRouter(applicationInstance.context, minimumTimeBetweenValidityChecks)
 router.routingMode = Router.MODE_BEST_MATCH
 applicationInstance.inboundRoot = router
 

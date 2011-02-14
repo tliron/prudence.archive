@@ -87,7 +87,7 @@
 ; Inbound root
 ;
 
-(def router (PrudenceRouter. (.getContext application-instance)))
+(def router (PrudenceRouter. (.getContext application-instance) minimum-time-between-validity-checks))
 (.setRoutingMode router Router/MODE_BEST_MATCH)
 (.setInboundRoot application-instance router)
 
