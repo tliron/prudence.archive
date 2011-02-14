@@ -113,6 +113,8 @@ public class FallbackRouter extends ResolvingRouter
 	 */
 	public Route filter( String pathTemplate, Filter filter, Restlet target )
 	{
+		filter.setNext( target );
+
 		Route existingRoute = null;
 		for( Route route : getRoutes() )
 		{
@@ -129,17 +131,20 @@ public class FallbackRouter extends ResolvingRouter
 			if( current == target )
 			{
 				// Replace current target
-				filter.setNext( target );
 				existingRoute.setNext( filter );
-				return existingRoute;
+
+				// Make sure our route is still relevant
+				if( getRoutes().contains( existingRoute ) )
+					return existingRoute;
 			}
 			else if( current instanceof Fallback )
 			{
 				// Replace in current Fallback
 				if( ( (Fallback) current ).replaceTarget( target, filter ) )
 				{
-					filter.setNext( target );
-					return existingRoute;
+					// Make sure our route is still relevant
+					if( getRoutes().contains( existingRoute ) )
+						return existingRoute;
 				}
 			}
 		}

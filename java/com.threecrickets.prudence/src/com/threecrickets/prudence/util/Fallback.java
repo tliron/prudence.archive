@@ -11,9 +11,8 @@
 
 package com.threecrickets.prudence.util;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -123,19 +122,15 @@ public class Fallback extends Restlet
 	 */
 	public boolean replaceTarget( Restlet originalTarget, Restlet newTarget )
 	{
-		// TODO: this is not a true atomic replace...
+		// Note: this is not a true atomic replace, but it is thread-safe
 
-		LinkedList<Restlet> copy = new LinkedList<Restlet>( targets );
-
-		for( ListIterator<Restlet> i = copy.listIterator(); i.hasNext(); )
+		ArrayList<Restlet> targetsCopy = new ArrayList<Restlet>( targets );
+		int index = targetsCopy.indexOf( originalTarget );
+		if( index != -1 )
 		{
-			Restlet target = i.next();
-			if( target == originalTarget )
-			{
-				i.set( newTarget );
-				targets = new CopyOnWriteArrayList<Restlet>( copy );
-				return true;
-			}
+			targetsCopy.set( index, newTarget );
+			targets = new CopyOnWriteArrayList<Restlet>( targetsCopy );
+			return true;
 		}
 
 		return false;
