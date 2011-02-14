@@ -18,9 +18,7 @@ import org.restlet.Restlet;
 import org.restlet.routing.Filter;
 import org.restlet.routing.Redirector;
 
-import com.threecrickets.prudence.service.RedirectorService;
 import com.threecrickets.prudence.util.CaptiveRedirector;
-import com.threecrickets.prudence.util.ResolvingRedirector;
 
 /**
  * A {@link Filter} that wraps an underlying {@link DelegatedHandler}.
@@ -137,18 +135,26 @@ public class DelegatedFilter extends Filter
 	@Override
 	protected int beforeHandle( Request request, Response response )
 	{
-		RedirectorService redirectorService = new RedirectorService( Redirector.MODE_SERVER_OUTBOUND );
-		Object r = delegatedHandler.handle( entryPointNameForBefore, redirectorService );
+		Object r = delegatedHandler.handle( entryPointNameForBefore );
 
 		if( r instanceof Number )
-			// Handle number
+			// Returned number
 			return ( (Number) r ).intValue();
 		else if( r != null )
 		{
-			// Handle string
+			// Returned string
 			String action = r.toString();
 			if( action != null )
 			{
+				if( action.startsWith( "/" ) )
+				{
+					// Capture!
+					String reference = "riap://application" + action + "?{rq}";
+					Redirector redirector = new CaptiveRedirector( delegatedHandler.getAttributes().getContext(), reference, false );
+					redirector.handle( request, response );
+					return STOP;
+				}
+
 				action = action.toUpperCase();
 				if( action.equals( "CONTINUE" ) )
 					return CONTINUE;
@@ -156,19 +162,6 @@ public class DelegatedFilter extends Filter
 					return SKIP;
 				else if( action.equals( "STOP" ) )
 					return STOP;
-				else if( action.equals( "REDIRECT" ) )
-				{
-					Redirector redirector = new ResolvingRedirector( delegatedHandler.getAttributes().getContext(), redirectorService.getReference(), redirectorService.getMode() );
-					redirector.handle( request, response );
-					return STOP;
-				}
-				else if( action.equals( "CAPTURE" ) )
-				{
-					String reference = "riap://application/" + redirectorService.getReference() + "?{rq}";
-					Redirector redirector = new CaptiveRedirector( delegatedHandler.getAttributes().getContext(), reference, false );
-					redirector.handle( request, response );
-					return STOP;
-				}
 			}
 		}
 
