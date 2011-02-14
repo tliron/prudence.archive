@@ -15,6 +15,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import org.restlet.Application;
+import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.routing.Template;
@@ -28,6 +30,22 @@ import org.restlet.util.Resolver;
  */
 public class ResolvingTemplate extends Template
 {
+	//
+	// Constants
+	//
+
+	/**
+	 * @see #getMapResolverConstructor(Context)
+	 * @see #setMapResolverClass(Context, Class)
+	 */
+	public static final String MAP_RESOLVER_CONSTRUCTOR = "com.threecrickets.prudence.util.ResolvingTemplate.mapResolverConstructor";
+
+	/**
+	 * @see #getCallResolverConstructor(Context)
+	 * @see #setCallResolverClass(Context, Class)
+	 */
+	public static final String CALL_RESOLVER_CONSTRUCTOR = "com.threecrickets.prudence.util.ResolvingTemplate.mapResolverConstructor";
+
 	//
 	// Construction
 	//
@@ -53,6 +71,38 @@ public class ResolvingTemplate extends Template
 	}
 
 	//
+	// Static attributes
+	//
+
+	@SuppressWarnings("unchecked")
+	public static Constructor<Resolver<?>> getMapResolverConstructor( Context context )
+	{
+		return (Constructor<Resolver<?>>) context.getAttributes().get( MAP_RESOLVER_CONSTRUCTOR );
+	}
+
+	public static void setMapResolverClass( Context context, Class<Resolver<?>> theClass ) throws SecurityException, NoSuchMethodException
+	{
+		if( theClass == null )
+			context.getAttributes().remove( MAP_RESOLVER_CONSTRUCTOR );
+		else
+			context.getAttributes().put( MAP_RESOLVER_CONSTRUCTOR, theClass.getConstructor( Map.class ) );
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Constructor<Resolver<?>> getCallResolverConstructor( Context context )
+	{
+		return (Constructor<Resolver<?>>) context.getAttributes().get( CALL_RESOLVER_CONSTRUCTOR );
+	}
+
+	public static void setCallResolverClass( Context context, Class<Resolver<?>> theClass ) throws SecurityException, NoSuchMethodException
+	{
+		if( theClass == null )
+			context.getAttributes().remove( CALL_RESOLVER_CONSTRUCTOR );
+		else
+			context.getAttributes().put( CALL_RESOLVER_CONSTRUCTOR, theClass.getConstructor( Request.class, Response.class ) );
+	}
+
+	//
 	// Attributes
 	//
 
@@ -70,12 +120,9 @@ public class ResolvingTemplate extends Template
 	public void setMapResolverClass( Class<Resolver<?>> theClass ) throws SecurityException, NoSuchMethodException
 	{
 		if( theClass == null )
-		{
 			mapResolverConstructor = null;
-			return;
-		}
-
-		mapResolverConstructor = theClass.getConstructor( Map.class );
+		else
+			mapResolverConstructor = theClass.getConstructor( Map.class );
 	}
 
 	/**
@@ -92,12 +139,9 @@ public class ResolvingTemplate extends Template
 	public void setCallResolverClass( Class<Resolver<?>> theClass ) throws SecurityException, NoSuchMethodException
 	{
 		if( theClass == null )
-		{
 			callResolverConstructor = null;
-			return;
-		}
-
-		callResolverConstructor = theClass.getConstructor( Request.class, Response.class );
+		else
+			callResolverConstructor = theClass.getConstructor( Request.class, Response.class );
 	}
 
 	//
@@ -108,6 +152,10 @@ public class ResolvingTemplate extends Template
 	public String format( Map<String, ?> values )
 	{
 		Constructor<Resolver<?>> mapResolverConstructor = this.mapResolverConstructor;
+
+		if( mapResolverConstructor == null )
+			mapResolverConstructor = getMapResolverConstructor( Application.getCurrent().getContext() );
+
 		if( mapResolverConstructor != null )
 		{
 			try
@@ -139,6 +187,10 @@ public class ResolvingTemplate extends Template
 	public String format( Request request, Response response )
 	{
 		Constructor<Resolver<?>> callResolverConstructor = this.callResolverConstructor;
+
+		if( callResolverConstructor == null )
+			callResolverConstructor = getCallResolverConstructor( Application.getCurrent().getContext() );
+
 		if( callResolverConstructor != null )
 		{
 			try
