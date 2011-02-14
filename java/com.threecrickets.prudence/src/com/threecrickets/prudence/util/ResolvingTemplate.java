@@ -74,6 +74,16 @@ public class ResolvingTemplate extends Template
 	// Static attributes
 	//
 
+	public static Constructor<Resolver<?>> getMapResolverConstructor()
+	{
+		return getMapResolverConstructor( Application.getCurrent() );
+	}
+
+	public static Constructor<Resolver<?>> getMapResolverConstructor( Application application )
+	{
+		return getMapResolverConstructor( application.getContext() );
+	}
+
 	@SuppressWarnings("unchecked")
 	public static Constructor<Resolver<?>> getMapResolverConstructor( Context context )
 	{
@@ -86,6 +96,16 @@ public class ResolvingTemplate extends Template
 			context.getAttributes().remove( MAP_RESOLVER_CONSTRUCTOR );
 		else
 			context.getAttributes().put( MAP_RESOLVER_CONSTRUCTOR, theClass.getConstructor( Map.class ) );
+	}
+
+	public static Constructor<Resolver<?>> getCallResolverConstructor()
+	{
+		return getCallResolverConstructor( Application.getCurrent() );
+	}
+
+	public static Constructor<Resolver<?>> getCallResolverConstructor( Application application )
+	{
+		return getCallResolverConstructor( application.getContext() );
 	}
 
 	@SuppressWarnings("unchecked")
@@ -154,7 +174,7 @@ public class ResolvingTemplate extends Template
 		Constructor<Resolver<?>> mapResolverConstructor = this.mapResolverConstructor;
 
 		if( mapResolverConstructor == null )
-			mapResolverConstructor = getMapResolverConstructor( Application.getCurrent().getContext() );
+			mapResolverConstructor = getMapResolverConstructor();
 
 		if( mapResolverConstructor != null )
 		{
@@ -189,7 +209,7 @@ public class ResolvingTemplate extends Template
 		Constructor<Resolver<?>> callResolverConstructor = this.callResolverConstructor;
 
 		if( callResolverConstructor == null )
-			callResolverConstructor = getCallResolverConstructor( Application.getCurrent().getContext() );
+			callResolverConstructor = getCallResolverConstructor();
 
 		if( callResolverConstructor != null )
 		{
