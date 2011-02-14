@@ -11,7 +11,9 @@
 
 package com.threecrickets.prudence.util;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -108,6 +110,35 @@ public class Fallback extends Restlet
 	public void addTarget( Restlet target )
 	{
 		this.targets.add( target );
+	}
+
+	/**
+	 * Replaces one target restlet with another.
+	 * 
+	 * @param originalTarget
+	 *        The target restlet to replace
+	 * @param newTarget
+	 *        The replacement target restlet
+	 * @return True if the replacement happened
+	 */
+	public boolean replaceTarget( Restlet originalTarget, Restlet newTarget )
+	{
+		// TODO: this is not a true atomic replace...
+
+		LinkedList<Restlet> copy = new LinkedList<Restlet>( targets );
+
+		for( ListIterator<Restlet> i = copy.listIterator(); i.hasNext(); )
+		{
+			Restlet target = i.next();
+			if( target == originalTarget )
+			{
+				i.set( newTarget );
+				targets = new CopyOnWriteArrayList<Restlet>( copy );
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -235,7 +266,7 @@ public class Fallback extends Restlet
 	/**
 	 * The target restlets.
 	 */
-	private final CopyOnWriteArrayList<Restlet> targets = new CopyOnWriteArrayList<Restlet>();
+	private volatile CopyOnWriteArrayList<Restlet> targets = new CopyOnWriteArrayList<Restlet>();
 
 	/**
 	 * The cache duration, in milliseconds.

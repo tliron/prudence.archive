@@ -166,31 +166,6 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
-	 * Detaches the target restlet, and attaches the filter instead with the
-	 * target chained after it.
-	 * <p>
-	 * The filter's context will be set to that of the target if it doesn't
-	 * already have a context.
-	 * 
-	 * @param uriTemplate
-	 *        The URI path template that must match the relative part of the
-	 *        resource URI
-	 * @param filter
-	 *        The filter
-	 * @param target
-	 *        The target Restlet to attach
-	 * @return The created route
-	 */
-	public Route filter( String uriTemplate, Filter filter, Restlet target )
-	{
-		detach( target );
-		if( filter.getContext() == null )
-			filter.setContext( target.getContext() );
-		filter.setNext( target );
-		return attach( uriTemplate, filter );
-	}
-
-	/**
 	 * As {@link #filter(String, Filter, Restlet)}, but internally uses a
 	 * {@link DelegatedFilter}.
 	 * 
