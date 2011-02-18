@@ -345,15 +345,34 @@ public class PrudenceRouter extends FallbackRouter
 	 *        resource URI
 	 * @param internalUriTemplate
 	 *        The internal URI path to which we will redirect
+	 * @param captureQuery
+	 *        Whether to capture the query, too
 	 * @return The created route
 	 * @see CaptiveRedirector
 	 */
-	public Route capture( String uriTemplate, String internalUriTemplate )
+	public Route capture( String uriTemplate, String internalUriTemplate, boolean captureQuery )
 	{
-		String targetUriTemplate = "riap://application/" + internalUriTemplate + "?{rq}";
+		String targetUriTemplate = "riap://application/" + internalUriTemplate;
+		if( captureQuery )
+			targetUriTemplate += "?{rq}";
 		Route route = attach( uriTemplate, new CaptiveRedirector( getContext(), targetUriTemplate, false ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
+	}
+
+	/**
+	 * As {@link #capture(String, String, boolean)}, with capturing of query.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param internalUriTemplate
+	 *        The internal URI path to which we will redirect
+	 * @return The created route
+	 */
+	public Route capture( String uriTemplate, String internalUriTemplate )
+	{
+		return capture( uriTemplate, internalUriTemplate, true );
 	}
 
 	/**
@@ -365,14 +384,32 @@ public class PrudenceRouter extends FallbackRouter
 	 *        resource URI
 	 * @param internalUriTemplate
 	 *        The internal URI path to which we will redirect
+	 * @param captureQuery
+	 *        Whether to capture the query, too
 	 * @return The created route
 	 * @see CaptiveRedirector
 	 */
-	public Route captureBase( String uriTemplate, String internalUriTemplate )
+	public Route captureBase( String uriTemplate, String internalUriTemplate, boolean captureQuery )
 	{
 		Route route = capture( uriTemplate, internalUriTemplate );
 		route.setMatchingMode( Template.MODE_STARTS_WITH );
 		return route;
+	}
+
+	/**
+	 * As {@link #captureBase(String, String, boolean)}, with capturing of
+	 * query.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param internalUriTemplate
+	 *        The internal URI path to which we will redirect
+	 * @return The created route
+	 */
+	public Route captureBase( String uriTemplate, String internalUriTemplate )
+	{
+		return captureBase( uriTemplate, internalUriTemplate, true );
 	}
 
 	/**
@@ -384,14 +421,32 @@ public class PrudenceRouter extends FallbackRouter
 	 *        resource URI
 	 * @param internalUriTemplate
 	 *        The internal URI path to which we will redirect
+	 * @param captureQuery
+	 *        Whether to capture the query, too
 	 * @return The created route (for the capture, not the hide)
 	 * @see CaptiveRedirector
 	 */
-	public Route captureAndHide( String uriTemplate, String internalUriTemplate )
+	public Route captureAndHide( String uriTemplate, String internalUriTemplate, boolean captureQuery )
 	{
-		Route route = capture( uriTemplate, internalUriTemplate );
+		Route route = capture( uriTemplate, internalUriTemplate, captureQuery );
 		hide( internalUriTemplate );
 		return route;
+	}
+
+	/**
+	 * As {@link #captureAndHide(String, String, boolean)}, with capturing of
+	 * query.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param internalUriTemplate
+	 *        The internal URI path to which we will redirect
+	 * @return The created route
+	 */
+	public Route captureAndHide( String uriTemplate, String internalUriTemplate )
+	{
+		return captureAndHide( uriTemplate, internalUriTemplate, true );
 	}
 
 	/**
@@ -410,15 +465,37 @@ public class PrudenceRouter extends FallbackRouter
 	 *        The internal application name
 	 * @param internalUriTemplate
 	 *        The internal URI path to which we will redirect
+	 * @param captureQuery
+	 *        Whether to capture the query, too
 	 * @return The created route
 	 * @see CaptiveRedirector
 	 */
-	public Route captureOther( String uriTemplate, String application, String internalUriTemplate )
+	public Route captureOther( String uriTemplate, String application, String internalUriTemplate, boolean captureQuery )
 	{
-		String targetUriTemplate = "riap://component/" + application + "/" + internalUriTemplate + "?{rq}";
+		String targetUriTemplate = "riap://component/" + application + "/" + internalUriTemplate;
+		if( captureQuery )
+			targetUriTemplate += "?{rq}";
 		Route route = attach( uriTemplate, new CaptiveRedirector( getContext(), targetUriTemplate, false ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
+	}
+
+	/**
+	 * As {@link #captureOther(String, String, String, boolean)}, with capturing
+	 * of query.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param application
+	 *        The internal application name
+	 * @param internalUriTemplate
+	 *        The internal URI path to which we will redirect
+	 * @return The created route
+	 */
+	public Route captureOther( String uriTemplate, String application, String internalUriTemplate )
+	{
+		return captureOther( uriTemplate, application, internalUriTemplate, true );
 	}
 
 	/**
