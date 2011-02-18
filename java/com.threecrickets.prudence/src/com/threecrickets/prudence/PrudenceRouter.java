@@ -311,7 +311,7 @@ public class PrudenceRouter extends FallbackRouter
 	}
 
 	/**
-	 * As {@link #redirectClient(String, String,int)}, but enforces matching
+	 * As {@link #redirectClient(String, String, int)}, but enforces matching
 	 * mode {@link Template#MODE_STARTS_WITH}.
 	 * 
 	 * @param uriTemplate
