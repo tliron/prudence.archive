@@ -14,8 +14,11 @@
 require 'java'
 import java.lang.System
 import java.util.logging.LogManager
+import com.threecrickets.scripturian.document.DocumentFileSource
 import com.threecrickets.scripturian.exception.DocumentNotFoundException
 import com.threecrickets.prudence.service.ApplicationService
+
+$document.library_sources.add DocumentFileSource.new(java.io.File.new($document.source.base_path, 'libraries/ruby'), 'default', 'rb', 5000)
 
 def execute_or_default(name, default=nil)
 	begin

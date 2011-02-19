@@ -14,8 +14,12 @@
 import java.lang.System
 import java.util.logging.LogManager
 import java.util.concurrent.Executors
+import java.io.File
+import com.threecrickets.scripturian.document.DocumentFileSource
 import com.threecrickets.scripturian.exception.DocumentNotFoundException
 import com.threecrickets.prudence.service.ApplicationService
+
+document.librarySources.add(new DocumentFileSource(new File(document.source.basePath, 'libraries/groovy'), 'default', 'gv', 5000))
 
 executeOrDefault = { name, deflt = null ->
 	try {

@@ -16,8 +16,12 @@ global $tasks, $scheduler, $component, $prudence_version, $prudence_revision, $p
 
 import java.lang.System;
 import java.util.logging.LogManager;
+import java.io.File;
+import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.prudence.service.ApplicationService;
+
+$document->librarySources->add(new DocumentFileSource(new File($document->source->basePath, 'libraries/php'), 'default', 'php', 5000));
 
 function execute_or_default($name, $def=NULL) {
 	global $document;

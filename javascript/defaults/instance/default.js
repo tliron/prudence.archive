@@ -14,8 +14,12 @@
 importClass(
 	java.lang.System,
 	java.util.logging.LogManager,
+	java.io.File,
+	com.threecrickets.scripturian.document.DocumentFileSource,
 	com.threecrickets.scripturian.exception.DocumentNotFoundException,
 	com.threecrickets.prudence.service.ApplicationService)
+ 
+document.librarySources.add(new DocumentFileSource(new File(document.source.basePath, 'libraries/javascript'), 'default', 'js', 5000))
 
 function executeOrDefault(name, def) {
 	try {

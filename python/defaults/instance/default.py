@@ -13,8 +13,12 @@
 
 from java.lang import System
 from java.util.logging import LogManager
+from java.io import File
+from com.threecrickets.scripturian.document import DocumentFileSource
 from com.threecrickets.scripturian.exception import DocumentNotFoundException
 from com.threecrickets.prudence.service import ApplicationService
+
+document.librarySources.add(DocumentFileSource(File(document.source.basePath, 'libraries/python'), 'default', 'py', 5000))
 
 def execute_or_default(name, default=None):
 	try:

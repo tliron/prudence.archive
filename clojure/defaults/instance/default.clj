@@ -12,9 +12,13 @@
 ;
 
 (import
- 'java.util.logging.LogManager
+ 'java.util.logging.LogManager 
+ 'java.io.File
+ 'com.threecrickets.scripturian.document.DocumentFileSource
  'com.threecrickets.scripturian.exception.DocumentNotFoundException
  'com.threecrickets.prudence.service.ApplicationService)
+
+(.. document getLibrarySources (add (DocumentFileSource. (File. (.. document getSource (getBasePath)) "libraries/clojure") "default" "clj" 5000)))
 
 (defn execute-or-default
 	([name default]
