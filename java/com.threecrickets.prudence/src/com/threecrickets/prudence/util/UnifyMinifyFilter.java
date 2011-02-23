@@ -11,6 +11,7 @@
 
 package com.threecrickets.prudence.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -30,8 +31,6 @@ import org.restlet.Restlet;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.routing.Filter;
-
-import com.caucho.quercus.env.StringInputStream;
 
 /**
  * A {@link Filter} that automatically unifies and/or minifies source files,
@@ -172,7 +171,7 @@ public abstract class UnifyMinifyFilter extends Filter
 				try
 				{
 					ins.add( new FileInputStream( new File( sourceDirectory, name ) ) );
-					ins.add( new StringInputStream( "\n" ) );
+					ins.add( new ByteArrayInputStream( NEWLINE_BYTES ) );
 				}
 				catch( IOException x )
 				{
@@ -271,6 +270,8 @@ public abstract class UnifyMinifyFilter extends Filter
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
+
+	private static final byte[] NEWLINE_BYTES = "\n".getBytes();
 
 	/**
 	 * The source extension.
