@@ -31,6 +31,8 @@ import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.routing.Filter;
 
+import com.caucho.quercus.env.StringInputStream;
+
 /**
  * A {@link Filter} that automatically unifies and/or minifies source files,
  * saving them as a single file. Unifying them allows clients to retrieve the
@@ -170,6 +172,7 @@ public abstract class UnifyMinifyFilter extends Filter
 				try
 				{
 					ins.add( new FileInputStream( new File( sourceDirectory, name ) ) );
+					ins.add( new StringInputStream( "\n" ) );
 				}
 				catch( IOException x )
 				{
