@@ -24,6 +24,7 @@ import org.restlet.resource.ResourceException;
 import com.threecrickets.prudence.internal.attributes.DelegatedHandlerAttributes;
 import com.threecrickets.prudence.service.ApplicationService;
 import com.threecrickets.prudence.service.ConversationService;
+import com.threecrickets.prudence.service.DelegatedHandlerDocumentService;
 import com.threecrickets.prudence.service.DocumentService;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
@@ -62,7 +63,7 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * <ul>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedHandler.applicationServiceName</code>
- * : Defaults to "application"..</li>
+ * : Defaults to "application".</li>
  * <li>
  * <code>com.threecrickets.prudence.DelegatedHandler.commonLibraryDocumentSource:</code>
  * {@link DocumentSource}.</li>
@@ -177,7 +178,7 @@ public class DelegatedHandler
 				ExecutionContext executionContext = new ExecutionContext( attributes.getWriter(), attributes.getErrorWriter() );
 				attributes.addLibraryLocations( executionContext );
 
-				executionContext.getServices().put( attributes.getDocumentServiceName(), new DocumentService( attributes ) );
+				executionContext.getServices().put( attributes.getDocumentServiceName(), new DelegatedHandlerDocumentService( attributes, documentDescriptor ) );
 				executionContext.getServices().put( attributes.getApplicationServiceName(), new ApplicationService() );
 
 				try
