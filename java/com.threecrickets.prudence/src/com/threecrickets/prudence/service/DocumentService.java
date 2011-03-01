@@ -57,6 +57,20 @@ public class DocumentService
 		this.attributes = attributes;
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param attributes
+	 *        The attributes
+	 * @param documentDescriptor
+	 *        The initial document descriptor
+	 */
+	public DocumentService( DocumentExecutionAttributes attributes, DocumentDescriptor<Executable> documentDescriptor )
+	{
+		this( attributes );
+		pushDocumentDescriptor( documentDescriptor );
+	}
+
 	//
 	// Attributes
 	//

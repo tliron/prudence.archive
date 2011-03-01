@@ -24,6 +24,7 @@ import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageManager;
+import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.ExecutionException;
@@ -159,13 +160,14 @@ public class ApplicationTask implements Runnable
 
 			try
 			{
-				Executable executable = Executable.createOnce( documentName, attributes.getDocumentSource(), false, attributes.getLanguageManager(), attributes.getDefaultLanguageTag(), attributes.isPrepare() )
-					.getDocument();
+				DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, attributes.getDocumentSource(), false, attributes.getLanguageManager(), attributes.getDefaultLanguageTag(),
+					attributes.isPrepare() );
+				Executable executable = documentDescriptor.getDocument();
 
 				ExecutionContext executionContext = new ExecutionContext( attributes.getWriter(), attributes.getErrorWriter() );
 				attributes.addLibraryLocations( executionContext );
 
-				executionContext.getServices().put( attributes.getDocumentServiceName(), new DocumentService( attributes ) );
+				executionContext.getServices().put( attributes.getDocumentServiceName(), new DocumentService( attributes, documentDescriptor ) );
 				executionContext.getServices().put( attributes.getApplicationServiceName(), new ApplicationService( application ) );
 
 				executable.execute( executionContext, this, attributes.getExecutionController() );
