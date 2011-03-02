@@ -192,6 +192,8 @@ public class DocumentService
 	 */
 	public ClientResource internal( String resourceUri, String mediaTypeName )
 	{
+		if( !resourceUri.startsWith( "/" ) )
+			resourceUri = "/" + resourceUri;
 		ClientResource clientResource = new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_APPLICATION, resourceUri ) );
 		clientResource.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( getMediaType( mediaTypeName ), 1f ) );
 		return clientResource;
@@ -210,7 +212,9 @@ public class DocumentService
 	 */
 	public ClientResource internal( String applicationInternalName, String resourceUri, String mediaTypeName )
 	{
-		ClientResource clientResource = new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, "/" + applicationInternalName + "/" + resourceUri ) );
+		if( !resourceUri.startsWith( "/" ) )
+			resourceUri = "/" + resourceUri;
+		ClientResource clientResource = new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, "/" + applicationInternalName + resourceUri ) );
 		clientResource.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( getMediaType( mediaTypeName ), 1f ) );
 		return clientResource;
 	}
