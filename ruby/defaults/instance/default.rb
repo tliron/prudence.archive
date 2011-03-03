@@ -47,7 +47,7 @@ end
 # Version
 #
 
-$prudence_version = '1.0'
+$prudence_version = '1.1'
 $prudence_revision = '-%REVISION%'
 if $prudence_revision.length == 1
 	$prudence_revision = ''
