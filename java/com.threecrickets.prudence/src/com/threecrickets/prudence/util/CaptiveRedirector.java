@@ -115,25 +115,12 @@ public class CaptiveRedirector extends ResolvingRedirector
 	@Override
 	public void handle( Request request, Response response )
 	{
-		Reference captiveReference;
-		if( hostRoot )
-		{
-			// Make sure that host reference is complete
-			Reference hostRef = request.getHostRef();
-			if( !hostRef.toString().endsWith( "/" ) )
-				hostRef = new Reference( hostRef.toString() + "/" );
-			captiveReference = new Reference( hostRef, request.getResourceRef() );
-		}
-		else
-		{
-			Reference baseRef = request.getRootRef();
-			if( baseRef == null )
-				// The root reference could be null (in RIAP)
-				baseRef = request.getOriginalRef();
-			captiveReference = new Reference( baseRef, request.getResourceRef() );
-		}
+		Reference rootRef = hostRoot ? null : request.getRootRef();
+		if( rootRef == null )
+			// The root reference could be null (e.g. in RIAP)
+			rootRef = new Reference( request.getResourceRef().getHostIdentifier() + "/" );
 
-		setCaptiveReference( request, captiveReference );
+		setCaptiveReference( request, new Reference( rootRef, request.getResourceRef() ) );
 
 		super.handle( request, response );
 	}

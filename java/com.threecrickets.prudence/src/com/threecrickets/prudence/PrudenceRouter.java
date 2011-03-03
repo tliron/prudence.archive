@@ -11,8 +11,13 @@
 
 package com.threecrickets.prudence;
 
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import org.restlet.Context;
+import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.Restlet;
+import org.restlet.data.Protocol;
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
 import org.restlet.routing.Filter;
@@ -24,7 +29,6 @@ import com.threecrickets.prudence.util.CaptiveRedirector;
 import com.threecrickets.prudence.util.Fallback;
 import com.threecrickets.prudence.util.FallbackRouter;
 import com.threecrickets.prudence.util.NormalizingRedirector;
-import com.threecrickets.prudence.util.StatusRestlet;
 
 /**
  * A {@link FallbackRouter} with shortcut methods for common routing tasks.
@@ -507,18 +511,39 @@ public class PrudenceRouter extends FallbackRouter
 	 * that if there really is a resource at that URI, it might still be
 	 * available via other routes.
 	 * <p>
-	 * Internally uses a {@link StatusRestlet}.
+	 * Hiding is explicitly disabled for the RIAP protocol.
 	 * 
-	 * @param uriTemplate
-	 *        The URI path template that must match the relative part of the
-	 *        resource URI
-	 * @return The created route
+	 * @param uri
+	 *        The URI path that must match the relative part of the resource URI
 	 */
-	public Route hide( String uriTemplate )
+	public void hide( String uri )
 	{
-		/*Route route = attach( uriTemplate, new StatusRestlet( Status.CLIENT_ERROR_NOT_FOUND ) );
-		route.setMatchingMode( Template.MODE_EQUALS );
-		return route;*/
-		return null;
+		hiddenUris.add( uri );
 	}
+
+	//
+	// Router
+	//
+
+	@Override
+	public void handle( Request request, Response response )
+	{
+		if( request.getProtocol() != Protocol.RIAP )
+		{
+			// RIAP ignores hide
+			String remaining = request.getResourceRef().getRemainingPart();
+			if( hiddenUris.contains( remaining ) )
+			{
+				response.setStatus( Status.CLIENT_ERROR_NOT_FOUND );
+				return;
+			}
+		}
+
+		super.handle( request, response );
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	private CopyOnWriteArraySet<String> hiddenUris = new CopyOnWriteArraySet<String>();
 }
