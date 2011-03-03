@@ -317,7 +317,7 @@ public class ConversationService
 	 */
 	public boolean stop()
 	{
-		throw new ConversationStoppedException();
+		throw new ConversationStoppedException( getRequest() );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

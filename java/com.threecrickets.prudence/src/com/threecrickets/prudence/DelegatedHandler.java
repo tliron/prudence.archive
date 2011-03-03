@@ -18,12 +18,15 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.restlet.Application;
 import org.restlet.Context;
+import org.restlet.Request;
 import org.restlet.resource.ResourceException;
 
 import com.threecrickets.prudence.internal.attributes.DelegatedHandlerAttributes;
 import com.threecrickets.prudence.service.ApplicationService;
 import com.threecrickets.prudence.service.ConversationService;
+import com.threecrickets.prudence.service.ConversationStoppedException;
 import com.threecrickets.prudence.service.DocumentService;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
@@ -237,6 +240,19 @@ public class DelegatedHandler
 		}
 		catch( ExecutionException x )
 		{
+			Request request = Request.getCurrent();
+			if( request != null )
+			{
+				if( ConversationStoppedException.isConversationStopped( request ) )
+				{
+					Application application = Application.getCurrent();
+					if( application != null )
+						application.getLogger().fine( "conversation.stop() was called" );
+
+					return null;
+				}
+			}
+
 			throw new ResourceException( x );
 		}
 		catch( NoSuchMethodException x )

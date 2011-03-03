@@ -39,6 +39,7 @@ import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.prudence.internal.attributes.DelegatedResourceAttributes;
 import com.threecrickets.prudence.service.ApplicationService;
+import com.threecrickets.prudence.service.ConversationStoppedException;
 import com.threecrickets.prudence.service.DelegatedResourceConversationService;
 import com.threecrickets.prudence.service.DelegatedResourceDocumentService;
 import com.threecrickets.scripturian.Executable;
@@ -672,7 +673,13 @@ public class DelegatedResource extends ServerResource
 		}
 		catch( ExecutionException x )
 		{
-			throw new ResourceException( x );
+			if( ConversationStoppedException.isConversationStopped( getRequest() ) )
+			{
+				getLogger().fine( "conversation.stop() was called" );
+				return null;
+			}
+			else
+				throw new ResourceException( x );
 		}
 		catch( NoSuchMethodException x )
 		{

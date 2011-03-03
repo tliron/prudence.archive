@@ -39,6 +39,7 @@ import com.threecrickets.prudence.internal.GeneratedTextDeferredRepresentation;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
 import com.threecrickets.prudence.internal.attributes.GeneratedTextResourceAttributes;
 import com.threecrickets.prudence.service.ApplicationService;
+import com.threecrickets.prudence.service.ConversationStoppedException;
 import com.threecrickets.prudence.service.GeneratedTextResourceConversationService;
 import com.threecrickets.prudence.service.GeneratedTextResourceDocumentService;
 import com.threecrickets.prudence.util.IoUtil;
@@ -522,6 +523,12 @@ public class GeneratedTextResource extends ServerResource
 			}
 			catch( ExecutionException x )
 			{
+				if( ConversationStoppedException.isConversationStopped( getRequest() ) )
+				{
+					getLogger().fine( "conversation.stop() was called" );
+					return null;
+				}
+
 				if( getResponse().getStatus().isSuccess() )
 					// An unintended exception
 					throw new ResourceException( x );
