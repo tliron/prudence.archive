@@ -15,6 +15,7 @@ import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Reference;
+import org.restlet.data.Status;
 import org.restlet.routing.Redirector;
 
 /**
@@ -121,6 +122,18 @@ public class CaptiveRedirector extends ResolvingRedirector
 			rootRef = new Reference( request.getResourceRef().getHostIdentifier() + "/" );
 
 		setCaptiveReference( request, new Reference( rootRef, request.getResourceRef() ) );
+
+		/*
+		 * System.out.println(request.getResourceRef()); Reference targetRef =
+		 * getTargetRef(request, response); System.out.println(targetRef);
+		 */
+
+		// Avoid endless loops
+		if( getTargetRef( request, response ).equals( request.getResourceRef() ) )
+		{
+			response.setStatus( Status.CLIENT_ERROR_NOT_FOUND );
+			return;
+		}
 
 		super.handle( request, response );
 	}

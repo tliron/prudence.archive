@@ -189,7 +189,7 @@ public class ConversationService
 	 */
 	public boolean isInternal()
 	{
-		return getRequest().getResourceRef().getSchemeProtocol().equals( Protocol.RIAP );
+		return getRequest().getProtocol().equals( Protocol.RIAP );
 	}
 
 	/**
@@ -310,14 +310,14 @@ public class ConversationService
 	/**
 	 * Abruptly ends the conversation.
 	 * <p>
-	 * Works by throwing a {@link RuntimeException}.
+	 * Works by throwing a {@link ConversationStoppedException}.
 	 * 
 	 * @return Always throws an exception, so nothing is ever returned (some
 	 *         language engines require a return value defined in the signature)
 	 */
 	public boolean stop()
 	{
-		throw new RuntimeException( "conversation.stop was called" );
+		throw new ConversationStoppedException();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

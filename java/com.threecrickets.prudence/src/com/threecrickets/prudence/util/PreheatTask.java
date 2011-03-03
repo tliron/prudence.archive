@@ -145,17 +145,11 @@ public class PreheatTask implements Runnable
 			if( x.getStatus().equals( Status.CLIENT_ERROR_NOT_FOUND ) )
 				logger.fine( "Could not find resource to preheat: " + uri );
 			else
-			{
-				logger.log( Level.SEVERE, "Preheating error: " + uri, x );
-				// System.err.print( clientResource.getReference() + " - " );
-				// x.printStackTrace();
-			}
+				logger.log( Level.FINE, "Preheating error: " + uri, x );
 		}
 		catch( IOException x )
 		{
-			logger.log( Level.SEVERE, "Preheating error: " + uri, x );
-			// System.err.print( clientResource.getReference() + " - " );
-			// x.printStackTrace();
+			logger.log( Level.FINE, "Preheating error: " + uri, x );
 		}
 	}
 
