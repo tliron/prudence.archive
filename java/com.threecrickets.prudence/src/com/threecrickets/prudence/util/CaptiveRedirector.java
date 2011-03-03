@@ -118,15 +118,17 @@ public class CaptiveRedirector extends ResolvingRedirector
 	@Override
 	public void handle( Request request, Response response )
 	{
+		Reference resourceRef = request.getResourceRef();
+
 		Reference rootRef = hostRoot ? null : request.getRootRef();
 		if( rootRef == null )
 			// The root reference could be null (e.g. in RIAP)
-			rootRef = new Reference( request.getResourceRef().getHostIdentifier() + "/" );
+			rootRef = new Reference( resourceRef.getHostIdentifier() + "/" );
 
-		setCaptiveReference( request, new Reference( rootRef, request.getResourceRef() ) );
+		setCaptiveReference( request, new Reference( rootRef, resourceRef ) );
 
 		// Avoid endless loops
-		if( targetTemplate.equals( request.getResourceRef().getPath() ) )
+		if( getTargetRef( request, response ).equals( resourceRef ) )
 		{
 			response.setStatus( Status.CLIENT_ERROR_NOT_FOUND );
 			return;
