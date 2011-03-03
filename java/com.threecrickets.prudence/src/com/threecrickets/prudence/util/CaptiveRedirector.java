@@ -11,6 +11,8 @@
 
 package com.threecrickets.prudence.util;
 
+import java.util.Map;
+
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -123,11 +125,6 @@ public class CaptiveRedirector extends ResolvingRedirector
 
 		setCaptiveReference( request, new Reference( rootRef, request.getResourceRef() ) );
 
-		/*
-		 * System.out.println(request.getResourceRef()); Reference targetRef =
-		 * getTargetRef(request, response); System.out.println(targetRef);
-		 */
-
 		// Avoid endless loops
 		if( getTargetRef( request, response ).equals( request.getResourceRef() ) )
 		{
@@ -139,7 +136,29 @@ public class CaptiveRedirector extends ResolvingRedirector
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
+	// Protected
+
+	@Override
+	protected Reference getTargetRef( Request request, Response response )
+	{
+		String attribute = TARGET_REFERENCE + response.hashCode();
+		Map<String, Object> attributes = request.getAttributes();
+		Reference targetRef = (Reference) attributes.get( attribute );
+		if( targetRef == null )
+		{
+			targetRef = super.getTargetRef( request, response );
+			attributes.put( attribute, targetRef );
+		}
+		return targetRef;
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
 	// Private
+
+	/**
+	 * Request attribute of the target reference.
+	 */
+	private static final String TARGET_REFERENCE = "com.threecrickets.prudence.util.CaptiveRedirector.targetReference.";
 
 	/**
 	 * Whether to set the base reference to the host root URI.
