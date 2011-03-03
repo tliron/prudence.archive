@@ -44,7 +44,7 @@ def fix_url(url):
 # Internal router
 #
 
-component.internalRouter.attach('/%s/' % application_internal_name, application_instance).matchingMode = Template.MODE_STARTS_WITH
+component.internalRouter.attach('/' + application_internal_name, application_instance).matchingMode = Template.MODE_STARTS_WITH
 
 #
 # Hosts

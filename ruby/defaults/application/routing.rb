@@ -47,7 +47,7 @@ end
 # Internal router
 #
 
-$component.internal_router.attach('/' + $application_internal_name + '/', $application_instance).matching_mode = Template::MODE_STARTS_WITH
+$component.internal_router.attach('/' + $application_internal_name, $application_instance).matching_mode = Template::MODE_STARTS_WITH
 
 #
 # Hosts

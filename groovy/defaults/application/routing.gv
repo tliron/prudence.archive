@@ -48,7 +48,7 @@ fixURL = { url ->
 // Internal router
 //
 
-componentInstance.internalRouter.attach('/' + applicationInternalName + '/', applicationInstance).matchingMode = Template.MODE_STARTS_WITH
+componentInstance.internalRouter.attach('/' + applicationInternalName, applicationInstance).matchingMode = Template.MODE_STARTS_WITH
 
 //
 // Hosts

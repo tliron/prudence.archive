@@ -50,7 +50,7 @@ function fixURL(url) {
 // Internal router
 //
 
-component.internalRouter.attach('/' + applicationInternalName + '/', applicationInstance).matchingMode = Template.MODE_STARTS_WITH
+component.internalRouter.attach('/' + applicationInternalName, applicationInstance).matchingMode = Template.MODE_STARTS_WITH
 
 //
 // Hosts

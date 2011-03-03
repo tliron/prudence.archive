@@ -66,7 +66,7 @@ if(!function_exists('fix_url')) {
 // Internal router
 //
 
-$component->internalRouter->attach('/' . $application_internal_name . '/', $application_instance)->matchingMode = Template::MODE_STARTS_WITH;
+$component->internalRouter->attach('/' . $application_internal_name, $application_instance)->matchingMode = Template::MODE_STARTS_WITH;
 
 //
 // Hosts
