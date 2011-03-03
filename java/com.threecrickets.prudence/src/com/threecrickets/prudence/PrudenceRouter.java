@@ -514,7 +514,8 @@ public class PrudenceRouter extends FallbackRouter
 	 * Hiding is explicitly disabled for the RIAP protocol.
 	 * 
 	 * @param uri
-	 *        The URI path that must match the relative part of the resource URI
+	 *        The URI path that must match the remaining part of the resource
+	 *        URI
 	 */
 	public void hide( String uri )
 	{
@@ -528,9 +529,9 @@ public class PrudenceRouter extends FallbackRouter
 	@Override
 	public void handle( Request request, Response response )
 	{
+		// RIAP ignores hide
 		if( request.getProtocol() != Protocol.RIAP )
 		{
-			// RIAP ignores hide
 			String remaining = request.getResourceRef().getRemainingPart();
 			if( hiddenUris.contains( remaining ) )
 			{
