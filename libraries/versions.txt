@@ -23,7 +23,7 @@ jruby				1.5.6
 json				
 jsr-223				
 junit				4.8.2
-jython				2.5.2 RC2
+jython				2.5.2
 jygments			1.0 (Revision 21)
 log4j				1.2.16
 mime4j				0.6
@@ -35,7 +35,7 @@ quercus				4.0.11
 restlet (JSE)		2.0.5
 rhino				1.7R2
 servlet (jetty)		2.5
-scripturian			1.0 (Revision 258)
+scripturian			1.0 (Revision 259)
 slf4j				1.6.1
 spymemcached		2.5
 sqlalchemy			0.6 (Revision 6720 + H2 patch)

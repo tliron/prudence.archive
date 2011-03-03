@@ -1493,6 +1493,86 @@ class TestGetAddrInfo(unittest.TestCase):
                 self.failUnlessEqual(expected_canonname, canonname, "For hostname '%s' and flags %d, canonname '%s' != '%s'" % (host_param, flags, expected_canonname, canonname) )
                 self.failUnlessEqual(expected_sockaddr, sockaddr[0], "For hostname '%s' and flags %d, sockaddr '%s' != '%s'" % (host_param, flags, expected_sockaddr, sockaddr[0]) )
 
+    def testIPV4AddressesOnly(self):
+        socket._use_ipv4_addresses_only(True)
+        def doAddressTest(addrinfos):
+            for family, socktype, proto, canonname, sockaddr in addrinfos:
+                self.failIf(":" in sockaddr[0], "Incorrectly received IPv6 address '%s'" % (sockaddr[0]) )
+        doAddressTest(socket.getaddrinfo("localhost", 0, socket.AF_INET6, socket.SOCK_STREAM, 0, 0))
+        doAddressTest(socket.getaddrinfo("localhost", 0, socket.AF_UNSPEC, socket.SOCK_STREAM, 0, 0))
+        socket._use_ipv4_addresses_only(False)
+
+    def testAddrTupleTypes(self):
+        ipv4_address_tuple = socket.getaddrinfo("localhost", 80, socket.AF_INET, socket.SOCK_STREAM, 0, 0)[0][4]
+        self.failUnlessEqual(ipv4_address_tuple[0], "127.0.0.1")
+        self.failUnlessEqual(ipv4_address_tuple[1], 80)
+        self.failUnlessRaises(IndexError, lambda: ipv4_address_tuple[2])
+        self.failUnlessEqual(str(ipv4_address_tuple), "('127.0.0.1', 80)")
+        self.failUnlessEqual(repr(ipv4_address_tuple), "('127.0.0.1', 80)")
+
+        ipv6_address_tuple = socket.getaddrinfo("localhost", 80, socket.AF_INET6, socket.SOCK_STREAM, 0, 0)[0][4]
+        self.failUnless     (ipv6_address_tuple[0] in ["::1", "0:0:0:0:0:0:0:1"])
+        self.failUnlessEqual(ipv6_address_tuple[1], 80)
+        self.failUnlessEqual(ipv6_address_tuple[2], 0)
+        # Can't have an expectation for scope
+        try:
+            ipv6_address_tuple[3]
+        except IndexError:
+            self.fail("Failed to retrieve third element of ipv6 4-tuple")
+        self.failUnlessRaises(IndexError, lambda: ipv6_address_tuple[4])
+        # These str/repr tests may fail on some systems: the scope element of the tuple may be non-zero
+        # In this case, we'll have to change the test to use .startswith() or .split() to exclude the scope element
+        self.failUnless(str(ipv6_address_tuple) in ["('::1', 80, 0, 0)", "('0:0:0:0:0:0:0:1', 80, 0, 0)"])
+        self.failUnless(repr(ipv6_address_tuple) in ["('::1', 80, 0, 0)", "('0:0:0:0:0:0:0:1', 80, 0, 0)"])
+
+class TestJython_get_jsockaddr(unittest.TestCase):
+    "These tests are specific to jython: they test a key internal routine"
+
+    def testIPV4AddressesFromGetAddrInfo(self):
+        local_addr = socket.getaddrinfo("localhost", 80, socket.AF_INET, socket.SOCK_STREAM, 0, 0)[0][4]
+        sockaddr = socket._get_jsockaddr(local_addr)
+        self.failUnless(isinstance(sockaddr, java.net.InetSocketAddress), "_get_jsockaddr returned wrong type: '%s'" % str(type(sockaddr)))
+        self.failUnlessEqual(sockaddr.address.hostAddress, "127.0.0.1")
+        self.failUnlessEqual(sockaddr.port, 80)
+
+    def testIPV6AddressesFromGetAddrInfo(self):
+        local_addr = socket.getaddrinfo("localhost", 80, socket.AF_INET6, socket.SOCK_STREAM, 0, 0)[0][4]
+        sockaddr = socket._get_jsockaddr(local_addr)
+        self.failUnless(isinstance(sockaddr, java.net.InetSocketAddress), "_get_jsockaddr returned wrong type: '%s'" % str(type(sockaddr)))
+        self.failUnless(sockaddr.address.hostAddress in ["::1", "0:0:0:0:0:0:0:1"])
+        self.failUnlessEqual(sockaddr.port, 80)
+
+    def testAddressesFrom2Tuple(self):
+        for addr_tuple in [
+            ("localhost", 80),
+            ]:
+            sockaddr = socket._get_jsockaddr(addr_tuple)
+            self.failUnless(isinstance(sockaddr, java.net.InetSocketAddress), "_get_jsockaddr returned wrong type: '%s'" % str(type(sockaddr)))
+            self.failUnless(sockaddr.address.hostAddress in ["127.0.0.1", "::1", "0:0:0:0:0:0:0:1"])
+            self.failUnlessEqual(sockaddr.port, 80)
+
+    def testAddressesFrom4Tuple(self):
+        # This test disabled: cannot construct IPV6 addresses from 4-tuple
+        return
+        for addr_tuple in [
+            ("localhost", 80, 0, 0),
+            ]:
+            sockaddr = socket._get_jsockaddr(addr_tuple)
+            self.failUnless(isinstance(sockaddr, java.net.InetSocketAddress), "_get_jsockaddr returned wrong type: '%s'" % str(type(sockaddr)))
+            self.failUnless(isinstance(sockaddr.address, java.net.Inet6Address), "_get_jsockaddr returned wrong address type: '%s'" % str(type(sockaddr.address)))
+            self.failUnless(sockaddr.address.hostAddress in ["::1", "0:0:0:0:0:0:0:1"])
+            self.failUnlessEqual(sockaddr.address.scopeId, 0)
+            self.failUnlessEqual(sockaddr.port, 80)
+
+    def testSpecialHostnames(self):
+        for addr_tuple, for_udp, expected_hostname in [
+            ( ("", 80),            False, socket.INADDR_ANY),
+            ( ("", 80),            True,  socket.INADDR_ANY),
+            ( ("<broadcast>", 80), True,  socket.INADDR_BROADCAST),
+            ]:
+            sockaddr = socket._get_jsockaddr(addr_tuple, for_udp)
+            self.failUnlessEqual(sockaddr.hostName, expected_hostname, "_get_jsockaddr returned wrong hostname '%s' for special hostname '%s'" % (sockaddr.hostName, expected_hostname))
+
 class TestExceptions(unittest.TestCase):
 
     def testExceptionTree(self):
@@ -1662,6 +1742,47 @@ class UnicodeTest(ThreadedTCPSocketTest):
     def _testUnicodeHostname(self):
         self.cli.connect((unicode(self.HOST), self.PORT))
 
+class IDNATest(unittest.TestCase):
+
+    def testGetAddrInfoIDNAHostname(self):
+        idna_domain = u"al\u00e1n.com"
+        if socket.supports('idna'):
+            try:
+                addresses = socket.getaddrinfo(idna_domain, 80)
+                self.failUnless(len(addresses) > 0, "No addresses returned for test IDNA domain '%s'" % repr(idna_domain))
+            except Exception, x:
+                self.fail("Unexpected exception raised for socket.getaddrinfo(%s)" % repr(idna_domain))
+        else:
+            try:
+                socket.getaddrinfo(idna_domain, 80)
+            except UnicodeEncodeError:
+                pass
+            except Exception, x:
+                self.fail("Non ascii domain '%s' should have raised UnicodeEncodeError, not %s" % (repr(idna_domain), str(x)))
+            else:
+                self.fail("Non ascii domain '%s' should have raised UnicodeEncodeError: no exception raised" % repr(idna_domain))
+
+    def testAddrTupleIDNAHostname(self):
+        idna_domain = u"al\u00e1n.com"
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if socket.supports('idna'):
+            try:
+                s.bind( (idna_domain, 80) )
+            except socket.error:
+                # We're not worried about socket errors, i.e. bind problems, etc.
+                pass
+            except Exception, x:
+                self.fail("Unexpected exception raised for socket.bind(%s)" % repr(idna_domain))
+        else:
+            try:
+                s.bind( (idna_domain, 80) )
+            except UnicodeEncodeError:
+                pass
+            except Exception, x:
+                self.fail("Non ascii domain '%s' should have raised UnicodeEncodeError, not %s" % (repr(idna_domain), str(x)))
+            else:
+                self.fail("Non ascii domain '%s' should have raised UnicodeEncodeError: no exception raised" % repr(idna_domain))
+
 class TestInvalidUsage(unittest.TestCase):
 
     def setUp(self):
@@ -1713,12 +1834,14 @@ def test_main():
         LineBufferedFileObjectClassTestCase,
         SmallBufferedFileObjectClassTestCase,
         UnicodeTest,
+        IDNATest,
     ]
     if hasattr(socket, "socketpair"):
         tests.append(BasicSocketPairTest)
     if sys.platform[:4] == 'java':
         tests.append(TestJythonTCPExceptions)
         tests.append(TestJythonUDPExceptions)
+        tests.append(TestJython_get_jsockaddr)
     # TODO: Broadcast requires permission, and is blocked by some firewalls
     # Need some way to discover the network setup on the test machine
     if False:
