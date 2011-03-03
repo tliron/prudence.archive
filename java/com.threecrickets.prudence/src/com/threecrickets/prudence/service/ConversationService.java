@@ -189,7 +189,7 @@ public class ConversationService
 	 */
 	public boolean isInternal()
 	{
-		return getRequest().getProtocol().equals( Protocol.RIAP );
+		return getReference().getSchemeProtocol().equals( Protocol.RIAP );
 	}
 
 	/**
