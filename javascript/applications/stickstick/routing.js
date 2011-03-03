@@ -11,7 +11,7 @@ importClass(
 router.captureAndHide(resourcesBaseURL + 'data/note/{id}/', '/data/note/')
 
 // Wrap the static web with unify-minify filters
-var cssFilter = new CssUnifyMinifyFilter(null, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks)
-var javaScriptFilter = new JavaScriptUnifyMinifyFilter(null, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks)
+var cssFilter = new CssUnifyMinifyFilter(null, new File(applicationBasePath + staticWebBasePath), minimumTimeBetweenValidityChecks)
+var javaScriptFilter = new JavaScriptUnifyMinifyFilter(null, new File(applicationBasePath + staticWebBasePath), minimumTimeBetweenValidityChecks)
 router.filterBase(staticWebBaseURL, cssFilter, staticWeb)
 router.filterBase(staticWebBaseURL, javaScriptFilter, cssFilter)
