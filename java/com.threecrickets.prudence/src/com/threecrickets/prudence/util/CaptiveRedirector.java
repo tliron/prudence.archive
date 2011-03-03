@@ -126,7 +126,7 @@ public class CaptiveRedirector extends ResolvingRedirector
 		setCaptiveReference( request, new Reference( rootRef, request.getResourceRef() ) );
 
 		// Avoid endless loops
-		if( getTargetRef( request, response ).equals( request.getResourceRef() ) )
+		if( targetTemplate.equals( request.getResourceRef().getPath() ) )
 		{
 			response.setStatus( Status.CLIENT_ERROR_NOT_FOUND );
 			return;
@@ -141,6 +141,7 @@ public class CaptiveRedirector extends ResolvingRedirector
 	@Override
 	protected Reference getTargetRef( Request request, Response response )
 	{
+		// Cache target reference
 		String attribute = TARGET_REFERENCE + response.hashCode();
 		Map<String, Object> attributes = request.getAttributes();
 		Reference targetRef = (Reference) attributes.get( attribute );
