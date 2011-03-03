@@ -3,4 +3,4 @@
 #
 
 document.preferredExtension = 'py'
-document.execute('defaults/instance/')
+document.execute('/defaults/instance/')

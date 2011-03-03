@@ -26,7 +26,7 @@ executeOrDefault = { name, deflt = null ->
 		document.execute(name)
 	} catch(DocumentNotFoundException) {
 		if(!deflt) {
-			deflt = 'defaults/' + name
+			deflt = '/defaults/' + name
 		}
 		document.execute(deflt)
 	}

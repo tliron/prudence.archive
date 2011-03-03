@@ -12,4 +12,4 @@
 ;
 
 (.setPreferredExtension document "clj")
-(.execute document "defaults/instance/")
+(.execute document "/defaults/instance/")

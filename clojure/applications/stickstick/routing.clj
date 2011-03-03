@@ -2,13 +2,13 @@
 ; Stickstick Routing
 ;
 
-(.execute document "defaults/application/routing/")
+(.execute document "/defaults/application/routing/")
 
 (import
 	'com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter
 	'com.threecrickets.prudence.util.CssUnifyMinifyFilter)
 
-(.captureAndHide router (str resources-base-url "data/note/{id}/") "data/note/")
+(.captureAndHide router (str resources-base-url "data/note/{id}/") "/data/note/")
 
 ; Wrap the static web with unify-minify filters
 (def css-filter (CssUnifyMinifyFilter. nil (File. (str application-base-path static-web-base-path)) dynamic-web-minimum-time-between-validity-checks))

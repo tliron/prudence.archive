@@ -30,7 +30,7 @@ function execute_or_default($name, $def=NULL) {
 	} catch(Exception $x) {
 		// TODO: find the exception type!
 		if(is_null($def)) {
-			$def = 'defaults/' . $name;
+			$def = '/defaults/' . $name;
 		}
 		$document->execute($def);
 	}

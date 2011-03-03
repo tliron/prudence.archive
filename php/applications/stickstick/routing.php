@@ -8,9 +8,9 @@ global $router, $resources_base_url, $static_web, $static_web_base_url, $applica
 import com.threecrickets.prudence.util.CssUnifyMinifyFilter;
 import com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter;
 
-$document->execute('defaults/application/routing/');
+$document->execute('/defaults/application/routing/');
 
-$router->captureAndHide($resources_base_url . 'data/note/{id}/', 'data/note/');
+$router->captureAndHide($resources_base_url . 'data/note/{id}/', '/data/note/');
 
 // Wrap the static web with unify-minify filters
 $css_filter = new CssUnifyMinifyFilter(NULL, new File($application_base_path . $static_web_base_path), $dynamic_web_minimum_time_between_validity_checks);

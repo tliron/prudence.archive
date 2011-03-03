@@ -31,13 +31,13 @@ def execute_or_default(name, default=nil)
 			
 		rescue DocumentNotFoundException
 			if default.nil?
-				default = 'defaults/' + name
+				default = '/defaults/' + name
 			end
 			$document.execute default
 		end
 	rescue
 		if default.nil?
-			default = 'defaults/' + name
+			default = '/defaults/' + name
 		end
 		$document.execute default
 	end

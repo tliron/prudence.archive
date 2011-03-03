@@ -36,8 +36,8 @@
 ; Makes sure we have slashes where we expect them
 (defn fix-url [url]
 	(let [url (.replace url "//" "/")] ; no doubles
-		(let [url (if (.startsWith url "/") (.substring url 1) url)] ; never at the beginning
-			(if (and (> (.length url) 0) (not (.endsWith url "/"))) ; always at the end
+		(let [url (if (not (.startsWith url "/")) (str "/" url))] ; always at the beginning
+			(if (not (.endsWith url "/")) ; always at the end
 				(str url "/")
 				url))))
 
@@ -63,10 +63,11 @@
 		
 		(let [url (if (nil? url) application-default-url url)]
 			(print (str "\"" url "\"") "on" (.getName host))
-			(.setMatchingMode (.attach host url application-instance) Template/MODE_STARTS_WITH)
-			(if-not (= url "/")
-				(let [url (if (.endsWith url "/") (.substring url 0 (- (.length url) 1)) url)]
-					(.setMatchingMode (.attach host url add-trailing-slash) Template/MODE_EQUALS))))
+      (let [url (if (= url "/") "" url)]
+        (.setMatchingMode (.attach host url application-instance) Template/MODE_STARTS_WITH)
+        (if-not (= url "")
+          (let [url (if (.endsWith url "/") (.substring url 0 (- (.length url) 1)) url)]
+            (.setMatchingMode (.attach host url add-trailing-slash) Template/MODE_EQUALS)))))
 		(if-not (empty? others)
 			(do
 				(print ", ")

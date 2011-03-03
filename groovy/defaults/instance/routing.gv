@@ -48,8 +48,8 @@ for(applicationDir in applicationDirs) {
 		applicationInternalName = applicationDir.name
 		applicationLoggerName = applicationDir.name
 		applicationBasePath = applicationDir.path
-		applicationDefaultURL = '/' + applicationDir.name + '/'
-		applicationBase = 'applications/' + applicationDir.name + '/'
+		applicationDefaultURL = '/' + applicationDir.name
+		applicationBase = 'applications/' + applicationDir.name
 		executeOrDefault(applicationBase, 'defaults/application/')
 		applications.add(applicationInstance)
 	}

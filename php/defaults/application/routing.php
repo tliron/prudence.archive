@@ -52,10 +52,10 @@ $class_loader = ClassLoader::getSystemClassLoader();
 if(!function_exists('fix_url')) {
 	function fix_url($url) {
 		$url = str_replace('//', '/', $url); // no doubles
-		if(strlen($url) > 0 && $url[0] == '/') { // never at the beginning
-			$url = substr($url, 1);
+		if($url == '' || $url[0] != '/') { // always at the beginning
+			$url = '/' . $url;
 		}
-		if(strlen($url) > 0 && $url[strlen($url) - 1] != '/') { // always at the end
+		if($url[strlen($url) - 1] != '/') { // always at the end
 			$url = $url . '/';
 		}
 		return $url;
@@ -86,8 +86,11 @@ foreach($hosts as $entry) {
 		$url = $application_default_url;
 	}
 	print '"' . $url . '" on ' . $host->name;
+	if($url == '/') {
+		$url = '';
+	}
 	$host->attach($url, $application_instance)->matchingMode = Template::MODE_STARTS_WITH;
-	if($url != '/') {
+	if($url != '') {
 		if($url[strlen($url) - 1] == '/') {
 			$url = substr($url, 0, -1);
 		}

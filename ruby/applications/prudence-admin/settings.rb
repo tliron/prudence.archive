@@ -2,7 +2,7 @@
 # Prudence Admin Settings
 #
 
-$document.execute 'defaults/application/settings/'
+$document.execute '/defaults/application/settings/'
 
 $application_name = 'Prudence Admin'
 $application_description = 'Runtime management of Prudence'

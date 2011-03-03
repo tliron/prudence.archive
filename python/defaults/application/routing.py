@@ -34,9 +34,9 @@ class_loader = ClassLoader.getSystemClassLoader()
 # Makes sure we have slashes where we expect them
 def fix_url(url):
 	url = url.replace('//', '/') # no doubles
-	if len(url) > 0 and url[0] == '/': # never at the beginning
-		url = url[1:]
-	if len(url) > 0 and url[-1] != '/': # always at the end
+	if url == '' or url[0] == '/': # always at the beginning
+		url = '/' + url
+	if url[-1] != '/': # always at the end
 		url = url + '/'
 	return url
 
@@ -61,8 +61,10 @@ for i in range(len(hosts)):
 	if url is None:
 		url = application_default_url
 	sys.stdout.write('"%s" on %s' % (url, host.name))
+	if url == '/':
+		url = ''
 	host.attach(url, application_instance).matchingMode = Template.MODE_STARTS_WITH
-	if url != '/':
+	if url != '':
 		if url[-1] == '/':
 			url = url[:-1]
 		host.attach(url, add_trailing_slash).matchingMode = Template.MODE_EQUALS

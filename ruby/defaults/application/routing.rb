@@ -34,10 +34,10 @@ $class_loader = ClassLoader::system_class_loader
 # Makes sure we have slashes where we expect them
 def fix_url url
 	url = url.gsub /\/\//, '/' # no doubles
-	if url.length > 0 && url[0] == ?/ # never at the beginning
-		url = url[1..-1]
+	if url == '' || url[0] != ?/ # always at the beginning
+		url = '/' + url
 	end
-	if url.length > 0 && url[-1] != ?/ # always at the end
+	if url[-1] != ?/ # always at the end
 		url += '/'
 	end
 	return url
@@ -67,8 +67,11 @@ for entry in $hosts
 		url = $application_default_url
 	end
 	print "\"#{url}\" on #{host.name}"
+	if url == '/'
+		url = ''
+	end
 	host.attach(url, $application_instance).matching_mode = Template::MODE_STARTS_WITH
-	if url != '/'
+	if url != ''
 		if url[-1] == ?/
 			url = url[0..-2]
 		end

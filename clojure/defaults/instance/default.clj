@@ -27,7 +27,7 @@
 			(catch DocumentNotFoundException _
 				(.execute document
 					(if (nil? default)
-						(str "defaults/" name)
+						(str "/defaults/" name)
 						default)))))
 	([name]
 		(execute-or-default name nil)))

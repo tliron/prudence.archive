@@ -25,7 +25,7 @@ def execute_or_default(name, default=None):
 		document.execute(name)
 	except DocumentNotFoundException:
 		if default is None:
-			default = 'defaults/' + name 
+			default = '/defaults/' + name 
 		document.execute(default)
 
 #

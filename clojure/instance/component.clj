@@ -11,7 +11,7 @@
 ; at http://threecrickets.com/
 ;
 
-(.execute document "defaults/instance/component/")
+(.execute document "/defaults/instance/component/")
 
 (import
 	'com.threecrickets.prudence.cache.H2Cache

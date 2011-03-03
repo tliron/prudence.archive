@@ -6,7 +6,7 @@
 global $application_base, $application_base_path, $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $predefined_globals, $show_debug_on_error, $preheat_resources;
 
-$document->execute('defaults/application/settings/');
+$document->execute('/defaults/application/settings/');
 
 $application_name = 'Stickstick';
 $application_description = 'Share online sticky notes';

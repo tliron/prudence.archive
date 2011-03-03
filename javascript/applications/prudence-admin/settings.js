@@ -2,7 +2,7 @@
 // Prudence Admin Settings
 //
 
-document.execute('defaults/application/settings/')
+document.execute('/defaults/application/settings/')
 
 applicationName = 'Prudence Admin'
 applicationDescription = 'Runtime management of Prudence'

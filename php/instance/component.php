@@ -14,7 +14,7 @@
 
 global $component;
 
-$document->execute('defaults/instance/component/');
+$document->execute('/defaults/instance/component/');
 
 import com.threecrickets.prudence.cache.H2Cache;
 import com.threecrickets.prudence.cache.ChainCache;

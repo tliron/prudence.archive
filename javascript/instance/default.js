@@ -12,4 +12,4 @@
 //
 
 document.preferredExtension = 'js'
-document.execute('defaults/instance/')
+document.execute('/defaults/instance/')

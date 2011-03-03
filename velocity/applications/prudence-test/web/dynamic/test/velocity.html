@@ -34,7 +34,7 @@
 ## Let's make sure Velocity interprets this before switching to the helper
 #set($thisAdapter = $executable.context.adapter)
 
-%><%& 'test/velocity-helper/' %><%
+%><%& '/test/velocity-helper/' %><%
 
 <p>This page was dynamically generated at $conversation.locals.currentTimeMillis</p>
 
@@ -71,7 +71,7 @@
 ##   $document.include('path')
 ##
 
-%><%& "test/velocity-triple/" %><%
+%><%& "/test/velocity-triple/" %><%
 
 #foreach($i in [0..9])
 	A multiple of three:

@@ -2,7 +2,7 @@
 ; Prudence Admin Settings
 ;
 
-(.execute document "defaults/application/settings/")
+(.execute document "/defaults/application/settings/")
 
 (def application-name "Stickstick")
 (def application-description "Share online sticky notes")

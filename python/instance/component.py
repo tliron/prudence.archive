@@ -2,7 +2,7 @@
 # Prudence Component
 #
 
-document.execute('defaults/instance/component/')
+document.execute('/defaults/instance/component/')
 
 from com.threecrickets.prudence.cache import H2Cache, ChainCache
 

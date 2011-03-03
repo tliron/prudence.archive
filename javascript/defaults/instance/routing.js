@@ -51,8 +51,8 @@ for(var i in applicationDirs) {
 		var applicationInternalName = applicationDir.name
 		var applicationLoggerName = applicationDir.name
 		var applicationBasePath = applicationDir.path
-		var applicationDefaultURL = '/' + applicationDir.name + '/'
-		var applicationBase = 'applications/' + applicationDir.name + '/'
+		var applicationDefaultURL = '/' + applicationDir.name
+		var applicationBase = 'applications/' + applicationDir.name
 		executeOrDefault(applicationBase, 'defaults/application/')
 		applications.add(applicationInstance)
 	}

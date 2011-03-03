@@ -13,5 +13,5 @@
 //
 
 $document->preferredExtension = 'php';
-$document->execute('defaults/instance/');
+$document->execute('/defaults/instance/');
 ?>

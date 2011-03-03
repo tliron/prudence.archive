@@ -11,7 +11,7 @@
 // at http://threecrickets.com/
 //
 
-document.execute('defaults/instance/component/')
+document.execute('/defaults/instance/component/')
 
 importClass(
 	com.threecrickets.prudence.cache.H2Cache,

@@ -2,7 +2,7 @@
 # Stickstick Settings
 #
 
-$document.execute 'defaults/application/settings/'
+$document.execute '/defaults/application/settings/'
 
 $application_name = 'Stickstick'
 $application_description = 'Share online sticky notes'

@@ -2,13 +2,13 @@
 // Stickstick Routing
 //
 
-document.execute('defaults/application/routing/')
+document.execute('/defaults/application/routing/')
 
 import com.threecrickets.prudence.util.CssUnifyMinifyFilter
 import com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter
 import org.restlet.routing.Template
 
-router.captureAndHide(resourcesBaseURL + 'data/note/{id}/', 'data/note/')
+router.captureAndHide(resourcesBaseURL + 'data/note/{id}/', '/data/note/')
 
 // Wrap the static web with unify-minify filters
 cssFilter = new CssUnifyMinifyFilter(null, new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetweenValidityChecks)

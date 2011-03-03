@@ -12,4 +12,4 @@
 #
 
 $document.preferred_extension = 'rb'
-$document.execute 'defaults/instance/'
+$document.execute '/defaults/instance/'

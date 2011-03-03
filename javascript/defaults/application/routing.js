@@ -37,10 +37,10 @@ var classLoader = ClassLoader.systemClassLoader
 // Makes sure we have slashes where we expect them
 function fixURL(url) {
 	url = url.replace(/\/\//g, '/') // no doubles
-	if(url.length > 0 && url[0] == '/') { // never at the beginning
-		url = url.slice(1)
+	if(url == '' || url[0] != '/') { // always at the beginning
+		url = '/' + url
 	}
-	if(url.length > 0 && url[url.length - 1] != '/') { // always at the end
+	if(url[url.length - 1] != '/') { // always at the end
 		url += '/'
 	}
 	return url
@@ -70,8 +70,11 @@ for(var i in hosts) {
 		url = applicationDefaultURL
 	}
 	print('"' + url + '" on ' + host.name)
+	if (url == '/') {
+		url = ''
+	}
 	host.attach(url, applicationInstance).matchingMode = Template.MODE_STARTS_WITH
-	if(url != '/') {
+	if(url != '') {
 		if(url[url.length - 1] == '/') {
 			url = url.slice(0, -1)
 		}

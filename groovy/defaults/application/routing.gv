@@ -35,10 +35,10 @@ classLoader = ClassLoader.systemClassLoader
 // Makes sure we have slashes where we expect them
 fixURL = { url ->
 	url = (url =~ /\/\//).replaceAll('/') // no doubles
-	if(url.size() > 0 && url[0] == '/') { // never at the beginning
-		url = url.substring(1)
+	if(url == '' || url[0] != '/') { // always at the beginning
+		url = '/' + url
 	}
-	if(url.size() > 0 && url[url.size() - 1] != '/') { // always at the end
+	if(url[url.size() - 1] != '/') { // always at the end
 		url += '/'
 	}
 	return url
@@ -67,8 +67,11 @@ hosts.eachWithIndex() { entry, i ->
 		url = applicationDefaultURL
 	}
 	print('"' + url + '" on ' + host.name)
+	if (url == '/') {
+		url = ''
+	}
 	host.attach(url, applicationInstance).matchingMode = Template.MODE_STARTS_WITH
-	if(url != '/') {
+	if(url != '') {
 		if(url[url.size() - 1] == '/') {
 			url = url.substring(0, url.size() - 1)
 		}

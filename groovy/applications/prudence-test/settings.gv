@@ -2,7 +2,7 @@
 // Prudence Guide Settings
 //
 
-document.execute('defaults/application/settings/')
+document.execute('/defaults/application/settings/')
 
 applicationName = 'Prudence Test'
 applicationDescription = 'Prudence tests'

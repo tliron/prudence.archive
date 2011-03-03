@@ -26,7 +26,7 @@ function executeOrDefault(name, def) {
 		document.execute(name)
 	} catch(e if e.javaException instanceof DocumentNotFoundException) {
 		if(!def) {
-			def = 'defaults/' + name
+			def = '/defaults/' + name
 		}
 		document.execute(def)
 	}

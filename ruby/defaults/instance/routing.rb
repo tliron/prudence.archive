@@ -48,8 +48,8 @@ for application_dir in $application_dirs
 		$application_internal_name = application_dir.name
 		$application_logger_name = application_dir.name
 		$application_base_path = application_dir.path
-		$application_default_url = '/' + application_dir.name + '/'
-		$application_base = 'applications/' + application_dir.name + '/'
+		$application_default_url = '/' + application_dir.name
+		$application_base = 'applications/' + application_dir.name
 		execute_or_default $application_base, 'defaults/application'
 		$applications.add $application_instance
 	end
