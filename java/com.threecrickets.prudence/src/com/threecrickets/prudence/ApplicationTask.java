@@ -97,7 +97,7 @@ public class ApplicationTask implements Runnable
 	//
 
 	/**
-	 * Construction using current Restlet application.
+	 * Constructor using current Restlet application.
 	 * 
 	 * @param documentName
 	 *        The document name

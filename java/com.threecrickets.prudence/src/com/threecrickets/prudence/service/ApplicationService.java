@@ -45,7 +45,7 @@ public class ApplicationService
 	//
 
 	/**
-	 * Construction using the current application.
+	 * Constructor using the current application.
 	 * 
 	 * @see Application#getCurrent()
 	 */
