@@ -86,7 +86,7 @@ public class MongoCache implements Cache
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param mongo
 	 *        The MongoDB connection
@@ -101,7 +101,7 @@ public class MongoCache implements Cache
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param db
 	 *        The MongoDB database
@@ -114,7 +114,7 @@ public class MongoCache implements Cache
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param collection
 	 */

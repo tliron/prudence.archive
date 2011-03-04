@@ -26,7 +26,7 @@ import org.restlet.routing.Route;
 import org.restlet.routing.Router;
 import org.restlet.routing.Template;
 
-import com.threecrickets.prudence.util.CaptiveRouter;
+import com.threecrickets.prudence.util.CapturingRouter;
 import com.threecrickets.prudence.util.Fallback;
 import com.threecrickets.prudence.util.FallbackRouter;
 import com.threecrickets.prudence.util.NormalizingRedirector;
@@ -34,7 +34,7 @@ import com.threecrickets.prudence.util.ResolvingRouter;
 
 /**
  * A {@link Router} with shortcut methods. Inherits all functionality from
- * {@link FallbackRouter}, {@link CaptiveRouter} and {@link ResolvingRouter}.
+ * {@link FallbackRouter}, {@link CapturingRouter} and {@link ResolvingRouter}.
  * 
  * @author Tal Liron
  */
@@ -55,6 +55,7 @@ public class PrudenceRouter extends FallbackRouter
 	public PrudenceRouter( Context context )
 	{
 		super( context, 5000 );
+		describe();
 	}
 
 	/**
@@ -69,10 +70,7 @@ public class PrudenceRouter extends FallbackRouter
 	public PrudenceRouter( Context context, int cacheDuration )
 	{
 		super( context, cacheDuration );
-		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
-		setName( "PrudenceRouter" );
-		setDescription( "A FallbackRouter with shortcut methods for common routing tasks" );
+		describe();
 	}
 
 	//
@@ -483,5 +481,21 @@ public class PrudenceRouter extends FallbackRouter
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * Hidden URIs.
+	 * 
+	 * @see #hide(String)
+	 */
 	private CopyOnWriteArraySet<String> hiddenUris = new CopyOnWriteArraySet<String>();
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "PrudenceRouter" );
+		setDescription( "A router with shortcut methods, inheriting functionality of FallbackRouter, CapturingRouter and ResolvingRouter" );
+	}
 }

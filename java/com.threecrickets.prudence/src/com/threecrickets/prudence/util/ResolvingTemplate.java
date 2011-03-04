@@ -35,12 +35,16 @@ public class ResolvingTemplate extends Template
 	//
 
 	/**
+	 * Application attribute of the map resolver constructor.
+	 * 
 	 * @see #getMapResolverConstructor(Context)
 	 * @see #setMapResolverClass(Context, Class)
 	 */
 	public static final String MAP_RESOLVER_CONSTRUCTOR = "com.threecrickets.prudence.util.ResolvingTemplate.mapResolverConstructor";
 
 	/**
+	 * Application attribute of the call resolver constructor.
+	 * 
 	 * @see #getCallResolverConstructor(Context)
 	 * @see #setCallResolverClass(Context, Class)
 	 */
@@ -50,21 +54,53 @@ public class ResolvingTemplate extends Template
 	// Construction
 	//
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param pattern
+	 * @param matchingMode
+	 * @param defaultType
+	 * @param defaultDefaultValue
+	 * @param defaultRequired
+	 * @param defaultFixed
+	 * @param encodingVariables
+	 */
 	public ResolvingTemplate( String pattern, int matchingMode, int defaultType, String defaultDefaultValue, boolean defaultRequired, boolean defaultFixed, boolean encodingVariables )
 	{
 		super( pattern, matchingMode, defaultType, defaultDefaultValue, defaultRequired, defaultFixed, encodingVariables );
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param pattern
+	 * @param matchingMode
+	 * @param defaultType
+	 * @param defaultDefaultValue
+	 * @param defaultRequired
+	 * @param defaultFixed
+	 */
 	public ResolvingTemplate( String pattern, int matchingMode, int defaultType, String defaultDefaultValue, boolean defaultRequired, boolean defaultFixed )
 	{
 		super( pattern, matchingMode, defaultType, defaultDefaultValue, defaultRequired, defaultFixed );
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param pattern
+	 * @param matchingMode
+	 */
 	public ResolvingTemplate( String pattern, int matchingMode )
 	{
 		super( pattern, matchingMode );
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param pattern
+	 */
 	public ResolvingTemplate( String pattern )
 	{
 		super( pattern );
@@ -74,17 +110,30 @@ public class ResolvingTemplate extends Template
 	// Static attributes
 	//
 
+	/**
+	 * @return
+	 */
 	public static Constructor<Resolver<?>> getMapResolverConstructor()
 	{
 		return getMapResolverConstructor( Application.getCurrent() );
 	}
 
+	/**
+	 * @param application
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static Constructor<Resolver<?>> getMapResolverConstructor( Application application )
 	{
 		return (Constructor<Resolver<?>>) application.getContext().getAttributes().get( MAP_RESOLVER_CONSTRUCTOR );
 	}
 
+	/**
+	 * @param application
+	 * @param theClass
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 */
 	public static void setMapResolverClass( Application application, Class<Resolver<?>> theClass ) throws SecurityException, NoSuchMethodException
 	{
 		if( theClass == null )
@@ -93,17 +142,30 @@ public class ResolvingTemplate extends Template
 			application.getContext().getAttributes().put( MAP_RESOLVER_CONSTRUCTOR, theClass.getConstructor( Map.class ) );
 	}
 
+	/**
+	 * @return
+	 */
 	public static Constructor<Resolver<?>> getCallResolverConstructor()
 	{
 		return getCallResolverConstructor( Application.getCurrent() );
 	}
 
+	/**
+	 * @param application
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static Constructor<Resolver<?>> getCallResolverConstructor( Application application )
 	{
 		return (Constructor<Resolver<?>>) application.getContext().getAttributes().get( CALL_RESOLVER_CONSTRUCTOR );
 	}
 
+	/**
+	 * @param application
+	 * @param theClass
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 */
 	public static void setCallResolverClass( Application application, Class<Resolver<?>> theClass ) throws SecurityException, NoSuchMethodException
 	{
 		if( theClass == null )

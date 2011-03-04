@@ -53,7 +53,7 @@ public abstract class UnifyMinifyFilter extends Filter
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param context
 	 *        The context
@@ -75,7 +75,7 @@ public abstract class UnifyMinifyFilter extends Filter
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param context
 	 *        The context

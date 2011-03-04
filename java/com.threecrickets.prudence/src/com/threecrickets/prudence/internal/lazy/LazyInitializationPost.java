@@ -34,7 +34,7 @@ public class LazyInitializationPost extends LazyInitializationMap<String, String
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param request
 	 *        The request

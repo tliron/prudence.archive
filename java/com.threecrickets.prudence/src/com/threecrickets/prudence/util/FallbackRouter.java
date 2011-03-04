@@ -31,7 +31,7 @@ import org.restlet.routing.Router;
  * @author Tal Liron
  */
 @SuppressWarnings("deprecation")
-public class FallbackRouter extends CaptiveRouter
+public class FallbackRouter extends CapturingRouter
 {
 	//
 	// Construction
@@ -60,10 +60,7 @@ public class FallbackRouter extends CaptiveRouter
 	public FallbackRouter( Context context, int cacheDuration )
 	{
 		super( context );
-		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
-		setName( "FallbackRouter" );
-		setDescription( "A router that takes care to bunch identical routes under Fallback restlets" );
+		describe();
 		this.cacheDuration = cacheDuration;
 	}
 
@@ -240,4 +237,15 @@ public class FallbackRouter extends CaptiveRouter
 	 * milliseconds.
 	 */
 	private volatile int cacheDuration;
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "FallbackRouter" );
+		setDescription( "A router that takes care to bunch identical routes under Fallback restlets" );
+	}
 }

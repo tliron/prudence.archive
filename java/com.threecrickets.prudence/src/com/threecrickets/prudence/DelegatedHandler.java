@@ -115,7 +115,7 @@ public class DelegatedHandler
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param documentName
 	 *        The document name

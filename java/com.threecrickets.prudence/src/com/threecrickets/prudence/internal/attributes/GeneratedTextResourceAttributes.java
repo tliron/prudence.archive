@@ -31,7 +31,7 @@ public class GeneratedTextResourceAttributes extends ResourceContextualAttribute
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param resource
 	 *        The resource

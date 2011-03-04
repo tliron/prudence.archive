@@ -43,7 +43,7 @@ public class InProcessMemoryCache implements Cache
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param maxSize
 	 *        Initial max size in bytes

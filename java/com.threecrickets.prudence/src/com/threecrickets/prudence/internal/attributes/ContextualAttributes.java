@@ -40,7 +40,7 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param prefix
 	 *        The prefix for attribute keys

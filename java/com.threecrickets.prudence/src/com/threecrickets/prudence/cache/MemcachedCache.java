@@ -87,7 +87,7 @@ public class MemcachedCache implements Cache
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param memcached
 	 *        The memcached client

@@ -31,7 +31,7 @@ public abstract class LazyInitializationMap<K, V> implements Map<K, V>
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param map
 	 *        The map to initialize

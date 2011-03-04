@@ -18,7 +18,7 @@ import org.restlet.Restlet;
 import org.restlet.routing.Filter;
 import org.restlet.routing.Redirector;
 
-import com.threecrickets.prudence.util.CaptiveRedirector;
+import com.threecrickets.prudence.util.CapturingRedirector;
 
 /**
  * A {@link Filter} that wraps an underlying {@link DelegatedHandler}.
@@ -34,7 +34,7 @@ import com.threecrickets.prudence.util.CaptiveRedirector;
 public class DelegatedFilter extends Filter
 {
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param context
 	 *        The context
@@ -47,7 +47,7 @@ public class DelegatedFilter extends Filter
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param context
 	 *        The context
@@ -59,6 +59,7 @@ public class DelegatedFilter extends Filter
 	public DelegatedFilter( Context context, Restlet next, String documentName )
 	{
 		super( context, next );
+		describe();
 		delegatedHandler = new DelegatedHandler( documentName, context );
 	}
 
@@ -150,7 +151,7 @@ public class DelegatedFilter extends Filter
 				{
 					// Capture!
 					String reference = "riap://application" + action + "?{rq}";
-					Redirector redirector = new CaptiveRedirector( delegatedHandler.getAttributes().getContext(), reference, false );
+					Redirector redirector = new CapturingRedirector( delegatedHandler.getAttributes().getContext(), reference, false );
 					redirector.handle( request, response );
 					return STOP;
 				}
@@ -198,4 +199,15 @@ public class DelegatedFilter extends Filter
 	 * specified.
 	 */
 	private volatile int defaultBeforeAction = CONTINUE;
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "DelegatedFilter" );
+		setDescription( "A filter that wraps an underlying DelegatedHandler" );
+	}
 }

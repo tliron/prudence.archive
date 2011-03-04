@@ -38,7 +38,7 @@ public abstract class NonVolatileContextualAttributes extends ContextualAttribut
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param prefix
 	 *        The prefix for attribute keys

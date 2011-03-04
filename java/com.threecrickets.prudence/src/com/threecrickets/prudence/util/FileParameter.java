@@ -29,7 +29,7 @@ public class FileParameter extends Parameter
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param name
 	 *        The parameter name
@@ -50,7 +50,7 @@ public class FileParameter extends Parameter
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param name
 	 *        The parameter name

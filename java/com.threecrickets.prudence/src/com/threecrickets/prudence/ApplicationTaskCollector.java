@@ -48,7 +48,7 @@ public class ApplicationTaskCollector implements TaskCollector
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param crontab
 	 *        The crontab file

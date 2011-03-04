@@ -50,7 +50,7 @@ public class CacheEntry implements Externalizable
 	//
 
 	/**
-	 * Construction. A constructor without arguments is required for
+	 * Constructor. A constructor without arguments is required for
 	 * {@link Externalizable}.
 	 */
 	public CacheEntry()
@@ -86,7 +86,7 @@ public class CacheEntry implements Externalizable
 	}
 
 	/**
-	 * Construction. Compresses string if encoding is provided.
+	 * Constructor. Compresses string if encoding is provided.
 	 * 
 	 * @param string
 	 *        The string
@@ -122,7 +122,7 @@ public class CacheEntry implements Externalizable
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param bytes
 	 *        The bytes
@@ -151,7 +151,7 @@ public class CacheEntry implements Externalizable
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param string
 	 *        The string
@@ -175,7 +175,7 @@ public class CacheEntry implements Externalizable
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param bytes
 	 *        The bytes

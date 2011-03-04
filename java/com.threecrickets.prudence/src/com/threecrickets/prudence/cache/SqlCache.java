@@ -75,7 +75,7 @@ public class SqlCache implements Cache
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param dataSource
 	 *        The data source

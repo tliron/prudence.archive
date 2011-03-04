@@ -4,31 +4,33 @@ import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.routing.Redirector;
 import org.restlet.routing.Route;
+import org.restlet.routing.Router;
 import org.restlet.routing.Template;
 import org.restlet.routing.Variable;
 
 /**
- * A {@link Router} that uses {@link CaptiveRedirector} and {@link CaptiveRoute}
- * to allow for URI capturing.
+ * A {@link Router} that uses {@link CapturingRedirector} and
+ * {@link CapturingRoute} to allow for URI capturing.
  * 
  * @author Tal Liron
  */
 @SuppressWarnings("deprecation")
-public class CaptiveRouter extends ResolvingRouter
+public class CapturingRouter extends ResolvingRouter
 {
 	//
 	// Construction
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param context
 	 *        The context
 	 */
-	public CaptiveRouter( Context context )
+	public CapturingRouter( Context context )
 	{
 		super( context );
+		describe();
 	}
 
 	//
@@ -41,7 +43,7 @@ public class CaptiveRouter extends ResolvingRouter
 	 * <p>
 	 * Enforces matching mode {@link Template#MODE_EQUALS}.
 	 * <p>
-	 * This is handled via a {@link CaptiveRedirector} in
+	 * This is handled via a {@link CapturingRedirector} in
 	 * {@link Redirector#MODE_SERVER_OUTBOUND} mode.
 	 * 
 	 * @param uriTemplate
@@ -52,7 +54,7 @@ public class CaptiveRouter extends ResolvingRouter
 	 * @param captureQuery
 	 *        Whether to capture the query, too
 	 * @return The created route
-	 * @see CaptiveRedirector
+	 * @see CapturingRedirector
 	 */
 	public Route capture( String uriTemplate, String internalUriTemplate, boolean captureQuery )
 	{
@@ -61,7 +63,7 @@ public class CaptiveRouter extends ResolvingRouter
 		String targetUriTemplate = "riap://application" + internalUriTemplate;
 		if( captureQuery )
 			targetUriTemplate += "?{rq}";
-		Route route = attach( uriTemplate, new CaptiveRedirector( getContext(), targetUriTemplate, false ) );
+		Route route = attach( uriTemplate, new CapturingRedirector( getContext(), targetUriTemplate, false ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}
@@ -72,7 +74,7 @@ public class CaptiveRouter extends ResolvingRouter
 	 * <p>
 	 * Enforces matching mode {@link Template#MODE_EQUALS}.
 	 * <p>
-	 * This is handled via a {@link CaptiveRedirector} in
+	 * This is handled via a {@link CapturingRedirector} in
 	 * {@link Redirector#MODE_SERVER_OUTBOUND} mode.
 	 * 
 	 * @param uriTemplate
@@ -93,7 +95,7 @@ public class CaptiveRouter extends ResolvingRouter
 		String targetUriTemplate = "riap://component/" + application + internalUriTemplate;
 		if( captureQuery )
 			targetUriTemplate += "?{rq}";
-		Route route = attach( uriTemplate, new CaptiveRedirector( getContext(), targetUriTemplate, false ) );
+		Route route = attach( uriTemplate, new CapturingRedirector( getContext(), targetUriTemplate, false ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}
@@ -104,13 +106,25 @@ public class CaptiveRouter extends ResolvingRouter
 	@Override
 	protected Route createRoute( String uriPattern, Restlet target, int matchingMode )
 	{
-		// Use CaptiveRoutes for CaptiveRedirectors
-		Route result;
-		if( target instanceof CaptiveRedirector )
-			result = new CaptiveRoute( this, new ResolvingTemplate( uriPattern, matchingMode, Variable.TYPE_URI_SEGMENT, "", true, false ), target );
+		if( target instanceof CapturingRedirector )
+		{
+			// Use CapturingRoutes for CapturingRedirectors
+			Route result = new CapturingRoute( this, new ResolvingTemplate( uriPattern, matchingMode, Variable.TYPE_URI_SEGMENT, "", true, false ), target );
+			result.setMatchingQuery( getDefaultMatchingQuery() );
+			return result;
+		}
 		else
-			result = new Route( this, new ResolvingTemplate( uriPattern, matchingMode, Variable.TYPE_URI_SEGMENT, "", true, false ), target );
-		result.setMatchingQuery( getDefaultMatchingQuery() );
-		return result;
+			return super.createRoute( uriPattern, target, matchingMode );
+	}
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "CapturingRouter" );
+		setDescription( "A router that uses CapturingRedirector and CapturingRoute to allow for URI capturing" );
 	}
 }

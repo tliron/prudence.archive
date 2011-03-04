@@ -38,7 +38,7 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param prefix
 	 *        The prefix for attribute keys

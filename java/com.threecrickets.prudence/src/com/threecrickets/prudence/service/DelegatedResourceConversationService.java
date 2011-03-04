@@ -37,7 +37,7 @@ public class DelegatedResourceConversationService extends ResourceConversationSe
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param resource
 	 *        The resource

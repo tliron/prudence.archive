@@ -37,7 +37,7 @@ public class H2Cache extends SqlCache
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param path
 	 *        The H2 database path

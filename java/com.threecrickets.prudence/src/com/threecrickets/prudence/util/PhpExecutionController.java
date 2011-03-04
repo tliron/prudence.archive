@@ -49,7 +49,7 @@ public class PhpExecutionController implements ExecutionController
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param fileItemFactory
 	 *        The file item factory
@@ -60,7 +60,7 @@ public class PhpExecutionController implements ExecutionController
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param sizeThreshold
 	 *        The size in bytes beyond which files will be stored to disk

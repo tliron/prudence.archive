@@ -36,7 +36,7 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param resource
 	 *        The resource

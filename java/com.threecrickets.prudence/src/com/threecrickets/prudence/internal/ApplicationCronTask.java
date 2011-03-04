@@ -36,7 +36,7 @@ public class ApplicationCronTask extends Task
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param application
 	 *        The Restlet application in which this task will execute
@@ -49,7 +49,7 @@ public class ApplicationCronTask extends Task
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param applicationTask
 	 *        The application task

@@ -29,7 +29,7 @@ public class DelegatedHandlerAttributes extends VolatileContextualAttributes
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param context
 	 *        The context

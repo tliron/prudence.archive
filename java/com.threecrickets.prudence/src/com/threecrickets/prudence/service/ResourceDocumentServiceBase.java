@@ -28,7 +28,7 @@ public abstract class ResourceDocumentServiceBase<R extends ServerResource> exte
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param resource
 	 *        The resource

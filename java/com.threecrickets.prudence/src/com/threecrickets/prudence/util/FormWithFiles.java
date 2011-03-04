@@ -50,7 +50,7 @@ public class FormWithFiles extends Form
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param webForm
 	 *        The URL encoded web form
@@ -65,7 +65,7 @@ public class FormWithFiles extends Form
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param webForm
 	 *        The URL encoded web form

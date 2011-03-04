@@ -27,14 +27,14 @@ public class ChainCache implements Cache
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 */
 	public ChainCache()
 	{
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param caches
 	 *        The initial caches

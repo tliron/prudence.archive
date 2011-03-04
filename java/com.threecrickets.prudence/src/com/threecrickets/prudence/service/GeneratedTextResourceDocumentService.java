@@ -41,7 +41,7 @@ import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.CacheEntry;
 import com.threecrickets.prudence.internal.CacheKeyPatternResolver;
 import com.threecrickets.prudence.internal.GeneratedTextDeferredRepresentation;
-import com.threecrickets.prudence.util.CaptiveRedirector;
+import com.threecrickets.prudence.util.CapturingRedirector;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
@@ -557,7 +557,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			callCacheKeyPatternHandlers( template, documentDescriptor );
 
 			// Use captive reference as the resource reference
-			Reference captiveReference = CaptiveRedirector.getCaptiveReference( request );
+			Reference captiveReference = CapturingRedirector.getCapturedReference( request );
 			Reference resourceReference = request.getResourceRef();
 			if( captiveReference != null )
 				request.setResourceRef( captiveReference );

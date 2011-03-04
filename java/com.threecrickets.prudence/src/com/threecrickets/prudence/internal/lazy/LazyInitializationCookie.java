@@ -32,7 +32,7 @@ public class LazyInitializationCookie extends LazyInitializationMap<String, Stri
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param request
 	 *        The request

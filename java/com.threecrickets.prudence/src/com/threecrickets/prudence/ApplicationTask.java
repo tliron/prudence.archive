@@ -109,7 +109,7 @@ public class ApplicationTask implements Runnable
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param application
 	 *        The Restlet application in which this task will execute

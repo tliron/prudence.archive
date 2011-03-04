@@ -64,7 +64,7 @@ public class ConversationStoppedException extends RuntimeException
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param request
 	 *        The request to mark as stopped

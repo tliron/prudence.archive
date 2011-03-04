@@ -48,7 +48,7 @@ public class NormalizingRedirector extends ResolvingRedirector
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param context
 	 *        The context
@@ -60,10 +60,7 @@ public class NormalizingRedirector extends ResolvingRedirector
 	public NormalizingRedirector( Context context, String targetPattern, int mode )
 	{
 		super( context, targetPattern, mode );
-		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
-		setName( "NormalizingRedirector" );
-		setDescription( "Redirector that normalizes relative paths" );
+		describe();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -84,5 +81,16 @@ public class NormalizingRedirector extends ResolvingRedirector
 			reference.setBaseRef( request.getResourceRef() );
 
 		return reference.getTargetRef();
+	}
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "NormalizingRedirector" );
+		setDescription( "A redirector that normalized relative paths" );
 	}
 }

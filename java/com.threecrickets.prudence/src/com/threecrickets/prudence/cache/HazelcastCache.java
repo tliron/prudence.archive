@@ -35,7 +35,7 @@ public class HazelcastCache implements Cache
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 */
 	public HazelcastCache()
 	{
@@ -43,7 +43,7 @@ public class HazelcastCache implements Cache
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param hazelcast
 	 *        The hazelcast instance or null to use the default instance
@@ -54,7 +54,7 @@ public class HazelcastCache implements Cache
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param hazelcast
 	 *        The Hazelcast instance or null to use the default instance

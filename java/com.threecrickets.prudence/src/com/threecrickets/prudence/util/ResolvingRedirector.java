@@ -31,14 +31,29 @@ public class ResolvingRedirector extends Redirector
 	// Construction
 	//
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param context
+	 * @param targetPattern
+	 * @param mode
+	 */
 	public ResolvingRedirector( Context context, String targetPattern, int mode )
 	{
 		super( context, targetPattern, mode );
+		describe();
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param context
+	 * @param targetTemplate
+	 */
 	public ResolvingRedirector( Context context, String targetTemplate )
 	{
 		super( context, targetTemplate );
+		describe();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -51,6 +66,9 @@ public class ResolvingRedirector extends Redirector
 	@Override
 	protected Reference getTargetRef( Request request, Response response )
 	{
+		// This is essentially the original Restlet code modified to use
+		// ResolvingTemplate.
+
 		// Create the template
 		Template rt = new ResolvingTemplate( this.targetTemplate );
 		rt.setLogger( getLogger() );
@@ -62,6 +80,9 @@ public class ResolvingRedirector extends Redirector
 	@Override
 	protected void serverRedirect( Restlet next, Reference targetRef, Request request, Response response )
 	{
+		// This is essentially the original Restlet code modified to use
+		// ResolvingTemplate.
+
 		if( next == null )
 			getLogger().warning( "No next Restlet provided for server redirection to " + targetRef );
 		else
@@ -100,5 +121,16 @@ public class ResolvingRedirector extends Redirector
 				}
 			}
 		}
+	}
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "ResolvingRedirector" );
+		setDescription( "A redirector that uses ResolvingTemplate" );
 	}
 }

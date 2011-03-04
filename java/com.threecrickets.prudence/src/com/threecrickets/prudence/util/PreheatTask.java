@@ -87,7 +87,7 @@ public class PreheatTask implements Runnable
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param applicationInternalName
 	 *        The internal application name
@@ -104,7 +104,7 @@ public class PreheatTask implements Runnable
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param applicationInternalName
 	 *        The internal application name

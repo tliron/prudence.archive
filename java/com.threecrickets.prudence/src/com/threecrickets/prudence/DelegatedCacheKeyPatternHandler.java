@@ -29,7 +29,7 @@ public class DelegatedCacheKeyPatternHandler extends DelegatedHandler
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param documentName
 	 *        The document name

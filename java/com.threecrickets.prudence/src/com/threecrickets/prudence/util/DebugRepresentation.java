@@ -53,7 +53,7 @@ public class DebugRepresentation extends StringRepresentation
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param status
 	 *        The status
@@ -168,7 +168,7 @@ public class DebugRepresentation extends StringRepresentation
 		}
 		appendName( html, "Host" );
 		appendValue( html, request.getHostRef() );
-		Reference captiveReference = CaptiveRedirector.getCaptiveReference( request );
+		Reference captiveReference = CapturingRedirector.getCapturedReference( request );
 		if( captiveReference != null )
 		{
 			appendName( html, "Captive" );

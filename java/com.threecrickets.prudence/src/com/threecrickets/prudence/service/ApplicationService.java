@@ -55,7 +55,7 @@ public class ApplicationService
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param application
 	 *        The application

@@ -21,9 +21,9 @@ import org.restlet.routing.Redirector;
  * A {@link Redirector} that keeps track of the captured reference.
  * 
  * @author Tal Liron
- * @see CaptiveRouter
+ * @see CapturingRouter
  */
-public class CaptiveRedirector extends ResolvingRedirector
+public class CapturingRedirector extends ResolvingRedirector
 {
 	//
 	// Constants
@@ -32,40 +32,40 @@ public class CaptiveRedirector extends ResolvingRedirector
 	/**
 	 * Request attribute of the captive {@link Reference}.
 	 * 
-	 * @see #getCaptiveReference(Request)
-	 * @see #setCaptiveReference(Request, Reference)
+	 * @see #getCapturedReference(Request)
+	 * @see #setCapturedReference(Request, Reference)
 	 */
-	public static final String CAPTIVE_REFERENCE = "com.threecrickets.prudence.util.CaptiveRedirector.captiveReference";
+	public static final String CAPTURED_REFERENCE = "com.threecrickets.prudence.util.CapturingRedirector.capturedReference";
 
 	//
 	// Static attributes
 	//
 
 	/**
-	 * The captive reference.
+	 * The captured reference.
 	 * 
 	 * @param request
 	 *        The request
 	 * @return The captured reference
-	 * @see #setCaptiveReference(Request, Reference)
+	 * @see #setCapturedReference(Request, Reference)
 	 */
-	public static Reference getCaptiveReference( Request request )
+	public static Reference getCapturedReference( Request request )
 	{
-		return (Reference) request.getAttributes().get( CAPTIVE_REFERENCE );
+		return (Reference) request.getAttributes().get( CAPTURED_REFERENCE );
 	}
 
 	/**
-	 * The captive reference.
+	 * The captured reference.
 	 * 
 	 * @param request
 	 *        The request
-	 * @param captiveReference
+	 * @param capturedReference
 	 *        The captive reference
-	 * @see #getCaptiveReference(Request)
+	 * @see #getCapturedReference(Request)
 	 */
-	public static void setCaptiveReference( Request request, Reference captiveReference )
+	public static void setCapturedReference( Request request, Reference capturedReference )
 	{
-		request.getAttributes().put( CAPTIVE_REFERENCE, captiveReference );
+		request.getAttributes().put( CAPTURED_REFERENCE, capturedReference );
 	}
 
 	//
@@ -82,13 +82,13 @@ public class CaptiveRedirector extends ResolvingRedirector
 	 * @param hostRoot
 	 *        Whether to set the base reference to the host root URI
 	 */
-	public CaptiveRedirector( Context context, String targetTemplate, boolean hostRoot )
+	public CapturingRedirector( Context context, String targetTemplate, boolean hostRoot )
 	{
 		this( context, targetTemplate, hostRoot, MODE_SERVER_OUTBOUND );
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param context
 	 *        The context
@@ -99,14 +99,11 @@ public class CaptiveRedirector extends ResolvingRedirector
 	 * @param hostRoot
 	 *        Whether to set the base reference to the host root URI
 	 */
-	public CaptiveRedirector( Context context, String targetPattern, boolean hostRoot, int mode )
+	public CapturingRedirector( Context context, String targetPattern, boolean hostRoot, int mode )
 	{
 		super( context, targetPattern, mode );
+		describe();
 		this.hostRoot = hostRoot;
-		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
-		setName( "CaptiveRedirector" );
-		setDescription( "Redirector that keeps track of the captive reference" );
 	}
 
 	//
@@ -123,7 +120,7 @@ public class CaptiveRedirector extends ResolvingRedirector
 			// The root reference could be null (e.g. in RIAP)
 			rootRef = new Reference( resourceRef.getHostIdentifier() + "/" );
 
-		setCaptiveReference( request, new Reference( rootRef, resourceRef ) );
+		setCapturedReference( request, new Reference( rootRef, resourceRef ) );
 
 		super.handle( request, response );
 	}
@@ -135,4 +132,15 @@ public class CaptiveRedirector extends ResolvingRedirector
 	 * Whether to set the base reference to the host root URI.
 	 */
 	private final boolean hostRoot;
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "CapturingRedirector" );
+		setDescription( "A redirector that keeps track of the captured reference" );
+	}
 }

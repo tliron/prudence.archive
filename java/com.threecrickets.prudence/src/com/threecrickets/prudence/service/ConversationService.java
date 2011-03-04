@@ -25,7 +25,7 @@ import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
 
-import com.threecrickets.prudence.util.CaptiveRedirector;
+import com.threecrickets.prudence.util.CapturingRedirector;
 import com.threecrickets.prudence.util.ConversationCookie;
 import com.threecrickets.prudence.util.FileParameter;
 import com.threecrickets.prudence.util.FormWithFiles;
@@ -42,7 +42,7 @@ public class ConversationService
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param fileUploadSizeThreshold
 	 *        The size in bytes beyond which uploaded files will be stored to
@@ -68,7 +68,7 @@ public class ConversationService
 	public Reference getReference()
 	{
 		Request request = getRequest();
-		Reference reference = CaptiveRedirector.getCaptiveReference( request );
+		Reference reference = CapturingRedirector.getCapturedReference( request );
 		if( reference == null )
 			reference = request.getResourceRef();
 		return reference;

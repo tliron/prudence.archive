@@ -35,6 +35,7 @@ public class StatusRestlet extends Restlet
 	 */
 	public StatusRestlet( Status status )
 	{
+		describe();
 		this.status = status;
 	}
 
@@ -55,4 +56,15 @@ public class StatusRestlet extends Restlet
 	 * The status to set.
 	 */
 	private final Status status;
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "StatusRestlet" );
+		setDescription( "A restlet that sets a specific status" );
+	}
 }

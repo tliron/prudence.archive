@@ -48,7 +48,7 @@ public class JavaScriptUnifyMinifyFilter extends UnifyMinifyFilter
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param context
 	 *        The context
@@ -63,7 +63,7 @@ public class JavaScriptUnifyMinifyFilter extends UnifyMinifyFilter
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param context
 	 *        The context
@@ -77,6 +77,7 @@ public class JavaScriptUnifyMinifyFilter extends UnifyMinifyFilter
 	public JavaScriptUnifyMinifyFilter( Context context, Restlet next, File scriptsDirectory, long minimumTimeBetweenValidityChecks )
 	{
 		super( context, next, scriptsDirectory, minimumTimeBetweenValidityChecks, "js", "min", "all" );
+		describe();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -100,5 +101,16 @@ public class JavaScriptUnifyMinifyFilter extends UnifyMinifyFilter
 			iox.initCause( x );
 			throw iox;
 		}
+	}
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "JavaScriptUnifyMinifyFilter" );
+		setDescription( "A filter that automatically unifies and/or compresses JavaScript source files" );
 	}
 }

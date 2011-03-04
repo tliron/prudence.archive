@@ -29,14 +29,25 @@ public class ResolvingRouter extends Router
 	// Construction
 	//
 
+	/**
+	 * Constructor.
+	 */
 	public ResolvingRouter()
 	{
 		super();
+		describe();
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param context
+	 *        The context
+	 */
 	public ResolvingRouter( Context context )
 	{
 		super( context );
+		describe();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -52,5 +63,16 @@ public class ResolvingRouter extends Router
 		Route result = new Route( this, new ResolvingTemplate( uriPattern, matchingMode, Variable.TYPE_URI_SEGMENT, "", true, false ), target );
 		result.setMatchingQuery( getDefaultMatchingQuery() );
 		return result;
+	}
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "ResolvingRouter" );
+		setDescription( "A router that uses ResolvingTemplate for all routes" );
 	}
 }

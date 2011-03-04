@@ -30,7 +30,7 @@ public class LazyInitializationRequest extends LazyInitializationMap<String, Str
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param getMap
 	 *        The get map to use

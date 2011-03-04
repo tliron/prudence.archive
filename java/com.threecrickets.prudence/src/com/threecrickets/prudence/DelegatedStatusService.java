@@ -24,7 +24,7 @@ import org.restlet.representation.Representation;
 import org.restlet.routing.Redirector;
 import org.restlet.service.StatusService;
 
-import com.threecrickets.prudence.util.CaptiveRedirector;
+import com.threecrickets.prudence.util.CapturingRedirector;
 import com.threecrickets.prudence.util.DebugRepresentation;
 
 /**
@@ -50,7 +50,7 @@ public class DelegatedStatusService extends StatusService
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param sourceCodeUri
 	 *        The source code URI or null
@@ -130,7 +130,7 @@ public class DelegatedStatusService extends StatusService
 	 * Captures (internally redirects) an error status to a URI within an
 	 * application. You can use template variables in the URI.
 	 * <p>
-	 * This is handled via a {@link CaptiveRedirector} with mode
+	 * This is handled via a {@link CapturingRedirector} with mode
 	 * {@link Redirector#MODE_SERVER_OUTBOUND}.
 	 * 
 	 * @param statusCode
@@ -147,7 +147,7 @@ public class DelegatedStatusService extends StatusService
 		if( !internalUriTemplate.startsWith( "/" ) )
 			internalUriTemplate = "/" + internalUriTemplate;
 		String targetUriTemplate = "riap://component/" + application + internalUriTemplate;
-		setHandler( statusCode, new CaptiveRedirector( context.createChildContext(), targetUriTemplate, false ) );
+		setHandler( statusCode, new CapturingRedirector( context.createChildContext(), targetUriTemplate, false ) );
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class DelegatedStatusService extends StatusService
 	 * application, with the resource reference's base URI being set the host
 	 * root. You can use template variables in the URI.
 	 * <p>
-	 * This is handled via a {@link CaptiveRedirector} with mode
+	 * This is handled via a {@link CapturingRedirector} with mode
 	 * {@link Redirector#MODE_SERVER_OUTBOUND}.
 	 * 
 	 * @param statusCode
@@ -172,7 +172,7 @@ public class DelegatedStatusService extends StatusService
 		if( !internalUriTemplate.startsWith( "/" ) )
 			internalUriTemplate = "/" + internalUriTemplate;
 		String targetUriTemplate = "riap://component/" + application + internalUriTemplate;
-		setHandler( statusCode, new CaptiveRedirector( context.createChildContext(), targetUriTemplate, true ) );
+		setHandler( statusCode, new CapturingRedirector( context.createChildContext(), targetUriTemplate, true ) );
 	}
 
 	/**

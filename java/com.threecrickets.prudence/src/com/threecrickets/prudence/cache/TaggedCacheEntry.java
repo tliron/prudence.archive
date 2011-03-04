@@ -30,7 +30,7 @@ public class TaggedCacheEntry implements Externalizable
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param entry
 	 *        The cache entry
@@ -51,7 +51,7 @@ public class TaggedCacheEntry implements Externalizable
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param entry
 	 *        The cache entry

@@ -47,7 +47,7 @@ public class CssUnifyMinifyFilter extends UnifyMinifyFilter
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param context
 	 *        The context
@@ -62,7 +62,7 @@ public class CssUnifyMinifyFilter extends UnifyMinifyFilter
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param context
 	 *        The context
@@ -76,6 +76,7 @@ public class CssUnifyMinifyFilter extends UnifyMinifyFilter
 	public CssUnifyMinifyFilter( Context context, Restlet next, File scriptsDirectory, long minimumTimeBetweenValidityChecks )
 	{
 		super( context, next, scriptsDirectory, minimumTimeBetweenValidityChecks, "css", "min", "all" );
+		describe();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -94,5 +95,16 @@ public class CssUnifyMinifyFilter extends UnifyMinifyFilter
 			iox.initCause( x );
 			throw iox;
 		}
+	}
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "CssUnifyMinifyFilter" );
+		setDescription( "A filter that automatically unifies and/or compresses CSS source files" );
 	}
 }

@@ -40,7 +40,7 @@ public class LazyInitializationFile extends LazyInitializationMap<String, Map<St
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param request
 	 *        The request

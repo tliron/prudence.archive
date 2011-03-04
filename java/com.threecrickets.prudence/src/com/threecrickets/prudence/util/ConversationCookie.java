@@ -112,7 +112,7 @@ public class ConversationCookie extends Cookie
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param name
 	 *        The cookie name

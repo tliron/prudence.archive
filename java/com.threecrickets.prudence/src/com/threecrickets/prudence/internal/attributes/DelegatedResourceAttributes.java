@@ -27,7 +27,7 @@ public class DelegatedResourceAttributes extends ResourceContextualAttributes
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param resource
 	 *        The resource

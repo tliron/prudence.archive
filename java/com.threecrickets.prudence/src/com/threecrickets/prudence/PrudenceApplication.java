@@ -36,15 +36,16 @@ public class PrudenceApplication extends Application
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 */
 	public PrudenceApplication()
 	{
 		super();
+		describe();
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param context
 	 *        The context
@@ -52,6 +53,7 @@ public class PrudenceApplication extends Application
 	public PrudenceApplication( Context context )
 	{
 		super( context );
+		describe();
 	}
 
 	//
@@ -65,5 +67,19 @@ public class PrudenceApplication extends Application
 			super.handle( request, response );
 		else
 			response.setStatus( Status.CLIENT_ERROR_NOT_FOUND );
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "PrudenceApplication" );
+		setDescription( "A an application that does not route requests when it is stopped" );
 	}
 }

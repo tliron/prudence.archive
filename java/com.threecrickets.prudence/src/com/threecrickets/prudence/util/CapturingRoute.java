@@ -23,28 +23,50 @@ import org.restlet.routing.Template;
  * making sure that captured requests are captured again.
  * 
  * @author Tal Liron
- * @see CaptiveRouter
+ * @see CapturingRouter
  */
 @SuppressWarnings("deprecation")
-public class CaptiveRoute extends Route
+public class CapturingRoute extends Route
 {
 	//
 	// Construction
 	//
 
-	public CaptiveRoute( Restlet next )
+	/**
+	 * Constructor.
+	 * 
+	 * @param next
+	 */
+	public CapturingRoute( Restlet next )
 	{
 		super( next );
+		describe();
 	}
 
-	public CaptiveRoute( Router router, String uriTemplate, Restlet next )
+	/**
+	 * Constructor.
+	 * 
+	 * @param router
+	 * @param uriTemplate
+	 * @param next
+	 */
+	public CapturingRoute( Router router, String uriTemplate, Restlet next )
 	{
 		super( router, uriTemplate, next );
+		describe();
 	}
 
-	public CaptiveRoute( Router router, Template template, Restlet next )
+	/**
+	 * Constructor.
+	 * 
+	 * @param router
+	 * @param template
+	 * @param next
+	 */
+	public CapturingRoute( Router router, Template template, Restlet next )
 	{
 		super( router, template, next );
+		describe();
 	}
 
 	//
@@ -54,9 +76,23 @@ public class CaptiveRoute extends Route
 	@Override
 	public float score( Request request, Response response )
 	{
-		if( CaptiveRedirector.getCaptiveReference( request ) != null )
+		if( CapturingRedirector.getCapturedReference( request ) != null )
 			return 0f;
 
 		return super.score( request, response );
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "CapturingRoute" );
+		setDescription( "A route that always scored 0.0 for captured requests" );
 	}
 }

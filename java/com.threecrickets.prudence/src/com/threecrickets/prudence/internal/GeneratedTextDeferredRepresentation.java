@@ -40,7 +40,7 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param resource
 	 *        The resource
@@ -60,7 +60,7 @@ public class GeneratedTextDeferredRepresentation extends WriterRepresentation im
 	}
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param resource
 	 *        The resource

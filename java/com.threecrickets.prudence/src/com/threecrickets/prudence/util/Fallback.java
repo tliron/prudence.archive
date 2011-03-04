@@ -77,10 +77,7 @@ public class Fallback extends Restlet
 	public Fallback( Context context, int cacheDuration, Restlet... targets )
 	{
 		super( context );
-		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
-		setName( "Fallback" );
-		setDescription( "Delegates to a series of targets in sequence, stopping at the first target that handles the request" );
+		describe();
 		this.cacheDuration = cacheDuration;
 		for( Restlet target : targets )
 			addTarget( target );
@@ -286,5 +283,16 @@ public class Fallback extends Restlet
 		private final Restlet target;
 
 		private final long timestamp = System.currentTimeMillis();
+	}
+
+	/**
+	 * Add description.
+	 */
+	private void describe()
+	{
+		setOwner( "Prudence" );
+		setAuthor( "Tal Liron" );
+		setName( "Fallback" );
+		setDescription( "Delegates to a series of targets in sequence, stopping at the first target that handles the request" );
 	}
 }

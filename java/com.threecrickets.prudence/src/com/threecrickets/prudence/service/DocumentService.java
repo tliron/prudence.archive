@@ -47,7 +47,7 @@ public class DocumentService
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param attributes
 	 *        The attributes

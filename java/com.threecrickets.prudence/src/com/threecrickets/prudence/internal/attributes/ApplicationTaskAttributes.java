@@ -27,7 +27,7 @@ public class ApplicationTaskAttributes extends NonVolatileContextualAttributes
 	//
 
 	/**
-	 * Construction.
+	 * Constructor.
 	 * 
 	 * @param application
 	 *        The application
