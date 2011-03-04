@@ -56,7 +56,7 @@ The Prudence Manual
 \end_layout
 
 \begin_layout Author
-Version 1
+Version 1.1
 \begin_inset Newline newline
 \end_inset
 
@@ -183,22 +183,22 @@ status open
 
 \begin_layout Plain Layout
 
-/animal/dog/3
+/animal/dog/3/
 \end_layout
 
 \begin_layout Plain Layout
 
-/animal/cat/12/image
+/animal/cat/12/image/
 \end_layout
 
 \begin_layout Plain Layout
 
-/animal/cat/12/image/large
+/animal/cat/12/image/large/
 \end_layout
 
 \begin_layout Plain Layout
 
-/animal/cat/12/specs
+/animal/cat/12/specs/
 \end_layout
 
 \end_inset
@@ -298,17 +298,17 @@ status open
 
 \begin_layout Plain Layout
 
-Create: /animal/cat/13 -> Error, already exists
+Create: /animal/cat/13/ -> Error, already exists
 \end_layout
 
 \begin_layout Plain Layout
 
-Create: /animal/cat/14 -> Error, already exists
+Create: /animal/cat/14/ -> Error, already exists
 \end_layout
 
 \begin_layout Plain Layout
 
-Create: /animal/cat/15 -> Error, already exists
+Create: /animal/cat/15/ -> Error, already exists
 \end_layout
 
 \begin_layout Plain Layout
@@ -318,7 +318,7 @@ Create: /animal/cat/15 -> Error, already exists
 
 \begin_layout Plain Layout
 
-Create: /animal/cat/302041 -> Success!
+Create: /animal/cat/302041/ -> Success!
 \end_layout
 
 \end_inset
@@ -340,22 +340,22 @@ status open
 
 \begin_layout Plain Layout
 
-Read: /animal/cat/next -> 14
+Read: /animal/cat/next/ -> 14
 \end_layout
 
 \begin_layout Plain Layout
 
-Create: /animal/cat/14 -> Oops, someone else beat us to 14!
+Create: /animal/cat/14/ -> Oops, someone else beat us to 14!
 \end_layout
 
 \begin_layout Plain Layout
 
-Read: /animal/cat/next -> 15
+Read: /animal/cat/next/ -> 15
 \end_layout
 
 \begin_layout Plain Layout
 
-Create: /animal/cat/15 -> Success!
+Create: /animal/cat/15/ -> Success!
 \end_layout
 
 \end_inset
@@ -380,7 +380,7 @@ status open
 
 \begin_layout Plain Layout
 
-Create: /animal/cat -> We send the data for the cat without the ID, and
+Create: /animal/cat/ -> We send the data for the cat without the ID, and
  get back the same cat with an ID
 \end_layout
 
@@ -418,7 +418,7 @@ status open
 
 \begin_layout Plain Layout
 
-/animal/cats
+/animal/cats/
 \end_layout
 
 \end_inset
@@ -441,7 +441,7 @@ status open
 
 \begin_layout Plain Layout
 
-/animal/cats/100/200
+/animal/cats/100/200/
 \end_layout
 
 \end_inset
@@ -468,7 +468,7 @@ status open
 
 \begin_layout Plain Layout
 
-Read(100, 200): /animal/cats
+Read(100, 200): /animal/cats/
 \end_layout
 
 \end_inset
@@ -500,7 +500,7 @@ status open
 
 \begin_layout Plain Layout
 
-Read(UTF-8, Russian): /animal/cat/13
+Read(UTF-8, Russian): /animal/cat/13/
 \end_layout
 
 \end_inset
@@ -1728,7 +1728,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/settings/')
+document.execute('/defaults/application/settings/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -1964,7 +1964,7 @@ status open
 
 \begin_layout Plain Layout
 
-<%& 'header/' %>
+<%& '/header/' %>
 \end_layout
 
 \begin_layout Plain Layout
@@ -2004,12 +2004,12 @@ var entry = {
 
 \begin_layout Plain Layout
 
-<%& 'entry/' %>
+<%& '/entry/' %>
 \end_layout
 
 \begin_layout Plain Layout
 
-<%& 'footer/' %>
+<%& '/footer/' %>
 \end_layout
 
 \end_inset
@@ -2030,7 +2030,7 @@ status open
 
 \begin_layout Plain Layout
 
-<%& 'header/' %>
+<%& '/header/' %>
 \end_layout
 
 \begin_layout Plain Layout
@@ -2070,12 +2070,12 @@ var entry = {
 
 \begin_layout Plain Layout
 
-<%& 'entry/' %>
+<%& '/entry/' %>
 \end_layout
 
 \begin_layout Plain Layout
 
-<%& 'footer/' %>
+<%& '/footer/' %>
 \end_layout
 
 \end_inset
@@ -2378,7 +2378,7 @@ status open
 
 \begin_layout Plain Layout
 
-<%& 'header/' %>
+<%& '/header/' %>
 \end_layout
 
 \begin_layout Plain Layout
@@ -2393,7 +2393,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('wikidata/')
+document.execute('/wikidata/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -2408,12 +2408,12 @@ var entry = getWikiEntry('index')
 
 \begin_layout Plain Layout
 
-<%& 'entry/' %>
+<%& '/entry/' %>
 \end_layout
 
 \begin_layout Plain Layout
 
-<%& 'footer/' %>
+<%& '/footer/' %>
 \end_layout
 
 \end_inset
@@ -2518,7 +2518,7 @@ status open
 
 \begin_layout Plain Layout
 
-<%& 'header/' %>
+<%& '/header/' %>
 \end_layout
 
 \begin_layout Plain Layout
@@ -2533,7 +2533,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('wikidata/')
+document.execute('/wikidata/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -2553,12 +2553,12 @@ var entry = getWikiEntry(entryID)
 
 \begin_layout Plain Layout
 
-<%& 'entry/' %>
+<%& '/entry/' %>
 \end_layout
 
 \begin_layout Plain Layout
 
-<%& 'footer/' %>
+<%& '/footer/' %>
 \end_layout
 
 \end_inset
@@ -2585,12 +2585,12 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/')
+document.execute('/defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
 
-router.capture('wiki/{entryid}/', 'wiki/')
+router.capture('/wiki/{entryid}/', '/wiki/')
 \end_layout
 
 \end_inset
@@ -2662,7 +2662,7 @@ conversation.locals.put('entryid', 'index')
 
 \begin_layout Plain Layout
 
-document.include('wiki/')
+document.include('/wiki/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -3012,7 +3012,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('wikidata/')
+document.execute('/wikidata/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -3130,17 +3130,17 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/')
+document.execute('/defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
 
-router.capture('entry/{entryid}/', 'entry/')
+router.capture('/entry/{entryid}/', '/entry/')
 \end_layout
 
 \begin_layout Plain Layout
 
-router.capture('wiki/{entryid}/', 'wiki/')
+router.capture('/wiki/{entryid}/', '/wiki/')
 \end_layout
 
 \end_inset
@@ -4017,7 +4017,7 @@ unless
 \begin_layout Quote
 Another disadvantage, for now, is that you will need to restart the Prudence
  instance for changes in your configuration scripts to take effect.
- This is true for Prudence 1.0: we plan to support ``hot'' configuration
+ This is true for Prudence 1.1: we plan to support ``hot'' configuration
  in a future version of Prudence.
 \end_layout
 
@@ -4063,7 +4063,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/instance/component/')
+document.execute('/defaults/instance/component/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -4560,7 +4560,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/instance/servers/')
+document.execute('/defaults/instance/servers/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -4785,7 +4785,7 @@ There's no reason to delete the archive: Prudence will only unzip the file
 \end_layout
 
 \begin_layout Quote
-This above is true for Prudence 1.0.
+This above is true for Prudence 1.1.
  A future version of Prudence will feature ``live'' zip-awareness, so that
  you will not have to restart the Prudence instance in order to take new
  or updates zips into account.
@@ -5118,7 +5118,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/')
+document.execute('/defaults/application/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -5450,6 +5450,25 @@ The base URL for showing source code (only relevant when showDebugOnError
  is true).
 \end_layout
 
+\begin_layout Paragraph
+minimumTimeBetweenValidityChecks
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|minimum-time-between-validity-checks"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is the time (in milliseconds) allowed to pass until a script file is
+ tested to see if it was changed.
+ During development, you'd want this to be low, but during production, it
+ should be high in order to avoid unnecessary hits on the filesystem.
+ Defaults to 1000 (1 second).
+\end_layout
+
 \begin_layout Subsubsection
 Logging
 \end_layout
@@ -5653,25 +5672,6 @@ This is so we can see the source code for scripts by adding ?source=true
  Defaults to true.
 \end_layout
 
-\begin_layout Paragraph
-resourcesMinimumTimeBetweenValidityChecks
-\begin_inset CommandInset label
-LatexCommand label
-name "../application/|resources-minimum-time-between-validity-checks"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-This is the time (in milliseconds) allowed to pass until a script file is
- tested to see if it was changed.
- During development, you'd want this to be low, but during production, it
- should be high in order to avoid unnecessary hits on the filesystem.
- Defaults to 1000 (1 second).
-\end_layout
-
 \begin_layout Subsubsection
 Dynamic Web
 \end_layout
@@ -5787,25 +5787,6 @@ This is so we can see the source code for scripts by adding ?source=true
  to the URL.
  You probably wouldn't want this for most applications.
  Defaults to true.
-\end_layout
-
-\begin_layout Paragraph
-dynamicWebMinimumTimeBetweenValidityChecks
-\begin_inset CommandInset label
-LatexCommand label
-name "../application/|dynamic-web-minimum-time-between-validity-checks"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-This is the time (in milliseconds) allowed to pass until a script file is
- tested to see if it was changed.
- During development, you'd want this to be low, but during production, it
- should be high in order to avoid unnecessary hits on the filesystem.
- Defaults to 1000 (1 second).
 \end_layout
 
 \begin_layout Paragraph
@@ -6060,18 +6041,6 @@ If the handler name points to a directory rather than a file, and that directory
  Defaults to ``default''.
 \end_layout
 
-\begin_layout Paragraph
-handlersMinimumTimeBetweenValidityChecks
-\end_layout
-
-\begin_layout Standard
-This is the time (in milliseconds) allowed to pass until a script file is
- tested to see if it was changed.
- During development, you'd want this to be low, but during production, it
- should be high in order to avoid unnecessary hits on the filesystem.
- Defaults to 1000 (1 second).
-\end_layout
-
 \begin_layout Subsubsection
 Tasks
 \end_layout
@@ -6095,18 +6064,6 @@ If the task name points to a directory rather than a file, and that directory
  This allows you to use the directory structure to create nice names without
  relying on filenames.
  Defaults to ``default''.
-\end_layout
-
-\begin_layout Paragraph
-tasksMinimumTimeBetweenValidityChecks
-\end_layout
-
-\begin_layout Standard
-This is the time (in milliseconds) allowed to pass until a script file is
- tested to see if it was changed.
- During development, you'd want this to be low, but during production, it
- should be high in order to avoid unnecessary hits on the filesystem.
- Defaults to 1000 (1 second).
 \end_layout
 
 \begin_layout Subsubsection
@@ -6215,6 +6172,28 @@ application.globals (page
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../api/|application-globals"
+
+\end_inset
+
+)
+\bar default
+ at runtime.
+ This is useful for custom configuration of your application.
+ For example, you can set resource IP addresses, service usernames and passwords
+, etc.
+\end_layout
+
+\begin_layout Paragraph
+predefinedSharedGlobals
+\end_layout
+
+\begin_layout Standard
+Values set in this map will be available in 
+\bar under
+application.sharedGlobals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-shared-globals"
 
 \end_inset
 
@@ -7008,7 +6987,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('util/data/')
+document.execute('/util/data/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -7147,7 +7126,7 @@ status open
 
 \begin_layout Plain Layout
 
-<%& 'lines/simple/' %>
+<%& '/lines/simple/' %>
 \end_layout
 
 \begin_layout Plain Layout
@@ -7227,7 +7206,7 @@ status open
 
 \begin_layout Plain Layout
 
-<%& 'lines/' + (i>5 ? 'emphasized/' : 'simple/') %>
+<%& '/lines/' + (i>5 ? 'emphasized/' : 'simple/') %>
 \end_layout
 
 \end_inset
@@ -8095,7 +8074,7 @@ var userCount = myDatabase.getCurrentUsers().count()
 
 \begin_layout Plain Layout
 
-<p><%& 'temperature/' %></p>
+<p><%& '/temperature/' %></p>
 \end_layout
 
 \begin_layout Plain Layout
@@ -8633,12 +8612,12 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/')
+document.execute('/defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
 
-router.capture('contact/', 'contact/{m}/')
+router.capture('/contact/', '/contact/{m}/')
 \end_layout
 
 \end_inset
@@ -8939,7 +8918,7 @@ What if you edit the file? Prudence will automatically pick up your changes
 minimum time interval (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../application/|resources-minimum-time-between-validity-checks"
+reference "../application/|minimum-time-between-validity-checks"
 
 \end_inset
 
@@ -9230,7 +9209,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('util/data/')
+document.execute('/util/data/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -11366,7 +11345,7 @@ application.logger.info('Scheduling monitor task to repeat every second')
 
 \begin_layout Plain Layout
 
-application.task('monitor/', 1000, 1000, false) 
+application.task('/monitor/', 1000, 1000, false) 
 \end_layout
 
 \end_inset
@@ -11420,7 +11399,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/')
+document.execute('/defaults/application/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -11429,7 +11408,7 @@ document.execute('defaults/application/')
 
 \begin_layout Plain Layout
 
-applicationService.task('poll/', 1000, 1000, false) 
+applicationService.task('/poll/', 1000, 1000, false) 
 \end_layout
 
 \end_inset
@@ -11601,7 +11580,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/')
+document.execute('/defaults/application/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -12015,7 +11994,7 @@ asePath),
 
 \begin_layout Plain Layout
 
-		dynamicWebMinimumTimeBetweenValidityChecks), staticWeb)
+		minimumTimeBetweenValidityChecks), staticWeb)
 \end_layout
 
 \end_inset
@@ -12123,7 +12102,7 @@ router.filterBase(
 
 \begin_layout Plain Layout
 
-		dynamicWebMinimumTimeBetweenValidityChecks), staticWeb)
+		minimumTimeBetweenValidityChecks), staticWeb)
 \end_layout
 
 \end_inset
@@ -12132,8 +12111,7 @@ router.filterBase(
 \end_layout
 
 \begin_layout Standard
-You can definitely use JavaScriptUnifyMinifyFilter and CssUnifyMinifyFilter
- together.
+You can use JavaScriptUnifyMinifyFilter and CssUnifyMinifyFilter together.
  The order of filtering should not matter.
 \end_layout
 
@@ -12351,7 +12329,7 @@ Our forum application (in the /applications/forum/ subdirectory) is attached
 \end_layout
 
 \begin_layout Standard
-The remaining part of the URI, ``thread/12/'' will be further routed inside
+The remaining part of the URI, ``/thread/12/'' will be further routed inside
  the forum application, as detailed below.
 \end_layout
 
@@ -12454,7 +12432,7 @@ Filename Extension Hiding
 \begin_layout Standard
 Prudence ignores filename extensions for the purpose of mapping to URIs.
  For example, the file ``/web/dynamic/wiki/table-of-contents.html'' will
- be mapped to the URI ``wiki/table-of-contents/''.
+ be mapped to the URI ``/wiki/table-of-contents/''.
 \end_layout
 
 \begin_layout Paragraph
@@ -12469,7 +12447,7 @@ ory, it is mapped to the URI for the subdirectory itself.
 
 \begin_layout Standard
 For example, the file ``/web/dynamic/wiki/contributors/index.html'' is mapped
- to the URI ``wiki/contributors/''.
+ to the URI ``/wiki/contributors/''.
  Note that another way to create the same URI is to use ``/web/dynamic/wiki/cont
 ributors.html'' (the ``.html'' is hidden by Prudence).
 \end_layout
@@ -12503,15 +12481,15 @@ name "../routing/|trailing-slash-requirement"
 \end_layout
 
 \begin_layout Standard
-You'll note that we used ``wiki/contributors/'' for the above, rather than
- ``wiki/contributors'' (the difference is the trailing slash).
+You'll note that we used ``/wiki/contributors/'' for the above, rather than
+ ``/wiki/contributors'' (the difference is the trailing slash).
  This is because Prudence requires trailing slashes by default: trying to
- access ``wiki/table-of-contents'' would permanently redirect to ``wiki/table-of
--contents/''.
+ access ``/wiki/table-of-contents'' would permanently redirect to ``/wiki/table-
+of-contents/''.
 \end_layout
 
 \begin_layout Standard
-Prudence does this for two main reasons:
+Prudence requires a trailing slash for two main reasons:
 \end_layout
 
 \begin_layout Enumerate
@@ -12531,7 +12509,7 @@ egatedResource.trailingSlashRequired'' application.globals.
 \end_layout
 
 \begin_layout Quote
-In Prudence 1.0, the filename extension hiding and trailing slash requirement
+In Prudence 1.1, the filename extension hiding and trailing slash requirement
  work only for /resources/ and /web/dynamic/ URLs.
  /web/static/ URLs still map full filenames.
  A future version of Prudence may extend these features to all resources.
@@ -12582,7 +12560,7 @@ status open
 
 \begin_layout Plain Layout
 
-router.capture('sitemap.xml', 'sitemap/')
+router.capture('/sitemap.xml', '/sitemap/')
 \end_layout
 
 \end_inset
@@ -12731,7 +12709,7 @@ status open
 
 \begin_layout Plain Layout
 
-router.hide('administration/')
+router.hide('/administration/')
 \end_layout
 
 \end_inset
@@ -12814,7 +12792,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/')
+document.execute('/defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -12823,7 +12801,7 @@ document.execute('defaults/application/routing/')
 
 \begin_layout Plain Layout
 
-router.capture('forum/help/{topic}/', 'forum/help/')
+router.capture('/forum/help/{topic}/', '/forum/help/')
 \end_layout
 
 \end_inset
@@ -12981,7 +12959,7 @@ status open
 
 \begin_layout Plain Layout
 
-router.captureAndHide('forum/help/{topic}/', 'forum/help/')
+router.captureAndHide('/forum/help/{topic}/', '/forum/help/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -12999,12 +12977,12 @@ The above is identical to:
 
 \begin_layout Plain Layout
 
-router.capture('forum/help/{topic}/', 'forum/help/')
+router.capture('/forum/help/{topic}/', '/forum/help/')
 \end_layout
 
 \begin_layout Plain Layout
 
-router.hide('forum/help/')
+router.hide('/forum/help/')
 \end_layout
 
 \end_inset
@@ -13098,7 +13076,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/');
+document.execute('/defaults/application/routing/');
 \end_layout
 
 \begin_layout Plain Layout
@@ -13141,7 +13119,7 @@ status open
 
 \begin_layout Plain Layout
 
-router.capture('message/', 'message/{m}/')
+router.capture('/message/', '/message/{m}/')
 \end_layout
 
 \end_inset
@@ -13261,7 +13239,7 @@ status open
 
 \begin_layout Plain Layout
 
-router.capture('data/client/', 'data/client/{emt}/')
+router.capture('/data/client/', '/data/client/{emt}/')
 \end_layout
 
 \end_inset
@@ -13270,8 +13248,9 @@ router.capture('data/client/', 'data/client/{emt}/')
 \end_layout
 
 \begin_layout Standard
-Because ``{emt}'' is the MIME type of data sent by the client, we can have
- files such as these:
+Because ``{emt}'' is the MIME type of data sent by the client, and the slash
+ used in MIME types is compatible with the slash used in filesystem path
+ separation, we can have files such as these:
 \end_layout
 
 \begin_layout Itemize
@@ -13378,7 +13357,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/instance/routing/')
+document.execute('/defaults/instance/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -13392,7 +13371,7 @@ document.execute('defaults/instance/routing/')
 
 \begin_layout Plain Layout
 
-component.statusService.capture(404, 'wackyhelp', 'help/main/',
+component.statusService.capture(404, 'wackyhelp', '/help/main/',
 \end_layout
 
 \begin_layout Plain Layout
@@ -13411,7 +13390,7 @@ component.statusService.capture(404, 'wackyhelp', 'help/main/',
 
 \begin_layout Plain Layout
 
-component.statusService.captureHostRoot(500, 'wackywiki', 'oops/',
+component.statusService.captureHostRoot(500, 'wackywiki', '/oops/',
 \end_layout
 
 \begin_layout Plain Layout
@@ -13441,7 +13420,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/')
+document.execute('/defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -13455,7 +13434,7 @@ document.execute('defaults/application/routing/')
 
 \begin_layout Plain Layout
 
-applicationInstance.statusService.capture(404, 'wackyhelp', 'help/main/',
+applicationInstance.statusService.capture(404, 'wackyhelp', '/help/main/',
 \end_layout
 
 \begin_layout Plain Layout
@@ -13617,7 +13596,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/')
+document.execute('/defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -13631,7 +13610,7 @@ document.execute('defaults/application/routing/')
 
 \begin_layout Plain Layout
 
-router.redirectClient('bug/', 'http://wackywiki.org/contact-us/bug/')
+router.redirectClient('/bug/', 'http://wackywiki.org/contact-us/bug/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -13645,7 +13624,7 @@ router.redirectClient('bug/', 'http://wackywiki.org/contact-us/bug/')
 
 \begin_layout Plain Layout
 
-router.redirectClient('forum/', '{rp}?debug=true')
+router.redirectClient('/forum/', '{rp}?debug=true')
 \end_layout
 
 \begin_layout Plain Layout
@@ -13659,8 +13638,8 @@ router.redirectClient('forum/', '{rp}?debug=true')
 
 \begin_layout Plain Layout
 
-router.redirectClient('contact/{reason}/', 'http://wackywiki.org/contact-us/{reaso
-n}', 301)
+router.redirectClient('/contact/{reason}/', 'http://wackywiki.org/contact-us/{reas
+on}', 301)
 \end_layout
 
 \begin_layout Plain Layout
@@ -13680,7 +13659,7 @@ importClass(org.restlet.routing.Redirector)
 
 \begin_layout Plain Layout
 
-router.attach('bug/',
+router.attach('/bug/',
 \end_layout
 
 \begin_layout Plain Layout
@@ -13746,7 +13725,17 @@ status open
 
 \begin_layout Plain Layout
 
-conversation.response.redirectSeeOther('../contact-us/')
+if (!conversation.internal) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	conversation.response.redirectSeeOther('../contact-us/')
+\end_layout
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \begin_layout Plain Layout
@@ -13762,6 +13751,11 @@ conversation.stop()
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Note that we are checking that the conversation is not internal.
+ As of Prudence 1.1, internal redirects will cause exceptions!
 \end_layout
 
 \begin_layout Standard
@@ -13886,7 +13880,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/')
+document.execute('/defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -13905,7 +13899,7 @@ importClass(org.restlet.resource.Directory)
 
 \begin_layout Plain Layout
 
-router.attach('forum/info/',
+router.attach('/forum/info/',
 \end_layout
 
 \begin_layout Plain Layout
@@ -13934,7 +13928,7 @@ router.attach('forum/info/',
 
 \begin_layout Plain Layout
 
-router.attachBase('forum/help/',
+router.attachBase('/forum/help/',
 \end_layout
 
 \begin_layout Plain Layout
@@ -13958,7 +13952,7 @@ router.attachBase('forum/help/',
 
 \begin_layout Plain Layout
 
-router.attach('forum/help/{topic}/', 'org.wackywiki.HelpAccessResource')
+router.attach('/forum/help/{topic}/', 'org.wackywiki.HelpAccessResource')
 \end_layout
 
 \begin_layout Plain Layout
@@ -14138,8 +14132,8 @@ var filter = new JavaScriptUnifyMinifyFilter(null,
 
 \begin_layout Plain Layout
 
-	new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetween
-ValidityChecks)
+	new File(applicationBasePath + staticWebBasePath), minimumTimeBetweenValidityCh
+ecks)
 \end_layout
 
 \begin_layout Plain Layout
@@ -14171,8 +14165,8 @@ var filter = new JavaScriptUnifyMinifyFilter(staticWeb.context, staticWeb,
 
 \begin_layout Plain Layout
 
-	new File(applicationBasePath + staticWebBasePath), dynamicWebMinimumTimeBetween
-ValidityChecks)
+	new File(applicationBasePath + staticWebBasePath), minimumTimeBetweenValidityCh
+ecks)
 \end_layout
 
 \begin_layout Plain Layout
@@ -14181,7 +14175,7 @@ ValidityChecks)
 
 \begin_layout Plain Layout
 
-router.reattachBase(staticWebBaseURL,staticWeb)
+router.reattachBase(staticWebBaseURL, staticWeb)
 \end_layout
 
 \end_inset
@@ -14256,8 +14250,8 @@ status open
 
 \begin_layout Plain Layout
 
-router.filterBase(dynamicWebBaseURL, 'remove-foul-language/', applicationInstance.
-context, dynamicWebBase)
+router.filterBase(dynamicWebBaseURL, '/remove-foul-language/', applicationInstanc
+e.context, dynamicWebBase)
 \end_layout
 
 \end_inset
@@ -14302,7 +14296,7 @@ var cleanupFilter = new DelegatedFilter(applicationInstance.context,
 
 \begin_layout Plain Layout
 
-	'remove-foul-language/', filtersDocumentSource, languageManager)
+	'/remove-foul-language/', filtersDocumentSource, languageManager)
 \end_layout
 
 \begin_layout Plain Layout
@@ -15468,10 +15462,10 @@ reference "../generating-html/|caching"
 Note that if you edit the source file such as that it would be reloaded,
  within the limits defined by the 
 \bar under
-dynamicWebMinimumTimeBetweenValidityChecks setting (page 
+minimumTimeBetweenValidityChecks setting (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../application/|dynamic-web-minimum-time-between-validity-checks"
+reference "../application/|minimum-time-between-validity-checks"
 
 \end_inset
 
@@ -15948,7 +15942,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/instance/component/')
+document.execute('/defaults/instance/component/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -16443,10 +16437,10 @@ Prudence might compile or otherwise prepare and cache code in the executed
 Executed documents, just like documents exposed at URLs, are reloaded and
  re-prepared on the fly if the file changes, within the limits of the 
 \bar under
-dynamicWebMinimumTimeBetweenValidityChecks setting (page 
+minimumTimeBetweenValidityChecks setting (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../application/|dynamic-web-minimum-time-between-validity-checks"
+reference "../application/|minimum-time-between-validity-checks"
 
 \end_inset
 
@@ -18748,7 +18742,7 @@ if(conversation.defer()) {
 \end_layout
 
 \begin_layout Quote
-This is an experimental feature in Prudence 1.0.
+This is an experimental feature in Prudence 1.1.
  The use of a separate thread pool is only supported when using the 
 \begin_inset CommandInset href
 LatexCommand href
@@ -19744,7 +19738,7 @@ Breakpoints?
 \end_layout
 
 \begin_layout Standard
-As of Prudence version 1.0, you cannot set breakpoints in your code, unless
+As of Prudence version 1.1, you cannot set breakpoints in your code, unless
  it's in Java.
  Future versions of Prudence may allow breakpoints for some flavors, as
  supported languages add more debugging features.
@@ -20263,7 +20257,7 @@ name "../administration/"
 
 \begin_layout Standard
 Prudence comes with the ``Prudence Administration Application.'' As of Prudence
- 1.0, this is a simple application that lets you see the servers, virtual
+ 1.1, this is a simple application that lets you see the servers, virtual
  hosts and applications in the Prudence instance, and lets you start and
  stop them.
  Future versions of Prudence will build on this foundation, allowing for
@@ -20347,7 +20341,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/')
+document.execute('/defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -21069,7 +21063,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/instance/servers/')
+document.execute('/defaults/instance/servers/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -21970,7 +21964,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('defaults/application/routing/')
+document.execute('/defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -21984,12 +21978,12 @@ document.execute('defaults/application/routing/')
 
 \begin_layout Plain Layout
 
-router.attach('data/item/{id}', classLoader.loadClass('org.myorg.ItemResource'))
+router.attach('/data/item/{id}', classLoader.loadClass('org.myorg.ItemResource'))
 \end_layout
 
 \begin_layout Plain Layout
 
-router.attach('data/items', classLoader.loadClass('org.myorg.ItemsResource'))
+router.attach('/data/items', classLoader.loadClass('org.myorg.ItemsResource'))
 \end_layout
 
 \end_inset
@@ -23374,7 +23368,7 @@ And so, after this lengthy discussion, it turns out that there aren't that
 \end_layout
 
 \begin_layout Standard
-As of version 1.0, Prudence has limited support for asynchronous processing,
+As of version 1.1, Prudence has limited support for asynchronous processing,
  via 
 \bar under
 conversation.defer (page 
@@ -24711,8 +24705,9 @@ redistribute
 \emph default
  software, not to use it.
  You are free to use Prudence as you please within your organization, even
- if you're using it to serve public web sites (though with no warranty nor
- an implicit guarantee of support from Three Crickets, the copyright holder).
+ if you're using it to serve public web sites---though with no warranty
+ nor an implicit guarantee of support from the copyright holder, Three Crickets
+ LLC.
 \end_layout
 
 \begin_layout Standard
@@ -24725,14 +24720,13 @@ would include
 \end_layout
 
 \begin_layout Standard
-Prudence uses the Lesser GPL, which has even less restrictions on redistribution
- than the regular GPL.
- As long as you do not alter Prudence in any way, you can include Prudence
- in any product, free or non-free.
- (Actually, Prudence uses version 3 of the Lesser GPL, which requires your
- product, even if it's not free software, to at least not restrict users'
- ownership of data via schemes such as DRM if you want to include Prudence
- in its distribution.)
+In fact, Prudence uses the Lesser GPL, which has even less restrictions
+ on redistribution than the regular GPL.
+ Essentially, as long as you do not alter Prudence in any way, you can include
+ Prudence in any product, even if it is not free.
+ (With one exception: Prudence uses version 3 of the Lesser GPL, which requires
+ your product to not restrict users' ownership of data via schemes such
+ as DRM if Prudence is to be included in its distribution.)
 \end_layout
 
 \begin_layout Standard
@@ -24742,18 +24736,20 @@ Even if your product does not qualify for including Prudence in it, you
 \end_layout
 
 \begin_layout Standard
-Three Crickets, the original developers of Prudence, are not trying to force
- you to purchase it.
- Instead, they hope to encourage you 1) to pay Three Crickets for consultation,
- support and development services for Prudence, and 2) to release your own
- product as free software, thereby truly sharing your innovation with all
- of society.
+We understand that in some cases open sourcing your product is impossible,
+ and passing the burden to the users is cumbersome.
+ As a last resort, we offer you a commercial license as an alternative to
+ the GPL.
+ Please contact Three Crickets for details.
 \end_layout
 
 \begin_layout Standard
-We understand that in some cases open sourcing your product is impossible.
- As a last resort, we offer you a commercial license.
- Please contact us for details.
+Three Crickets, the original developers of Prudence, are not trying to force
+ you to purchase it.
+ Instead, they hope to encourage you to 1) pay Three Crickets for consultation,
+ support and development services for Prudence, which is our business model
+ for Prudence, and to 2) consider releasing your own product as free software,
+ thereby truly sharing your innovation with all of society.
 \end_layout
 
 \begin_layout Subsubsection
@@ -24763,15 +24759,17 @@ Why the LGPL and not the GPL?
 \begin_layout Standard
 The Lesser GPL used to be called the ``Library GPL,'' and was originally
  drafted for glibc.
- It represents a certain admission of defeat: there are so many alternatives
- to our library out there, that you might not consider using our library
- under GPL.
+ It is meant for special cases in which the full GPL could severely limit
+ the adoption of a product, which would be self-defeating.
+ The assumption is that there are many alternatives with less restrictions
+ on distribution.
 \end_layout
 
 \begin_layout Standard
-In the case of Linux, the GPL has done a wonderful job at convincing vendors
- to open source their code in order to ship their products with Linux inside.
- It just doesn't seem likely that they would do the same for Prudence.
+In the case of Linux, the full GPL has done a wonderful job at convincing
+ vendors to open source their code in order to ship their products with
+ Linux inside.
+ However, it doesn't seem likely that they would do the same for Prudence.
 \end_layout
 
 \begin_layout Standard
