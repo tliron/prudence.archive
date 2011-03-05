@@ -85,15 +85,13 @@ foreach($hosts as $entry) {
 	if(is_null($url)) {
 		$url = $application_default_url;
 	}
-	print '"' . $url . '" on ' . $host->name;
-	if($url == '/') {
-		$url = '';
+	if(($url != '') && ($url[strlen($url) - 1] == '/')) {
+		// No trailing slash
+		$url = substr($url, 0, -1);
 	}
+	print '"' . $url . '/" on ' . $host->name;
 	$host->attach($url, $application_instance)->matchingMode = Template::MODE_STARTS_WITH;
 	if($url != '') {
-		if($url[strlen($url) - 1] == '/') {
-			$url = substr($url, 0, -1);
-		}
 		$host->attach($url, $add_trailing_slash)->matchingMode = Template::MODE_EQUALS;
 	}
 	if($i < count($hosts) - 1) {

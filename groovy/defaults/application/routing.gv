@@ -66,15 +66,13 @@ hosts.eachWithIndex() { entry, i ->
 	if(!url) {
 		url = applicationDefaultURL
 	}
-	print('"' + url + '" on ' + host.name)
-	if (url == '/') {
-		url = ''
+	if((url != '') && (url[url.length - 1] == '/')) {
+		// No trailing slash
+		url = url.substring(0, url.size() - 1)
 	}
+	print('"' + url + '/" on ' + host.name)
 	host.attach(url, applicationInstance).matchingMode = Template.MODE_STARTS_WITH
 	if(url != '') {
-		if(url[url.size() - 1] == '/') {
-			url = url.substring(0, url.size() - 1)
-		}
 		host.attach(url, addTrailingSlash).matchingMode = Template.MODE_EQUALS
 	}
 	if(i < hosts.size() - 1) {

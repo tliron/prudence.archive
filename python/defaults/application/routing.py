@@ -60,13 +60,12 @@ for i in range(len(hosts)):
 	host, url = hosts.items()[i]
 	if url is None:
 		url = application_default_url
-	sys.stdout.write('"%s" on %s' % (url, host.name))
-	if url == '/':
-		url = ''
+	if url != '' and url[-1] == '/':
+		# No trailing slash
+		url = url[:-1]
+	sys.stdout.write('"%s/" on %s' % (url, host.name))
 	host.attach(url, application_instance).matchingMode = Template.MODE_STARTS_WITH
 	if url != '':
-		if url[-1] == '/':
-			url = url[:-1]
 		host.attach(url, add_trailing_slash).matchingMode = Template.MODE_EQUALS
 	if i < len(hosts) - 1:
 		sys.stdout.write(', ')

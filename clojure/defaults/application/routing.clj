@@ -12,20 +12,20 @@
 ;
 
 (import
- 'java.lang.ClassLoader
- 'java.io.File
- 'java.util.concurrent.ConcurrentHashMap
- 'org.restlet.routing.Router
- 'org.restlet.routing.Redirector
- 'org.restlet.routing.Template
- 'org.restlet.resource.Finder
- 'org.restlet.resource.Directory
- 'org.restlet.engine.application.Encoder
- 'com.threecrickets.scripturian.util.DefrostTask
- 'com.threecrickets.scripturian.document.DocumentFileSource
- 'com.threecrickets.prudence.PrudenceRouter
- 'com.threecrickets.prudence.util.PreheatTask
- 'com.threecrickets.prudence.util.PhpExecutionController)
+  'java.lang.ClassLoader
+  'java.io.File
+  'java.util.concurrent.ConcurrentHashMap
+  'org.restlet.routing.Router
+  'org.restlet.routing.Redirector
+  'org.restlet.routing.Template
+  'org.restlet.resource.Finder
+  'org.restlet.resource.Directory
+  'org.restlet.engine.application.Encoder
+  'com.threecrickets.scripturian.util.DefrostTask
+  'com.threecrickets.scripturian.document.DocumentFileSource
+  'com.threecrickets.prudence.PrudenceRouter
+  'com.threecrickets.prudence.util.PreheatTask
+  'com.threecrickets.prudence.util.PhpExecutionController)
 
 (def classLoader (ClassLoader/getSystemClassLoader))
 
@@ -35,11 +35,11 @@
 
 ; Makes sure we have slashes where we expect them
 (defn fix-url [url]
-	(let [url (.replace url "//" "/")] ; no doubles
-		(let [url (if (not (.startsWith url "/")) (str "/" url))] ; always at the beginning
-			(if (not (.endsWith url "/")) ; always at the end
-				(str url "/")
-				url))))
+  (let [url (.replace url "//" "/")] ; no doubles
+    (let [url (if (not (.startsWith url "/")) (str "/" url))] ; always at the beginning
+      (if (not (.endsWith url "/")) ; always at the end
+        (str url "/")
+        url))))
 
 ;
 ; Internal router
@@ -57,21 +57,20 @@
 (def add-trailing-slash (Redirector. (.getContext application-instance) "{ri}/" Redirector/MODE_CLIENT_PERMANENT))
 
 (defn add-to-hosts [entries]
-	(let [[entry & others] (seq entries)
-		host (.getKey entry)
-		url (.getValue entry)]
-		
-		(let [url (if (nil? url) application-default-url url)]
-			(print (str "\"" url "\"") "on" (.getName host))
-      (let [url (if (= url "/") "" url)]
+  (let [[entry & others] (seq entries)
+    host (.getKey entry)
+    url (.getValue entry)]
+    
+    (let [url (if (nil? url) application-default-url url)]
+      (let [url (if (.endsWith url "/") (.substring url 0 (- (.length url) 1)) url)] ; No trailing slash
+        (print "\"" url "/\" on" (.getName host))
         (.setMatchingMode (.attach host url application-instance) Template/MODE_STARTS_WITH)
         (if-not (= url "")
-          (let [url (if (.endsWith url "/") (.substring url 0 (- (.length url) 1)) url)]
-            (.setMatchingMode (.attach host url add-trailing-slash) Template/MODE_EQUALS)))))
-		(if-not (empty? others)
-			(do
-				(print ", ")
-				(recur others)))))
+          (.setMatchingMode (.attach host url add-trailing-slash) Template/MODE_EQUALS)))))
+    (if-not (empty? others)
+      (do
+        (print ", ")
+        (recur others)))))
 
 (print (str (.getName application-instance) ": "))
 (add-to-hosts (.entrySet hosts))
@@ -82,7 +81,7 @@
 (.put application-globals "com.threecrickets.prudence.component" component)
 (def cache (.. component getContext getAttributes (get "com.threecrickets.prudence.cache")))
 (if (not (nil? cache))
-	(.put application-globals "com.threecrickets.prudence.cache" cache))
+  (.put application-globals "com.threecrickets.prudence.cache" cache))
 
 ;
 ; Inbound root
@@ -97,10 +96,10 @@
 ;
 
 (doseq [url url-add-trailing-slash]
-	(let [url (fix-url url)]
-		(if (> (.length url) 0)
-			(let [url (if (.endsWith url "/") (.substring url (- (.length url) 1)) url)]
-				(.attach router url add-trailing-slash)))))
+  (let [url (fix-url url)]
+    (if (> (.length url) 0)
+      (let [url (if (.endsWith url "/") (.substring url (- (.length url) 1)) url)]
+        (.attach router url add-trailing-slash)))))
 
 (def language-manager (.. executable getManager))
 
@@ -129,8 +128,8 @@
 (.attachBase router dynamic-web-base-url dynamic-web)
 
 (if dynamic-web-defrost
-	(doseq [defrost-task (DefrostTask/forDocumentSource dynamic-web-document-source language-manager "clojure" true true)]
-		(def tasks (conj tasks defrost-task))))
+  (doseq [defrost-task (DefrostTask/forDocumentSource dynamic-web-document-source language-manager "clojure" true true)]
+    (def tasks (conj tasks defrost-task))))
 
 ;
 ; Static web
@@ -158,28 +157,28 @@
 (.attachBase router resources-base-url resources)
 
 (if resources-defrost
-	(doseq [defrost-task (DefrostTask/forDocumentSource resources-document-source language-manager "clojure" false true)]
-		(def tasks (conj tasks defrost-task))))
+  (doseq [defrost-task (DefrostTask/forDocumentSource resources-document-source language-manager "clojure" false true)]
+    (def tasks (conj tasks defrost-task))))
 
 ;
 ; SourceCode
 ;
 
 (if show-debug-on-error
-	(do
-		(.put application-globals "com.threecrickets.prudence.SourceCodeResource.documentSources" [dynamic-web-document-source resources-document-source])
-		
-		(def source-code (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.SourceCodeResource")))
+  (do
+    (.put application-globals "com.threecrickets.prudence.SourceCodeResource.documentSources" [dynamic-web-document-source resources-document-source])
+    
+    (def source-code (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.SourceCodeResource")))
     (def show-source-code-url (fix-url show-source-code-url))
-		(.setMatchingMode (.attach router show-source-code-url source-code) Template/MODE_EQUALS)))
+    (.setMatchingMode (.attach router show-source-code-url source-code) Template/MODE_EQUALS)))
 
 ;
 ; Preheat
 ;
 
 (if dynamic-web-preheat
-	(doseq [preheat-task (PreheatTask/forDocumentSource dynamic-web-document-source application-internal-name application-instance application-logger-name)]
-		(def tasks (conj tasks preheat-task))))
+  (doseq [preheat-task (PreheatTask/forDocumentSource dynamic-web-document-source application-internal-name application-instance application-logger-name)]
+    (def tasks (conj tasks preheat-task))))
 
 (doseq [preheat-resource preheat-resources]
-	(def tasks (conj tasks (PreheatTask. application-internal-name preheat-resource application-instance application-logger-name))))
+  (def tasks (conj tasks (PreheatTask. application-internal-name preheat-resource application-instance application-logger-name))))

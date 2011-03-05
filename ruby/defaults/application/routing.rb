@@ -66,15 +66,13 @@ for entry in $hosts
 	if url.nil?
 		url = $application_default_url
 	end
-	print "\"#{url}\" on #{host.name}"
-	if url == '/'
-		url = ''
+	if url != '/' && if url[-1] == ?/
+		# No trailing slash
+		url = url[0..-2]
 	end
+	print "\"#{url}/\" on #{host.name}"
 	host.attach(url, $application_instance).matching_mode = Template::MODE_STARTS_WITH
 	if url != ''
-		if url[-1] == ?/
-			url = url[0..-2]
-		end
 		host.attach(url, $add_trailing_slash).matching_mode = Template::MODE_EQUALS
 	end
 	if i < $hosts.length - 1

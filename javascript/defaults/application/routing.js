@@ -69,15 +69,13 @@ for(var i in hosts) {
 	if(!url) {
 		url = applicationDefaultURL
 	}
-	print('"' + url + '" on ' + host.name)
-	if (url == '/') {
-		url = ''
+	if((url != '') && (url[url.length - 1] == '/')) {
+		// No trailing slash
+		url = url.slice(0, -1)
 	}
+	print('"' + url + '/" on ' + host.name)
 	host.attach(url, applicationInstance).matchingMode = Template.MODE_STARTS_WITH
 	if(url != '') {
-		if(url[url.length - 1] == '/') {
-			url = url.slice(0, -1)
-		}
 		host.attach(url, addTrailingSlash).matchingMode = Template.MODE_EQUALS
 	}
 	if(i < hosts.length - 1) {
