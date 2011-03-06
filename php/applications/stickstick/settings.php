@@ -23,5 +23,5 @@ $predefined_globals['stickstick.database'] = $application_base_path . '/data/sti
 
 $show_debug_on_error = true;
 
-$preheat_resources = array('data/');
+$preheat_resources = array('/data/');
 ?>

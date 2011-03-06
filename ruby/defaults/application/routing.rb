@@ -37,7 +37,7 @@ def fix_url url
 	if url == '' || url[0] != ?/ # always at the beginning
 		url = '/' + url
 	end
-	if url[-1] != ?/ # always at the end
+	if url != '/' && url[-1] != ?/ # always at the end
 		url += '/'
 	end
 	return url
@@ -66,7 +66,7 @@ for entry in $hosts
 	if url.nil?
 		url = $application_default_url
 	end
-	if url != '/' && if url[-1] == ?/
+	if url != '' && url[-1] == ?/
 		# No trailing slash
 		url = url[0..-2]
 	end
@@ -120,8 +120,8 @@ $language_manager = $executable.manager
 #
 
 $library_document_sources = [
-	DocumentFileSource.new($application_base + $libraries_base_path, $application_base + $libraries_base_path, $documents_default_name, 'rb', $minimum_time_between_validity_checks)
-	DocumentFileSource.new($application_base + '/../../libraries/ruby/', $application_base + '/../../libraries/ruby/', $documents_default_name, 'rb', $minimum_time_between_validity_checks)
+	DocumentFileSource.new($application_base + $libraries_base_path, $application_base_path + $libraries_base_path, $documents_default_name, 'rb', $minimum_time_between_validity_checks),
+	DocumentFileSource.new($application_base + '/../../libraries/ruby/', $application_base_path + '/../../libraries/ruby/', $documents_default_name, 'rb', $minimum_time_between_validity_checks)
 ]
 
 #

@@ -53,7 +53,7 @@ foreach($application_dirs as $application_dir) {
 		$application_base_path = $application_dir->path;
 		$application_default_url = '/' . $application_dir->name;
 		$application_base = 'applications/' . $application_dir->name;
-		execute_or_default($application_base, 'defaults/application');
+		execute_or_default($application_base, 'defaults/application/');
 		$applications->add($application_instance);
 	}
 }

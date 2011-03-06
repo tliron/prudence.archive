@@ -38,7 +38,7 @@ fixURL = { url ->
 	if(url == '' || url[0] != '/') { // always at the beginning
 		url = '/' + url
 	}
-	if(url[url.size() - 1] != '/') { // always at the end
+	if((url != '/') && (url[url.size() - 1] != '/')) { // always at the end
 		url += '/'
 	}
 	return url
@@ -66,7 +66,7 @@ hosts.eachWithIndex() { entry, i ->
 	if(!url) {
 		url = applicationDefaultURL
 	}
-	if((url != '') && (url[url.length - 1] == '/')) {
+	if((url != '') && (url[url.size() - 1] == '/')) {
 		// No trailing slash
 		url = url.substring(0, url.size() - 1)
 	}
@@ -107,7 +107,7 @@ for(url in urlAddTrailingSlash) {
 	if(url.size() > 0) {
 		if(url[url.size() - 1] == '/') {
 			// Remove trailing slash for pattern
-			url = url.slice(0, -1)
+			url = url.substring(0, url.size() - 1)
 		}
 		router.attach(url, addTrailingSlash)
 	}

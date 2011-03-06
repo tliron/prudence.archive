@@ -18,21 +18,37 @@ import java.lang.System;
 import java.util.logging.LogManager;
 import java.io.File;
 import com.threecrickets.scripturian.document.DocumentFileSource;
-import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.prudence.service.ApplicationService;
 
 $document->librarySources->add(new DocumentFileSource(new File($document->source->basePath, 'libraries/php'), 'default', 'php', 5000));
+
+function is_java_exception($x, $name) {
+	$name = $name . ':';
+	if($x->__javaException) {
+		return substr($x->__javaException, 0, strlen($name)) == $name;
+	}
+	return FALSE;
+}
 
 function execute_or_default($name, $def=NULL) {
 	global $document;
 	try {
 		$document->execute($name);
 	} catch(Exception $x) {
-		// TODO: find the exception type!
-		if(is_null($def)) {
-			$def = '/defaults/' . $name;
+		if(is_java_exception($x, 'com.threecrickets.scripturian.exception.DocumentNotFoundException')) {
+			if(is_null($def)) {
+				$def = '/defaults/' . $name;
+			}
+			$document->execute($def);
 		}
-		$document->execute($def);
+		else {
+			if($x->__javaException) {
+				$x->__javaException->printStackTrace();
+			} else {
+				print $x->getMessage() . "\n";
+			}
+			throw $x;
+		}
 	}
 }
 
@@ -173,6 +189,6 @@ if(count($tasks) > 0) {
 
 for($i = 0; $i < $applications->size(); $i++) {
 	$application_service = new ApplicationService($applications->get($i));
-	$application_service->task('startup/', 0, 0, FALSE);
+	$application_service->task('/startup/', 0, 0, FALSE);
 }
 ?>

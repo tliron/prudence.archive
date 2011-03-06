@@ -55,7 +55,7 @@ if(!function_exists('fix_url')) {
 		if($url == '' || $url[0] != '/') { // always at the beginning
 			$url = '/' . $url;
 		}
-		if($url[strlen($url) - 1] != '/') { // always at the end
+		if(($url != '/') && ($url[strlen($url) - 1] != '/')) { // always at the end
 			$url = $url . '/';
 		}
 		return $url;
@@ -128,7 +128,7 @@ foreach($url_add_trailing_slash as $url) {
 			// Remove trailing slash for pattern
 			$url = substr($url, 0, -1);
 		}
-		$router->attach($url, $addTrailingSlash);
+		$router->attach($url, $add_trailing_slash);
 	}
 }
 
@@ -139,8 +139,8 @@ $language_manager = $executable->manager;
 //
 
 $library_document_sources = new ArrayList(2);
-$library_document_sources->add(new DocumentFileSource($application_base . $libraries_base_path, $application_base . $libraries_base_path, $documents_default_name, 'php', $minimum_time_between_validity_checks));
-$library_document_sources->add(new DocumentFileSource($application_base . '/../../libraries/php/', $application_base . '/../../libraries/php/', $documents_default_name, 'php', $minimum_time_between_validity_checks);
+$library_document_sources->add(new DocumentFileSource($application_base . $libraries_base_path, $application_base_path . $libraries_base_path, $documents_default_name, 'php', $minimum_time_between_validity_checks));
+$library_document_sources->add(new DocumentFileSource($application_base . '/../../libraries/php/', $application_base_path . '/../../libraries/php/', $documents_default_name, 'php', $minimum_time_between_validity_checks));
 
 //
 // Dynamic web

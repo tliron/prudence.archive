@@ -36,8 +36,8 @@ $show_debug_on_error = false
 
 $show_source_code_url = '/sourcecode/'
 
-// This is so we can see the source code for scripts by adding ?source=true
-// to the URL. You probably wouldn't want this for most applications.
+# This is so we can see the source code for scripts by adding ?source=true
+# to the URL. You probably wouldn't want this for most applications.
 
 $source_viewable = true
 

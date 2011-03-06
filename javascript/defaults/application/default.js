@@ -23,13 +23,13 @@ importClass(
 // Settings
 //
 
-executeOrDefault(applicationBase + '/settings/', 'defaults/application/settings/')
+executeOrDefault(applicationBase + '/settings/', '/defaults/application/settings/')
 
 //
 // Application
 //
 
-executeOrDefault(applicationBase + '/application/', 'defaults/application/application/')
+executeOrDefault(applicationBase + '/application/', '/defaults/application/application/')
 
 applicationInstance.name = applicationName
 applicationInstance.description = applicationDescription
@@ -55,7 +55,7 @@ applicationInstance.metadataService.addExtension('php', MediaType.TEXT_HTML)
 // Routing
 //
 
-executeOrDefault(applicationBase + '/routing/', 'defaults/application/routing/')
+executeOrDefault(applicationBase + '/routing/', '/defaults/application/routing/')
 
 //
 // Logging

@@ -34,9 +34,9 @@ class_loader = ClassLoader.getSystemClassLoader()
 # Makes sure we have slashes where we expect them
 def fix_url(url):
 	url = url.replace('//', '/') # no doubles
-	if url == '' or url[0] == '/': # always at the beginning
+	if url == '' or url[0] != '/': # always at the beginning
 		url = '/' + url
-	if url[-1] != '/': # always at the end
+	if url != '/' and url[-1] != '/': # always at the end
 		url = url + '/'
 	return url
 
@@ -104,8 +104,8 @@ language_manager = executable.manager
 #
 
 library_document_sources = [
-	DocumentFileSource(application_base + libraries_base_path, application_base + libraries_base_path, documents_default_name, 'py', minimum_time_between_validity_checks),
-	DocumentFileSource(application_base + '/../../libraries/python/', application_base + '/../../libraries/python/', documents_default_name, 'py', minimum_time_between_validity_checks)
+	DocumentFileSource(application_base + libraries_base_path, application_base_path + libraries_base_path, documents_default_name, 'py', minimum_time_between_validity_checks),
+	DocumentFileSource(application_base + '/../../libraries/python/', application_base_path + '/../../libraries/python/', documents_default_name, 'py', minimum_time_between_validity_checks)
 ]
 
 #

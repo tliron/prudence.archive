@@ -116,7 +116,7 @@ executeOrDefault('instance/servers/')
 //
 
 predefinedSharedGlobals.each() { key, value ->
-	component.context.attributes[key] = value
+	componentInstance.context.attributes[key] = value
 }
 
 //
@@ -132,7 +132,7 @@ for(server in componentInstance.servers) {
 	} else {
 		print('Listening on port ' + server.port + ' for ')
 	}
-	server.protocols.eachWithIndex { protocol, j ->
+	server.protocols.eachWithIndex() { protocol, j ->
 		if(j < server.protocols.size() - 1) {
 			print(', ')
 		}
@@ -171,5 +171,5 @@ if(tasks.size() > 0) {
 
 for(application in applications) {
 	applicationService = new ApplicationService(application)
-	applicationService.task('startup/', 0, 0, false)
+	applicationService.task('/startup/', 0, 0, false)
 }

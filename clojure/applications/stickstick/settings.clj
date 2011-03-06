@@ -20,4 +20,4 @@
 
 (def show-debug-on-error true)
 
-(def preheat-resources ["data/"])
+(def preheat-resources ["/data/"])

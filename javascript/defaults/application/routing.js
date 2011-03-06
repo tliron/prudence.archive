@@ -40,7 +40,7 @@ function fixURL(url) {
 	if(url == '' || url[0] != '/') { // always at the beginning
 		url = '/' + url
 	}
-	if(url[url.length - 1] != '/') { // always at the end
+	if((url != '/') && (url[url.length - 1] != '/')) { // always at the end
 		url += '/'
 	}
 	return url

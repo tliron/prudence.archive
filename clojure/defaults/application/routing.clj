@@ -36,8 +36,8 @@
 ; Makes sure we have slashes where we expect them
 (defn fix-url [url]
   (let [url (.replace url "//" "/")] ; no doubles
-    (let [url (if (not (.startsWith url "/")) (str "/" url))] ; always at the beginning
-      (if (not (.endsWith url "/")) ; always at the end
+    (let [url (if (not (.startsWith url "/")) (str "/" url) url)] ; always at the beginning
+      (if (and (not (.equals url "/")) (not (.endsWith url "/"))) ; always at the end
         (str url "/")
         url))))
 
@@ -63,10 +63,10 @@
     
     (let [url (if (nil? url) application-default-url url)]
       (let [url (if (.endsWith url "/") (.substring url 0 (- (.length url) 1)) url)] ; No trailing slash
-        (print "\"" url "/\" on" (.getName host))
+        (print (str "\"" url "/\" on") (.getName host))
         (.setMatchingMode (.attach host url application-instance) Template/MODE_STARTS_WITH)
-        (if-not (= url "")
-          (.setMatchingMode (.attach host url add-trailing-slash) Template/MODE_EQUALS)))))
+        (if-not (.equals url "")
+          (.setMatchingMode (.attach host url add-trailing-slash) Template/MODE_EQUALS))))
     (if-not (empty? others)
       (do
         (print ", ")
@@ -98,7 +98,7 @@
 (doseq [url url-add-trailing-slash]
   (let [url (fix-url url)]
     (if (> (.length url) 0)
-      (let [url (if (.endsWith url "/") (.substring url (- (.length url) 1)) url)]
+      (let [url (if (.endsWith url "/") (.substring url 0 (- (.length url) 1)) url)]
         (.attach router url add-trailing-slash)))))
 
 (def language-manager (.. executable getManager))
@@ -108,8 +108,8 @@
 ;
 
 (def library-document-sources [
-  (DocumentFileSource. (str application-base libraries-base-path) (str application-base libraries-base-path) documents-default-name "clj" minimum-time-between-validity-checks)
-  (DocumentFileSource. (str application-base "/../../libraries/clojure/") (str application-base "/../../libraries/clojure/") documents-default-name "clj" minimum-time-between-validity-checks)]
+  (DocumentFileSource. (str application-base libraries-base-path) (str application-base-path libraries-base-path) documents-default-name "clj" (.longValue minimum-time-between-validity-checks))
+  (DocumentFileSource. (str application-base "/../../libraries/clojure/") (str application-base-path "/../../libraries/clojure/") documents-default-name "clj" (.longValue minimum-time-between-validity-checks))])
 
 ;
 ; Dynamic web

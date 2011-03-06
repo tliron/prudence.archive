@@ -68,4 +68,4 @@ componentInstance.context.attributes['com.threecrickets.prudence.cache'] = new I
 // These will be available to your code via application.sharedGlobals.
 //
 
-predefinedSharedGlobals = {}
+predefinedSharedGlobals = [:]

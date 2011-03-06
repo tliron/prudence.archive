@@ -183,6 +183,9 @@ public abstract class DistributionTest extends MultiTest
 
 		System.setProperty( LanguageManager.SCRIPTURIAN_CACHE_PATH, name + "/content/cache" );
 
+		// new File( name + "/content/cache/" + name ).mkdirs();
+		// new File( name + "/content/cache/python/executables" ).mkdirs();
+
 		Scripturian.main( new String[]
 		{
 			"instance", "--base-path=" + name + "/content/"

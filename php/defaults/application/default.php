@@ -33,13 +33,13 @@ import com.threecrickets.prudence.service.ApplicationService;
 // Settings
 //
 
-execute_or_default($application_base . '/settings/', 'defaults/application/settings/');
+execute_or_default($application_base . '/settings/', '/defaults/application/settings/');
 
 //
 // Application
 //
 
-execute_or_default($application_base . '/application/', 'defaults/application/application/');
+execute_or_default($application_base . '/application/', '/defaults/application/application/');
 
 $application_instance->name = $application_name;
 $application_instance->description = $application_description;
@@ -65,7 +65,7 @@ $application_instance->metadataService->addExtension('php', MediaType::valueOf('
 // Routing
 //
 
-execute_or_default($application_base . '/routing/', 'defaults/application/routing/');
+execute_or_default($application_base . '/routing/', '/defaults/application/routing/');
 
 //
 // Logging
@@ -101,14 +101,16 @@ $scheduler->addTaskCollector(new ApplicationTaskCollector(new File($application_
 // Common Configurations
 //
 
-function configure_common($prefix) {
-	global $application_globals, $language_manager, $documents_default_name, $libraries_document_source, $common_libraries_document_source, $file_upload_size_threshold, $source_viewable;
-	$application_globals[$prefix . '.languageManager'] = $language_manager;
-	$application_globals[$prefix . '.defaultName'] = $documents_default_name;
-	$application_globals[$prefix . '.defaultLanguageTag'] = 'php';
-	$application_globals[$prefix . '.libraryDocumentSources'] = $library_document_sources;
-	$application_globals[$prefix . '.fileUploadSizeThreshold'] = $file_upload_size_threshold;
-	$application_globals[$prefix . '.sourceViewable'] = $source_viewable;
+if(!function_exists('configure_common')) {
+	function configure_common($prefix) {
+		global $application_globals, $language_manager, $documents_default_name, $library_document_sources, $common_libraries_document_source, $file_upload_size_threshold, $source_viewable;
+		$application_globals[$prefix . '.languageManager'] = $language_manager;
+		$application_globals[$prefix . '.defaultName'] = $documents_default_name;
+		$application_globals[$prefix . '.defaultLanguageTag'] = 'php';
+		$application_globals[$prefix . '.libraryDocumentSources'] = $library_document_sources;
+		$application_globals[$prefix . '.fileUploadSizeThreshold'] = $file_upload_size_threshold;
+		$application_globals[$prefix . '.sourceViewable'] = $source_viewable;
+	}
 }
 
 configure_common('com.threecrickets.prudence.GeneratedTextResource');

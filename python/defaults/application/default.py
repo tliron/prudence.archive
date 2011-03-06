@@ -20,13 +20,13 @@ from com.threecrickets.prudence.service import ApplicationService
 # Settings
 #
 
-execute_or_default(application_base + '/settings/', 'defaults/application/settings/')
+execute_or_default(application_base + '/settings/', '/defaults/application/settings/')
 
 #
 # Application
 #
 
-execute_or_default(application_base + '/application/', 'defaults/application/application/')
+execute_or_default(application_base + '/application/', '/defaults/application/application/')
 
 application_instance.name = application_name
 application_instance.description = application_description
@@ -52,7 +52,7 @@ application_instance.metadataService.addExtension('php', MediaType.TEXT_HTML)
 # Routing
 #
 
-execute_or_default(application_base + '/routing/', 'defaults/application/routing/')
+execute_or_default(application_base + '/routing/', '/defaults/application/routing/')
 
 #
 # Logging
