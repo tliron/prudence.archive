@@ -27,7 +27,7 @@ cd $HERE
 #rm -f prudence-$DIST*.dsc
 #rm -f prudence-$DIST*.tar.gz
 
-cd prudence-$DIST-1.0
+cd prudence-$DIST-1.1
 #rm -f files
 #rm -f prudence*.debhelper.log
 #rm -f prudence*.substvars

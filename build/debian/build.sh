@@ -21,7 +21,7 @@ fi
 
 HERE=$(cd "${0%/*}" 2>/dev/null; echo "$PWD")
 
-cd $HERE/prudence-$DIST-1.0
+cd $HERE/prudence-$DIST-1.1
 rm -rf content
 cp -r ../../$DIST/content .
 dpkg-buildpackage -S -kC11D6BA2 
