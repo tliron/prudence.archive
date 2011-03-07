@@ -136,8 +136,8 @@
 	<macrodef name="fetch-debian">
 		<attribute name="name" />
 		<sequential>
-			<mkdir dir="debian/prudence-@{name}-1.0/debian" />
-			<vppcopy todir="debian/prudence-@{name}-1.0/debian">
+			<mkdir dir="debian/prudence-@{name}-1.1/debian" />
+			<vppcopy todir="debian/prudence-@{name}-1.1/debian">
 				<fileset dir="debian/common" />
 				<config>
 					<context>
@@ -261,7 +261,7 @@
 	</target>
 
 	<target name="javadoc-unless" description="Create Prudence API docs" unless="javadoc-present">
-		<javadoc sourcepath="${java-src}" source="1.5" excludepackagenames="**.internal.*,**.test.*" destdir="${tmp}/api" stylesheetfile="${documentation}/soft-cricket-api.css" windowtitle="Prudence 1.0-${revision.max}" doctitle="Prudence 1.0-${revision.max}" access="protected" author="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" splitindex="true" use="true" version="true" verbose="true">
+		<javadoc sourcepath="${java-src}" source="1.5" excludepackagenames="**.internal.*,**.test.*" destdir="${tmp}/api" stylesheetfile="${documentation}/soft-cricket-api.css" windowtitle="Prudence 1.1-${revision.max}" doctitle="Prudence 1.1-${revision.max}" access="protected" author="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" splitindex="true" use="true" version="true" verbose="true">
 			<link href="http://download.oracle.com/javase/1.5.0/docs/api/" />
 			<link href="http://download.oracle.com/javase/6/docs/api/" />
 			<link href="http://threecrickets.com/scripturian/api/" />

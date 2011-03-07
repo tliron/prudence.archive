@@ -22,10 +22,10 @@ fi
 HERE=$(cd "${0%/*}" 2>/dev/null; echo "$PWD")
 cd $HERE
 
-dput prudence prudence-clojure_${VERSION}_source.changes
-dput prudence prudence-groovy_${VERSION}_source.changes
-dput prudence prudence-javascript_${VERSION}_source.changes
-dput prudence prudence-kitchensink_${VERSION}_source.changes
-dput prudence prudence-php_${VERSION}_source.changes
-dput prudence prudence-python_${VERSION}_source.changes
-dput prudence prudence-ruby_${VERSION}_source.changes
+dput prudence prudence-clojure-1.1_${VERSION}_source.changes
+dput prudence prudence-groovy-1.1_${VERSION}_source.changes
+dput prudence prudence-javascript-1.1_${VERSION}_source.changes
+dput prudence prudence-kitchensink-1.1_${VERSION}_source.changes
+dput prudence prudence-php-1.1_${VERSION}_source.changes
+dput prudence prudence-python-1.1_${VERSION}_source.changes
+dput prudence prudence-ruby-1.1_${VERSION}_source.changes
