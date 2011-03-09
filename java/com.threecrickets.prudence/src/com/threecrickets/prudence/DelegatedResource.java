@@ -42,6 +42,7 @@ import com.threecrickets.prudence.service.ApplicationService;
 import com.threecrickets.prudence.service.ConversationStoppedException;
 import com.threecrickets.prudence.service.DelegatedResourceConversationService;
 import com.threecrickets.prudence.service.DelegatedResourceDocumentService;
+import com.threecrickets.prudence.util.ByteArrayRepresentation;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
@@ -497,6 +498,10 @@ public class DelegatedResource extends ServerResource
 			getResponse().setStatus( Status.valueOf( ( (Number) object ).intValue() ) );
 
 			return null;
+		}
+		else if( object instanceof byte[] )
+		{
+			return new ByteArrayRepresentation( conversationService.getMediaType(), (byte[]) object );
 		}
 		else
 		{
