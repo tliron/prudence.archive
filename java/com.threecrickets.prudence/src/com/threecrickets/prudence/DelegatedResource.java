@@ -499,10 +499,6 @@ public class DelegatedResource extends ServerResource
 
 			return null;
 		}
-		else if( object instanceof byte[] )
-		{
-			return new ByteArrayRepresentation( conversationService.getMediaType(), (byte[]) object );
-		}
 		else
 		{
 			Representation representation;
@@ -516,6 +512,10 @@ public class DelegatedResource extends ServerResource
 					representation.getLanguages().add( language );
 				representation.setCharacterSet( conversationService.getCharacterSet() );
 			}
+			else if( object instanceof byte[] )
+			{
+				representation = new ByteArrayRepresentation( conversationService.getMediaType(), (byte[]) object );
+			}
 			else
 			{
 				// Convert to string
@@ -525,6 +525,7 @@ public class DelegatedResource extends ServerResource
 			representation.setTag( conversationService.getTag() );
 			representation.setExpirationDate( conversationService.getExpirationDate() );
 			representation.setModificationDate( conversationService.getModificationDate() );
+			representation.setDisposition( conversationService.getDisposition() );
 
 			return representation;
 		}

@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.restlet.Request;
 import org.restlet.Response;
+import org.restlet.data.Disposition;
 import org.restlet.data.Form;
 import org.restlet.data.LocalReference;
 import org.restlet.data.Parameter;
@@ -294,6 +295,16 @@ public class ConversationService
 	}
 
 	/**
+	 * The representation's disposition.
+	 * 
+	 * @return A disposition
+	 */
+	public Disposition getDisposition()
+	{
+		return disposition;
+	}
+
+	/**
 	 * The request attributes.
 	 * 
 	 * @return The locals
@@ -357,4 +368,9 @@ public class ConversationService
 	 * The conversation cookies.
 	 */
 	private Collection<ConversationCookie> conversationCookies;
+
+	/**
+	 * The representation's disposition.
+	 */
+	private Disposition disposition = new Disposition();
 }
