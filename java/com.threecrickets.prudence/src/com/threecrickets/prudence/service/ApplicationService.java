@@ -78,6 +78,15 @@ public class ApplicationService
 		return application;
 	}
 
+	/**
+	 * The underlying component.
+	 * <p>
+	 * Note: for this to work, the component must have been explicitly set as
+	 * attribute <code>com.threecrickets.prudence.component</code> in the
+	 * application's context.
+	 * 
+	 * @return The component
+	 */
 	public Component getComponent()
 	{
 		return (Component) getGlobals().get( "com.threecrickets.prudence.component" );
@@ -127,6 +136,7 @@ public class ApplicationService
 	 * Note that this could be null if shared globals are not set up.
 	 * 
 	 * @return The shared globals or null
+	 * @see #getComponent()
 	 */
 	public ConcurrentMap<String, Object> getSharedGlobals()
 	{
@@ -148,6 +158,7 @@ public class ApplicationService
 	 * @param defaultValue
 	 *        The default value
 	 * @return The shared global's current value
+	 * @see #getComponent()
 	 */
 	public Object getSharedGlobal( String name, Object defaultValue )
 	{
