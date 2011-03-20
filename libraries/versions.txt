@@ -28,7 +28,7 @@ jygments			1.0 (Revision 21)
 log4j				1.2.16
 mime4j				0.6
 mongo-java-driver	2.5
-mongo-rhino-driver	1.0 (Revision 79)
+mongo-rhino-driver	1.0 (Revision 80)
 mysqlconnector		5.1.14
 pygments			1.1.1
 quercus				4.0.11
