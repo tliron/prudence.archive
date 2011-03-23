@@ -119,12 +119,14 @@ console () {
 	-server \
 	-cp "$CP" \
 	-Dscripturian.cache=cache \
+	-Dhazelcast.config=configuration/hazelcast.conf \
 #if(($distribution == 'python') || ($distribution == 'kitchensink'))
 	-Dpython.home=libraries/python \
 	-Dpython.verbose=warning \
 	-Djava.library.path=/usr/local/lib \
 #end
 	-Djava.util.logging.config.file=none \
+	-Dnet.spy.log.LoggerImpl=net.spy.log.SunLogger \
 	com.threecrickets.scripturian.Scripturian instance
 }
 
@@ -177,12 +179,14 @@ start () {
 	-jvm server \
 	-cp "$JARS" \
 	-Dscripturian.cache=cache \
+	-Dhazelcast.config=configuration/hazelcast.conf \
 #if(($distribution == 'python') || ($distribution == 'kitchensink'))
 	-Dpython.home=libraries/python \
 	-Dpython.verbose=warning \
 	-Djava.library.path=/usr/local/lib \
 #end
 	-Djava.util.logging.config.file=none \
+	-Dnet.spy.log.LoggerImpl=net.spy.log.SunLogger \
 	com.threecrickets.prudence.PrudenceDaemon instance
 }
 
