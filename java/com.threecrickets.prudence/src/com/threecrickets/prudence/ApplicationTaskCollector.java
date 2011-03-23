@@ -132,7 +132,7 @@ public class ApplicationTaskCollector implements TaskCollector
 
 					// Find context, if there is any
 					String context = null;
-					String[] split = documentName.split( "\\s+" );
+					String[] split = documentName.split( "\\s+", 2 );
 					if( split.length > 1 )
 					{
 						documentName = split[0];
