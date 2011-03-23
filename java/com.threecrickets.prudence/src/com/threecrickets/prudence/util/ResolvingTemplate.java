@@ -16,7 +16,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.restlet.Application;
-import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.routing.Template;
@@ -37,16 +36,14 @@ public class ResolvingTemplate extends Template
 	/**
 	 * Application attribute of the map resolver constructor.
 	 * 
-	 * @see #getMapResolverConstructor(Context)
-	 * @see #setMapResolverClass(Context, Class)
+	 * @see #getMapResolverConstructor()
 	 */
 	public static final String MAP_RESOLVER_CONSTRUCTOR = "com.threecrickets.prudence.util.ResolvingTemplate.mapResolverConstructor";
 
 	/**
 	 * Application attribute of the call resolver constructor.
 	 * 
-	 * @see #getCallResolverConstructor(Context)
-	 * @see #setCallResolverClass(Context, Class)
+	 * @see #getCallResolverConstructor()
 	 */
 	public static final String CALL_RESOLVER_CONSTRUCTOR = "com.threecrickets.prudence.util.ResolvingTemplate.mapResolverConstructor";
 
@@ -111,7 +108,7 @@ public class ResolvingTemplate extends Template
 	//
 
 	/**
-	 * @return
+	 * @return The constructor for the map resolver
 	 */
 	public static Constructor<Resolver<?>> getMapResolverConstructor()
 	{
@@ -120,7 +117,7 @@ public class ResolvingTemplate extends Template
 
 	/**
 	 * @param application
-	 * @return
+	 * @return The constructor for the map resolver
 	 */
 	@SuppressWarnings("unchecked")
 	public static Constructor<Resolver<?>> getMapResolverConstructor( Application application )
@@ -143,7 +140,7 @@ public class ResolvingTemplate extends Template
 	}
 
 	/**
-	 * @return
+	 * @return The constructor for the call resolver
 	 */
 	public static Constructor<Resolver<?>> getCallResolverConstructor()
 	{
@@ -152,7 +149,7 @@ public class ResolvingTemplate extends Template
 
 	/**
 	 * @param application
-	 * @return
+	 * @return The constructor for the call resolver
 	 */
 	@SuppressWarnings("unchecked")
 	public static Constructor<Resolver<?>> getCallResolverConstructor( Application application )
