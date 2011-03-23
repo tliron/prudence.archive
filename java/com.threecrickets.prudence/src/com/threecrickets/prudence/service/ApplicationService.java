@@ -373,7 +373,8 @@ public class ApplicationService
 	 * Submits a task on the Hazelcast cluster.
 	 * 
 	 * @param applicationName
-	 *        The application's full name
+	 *        The application's full name, or null to default to current
+	 *        application's name
 	 * @param documentName
 	 *        The document name
 	 * @param context
@@ -389,6 +390,9 @@ public class ApplicationService
 	@SuppressWarnings("unchecked")
 	public Future<?> distributedTask( String applicationName, String documentName, Object context, Object where, boolean multi )
 	{
+		if( applicationName == null )
+			applicationName = getApplication().getName();
+
 		ExecutorService executor = Hazelcast.getExecutorService();
 		Callable<Void> task = DistributedTask.callable( new SerializableApplicationTask( applicationName, documentName, context ), null );
 
