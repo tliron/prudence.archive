@@ -71,7 +71,7 @@ public abstract class InstanceUtil
 	 * context.
 	 * 
 	 * @param name
-	 *        The application's internal name
+	 *        The application's full name
 	 * @return The application or null
 	 * @see #getComponent()
 	 */

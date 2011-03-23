@@ -373,7 +373,7 @@ public class ApplicationService
 	 * Submits a task on the Hazelcast cluster.
 	 * 
 	 * @param applicationName
-	 *        The application name
+	 *        The application's full name
 	 * @param documentName
 	 *        The document name
 	 * @param context

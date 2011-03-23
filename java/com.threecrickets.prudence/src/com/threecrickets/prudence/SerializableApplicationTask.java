@@ -40,8 +40,8 @@ public class SerializableApplicationTask implements Runnable, Serializable
 	 * Constructor.
 	 * 
 	 * @param applicationName
-	 *        The internal name of the Restlet application in which this task
-	 *        will execute
+	 *        The full name of the Restlet application in which this task will
+	 *        execute
 	 * @param documentName
 	 *        The document name
 	 * @param context
@@ -84,7 +84,7 @@ public class SerializableApplicationTask implements Runnable, Serializable
 	{
 		ApplicationTask applicationTask = getApplicationTask();
 		if( applicationTask == null )
-			throw new RuntimeException( "Could not initialize application task for application: " + applicationName );
+			throw new RuntimeException( "Could not find an application named: " + applicationName );
 
 		applicationTask.run();
 	}
@@ -95,8 +95,7 @@ public class SerializableApplicationTask implements Runnable, Serializable
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * The internal name of the Restlet application in which this task will
-	 * execute.
+	 * The full name of the Restlet application in which this task will execute.
 	 */
 	private String applicationName;
 
