@@ -271,7 +271,7 @@
 			<link href="http://commons.apache.org/fileupload/apidocs/" />
 			<link href="http://www.sauronsoftware.it/projects/cron4j/api/" />
 			<link href="http://www.h2database.com/javadoc/" />
-			<link href="http://hazelcast.googlecode.com/svn/javadoc/" />
+			<link href="http://www.hazelcast.com/javadoc/" />
 			<link href="http://dustin.github.com/java-memcached-client/apidocs/" />
 			<link href="http://commons.apache.org/daemon/apidocs/" />
 			<link href="http://api.mongodb.org/java/2.3/" />
