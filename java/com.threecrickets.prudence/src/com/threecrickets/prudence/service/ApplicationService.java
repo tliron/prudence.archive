@@ -11,6 +11,9 @@
 
 package com.threecrickets.prudence.service;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,12 +27,16 @@ import org.restlet.Component;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
 
+import com.hazelcast.core.DistributedTask;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.Member;
+import com.hazelcast.core.MultiTask;
 import com.threecrickets.prudence.ApplicationTask;
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.prudence.GeneratedTextResource;
+import com.threecrickets.prudence.SerializableApplicationTask;
+import com.threecrickets.prudence.util.InstanceUtil;
 import com.threecrickets.prudence.util.LoggingUtil;
-import com.threecrickets.scripturian.exception.DocumentException;
-import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
  * Application service exposed to executables.
@@ -89,7 +96,7 @@ public class ApplicationService
 	 */
 	public Component getComponent()
 	{
-		return (Component) getGlobals().get( "com.threecrickets.prudence.component" );
+		return (Component) getGlobals().get( InstanceUtil.COMPONENT_ATTRIBUTE );
 	}
 
 	/**
@@ -186,6 +193,56 @@ public class ApplicationService
 	}
 
 	/**
+	 * A map of all values global to the Prudence Hazelcast cluster.
+	 * <p>
+	 * This is simply the "com.threecrickets.prudence.distributedGlobals"
+	 * Hazelcast map.
+	 * 
+	 * @return The distributed globals or null
+	 */
+	public ConcurrentMap<String, Object> getDistributedGlobals()
+	{
+		return Hazelcast.getMap( "com.threecrickets.prudence.distributedGlobals" );
+	}
+
+	/**
+	 * Gets a value global to the Prudence Hazelcast cluster, atomically setting
+	 * it to a default value if it doesn't exist.
+	 * <p>
+	 * If distributed globals are not set up, does nothing and returns null.
+	 * 
+	 * @param name
+	 *        The name of the distributed global
+	 * @param defaultValue
+	 *        The default value
+	 * @return The distributed global's current value
+	 */
+	public Object getDistributedGlobal( String name, Object defaultValue )
+	{
+		ConcurrentMap<String, Object> globals = getDistributedGlobals();
+
+		if( globals == null )
+			return null;
+
+		Object value = globals.get( name );
+
+		if( value == null )
+		{
+			if( defaultValue != null )
+			{
+				value = defaultValue;
+				Object existing = globals.putIfAbsent( name, value );
+				if( existing != null )
+					value = existing;
+			}
+			else
+				globals.remove( name );
+		}
+
+		return value;
+	}
+
+	/**
 	 * The application's logger.
 	 * 
 	 * @return The logger
@@ -248,13 +305,13 @@ public class ApplicationService
 
 			if( attributes != null )
 			{
-				executor = (ExecutorService) attributes.get( "com.threecrickets.prudence.executor" );
+				executor = (ExecutorService) attributes.get( InstanceUtil.EXECUTOR_ATTRIBUTE );
 
 				if( executor == null )
 				{
 					executor = Executors.newScheduledThreadPool( Runtime.getRuntime().availableProcessors() * 2 + 1 );
 
-					ExecutorService existing = (ExecutorService) attributes.putIfAbsent( "com.threecrickets.prudence.executor", executor );
+					ExecutorService existing = (ExecutorService) attributes.putIfAbsent( InstanceUtil.EXECUTOR_ATTRIBUTE, executor );
 					if( existing != null )
 						executor = existing;
 				}
@@ -286,13 +343,12 @@ public class ApplicationService
 	 *        Whether repetitions are at fixed times, or if the repeat delay
 	 *        begins when the task ends
 	 * @return A future for the task
-	 * @throws ParsingException
-	 * @throws DocumentException
 	 * @see #getExecutor()
 	 */
-	public Future<?> task( String documentName, Object context, int delay, int repeatEvery, boolean fixedRepeat ) throws ParsingException, DocumentException
+	public Future<?> task( String documentName, Object context, int delay, int repeatEvery, boolean fixedRepeat )
 	{
 		ExecutorService executor = getExecutor();
+		ApplicationTask task = new ApplicationTask( application, documentName, context );
 		if( ( delay > 0 ) || ( repeatEvery > 0 ) )
 		{
 			if( !( executor instanceof ScheduledExecutorService ) )
@@ -302,15 +358,66 @@ public class ApplicationService
 			if( repeatEvery > 0 )
 			{
 				if( fixedRepeat )
-					return scheduledExecutor.scheduleAtFixedRate( new ApplicationTask( application, documentName, context ), delay, repeatEvery, TimeUnit.MILLISECONDS );
+					return scheduledExecutor.scheduleAtFixedRate( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
 				else
-					return scheduledExecutor.scheduleWithFixedDelay( new ApplicationTask( application, documentName, context ), delay, repeatEvery, TimeUnit.MILLISECONDS );
+					return scheduledExecutor.scheduleWithFixedDelay( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
 			}
 			else
-				return scheduledExecutor.schedule( new ApplicationTask( application, documentName, context ), delay, TimeUnit.MILLISECONDS );
+				return scheduledExecutor.schedule( task, delay, TimeUnit.MILLISECONDS );
 		}
 		else
-			return executor.submit( new ApplicationTask( application, documentName, context ) );
+			return executor.submit( task );
+	}
+
+	/**
+	 * Submits a task on the Hazelcast cluster.
+	 * 
+	 * @param applicationName
+	 *        The application name
+	 * @param documentName
+	 *        The document name
+	 * @param context
+	 *        The context made available to the task (must be serializable)
+	 * @param where
+	 *        A {@link Member}, an iterable of {@link Member}, any other object
+	 *        (the member key), or null to let Hazelcast decide
+	 * @param multi
+	 *        Whether the task should be executed on all members in the set
+	 * @return A future for the task
+	 * @see Hazelcast#getExecutorService()
+	 */
+	@SuppressWarnings("unchecked")
+	public Future<?> distributedTask( String applicationName, String documentName, Object context, Object where, boolean multi )
+	{
+		ExecutorService executor = Hazelcast.getExecutorService();
+		Callable<Void> task = DistributedTask.callable( new SerializableApplicationTask( applicationName, documentName, context ), null );
+
+		DistributedTask<Void> distributedTask;
+		if( where == null )
+			distributedTask = new DistributedTask<Void>( task );
+		else if( where instanceof Member )
+			distributedTask = new DistributedTask<Void>( task, (Member) where );
+		else if( where instanceof Set )
+		{
+			if( multi )
+				distributedTask = new MultiTask<Void>( task, (Set<Member>) where );
+			else
+				distributedTask = new DistributedTask<Void>( task, (Set<Member>) where );
+		}
+		else if( where instanceof Iterable )
+		{
+			Set<Member> members = new HashSet<Member>();
+			for( Member member : (Iterable<Member>) where )
+				members.add( member );
+			if( multi )
+				distributedTask = new MultiTask<Void>( task, members );
+			else
+				distributedTask = new DistributedTask<Void>( task, members );
+		}
+		else
+			distributedTask = new DistributedTask<Void>( task, where );
+
+		return executor.submit( distributedTask );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

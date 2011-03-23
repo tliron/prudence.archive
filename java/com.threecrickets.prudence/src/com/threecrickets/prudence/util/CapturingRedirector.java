@@ -30,7 +30,7 @@ public class CapturingRedirector extends ResolvingRedirector
 	//
 
 	/**
-	 * Request attribute of the captive {@link Reference}.
+	 * Request attribute of the captive {@link Reference} for a {@link Request}.
 	 * 
 	 * @see #getCapturedReference(Request)
 	 * @see #setCapturedReference(Request, Reference)

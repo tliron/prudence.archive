@@ -25,7 +25,7 @@ public class ConversationStoppedException extends RuntimeException
 	//
 
 	/**
-	 * Conversation stopped attribute.
+	 * Conversation stopped attribute for a {@link Request}.
 	 */
 	public static final String CONVERSATION_STOPPED_ATTRIBUTE = "com.threecrickets.prudence.service.ConversationStoppedException.conversationStopped";
 

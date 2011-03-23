@@ -13,7 +13,7 @@ package com.threecrickets.prudence;
 
 import org.restlet.Component;
 
-import com.threecrickets.scripturian.GlobalScope;
+import com.threecrickets.prudence.util.InstanceUtil;
 import com.threecrickets.scripturian.Main;
 import com.threecrickets.scripturian.ScripturianDaemon;
 
@@ -37,7 +37,7 @@ public class PrudenceDaemon extends ScripturianDaemon
 
 	static void stop( String[] args ) throws Exception
 	{
-		Component component = (Component) GlobalScope.getInstance().getAttributes().get( "com.threecrickets.prudence.component" );
+		Component component = InstanceUtil.getComponent();
 		if( component != null )
 			component.stop();
 	}

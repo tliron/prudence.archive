@@ -21,6 +21,7 @@ import org.restlet.data.CharacterSet;
 
 import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.internal.JygmentsDocumentFormatter;
+import com.threecrickets.prudence.util.InstanceUtil;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.LanguageManager;
@@ -317,7 +318,7 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 	public Cache getCache()
 	{
 		if( cache == null )
-			cache = (Cache) getAttributes().get( "com.threecrickets.prudence.cache" );
+			cache = (Cache) getAttributes().get( InstanceUtil.CACHE_ATTRIBUTE );
 
 		return cache;
 	}

@@ -23,9 +23,8 @@ import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.restlet.Component;
 
-import com.threecrickets.scripturian.GlobalScope;
+import com.threecrickets.prudence.util.InstanceUtil;
 import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.Scripturian;
 
@@ -77,7 +76,7 @@ public abstract class DistributionTest extends MultiTest
 
 		if( inProcess )
 		{
-			assertNotNull( getInProcessComponent() );
+			assertNotNull( InstanceUtil.getComponent() );
 			stopInProcessComponent();
 		}
 		else
@@ -172,11 +171,6 @@ public abstract class DistributionTest extends MultiTest
 			deleteDirectory( data );
 	}
 
-	private static Component getInProcessComponent()
-	{
-		return (Component) GlobalScope.getInstance().getAttributes().get( "com.threecrickets.prudence.component" );
-	}
-
 	private void startInProcessComponent()
 	{
 		System.out.println( "Starting Prudence instance in this process..." );
@@ -203,7 +197,7 @@ public abstract class DistributionTest extends MultiTest
 			x.printStackTrace();
 		}
 
-		assertNotNull( getInProcessComponent() );
+		assertNotNull( InstanceUtil.getComponent() );
 
 		started = true;
 	}
@@ -212,7 +206,7 @@ public abstract class DistributionTest extends MultiTest
 	{
 		try
 		{
-			getInProcessComponent().stop();
+			InstanceUtil.getComponent().stop();
 			System.out.println( "Stopped in-process component." );
 		}
 		catch( Exception x )

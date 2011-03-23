@@ -219,7 +219,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		// For initial documents, see if a document descriptor is cached for us
 		// in the request
 		if( currentDocumentDescriptor == null )
-			documentDescriptor = (DocumentDescriptor<Executable>) resource.getRequest().getAttributes().remove( "com.threecrickets.prudence.GeneratedTextResource.documentDescriptor" );
+			documentDescriptor = (DocumentDescriptor<Executable>) resource.getRequest().getAttributes().remove( DOCUMENT_DESCRIPTOR_ATTRIBUTE );
 
 		if( documentDescriptor == null )
 		{
@@ -291,7 +291,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		documentDescriptor = Executable.createOnce( documentName, getSource(), true, resource.getAttributes().getLanguageManager(), resource.getAttributes().getDefaultLanguageTag(), resource.getAttributes().isPrepare() );
 
 		// Cache the document descriptor in the request
-		resource.getRequest().getAttributes().put( "com.threecrickets.prudence.GeneratedTextResource.documentDescriptor", documentDescriptor );
+		resource.getRequest().getAttributes().put( DOCUMENT_DESCRIPTOR_ATTRIBUTE, documentDescriptor );
 
 		// Set initial media type according to the document's tag
 		if( conversationService.getMediaType() == null )
@@ -321,8 +321,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 					if( documentDescriptor.getDocument().getDocumentTimestamp() <= cacheEntry.getDocumentModificationDate().getTime() )
 					{
 						// Cache the cache entry in the request
-						resource.getRequest().getAttributes().put( "com.threecrickets.prudence.GeneratedTextResource.cacheKey", cacheKey );
-						resource.getRequest().getAttributes().put( "com.threecrickets.prudence.GeneratedTextResource.cacheEntry", cacheEntry );
+						resource.getRequest().getAttributes().put( CACHE_KEY_ATTRIBUTE, cacheKey );
+						resource.getRequest().getAttributes().put( CACHE_ENTRY_ATTRIBUTE, cacheEntry );
 
 						return cacheEntry;
 					}
@@ -336,15 +336,45 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	/**
+	 * Encoding attribute for an {@link Executable}.
+	 */
 	private static final String ENCODING_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.encoding";
 
+	/**
+	 * Cache duration attribute for an {@link Executable}.
+	 */
 	private static final String CACHE_DURATION_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheDuration";
 
+	/**
+	 * Cache key pattern attribute for an {@link Executable}.
+	 */
 	private static final String CACHE_KEY_PATTERN_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheKeyPattern";
 
+	/**
+	 * Cache key pattern handlers attribute for an {@link Executable}.
+	 */
 	private static final String CACHE_KEY_PATTERN_HANDLERS_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers";
 
+	/**
+	 * Cache tags attribute for an {@link Executable}.
+	 */
 	private static final String CACHE_TAGS_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheTags";
+
+	/**
+	 * Document descriptor attribute for a {@link Request}.
+	 */
+	private static final String DOCUMENT_DESCRIPTOR_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.documentDescriptor";
+
+	/**
+	 * Cache key attribute for a {@link Request}.
+	 */
+	private static final String CACHE_KEY_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheKey";
+
+	/**
+	 * Cache entry attribute for a {@link Request}.
+	 */
+	private static final String CACHE_ENTRY_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.cacheEntry";
 
 	/**
 	 * The conversation service.
@@ -704,8 +734,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			}
 
 			// See if a valid cache entry has already been cached in the request
-			CacheEntry cacheEntry = (CacheEntry) resource.getRequest().getAttributes().remove( "com.threecrickets.prudence.GeneratedTextResource.cacheEntry" );
-			String cacheKey = (String) resource.getRequest().getAttributes().remove( "com.threecrickets.prudence.GeneratedTextResource.cacheKey" );
+			CacheEntry cacheEntry = (CacheEntry) resource.getRequest().getAttributes().remove( CACHE_ENTRY_ATTRIBUTE );
+			String cacheKey = (String) resource.getRequest().getAttributes().remove( CACHE_KEY_ATTRIBUTE );
 			if( ( cacheEntry != null ) && ( cacheKey != null ) )
 				return represent( cacheEntry, getEncoding( executable ), cacheKey, executable, writer );
 

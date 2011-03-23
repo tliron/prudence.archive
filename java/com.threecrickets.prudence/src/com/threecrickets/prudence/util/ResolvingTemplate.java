@@ -34,14 +34,14 @@ public class ResolvingTemplate extends Template
 	//
 
 	/**
-	 * Application attribute of the map resolver constructor.
+	 * Attribute of the map resolver constructor for an {@link Application}.
 	 * 
 	 * @see #getMapResolverConstructor()
 	 */
 	public static final String MAP_RESOLVER_CONSTRUCTOR = "com.threecrickets.prudence.util.ResolvingTemplate.mapResolverConstructor";
 
 	/**
-	 * Application attribute of the call resolver constructor.
+	 * Attribute of the call resolver constructor for an {@link Application}.
 	 * 
 	 * @see #getCallResolverConstructor()
 	 */

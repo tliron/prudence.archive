@@ -43,10 +43,18 @@ import org.restlet.data.Encoding;
  */
 public abstract class IoUtil
 {
+	//
+	// Constants
+	//
+
 	/**
 	 * Constant.
 	 */
 	public static List<Encoding> SUPPORTED_COMPRESSION_ENCODINGS = Arrays.asList( Encoding.DEFLATE, Encoding.GZIP, Encoding.ZIP );
+
+	//
+	// Static operations
+	//
 
 	/**
 	 * Copies streams. The input stream is entirely consumed and closed.

@@ -24,7 +24,7 @@ import org.restlet.engine.Engine;
 public abstract class LoggingUtil
 {
 	//
-	// Static operations
+	// Static attributes
 	//
 
 	/**

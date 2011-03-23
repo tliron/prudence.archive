@@ -40,8 +40,8 @@ public class DelegatedStatusService extends StatusService
 	//
 
 	/**
-	 * A request attribute to signify to upstream instances that the status has
-	 * already been handled.
+	 * Attribute to signify to upstream instances that the status has already
+	 * been handled for a {@link Request}.
 	 */
 	public static final String PASSTHROUGH_ATTRIBUTE = "com.threecrickets.prudence.DelegatedStatusService.passThrough";
 
@@ -210,7 +210,7 @@ public class DelegatedStatusService extends StatusService
 				response.setEntity( null );
 
 				// Clean up for generated text resource
-				attributes.remove( "com.threecrickets.prudence.GeneratedTextResource.documentName" );
+				attributes.remove( GeneratedTextResource.DOCUMENT_NAME_ATTRIBUTE );
 
 				// Delegate
 				errorHandler.handle( request, response );

@@ -13,6 +13,7 @@ package com.threecrickets.prudence;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.logging.Level;
 
 import org.restlet.Application;
 import org.restlet.Context;
@@ -28,6 +29,7 @@ import com.threecrickets.scripturian.LanguageManager;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
+import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
@@ -153,6 +155,16 @@ public class ApplicationTask implements Runnable
 		return documentName;
 	}
 
+	/**
+	 * The context made available to the task.
+	 * 
+	 * @return The context
+	 */
+	public Object getContext()
+	{
+		return context;
+	}
+
 	//
 	// Runnable
 	//
@@ -178,20 +190,29 @@ public class ApplicationTask implements Runnable
 
 				executable.execute( executionContext, this, attributes.getExecutionController() );
 			}
+			catch( DocumentNotFoundException x )
+			{
+				application.getLogger().warning( "Task not found: " + documentName );
+				throw new RuntimeException( x );
+			}
 			catch( DocumentException x )
 			{
+				application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
 				throw new RuntimeException( x );
 			}
 			catch( ParsingException x )
 			{
+				application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
 				throw new RuntimeException( x );
 			}
 			catch( ExecutionException x )
 			{
+				application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
 				throw new RuntimeException( x );
 			}
 			catch( IOException x )
 			{
+				application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
 				throw new RuntimeException( x );
 			}
 		}

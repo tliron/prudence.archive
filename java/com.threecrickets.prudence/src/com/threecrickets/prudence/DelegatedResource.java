@@ -177,6 +177,11 @@ public class DelegatedResource extends ServerResource
 	// Attributes
 	//
 
+	/**
+	 * The attributes.
+	 * 
+	 * @return The attributes
+	 */
 	public DelegatedResourceAttributes getAttributes()
 	{
 		return attributes;
@@ -452,6 +457,11 @@ public class DelegatedResource extends ServerResource
 	// Private
 
 	/**
+	 * Entry point validity cache attribute for an {@link Executable}.
+	 */
+	private static final String ENTRY_POINT_VALIDITY_CACHE_ATTRIBUTE = "com.threecrickets.prudence.DelegatedResource.entryPointValidityCache";
+
+	/**
 	 * Constant.
 	 */
 	private static final String SOURCE = "source";
@@ -588,11 +598,11 @@ public class DelegatedResource extends ServerResource
 	private ConcurrentMap<String, Boolean> getEntryPointValidityCache( Executable executable )
 	{
 		ConcurrentMap<String, Object> attributes = executable.getAttributes();
-		ConcurrentMap<String, Boolean> entryPointValidityCache = (ConcurrentMap<String, Boolean>) attributes.get( "com.threecrickets.prudence.DelegatedResource.entryPointValidityCache" );
+		ConcurrentMap<String, Boolean> entryPointValidityCache = (ConcurrentMap<String, Boolean>) attributes.get( ENTRY_POINT_VALIDITY_CACHE_ATTRIBUTE );
 		if( entryPointValidityCache == null )
 		{
 			entryPointValidityCache = new ConcurrentHashMap<String, Boolean>();
-			ConcurrentMap<String, Boolean> existing = (ConcurrentMap<String, Boolean>) attributes.putIfAbsent( "com.threecrickets.prudence.DelegatedResource.entryPointValidityCache", entryPointValidityCache );
+			ConcurrentMap<String, Boolean> existing = (ConcurrentMap<String, Boolean>) attributes.putIfAbsent( ENTRY_POINT_VALIDITY_CACHE_ATTRIBUTE, entryPointValidityCache );
 			if( existing != null )
 				entryPointValidityCache = existing;
 		}

@@ -23,7 +23,8 @@ import com.hazelcast.core.MultiMap;
  * A <a href="http://www.hazelcast.com/">Hazelcast</a>-backed cache.
  * <p>
  * Uses a Hazelcast map and a Hazelcast multimap, defaulting to the names
- * "prudence.cache" and "prduence.tagMap" respectively. Refer to Hazelcast
+ * "com.threecrickets.prudence.prudence.cache" and
+ * "com.threecrickets.prudence.prduence.tagMap" respectively. Refer to Hazelcast
  * documentation for instructions on how to configure them.
  * 
  * @author Tal Liron
@@ -50,7 +51,7 @@ public class HazelcastCache implements Cache
 	 */
 	public HazelcastCache( HazelcastInstance hazelcast )
 	{
-		this( hazelcast, "prudence.cache", "prudence.tagMap" );
+		this( hazelcast, "com.threecrickets.prudence.cache", "com.threecrickets.prudence.tagMap" );
 	}
 
 	/**

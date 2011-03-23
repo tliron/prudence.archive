@@ -167,12 +167,29 @@ public class GeneratedTextResource extends ServerResource
 	// Constants
 	//
 
+	/**
+	 * Document name attribute for a {@link Request}.
+	 */
+	public static final String DOCUMENT_NAME_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.documentName";
+
+	/**
+	 * Constant.
+	 */
 	public static final int CLIENT_CACHING_MODE_DISABLED = 0;
 
+	/**
+	 * Constant.
+	 */
 	public static final int CLIENT_CACHING_MODE_CONDITIONAL = 1;
 
+	/**
+	 * Constant.
+	 */
 	public static final int CLIENT_CACHING_MODE_OFFLINE = 2;
 
+	/**
+	 * Global list of supported encodings.
+	 */
 	public static final List<Encoding> SUPPORTED_ENCODINGS = new ArrayList<Encoding>();
 
 	static
@@ -185,6 +202,11 @@ public class GeneratedTextResource extends ServerResource
 	// Attributes
 	//
 
+	/**
+	 * The attributes.
+	 * 
+	 * @return The attributes
+	 */
 	public GeneratedTextResourceAttributes getAttributes()
 	{
 		return attributes;
@@ -207,12 +229,12 @@ public class GeneratedTextResource extends ServerResource
 		Map<String, Object> attributes = request.getAttributes();
 
 		// Check for cached document name in the request
-		String documentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentName" );
+		String documentName = (String) attributes.get( DOCUMENT_NAME_ATTRIBUTE );
 		if( documentName == null )
 		{
 			documentName = request.getResourceRef().getRemainingPart( true, false );
 			documentName = this.attributes.validateDocumentName( documentName, this.attributes.getDefaultIncludedName() );
-			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentName", documentName );
+			attributes.put( DOCUMENT_NAME_ATTRIBUTE, documentName );
 		}
 
 		try
@@ -330,12 +352,12 @@ public class GeneratedTextResource extends ServerResource
 		Map<String, Object> attributes = request.getAttributes();
 
 		// Check for cached document name in the request
-		String documentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentName" );
+		String documentName = (String) attributes.get( DOCUMENT_NAME_ATTRIBUTE );
 		if( documentName == null )
 		{
 			documentName = request.getResourceRef().getRemainingPart( true, false );
 			documentName = this.attributes.validateDocumentName( documentName, this.attributes.getDefaultIncludedName() );
-			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentName", documentName );
+			attributes.put( DOCUMENT_NAME_ATTRIBUTE, documentName );
 		}
 
 		GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this, null, null, variant );
@@ -415,12 +437,12 @@ public class GeneratedTextResource extends ServerResource
 		Map<String, Object> attributes = request.getAttributes();
 
 		// Check for cached document name in the request
-		String documentName = (String) attributes.get( "com.threecrickets.prudence.GeneratedTextResource.documentName" );
+		String documentName = (String) attributes.get( DOCUMENT_NAME_ATTRIBUTE );
 		if( documentName == null )
 		{
 			documentName = request.getResourceRef().getRemainingPart( true, false );
 			documentName = this.attributes.validateDocumentName( documentName, this.attributes.getDefaultIncludedName() );
-			attributes.put( "com.threecrickets.prudence.GeneratedTextResource.documentName", documentName );
+			attributes.put( DOCUMENT_NAME_ATTRIBUTE, documentName );
 		}
 
 		try
