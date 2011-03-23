@@ -11,7 +11,7 @@ grizzly				1.9.21
 groboutils			5 (note: we've removed the internal log4j distribution)
 groovy				1.7.5
 h2					1.3.153
-hazelcast			1.9.1
+hazelcast			1.9.2.2
 httpclient			4.0.3
 httpcore			4.0.1 (blocking version)
 httpmime			4.0.3
