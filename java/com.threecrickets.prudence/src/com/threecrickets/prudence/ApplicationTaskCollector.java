@@ -132,11 +132,11 @@ public class ApplicationTaskCollector implements TaskCollector
 
 					// Find context, if there is any
 					String context = null;
-					int space = documentName.indexOf( ' ' );
-					if( space != -1 )
+					String[] split = documentName.split( "\\s+" );
+					if( split.length > 1 )
 					{
-						context = documentName.substring( space + 1 );
-						documentName = documentName.substring( 0, space );
+						documentName = split[0];
+						context = split[1];
 					}
 
 					// Add the task
