@@ -170,5 +170,5 @@ if(tasks.length > 0) {
 
 for(var i = applications.iterator(); i.hasNext(); ) {
 	var applicationService = new ApplicationService(i.next())
-	applicationService.task('/startup/', 0, 0, false)
+	applicationService.task('/startup/', 'initial', 0, 0, false)
 }

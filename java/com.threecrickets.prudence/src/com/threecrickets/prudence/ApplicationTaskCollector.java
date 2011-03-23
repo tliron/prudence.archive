@@ -130,8 +130,17 @@ public class ApplicationTaskCollector implements TaskCollector
 					if( documentName.length() == 0 )
 						continue;
 
+					// Find context, if there is any
+					String context = null;
+					int space = documentName.indexOf( ' ' );
+					if( space != -1 )
+					{
+						context = documentName.substring( space + 1 );
+						documentName = documentName.substring( 0, space );
+					}
+
 					// Add the task
-					taskTable.add( pattern, new ApplicationCronTask( application, documentName ) );
+					taskTable.add( pattern, new ApplicationCronTask( application, documentName, context ) );
 				}
 			}
 			catch( IOException x )

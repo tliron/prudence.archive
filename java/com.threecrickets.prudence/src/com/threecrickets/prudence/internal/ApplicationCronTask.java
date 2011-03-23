@@ -42,10 +42,12 @@ public class ApplicationCronTask extends Task
 	 *        The Restlet application in which this task will execute
 	 * @param documentName
 	 *        The document name
+	 * @param context
+	 *        The context made available to the task
 	 */
-	public ApplicationCronTask( Application application, String documentName )
+	public ApplicationCronTask( Application application, String documentName, Object context )
 	{
-		this( new ApplicationTask( application, documentName ) );
+		this( new ApplicationTask( application, documentName, context ) );
 	}
 
 	/**

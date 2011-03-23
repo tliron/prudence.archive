@@ -144,14 +144,14 @@
 ; Tasks
 ;
 
-;(def fixed-executor (Executors/newFixedThreadPool (+ (* (.. Runtime getRuntime (availableProcessors)) 2) 1)))
-;(if-not (empty? tasks)
-	;(let [start-time (System/currentTimeMillis)]
-		;(println "Executing" (count tasks) "startup tasks...")
-		;(let [futures (for [task tasks] (.submit fixed-executor task))]
-			;(dorun (for [future futures] (.get future)))
-			;(println "Finished all startup tasks in" (/ (- (System/currentTimeMillis) start-time) 1000.0) "seconds."))))
+(def fixed-executor (Executors/newFixedThreadPool (+ (* (.. Runtime getRuntime (availableProcessors)) 2) 1)))
+(if-not (empty? tasks)
+	(let [start-time (System/currentTimeMillis)]
+		(println "Executing" (count tasks) "startup tasks...")
+		(let [futures (for [task tasks] (.submit fixed-executor task))]
+			(dorun (for [future futures] (.get future)))
+			(println "Finished all startup tasks in" (/ (- (System/currentTimeMillis) start-time) 1000.0) "seconds."))))
 
-;(doseq [application applications]
- ; (let [application-service (ApplicationService. application)]
-  ;  (.task application-service "/startup/" 0 0 false)))
+(doseq [application applications]
+  (let [application-service (ApplicationService. application)]
+    (.task application-service "/startup/" "initial" 0 0 false)))

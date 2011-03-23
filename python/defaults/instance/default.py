@@ -156,4 +156,4 @@ if len(tasks) > 0:
 
 for application in applications:
 	applicationService = ApplicationService(application)
-	applicationService.task('/startup/', 0, 0, False)
+	applicationService.task('/startup/', 'initial', 0, 0, False)

@@ -19,6 +19,7 @@ import org.restlet.Context;
 
 import com.threecrickets.prudence.internal.attributes.ApplicationTaskAttributes;
 import com.threecrickets.prudence.service.ApplicationService;
+import com.threecrickets.prudence.service.ApplicationTaskDocumentService;
 import com.threecrickets.prudence.service.DocumentService;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
@@ -101,11 +102,13 @@ public class ApplicationTask implements Runnable
 	 * 
 	 * @param documentName
 	 *        The document name
+	 * @param context
+	 *        The context made available to the task
 	 * @see Application#getCurrent()
 	 */
-	public ApplicationTask( String documentName )
+	public ApplicationTask( String documentName, Object context )
 	{
-		this( Application.getCurrent(), documentName );
+		this( Application.getCurrent(), documentName, context );
 	}
 
 	/**
@@ -115,12 +118,15 @@ public class ApplicationTask implements Runnable
 	 *        The Restlet application in which this task will execute
 	 * @param documentName
 	 *        The document name
+	 * @param context
+	 *        The context made available to the task
 	 */
-	public ApplicationTask( Application application, String documentName )
+	public ApplicationTask( Application application, String documentName, Object context )
 	{
 		attributes = new ApplicationTaskAttributes( application );
 		this.application = application;
 		this.documentName = documentName;
+		this.context = context;
 	}
 
 	//
@@ -167,7 +173,7 @@ public class ApplicationTask implements Runnable
 				ExecutionContext executionContext = new ExecutionContext( attributes.getWriter(), attributes.getErrorWriter() );
 				attributes.addLibraryLocations( executionContext );
 
-				executionContext.getServices().put( attributes.getDocumentServiceName(), new DocumentService( attributes, documentDescriptor ) );
+				executionContext.getServices().put( attributes.getDocumentServiceName(), new ApplicationTaskDocumentService( attributes, documentDescriptor, context ) );
 				executionContext.getServices().put( attributes.getApplicationServiceName(), new ApplicationService( application ) );
 
 				executable.execute( executionContext, this, attributes.getExecutionController() );
@@ -212,4 +218,9 @@ public class ApplicationTask implements Runnable
 	 * The document name.
 	 */
 	private final String documentName;
+
+	/**
+	 * The context made available to the task.
+	 */
+	private final Object context;
 }

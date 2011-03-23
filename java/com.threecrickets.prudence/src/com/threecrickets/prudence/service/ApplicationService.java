@@ -276,6 +276,8 @@ public class ApplicationService
 	 * 
 	 * @param documentName
 	 *        The document name
+	 * @param context
+	 *        The context made available to the task
 	 * @param delay
 	 *        Initial delay in milliseconds, or zero for ASAP
 	 * @param repeatEvery
@@ -288,7 +290,7 @@ public class ApplicationService
 	 * @throws DocumentException
 	 * @see #getExecutor()
 	 */
-	public Future<?> task( String documentName, int delay, int repeatEvery, boolean fixedRepeat ) throws ParsingException, DocumentException
+	public Future<?> task( String documentName, Object context, int delay, int repeatEvery, boolean fixedRepeat ) throws ParsingException, DocumentException
 	{
 		ExecutorService executor = getExecutor();
 		if( ( delay > 0 ) || ( repeatEvery > 0 ) )
@@ -300,15 +302,15 @@ public class ApplicationService
 			if( repeatEvery > 0 )
 			{
 				if( fixedRepeat )
-					return scheduledExecutor.scheduleAtFixedRate( new ApplicationTask( application, documentName ), delay, repeatEvery, TimeUnit.MILLISECONDS );
+					return scheduledExecutor.scheduleAtFixedRate( new ApplicationTask( application, documentName, context ), delay, repeatEvery, TimeUnit.MILLISECONDS );
 				else
-					return scheduledExecutor.scheduleWithFixedDelay( new ApplicationTask( application, documentName ), delay, repeatEvery, TimeUnit.MILLISECONDS );
+					return scheduledExecutor.scheduleWithFixedDelay( new ApplicationTask( application, documentName, context ), delay, repeatEvery, TimeUnit.MILLISECONDS );
 			}
 			else
-				return scheduledExecutor.schedule( new ApplicationTask( application, documentName ), delay, TimeUnit.MILLISECONDS );
+				return scheduledExecutor.schedule( new ApplicationTask( application, documentName, context ), delay, TimeUnit.MILLISECONDS );
 		}
 		else
-			return executor.submit( new ApplicationTask( application, documentName ) );
+			return executor.submit( new ApplicationTask( application, documentName, context ) );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
