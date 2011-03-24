@@ -13,7 +13,7 @@ REM #
 CD /D "%0%\..\.."
 
 SET JARS=#foreach($jar in $jars.split(':'))
-%CD%/libraries/${jar}#if($foreach.hasNext);^
+%CD%\libraries\${jar}#if($foreach.hasNext);^
 #end
 #end
 
@@ -37,6 +37,13 @@ EXIT /B
 %JAVA% ^
 -cp %JARS% ^
 -Dscripturian.cache=cache ^
+-Dhazelcast.config=configuration\hazelcast.conf ^
+#if(($distribution == 'python') || ($distribution == 'kitchensink'))
+-Dpython.home=libraries\python ^
+-Dpython.verbose=warning ^
+#end
+-Djava.util.logging.config.file=none ^
+-Dnet.spy.log.LoggerImpl=net.spy.log.SunLogger ^
 com.threecrickets.scripturian.Scripturian instance
 EXIT /B
 
@@ -63,6 +70,13 @@ ECHO Installing service Prudence${service}...
 --StopMethod=stop ^
 --Jvm=auto ^
 --JvmOptions=-Dscripturian.cache=cache ^
+++JvmOptions=-Dhazelcast.config=configuration\hazelcast.conf ^
+#if(($distribution == 'python') || ($distribution == 'kitchensink'))
+++JvmOptions=-Dpython.home=libraries\python ^
+++JvmOptions=-Dpython.verbose=warning ^
+#end
+++JvmOptions=-Djava.util.logging.config.file=none ^
+++JvmOptions=-Dnet.spy.log.LoggerImpl=net.spy.log.SunLogger ^
 --Classpath="%JARS%"
 EXIT /B
 
