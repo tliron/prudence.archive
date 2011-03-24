@@ -64,6 +64,16 @@ public abstract class InstanceUtil
 	}
 
 	/**
+	 * @param component
+	 *        The component
+	 * @see #getComponent()
+	 */
+	public static void setComponent( Component component )
+	{
+		GlobalScope.getInstance().getAttributes().put( COMPONENT_ATTRIBUTE, component );
+	}
+
+	/**
 	 * Gets an application associated with the current Prudence instance.
 	 * <p>
 	 * Expects that a map of applications was set in the

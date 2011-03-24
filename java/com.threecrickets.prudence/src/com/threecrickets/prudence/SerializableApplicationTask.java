@@ -14,21 +14,15 @@ package com.threecrickets.prudence;
 import java.io.Serializable;
 
 import org.restlet.Application;
-import org.restlet.Component;
 
 import com.threecrickets.prudence.util.InstanceUtil;
 
 /**
  * A serializable wrapper for an {@link ApplicationTask}.
- * <p>
- * This class expects that a component has been set in
- * {@link InstanceUtil#setComponent(Component)} and that a map of the
- * component's applications was set in the
- * "com.threecrickets.prudence.applications" attribute of the component's
- * context.
  * 
  * @author Tal Liron
  * @see ApplicationTask
+ * @see InstanceUtil#getApplication(String)
  */
 public class SerializableApplicationTask implements Runnable, Serializable
 {
