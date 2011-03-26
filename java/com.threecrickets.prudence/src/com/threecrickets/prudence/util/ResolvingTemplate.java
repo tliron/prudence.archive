@@ -112,7 +112,11 @@ public class ResolvingTemplate extends Template
 	 */
 	public static Constructor<Resolver<?>> getMapResolverConstructor()
 	{
-		return getMapResolverConstructor( Application.getCurrent() );
+		Application application = Application.getCurrent();
+		if( application != null )
+			return getMapResolverConstructor( application );
+		else
+			return null;
 	}
 
 	/**
@@ -144,7 +148,11 @@ public class ResolvingTemplate extends Template
 	 */
 	public static Constructor<Resolver<?>> getCallResolverConstructor()
 	{
-		return getCallResolverConstructor( Application.getCurrent() );
+		Application application = Application.getCurrent();
+		if( application != null )
+			return getCallResolverConstructor( application );
+		else
+			return null;
 	}
 
 	/**
