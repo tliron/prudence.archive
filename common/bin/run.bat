@@ -10,6 +10,7 @@ REM # limitations, transferable or non-transferable, directly from Three Cricket
 REM # at http://threecrickets.com/
 REM #
 
+SET ORIGINAL="%CD%"
 CD /D "%0%\..\.."
 
 SET JARS=#foreach($jar in $jars.split(':'))
@@ -30,6 +31,7 @@ IF "%1"=="uninstall" GOTO uninstall
 IF "%1"=="monitor" GOTO monitor
 IF "%1"=="settings" GOTO settings
 ECHO Usage: {console^|start^|stop^|install^|uninstall^|monitor^|settings}
+CD /D "%ORIGINAL%"
 EXIT /B
 
 :console
@@ -45,6 +47,7 @@ EXIT /B
 -Djava.util.logging.config.file=none ^
 -Dnet.spy.log.LoggerImpl=net.spy.log.SunLogger ^
 com.threecrickets.scripturian.Scripturian instance
+CD /D "%ORIGINAL%"
 EXIT /B
 
 :install
@@ -55,11 +58,11 @@ ECHO Installing service Prudence${service}...
 //IS//Prudence${service} ^
 --DisplayName="Prudence for ${service}" ^
 --Description="Prudence for ${service}" ^
---LogPath="%CD%/logs" ^
+--LogPath="%CD%\logs" ^
 --LogPrefix=service ^
 --LogLevel=Debug ^
 --LogJniMessages=1 ^
---PidFile=run.pid ^
+--PidFile="%CD%\run.pid" ^
 --StdOutput=auto ^
 --StdError=auto ^
 --StartMode=jvm ^
@@ -78,6 +81,7 @@ ECHO Installing service Prudence${service}...
 ++JvmOptions=-Djava.util.logging.config.file=none ^
 ++JvmOptions=-Dnet.spy.log.LoggerImpl=net.spy.log.SunLogger ^
 --Classpath="%JARS%"
+CD /D "%ORIGINAL%"
 EXIT /B
 
 :uninstall
@@ -85,27 +89,32 @@ EXIT /B
 ECHO Uninstalling service Prudence${service}...
 
 %PRUNSRV% ^
-//DS//PrudenceJavaScript
+//DS//Prudence${service}
+CD /D "%ORIGINAL%"
 EXIT /B
 
 :start
 
 NET START Prudence${service}
+CD /D "%ORIGINAL%"
 EXIT /B
 
 :stop
 
 NET STOP Prudence${service}
+CD /D "%ORIGINAL%"
 EXIT /B
 
 :monitor
 
 START "Prudence${service} Monitor" %PRUNMGR% ^
 //MS//Prudence${service}"
+CD /D "%ORIGINAL%"
 EXIT /B
 
 :settings
 
 START "Prudence${service} Settings" %PRUNMGR% ^
 //ES//Prudence${service}
+CD /D "%ORIGINAL%"
 EXIT /B
