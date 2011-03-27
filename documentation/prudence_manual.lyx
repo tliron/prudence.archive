@@ -1605,7 +1605,7 @@ Look at how Firefox communicates with your dynamic page using Firebug: the
  That's because Prudence generates a new version of the page per every user
  request.
  Since each such version might be different from the last, the default behavior
- is that client's should never expect their cached version to be correct.
+ is that clients should never expect their cached version to be correct.
 \end_layout
 
 \begin_layout Standard
@@ -2599,8 +2599,8 @@ router.capture('/wiki/{entryid}/', '/wiki/')
 \end_layout
 
 \begin_layout Standard
-Note that you have to restart Prudence in order for your routing.js to take
- effect.
+Note that you have to restart Prudence in order for your ``routing.js'' to
+ take effect.
  Then, try to access 
 \begin_inset CommandInset href
 LatexCommand href
@@ -2685,7 +2685,7 @@ Learn more about
 capturing (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -2697,7 +2697,7 @@ reference "../routing/|capturing"
 \begin_layout Itemize
 Learn more about 
 \bar under
-the /routing.js file (page 
+the ``routing.js'' file (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../application/|routing-file"
@@ -3149,7 +3149,7 @@ router.capture('/wiki/{entryid}/', '/wiki/')
 \end_layout
 
 \begin_layout Standard
-You need to restart Prudence for this new routing.js to take effect.
+You need to restart Prudence for this new ``routing.js'' to take effect.
  Then, you'll be able to see HTML representations of your wiki entries at
  
 \begin_inset CommandInset href
@@ -3761,7 +3761,7 @@ reference "../instance/|configuration-by-script"
 )
 \bar default
  go here.
- You need, at the very least, a default.* script.
+ You need, at the very least, a ``default.*'' script.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4123,8 +4123,8 @@ This is the only required instance configuration script, and is the entry
 
 \begin_layout Standard
 You'd likely prefer to override the other configuration scripts.
- Override /instance/default.* if you want to do things after everything else
- in the instance has been initialized.
+ Override ``/instance/default.*'' if you want to do things after everything
+ else in the instance has been initialized.
 \end_layout
 
 \begin_layout Standard
@@ -4544,7 +4544,7 @@ if(conversation.reference.schemeProtocol.name == 'HTTPS') {
 
 \begin_layout Standard
 Prudence can also handle secure connections itself.
- Here's an example /instance/severs.js:
+ Here's an example ``/instance/severs.js'':
 \end_layout
 
 \begin_layout Standard
@@ -4669,7 +4669,7 @@ keytool -keystore /path/prudence.jks -alias mykey -genkey -keyalg RSA
 \begin_layout Standard
 When creating the keystore, you will be asked provide a password for it,
  and you may optionally provide a different password for your key, in which
- case you need to comment out the relevant line in the servers.js above.
+ case you need to comment out the relevant line in the ``servers.js'' above.
  (The key alias and key password would be kept if you move the key to a
  different keystore.)
 \end_layout
@@ -5107,7 +5107,7 @@ You'll rarely need to do it, but you can also override Prudence's default
 
 \begin_layout Standard
 Here you can modify an application's filename extensions to media type mappings.
- An example default.js:
+ An example ``default.js'':
 \end_layout
 
 \begin_layout Standard
@@ -5349,6 +5349,13 @@ reference "../api/|application-application"
 
 \begin_layout Paragraph
 applicationName
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|application-name"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6097,7 +6104,7 @@ Note that all /resources/ and /web/dynamic/ files are automatically preheated.
 custom routing, such as capturing (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -6256,7 +6263,7 @@ All files under /web/dynamic/ are assumed to be text files, and are mapped
 ``capture'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -6563,7 +6570,7 @@ And so does this line!<br>
 
 \begin_layout Standard
 If you expect the first line to appear 10 times and second line to appear
- once, you are wrong.
+ once, you will be disappointed.
  The reason is that the newline is part of the ``print'', not part of your
  scriptlet code.
  It produces this JavaScript code:
@@ -6588,7 +6595,7 @@ nAnd so does this line!<br>')
 \end_layout
 
 \begin_layout Standard
-Two methods to avoid this problem are:
+Two ways to avoid this problem are:
 \end_layout
 
 \begin_layout Enumerate
@@ -6874,8 +6881,8 @@ Code Libraries
 Code files you put in your application's /libraries/ subdirectory can be
  accesses using your language's code inclusion mechanism.
  Here are examples in various languages.
- Let's assume that there is a file named /libraries/util/data.*, which defines
- a function called getData():
+ Let's assume that there is a file named ``/libraries/util/data.*'', which
+ defines a function called getData():
 \end_layout
 
 \begin_layout Itemize
@@ -7088,7 +7095,74 @@ This is line number <%= i>5 ? '<b>' + i + '</b>' : i %> out of 10.<br/>
 \end_layout
 
 \begin_layout Subsubsection
-Includes and Fragments
+Comment Scriptlets
+\end_layout
+
+\begin_layout Standard
+These scriptlets are ignored.
+ Useful for adding comments, and for ``commenting out'' code temporarily
+ during development:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%#
+\end_layout
+
+\begin_layout Plain Layout
+
+This whole scriptlet is ignored.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+var i = ugh...
+ i don't know.
+ will deal with it later.
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Include Scriptlets and Fragments
 \begin_inset CommandInset label
 LatexCommand label
 name "../generating-html/|includes-and-fragments"
@@ -7907,7 +7981,7 @@ What if you edit the file? Prudence will automatically pick up your changes
 minimum time interval (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../application/|dynamic-web-minimum-time-between-validity-checks"
+reference "../application/|minimum-time-between-validity-checks"
 
 \end_inset
 
@@ -8601,7 +8675,7 @@ reference "../routing/|uri-patterns"
 \bar default
  to automatically use either file without a main file to switch between
  the two.
- Here's an example application routing.js:
+ Here's an example application ``routing.js'':
 \end_layout
 
 \begin_layout Standard
@@ -8668,7 +8742,7 @@ status open
 \end_layout
 
 \begin_layout Standard
-And then, under /resources/send.js:
+And then, under ``/resources/send.js'':
 \end_layout
 
 \begin_layout Standard
@@ -8786,7 +8860,7 @@ All files under /resources/ are assumed to be source code files, and are
 ``capture'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -9096,8 +9170,8 @@ Code Libraries
 Code files you put in your application's /libraries/ subdirectory can be
  accesses using your language's code inclusion mechanism.
  Here are examples in various languages.
- Let's assume that there is a file named /libraries/util/data.*, which defines
- a function called getData().
+ Let's assume that there is a file named ``/libraries/util/data.*'', which
+ defines a function called getData().
 \end_layout
 
 \begin_layout Itemize
@@ -9234,7 +9308,7 @@ name "../resources/|entry-points"
 \end_layout
 
 \begin_layout Subsubsection
-What Are They?
+What Are Entry Points?
 \end_layout
 
 \begin_layout Standard
@@ -9435,8 +9509,11 @@ name "../resources/|handle-init"
 
 \begin_layout Standard
 This is the only required entry point.
- It is called once for every user request, and always before any of the
- other entry points.
+ It is called once for 
+\emph on
+every user request
+\emph default
+, and always before any of the other entry points.
 \end_layout
 
 \begin_layout Standard
@@ -9498,7 +9575,8 @@ But, Why?
 
 \begin_layout Standard
 You might wonder why we add these supported media types dynamically for
- each request, since they are usually always the same.
+ each request via a call to handleInit, since they are usually always the
+ same for a resource.
  The reason is that sometimes they may not be the same.
  In handleInit, you can check for various conditions of the conversation,
  or even external to the conversation, to decide which media types to support.
@@ -9568,7 +9646,7 @@ reference "../api/|conversation"
 captured URI segments (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -9608,6 +9686,22 @@ reference "../routing/|capturing-errors"
 )
 \bar default
  can let you take over and return an appropriate error page to the client.
+\end_layout
+
+\begin_layout Itemize
+Arrays of bytes: Used for returning binary representations.
+ Note that some languages (JavaScript, for example) have their own implementatio
+ns of arrays, which are not exactly compatible with JVM arrays.
+ In such cases, you have to make sure to return JVM arrays.
+ Internally, Prudence represents these values with a 
+\begin_inset CommandInset href
+LatexCommand href
+name "ByteArrayRepresentation"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/util/ByteArrayRepresentation.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Itemize
@@ -9773,7 +9867,7 @@ reference "../api/|conversation"
 captured URI segments (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -9900,7 +9994,7 @@ reference "../api/|conversation"
 captured URI segments (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -10011,7 +10105,7 @@ reference "../api/|conversation"
 captured URI segments (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -10524,7 +10618,7 @@ function handleGet(conversation) {
 
 \begin_layout Plain Layout
 
-		return JSON.stringify(data)
+		return JSON.to(data)
 \end_layout
 
 \begin_layout Plain Layout
@@ -10793,12 +10887,12 @@ Global Handlers
 \begin_layout Standard
 One way to use them is to set them globally, such they will be usable in
  cache key patterns of any document.
- To do so, in your application's /routing.* use the cacheKeyPatternHandlers
+ To do so, in your application's ``routing.*'' use the cacheKeyPatternHandlers
  service, which is a map of variable names (without the curly brackets)
  to handler names.
  For example, let's have ``{un}'' and ``{ug}'' be handled by ``/handlers/userinf
 o.js''.
- Here the /routing.js:
+ Here the ``routing.js'':
 \end_layout
 
 \begin_layout Standard
@@ -11109,7 +11203,7 @@ There is likely no response set at this point, so you only have access to
 \end_layout
 
 \begin_layout Standard
-Three return values are supported, as either a string or a number:
+Three literal return values are supported, as either a string or a number:
 \end_layout
 
 \begin_layout Itemize
@@ -11133,6 +11227,25 @@ reference "../handlers/|handle-after"
 ``stop'' or 2: Stop our handling altogether (note that previous handlers
  along the route may still process the conversation before it returns to
  the client)
+\end_layout
+
+\begin_layout Standard
+Otherwise, you may return an internal URI, which must begin with a ``/''.
+ This causes the filter to capture to that URI (an internal redirect).
+ This is a powerful feature allowing you to implement complex capturing
+ via filters.
+ For more information and an example, see 
+\bar under
+dynamic capturing in the routing chapter (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|dynamic-capturing"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -11213,12 +11326,32 @@ name "../manual/tasks/"
 \end_layout
 
 \begin_layout Standard
+Programming multi-threaded and distributed applications is usually very
+ difficult, but Prudence makes a lot of the work easier via support for
+ tasks, which run in the ``background'' outside of the client thread pool.
+ Tasks are an important port of your scaling strategy as they allow your
+ application to do work without holding up client threads.
+ For a full discussion, see 
+\bar under
+``Scaling Tips'' (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../../scaling/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
 Tasks are straightforward scripts placed in the application's /tasks/ subdirecto
 ry.
  They are straightforward in that, upon execution, the code is simply run
  as is.
  There is no particular entry point as with /resources/ or /handlers/.
- They can be run on-demand or scheduled to run and specific times.
+ They can be run on-demand or scheduled to run at specific times and locations.
 \end_layout
 
 \begin_layout Standard
@@ -11251,10 +11384,9 @@ reference "../api/|conversation"
 \end_layout
 
 \begin_layout Standard
-Tasks run in their own global thread pool, which is separate from that of
- the HTTP threads.
- Thus, they can be considered ``asynchronous'' in regards to HTTP requests.
- The usual concurrency concerns apply to them.
+The modern JVM, running on modern operating systems and multi-core hardware,
+ will do a very good job at multi-threading, so be confidence in using /tasks/
+ heavily.
 \end_layout
 
 \begin_layout Standard
@@ -11282,8 +11414,30 @@ reference "../api/|application-task"
 )
 \bar default
  to spawn or schedule tasks on demand from your /resources/ or /web/dynamic/
- code.
- You might want to store a flag in 
+ code, or 
+\bar under
+application.distributedTask (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-distributed-task"
+
+\end_inset
+
+)
+\bar default
+ to spawn tasks in your 
+\begin_inset CommandInset href
+LatexCommand href
+name "Hazelcast"
+target "http://www.hazelcast.com/"
+
+\end_inset
+
+ cluster.
+\end_layout
+
+\begin_layout Standard
+In some cases, you may want to atomically update a boolean in 
 \bar under
 application.globals (page 
 \begin_inset CommandInset ref
@@ -11294,7 +11448,19 @@ reference "../api/|application-globals"
 
 )
 \bar default
- to mark that the task has already been scheduled.
+ or 
+\bar under
+application.distributedGlobals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-distributed-globals"
+
+\end_inset
+
+)
+\bar default
+ to flag that the task has been scheduled, so that you won't schedule it
+ more than once.
 \end_layout
 
 \begin_layout Subsection
@@ -11306,7 +11472,7 @@ Startup Task
 \end_layout
 
 \begin_layout Standard
-Prudence will automatically run the task called ``startup/'' upon startup.
+Prudence will automatically spawn the task called ``/startup/'' upon startup.
  Note that it will run after all the other startup tasks (defrosting, preheating
 ) finish, in order to make sure your application is ``hot'' first.
  If you need multiple tasks running---usually repeating tasks, such as those
@@ -11345,12 +11511,30 @@ application.logger.info('Scheduling monitor task to repeat every second')
 
 \begin_layout Plain Layout
 
-application.task('/monitor/', 1000, 1000, false) 
+application.task('/monitor/', null, 1000, 1000, false) 
 \end_layout
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Note that this initial run of the ``/startup/'' task will send the string
+ ``initial'' for the 
+\bar under
+document.context (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-context"
+
+\end_inset
+
+)
+\bar default
+.
+ This is so you can distinguish between this initial run and possible subequent
+ runs that you spawn yourself.
 \end_layout
 
 \begin_layout Subsubsection
@@ -11388,8 +11572,8 @@ reference "../application/"
 \end_layout
 
 \begin_layout Standard
-Here is an example default.js (note the use of ``applicationService'' instead
- of ``application''):
+Here is an example ``default.js'' (note the use of ``applicationService''
+ instead of ``application''):
 \end_layout
 
 \begin_layout Standard
@@ -11408,7 +11592,8 @@ document.execute('/defaults/application/')
 
 \begin_layout Plain Layout
 
-applicationService.task('/poll/', 1000, 1000, false) 
+applicationService.task('/poll/', {name: 'mypoll', maxDuration: 5000}, 1000,
+ 1000, false) 
 \end_layout
 
 \end_inset
@@ -11455,7 +11640,29 @@ To use this facility, place a file with the name ``crontab'' in your application
  Its format is purposely very similar to that of the crontab configuration
  file found in many Unix-like operating system: each line starts with scheduling
  pattern and ends with the task name.
- The scheduling pattern is a series of five whitespace-separated settings.
+\end_layout
+
+\begin_layout Standard
+Optionally, you may add more text after the task name and whitespace: anything
+ there is grabbed as a single string and sent as the context to the task,
+ which can be accessed there as 
+\bar under
+document.context (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-context"
+
+\end_inset
+
+)
+\bar default
+.
+ Because crontab is a text file, only textual contexts may be sent, but
+ you can use JSON, XML or other encodings to create complex contexts.
+\end_layout
+
+\begin_layout Standard
+The scheduling pattern is a series of five whitespace-separated settings.
  Any of these settings can be ``*'', signifying that any value would match.
  Use a slash to match only numbers that divide equally by the number after
  the slash (can also be used on ``*'').
@@ -11556,7 +11763,7 @@ reference "../api/|application-task"
 \end_layout
 
 \begin_layout Standard
-You can also setup a special crontab to run arbitrary Java static methods
+You can also set up a special crontab to run arbitrary Java static methods
  and even non-JVM system processes.
  Internally, Prudence uses the flexible 
 \begin_inset CommandInset href
@@ -11568,7 +11775,7 @@ target "http://www.sauronsoftware.it/projects/cron4j/"
 
  library.
  See its documentation for more information.
- Here's an example application's /default.js configuration script to set
+ Here's an example application's ``default.js'' configuration script to set
  up a ``crontab-system'' file:
 \end_layout
 
@@ -11591,23 +11798,6 @@ scheduler.scheduleFile(new File(applicationBasePath + '/crontab-system'))
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsection
-Distributed Tasks
-\end_layout
-
-\begin_layout Standard
-Prudence comes with 
-\begin_inset CommandInset href
-LatexCommand href
-name "Hazelcast"
-target "http://www.hazelcast.com/"
-
-\end_inset
-
-, which has excellent support for handling distributed task queues.
- See the Hazelcast documentation for more information.
 \end_layout
 
 \begin_layout Section
@@ -11824,8 +12014,8 @@ The query string is ignored by Prudence's static web handler, but since
 \begin_layout Standard
 Since the above techniques require considerable discipline from the application
  maintainers, the cache control filter is not enabled by default in Prudence.
- The following is an example on how to enable it in an application's /routing.js,
- while disabling it for file types that are frequently updated:
+ The following is an example on how to enable it in an application's ``routing.js
+'', while disabling it for file types that are frequently updated:
 \end_layout
 
 \begin_layout Standard
@@ -12191,7 +12381,7 @@ Requests come in from servers.
 \begin_layout Standard
 You can configure your servers in 
 \bar under
-/instance/servers.* (page 
+``/instance/servers.*'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../application/|dynamic-web-client-caching-mode"
@@ -12246,7 +12436,7 @@ At the minimum you must have one virtual host.
 \begin_layout Standard
 You can configure your virtual hosts in 
 \bar under
-/instance/hosts.* (page 
+``/instance/hosts.*'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../instance/|hosts-file"
@@ -12265,7 +12455,7 @@ Step 4: Applications
 \begin_layout Standard
 Using 
 \bar under
-``hosts'' in your application's /settings.* (page 
+``hosts'' in your application's ``settings.*'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../application/|hosts"
@@ -12348,7 +12538,7 @@ Prudence applications come with default support for three kinds of handlers:
  subdirectory).
  By default, all three handlers are attached at the root URI, ``/'', of
  the application (which may vary per virtual host).
- However, it is possible to change this in your application's /settings.*,
+ However, it is possible to change this in your application's ``settings.*'',
  see 
 \bar under
 resourcesBaseURL, dynamicWebBaseURL and staticWebBaseURL (page 
@@ -12542,7 +12732,7 @@ You can override all the automatic prettifying techniques mentioned above
 capturing URIs (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -12666,7 +12856,7 @@ The straightforward URI routing based on directories and filenames is useful,
  but you'll likely need other kinds of routing, too.
  That's what 
 \bar under
-your application's /routing.* is for (page 
+your application's ``routing.*'' is for (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../application/|routing-file"
@@ -12698,7 +12888,7 @@ name "../routing/|hiding"
 \begin_layout Standard
 The following will make sure that the given URI always returns a 404, even
  if the page or resource exists.
- For example, in /routing.* (JavaScript flavor):
+ For example, in ``routing.*'' (JavaScript flavor):
 \end_layout
 
 \begin_layout Standard
@@ -12734,7 +12924,7 @@ reference "../api/|document-internal"
 capturing (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -12744,10 +12934,10 @@ reference "../routing/|capturing"
 \end_layout
 
 \begin_layout Subsubsection
-Capturing
+Static Capturing
 \begin_inset CommandInset label
 LatexCommand label
-name "../routing/|capturing"
+name "../routing/|static-capturing"
 
 \end_inset
 
@@ -12756,12 +12946,19 @@ name "../routing/|capturing"
 
 \begin_layout Standard
 Prudence lets you ``capture'' abitrary URI patterns into any internal URI
- you wish, in /resources/, /web/dynamic/ or /web/static/.
+ you wish, whether they're implemented as /resources/, /web/dynamic/ or
+ /web/static/.
+ This lets you turn a single URI implementation to into a multitude of URIs,
+ vastly expanding your URI-space.
 \end_layout
 
 \begin_layout Standard
-You can use curly-bracket-delimited tags in the URI to parse URI segments
- and store them in 
+Static capturing is handled in your application's ``routing.*'', via the
+ router.capture API.
+ The first argument is the pattern your want to capture, the second is the
+ interal URI to which the request will be redirected.
+ You use curly-bracket-delimited tags in the URI to parse URI segments and
+ store them in 
 \bar under
 conversation.locals (page 
 \begin_inset CommandInset ref
@@ -12773,10 +12970,7 @@ reference "../api/|conversation-locals"
 )
 \bar default
 .
-\end_layout
-
-\begin_layout Standard
-For example, in /routing.* (JavaScript flavor):
+ For example, in ``routing.*'' (JavaScript flavor):
 \end_layout
 
 \begin_layout Standard
@@ -12991,8 +13185,8 @@ router.hide('/forum/help/')
 \end_layout
 
 \begin_layout Standard
-Another feature of internal redirection is that your code you can check
- for internal access and enforce it.
+Another feature of internal redirection is that your code can check for
+ internal access and enforce it.
  As an example, let's implement URI hiding via a scriptlet:
 \end_layout
 
@@ -13076,7 +13270,7 @@ status open
 
 \begin_layout Plain Layout
 
-document.execute('/defaults/application/routing/');
+document.execute('/defaults/application/routing/')
 \end_layout
 
 \begin_layout Plain Layout
@@ -13284,6 +13478,185 @@ reference "../api/|conversation-media-type"
 \end_layout
 
 \begin_layout Subsubsection
+Dynamic Capturing
+\begin_inset CommandInset label
+LatexCommand label
+name "../routing/|dynamic-capturing"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Static capturing using patterns is very powerful, but sometimes you need
+ more than patterns: you need to check attributes of the client's request,
+ such as the contents of cookies, or do a database lookup to find out the
+ destination internal URI.
+ To allow for this, Prudence also lets you capture by 
+\bar under
+returning a URI in a filter (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../handlers/|handle-before"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+Here's an example of a filter that redirects to a wiki page only if that
+ page exists in the database.
+ First, let's 
+\bar under
+install the filter (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|filtering"
+
+\end_inset
+
+)
+\bar default
+ in our ``routing.js'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+// Implement defaults
+\end_layout
+
+\begin_layout Plain Layout
+
+document.execute('/defaults/application/routing/')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+router.filter(dynamicWebBaseURL, '/page-filter/', dynamicWeb)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here is ``/handlers/page-filter.js'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+function handleBefore(conversation) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	// Let's look for the page name in remaining part of the URI
+\end_layout
+
+\begin_layout Plain Layout
+
+	var pageName = String(conversation.reference.getRemainingPart(true, false))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	// Fetch the page from the database
+\end_layout
+
+\begin_layout Plain Layout
+
+	var page = getPageFromDatabase(pageName)
+\end_layout
+
+\begin_layout Plain Layout
+
+	if (page) {
+\end_layout
+
+\begin_layout Plain Layout
+
+		// Cache the fetched page in conversation.locals
+\end_layout
+
+\begin_layout Plain Layout
+
+		conversation.locals.put('page', page)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		// Capture!
+\end_layout
+
+\begin_layout Plain Layout
+
+		return '/page/'
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	// This was not a page, so continue as usual
+\end_layout
+
+\begin_layout Plain Layout
+
+	return 'continue'
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You would then have a ``/web/dynamic/page.html'' that can get the pre-fetched
+ page from conversation.locals.get('page') and renders it.
+\end_layout
+
+\begin_layout Subsubsection
 Capturing Errors
 \begin_inset CommandInset label
 LatexCommand label
@@ -13341,7 +13714,7 @@ You can capture errors both at the application level or at the instance
 \end_layout
 
 \begin_layout Standard
-Examples from /instance/routing.* (JavaScript flavor):
+Examples from ``/instance/routing.*'' (JavaScript flavor):
 \end_layout
 
 \begin_layout Standard
@@ -13404,7 +13777,7 @@ component.statusService.captureHostRoot(500, 'wackywiki', '/oops/',
 \end_layout
 
 \begin_layout Standard
-Examples from an application's /routing.*:
+Examples from an application's ``routing.*'':
 \end_layout
 
 \begin_layout Standard
@@ -13491,7 +13864,7 @@ name "../routing/|static-redirection"
 
 \begin_layout Standard
 By ``static'' here is meant that redirection is configured into the application'
-s /routing.* script.
+s ``routing.*'' script.
  (You can also call this API on a running application, though you should
  realize that it essentially changed your application's routing.) ``Dynamic''
  routing, from within /dynamic/web/ or /resources/, is described in the
@@ -13858,7 +14231,7 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_inset
 
 ).
- Do your attachments in the application's /routing.* configuration script.
+ Do your attachments in the application's ``routing.*'' configuration script.
  Prudence offers some attachment ``sugar'' in addition the standard Restlet
  API.
 \end_layout
@@ -14313,6 +14686,21 @@ router.filterBase(dynamicWebBaseURL, cleanupFilter, dynamicWeb)
 
 \end_layout
 
+\begin_layout Standard
+Custom filters can also be used for 
+\bar under
+dynamic capturing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|dynamic-capturing"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
 \begin_layout Paragraph
 Built-In Filters
 \end_layout
@@ -14381,7 +14769,7 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_inset
 
 .
- Here's the routing.js:
+ Here's the ``routing.js'':
 \end_layout
 
 \begin_layout Standard
@@ -14790,7 +15178,7 @@ This feature is especially useful with:
 URI capturing (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -14907,7 +15295,7 @@ The ``application'' service is a good place to store shared state for the
 \begin_layout Quote
 Though the ``application'' service of the configuration scripts is different
  from that of your Prudence application, you can access the Prudence ``applicati
-on'' service in that application's default.* script as ``applicationService''.
+on'' service in that application's ``default.*'' script as ``applicationService''.
  For example, you can access the application logger as ``applicationService.logge
 r''.
 \end_layout
@@ -15022,6 +15410,60 @@ if((dbConnection === null) && (application.sharedGlobals !== null)) {
 \end_layout
 
 \begin_layout Paragraph
+application.distributedGlobals, application.getDistributedGlobal
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|application-distributed-globals"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These are similar to 
+\bar under
+application.globals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-globals"
+
+\end_inset
+
+)
+\bar default
+, but are in fact shared by all members of the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Hazelcast"
+target "http://www.hazelcast.com/"
+
+\end_inset
+
+ cluster to which we belong.
+\end_layout
+
+\begin_layout Standard
+This is simply a convenience API to access the Hazelcast map named ``com.threecri
+ckets.prudence.distributedGlobals''.
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+application.distributedTask (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-distributed-task"
+
+\end_inset
+
+)
+\bar default
+ for another Hazelcast-specific API.
+\end_layout
+
+\begin_layout Paragraph
 application.arguments
 \end_layout
 
@@ -15052,15 +15494,15 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_inset
 
 .
- Here you can access some information defined in /settings.*, such as application.
-application.owner, application.application.author, application.application.statusServ
-ice.contactEmail, etc.
+ Here you can access some information defined in ``settings.*'', such as
+ application.application.owner, application.application.author, application.applicati
+on.statusService.contactEmail, etc.
 \end_layout
 
 \begin_layout Standard
 You can configure the underlying application instance via 
 \bar under
-/application.* (page 
+``application.*'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../application/|application-file"
@@ -15200,8 +15642,8 @@ name "../api/|application-task"
 \end_layout
 
 \begin_layout Standard
-Spawns or schedules asynchronous tasks from the application's /tasks/ subdirecto
-ry.
+Spawns or schedules in-process asynchronous tasks from the application's
+ /tasks/ subdirectory.
  See 
 \bar under
 tasks (page 
@@ -15213,15 +15655,42 @@ reference "../tasks/"
 
 )
 \bar default
- for more information.
+ for more information, and 
+\bar under
+application.distributedTask (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-distributed-task"
+
+\end_inset
+
+)
+\bar default
+ for a distributed version of this API.
 \end_layout
 
 \begin_layout Standard
-There are four arguments:
+There are five arguments:
 \end_layout
 
 \begin_layout Enumerate
-The document name.
+The document name in /tasks/.
+\end_layout
+
+\begin_layout Enumerate
+The context (or null).
+ This is later available for the task as 
+\bar under
+document.context (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-context"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Enumerate
@@ -15253,7 +15722,7 @@ status open
 
 \begin_layout Plain Layout
 
-application.task('email/reminders/', 0, 10 * 60 * 1000, true)
+application.task('/email/reminders/', null, 0, 10 * 60 * 1000, true)
 \end_layout
 
 \end_inset
@@ -15278,7 +15747,7 @@ status open
 
 \begin_layout Plain Layout
 
-application.task('database/cleanup/', 0, 0, false).get()
+application.task('/database/cleanup/', 'fast', 0, 0, false).get()
 \end_layout
 
 \end_inset
@@ -15319,7 +15788,7 @@ if(cleanup && cleanup.done) {
 
 \begin_layout Plain Layout
 
-	application.globals.put('myapp.task.cleanup', application.task('database/cleanup/',
+	application.globals.put('myapp.task.cleanup', application.task('/database/cleanup/',
  0, 0, false))
 \end_layout
 
@@ -15331,6 +15800,134 @@ if(cleanup && cleanup.done) {
 \end_inset
 
 
+\end_layout
+
+\begin_layout Paragraph
+application.distributedTask
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|application-distributed-task"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Spawns asynchronous tasks on any Prudence instance which is part of the
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "Hazelcast"
+target "http://www.hazelcast.com/"
+
+\end_inset
+
+ cluster to which we belong (may also be our current instance).
+ Other than the fact that this task may run out-of-process, this API is
+ similar to 
+\bar under
+application.task (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-task"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+There are five arguments:
+\end_layout
+
+\begin_layout Enumerate
+The application's full name, per the 
+\bar under
+application setting (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|application-name"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Enumerate
+The document name in /tasks/.
+\end_layout
+
+\begin_layout Enumerate
+The context (or null).
+ This is later available for the task as 
+\bar under
+document.context (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-context"
+
+\end_inset
+
+)
+\bar default
+.
+ Note that for distributed tasks, unlike in-process tasks, the context 
+\emph on
+must be serializable
+\emph default
+.
+ Depending on your object implementation, this may mean having to manually
+ serialize/deserialize the context into a string or another serializable
+ format.
+\end_layout
+
+\begin_layout Enumerate
+Where to run the task:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Null: let Hazelcast decide
+\end_layout
+
+\begin_layout Enumerate
+Member instance: the particular cluster member
+\end_layout
+
+\begin_layout Enumerate
+String: the particular cluster member for this key
+\end_layout
+
+\begin_layout Enumerate
+Iterable of Member instances: all these members (see the fifth argument,
+ below)
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Multi-task support: whether the task should run on each member of the cluster
+ (true), or on just one (false).
+ Only applicable if ``where'' is an iterable of member instances.
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+application.distributedGlobals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-distributed-globals"
+
+\end_inset
+
+)
+\bar default
+ for an easy way to make state available to distributed tasks.
 \end_layout
 
 \begin_layout Subsection
@@ -15915,7 +16512,7 @@ Prudence's default cache backend is a 1MB in-process memory cache, but this
  Here's an example of chaining an H2 database cache after the default cache,
  via the 
 \bar under
-/component.* configuration script (page 
+``component.*'' configuration script (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../instance/|component-file"
@@ -16286,6 +16883,48 @@ reference "../api/|document-invalidate"
 .
 \end_layout
 
+\begin_layout Paragraph
+document.context
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-context"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+(only available in /tasks/)
+\end_layout
+
+\begin_layout Standard
+Access to the context optionally sent to the task.
+ See 
+\bar under
+application.task (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-task"
+
+\end_inset
+
+)
+\bar default
+ and 
+\bar under
+application.distributedTask (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-distributed-task"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
 \begin_layout Subsubsection
 
 \shape italic
@@ -16512,7 +17151,7 @@ The executed code does not have to be in the same language as the calling
 \begin_layout Enumerate
 Use document.execute as an alternative to document.include if you prefer not
  to use scriptlets.
- For example, executing mylibrary.js might be more readable than including
+ For example, executing ``mylibrary.js'' might be more readable than including
  a fragment called mylibrary.html that is all just one JavaScript scriptlet.
 \end_layout
 
@@ -16719,7 +17358,17 @@ You can create unit tests for your resources without having to start an
 \end_layout
 
 \begin_layout Enumerate
-The defrosting mechanism uses document.internal to load resources.
+The preheating mechanism uses document.internal to load resources.
+\end_layout
+
+\begin_layout Quote
+document.internal makes requests via the RIAP (Restlet Internal Access Protocol).
+ You can construct URIs of this pseudo-protocol on your own, like so: ``riap://a
+pplication/myresource/''.
+ A call to document.external with this URI would be identical to calling
+ document.internal with ``/myresource/''.
+ See the Restlet documentation for full information about RIAP and other
+ pseudo-protocols (CLAP, JAR, WAR, etc.).
 \end_layout
 
 \begin_layout Paragraph
@@ -16803,7 +17452,7 @@ This is a good place to remind you that REST is not just HTTP.
  By default, Prudence supports http: and file: scheme URIs for document.external,
  and you can add more protocols via your 
 \bar under
-/instance/clients.* configuration script (page 
+``/instance/clients.*'' configuration script (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../instance/|clients-file"
@@ -16891,7 +17540,7 @@ target "http://hc.apache.org/httpcomponents-client/index.html"
 \end_inset
 
  for high-performance access to external HTTP documents, with full support
- for secure connections (prefixed with ``https:'').
+ for secure connections (prefixed with ``https://'').
 \end_layout
 
 \begin_layout Paragraph
@@ -17188,7 +17837,7 @@ This is very useful to allow for relative references in HTML.
 captured URIs (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -17777,7 +18426,8 @@ reference "../api/|conversation-preferences"
 
 )
 \bar default
-.Use 
+.
+ Use 
 \begin_inset CommandInset href
 LatexCommand href
 name "conversation.request.clientInfo.acceptedCharacterSets"
@@ -17847,7 +18497,8 @@ reference "../api/|conversation-preferences"
 
 )
 \bar default
-.Use 
+.
+ Use 
 \begin_inset CommandInset href
 LatexCommand href
 name "conversation.request.clientInfo.acceptedLanguages"
@@ -17875,7 +18526,7 @@ name "../api/|conversation-encoding"
 \end_layout
 
 \begin_layout Standard
-In /web/dynamic/, this value is read-only.
+In /web/dynamic/, this value is read-only, defined by client.
  If it is ``zip'', ``gzip'' or ``deflate,'' Prudence will compress the output
  text.
  Cache entries are stored in their compressed state, such that subsequent
@@ -17937,7 +18588,8 @@ reference "../api/|conversation-preferences"
 
 )
 \bar default
-.Use 
+.
+ Use 
 \begin_inset CommandInset href
 LatexCommand href
 name "conversation.request.clientInfo.acceptedEncodings"
@@ -17946,6 +18598,58 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_inset
 
  to find out more generally which encodings the client supports.
+\end_layout
+
+\begin_layout Paragraph
+conversation.disposition
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-disposition"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Access to the response 
+\begin_inset CommandInset href
+LatexCommand href
+name "disposition"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/Disposition.html"
+
+\end_inset
+
+, which lets you define how clients should treat your representation.
+\end_layout
+
+\begin_layout Standard
+conversation.disposition.type can accept the values ``attachment'', ``inline''
+ or ``none''.
+\end_layout
+
+\begin_layout Standard
+Example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+conversation.disposition.type = 'attachment'
+\end_layout
+
+\begin_layout Plain Layout
+
+conversation.disposition.filename = 'revenue.csv'
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -18611,7 +19315,7 @@ reference "../api/|document-internal"
 URI capturing (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -19465,7 +20169,7 @@ reference "../api/|conversation-defer"
 Captured URI segments are stored here (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -19501,13 +20205,13 @@ reference "../handlers/|cache-key-pattern-handlers"
 \end_layout
 
 \begin_layout Subsubsection
-Sharing State Between Prudence Instances
+Sharing State Between Prudence Applications and Instances
 \end_layout
 
 \begin_layout Standard
-The 
+See 
 \bar under
-shared globals (page 
+application.sharedGlobals (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../api/|application-shared-globals"
@@ -19516,22 +20220,18 @@ reference "../api/|application-shared-globals"
 
 )
 \bar default
- allow you share state between applications in a Prudence instance, but
- what if you need to share state between instances?
-\end_layout
-
-\begin_layout Standard
-Prudence comes with 
-\begin_inset CommandInset href
-LatexCommand href
-name "Hazelcast"
-target "http://www.hazelcast.com/"
+ and 
+\bar under
+application.distributedGlobals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-distributed-globals"
 
 \end_inset
 
-, which does an excellent job at sharing standard JVM maps, lists, locks
- and other state facilities.
- See the Hazelcast documentation for complete information.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Section
@@ -20284,7 +20984,7 @@ Changing the Root URL
 \begin_layout Standard
 Let's say we want prudence-admin at the ``/admin/'' URL on the default host,
  and the ``/prudence/admin/'' URL on myHost.
- We'll edit its settings.*.
+ We'll edit its ``settings.*''.
  Here's an example for the JavaScript flavor:
 \end_layout
 
@@ -20325,7 +21025,7 @@ reference "../routing/"
 \end_layout
 
 \begin_layout Standard
-We'll create a routing.js file (for the JavaScript flavor):
+We'll create a ``routing.js'' file (for the JavaScript flavor):
 \end_layout
 
 \begin_layout Standard
@@ -21043,7 +21743,7 @@ status open
 \begin_layout Standard
 In our Prudence instances, we'll use 
 \bar under
-/instance/servers.* (page 
+``/instance/servers.*'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../instance/|servers-file"
@@ -21093,7 +21793,7 @@ component.servers.add(secureServer)
 \begin_layout Standard
 And we'll use 
 \bar under
-/instance/hosts.* (page 
+``/instance/hosts.*'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../instance/|hosts-file"
@@ -21843,7 +22543,7 @@ target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prude
 URI ``capturing'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|capturing"
+reference "../routing/|static-capturing"
 
 \end_inset
 
@@ -21938,7 +22638,7 @@ Custom Resources and Restlets
 \begin_layout Standard
 Use your application's 
 \bar under
-/routing.* (page 
+``routing.*'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../application/|routing-file"
@@ -22051,7 +22751,7 @@ By default, Prudence creates an instance of the standard Restlet Application
  class.
  Use your application's 
 \bar under
-/application.* (page 
+``application.*'' (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../application/|application-file"
@@ -23133,46 +23833,6 @@ One size does not fit all: you will want to use different strategies to
 \end_layout
 
 \begin_layout Subsubsection
-Necessary Tasks
-\end_layout
-
-\begin_layout Standard
-
-\emph on
-The user can't continue without the task being resolved.
-\end_layout
-
-\begin_layout Standard
-If the necessary task is deterministically fast, you can do all processing
- in the request itself.
-\end_layout
-
-\begin_layout Standard
-If not, you should queue the task on a handling service and return a ``please
- wait'' page to the user.
- It would be nice to add a progress bar or some other kind of estimation
- of how long it would take for the task to be done.
- The client will poll until the task status is marked ``done,'' after which
- they will be redirected somewhere else.
- Each polling request sent by the client could likely be processed very
- quickly, so this this strategy effectively breaks the task into many small
- requests (``It's better to have many short requests than one long one'').
-\end_layout
-
-\begin_layout Standard
-Implementing a handling service is by no means trivial.
- It adds a new component to your architecture, one that also has to be made
- to scale.
- One can also argue that it adversely affects user experience by adding
- overhead, delaying the time it takes for the task to complete.
- The bottom line, though, is you're vastly increasing concurrency and your
- ability to scale.
- And, you're actually improving the user experience: they would get a feedback
- on what's going on rather than having their browsers spin, waiting for
- their requests to complete.
-\end_layout
-
-\begin_layout Subsubsection
 Deferrable Tasks
 \begin_inset CommandInset label
 LatexCommand label
@@ -23186,19 +23846,40 @@ name "../scaling/|deferrable-tasks"
 \begin_layout Standard
 
 \emph on
-It's OK if the task occurs later.
+Deferrable tasks are tasks that can be resolved later, without impeding
+ on the user's ability to continue using the application.
 \end_layout
 
 \begin_layout Standard
-As with necessary tasks, you can queue these with a task handling service,
- but it's much simpler because you don't have to keep track of status or
- display it to the user.
- This allows you to use a simpler---and more scalable---task handling service.
+If the deferrable task is deterministically fast, you can do all processing
+ in the request itself.
+ If not, you should queue the task on a handling service.
+ Prudence's 
+\bar under
+tasks (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../manual/tasks/"
+
+\end_inset
+
+)
+\bar default
+ implementation is a great solution for deferrable tasks, as it lets you
+ run tasks on other threads or even distribute them in a 
+\begin_inset CommandInset href
+LatexCommand href
+name "Hazelcast"
+target "http://www.hazelcast.com/"
+
+\end_inset
+
+ cluster.
 \end_layout
 
 \begin_layout Standard
 Deferring tasks does present a challenge to the user experience: What do
- you do if the task fails, and the user needs to know about it? One solution
+ you do if the task fails and the user needs to know about it? One solution
  can be to send a warning email or other kind of message to the user.
  Another solution could be to have your client constantly poll in the background
  (via ``AJAX'') to see if there are any error messages, which in turn might
@@ -23210,11 +23891,40 @@ Before you decide on deferring a task, think carefully of the user experience:
  for example, users might be constantly refreshing a web page waiting to
  see the results of their operation.
  Perhaps the task you thought you can defer should actually be considered
- necessary?
+ necessary (see below)?
+\end_layout
+
+\begin_layout Subsubsection
+Necessary Tasks
 \end_layout
 
 \begin_layout Standard
-Prudence lets you easily defer work internally via 
+
+\emph on
+Necessary tasks are tasks that must be resolved before the user can continue
+ using the application.
+\end_layout
+
+\begin_layout Standard
+If the necessary task is deterministically fast, you can do all processing
+ in the request itself.
+ If not, you should queue the task on a handling service and return a ``please
+ wait'' page to the user.
+\end_layout
+
+\begin_layout Standard
+It would be nice to add a progress bar or some other kind of estimation
+ of how long it would take for the task to be done, with a maximum duraton
+ set after which the task should be considered to have failed.
+ The client would poll until the task status is marked ``done,'' after which
+ they would be redirected back to the application flow.
+ Each polling request sent by the client could likely be processed very
+ quickly, so this this strategy effectively breaks the task into many small
+ requests (``It's better to have many short requests than one long one'').
+\end_layout
+
+\begin_layout Standard
+Prudence's 
 \bar under
 tasks (page 
 \begin_inset CommandInset ref
@@ -23225,29 +23935,22 @@ reference "../manual/tasks/"
 
 )
 \bar default
-.
- In particular, you can spawn a task dynamically to do work without tying
- up the current thread.
- Also, Prudence comes with 
-\begin_inset CommandInset href
-LatexCommand href
-name "Hazelcast"
-target "http://www.hazelcast.com/"
+ implementation is a good start for creating such a mechanism: however,
+ it would be up to you to create a ``please wait'' mechanism, as well as
+ a way to track the tasks' progress and deal with failure.
+\end_layout
 
-\end_inset
-
-, which is used for an optional 
-\bar under
-distributed cache backend (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../scaling/|cache-backends"
-
-\end_inset
-
-)
-\bar default
-, but also has excellent support for handling distributed task queues.
+\begin_layout Standard
+Implementing such a handling service is not trivial.
+ It adds a new component to your architecture, one that also has to be made
+ to scale.
+ One can also argue that it adversely affects user experience by adding
+ overhead, delaying the time it takes for the task to complete.
+ The bottom line, though, is you're vastly increasing concurrency and your
+ ability to scale.
+ And, you're improving the user experience in one respect: they would get
+ a feedback on what's going on rather than having their browsers spin, waiting
+ for their requests to complete.
 \end_layout
 
 \begin_layout Subsubsection
