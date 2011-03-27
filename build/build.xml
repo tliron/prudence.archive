@@ -78,7 +78,7 @@
 			<copy todir="@{dist}/content/applications/prudence-test/web/static/api">
 				<fileset dir="${tmp}/api" />
 			</copy>
-			<copy tofile="@{dist}/content/applications/prudence-test/web/static/manual/index.html" file="${documentation}/prudence_manual.html" />
+			<copy tofile="@{dist}/content/applications/prudence-test/web/static/manual/index.html" file="${tmp}/documentation/prudence_manual.html" />
 		</sequential>
 	</macrodef>
 
@@ -124,7 +124,7 @@
 				<fileset dir="@{dist}/content/bin" includes="**/run.sh, **/jsvc" />
 			</chmod>
 			<copy todir="@{dist}/content/documentation">
-				<fileset dir="${documentation}" excludes="*~,*.emergency" />
+				<fileset dir="${tmp}/documentation" />
 			</copy>
 			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%REVISION%" value="${revision.max}" />
 			<copy todir="@{dist}/content/applications/prudence-test/web">
@@ -260,6 +260,10 @@
 		<antcall target="javadoc-unless" />
 	</target>
 
+	<target name="clean-javadoc" description="Clean Prudence API docs">
+		<delete dir="${tmp}/api" />
+	</target>
+
 	<target name="javadoc-unless" description="Create Prudence API docs" unless="javadoc-present">
 		<javadoc sourcepath="${java-src}" source="1.5" excludepackagenames="**.internal.*,**.test.*" destdir="${tmp}/api" stylesheetfile="${documentation}/soft-cricket-api.css" windowtitle="Prudence 1.1-${revision.max}" doctitle="Prudence 1.1-${revision.max}" access="protected" author="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" splitindex="true" use="true" version="true" verbose="true">
 			<link href="http://download.oracle.com/javase/1.5.0/docs/api/" />
@@ -294,21 +298,33 @@
 			</bottom>
 		</javadoc>
 	</target>
+
+	<target name="documentation" depends="revision" description="Create Prudence Manual">
+		<available file="${tmp}/documentation" property="documentation-present" />
+		<antcall target="documentation-unless" />
+	</target>
 	
-	<target name="documentation">
-		<delete file="${documentation}/prudence_manual.pdf" />
-		<delete file="${documentation}/prudence_manual.html" />
+	<target name="clean-documentation" description="Clean Prudence Manual">
+		<delete dir="${tmp}/documentation" />
+	</target>
+
+	<target name="documentation-unless" description="Create Prudence Manual" unless="documentation-present">
+		<mkdir dir="${tmp}/documentation" />
+		<copy todir="${tmp}/documentation">
+			<fileset dir="${documentation}" excludes="*~" />
+		</copy>
+		<replace dir="${tmp}/documentation" includes="prudence_manual.lyx" token="%REVISION%" value="${revision.max}" />
 		<exec executable="lyx" failifexecutionfails="false">
 			<arg value="--export" />
 			<arg value="pdf" />
-			<arg value="${documentation}/prudence_manual.lyx" />
+			<arg value="${tmp}/documentation/prudence_manual.lyx" />
 		</exec>
 		<exec executable="elyxer" failifexecutionfails="false">
 			<arg value="--html" />
 			<arg value="--title" />
 			<arg value="Prudence Manual" />
-			<arg value="${documentation}/prudence_manual.lyx" />
-			<arg value="${documentation}/prudence_manual.html" />
+			<arg value="${tmp}/documentation/prudence_manual.lyx" />
+			<arg value="${tmp}/documentation/prudence_manual.html" />
 		</exec>
 	</target>
 	
@@ -359,11 +375,11 @@
 		<fetch-library-versions dist="${dist-javascript}" />
 	</target>
 	
-	<target name="javadoc-javascript" depends="javadoc" description="Fetch Prudence API docs">
+	<target name="javadoc-javascript" depends="javadoc, documentation" description="Fetch Prudence API docs">
 		<fetch-javadocs dist="${dist-javascript}" />
 	</target>
 	
-	<target name="content-javascript" depends="javadoc-javascript, revision" description="Fetch content">
+	<target name="content-javascript" depends="javadoc-javascript" description="Fetch content">
 		<fetch-common-content dist="${dist-javascript}" base="${javascript}" name="JavaScript" />
 	</target>
 	
@@ -420,11 +436,11 @@
 		<fetch-library-versions dist="${dist-python}" />
 	</target>
 	
-	<target name="javadoc-python" depends="javadoc" description="Fetch Prudence API docs">
+	<target name="javadoc-python" depends="javadoc, documentation" description="Fetch Prudence API docs">
 		<fetch-javadocs dist="${dist-python}" />
 	</target>
 	
-	<target name="content-python" depends="javadoc-python, revision" description="Fetch content">
+	<target name="content-python" depends="javadoc-python" description="Fetch content">
 		<fetch-common-content dist="${dist-python}" base="${python}" name="Python" />
 	</target>
 	
@@ -478,11 +494,11 @@
 		<fetch-library-versions dist="${dist-clojure}" />
 	</target>
 	
-	<target name="javadoc-clojure" depends="javadoc" description="Fetch Prudence API docs">
+	<target name="javadoc-clojure" depends="javadoc, documentation" description="Fetch Prudence API docs">
 		<fetch-javadocs dist="${dist-clojure}" />
 	</target>
 	
-	<target name="content-clojure" depends="javadoc-clojure, revision" description="Fetch content">
+	<target name="content-clojure" depends="javadoc-clojure" description="Fetch content">
 		<fetch-common-content dist="${dist-clojure}" base="${clojure}" name="Clojure" />
 	</target>
 	
@@ -536,11 +552,11 @@
 		<fetch-library-versions dist="${dist-groovy}" />
 	</target>
 	
-	<target name="javadoc-groovy" depends="javadoc" description="Fetch Prudence API docs">
+	<target name="javadoc-groovy" depends="javadoc, documentation" description="Fetch Prudence API docs">
 		<fetch-javadocs dist="${dist-groovy}" />
 	</target>
 	
-	<target name="content-groovy" depends="javadoc-groovy, revision" description="Fetch content">
+	<target name="content-groovy" depends="javadoc-groovy" description="Fetch content">
 		<fetch-common-content dist="${dist-groovy}" base="${groovy}" name="Groovy" />
 	</target>
 	
@@ -594,11 +610,11 @@
 		<fetch-library-versions dist="${dist-ruby}" />
 	</target>
 	
-	<target name="javadoc-ruby" depends="javadoc" description="Fetch Prudence API docs">
+	<target name="javadoc-ruby" depends="javadoc, documentation" description="Fetch Prudence API docs">
 		<fetch-javadocs dist="${dist-ruby}" />
 	</target>
 	
-	<target name="content-ruby" depends="javadoc-ruby, revision" description="Fetch content">
+	<target name="content-ruby" depends="javadoc-ruby" description="Fetch content">
 		<fetch-common-content dist="${dist-ruby}" base="${ruby}" name="Ruby" />
 	</target>
 	
@@ -655,11 +671,11 @@
 		<fetch-library-versions dist="${dist-php}" />
 	</target>
 	
-	<target name="javadoc-php" depends="javadoc" description="Fetch Prudence API docs">
+	<target name="javadoc-php" depends="javadoc, documentation" description="Fetch Prudence API docs">
 		<fetch-javadocs dist="${dist-php}" />
 	</target>
 	
-	<target name="content-php" depends="javadoc-php, revision" description="Fetch content">
+	<target name="content-php" depends="javadoc-php" description="Fetch content">
 		<fetch-common-content dist="${dist-php}" base="${php}" name="PHP" />
 	</target>
 	
@@ -684,7 +700,7 @@
 		<fetch-prudence-test-jar dist="${dist-kitchensink}" />
 	</target>
 	
-	<target name="javadoc-kitchensink" depends="javadoc" description="Fetch Prudence API docs">
+	<target name="javadoc-kitchensink" depends="javadoc, documentation" description="Fetch Prudence API docs">
 		<fetch-javadocs dist="${dist-kitchensink}" />
 	</target>
 	
@@ -736,7 +752,7 @@
 		<fetch-library-versions dist="${dist-kitchensink}" />
 	</target>
 	
-	<target name="content-kitchensink" depends="javadoc-kitchensink, revision" description="Fetch content">
+	<target name="content-kitchensink" depends="javadoc-kitchensink" description="Fetch content">
 		<echo>Using ${kitchensink-base} as base for Kitchen Sink distribution.</echo>
 		<!-- Fetch Prudence Tests -->
 		<copy todir="${dist-kitchensink}/content/applications/prudence-test/web">

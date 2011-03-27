@@ -56,10 +56,10 @@ The Prudence Manual
 \end_layout
 
 \begin_layout Author
-Version 1.1
-\begin_inset Newline newline
-\end_inset
+Version 1.1 (%REVISION%)
+\end_layout
 
+\begin_layout Author
 Main text written by Tal Liron
 \end_layout
 
@@ -15441,15 +15441,19 @@ target "http://www.hazelcast.com/"
 \end_inset
 
  cluster to which we belong.
+ Note that values stored here 
+\emph on
+must be serializable
+\emph default
+.
+ Depending on your object implementation, this may mean having to manually
+ serialize/deserialize the value into a string or another serializable format.
 \end_layout
 
 \begin_layout Standard
 This is simply a convenience API to access the Hazelcast map named ``com.threecri
 ckets.prudence.distributedGlobals''.
-\end_layout
-
-\begin_layout Standard
-See 
+ See 
 \bar under
 application.distributedTask (page 
 \begin_inset CommandInset ref
@@ -15927,7 +15931,7 @@ reference "../api/|application-distributed-globals"
 
 )
 \bar default
- for an easy way to make state available to distributed tasks.
+ for an easy way to share state with distributed tasks.
 \end_layout
 
 \begin_layout Subsection
@@ -17622,8 +17626,26 @@ name "../api/|executable-globals"
 \end_layout
 
 \begin_layout Standard
-These are similar in use to application.globals, but are shared by all applicatio
-ns on the VM.
+These are similar in use to 
+\bar under
+application.sharedGlobals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-shared-globals"
+
+\end_inset
+
+)
+\bar default
+, but may also be accessed by non-Prudence 
+\begin_inset CommandInset href
+LatexCommand href
+name "Scripturian"
+target "http://threecrickets.com/scripturian/"
+
+\end_inset
+
+ code running on the same VM.
  See 
 \bar under
 ``sharing state'' (page 
@@ -19589,6 +19611,87 @@ Prudence is designed to allow massive concurrency and scalability while
 \end_layout
 
 \begin_layout Subsubsection
+conversation.locals
+\end_layout
+
+\begin_layout Standard
+These are not ``local'' in the same way that code scope locals are.
+ The term ``local'' here should be read as ``local to the conversation.''
+ They are ``global'' in the sense that they can be accessed by any function
+ in your code, but are ``local'' in the sense that they persist only for
+ the duration of the user request.
+ (Compare with ``thread locals'' in the JVM, which are also ``local'' in
+ a specific sense.)
+\end_layout
+
+\begin_layout Standard
+You may ask, then, why you wouldn't want to just use your language globals,
+ which have similar scope and life.
+ 
+\bar under
+conversation.locals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-locals"
+
+\end_inset
+
+)
+\bar default
+ have three main uses in Prudence:
+\end_layout
+
+\begin_layout Enumerate
+To easily share conversation-scope state between scriptlets written in different
+ languages.
+\end_layout
+
+\begin_layout Enumerate
+To share state for deferred conversations---see 
+\bar under
+conversation.defer (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-defer"
+
+\end_inset
+
+)
+\bar default
+.
+ In such cases, your language's globals would not persist across the thread
+ boundaries.
+\end_layout
+
+\begin_layout Enumerate
+They are Prudence's general mechanism for sending state to your code in
+ a conversation.
+ For example, 
+\bar under
+captured URI segments are stored here (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|static-capturing"
+
+\end_inset
+
+)
+\bar default
+ as well as 
+\bar under
+document.cacheKeyPattern (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-key-pattern"
+
+\end_inset
+
+)
+\bar default
+ variables.
+\end_layout
+
+\begin_layout Subsubsection
 Global Variables
 \begin_inset CommandInset label
 LatexCommand label
@@ -19649,12 +19752,23 @@ reference "../api/|application-globals"
 
 )
 \bar default
- or 
+, 
 \bar under
-executable.globals (page 
+application.sharedGlobals (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../api/|executable-globals"
+reference "../api/|application-shared-globals"
+
+\end_inset
+
+)
+\bar default
+ or even 
+\bar under
+application.distributedGlobals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-distributed-globals"
 
 \end_inset
 
@@ -19694,7 +19808,116 @@ reference "../api/|application-globals"
 
 )
 \bar default
- or even 
+.
+\end_layout
+
+\begin_layout Subsubsection
+application.globals vs.
+ application.sharedGlobals
+\end_layout
+
+\begin_layout Standard
+The rule of thumb is to always prefer to use
+\bar under
+ application.globals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-globals"
+
+\end_inset
+
+)
+\bar default
+.
+ By doing so, you'll minimize interdependencies between applications, and
+ help make each application deployable on its own.
+\end_layout
+
+\begin_layout Standard
+Use for 
+\bar under
+application.sharedGlobals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-shared-globals"
+
+\end_inset
+
+)
+\bar default
+ (and possibly 
+\bar under
+application.distributedGlobals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-distributed-globals"
+
+\end_inset
+
+)
+\bar default
+---similar concerns apply to it) only when you explicitly need a bridge
+ 
+\emph on
+between 
+\emph default
+applications.
+ Examples:
+\end_layout
+
+\begin_layout Enumerate
+To save resources.
+ For example, if an application detects that a database connection has already
+ been opened by another application in the Prudence instance, and stored
+ in application.sharedGlobals, then it could use that connection rather than
+ create a new one.
+ This would only work, of course, if a few applications share the same database,
+ which is common in many deployments.
+\end_layout
+
+\begin_layout Enumerate
+To send messages between applications.
+ This would be necessary if operations in one application could affect another.
+ For example, you could place a task queue in application.sharedGlobals,
+ where applications could queue required operations.
+ A thread in another application would consume these and act accordingly.
+ Of course, you will have to plan for asynchronous behavior, and especially
+ allow for failure.
+ What happens if the consumer application is down? It may make more sense
+ in these cases to use a persistent storage, such as a database, for the
+ queue.
+\end_layout
+
+\begin_layout Standard
+Generally, if you find yourself having to rely on application.sharedGlobals,
+ ask yourself if your code would be better off encapsulated as a single
+ application.
+ Remember that Prudence has powerful URL routing, support for virtual hosting,
+ etc., letting you easily have one application work in several sites simultaneous
+ly.
+\end_layout
+
+\begin_layout Quote
+Note for Clojure flavor: All Clojure vars are VM-wide globals equivalent
+ in scope to executable.globals.
+ You usually work with namespaces that Prudence creates on the fly, so they
+ do not persist beyond the execution.
+ However, if you explicitly define a namespace, then you can use it as a
+ place for shared state.
+ It will then be up to you to make sure that your namescape doesn't collide
+ with that of another application installed in the Prudence insstance.
+ Though this approach might seem to break our rule of thumb here, of preferring
+ application.globals to application.sharedGlobals, it is more idiomatic to
+ Clojure and Lisps more generally.
+\end_layout
+
+\begin_layout Subsubsection
+application.sharedGlobals vs.
+ executable.globals
+\end_layout
+
+\begin_layout Standard
+
 \bar under
 executable.globals (page 
 \begin_inset CommandInset ref
@@ -19705,69 +19928,29 @@ reference "../api/|executable-globals"
 
 )
 \bar default
+ are in practice identical to 
+\bar under
+application.sharedGlobals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-shared-globals"
+
+\end_inset
+
+)
+\bar default
 .
-\end_layout
+ The latter is simply reserved for Prudence applications.
+ If you are running non-Prudence 
+\begin_inset CommandInset href
+LatexCommand href
+name "Scripturian"
+target "http://threecrickets.com/scripturian/"
 
-\begin_layout Subsubsection
-application.globals vs.
- executable.globals
-\end_layout
+\end_inset
 
-\begin_layout Standard
-You should prefer application.globals.
- By doing so, you'll minimize interdependencies between applications, and
- help make each application deployable on its own.
-\end_layout
-
-\begin_layout Standard
-It's best to use executable.globals as an 
-\emph on
-optional
-\emph default
- bridge between applications.
- Examples:
-\end_layout
-
-\begin_layout Enumerate
-To save resources.
- For example, if an application detects that a database connection has already
- been opened by another application in the Prudence instance, and stored
- in executable.globals, then it could use that connection rather than create
- a new one.
- This would only work, of course, if a few applications share the same database.
-\end_layout
-
-\begin_layout Enumerate
-To send messages between applications.
- This would be necessary if operations in one application could affect another.
- For example, you could place a task queue in executable.globals, where applicati
-on could queue required operations.
- A thread in another application would consume these and act accordingly.
- Of course, you will have to plan for asynchronous behavior, and especially
- allow for failure.
- What happens if the consumer application is down?
-\end_layout
-
-\begin_layout Standard
-Generally, if you find yourself having to rely on executable.globals, ask
- yourself if your code would be better off encapsulated as a single application.
- Remember that Prudence has powerful URL routing, support for virtual hosting,
- etc., letting you easily have one application work in several sites simultaneous
-ly
-\end_layout
-
-\begin_layout Quote
-Note for Clojure flavor: All Clojure vars are VM-wide globals equivalent
- in scope to executable.globals.
- You usually work with namespaces that Prudence creates on the fly, so they
- do not persist beyond the execution.
- However, if you explicitly define a namespace, then you use it as a place
- for shared state.
- It will then be up to you to make sure that your namescape doesn't collide
- with that of another application installed in the Prudence insstance.
- Though this approach might seem to break our rule of thumb here, of preferring
- application.globals to executable.globals, it is more idiomatic to Clojure
- and Lisps more generally.
+ code on the same VM, and need to share state with Prudence, then executable.glob
+als are available for you.
 \end_layout
 
 \begin_layout Subsubsection
@@ -19782,8 +19965,51 @@ name "../api/|concurrency"
 \end_layout
 
 \begin_layout Standard
-Though application.globals and executable.globals are thread safe, it's important
- to understand how to use them properly.
+Though 
+\bar under
+application.globals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-globals"
+
+\end_inset
+
+)
+\bar default
+, 
+\bar under
+application.sharedGlobals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-shared-globals"
+
+\end_inset
+
+)
+\bar default
+, 
+\bar under
+application.distributedGlobals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-distributed-globals"
+
+\end_inset
+
+)
+\bar default
+ and 
+\bar under
+executable.globals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|executable-globals"
+
+\end_inset
+
+)
+\bar default
+ are all thread safe, it's important to understand how to use them properly.
 \end_layout
 
 \begin_layout Quote
@@ -19845,6 +20071,10 @@ The problem is that in the short interval between comparing the value in
  Thus, the ``data_source'' instance you are referring to in the current
  thread would be different from the ``myapp.data.source'' global used by other
  threads.
+ The value is not truly shared! In some cases, this would only result in
+ a few extra, unnecessary resources being created.
+ But in some cases, when you rely on the uniqueness of the global, this
+ can lead to subtle bugs.
 \end_layout
 
 \begin_layout Quote
@@ -19856,8 +20086,12 @@ exactly
  between our comparison and our set.
  If your application has many concurrent users, and your machine has many
  CPU cores, it can actually happen quite frequently.
- And, even if rare, your application has a chance of breaking if just two
- users use it at the same time!
+ And, even if rare, your application has a chance of breaking if 
+\emph on
+just two users use it at the same time
+\emph default
+.
+ This is not a problem you can gloss over, even for simple applications.
 \end_layout
 
 \begin_layout Standard
@@ -19917,8 +20151,8 @@ Optimizing for Performance
 \begin_layout Standard
 You may have noticed, in the code above, that if another thread had already
  set the global value, then our created data source would be discarded.
- If data source creation is heavy and slow, then this could significantly
- affect our performance.
+ If data source creation is heavy and slow, then this could affect our performan
+ce.
  The only way to guarantee that this would not happen would be to make the
  entire operation atomic, by synchronizing it with a lock:
 \end_layout
@@ -20010,15 +20244,10 @@ might
 \end_layout
 
 \begin_layout Standard
-If all else fails, then Prudence's globals may not be the best solution
- for your problem.
- Look into creating an external service (possibly written in Java) to manage
- global connections for you.
-\end_layout
-
-\begin_layout Standard
 Here's a final version of our get_connection function that lets you control
- whether to lock access:
+ whether to lock access.
+ This can help you more easily compare which technique works better for
+ your application:
 \end_layout
 
 \begin_layout Standard
@@ -20122,116 +20351,6 @@ Complicated, isn't it? Unfortunately, complicated code and fine-tuning is
 But, don't be discouraged.
  The standard protocol for using Prudence's globals will likely be good
  enough for the vast majority of your state-sharing needs.
-\end_layout
-
-\begin_layout Subsubsection
-conversation.locals
-\end_layout
-
-\begin_layout Standard
-These are not ``local'' in the same way that function locals are.
- The term ``local'' here should be read as ``local to the conversation''
- (compare with the term ``thread locals'').
- They are ``global'' in the sense that they can be accessed by any function
- in your code, but are ``local'' in the sense that they persist only for
- the duration of the user request.
-\end_layout
-
-\begin_layout Standard
-You may ask, then, why you wouldn't want to just use your language globals,
- which have the same scope and life.
- conversation.locals have four main uses in Prudence:
-\end_layout
-
-\begin_layout Enumerate
-To easily share conversation-scope state between scriptlets written in different
- languages.
-\end_layout
-
-\begin_layout Enumerate
-To share state for deferred conversations---see 
-\bar under
-conversation.defer (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-defer"
-
-\end_inset
-
-)
-\bar default
-.
-\end_layout
-
-\begin_layout Enumerate
-
-\bar under
-Captured URI segments are stored here (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../routing/|static-capturing"
-
-\end_inset
-
-)
-\bar default
-.
-\end_layout
-
-\begin_layout Enumerate
-They can be used as 
-\bar under
-document.cacheKeyPattern (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|document-cache-key-pattern"
-
-\end_inset
-
-)
-\bar default
- variables, in conjunction with 
-\bar under
-cache key pattern handlers (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../handlers/|cache-key-pattern-handlers"
-
-\end_inset
-
-)
-\bar default
-.
-\end_layout
-
-\begin_layout Subsubsection
-Sharing State Between Prudence Applications and Instances
-\end_layout
-
-\begin_layout Standard
-See 
-\bar under
-application.sharedGlobals (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|application-shared-globals"
-
-\end_inset
-
-)
-\bar default
- and 
-\bar under
-application.distributedGlobals (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|application-distributed-globals"
-
-\end_inset
-
-)
-\bar default
-.
 \end_layout
 
 \begin_layout Section
