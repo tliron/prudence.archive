@@ -114,11 +114,13 @@ library_document_sources = [
 
 dynamic_web_document_source = DocumentFileSource(application_base + dynamic_web_base_path, application_base_path + dynamic_web_base_path, dynamic_web_default_document, 'py', minimum_time_between_validity_checks)
 cache_key_pattern_handlers = ConcurrentHashMap()
+scriptlet_plugins = ConcurrentHashMap()
 application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamic_web_document_source
 application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = dynamic_web_default_document
 application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController() # Adds PHP predefined variables
 application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamic_web_client_caching_mode
 application_globals['com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers'] = cache_key_pattern_handlers
+application_globals['com.threecrickets.prudence.GeneratedTextResource.scriptletPlugins'] = scriptlet_plugins
 
 dynamic_web = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 dynamic_web_base_url = fix_url(dynamic_web_base_url)

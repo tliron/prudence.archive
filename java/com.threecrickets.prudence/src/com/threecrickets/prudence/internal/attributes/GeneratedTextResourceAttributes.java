@@ -12,12 +12,16 @@
 package com.threecrickets.prudence.internal.attributes;
 
 import java.io.File;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Context;
 
+import com.threecrickets.prudence.DelegatedScriptletPlugin;
 import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.ParsingContext;
+import com.threecrickets.scripturian.ScriptletPlugin;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentSource;
 
@@ -236,6 +240,42 @@ public class GeneratedTextResourceAttributes extends ResourceContextualAttribute
 		return clientCachingMode;
 	}
 
+	/**
+	 * The scriptlet plugins to use during parsing.
+	 * 
+	 * @return The scriptlet plugins or null
+	 * @see DelegatedScriptletPlugin
+	 */
+	@SuppressWarnings("unchecked")
+	public ConcurrentMap<String, ScriptletPlugin> getScriptletPlugins()
+	{
+		if( scriptletPlugins == null )
+			scriptletPlugins = (ConcurrentMap<String, ScriptletPlugin>) getAttributes().get( prefix + ".scriptletPlugins" );
+
+		return scriptletPlugins;
+	}
+
+	//
+	// DocumentExecutionAttributes
+	//
+
+	/**
+	 * Creates a parsing context based on the attributes.
+	 * 
+	 * @return A parsing context
+	 */
+	@Override
+	public ParsingContext createParsingContext()
+	{
+		ParsingContext parsingContext = super.createParsingContext();
+
+		Map<String, ScriptletPlugin> scriptletPlugins = getScriptletPlugins();
+		if( scriptletPlugins != null )
+			parsingContext.getScriptletPlugins().putAll( scriptletPlugins );
+
+		return parsingContext;
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
@@ -276,4 +316,9 @@ public class GeneratedTextResourceAttributes extends ResourceContextualAttribute
 	 * Whether or not to send information to the client about cache expiration.
 	 */
 	private Integer clientCachingMode;
+
+	/**
+	 * The scriptlet plugins used during parsing.
+	 */
+	private ConcurrentMap<String, ScriptletPlugin> scriptletPlugins;
 }

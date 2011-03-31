@@ -26,6 +26,7 @@ import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
+import com.threecrickets.scripturian.ParsingContext;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
@@ -130,7 +131,7 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 
 	/**
 	 * An optional {@link DocumentFormatter} to use for representing source
-	 * code. Defaults to a {@link JygmentsDocumentFormatter}.
+	 * code.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>documentFormatter</code> in the application's {@link Context}.
@@ -194,6 +195,13 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 	// Operations
 	//
 
+	/**
+	 * Adds the library locations to the execution context.
+	 * 
+	 * @param executionContext
+	 *        The execution context
+	 * @see #getLibraryDocumentSources()
+	 */
 	public void addLibraryLocations( ExecutionContext executionContext )
 	{
 		Iterable<DocumentSource<Executable>> sources = getLibraryDocumentSources();
@@ -215,11 +223,48 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 	// DocumentExecutionAttributes
 	//
 
+	/**
+	 * Creates a parsing context based on the attributes.
+	 * 
+	 * @return A parsing context
+	 */
+	public ParsingContext createParsingContext()
+	{
+		ParsingContext parsingContext = new ParsingContext();
+		parsingContext.setLanguageManager( getLanguageManager() );
+		parsingContext.setDefaultLanguageTag( getDefaultLanguageTag() );
+		parsingContext.setPrepare( isPrepare() );
+		parsingContext.setDocumentSource( getDocumentSource() );
+		return parsingContext;
+	}
+
+	/**
+	 * Throws an exception if the document name is invalid. Uses
+	 * {@link #getDefaultName()} if no name is given, and respects
+	 * {@link #isTrailingSlashRequired()}.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @return The valid document name
+	 * @throws ResourceException
+	 */
 	public String validateDocumentName( String documentName ) throws ResourceException
 	{
 		return validateDocumentName( documentName, getDefaultName() );
 	}
 
+	/**
+	 * Throws an exception if the document name is invalid. Uses the default
+	 * given document name if no name is given, and respects
+	 * {@link #isTrailingSlashRequired()}.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @param defaultDocumentName
+	 *        The default document name
+	 * @return The valid document name
+	 * @throws ResourceException
+	 */
 	public String validateDocumentName( String documentName, String defaultDocumentName ) throws ResourceException
 	{
 		if( isTrailingSlashRequired() )

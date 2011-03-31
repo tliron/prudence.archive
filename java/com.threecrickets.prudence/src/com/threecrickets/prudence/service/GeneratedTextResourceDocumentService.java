@@ -44,6 +44,7 @@ import com.threecrickets.prudence.internal.GeneratedTextDeferredRepresentation;
 import com.threecrickets.prudence.util.CapturingRedirector;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
+import com.threecrickets.scripturian.ParsingContext;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.exception.DocumentException;
 import com.threecrickets.scripturian.exception.DocumentNotFoundException;
@@ -223,10 +224,10 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 		if( documentDescriptor == null )
 		{
+			ParsingContext parsingContext = resource.getAttributes().createParsingContext();
 			try
 			{
-				documentDescriptor = Executable.createOnce( documentName, getSource(), true, resource.getAttributes().getLanguageManager(), resource.getAttributes().getDefaultLanguageTag(), resource.getAttributes()
-					.isPrepare() );
+				documentDescriptor = Executable.createOnce( documentName, true, parsingContext );
 			}
 			catch( DocumentNotFoundException x )
 			{
@@ -235,8 +236,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 					// Try the fragment directory
 					File fragmentDirectory = getRelativeFile( resource.getAttributes().getFragmentDirectory() );
 					if( fragmentDirectory != null )
-						documentDescriptor = Executable.createOnce( fragmentDirectory.getPath() + "/" + documentName, getSource(), true, resource.getAttributes().getLanguageManager(), resource.getAttributes()
-							.getDefaultLanguageTag(), resource.getAttributes().isPrepare() );
+						documentDescriptor = Executable.createOnce( fragmentDirectory.getPath() + "/" + documentName, true, parsingContext );
 					else
 						throw x;
 				}
@@ -288,7 +288,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		documentName = resource.getAttributes().validateDocumentName( documentName, resource.getAttributes().getDefaultIncludedName() );
 
 		DocumentDescriptor<Executable> documentDescriptor;
-		documentDescriptor = Executable.createOnce( documentName, getSource(), true, resource.getAttributes().getLanguageManager(), resource.getAttributes().getDefaultLanguageTag(), resource.getAttributes().isPrepare() );
+		documentDescriptor = Executable.createOnce( documentName, true, resource.getAttributes().createParsingContext() );
 
 		// Cache the document descriptor in the request
 		resource.getRequest().getAttributes().put( DOCUMENT_DESCRIPTOR_ATTRIBUTE, documentDescriptor );

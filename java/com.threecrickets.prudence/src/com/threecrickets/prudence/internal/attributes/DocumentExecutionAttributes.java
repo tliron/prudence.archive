@@ -17,6 +17,7 @@ import org.restlet.resource.ResourceException;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.LanguageManager;
+import com.threecrickets.scripturian.ParsingContext;
 import com.threecrickets.scripturian.document.DocumentSource;
 
 /**
@@ -136,4 +137,11 @@ public interface DocumentExecutionAttributes
 	 * @throws ResourceException
 	 */
 	public String validateDocumentName( String documentName, String defaultDocumentName ) throws ResourceException;
+
+	/**
+	 * Creates a parsing context based on the attributes.
+	 * 
+	 * @return A parsing context
+	 */
+	public ParsingContext createParsingContext();
 }

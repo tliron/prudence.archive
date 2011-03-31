@@ -117,11 +117,13 @@
 
 (def dynamic-web-document-source (DocumentFileSource. (str application-base dynamic-web-base-path) (str application-base-path dynamic-web-base-path) dynamic-web-default-document "clj" (.longValue minimum-time-between-validity-checks)))
 (def cache-key-pattern-handlers (ConcurrentHashMap.))
+(def scriptlet-plugins (ConcurrentHashMap.))
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.documentSource" dynamic-web-document-source)
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName" dynamic-web-default-document)
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.executionController" (PhpExecutionController.)) ; Adds PHP predefined variables
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.clientCachingMode" dynamic-web-client-caching-mode)
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers" cache-key-pattern-handlers)
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.scriptletPlugins" scriptlet-plugins)
 
 (def dynamic-web (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.GeneratedTextResource")))
 (def dynamic-web-base-url (fix-url dynamic-web-base-url))

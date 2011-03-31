@@ -36,7 +36,7 @@ global $hosts, $documents_default_name, $minimum_time_between_validity_checks;
 global $library_document_sources, $libraries_base_path;
 global $resources_base_url, $resources_base_path, $resources_defrost;
 global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_client_caching_mode;
-global $cache_key_pattern_handlers;
+global $cache_key_pattern_handlers, $scriptlet_plugins;
 global $static_web_base_url, $static_web_base_path, $static_web_compress, $static_web_directory_listing_allowed;
 global $preheat_resources;
 global $url_add_trailing_slash;
@@ -148,11 +148,13 @@ $library_document_sources->add(new DocumentFileSource($application_base . '/../.
 
 $dynamic_web_document_source = new DocumentFileSource($application_base . $dynamic_web_base_path, $application_base_path . $dynamic_web_base_path, $dynamic_web_default_document, 'php', $minimum_time_between_validity_checks);
 $cache_key_pattern_handlers = new ConcurrentHashMap();
+$scriptlet_plugins = new ConcurrentHashMap();
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source;
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = $dynamic_web_default_document;
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController(); // Adds PHP predefined variables
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode;
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers'] = $cache_key_pattern_handlers;
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.scriptletPlugins'] = $scriptlet_plugins
 
 $dynamic_web = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.GeneratedTextResource'));
 $dynamic_web_base_url = fix_url($dynamic_web_base_url);

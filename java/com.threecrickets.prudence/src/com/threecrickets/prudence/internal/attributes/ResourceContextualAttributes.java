@@ -39,6 +39,7 @@ public class ResourceContextualAttributes extends NonVolatileContextualAttribute
 	{
 		if( attributes == null )
 			attributes = resource.getContext().getAttributes();
+
 		return attributes;
 	}
 

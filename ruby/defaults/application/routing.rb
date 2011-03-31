@@ -130,11 +130,13 @@ $library_document_sources = [
 
 $dynamic_web_document_source = DocumentFileSource.new($application_base + $dynamic_web_base_path, $application_base_path + $dynamic_web_base_path, $dynamic_web_default_document, 'rb', $minimum_time_between_validity_checks)
 $cache_key_pattern_handlers = ConcurrentHashMap.new
+$scriptlet_plugins = ConcurrentHashMap.new
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = $dynamic_web_default_document
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController.new # Adds PHP predefined variables
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers'] = $cache_key_pattern_handlers
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.scriptletPlugins'] = $scriptlet_plugins
 
 $dynamic_web = Finder.new($application_instance.context, $class_loader.load_class('com.threecrickets.prudence.GeneratedTextResource'))
 $dynamic_web_base_url = fix_url $dynamic_web_base_url

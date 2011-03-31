@@ -26,6 +26,7 @@ import org.restlet.resource.ClientResource;
 
 import com.threecrickets.prudence.internal.attributes.DocumentExecutionAttributes;
 import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.ParsingContext;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentSource;
@@ -306,21 +307,18 @@ public class DocumentService
 	{
 		documentName = attributes.validateDocumentName( documentName );
 
-		DocumentNotFoundException x = null;
 		Iterator<DocumentSource<Executable>> iterator = null;
 
-		DocumentSource<Executable> source = getSource();
-		while( source != null )
+		ParsingContext parsingContext = attributes.createParsingContext();
+		while( true )
 		{
 			try
 			{
-				return Executable.createOnce( documentName, source, false, attributes.getLanguageManager(), attributes.getDefaultLanguageTag(), attributes.isPrepare() );
+				return Executable.createOnce( documentName, false, parsingContext );
 			}
-			catch( DocumentNotFoundException xx )
+			catch( DocumentNotFoundException x )
 			{
-				x = xx;
-
-				source = null;
+				DocumentSource<Executable> source = null;
 
 				if( iterator == null )
 				{
@@ -331,13 +329,13 @@ public class DocumentService
 
 				if( ( iterator != null ) && iterator.hasNext() )
 					source = iterator.next();
+
+				if( source == null )
+					throw x;
+
+				parsingContext.setDocumentSource( source );
 			}
 		}
-
-		if( x != null )
-			throw x;
-		else
-			throw new DocumentNotFoundException( documentName );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

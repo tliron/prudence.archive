@@ -131,11 +131,13 @@ libraryDocumentSources.add(new DocumentFileSource(applicationBase + '/../../libr
 
 var dynamicWebDocumentSource = new DocumentFileSource(applicationBase + dynamicWebBasePath, applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'js', minimumTimeBetweenValidityChecks)
 var cacheKeyPatternHandlers = new ConcurrentHashMap()
+var scriptletPlugins = new ConcurrentHashMap()
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource)
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName', dynamicWebDefaultDocument)
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.executionController', new PhpExecutionController()) // Adds PHP predefined variables
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.clientCachingMode', dynamicWebClientCachingMode)
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers', cacheKeyPatternHandlers)
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.scriptletPlugins', scriptletPlugins)
 
 var dynamicWeb = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.GeneratedTextResource'))
 dynamicWebBaseURL = fixURL(dynamicWebBaseURL)

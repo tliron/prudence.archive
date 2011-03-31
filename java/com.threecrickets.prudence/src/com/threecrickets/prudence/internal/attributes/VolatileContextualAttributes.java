@@ -410,15 +410,15 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 	/**
 	 * The directory in which to place uploaded files.
 	 */
-	protected static volatile File fileUploadDirectory;
+	protected volatile File fileUploadDirectory;
 
 	/**
 	 * The size in bytes beyond which uploaded files will be stored to disk.
 	 */
-	protected static volatile Integer fileUploadSizeThreshold;
+	protected volatile Integer fileUploadSizeThreshold;
 
 	/**
 	 * Cache used for caching mode.
 	 */
-	protected static volatile Cache cache;
+	protected volatile Cache cache;
 }
