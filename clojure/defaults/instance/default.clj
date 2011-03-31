@@ -149,7 +149,10 @@
 	(let [start-time (System/currentTimeMillis)]
 		(println "Executing" (count tasks) "startup tasks...")
 		(let [futures (for [task tasks] (.submit fixed-executor task))]
-			(dorun (for [future futures] (.get future)))
+			(dorun (for [future futures]
+        (try
+          (.get future)
+        	(catch Exception _))))
 			(println "Finished all startup tasks in" (/ (- (System/currentTimeMillis) start-time) 1000.0) "seconds."))))
 
 (doseq [application applications]

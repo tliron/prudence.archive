@@ -151,7 +151,10 @@ if len(tasks) > 0:
 	for task in tasks:
 	    futures.append(fixed_executor.submit(task))
 	for future in futures:
-		future.get()
+		try:
+			future.get()
+		except:
+			pass
 	print 'Finished all startup tasks in %s seconds.' % ((System.currentTimeMillis() - start_time) / 1000.0)
 
 for application in applications:

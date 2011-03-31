@@ -163,7 +163,10 @@ if(tasks.length > 0) {
 	}
 	for(var i in futures) {
 		var future = futures[i]
-		future.get()
+		try {
+			future.get()
+		} catch(x) {
+		}
 	}
 	print('Finished all startup tasks in ' + ((System.currentTimeMillis() - startTime) / 1000) + ' seconds.\n')
 }

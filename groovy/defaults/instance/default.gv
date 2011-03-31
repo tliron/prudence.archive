@@ -162,7 +162,11 @@ if(tasks.size() > 0) {
 		futures.add(fixedExecutor.submit(task))
 	}
 	for(future in futures) {
-		future.get()
+		try {
+			future.get()
+		}
+		catch(x) {
+		}
 	}
 	println('Finished all startup tasks in ' + ((System.currentTimeMillis() - startTime) / 1000) + ' seconds.')
 	out.flush()

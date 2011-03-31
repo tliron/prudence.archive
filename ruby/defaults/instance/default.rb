@@ -176,7 +176,10 @@ if $tasks.length > 0
 		futures << $fixed_executor.submit(task)
 	end
 	for future in futures
-		future.get
+		begin
+			future.get
+		rescue
+		end
 	end
 	puts "Finished all startup tasks in #{(System::current_time_millis - start_time) / 1000.0} seconds."
 end

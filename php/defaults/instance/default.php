@@ -34,7 +34,8 @@ function execute_or_default($name, $def=NULL) {
 	global $document;
 	try {
 		$document->execute($name);
-	} catch(Exception $x) {
+	}
+	catch(Exception $x) {
 		if(is_java_exception($x, 'com.threecrickets.scripturian.exception.DocumentNotFoundException')) {
 			if(is_null($def)) {
 				$def = '/defaults/' . $name;
@@ -182,7 +183,11 @@ if(count($tasks) > 0) {
 		$futures[] = $fixed_executor->submit($task);
 	}
 	foreach($futures as $future) {
-		$future->get();
+		try {
+			$future->get();
+		}
+		catch(Exception $x) {
+		}
 	}
 	print 'Finished all startup tasks in ' . ((System::currentTimeMillis() - $start_time) / 1000) . " seconds.\n";
 }
