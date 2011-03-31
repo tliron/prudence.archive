@@ -7363,6 +7363,34 @@ reference "../routing/|hiding"
 \end_layout
 
 \begin_layout Subsubsection
+Custom Scriptlets
+\end_layout
+
+\begin_layout Standard
+You can even create your own custom scriptlets using special handlers called
+ 
+\bar under
+scriptlet plugins (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../handlers/|scriptlet-plugins"
+
+\end_inset
+
+)
+\bar default
+, effectively extending Prudence's 
+\begin_inset CommandInset href
+LatexCommand href
+name "Scripturian"
+target "http://threecrickets.com/scripturian/"
+
+\end_inset
+
+-based templating engine.
+\end_layout
+
+\begin_layout Subsubsection
 Mixing Languages
 \begin_inset CommandInset label
 LatexCommand label
@@ -10735,11 +10763,12 @@ Prudence supports a few kinds of ``handlers,'' special purpose code for
 \end_layout
 
 \begin_layout Subsection
-Comparison with Resources
+Handlers vs.
+ Resources
 \end_layout
 
 \begin_layout Standard
-Creating handlers is similar to creating a 
+Creating a handler is similar to creating a 
 \bar under
 resource (page 
 \begin_inset CommandInset ref
@@ -10750,7 +10779,7 @@ reference "../resources/"
 
 )
 \bar default
-, except that they are much simpler.
+, though handlers are even simpler.
 \end_layout
 
 \begin_layout Standard
@@ -10769,7 +10798,7 @@ reference "../resources/|files"
 \bar default
 .
  Though there are different kinds of handlers, they are all put in /handlers/,
- the different being only in which entry points Prudence expects to find
+ the difference being only in which entry points Prudence expects to find
  in them.
  It's up to you to use the correct kind of handler for the correct purpose.
 \end_layout
@@ -10821,6 +10850,172 @@ reference "../api/|conversation"
 
 \begin_layout Itemize
 Some entry points support additional arguments.
+\end_layout
+
+\begin_layout Subsection
+Filters
+\begin_inset CommandInset label
+LatexCommand label
+name "../handlers/|filters"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Filters sit somewhere along the conversation route, and are able to affect
+ the progress of the conversation.
+ See 
+\bar under
+the section on filtering in routing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|filtering"
+
+\end_inset
+
+)
+\bar default
+ for a complete discussion.
+\end_layout
+
+\begin_layout Subsubsection
+Entry Points
+\end_layout
+
+\begin_layout Standard
+Both entry points are optional, though it's quite useless to have a filter
+ with neither.
+\end_layout
+
+\begin_layout Paragraph
+handleBefore
+\begin_inset CommandInset label
+LatexCommand label
+name "../handlers/|handle-before"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is called 
+\emph on
+before
+\emph default
+ the request is handled by the next handler along the route.
+\end_layout
+
+\begin_layout Standard
+There is likely no response set at this point, so you only have access to
+ request attributes.
+\end_layout
+
+\begin_layout Standard
+Three literal return values are supported, as either a string or a number:
+\end_layout
+
+\begin_layout Itemize
+``continue'' or 0: Continue to the next handler
+\end_layout
+
+\begin_layout Itemize
+``skip'' or 1: Skip the next handler and continue to our 
+\bar under
+handleAfter entry point (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../handlers/|handle-after"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+``stop'' or 2: Stop our handling altogether (note that previous handlers
+ along the route may still process the conversation before it returns to
+ the client)
+\end_layout
+
+\begin_layout Standard
+Otherwise, you may return an internal URI, which must begin with a ``/''.
+ This causes the filter to capture to that URI (an internal redirect).
+ This is a powerful feature allowing you to implement complex capturing
+ via filters.
+ For more information and an example, see 
+\bar under
+dynamic capturing in the routing chapter (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|dynamic-capturing"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Paragraph
+handleAfter
+\begin_inset CommandInset label
+LatexCommand label
+name "../handlers/|handle-after"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is called 
+\emph on
+after
+\emph default
+ the request is handled by the next handler along the route, unless ``stop''
+ was returned from our 
+\bar under
+handleBefore (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../handlers/|handle-before"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+At this point, a response has usually been set, unless we returned ``skip''
+ from in handleBefore or another filter down the route erased it.
+ You may manipulate the response or even replace it entirely.
+\end_layout
+
+\begin_layout Standard
+Note that handleAfter is called even if the next handler encounters an error.
+ You can test for such an error with 
+\bar under
+conversation.statusCode (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|conversation-status-code"
+
+\end_inset
+
+)
+\bar default
+.
+ Indeed, one use case for filters is to clean up and release hanging services
+ after errors occur.
+\end_layout
+
+\begin_layout Standard
+No return value is expected.
 \end_layout
 
 \begin_layout Subsection
@@ -11142,10 +11337,10 @@ Note that no return value is expected.
 \end_layout
 
 \begin_layout Subsection
-Filters
+Scriptlet Plugins
 \begin_inset CommandInset label
 LatexCommand label
-name "../handlers/|filters"
+name "../handlers/|scriptlet-plugins"
 
 \end_inset
 
@@ -11153,106 +11348,179 @@ name "../handlers/|filters"
 \end_layout
 
 \begin_layout Standard
-Filters sit somewhere along the conversation route, and are able to affect
- the progress of the conversation.
- See 
+These powerful handlers let you create your own scriplet types for 
 \bar under
-the section on filtering in routing (page 
+generating HTML (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../routing/|filtering"
+reference "../generating-html/"
 
 \end_inset
 
 )
 \bar default
- for a complete discussion.
+, effectively extending Prudence's 
+\begin_inset CommandInset href
+LatexCommand href
+name "Scripturian"
+target "http://threecrickets.com/scripturian/"
+
+\end_inset
+
+-based templating engine.
+\end_layout
+
+\begin_layout Standard
+Though you can always simply call a function from a regular scriptlet, scriplet
+ plugins can be more succint, elegant and readable.
+ In particular, you can use them to break limitations of your programming
+ language, because they let parse content as you see fit.
+ Thus, they are useful for embedding templating engines and expression languages.
+\end_layout
+
+\begin_layout Standard
+You can install scriptlet plugins in your application's ``routing.*'' using
+ the scriptletPlugins service, which is a map of plugin code to handler
+ names.
+\end_layout
+
+\begin_layout Standard
+In this example we'll have ``['' and ``]'' be handled by ``/handlers/paragraph-s
+criptlets.js''.
+ Here is the ``routing.js'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+scriptletPlugins.put('[[', '/paragraph-scriptlets/')
+\end_layout
+
+\begin_layout Plain Layout
+
+scriptletPlugins.put(']]', '/paragraph-scriptlets/')
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that you can also install instances of 
+\begin_inset CommandInset href
+LatexCommand href
+name "ScriptletPlugin"
+target "http://threecrickets.com/scripturian/api/index.html?com/threecrickets/scripturian/ScriptletPlugin.html"
+
+\end_inset
+
+ into scriptletPlugins directly.
+ This is useful for installing plugins written in Java or supplied by a
+ third party JVM library.
 \end_layout
 
 \begin_layout Subsubsection
 Entry Points
 \end_layout
 
-\begin_layout Standard
-Both entry points are optional, though it's quite useless to have a filter
- with neither.
-\end_layout
-
 \begin_layout Paragraph
-handleBefore
-\begin_inset CommandInset label
-LatexCommand label
-name "../handlers/|handle-before"
-
-\end_inset
-
-
+getScriptlet
 \end_layout
 
 \begin_layout Standard
-This is called 
-\emph on
-before
-\emph default
- the request is handled by the next handler along the route.
-\end_layout
-
-\begin_layout Standard
-There is likely no response set at this point, so you only have access to
- request attributes.
-\end_layout
-
-\begin_layout Standard
-Three literal return values are supported, as either a string or a number:
-\end_layout
-
-\begin_layout Itemize
-``continue'' or 0: Continue to the next handler
-\end_layout
-
-\begin_layout Itemize
-``skip'' or 1: Skip the next handler and continue to our 
+In addition to the 
 \bar under
-handleAfter entry point (page 
+``conversation'' service (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "../handlers/|handle-after"
-
-\end_inset
-
-)
-\end_layout
-
-\begin_layout Itemize
-``stop'' or 2: Stop our handling altogether (note that previous handlers
- along the route may still process the conversation before it returns to
- the client)
-\end_layout
-
-\begin_layout Standard
-Otherwise, you may return an internal URI, which must begin with a ``/''.
- This causes the filter to capture to that URI (an internal redirect).
- This is a powerful feature allowing you to implement complex capturing
- via filters.
- For more information and an example, see 
-\bar under
-dynamic capturing in the routing chapter (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../routing/|dynamic-capturing"
+reference "../api/|conversation"
 
 \end_inset
 
 )
 \bar default
-.
+ argument, this entry point receives two more arguments: code and content.
+ The code is which scriptlet plugin code you need to interpret, and content
+ is the content of the scriptlet.
+ All you need to do is return the resulting scriptlet.
 \end_layout
 
-\begin_layout Paragraph
-handleAfter
-\begin_inset CommandInset label
-LatexCommand label
-name "../handlers/|handle-after"
+\begin_layout Standard
+Here's our ``/handlers/paragraph-scriptlets.js'':
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+function handleGetScriptlet(conversation, code, content) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	switch (String(code)) {
+\end_layout
+
+\begin_layout Plain Layout
+
+		case '[[':
+\end_layout
+
+\begin_layout Plain Layout
+
+			return 'print(
+\backslash
+'<p style="' + content + '">
+\backslash
+');'
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		case ']]':
+\end_layout
+
+\begin_layout Plain Layout
+
+			return 'print(
+\backslash
+'</p>
+\backslash
+');'
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	return ''
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
 
 \end_inset
 
@@ -11260,51 +11528,69 @@ name "../handlers/|handle-after"
 \end_layout
 
 \begin_layout Standard
-This is called 
-\emph on
-after
-\emph default
- the request is handled by the next handler along the route, unless ``stop''
- was returned from our 
-\bar under
-handleBefore (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../handlers/|handle-before"
+The example is trivial: scriptlets can generate any code, not just ``print''
+ statements.
+\end_layout
+
+\begin_layout Standard
+Here's an example of how these scriptlets would be used in generating HTML:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%[[ color: red; %>
+\end_layout
+
+\begin_layout Plain Layout
+
+This is a red paragraph.
+\end_layout
+
+\begin_layout Plain Layout
+
+<%]]%>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
 
 \end_inset
 
-)
-\bar default
-.
+
 \end_layout
 
-\begin_layout Standard
-At this point, a response has usually been set, unless we returned ``skip''
- from in handleBefore or another filter down the route erased it.
- You may manipulate the response or even replace it entirely.
-\end_layout
-
-\begin_layout Standard
-Note that handleAfter is called even if the next handler encounters an error.
- You can test for such an error with 
-\bar under
-conversation.statusCode (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|conversation-status-code"
-
-\end_inset
-
-)
-\bar default
-.
- Indeed, one use case for filters is to clean up and release hanging services
- after errors occur.
-\end_layout
-
-\begin_layout Standard
-No return value is expected.
+\begin_layout Quote
+Note that even though changes to your scriptlet plugin handler code take
+ effect on the fly, the documents that use this handler are not regenerated
+ on the fly when scriptlet handler code is updated.
+ The reason is that the handler code is used only when compiling your document,
+ not when its actually executed.
+ If you want Prudence to regenerate your documents, either make a trivial
+ change to them (for example, ``touch'' to update their date) or delete
+ Prudence's /cache/ directory and restart your Prudence instance.
 \end_layout
 
 \begin_layout Section
