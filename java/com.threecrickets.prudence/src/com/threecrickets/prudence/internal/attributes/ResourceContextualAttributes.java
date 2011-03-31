@@ -44,12 +44,15 @@ public class ResourceContextualAttributes extends NonVolatileContextualAttribute
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
-	// Private
+	// Protected
 
 	/**
 	 * The resource.
 	 */
-	private final ServerResource resource;
+	protected final ServerResource resource;
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
 
 	/**
 	 * The attributes.

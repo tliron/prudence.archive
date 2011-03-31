@@ -80,8 +80,8 @@ public class DelegatedScriptletPlugin extends DelegatedHandler implements Script
 	// Private
 
 	/**
-	 * The name of the <code>getScriptlet()</code> entry point in the
+	 * The name of the <code>handleGetScriptlet()</code> entry point in the
 	 * executable.
 	 */
-	private volatile String entryPointNameForGetScriptlet = "getScriptlet";
+	private volatile String entryPointNameForGetScriptlet = "handleGetScriptlet";
 }

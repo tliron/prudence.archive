@@ -13,6 +13,7 @@ package com.threecrickets.prudence.internal.attributes;
 
 import java.io.File;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Context;
@@ -250,7 +251,23 @@ public class GeneratedTextResourceAttributes extends ResourceContextualAttribute
 	public ConcurrentMap<String, ScriptletPlugin> getScriptletPlugins()
 	{
 		if( scriptletPlugins == null )
-			scriptletPlugins = (ConcurrentMap<String, ScriptletPlugin>) getAttributes().get( prefix + ".scriptletPlugins" );
+		{
+			scriptletPlugins = new ConcurrentHashMap<String, ScriptletPlugin>();
+
+			Map<String, Object> potentialScriptletPlugins = (ConcurrentMap<String, Object>) getAttributes().get( prefix + ".scriptletPlugins" );
+			if( potentialScriptletPlugins != null )
+			{
+				for( Map.Entry<String, Object> entry : potentialScriptletPlugins.entrySet() )
+				{
+					Object scriptletPlugin = entry.getValue();
+					if( scriptletPlugin instanceof ScriptletPlugin )
+						scriptletPlugins.put( entry.getKey(), (ScriptletPlugin) scriptletPlugin );
+					else
+						// Create delegated scriptlet plugin
+						scriptletPlugins.put( entry.getKey(), new DelegatedScriptletPlugin( scriptletPlugin.toString(), resource.getContext() ) );
+				}
+			}
+		}
 
 		return scriptletPlugins;
 	}
