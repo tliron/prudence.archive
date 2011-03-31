@@ -3883,6 +3883,17 @@ target "http://www.hazelcast.com/"
 
 , see 
 \bar under
+Prudence clusters (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../cluster/"
+
+\end_inset
+
+)
+\bar default
+ and 
+\bar under
 document.cache (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
@@ -11514,7 +11525,7 @@ function handleGetScriptlet(conversation, code, content) {
 
 \begin_layout Plain Layout
 
-	return ''
+	return ""
 \end_layout
 
 \begin_layout Plain Layout
@@ -11614,8 +11625,20 @@ name "../manual/tasks/"
 \begin_layout Standard
 Programming multi-threaded and distributed applications is usually very
  difficult, but Prudence makes a lot of the work easier via support for
- tasks, which run in the ``background'' outside of the client thread pool.
- Tasks are an important port of your scaling strategy as they allow your
+ tasks, which run in the ``background'' outside of the client thread pool,
+ and indeed can run anywhere in your 
+\bar under
+Prudence cluster (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../cluster/"
+
+\end_inset
+
+)
+\bar default
+.
+ Tasks are an important part of your scaling strategy as they allow your
  application to do work without holding up client threads.
  For a full discussion, see 
 \bar under
@@ -11712,14 +11735,17 @@ reference "../api/|application-distributed-task"
 )
 \bar default
  to spawn tasks in your 
-\begin_inset CommandInset href
-LatexCommand href
-name "Hazelcast"
-target "http://www.hazelcast.com/"
+\bar under
+Prudence cluster (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../cluster/"
 
 \end_inset
 
- cluster.
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Standard
@@ -15719,14 +15745,17 @@ reference "../api/|application-globals"
 )
 \bar default
 , but are in fact shared by all members of the 
-\begin_inset CommandInset href
-LatexCommand href
-name "Hazelcast"
-target "http://www.hazelcast.com/"
+\bar under
+Prudence cluster (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../cluster/"
 
 \end_inset
 
- cluster to which we belong.
+)
+\bar default
+ to which we belong.
  Note that values stored here 
 \emph on
 must be serializable
@@ -15750,7 +15779,7 @@ reference "../api/|application-distributed-task"
 
 )
 \bar default
- for another Hazelcast-specific API.
+ for another cluster-specific API.
 \end_layout
 
 \begin_layout Paragraph
@@ -16106,14 +16135,17 @@ name "../api/|application-distributed-task"
 \begin_layout Standard
 Spawns asynchronous tasks on any Prudence instance which is part of the
  
-\begin_inset CommandInset href
-LatexCommand href
-name "Hazelcast"
-target "http://www.hazelcast.com/"
+\bar under
+Prudence cluster (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../cluster/"
 
 \end_inset
 
- cluster to which we belong (may also be our current instance).
+)
+\bar default
+ to which we belong (may also be our current instance).
  Other than the fact that this task may run out-of-process, this API is
  similar to 
 \bar under
@@ -16918,8 +16950,27 @@ target "http://www.mongodb.org/"
 \end_inset
 
  cache backends, which can similarly be chained together.
- There's a full reference in the Java API documentation, but here are simple
- examples:
+ For more information about distributed caches, see 
+\bar under
+Prudence clusters (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../cluster/"
+
+\end_inset
+
+)
+\bar default
+.
+ There's a full reference in the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Java API documentation"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/package-summary.html"
+
+\end_inset
+
+, but here are simple examples:
 \end_layout
 
 \begin_layout Standard
@@ -17639,7 +17690,18 @@ reference "../api/|document-external"
 \bar default
  instead.
  This could allow for an easy way to run your application in a cluster,
- behind a load balancer.
+ behind a 
+\bar under
+load balancer (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../cluster/|load-balancing"
+
+\end_inset
+
+)
+\bar default
+.
 \end_layout
 
 \begin_layout Enumerate
@@ -21833,13 +21895,314 @@ name "../http-proxy/"
 There's nothing special about how Prudence handles HTTP, and it can work
  easily behind any reverse proxy.
  This lets you easily unite Prudence with other web servers or run it behind
- a load balancer.
+ a 
+\bar under
+load balancer (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../cluster/|load-balancing"
+
+\end_inset
+
+)
+\bar default
+.
  Though it's not unique to Prudence, we thought to add this section to the
  manual in order to get you up and running quickly with this useful scenario.
 \end_layout
 
 \begin_layout Subsection
-Perlbal
+Apache
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "Apache"
+target "http://httpd.apache.org/"
+
+\end_inset
+
+'s HTTP server is often called the ``Swiss army knife of the Internet''
+ for how well it manipulates URLs and routes HTTP requests.
+ Prudence already does powerful 
+\bar under
+URI-based routing (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/"
+
+\end_inset
+
+)
+\bar default
+, including 
+\bar under
+virtual hosting (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../routing/|virtual-hosts"
+
+\end_inset
+
+)
+\bar default
+, meaning that you probably won't need Apache for that.
+\end_layout
+
+\begin_layout Standard
+Where you might want to use Apache is as a container environment for other
+ application platforms, such as mod_php and mod_wsgi.
+ If you have no choice but to run Apache as your front end, it is straightforwar
+d to set it to route to Prudence via reverse proxy.
+\end_layout
+
+\begin_layout Standard
+Here's a sample Apache configuration that proxies all URLs beginning with
+ ``/prudence/'' to a local Prudence instance running at the default server
+ port.
+ For demonstration purposes, we'll also explicitly block proxying of ``/prudence
+/images/'' URLs so that Apache would handle serving them (from directory
+ /var/www/prudence/images) instead of Prudence.
+ Though, note that Prudence can 
+\bar under
+serve static files just fine (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../static-web/"
+
+\end_inset
+
+)
+\bar default
+.
+ Apache's mod_proxy and mod_proxy_http must be enabled for this configuration
+ to work:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<VirtualHost *:80>
+\end_layout
+
+\begin_layout Plain Layout
+
+	DocumentRoot /var/www
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	<Proxy *>
+\end_layout
+
+\begin_layout Plain Layout
+
+		Order deny,allow
+\end_layout
+
+\begin_layout Plain Layout
+
+		Allow from all
+\end_layout
+
+\begin_layout Plain Layout
+
+	</Proxy>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	ProxyRequests Off
+\end_layout
+
+\begin_layout Plain Layout
+
+	ProxyPreserveHost On
+\end_layout
+
+\begin_layout Plain Layout
+
+	ProxyStatus On
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	# Note that the order of ProxyPass statements matters
+\end_layout
+
+\begin_layout Plain Layout
+
+	ProxyPass /prudence/images/ !
+\end_layout
+
+\begin_layout Plain Layout
+
+	ProxyPass /prudence/ http://localhost:8080/ retry=0 
+\end_layout
+
+\begin_layout Plain Layout
+
+</VirtualHost>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Prudence Clusters
+\begin_inset CommandInset label
+LatexCommand label
+name "../cluster/"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Several Prudence instances can work together as a cluster, allowing them
+ to share state and tasks.
+ Clusters can be deployed on a dedicated grid of servers or in ``clouds''
+ of disposable virtual machines.
+ A cluster can help you scale, as well as provide you with better uptime
+ via redundancy.
+\end_layout
+
+\begin_layout Standard
+Prudence instances in a local network automatically form a 
+\begin_inset CommandInset href
+LatexCommand href
+name "Hazelcast"
+target "http://www.hazelcast.com/"
+
+\end_inset
+
+ cluster, discovering each other via IP multicasting.
+\end_layout
+
+\begin_layout Standard
+That's the default behavior: Hazelcast is otherwise very configurable, providing
+ you with fine-grained control over cluster discovery and distribution.
+ Edit your ``/configuration/hazelcast.conf'' file according to the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Hazelcast documentation"
+target "http://www.hazelcast.com/documentation.jsp#Config"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Cluster API
+\end_layout
+
+\begin_layout Standard
+Within the cluster, you can use 
+\bar under
+application.distributedTask (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-distributed-task"
+
+\end_inset
+
+)
+\bar default
+ to execute tasks anywhere and 
+\bar under
+application.distributedGlobals (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-distributed-globals"
+
+\end_inset
+
+)
+\bar default
+ to share state.
+\end_layout
+
+\begin_layout Subsection
+Distributed Cache
+\end_layout
+
+\begin_layout Standard
+If you're already within a Hazelcast cluster, you might as well set up a
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "HazelcastCache"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/HazelcastCache.html"
+
+\end_inset
+
+ for your cache backend.
+ Otherwise, Prudence also supports 
+\begin_inset CommandInset href
+LatexCommand href
+name "memcached"
+target "http://memcached.org/"
+
+\end_inset
+
+, 
+\begin_inset CommandInset href
+LatexCommand href
+name "MongoDB"
+target "http://www.mongodb.org/"
+
+\end_inset
+
+, and even SQL-database based distributed caches.
+ Of course, you can chain several backends together.
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+document.cache (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache"
+
+\end_inset
+
+)
+\bar default
+ for more information and examples.
+\end_layout
+
+\begin_layout Subsection
+Load Balancing
+\begin_inset CommandInset label
+LatexCommand label
+name "../cluster/|load-balancing"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -21874,13 +22237,29 @@ reference "../../scaling/"
 
 \end_inset
 
-) 
+)
 \bar default
-for an in-depth treatment.
+ for an in-depth treatment.
+\end_layout
+
+\begin_layout Subsubsection
+PerlBal
 \end_layout
 
 \begin_layout Standard
-There are many great load balancers out there, but we especially like 
+Prudence supports load balancing using 
+\bar under
+HTTP proxies (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../http-proxy/"
+
+\end_inset
+
+)
+\bar default
+.
+ There are many great load balancers out there, but we especially like 
 \begin_inset CommandInset href
 LatexCommand href
 name "Perlbal"
@@ -21889,9 +22268,9 @@ target "http://www.danga.com/perlbal/"
 \end_inset
 
 .
- Here's an example perlbal.conf in which we use Perlbal to handle secure
+ Here's an example ``perlbal.conf'' in which we use Perlbal to handle secure
  connections for us.
- See 
+ (See 
 \bar under
 secure servers (page 
 \begin_inset CommandInset ref
@@ -21902,7 +22281,7 @@ reference "../instance/|secure-servers"
 
 )
 \bar default
- on how to configure Prudence to handle secure connections directly.
+ on how to configure Prudence to handle secure connections directly.)
 \end_layout
 
 \begin_layout Standard
@@ -22308,163 +22687,6 @@ status open
 \begin_layout Plain Layout
 
 hosts = [[secureHost, '/myapp/']]
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Apache
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset href
-LatexCommand href
-name "Apache"
-target "http://httpd.apache.org/"
-
-\end_inset
-
-'s HTTP server is often called the ``Swiss army knife of the Internet''
- for how well it manipulates URLs and routes HTTP requests.
- Prudence already does powerful 
-\bar under
-URI-based routing (page 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "../routing/"
-
-\end_inset
-
-)
-\bar default
-, including 
-\bar under
-virtual hosting (page 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "../routing/|virtual-hosts"
-
-\end_inset
-
-)
-\bar default
-, meaning that you probably won't need Apache for that.
-\end_layout
-
-\begin_layout Standard
-Where you might want to use Apache is as a container environment for other
- application platforms, such as mod_php and mod_wsgi.
- If you have no choice but to run Apache as your front end, it is straightforwar
-d to set it to route to Prudence via reverse proxy.
-\end_layout
-
-\begin_layout Standard
-Here's a sample Apache configuration that proxies all URLs beginning with
- ``/prudence/'' to a local Prudence instance running at the default server
- port.
- For demonstration purposes, we'll also explicitly block proxying of ``/prudence
-/images/'' URLs so that Apache would handle serving them (from directory
- /var/www/prudence/images) instead of Prudence.
- Though, note that Prudence can 
-\bar under
-serve static files just fine (page 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "../static-web/"
-
-\end_inset
-
-)
-\bar default
-.
- Apache's mod_proxy and mod_proxy_http must be enabled for this configuration
- to work:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "breaklines=true"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<VirtualHost *:80>
-\end_layout
-
-\begin_layout Plain Layout
-
-	DocumentRoot /var/www
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	<Proxy *>
-\end_layout
-
-\begin_layout Plain Layout
-
-		Order deny,allow
-\end_layout
-
-\begin_layout Plain Layout
-
-		Allow from all
-\end_layout
-
-\begin_layout Plain Layout
-
-	</Proxy>
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	ProxyRequests Off
-\end_layout
-
-\begin_layout Plain Layout
-
-	ProxyPreserveHost On
-\end_layout
-
-\begin_layout Plain Layout
-
-	ProxyStatus On
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	# Note that the order of ProxyPass statements matters
-\end_layout
-
-\begin_layout Plain Layout
-
-	ProxyPass /prudence/images/ !
-\end_layout
-
-\begin_layout Plain Layout
-
-	ProxyPass /prudence/ http://localhost:8080/ retry=0 
-\end_layout
-
-\begin_layout Plain Layout
-
-</VirtualHost>
 \end_layout
 
 \end_inset
@@ -25468,6 +25690,21 @@ target "http://www.hazelcast.com/"
 \end_inset
 
  will help many Prudence users scale their applications easily and elegantly.
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+Prudence clusters (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../cluster/"
+
+\end_inset
+
+)
+\bar default
+ for more information on how Hazelcast is integrated into Prudence.
 \end_layout
 
 \begin_layout Section
