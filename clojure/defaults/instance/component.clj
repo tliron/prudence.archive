@@ -12,11 +12,12 @@
 ;
 
 (import
-  'java.util.concurrent.Executors
-  'org.restlet.Component
-	'com.threecrickets.prudence.DelegatedStatusService
-	'com.threecrickets.prudence.cache.InProcessMemoryCache
-  'it.sauronsoftware.cron4j.Scheduler)
+ 'java.util.concurrent.Executors
+ 'org.restlet.Component
+ 'com.threecrickets.prudence.DelegatedStatusService
+ 'com.threecrickets.prudence.cache.ChainCache
+ 'com.threecrickets.prudence.cache.HazelcastCache
+ 'it.sauronsoftware.cron4j.Scheduler)
 
 ;
 ; Component
@@ -60,7 +61,9 @@
 ; Cache
 ;
 
-(.. component getContext getAttributes (put "com.threecrickets.prudence.cache" (InProcessMemoryCache.)))
+(def cache (ChainCache.))
+(.. cache getCaches (add (HazelcastCache.)))
+(.. component getContext getAttributes (put "com.threecrickets.prudence.cache" cache))
 
 ;
 ; Predefined Shared Globals

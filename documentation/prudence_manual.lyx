@@ -16824,15 +16824,53 @@ ce and reliability.
 \begin_layout Standard
 Though Prudence automatically caches the output of dynamic HTML and fragments,
  you can use the cache directly for your own purposes.
- Cache entries are instances of CacheEntry, which embeds various formatting
- attributes that you are free to ignore if you don't need them.
+ Cache entries are instances of 
+\begin_inset CommandInset href
+LatexCommand href
+name "CacheEntry"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/CacheEntry.html"
+
+\end_inset
+
+, which embeds various formatting attributes that you are free to ignore
+ if you don't need them.
 \end_layout
 
 \begin_layout Standard
-Prudence's default cache backend is a 1MB in-process memory cache, but this
- can be configured.
- Here's an example of chaining an H2 database cache after the default cache,
- via the 
+Prudence's default cache backend is a 
+\begin_inset CommandInset href
+LatexCommand href
+name "cache chain"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/ChainCache.html"
+
+\end_inset
+
+ with a 
+\begin_inset CommandInset href
+LatexCommand href
+name "Hazelcast cache"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/HazelcastCache.html"
+
+\end_inset
+
+, but this can be configured differently.
+ Here's an example of chaining a 1MB 
+\begin_inset CommandInset href
+LatexCommand href
+name "in-process memory cache"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/InProcessMemoryCache.html"
+
+\end_inset
+
+ before and a 
+\begin_inset CommandInset href
+LatexCommand href
+name "H2 database cache"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/H2Cache.html"
+
+\end_inset
+
+ after the default cache, via the 
 \bar under
 ``component.*'' configuration script (page 
 \begin_inset CommandInset ref
@@ -16843,9 +16881,13 @@ reference "../instance/|component-file"
 
 )
 \bar default
-.
- The memory cache ensures extremely fast retrieval times, while the database
- cache makes sure entries will persist even if you restart Prudence:
+:
+\end_layout
+
+\begin_layout Standard
+(Why would you want to do this? The in-process memory caches ensure the
+ fastest retrieval times, while the addition of the database cache makes
+ sure entries will persist even if you restart Prudence.)
 \end_layout
 
 \begin_layout Standard
@@ -16870,8 +16912,7 @@ document.execute('/defaults/instance/component/')
 
 \begin_layout Plain Layout
 
-// Create an H2-database-backed cache chained after the default in-memory
- cache
+// Create an H2-database-backed cache chained after the default caches
 \end_layout
 
 \begin_layout Plain Layout
@@ -16881,12 +16922,12 @@ importClass(
 
 \begin_layout Plain Layout
 
-	com.threecrickets.prudence.cache.H2Cache,
+	com.threecrickets.prudence.cache.InProcessMemoryCache
 \end_layout
 
 \begin_layout Plain Layout
 
-	com.threecrickets.prudence.cache.ChainCache)
+	com.threecrickets.prudence.cache.H2Cache)
 \end_layout
 
 \begin_layout Plain Layout
@@ -16895,28 +16936,47 @@ importClass(
 
 \begin_layout Plain Layout
 
-var defaultCache = component.context.attributes.get('com.threecrickets.prudence.cache'
-)
+var chainCache = component.context.attributes.get('com.threecrickets.prudence.cache')
 \end_layout
 
 \begin_layout Plain Layout
 
-var chainCache = new ChainCache()
 \end_layout
 
 \begin_layout Plain Layout
 
-chainCache.caches.add(defaultCache)
+// The constructor accepts a max size in bytes (defaults to 1 MB)
 \end_layout
 
 \begin_layout Plain Layout
 
-chainCache.caches.add(new H2Cache('cache/prudence/prudence')) 
+// (Note that you have to make sure that the JVM has been started with a
+ heap
 \end_layout
 
 \begin_layout Plain Layout
 
-component.context.attributes.put('com.threecrickets.prudence.cache', chainCache)
+// size large enough for your cache)
+\end_layout
+
+\begin_layout Plain Layout
+
+chainCache.caches.add(0, new InProcessMemoryCache(10 * 1024 * 1024 * 1024))
+ // 10 MB
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// H2 will store its database files in the supplied path
+\end_layout
+
+\begin_layout Plain Layout
+
+chainCache.caches.add(new H2Cache('cache/prudence/prudence'))
 \end_layout
 
 \end_inset
@@ -16929,15 +16989,7 @@ Prudence also comes with
 \begin_inset CommandInset href
 LatexCommand href
 name "memcached"
-target "http://memcached.org/"
-
-\end_inset
-
-, 
-\begin_inset CommandInset href
-LatexCommand href
-name "Hazelcast"
-target "http://www.hazelcast.com/"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/MemcachedCache.html"
 
 \end_inset
 
@@ -16945,12 +16997,16 @@ target "http://www.hazelcast.com/"
 \begin_inset CommandInset href
 LatexCommand href
 name "MongoDB"
-target "http://www.mongodb.org/"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/MongoDbCache.html"
 
 \end_inset
 
  cache backends, which can similarly be chained together.
- For more information about distributed caches, see 
+ Here are simple examples:
+\end_layout
+
+\begin_layout Standard
+(For more information about distributed cache backends, see 
 \bar under
 Prudence clusters (page 
 \begin_inset CommandInset ref
@@ -16961,16 +17017,7 @@ reference "../cluster/"
 
 )
 \bar default
-.
- There's a full reference in the 
-\begin_inset CommandInset href
-LatexCommand href
-name "Java API documentation"
-target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/package-summary.html"
-
-\end_inset
-
-, but here are simple examples:
+.)
 \end_layout
 
 \begin_layout Standard
@@ -16996,37 +17043,7 @@ importClass(
 
 \begin_layout Plain Layout
 
-	com.threecrickets.prudence.cache.MongoCache)
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-// The constructor accepts a max size in bytes (defaults to 1MB)
-\end_layout
-
-\begin_layout Plain Layout
-
-// (Note that you have to make sure that the JVM has been started with a
- heap
-\end_layout
-
-\begin_layout Plain Layout
-
-// size large enough for your cache)
-\end_layout
-
-\begin_layout Plain Layout
-
-component.context.attributes.put('com.threecrickets.prudence.cache',
-\end_layout
-
-\begin_layout Plain Layout
-
-	new InProcessMemoryCache(1024 * 1024 * 1024 * 1024) // 1GB
+	com.threecrickets.prudence.cache.MongoDbCache)
 \end_layout
 
 \begin_layout Plain Layout
@@ -17083,7 +17100,7 @@ component.context.attributes.put('com.threecrickets.prudence.cache',
 
 \begin_layout Plain Layout
 
-	new MongoCache())
+	new MongoDbCache())
 \end_layout
 
 \end_inset
@@ -22097,12 +22114,27 @@ target "http://www.hazelcast.com/"
 
 \end_inset
 
- cluster, discovering each other via IP multicasting.
+ cluster, discovering each other, as well as detecting member failures,
+ via IP multicasting.
+ You can see log messages about members being added to or removed from the
+ cluster in the 
+\bar under
+``prudence.log'' file of any node (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../logging/"
+
+\end_inset
+
+)
+\bar default
+ from the logger named ``com.hazelcast.cluster.ClusterManager''.
 \end_layout
 
 \begin_layout Standard
-That's the default behavior: Hazelcast is otherwise very configurable, providing
- you with fine-grained control over cluster discovery and distribution.
+Multicast discovery is the default behavior, but Hazelcast is otherwise
+ very configurable, providing you with fine-grained control over both member
+ discovery, distribution, and fault tolerance.
  Edit your ``/configuration/hazelcast.conf'' file according to the 
 \begin_inset CommandInset href
 LatexCommand href
@@ -22115,7 +22147,7 @@ target "http://www.hazelcast.com/documentation.jsp#Config"
 \end_layout
 
 \begin_layout Subsection
-Cluster API
+Distributed Tasks
 \end_layout
 
 \begin_layout Standard
@@ -22130,7 +22162,17 @@ reference "../api/|application-distributed-task"
 
 )
 \bar default
- to execute tasks anywhere and 
+ to execute tasks anywhere (and even everywhere) in the cluster.
+ Use the ``where'' argument to control exactly where you want the task to
+ run.
+\end_layout
+
+\begin_layout Subsection
+Distributed State
+\end_layout
+
+\begin_layout Standard
+Use 
 \bar under
 application.distributedGlobals (page 
 \begin_inset CommandInset ref
@@ -22141,7 +22183,7 @@ reference "../api/|application-distributed-globals"
 
 )
 \bar default
- to share state.
+ to share state, with cluster-wide atomic operations.
 \end_layout
 
 \begin_layout Subsection
@@ -22149,21 +22191,23 @@ Distributed Cache
 \end_layout
 
 \begin_layout Standard
-If you're already within a Hazelcast cluster, you might as well set up a
- 
+By default, Prudence chains an in-process memory cache over a 
 \begin_inset CommandInset href
 LatexCommand href
-name "HazelcastCache"
+name "Hazelcast cache"
 target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/HazelcastCache.html"
 
 \end_inset
 
- for your cache backend.
- Otherwise, Prudence also supports 
+, so you are already reaping the benefits of the cluster.
+\end_layout
+
+\begin_layout Standard
+Prudence also supports 
 \begin_inset CommandInset href
 LatexCommand href
 name "memcached"
-target "http://memcached.org/"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/MemcachedCache.html"
 
 \end_inset
 
@@ -22176,11 +22220,8 @@ target "http://www.mongodb.org/"
 \end_inset
 
 , and even SQL-database based distributed caches.
- Of course, you can chain several backends together.
-\end_layout
-
-\begin_layout Standard
-See 
+ Of course, you can chain several distributed backends together.
+ See 
 \bar under
 document.cache (page 
 \begin_inset CommandInset ref

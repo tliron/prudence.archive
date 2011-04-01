@@ -43,7 +43,7 @@ import com.mongodb.MongoException;
  * 
  * @author Tal Liron
  */
-public class MongoCache implements Cache
+public class MongoDbCache implements Cache
 {
 	//
 	// Construction
@@ -56,7 +56,7 @@ public class MongoCache implements Cache
 	 * @throws MongoException
 	 * @throws UnknownHostException
 	 */
-	public MongoCache() throws UnknownHostException, MongoException
+	public MongoDbCache() throws UnknownHostException, MongoException
 	{
 		this( new Mongo() );
 	}
@@ -67,7 +67,7 @@ public class MongoCache implements Cache
 	 * @param mongo
 	 *        The MongoDB connection
 	 */
-	public MongoCache( Mongo mongo )
+	public MongoDbCache( Mongo mongo )
 	{
 		this( mongo, "prudence" );
 	}
@@ -80,7 +80,7 @@ public class MongoCache implements Cache
 	 * @param dbName
 	 *        The MongoDB database name
 	 */
-	public MongoCache( Mongo mongo, String dbName )
+	public MongoDbCache( Mongo mongo, String dbName )
 	{
 		this( mongo.getDB( dbName ), "cache" );
 	}
@@ -95,7 +95,7 @@ public class MongoCache implements Cache
 	 * @param collectionName
 	 *        The name of the collection to use for the cache
 	 */
-	public MongoCache( Mongo mongo, String dbName, String collectionName )
+	public MongoDbCache( Mongo mongo, String dbName, String collectionName )
 	{
 		this( mongo.getDB( dbName ), collectionName );
 	}
@@ -108,7 +108,7 @@ public class MongoCache implements Cache
 	 * @param collectionName
 	 *        The name of the collection to use for the cache
 	 */
-	public MongoCache( DB db, String collectionName )
+	public MongoDbCache( DB db, String collectionName )
 	{
 		cacheCollection = db.getCollection( collectionName );
 	}
@@ -118,7 +118,7 @@ public class MongoCache implements Cache
 	 * 
 	 * @param collection
 	 */
-	public MongoCache( DBCollection collection )
+	public MongoDbCache( DBCollection collection )
 	{
 		this.cacheCollection = collection;
 		collection.ensureIndex( TAG_INDEX );

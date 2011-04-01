@@ -16,7 +16,8 @@ importClass(
 	java.util.concurrent.Executors,
 	org.restlet.Component,
 	com.threecrickets.prudence.DelegatedStatusService,
-	com.threecrickets.prudence.cache.InProcessMemoryCache,
+	com.threecrickets.prudence.cache.ChainCache,
+	com.threecrickets.prudence.cache.HazelcastCache,
 	Packages.it.sauronsoftware.cron4j.Scheduler)
 
 //
@@ -61,7 +62,9 @@ component.context.attributes.put('com.threecrickets.prudence.scheduler', schedul
 // Cache
 //
 
-component.context.attributes.put('com.threecrickets.prudence.cache', new InProcessMemoryCache())
+var cache = new ChainCache()
+cache.caches.add(new HazelcastCache())
+component.context.attributes.put('com.threecrickets.prudence.cache', cache)
 
 //
 // Predefined Shared Globals

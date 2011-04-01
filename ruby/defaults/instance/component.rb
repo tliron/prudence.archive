@@ -16,7 +16,8 @@ import java.lang.Runtime
 import java.util.concurrent.Executors
 import org.restlet.Component
 import com.threecrickets.prudence.DelegatedStatusService
-import com.threecrickets.prudence.cache.InProcessMemoryCache
+import com.threecrickets.prudence.cache.ChainCache
+import com.threecrickets.prudence.cache.HazelcastCache
 import 'it.sauronsoftware.cron4j.Scheduler'
 
 #
@@ -61,7 +62,9 @@ $component.context.attributes['com.threecrickets.prudence.scheduler'] = $schedul
 # Cache
 #
 
-$component.context.attributes['com.threecrickets.prudence.cache'] = InProcessMemoryCache.new
+$cache = ChainCache.new
+$cache.caches.add HazelcastCache.new
+$component.context.attributes['com.threecrickets.prudence.cache'] = $cache
 
 #
 # Predefined Shared Globals
