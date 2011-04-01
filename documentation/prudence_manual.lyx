@@ -4230,7 +4230,7 @@ target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prude
 \end_layout
 
 \begin_layout Enumerate
-Creates a global, thread pool executor, which is used for 
+Creates a global thread pool executor, which is used for 
 \bar under
 application.task (page 
 \begin_inset CommandInset ref
@@ -4243,15 +4243,23 @@ reference "../api/|application-task"
 \end_layout
 
 \begin_layout Enumerate
-Creates an 
+Creates a 
 \begin_inset CommandInset href
 LatexCommand href
-name "InProcessMemoryCache"
-target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/InProcessMemoryCache.html"
+name "cache chain"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/ChainCache.html"
 
 \end_inset
 
- backend, which is used for 
+ with a 
+\begin_inset CommandInset href
+LatexCommand href
+name "Hazelcast cache"
+target "http://threecrickets.com/prudence/api/index.html?com/threecrickets/prudence/cache/HazelcastCache.html"
+
+\end_inset
+
+, used for 
 \bar under
 document.cache (page 
 \begin_inset CommandInset ref
