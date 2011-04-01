@@ -370,29 +370,20 @@ public abstract class IoUtil
 	}
 
 	/**
-	 * Reads a string as UTF-8 from a byte stream. Empty strings are not
-	 * supported: null is returned if there is no string information.
+	 * Reads a string as UTF-8 from a byte stream.
 	 * <p>
 	 * Unlike {@link DataInput#readUTF()}, this implementation does not limit
 	 * the string size.
 	 * 
 	 * @param in
 	 *        The stream
-	 * @return The string or null
+	 * @return The string
 	 * @throws IOException
 	 * @see {@link #writeUtf8(ObjectOutput, String)}
 	 */
-	public static String readUtf8orNull( DataInput in ) throws IOException
+	public static String readUtf8( DataInput in ) throws IOException
 	{
 		int length = in.readInt();
-		if( length == 0 )
-			return null;
-
-		// char[] chars = new char[length];
-		// for( int c = 0; c < length; c++ )
-		// chars[c] = in.readChar();
-		// return new String( chars );
-
 		byte[] bytes = new byte[length];
 		in.readFully( bytes );
 		return new String( bytes, "UTF-8" );
@@ -410,7 +401,7 @@ public abstract class IoUtil
 	 * @param string
 	 *        The string or null
 	 * @throws IOException
-	 * @see {@link #readUtf8orNull(ObjectInput)}
+	 * @see {@link #readUtf8(ObjectInput)}
 	 */
 	public static void writeUtf8( DataOutput out, String string ) throws IOException
 	{
@@ -419,7 +410,6 @@ public abstract class IoUtil
 		else
 		{
 			out.writeInt( string.length() );
-			// out.writeChars( string );
 			out.write( string.getBytes( "UTF-8" ) );
 		}
 	}

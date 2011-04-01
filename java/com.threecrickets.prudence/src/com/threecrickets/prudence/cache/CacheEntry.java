@@ -252,10 +252,10 @@ public class CacheEntry implements Externalizable
 	 */
 	public int getSize()
 	{
-		if( string != null )
-			return string.getBytes().length;
-		else
+		if( bytes != null )
 			return bytes.length;
+		else
+			return string.getBytes().length;
 	}
 
 	/**
@@ -394,13 +394,15 @@ public class CacheEntry implements Externalizable
 
 	public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
 	{
-		int byteSize = in.readInt();
-		if( byteSize > 0 )
+		if( in.readBoolean() )
 		{
+			int byteSize = in.readInt();
 			bytes = new byte[byteSize];
 			in.readFully( bytes );
 		}
-		string = IoUtil.readUtf8orNull( in );
+		else
+			string = IoUtil.readUtf8( in );
+
 		mediaType = MediaType.valueOf( in.readUTF() );
 		language = Language.valueOf( in.readUTF() );
 		characterSet = CharacterSet.valueOf( in.readUTF() );
@@ -412,14 +414,18 @@ public class CacheEntry implements Externalizable
 
 	public void writeExternal( ObjectOutput out ) throws IOException
 	{
-		if( ( bytes != null ) && bytes.length > 0 )
+		if( bytes != null )
 		{
+			out.writeBoolean( true );
 			out.writeInt( bytes.length );
 			out.write( bytes );
 		}
 		else
-			out.writeInt( 0 );
-		IoUtil.writeUtf8( out, string );
+		{
+			out.writeBoolean( false );
+			IoUtil.writeUtf8( out, string );
+		}
+
 		out.writeUTF( nonNull( mediaType ) );
 		out.writeUTF( nonNull( language ) );
 		out.writeUTF( nonNull( characterSet ) );
