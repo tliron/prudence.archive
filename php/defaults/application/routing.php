@@ -154,7 +154,7 @@ $application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultIn
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController(); // Adds PHP predefined variables
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode;
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.cacheKeyPatternHandlers'] = $cache_key_pattern_handlers;
-$application_globals['com.threecrickets.prudence.GeneratedTextResource.scriptletPlugins'] = $scriptlet_plugins
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.scriptletPlugins'] = $scriptlet_plugins;
 
 $dynamic_web = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.GeneratedTextResource'));
 $dynamic_web_base_url = fix_url($dynamic_web_base_url);
