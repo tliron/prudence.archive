@@ -27,6 +27,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
+import com.threecrickets.prudence.util.IoUtil;
 
 /**
  * A <a href="http://www.mongodb.org/">MongoDB</a>-backed cache.
@@ -177,7 +178,7 @@ public class MongoDbCache implements Cache
 		{
 			try
 			{
-				Binary binary = new Binary( BINARY_TYPE, entry.toBytes() );
+				Binary binary = new Binary( BINARY_TYPE, IoUtil.serialize( entry ) );
 				set.put( "binary", binary );
 			}
 			catch( IOException x )

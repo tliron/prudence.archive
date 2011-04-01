@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -294,6 +296,73 @@ public abstract class IoUtil
 		finally
 		{
 			zipFile.close();
+		}
+	}
+
+	/**
+	 * Serializes an object.
+	 * 
+	 * @param o
+	 *        The object
+	 * @return The bytes
+	 * @throws IOException
+	 */
+	public static byte[] serialize( Object o ) throws IOException
+	{
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		try
+		{
+			ObjectOutputStream stream = new ObjectOutputStream( byteStream );
+			try
+			{
+				stream.writeObject( o );
+			}
+			finally
+			{
+				stream.close();
+			}
+		}
+		finally
+		{
+			byteStream.close();
+		}
+
+		return byteStream.toByteArray();
+	}
+
+	/**
+	 * Deserializes an object.
+	 * 
+	 * @param <V>
+	 *        The object type
+	 * @param bytes
+	 *        The bytes or null
+	 * @return The object or null
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	public static <V> V deserialize( byte[] bytes ) throws IOException, ClassNotFoundException
+	{
+		if( bytes == null )
+			return null;
+
+		ByteArrayInputStream byteStream = new ByteArrayInputStream( bytes );
+		try
+		{
+			ObjectInputStream stream = new ObjectInputStream( byteStream );
+			try
+			{
+				return (V) stream.readObject();
+			}
+			finally
+			{
+				stream.close();
+			}
+		}
+		finally
+		{
+			byteStream.close();
 		}
 	}
 

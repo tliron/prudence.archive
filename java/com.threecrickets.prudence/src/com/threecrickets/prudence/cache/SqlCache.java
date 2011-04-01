@@ -151,16 +151,16 @@ public class SqlCache implements Cache
 				{
 					if( fresh )
 					{
-						statement.execute( "DROP TABLE IF EXISTS " + entryTableName );
-						statement.execute( "DROP TABLE IF EXISTS " + tagTableName );
+						statement.execute( "DROP TABLE IF EXISTS " + cacheTableName );
+						statement.execute( "DROP TABLE IF EXISTS " + cacheTagsTableName );
 					}
 
 					statement
 						.execute( "CREATE TABLE IF NOT EXISTS "
-							+ entryTableName
+							+ cacheTableName
 							+ " (key VARCHAR(255) PRIMARY KEY, data BLOB, media_type VARCHAR(255), language VARCHAR(255), character_set VARCHAR(255), encoding VARCHAR(255), document_modification_date TIMESTAMP, expiration_date TIMESTAMP)" );
-					statement.execute( "CREATE TABLE IF NOT EXISTS " + tagTableName + " (key VARCHAR(255), tag VARCHAR(255), FOREIGN KEY(key) REFERENCES " + entryTableName + "(key) ON DELETE CASCADE)" );
-					statement.execute( "CREATE INDEX IF NOT EXISTS " + tagTableName + "_tag_idx ON " + tagTableName + " (tag)" );
+					statement.execute( "CREATE TABLE IF NOT EXISTS " + cacheTagsTableName + " (key VARCHAR(255), tag VARCHAR(255), FOREIGN KEY(key) REFERENCES " + cacheTableName + "(key) ON DELETE CASCADE)" );
+					statement.execute( "CREATE INDEX IF NOT EXISTS " + cacheTagsTableName + "_tag_idx ON " + cacheTagsTableName + " (tag)" );
 				}
 				finally
 				{
@@ -200,7 +200,7 @@ public class SqlCache implements Cache
 
 				// Try updating this key
 
-				String sql = "UPDATE " + entryTableName + " SET data=?, media_type=?, language=?, character_set=?, encoding=?, document_modification_date=?, expiration_date=? WHERE key=?";
+				String sql = "UPDATE " + cacheTableName + " SET data=?, media_type=?, language=?, character_set=?, encoding=?, document_modification_date=?, expiration_date=? WHERE key=?";
 				PreparedStatement statement = connection.prepareStatement( sql );
 				try
 				{
@@ -250,7 +250,7 @@ public class SqlCache implements Cache
 
 					// delete( connection, key );
 
-					sql = "INSERT INTO " + entryTableName + " (key, data, media_type, language, character_set, encoding, document_modification_date, expiration_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+					sql = "INSERT INTO " + cacheTableName + " (key, data, media_type, language, character_set, encoding, document_modification_date, expiration_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 					statement = connection.prepareStatement( sql );
 					try
 					{
@@ -272,7 +272,7 @@ public class SqlCache implements Cache
 
 				// Clean out existing tags for this key
 
-				sql = "DELETE FROM " + tagTableName + " WHERE key=?";
+				sql = "DELETE FROM " + cacheTagsTableName + " WHERE key=?";
 				statement = connection.prepareStatement( sql );
 				try
 				{
@@ -288,7 +288,7 @@ public class SqlCache implements Cache
 
 				if( tags.iterator().hasNext() )
 				{
-					sql = "INSERT INTO " + tagTableName + " (key, tag) VALUES (?, ?)";
+					sql = "INSERT INTO " + cacheTagsTableName + " (key, tag) VALUES (?, ?)";
 					statement = connection.prepareStatement( sql );
 					statement.setString( 1, key );
 					try
@@ -330,7 +330,7 @@ public class SqlCache implements Cache
 			Connection connection = dataSource.getConnection();
 			try
 			{
-				String sql = "SELECT data, media_type, language, character_set, encoding, document_modification_date, expiration_date FROM " + entryTableName + " WHERE key=?";
+				String sql = "SELECT data, media_type, language, character_set, encoding, document_modification_date, expiration_date FROM " + cacheTableName + " WHERE key=?";
 				PreparedStatement statement = connection.prepareStatement( sql );
 				try
 				{
@@ -433,7 +433,7 @@ public class SqlCache implements Cache
 
 				ArrayList<Lock> locks = new ArrayList<Lock>( tagged.size() );
 
-				String sql = "DELETE FROM " + entryTableName + " WHERE key IN (";
+				String sql = "DELETE FROM " + cacheTableName + " WHERE key IN (";
 				for( String key : tagged )
 				{
 					sql += "?,";
@@ -492,7 +492,7 @@ public class SqlCache implements Cache
 			Connection connection = dataSource.getConnection();
 			try
 			{
-				String sql = "DELETE FROM " + entryTableName + " WHERE expiration_date<?";
+				String sql = "DELETE FROM " + cacheTableName + " WHERE expiration_date<?";
 				PreparedStatement statement = connection.prepareStatement( sql );
 				try
 				{
@@ -547,12 +547,12 @@ public class SqlCache implements Cache
 	/**
 	 * The entry table name.
 	 */
-	private final String entryTableName = "prudence_cache";
+	private final String cacheTableName = "prudence_cache";
 
 	/**
 	 * The tag table name.
 	 */
-	private final String tagTableName = "prudence_cache_tag";
+	private final String cacheTagsTableName = "prudence_cache_tags";
 
 	/**
 	 * The current max cache size.
@@ -577,7 +577,7 @@ public class SqlCache implements Cache
 		Statement statement = connection.createStatement();
 		try
 		{
-			String sql = "SELECT COUNT(key) FROM " + entryTableName;
+			String sql = "SELECT COUNT(key) FROM " + cacheTableName;
 			ResultSet rs = statement.executeQuery( sql );
 			try
 			{
@@ -612,7 +612,7 @@ public class SqlCache implements Cache
 		lock.lock();
 		try
 		{
-			String sql = "DELETE FROM " + entryTableName + " WHERE key=?";
+			String sql = "DELETE FROM " + cacheTableName + " WHERE key=?";
 			PreparedStatement statement = connection.prepareStatement( sql );
 			try
 			{
@@ -648,7 +648,7 @@ public class SqlCache implements Cache
 	private List<String> getTagged( Connection connection, String tag ) throws SQLException
 	{
 		ArrayList<String> tagged = new ArrayList<String>();
-		String sql = "SELECT key FROM " + tagTableName + " WHERE tag=?";
+		String sql = "SELECT key FROM " + cacheTagsTableName + " WHERE tag=?";
 		PreparedStatement statement = connection.prepareStatement( sql );
 		try
 		{

@@ -131,11 +131,11 @@ public class InProcessMemoryCache implements Cache
 		{
 			for( String tag : tags )
 			{
-				Set<String> tagged = tagMap.get( tag );
+				Set<String> tagged = cacheTags.get( tag );
 				if( tagged == null )
 				{
 					tagged = new CopyOnWriteArraySet<String>();
-					Set<String> existing = tagMap.putIfAbsent( tag, tagged );
+					Set<String> existing = cacheTags.putIfAbsent( tag, tagged );
 					if( existing != null )
 						tagged = existing;
 				}
@@ -175,7 +175,7 @@ public class InProcessMemoryCache implements Cache
 
 	public void invalidate( String tag )
 	{
-		Set<String> tagged = tagMap.remove( tag );
+		Set<String> tagged = cacheTags.remove( tag );
 		if( tagged != null )
 		{
 			for( String key : tagged )
@@ -214,7 +214,7 @@ public class InProcessMemoryCache implements Cache
 		// This is not atomic, but does it matter?
 
 		cache.clear();
-		tagMap.clear();
+		cacheTags.clear();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -228,7 +228,7 @@ public class InProcessMemoryCache implements Cache
 	/**
 	 * The tagged keys, for invalidation.
 	 */
-	private final ConcurrentMap<String, Set<String>> tagMap = new ConcurrentHashMap<String, Set<String>>();
+	private final ConcurrentMap<String, Set<String>> cacheTags = new ConcurrentHashMap<String, Set<String>>();
 
 	/**
 	 * The current cache size.

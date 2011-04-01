@@ -24,8 +24,8 @@ import com.hazelcast.core.MultiMap;
  * <p>
  * Uses a Hazelcast map and a Hazelcast multimap, defaulting to the names
  * "com.threecrickets.prudence.prudence.cache" and
- * "com.threecrickets.prudence.prduence.tagMap" respectively. Refer to Hazelcast
- * documentation for instructions on how to configure them.
+ * "com.threecrickets.prudence.prduence.cacheTags" respectively. Refer to
+ * Hazelcast documentation for instructions on how to configure them.
  * 
  * @author Tal Liron
  */
@@ -51,7 +51,7 @@ public class HazelcastCache implements Cache
 	 */
 	public HazelcastCache( HazelcastInstance hazelcast )
 	{
-		this( hazelcast, "com.threecrickets.prudence.cache", "com.threecrickets.prudence.tagMap" );
+		this( hazelcast, "com.threecrickets.prudence.cache", "com.threecrickets.prudence.cacheTags" );
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class HazelcastCache implements Cache
 	public HazelcastCache( HazelcastInstance hazelcast, String cacheName, String tagMapName )
 	{
 		this.cacheName = cacheName;
-		this.tagMapName = tagMapName;
+		this.cacheTagsName = tagMapName;
 		this.hazelcast = hazelcast != null ? hazelcast : Hazelcast.getDefaultInstance();
 	}
 
@@ -165,7 +165,7 @@ public class HazelcastCache implements Cache
 	/**
 	 * The Hazelcast map name for the tag map.
 	 */
-	private final String tagMapName;
+	private final String cacheTagsName;
 
 	/**
 	 * Whether to print debug messages to standard out.
@@ -189,6 +189,6 @@ public class HazelcastCache implements Cache
 	 */
 	private MultiMap<String, String> getTagMap()
 	{
-		return hazelcast.getMultiMap( tagMapName );
+		return hazelcast.getMultiMap( cacheTagsName );
 	}
 }
