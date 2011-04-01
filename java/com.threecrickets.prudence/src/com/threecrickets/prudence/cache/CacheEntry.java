@@ -365,7 +365,7 @@ public class CacheEntry implements Externalizable
 			bytes = new byte[byteSize];
 			in.readFully( bytes );
 		}
-		string = in.readUTF();
+		string = IoUtil.readUTF( in );
 		mediaType = MediaType.valueOf( in.readUTF() );
 		language = Language.valueOf( in.readUTF() );
 		characterSet = CharacterSet.valueOf( in.readUTF() );
@@ -384,7 +384,7 @@ public class CacheEntry implements Externalizable
 		}
 		else
 			out.writeInt( 0 );
-		out.writeUTF( nonNull( string ) );
+		IoUtil.writeUTF( out, nonNull( string ) );
 		out.writeUTF( nonNull( mediaType ) );
 		out.writeUTF( nonNull( language ) );
 		out.writeUTF( nonNull( characterSet ) );
