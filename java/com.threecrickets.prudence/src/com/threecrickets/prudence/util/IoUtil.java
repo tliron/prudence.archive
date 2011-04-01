@@ -370,47 +370,57 @@ public abstract class IoUtil
 	}
 
 	/**
-	 * Reads a UTF string from a data input.
+	 * Reads a string as UTF-8 from a byte stream. Empty strings are not
+	 * supported: null is returned if there is no string information.
 	 * <p>
-	 * The string is expected to have been stored as a simple array of bytes,
-	 * which is not most effecient, but is the most safe in terms of encoding
-	 * issues.
+	 * Unlike {@link DataInput#readUTF()}, this implementation does not limit
+	 * the string size.
 	 * 
 	 * @param in
-	 *        The input
-	 * @return The string
+	 *        The stream
+	 * @return The string or null
 	 * @throws IOException
-	 * @see {@link #writeUTF(ObjectOutput, String)}
+	 * @see {@link #writeUtf8(ObjectOutput, String)}
 	 */
-	public static String readUTF( DataInput in ) throws IOException
+	public static String readUtf8orNull( DataInput in ) throws IOException
 	{
 		int length = in.readInt();
+		if( length == 0 )
+			return null;
+
+		// char[] chars = new char[length];
+		// for( int c = 0; c < length; c++ )
+		// chars[c] = in.readChar();
+		// return new String( chars );
+
 		byte[] bytes = new byte[length];
 		in.readFully( bytes );
-		return new String( bytes );
+		return new String( bytes, "UTF-8" );
 	}
 
 	/**
-	 * Writes a UTF string to a data output.
+	 * Writes a string in UTF-8 to a byte stream. This method does not
+	 * differentiate between empty strings and nulls.
 	 * <p>
-	 * The string is Fstored as a simple array of bytes, which is not most
-	 * effecient, but is the most safe in terms of encoding issues.
+	 * Unlike {@link DataOutput#writeUTF(String)}, this implementation does not
+	 * limit the string size.
 	 * 
 	 * @param out
-	 *        The output
+	 *        The stream
 	 * @param string
-	 *        The string
+	 *        The string or null
 	 * @throws IOException
-	 * @see {@link #readUTF(ObjectInput)}
+	 * @see {@link #readUtf8orNull(ObjectInput)}
 	 */
-	public static void writeUTF( DataOutput out, String string ) throws IOException
+	public static void writeUtf8( DataOutput out, String string ) throws IOException
 	{
 		if( string == null )
 			out.writeInt( 0 );
 		else
 		{
 			out.writeInt( string.length() );
-			out.write( string.getBytes() );
+			// out.writeChars( string );
+			out.write( string.getBytes( "UTF-8" ) );
 		}
 	}
 
