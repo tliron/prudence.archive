@@ -396,8 +396,7 @@ public class CacheEntry implements Externalizable
 	{
 		if( in.readBoolean() )
 		{
-			int byteSize = in.readInt();
-			bytes = new byte[byteSize];
+			bytes = new byte[in.readInt()];
 			in.readFully( bytes );
 		}
 		else

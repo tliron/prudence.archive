@@ -28,6 +28,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
@@ -370,7 +372,41 @@ public abstract class IoUtil
 	}
 
 	/**
-	 * Reads a string as UTF-8 from a byte stream.
+	 * Safely decodes a UTF-8-encoded string.
+	 * 
+	 * @param bytes
+	 *        The bytes
+	 * @return The string
+	 */
+	public static String decodeUtf8( byte[] bytes )
+	{
+		return UTF8.decode( ByteBuffer.wrap( bytes ) ).toString();
+	}
+
+	/**
+	 * Safely decodes a string as UTF-8.
+	 * 
+	 * @param string
+	 *        The string
+	 * @return The bytes
+	 */
+	public static byte[] encodeUtf8( String string )
+	{
+		ByteBuffer buffer = UTF8.encode( string );
+		byte[] bytes;
+		if( buffer.hasArray() )
+			bytes = buffer.array();
+		else
+		{
+			buffer.clear();
+			bytes = new byte[buffer.capacity()];
+			buffer.get( bytes );
+		}
+		return bytes;
+	}
+
+	/**
+	 * Safely reads a string as UTF-8 from a byte stream.
 	 * <p>
 	 * Unlike {@link DataInput#readUTF()}, this implementation does not limit
 	 * the string size.
@@ -379,18 +415,18 @@ public abstract class IoUtil
 	 *        The stream
 	 * @return The string
 	 * @throws IOException
-	 * @see {@link #writeUtf8(ObjectOutput, String)}
+	 * @see #writeUtf8(ObjectOutput, String)
+	 * @see #decodeUtf8(byte[])
 	 */
 	public static String readUtf8( DataInput in ) throws IOException
 	{
-		int length = in.readInt();
-		byte[] bytes = new byte[length];
+		byte[] bytes = new byte[in.readInt()];
 		in.readFully( bytes );
-		return new String( bytes, "UTF-8" );
+		return decodeUtf8( bytes );
 	}
 
 	/**
-	 * Writes a string in UTF-8 to a byte stream. This method does not
+	 * Safely writes a string in UTF-8 to a byte stream. This method does not
 	 * differentiate between empty strings and nulls.
 	 * <p>
 	 * Unlike {@link DataOutput#writeUTF(String)}, this implementation does not
@@ -401,7 +437,8 @@ public abstract class IoUtil
 	 * @param string
 	 *        The string or null
 	 * @throws IOException
-	 * @see {@link #readUtf8(ObjectInput)}
+	 * @see #readUtf8(ObjectInput)
+	 * @see #encodeUtf8(String)
 	 */
 	public static void writeUtf8( DataOutput out, String string ) throws IOException
 	{
@@ -409,8 +446,9 @@ public abstract class IoUtil
 			out.writeInt( 0 );
 		else
 		{
-			out.writeInt( string.length() );
-			out.write( string.getBytes( "UTF-8" ) );
+			byte[] bytes = encodeUtf8( string );
+			out.writeInt( bytes.length );
+			out.write( bytes );
 		}
 	}
 
@@ -420,6 +458,11 @@ public abstract class IoUtil
 	private IoUtil()
 	{
 	}
+
+	/**
+	 * UTF-8 charset.
+	 */
+	private static final Charset UTF8 = Charset.forName( "UTF-8" );
 
 	/**
 	 * Cache of unique files.
