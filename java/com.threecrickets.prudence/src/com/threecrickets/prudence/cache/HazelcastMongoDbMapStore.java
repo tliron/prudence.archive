@@ -107,6 +107,7 @@ public abstract class HazelcastMongoDbMapStore<K, V> implements MapStore<K, V>
 	// MapStore
 	//
 
+	@SuppressWarnings("unchecked")
 	public V load( K key )
 	{
 		DBCollection collection = getCollection();
@@ -116,7 +117,7 @@ public abstract class HazelcastMongoDbMapStore<K, V> implements MapStore<K, V>
 
 		DBObject value = collection.findOne( query );
 		if( value != null )
-			return fromBinary( (byte[]) value.get( "value" ) );
+			return (V) fromBinary( (byte[]) value.get( "value" ) );
 		return null;
 	}
 
@@ -231,7 +232,7 @@ public abstract class HazelcastMongoDbMapStore<K, V> implements MapStore<K, V>
 	 *        The binary or null
 	 * @return The object or null
 	 */
-	private static <V> V fromBinary( byte[] binary )
+	private static Object fromBinary( byte[] binary )
 	{
 		if( binary == null )
 			return null;

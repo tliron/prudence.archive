@@ -341,8 +341,7 @@ public abstract class IoUtil
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	@SuppressWarnings("unchecked")
-	public static <V> V deserialize( byte[] bytes ) throws IOException, ClassNotFoundException
+	public static Object deserialize( byte[] bytes ) throws IOException, ClassNotFoundException
 	{
 		if( bytes == null )
 			return null;
@@ -353,7 +352,7 @@ public abstract class IoUtil
 			ObjectInputStream stream = new ObjectInputStream( byteStream );
 			try
 			{
-				return (V) stream.readObject();
+				return stream.readObject();
 			}
 			finally
 			{
