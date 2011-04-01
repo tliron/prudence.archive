@@ -15,6 +15,8 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -368,19 +370,19 @@ public abstract class IoUtil
 	}
 
 	/**
-	 * Reads a UTF string from a stream.
+	 * Reads a UTF string from a data input.
 	 * <p>
 	 * The string is expected to have been stored as a simple array of bytes,
 	 * which is not most effecient, but is the most safe in terms of encoding
 	 * issues.
 	 * 
 	 * @param in
-	 *        The stream
+	 *        The input
 	 * @return The string
 	 * @throws IOException
 	 * @see {@link #writeUTF(ObjectOutput, String)}
 	 */
-	public static String readUTF( ObjectInput in ) throws IOException
+	public static String readUTF( DataInput in ) throws IOException
 	{
 		int length = in.readInt();
 		byte[] bytes = new byte[length];
@@ -389,19 +391,19 @@ public abstract class IoUtil
 	}
 
 	/**
-	 * Writes a UTF string to a stream.
+	 * Writes a UTF string to a data output.
 	 * <p>
 	 * The string is Fstored as a simple array of bytes, which is not most
 	 * effecient, but is the most safe in terms of encoding issues.
 	 * 
 	 * @param out
-	 *        The stream
+	 *        The output
 	 * @param string
 	 *        The string
 	 * @throws IOException
 	 * @see {@link #readUTF(ObjectInput)}
 	 */
-	public static void writeUTF( ObjectOutput out, String string ) throws IOException
+	public static void writeUTF( DataOutput out, String string ) throws IOException
 	{
 		if( string == null )
 			out.writeInt( 0 );

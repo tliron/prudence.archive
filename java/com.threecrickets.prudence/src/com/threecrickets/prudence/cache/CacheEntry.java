@@ -12,11 +12,13 @@
 package com.threecrickets.prudence.cache;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.Date;
 
 import org.restlet.data.CharacterSet;
@@ -315,6 +317,39 @@ public class CacheEntry implements Externalizable
 	//
 	// Operations
 	//
+
+	/**
+	 * Serialize into a byte array.
+	 * <p>
+	 * Note that unlike {@link IoUtil#serialize(Object)}, this will not include
+	 * the type header.
+	 * 
+	 * @return An array of bytes
+	 * @throws IOException
+	 * @see #CacheEntry(byte[])
+	 */
+	public byte[] toBytes() throws IOException
+	{
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		try
+		{
+			ObjectOutputStream stream = new ObjectOutputStream( byteStream );
+			try
+			{
+				writeExternal( stream );
+			}
+			finally
+			{
+				stream.close();
+			}
+		}
+		finally
+		{
+			byteStream.close();
+		}
+
+		return byteStream.toByteArray();
+	}
 
 	/**
 	 * Creates a {@link StringRepresentation} or a
