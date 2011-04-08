@@ -22127,7 +22127,7 @@ target "http://www.hazelcast.com/"
  You can see log messages about members being added to or removed from the
  cluster in the 
 \bar under
-``prudence.log'' file of any node (page 
+``prudence.log'' files (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../logging/"
@@ -22140,9 +22140,9 @@ reference "../logging/"
 \end_layout
 
 \begin_layout Standard
-Multicast discovery is the default behavior, but Hazelcast is otherwise
- very configurable, providing you with fine-grained control over both member
- discovery, distribution, and fault tolerance.
+IP multicast discovery is the default behavior, but Hazelcast is otherwise
+ very configurable, providing you with fine-grained control over member
+ discovery, data distribution and fault tolerance.
  Edit your ``/configuration/hazelcast.conf'' file according to the 
 \begin_inset CommandInset href
 LatexCommand href
@@ -22154,12 +22154,31 @@ target "http://www.hazelcast.com/documentation.jsp#Config"
 .
 \end_layout
 
+\begin_layout Standard
+How far can Prudence clusters take you? Consider that Hazelcast has been
+ tested and works just fine in cloud clusters of 100 members.
+ So, Prudence can take you very far indeed: however, you must be sure that
+ the other parts of your architecture scale.
+ See our 
+\bar under
+``Scaling Tips'' article (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../../scaling/"
+
+\end_inset
+
+)
+\bar default
+ for an in-depth treatment.
+\end_layout
+
 \begin_layout Subsection
 Distributed Tasks
 \end_layout
 
 \begin_layout Standard
-Within the cluster, you can use 
+You can use 
 \bar under
 application.distributedTask (page 
 \begin_inset CommandInset ref
@@ -22191,7 +22210,7 @@ reference "../api/|application-distributed-globals"
 
 )
 \bar default
- to share state, with cluster-wide atomic operations.
+ to share state, with support for cluster-wide atomic operations.
 \end_layout
 
 \begin_layout Subsection
@@ -23724,7 +23743,7 @@ target "http://developers.facebook.com/blog/post/358"
  Because Prudence is built on the fast JVM platform, you're in good hands
  in this respect.
  Note, however, that there's a potential pitfall to high performance: more
- threads threads per machine would also mean more RAM requirements per machine,
+ threads per machine would also mean more RAM requirements per machine,
  which also costs money.
  Crunch the numbers and make sure that you're actually saving money by increasin
 g performance.
@@ -23877,12 +23896,13 @@ Caching, however, is only effective is there's something in the cache.
 \end_layout
 
 \begin_layout Standard
-In your plan for fine-grained caching, take special care to isolate those
- fragments that cannot be cached, and cache everything around them.
+In your plan for fine-grained caching with Prudence, take special care to
+ isolate those fragments that cannot be cached, and cache everything around
+ them.
 \end_layout
 
 \begin_layout Standard
-Make sure to change Prudence's 
+Make sure to change the 
 \bar under
 cache key (page 
 \begin_inset CommandInset ref
@@ -23895,8 +23915,7 @@ reference "../manual/api/|document-cache-key-pattern"
 \bar default
  to fit the lowest common denominator: you want as many possible requests
  to use the already-cached data, rather than generating new data.
- Note that, by default, Prudence includes the request URI in the cache key
- .
+ Note that, by default, Prudence includes the request URI in the cache key.
  Fragments, though, may very well appear identically in many different URIs.
  You would thus not want the URI as part of their cache key.
 \end_layout
@@ -24090,7 +24109,7 @@ n combinations.
  the tree, no problem: all possibilities were already pre-filled.
  You might end up having to generate and cache thousands of views at once,
  but the difference between generating one view and generating thousands
- of views may be quite small, because the majority of the duration is spend
+ of views may be quite small, because the majority of that duration is spent
  communicating with the database backend.
  
 \end_layout
