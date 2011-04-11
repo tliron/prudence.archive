@@ -171,7 +171,7 @@ public class DelegatedHandler
 
 		try
 		{
-			DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, false, attributes.createParsingContext() );
+			DocumentDescriptor<Executable> documentDescriptor = attributes.createOnce( documentName, false, true, true, false );
 			Executable executable = documentDescriptor.getDocument();
 
 			if( executable.getEnterableExecutionContext() == null )
@@ -179,7 +179,7 @@ public class DelegatedHandler
 				ExecutionContext executionContext = new ExecutionContext( attributes.getWriter(), attributes.getErrorWriter() );
 				attributes.addLibraryLocations( executionContext );
 
-				executionContext.getServices().put( attributes.getDocumentServiceName(), new DocumentService( attributes, documentDescriptor ) );
+				executionContext.getServices().put( attributes.getDocumentServiceName(), new DocumentService<DelegatedHandlerAttributes>( attributes, documentDescriptor ) );
 				executionContext.getServices().put( attributes.getApplicationServiceName(), new ApplicationService() );
 
 				try

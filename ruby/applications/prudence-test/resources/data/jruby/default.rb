@@ -1,4 +1,4 @@
-require 'java'
+include Java
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import org.restlet.ext.json.JsonRepresentation
 import org.json.JSONObject

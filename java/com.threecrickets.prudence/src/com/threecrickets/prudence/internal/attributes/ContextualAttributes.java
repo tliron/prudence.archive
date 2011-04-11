@@ -13,6 +13,7 @@ package com.threecrickets.prudence.internal.attributes;
 
 import java.io.File;
 import java.io.Writer;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Context;
@@ -27,9 +28,13 @@ import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
 import com.threecrickets.scripturian.ParsingContext;
+import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentFormatter;
 import com.threecrickets.scripturian.document.DocumentSource;
+import com.threecrickets.scripturian.exception.DocumentException;
+import com.threecrickets.scripturian.exception.DocumentNotFoundException;
+import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
  * @author Tal Liron
@@ -223,19 +228,48 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 	// DocumentExecutionAttributes
 	//
 
-	/**
-	 * Creates a parsing context based on the attributes.
-	 * 
-	 * @return A parsing context
-	 */
-	public ParsingContext createParsingContext()
+	public DocumentDescriptor<Executable> createOnce( String documentName, boolean isTextWithScriptlets, boolean includeMainSource, boolean includeExtraSources, boolean includeLibrarySources ) throws ParsingException,
+		DocumentException
 	{
 		ParsingContext parsingContext = new ParsingContext();
 		parsingContext.setLanguageManager( getLanguageManager() );
 		parsingContext.setDefaultLanguageTag( getDefaultLanguageTag() );
 		parsingContext.setPrepare( isPrepare() );
-		parsingContext.setDocumentSource( getDocumentSource() );
-		return parsingContext;
+		if( includeMainSource )
+			parsingContext.setDocumentSource( getDocumentSource() );
+
+		Iterator<DocumentSource<Executable>> iterator = null;
+		while( true )
+		{
+			try
+			{
+				if( parsingContext.getDocumentSource() == null )
+					throw new DocumentNotFoundException( documentName );
+
+				return Executable.createOnce( documentName, isTextWithScriptlets, parsingContext );
+			}
+			catch( DocumentNotFoundException x )
+			{
+				if( ( ( iterator == null ) || !iterator.hasNext() ) && includeExtraSources )
+				{
+					Iterable<DocumentSource<Executable>> sources = getExtraDocumentSources();
+					iterator = sources != null ? sources.iterator() : null;
+					includeExtraSources = false;
+				}
+
+				if( ( ( iterator == null ) || !iterator.hasNext() ) && includeLibrarySources )
+				{
+					Iterable<DocumentSource<Executable>> sources = getLibraryDocumentSources();
+					iterator = sources != null ? sources.iterator() : null;
+					includeLibrarySources = false;
+				}
+
+				if( ( iterator == null ) || !iterator.hasNext() )
+					throw x;
+
+				parsingContext.setDocumentSource( iterator.next() );
+			}
+		}
 	}
 
 	/**

@@ -1,5 +1,5 @@
 
-require 'java'
+include Java
 import java.lang.System
 import org.json.JSONObject
 

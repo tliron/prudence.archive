@@ -21,7 +21,7 @@ import com.threecrickets.prudence.internal.attributes.ResourceContextualAttribut
  * @author Tal Liron
  * @param <R>
  */
-public abstract class ResourceDocumentServiceBase<R extends ServerResource> extends DocumentService
+public abstract class ResourceDocumentServiceBase<R extends ServerResource, A extends ResourceContextualAttributes> extends DocumentService<A>
 {
 	//
 	// Construction
@@ -35,7 +35,7 @@ public abstract class ResourceDocumentServiceBase<R extends ServerResource> exte
 	 * @param attributes
 	 *        The attributes
 	 */
-	public ResourceDocumentServiceBase( R resource, ResourceContextualAttributes attributes )
+	public ResourceDocumentServiceBase( R resource, A attributes )
 	{
 		super( attributes );
 		this.resource = resource;

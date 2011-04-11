@@ -13,13 +13,31 @@
 
 importClass(
 	java.lang.System,
-	java.util.logging.LogManager,
 	java.io.File,
+	java.util.logging.LogManager,
+	java.util.concurrent.Executors,
+	java.util.concurrent.CopyOnWriteArrayList,
 	com.threecrickets.scripturian.document.DocumentFileSource,
 	com.threecrickets.scripturian.exception.DocumentNotFoundException,
 	com.threecrickets.prudence.service.ApplicationService)
- 
-document.librarySources.add(new DocumentFileSource(new File(document.source.basePath, 'libraries/javascript'), 'default', 'js', 5000))
+	
+//
+// Common
+//
+
+var commonLibrariesDocumentSource = new DocumentFileSource('common/libraries/', new File(document.source.basePath, 'common/libraries/'), 'default', 'js', 5000)
+var commonFragmentsDocumentSource = new DocumentFileSource('common/web/fragments/', new File(document.source.basePath, 'common/web/fragments/'), 'index', 'js', 5000)
+
+var commonTasksDocumentSources = new CopyOnWriteArrayList()
+commonTasksDocumentSources.add(new DocumentFileSource('common/tasks/', new File(document.source.basePath, 'common/tasks/'), 'default', 'js', 5000))
+var commonHandlersDocumentSources = new CopyOnWriteArrayList()
+commonHandlersDocumentSources.add(new DocumentFileSource('common/handlers/', new File(document.source.basePath, 'common/handlers/'), 'default', 'js', 5000))
+
+document.librarySources.add(commonLibrariesDocumentSource)
+
+//
+// Utilities
+//
 
 function executeOrDefault(name, def) {
 	try {

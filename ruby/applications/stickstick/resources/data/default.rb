@@ -1,5 +1,5 @@
 
-require 'java'
+include Java
 import org.json.JSONObject
 
 require 'stickstick/data.rb'

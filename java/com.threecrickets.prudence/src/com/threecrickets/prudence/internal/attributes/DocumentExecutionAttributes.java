@@ -17,8 +17,10 @@ import org.restlet.resource.ResourceException;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.LanguageManager;
-import com.threecrickets.scripturian.ParsingContext;
+import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentSource;
+import com.threecrickets.scripturian.exception.DocumentException;
+import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
  * @author Tal Liron
@@ -30,8 +32,8 @@ public interface DocumentExecutionAttributes
 	//
 
 	/**
-	 * The {@link DocumentSource} used to fetch documents. This must be set to a
-	 * valid value before this class is used!
+	 * The {@link DocumentSource} instance used to fetch documents. This must be
+	 * set to a valid value before this class is used!
 	 * <p>
 	 * This setting can be configured by setting an attribute named
 	 * <code>documentSource</code> in the application's {@link Context}.
@@ -39,6 +41,16 @@ public interface DocumentExecutionAttributes
 	 * @return The document source
 	 */
 	public DocumentSource<Executable> getDocumentSource();
+
+	/**
+	 * The extra {@link DocumentSource} instances used to fetch documents.
+	 * <p>
+	 * This setting can be configured by setting an attribute named
+	 * <code>extraDocumentSources</code> in the application's {@link Context}.
+	 * 
+	 * @return The extra document sources
+	 */
+	public Iterable<DocumentSource<Executable>> getExtraDocumentSources();
 
 	/**
 	 * The {@link LanguageManager} used to create the language adapters. Uses a
@@ -80,7 +92,7 @@ public interface DocumentExecutionAttributes
 	 * This setting can be configured by setting an attribute named
 	 * <code>libraryDocumentSources</code> in the application's {@link Context}.
 	 * 
-	 * @return The library directory or null
+	 * @return The library document sources or null
 	 * @see ExecutionContext#getLibraryLocations()
 	 */
 	public Iterable<DocumentSource<Executable>> getLibraryDocumentSources();
@@ -138,10 +150,6 @@ public interface DocumentExecutionAttributes
 	 */
 	public String validateDocumentName( String documentName, String defaultDocumentName ) throws ResourceException;
 
-	/**
-	 * Creates a parsing context based on the attributes.
-	 * 
-	 * @return A parsing context
-	 */
-	public ParsingContext createParsingContext();
+	public DocumentDescriptor<Executable> createOnce( String documentName, boolean isTextWithScriptlets, boolean includeMainSource, boolean includeExtraSources, boolean includeLibrarySources ) throws ParsingException,
+		DocumentException;
 }

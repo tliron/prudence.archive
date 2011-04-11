@@ -134,11 +134,12 @@ public class PreheatTask implements Runnable
 		ClientResource clientResource = new ClientResource( context, LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, uri ) );
 		try
 		{
+			long timestamp = System.currentTimeMillis();
 			logger.fine( "Preheating: " + uri );
 			Representation representation = clientResource.get();
 			if( representation != null )
 				representation.exhaust();
-			logger.fine( "Preheated: " + uri );
+			logger.fine( "Preheated: " + uri + " (" + ( System.currentTimeMillis() - timestamp ) + ")" );
 		}
 		catch( ResourceException x )
 		{

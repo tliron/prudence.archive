@@ -111,6 +111,7 @@
 
 (def dynamic-web-base-url "/")
 (def dynamic-web-base-path "/web/dynamic/")
+(def fragments-base-path "/web/fragments/")
 
 ; If the URL points to a directory rather than a file, and that directory
 ; contains a file with this name, then it will be used. This allows

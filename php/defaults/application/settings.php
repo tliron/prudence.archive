@@ -18,7 +18,7 @@ global $show_debug_on_error, $show_source_code_url;
 global $application_logger_name;
 global $hosts, $documents_default_name, $minimum_time_between_validity_checks, $source_viewable, $libraries_base_path;
 global $resources_base_url, $resources_base_path, $resources_defrost;
-global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_client_caching_mode;
+global $dynamic_web_base_url, $dynamic_web_base_path, $fragments_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_client_caching_mode;
 global $static_web_base_url, $static_web_base_path, $static_web_compress, $static_web_directory_listing_allowed;
 global $file_upload_size_threshold;
 global $handlers_base_path;
@@ -128,6 +128,7 @@ $resources_defrost = TRUE;
 
 $dynamic_web_base_url = '/';
 $dynamic_web_base_path = '/web/dynamic/';
+$fragments_base_path = '/web/fragments/';
 
 // If the URL points to a directory rather than a file, and that directory
 // contains a file with this name, then it will be used. This allows

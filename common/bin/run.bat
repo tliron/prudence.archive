@@ -41,7 +41,7 @@ EXIT /B
 -Dscripturian.cache=cache ^
 -Dhazelcast.config=configuration\hazelcast.conf ^
 #if(($distribution == 'python') || ($distribution == 'kitchensink'))
--Dpython.home=libraries\python ^
+-Dpython.home=common\libraries ^
 -Dpython.verbose=warning ^
 #end
 -Djava.util.logging.config.file=none ^
@@ -75,7 +75,7 @@ ECHO Installing service Prudence${service}...
 --JvmOptions=-Dscripturian.cache=cache ^
 ++JvmOptions=-Dhazelcast.config=configuration\hazelcast.conf ^
 #if(($distribution == 'python') || ($distribution == 'kitchensink'))
-++JvmOptions=-Dpython.home=libraries\python ^
+++JvmOptions=-Dpython.home=common\libraries ^
 ++JvmOptions=-Dpython.verbose=warning ^
 #end
 ++JvmOptions=-Djava.util.logging.config.file=none ^

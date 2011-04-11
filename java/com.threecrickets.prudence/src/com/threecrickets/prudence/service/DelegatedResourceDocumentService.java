@@ -12,6 +12,7 @@
 package com.threecrickets.prudence.service;
 
 import com.threecrickets.prudence.DelegatedResource;
+import com.threecrickets.prudence.internal.attributes.DelegatedResourceAttributes;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 
@@ -21,7 +22,7 @@ import com.threecrickets.scripturian.document.DocumentDescriptor;
  * @author Tal Liron
  * @see DelegatedResource
  */
-public class DelegatedResourceDocumentService extends ResourceDocumentServiceBase<DelegatedResource>
+public class DelegatedResourceDocumentService extends ResourceDocumentServiceBase<DelegatedResource, DelegatedResourceAttributes>
 {
 	//
 	// Construction

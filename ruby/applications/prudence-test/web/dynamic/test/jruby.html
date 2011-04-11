@@ -27,7 +27,7 @@ $document.cache_duration = 5000
 # Calling Java
 #
 
-require 'java'
+include Java
 import java.lang.System
 print '<p>This page was dynamically generated at ', System::current_time_millis, '</p>'
 

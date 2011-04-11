@@ -15,7 +15,7 @@ import sys
 
 from java.lang import ClassLoader
 from java.io import File
-from java.util.concurrent import ConcurrentHashMap
+from java.util.concurrent import ConcurrentHashMap, CopyOnWriteArrayList
 
 from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Finder, Directory
@@ -103,19 +103,22 @@ language_manager = executable.manager
 # Libraries
 #
 
-library_document_sources = [
-	DocumentFileSource(application_base + libraries_base_path, application_base_path + libraries_base_path, documents_default_name, 'py', minimum_time_between_validity_checks),
-	DocumentFileSource(application_base + '/../../libraries/python/', application_base_path + '/../../libraries/python/', documents_default_name, 'py', minimum_time_between_validity_checks)
-]
+libraries_document_sources = CopyOnWriteArrayList()
+libraries_document_sources.add(DocumentFileSource(application_base + libraries_base_path, application_base_path + libraries_base_path, documents_default_name, 'py', minimum_time_between_validity_checks))
+libraries_document_sources.add(common_libraries_document_source)
 
 #
 # Dynamic web
 #
 
 dynamic_web_document_source = DocumentFileSource(application_base + dynamic_web_base_path, application_base_path + dynamic_web_base_path, dynamic_web_default_document, 'py', minimum_time_between_validity_checks)
+fragments_document_sources = CopyOnWriteArrayList()
+fragments_document_sources.add(DocumentFileSource(application_base + fragments_base_path, application_base_path + fragments_base_path, dynamic_web_default_document, 'py', minimum_time_between_validity_checks))
+fragments_document_sources.add(common_fragments_document_source)
 cache_key_pattern_handlers = ConcurrentHashMap()
 scriptlet_plugins = ConcurrentHashMap()
 application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamic_web_document_source
+application_globals['com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources'] = fragments_document_sources
 application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = dynamic_web_default_document
 application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController() # Adds PHP predefined variables
 application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamic_web_client_caching_mode

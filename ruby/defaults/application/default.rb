@@ -76,6 +76,7 @@ end
 
 $handlers_document_source = DocumentFileSource.new($application_base + $handlers_base_path, $application_base_path + $handlers_base_path, $documents_default_name, 'rb', $minimum_time_between_validity_checks)
 $application_globals['com.threecrickets.prudence.DelegatedHandler.documentSource'] = $handlers_document_source
+$application_globals['com.threecrickets.prudence.DelegatedHandler.extraDocumentSources'] = $common_handlers_document_sources
 
 #
 # Tasks
@@ -83,6 +84,7 @@ $application_globals['com.threecrickets.prudence.DelegatedHandler.documentSource
 
 $tasks_document_source = DocumentFileSource.new($application_base + $tasks_base_path, $application_base_path + $tasks_base_path, $documents_default_name, 'rb', $minimum_time_between_validity_checks)
 $application_globals['com.threecrickets.prudence.ApplicationTask.documentSource'] = $tasks_document_source
+$application_globals['com.threecrickets.prudence.ApplicationTask.extraDocumentSources'] = $common_tasks_document_sources
 
 $scheduler.add_task_collector ApplicationTaskCollector.new(java.io.File.new($application_base_path + '/crontab'), $application_instance)
 
@@ -94,7 +96,7 @@ def configure_common(prefix)
 	$application_globals[prefix + '.languageManager'] = $language_manager
 	$application_globals[prefix + '.defaultName'] = $documents_default_name
 	$application_globals[prefix + '.defaultLanguageTag'] = 'ruby'
-	$application_globals[prefix + '.libraryDocumentSources'] = $library_document_sources
+	$application_globals[prefix + '.libraryDocumentSources'] = $libraries_document_sources
 	$application_globals[prefix + '.fileUploadSizeThreshold'] = $file_upload_size_threshold
 	$application_globals[prefix + '.sourceViewable'] = $source_viewable
 end

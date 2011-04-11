@@ -121,7 +121,7 @@ console () {
 	-Dscripturian.cache=cache \
 	-Dhazelcast.config=configuration/hazelcast.conf \
 #if(($distribution == 'python') || ($distribution == 'kitchensink'))
-	-Dpython.home=libraries/python \
+	-Dpython.home=common/libraries \
 	-Dpython.verbose=warning \
 	-Djava.library.path=/usr/local/lib \
 #end
@@ -181,7 +181,7 @@ start () {
 	-Dscripturian.cache=cache \
 	-Dhazelcast.config=configuration/hazelcast.conf \
 #if(($distribution == 'python') || ($distribution == 'kitchensink'))
-	-Dpython.home=libraries/python \
+	-Dpython.home=common/libraries \
 	-Dpython.verbose=warning \
 	-Djava.library.path=/usr/local/lib \
 #end

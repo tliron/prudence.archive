@@ -11,14 +11,32 @@
 # at http://threecrickets.com/
 #
 
-require 'java'
+include Java
 import java.lang.System
 import java.util.logging.LogManager
+import java.util.concurrent.Executors
+import java.util.concurrent.CopyOnWriteArrayList
 import com.threecrickets.scripturian.document.DocumentFileSource
 import com.threecrickets.scripturian.exception.DocumentNotFoundException
 import com.threecrickets.prudence.service.ApplicationService
 
-$document.library_sources.add DocumentFileSource.new(java.io.File.new($document.source.base_path, 'libraries/ruby'), 'default', 'rb', 5000)
+#
+# Common
+#
+
+$common_libraries_document_source = DocumentFileSource.new 'common/libraries/', java.io.File.new($document.source.base_path, 'common/libraries/'), 'default', 'rb', 5000
+$common_fragments_document_source = DocumentFileSource.new 'common/web/fragments/', java.io.File.new($document.source.base_path, 'common/web/fragments/'), 'index', 'rb', 5000
+
+$common_tasks_document_sources = CopyOnWriteArrayList.new
+$common_tasks_document_sources.add DocumentFileSource.new('common/tasks/', java.io.File.new($document.source.base_path, 'common/tasks/'), 'default', 'rb', 5000)
+$common_handlers_document_sources = CopyOnWriteArrayList.new
+$common_handlers_document_sources.add DocumentFileSource.new('common/handlers/', java.io.File.new($document.source.base_path, 'common/handlers/'), 'default', 'rb', 5000)
+
+$document.library_sources.add $common_libraries_document_source
+
+#
+# Utilities
+#
 
 def execute_or_default(name, default=nil)
 	begin

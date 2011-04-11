@@ -13,6 +13,7 @@
 
 import java.lang.ClassLoader
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
 import org.restlet.routing.Router
 import org.restlet.routing.Redirector
 import org.restlet.routing.Template
@@ -119,19 +120,22 @@ $language_manager = $executable.manager
 # Libraries
 #
 
-$library_document_sources = [
-	DocumentFileSource.new($application_base + $libraries_base_path, $application_base_path + $libraries_base_path, $documents_default_name, 'rb', $minimum_time_between_validity_checks),
-	DocumentFileSource.new($application_base + '/../../libraries/ruby/', $application_base_path + '/../../libraries/ruby/', $documents_default_name, 'rb', $minimum_time_between_validity_checks)
-]
+$libraries_document_sources = CopyOnWriteArrayList.new
+$libraries_document_sources.add DocumentFileSource.new($application_base + $libraries_base_path, $application_base_path + $libraries_base_path, $documents_default_name, 'rb', $minimum_time_between_validity_checks)
+$libraries_document_sources.add $common_libraries_document_source
 
 #
 # Dynamic web
 #
 
 $dynamic_web_document_source = DocumentFileSource.new($application_base + $dynamic_web_base_path, $application_base_path + $dynamic_web_base_path, $dynamic_web_default_document, 'rb', $minimum_time_between_validity_checks)
+$fragments_document_sources = CopyOnWriteArrayList.new
+$fragments_document_sources.add DocumentFileSource.new($application_base + $fragments_base_path, $application_base_path + $fragments_base_path, $dynamic_web_default_document, 'rb', $minimum_time_between_validity_checks)
+$fragments_document_sources.add $common_fragments_document_source
 $cache_key_pattern_handlers = ConcurrentHashMap.new
 $scriptlet_plugins = ConcurrentHashMap.new
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source
+$application_blobals['com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources'] = $fragments_document_sources
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = $dynamic_web_default_document
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController.new # Adds PHP predefined variables
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode

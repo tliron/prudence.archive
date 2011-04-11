@@ -96,6 +96,15 @@ public abstract class NonVolatileContextualAttributes extends ContextualAttribut
 	}
 
 	@SuppressWarnings("unchecked")
+	public Iterable<DocumentSource<Executable>> getExtraDocumentSources()
+	{
+		if( extraDocumentSources == null )
+			extraDocumentSources = (Iterable<DocumentSource<Executable>>) getAttributes().get( prefix + ".extraDocumentSources" );
+
+		return extraDocumentSources;
+	}
+
+	@SuppressWarnings("unchecked")
 	public Iterable<DocumentSource<Executable>> getLibraryDocumentSources()
 	{
 		if( libraryDocumentSources == null )
@@ -340,6 +349,11 @@ public abstract class NonVolatileContextualAttributes extends ContextualAttribut
 	 * The document source.
 	 */
 	protected DocumentSource<Executable> documentSource;
+
+	/**
+	 * The extra document sources.
+	 */
+	protected Iterable<DocumentSource<Executable>> extraDocumentSources;
 
 	/**
 	 * Executables might use these {@link DocumentSource} instances for

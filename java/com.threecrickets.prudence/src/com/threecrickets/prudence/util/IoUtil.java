@@ -23,9 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
@@ -339,8 +337,6 @@ public abstract class IoUtil
 	/**
 	 * Deserializes an object.
 	 * 
-	 * @param <V>
-	 *        The object type
 	 * @param bytes
 	 *        The bytes or null
 	 * @return The object or null
@@ -415,7 +411,7 @@ public abstract class IoUtil
 	 *        The stream
 	 * @return The string
 	 * @throws IOException
-	 * @see #writeUtf8(ObjectOutput, String)
+	 * @see #writeUtf8(DataOutput, String)
 	 * @see #decodeUtf8(byte[])
 	 */
 	public static String readUtf8( DataInput in ) throws IOException
@@ -437,7 +433,7 @@ public abstract class IoUtil
 	 * @param string
 	 *        The string or null
 	 * @throws IOException
-	 * @see #readUtf8(ObjectInput)
+	 * @see #readUtf8(DataInput)
 	 * @see #encodeUtf8(String)
 	 */
 	public static void writeUtf8( DataOutput out, String string ) throws IOException

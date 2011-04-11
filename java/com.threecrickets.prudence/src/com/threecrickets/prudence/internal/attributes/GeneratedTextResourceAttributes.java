@@ -12,6 +12,7 @@
 package com.threecrickets.prudence.internal.attributes;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -23,8 +24,12 @@ import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ParsingContext;
 import com.threecrickets.scripturian.ScriptletPlugin;
+import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentSource;
+import com.threecrickets.scripturian.exception.DocumentException;
+import com.threecrickets.scripturian.exception.DocumentNotFoundException;
+import com.threecrickets.scripturian.exception.ParsingException;
 
 /**
  * @author Tal Liron
@@ -161,41 +166,6 @@ public class GeneratedTextResourceAttributes extends ResourceContextualAttribute
 	}
 
 	/**
-	 * Executables might use this directory for including fragments. If the
-	 * {@link #getDocumentSource()} is a {@link DocumentFileSource}, then this
-	 * will default to the {@link DocumentFileSource#getBasePath()} plus
-	 * "../fragments/".
-	 * <p>
-	 * This setting can be configured by setting an attribute named
-	 * <code>fragmentDirectory</code> in the application's {@link Context}.
-	 * 
-	 * @return The fragment directory or null
-	 */
-	public File getFragmentDirectory()
-	{
-		if( fragmentDirectory == null )
-		{
-			ConcurrentMap<String, Object> attributes = getAttributes();
-			fragmentDirectory = (File) attributes.get( prefix + ".fragmentDirectory" );
-
-			if( fragmentDirectory == null )
-			{
-				DocumentSource<Executable> documentSource = getDocumentSource();
-				if( documentSource instanceof DocumentFileSource<?> )
-				{
-					fragmentDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../fragments/" );
-
-					File existing = (File) attributes.putIfAbsent( prefix + ".fragmentDirectory", fragmentDirectory );
-					if( existing != null )
-						fragmentDirectory = existing;
-				}
-			}
-		}
-
-		return fragmentDirectory;
-	}
-
-	/**
 	 * Whether or not to negotiate encoding by default. Defaults to true.
 	 * <p>
 	 * This setting can be configured by setting an attribute named
@@ -276,21 +246,56 @@ public class GeneratedTextResourceAttributes extends ResourceContextualAttribute
 	// DocumentExecutionAttributes
 	//
 
-	/**
-	 * Creates a parsing context based on the attributes.
-	 * 
-	 * @return A parsing context
-	 */
 	@Override
-	public ParsingContext createParsingContext()
+	public DocumentDescriptor<Executable> createOnce( String documentName, boolean isTextWithScriptlets, boolean includeMainSource, boolean includeExtraSources, boolean includeLibrarySources ) throws ParsingException,
+		DocumentException
 	{
-		ParsingContext parsingContext = super.createParsingContext();
+		ParsingContext parsingContext = new ParsingContext();
+		parsingContext.setLanguageManager( getLanguageManager() );
+		parsingContext.setDefaultLanguageTag( getDefaultLanguageTag() );
+		parsingContext.setPrepare( isPrepare() );
+		if( includeMainSource )
+			parsingContext.setDocumentSource( getDocumentSource() );
 
-		Map<String, ScriptletPlugin> scriptletPlugins = getScriptletPlugins();
-		if( scriptletPlugins != null )
-			parsingContext.getScriptletPlugins().putAll( scriptletPlugins );
+		if( isTextWithScriptlets )
+		{
+			Map<String, ScriptletPlugin> scriptletPlugins = getScriptletPlugins();
+			if( scriptletPlugins != null )
+				parsingContext.getScriptletPlugins().putAll( scriptletPlugins );
+		}
 
-		return parsingContext;
+		Iterator<DocumentSource<Executable>> iterator = null;
+		while( true )
+		{
+			try
+			{
+				if( parsingContext.getDocumentSource() == null )
+					throw new DocumentNotFoundException( documentName );
+
+				return Executable.createOnce( documentName, isTextWithScriptlets, parsingContext );
+			}
+			catch( DocumentNotFoundException x )
+			{
+				if( ( ( iterator == null ) || !iterator.hasNext() ) && includeExtraSources )
+				{
+					Iterable<DocumentSource<Executable>> sources = getExtraDocumentSources();
+					iterator = sources != null ? sources.iterator() : null;
+					includeExtraSources = false;
+				}
+
+				if( ( ( iterator == null ) || !iterator.hasNext() ) && includeLibrarySources )
+				{
+					Iterable<DocumentSource<Executable>> sources = getLibraryDocumentSources();
+					iterator = sources != null ? sources.iterator() : null;
+					includeLibrarySources = false;
+				}
+
+				if( ( iterator == null ) || !iterator.hasNext() )
+					throw x;
+
+				parsingContext.setDocumentSource( iterator.next() );
+			}
+		}
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -318,11 +323,6 @@ public class GeneratedTextResourceAttributes extends ResourceContextualAttribute
 	 * The cache key pattern handlers.
 	 */
 	private ConcurrentMap<String, String> cacheKeyPatternHandlers;
-
-	/**
-	 * Executables might use this directory for including fragments.
-	 */
-	private File fragmentDirectory;
 
 	/**
 	 * Whether or not to negotiate encoding by default.

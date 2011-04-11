@@ -178,7 +178,7 @@ public class ApplicationTask implements Runnable
 
 			try
 			{
-				DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, false, attributes.createParsingContext() );
+				DocumentDescriptor<Executable> documentDescriptor = attributes.createOnce( documentName, false, true, true, false );
 				Executable executable = documentDescriptor.getDocument();
 
 				ExecutionContext executionContext = new ExecutionContext( attributes.getWriter(), attributes.getErrorWriter() );

@@ -12,7 +12,7 @@
 package com.threecrickets.prudence.service;
 
 import com.threecrickets.prudence.ApplicationTask;
-import com.threecrickets.prudence.internal.attributes.DocumentExecutionAttributes;
+import com.threecrickets.prudence.internal.attributes.ApplicationTaskAttributes;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 
@@ -22,7 +22,7 @@ import com.threecrickets.scripturian.document.DocumentDescriptor;
  * @author Tal Liron
  * @see ApplicationTask
  */
-public class ApplicationTaskDocumentService extends DocumentService
+public class ApplicationTaskDocumentService extends DocumentService<ApplicationTaskAttributes>
 {
 	//
 	// Construction
@@ -38,7 +38,7 @@ public class ApplicationTaskDocumentService extends DocumentService
 	 * @param context
 	 *        The context made available to the task
 	 */
-	public ApplicationTaskDocumentService( DocumentExecutionAttributes attributes, DocumentDescriptor<Executable> documentDescriptor, Object context )
+	public ApplicationTaskDocumentService( ApplicationTaskAttributes attributes, DocumentDescriptor<Executable> documentDescriptor, Object context )
 	{
 		super( attributes, documentDescriptor );
 		this.context = context;

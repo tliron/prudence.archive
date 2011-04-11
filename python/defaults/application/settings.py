@@ -111,6 +111,7 @@ resources_defrost = True
 
 dynamic_web_base_url = '/'
 dynamic_web_base_path = '/web/dynamic/'
+fragments_base_path = '/web/fragments/'
 
 # If the URL points to a directory rather than a file, and that directory
 # contains a file with this name, then it will be used. This allows

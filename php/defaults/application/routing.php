@@ -16,6 +16,7 @@ import java.lang.ClassLoader;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.restlet.routing.Router;
 import org.restlet.routing.Redirector;
 import org.restlet.routing.Template;
@@ -33,14 +34,15 @@ global $application_internal_name, $application_logger_name, $application_base, 
 global $application_name, $application_description, $application_author, $application_owner, $application_home_url, $application_contact_email;
 global $show_debug_on_error, $show_source_code_url;
 global $hosts, $documents_default_name, $minimum_time_between_validity_checks;
-global $library_document_sources, $libraries_base_path;
+global $libraries_document_sources, $libraries_base_path;
 global $resources_base_url, $resources_base_path, $resources_defrost;
-global $dynamic_web_base_url, $dynamic_web_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_client_caching_mode;
+global $dynamic_web_base_url, $dynamic_web_base_path, $fragments_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_client_caching_mode;
 global $cache_key_pattern_handlers, $scriptlet_plugins;
 global $static_web_base_url, $static_web_base_path, $static_web_compress, $static_web_directory_listing_allowed;
 global $preheat_resources;
 global $url_add_trailing_slash;
 global $predefined_globals;
+global $common_libraries_document_source, $common_fragments_document_source, $common_tasks_document_sources, $common_handlers_document_sources;
 
 $class_loader = ClassLoader::getSystemClassLoader();
 
@@ -138,18 +140,22 @@ $language_manager = $executable->manager;
 // Libraries
 //
 
-$library_document_sources = new ArrayList(2);
-$library_document_sources->add(new DocumentFileSource($application_base . $libraries_base_path, $application_base_path . $libraries_base_path, $documents_default_name, 'php', $minimum_time_between_validity_checks));
-$library_document_sources->add(new DocumentFileSource($application_base . '/../../libraries/php/', $application_base_path . '/../../libraries/php/', $documents_default_name, 'php', $minimum_time_between_validity_checks));
+$libraries_document_sources = new CopyOnWriteArrayList();
+$libraries_document_sources->add(new DocumentFileSource($application_base . $libraries_base_path, $application_base_path . $libraries_base_path, $documents_default_name, 'php', $minimum_time_between_validity_checks));
+$libraries_document_sources->add($common_libraries_document_source);
 
 //
 // Dynamic web
 //
 
 $dynamic_web_document_source = new DocumentFileSource($application_base . $dynamic_web_base_path, $application_base_path . $dynamic_web_base_path, $dynamic_web_default_document, 'php', $minimum_time_between_validity_checks);
+$fragments_document_sources = new CopyOnWriteArrayList();
+$fragments_document_sources->add(new DocumentFileSource($application_base . $fragments_base_path, $application_base_path . $fragments_base_path, $dynamic_web_default_document, 'php', $minimum_time_between_validity_checks));
+$fragments_document_sources->add($common_fragments_document_source);
 $cache_key_pattern_handlers = new ConcurrentHashMap();
 $scriptlet_plugins = new ConcurrentHashMap();
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source;
+$application_blobals['com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources'] = $fragments_document_sources;
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = $dynamic_web_default_document;
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController(); // Adds PHP predefined variables
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode;

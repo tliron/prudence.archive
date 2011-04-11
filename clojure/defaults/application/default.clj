@@ -74,6 +74,7 @@
 
 (def handlers-document-source (DocumentFileSource. (str application-base handlers-base-path) (str application-base-path handlers-base-path) documents-default-name "clj" (.longValue minimum-time-between-validity-checks)))
 (.put application-globals "com.threecrickets.prudence.DelegatedHandler.documentSource" handlers-document-source)
+(.put application-globals "com.threecrickets.prudence.DelegatedHandler.extraDocumentSources" common-handlers-document-sources)
 
 ;
 ; Tasks
@@ -81,6 +82,7 @@
 
 (def tasks-document-source (DocumentFileSource. (str application-base tasks-base-path) (str application-base-path tasks-base-path) documents-default-name "clj" (.longValue minimum-time-between-validity-checks)))
 (.put application-globals "com.threecrickets.prudence.ApplicationTask.documentSource" tasks-document-source)
+(.put application-globals "com.threecrickets.prudence.ApplicationTask.extraDocumentSources" common-tasks-document-sources)
 
 (.addTaskCollector scheduler (ApplicationTaskCollector. (File. (str application-base-path "/crontab")) application-instance))
 
@@ -92,7 +94,7 @@
  (.put application-globals (str prefix ".languageManager") language-manager)
  (.put application-globals (str prefix ".defaultName") documents-default-name)
  (.put application-globals (str prefix ".defaultLanguageTag") "clojure")
- (.put application-globals (str prefix ".libraryDocumentSources") library-document-sources)
+ (.put application-globals (str prefix ".libraryDocumentSources") libraries-document-sources)
  (.put application-globals (str prefix ".fileUploadSizeThreshold") file-upload-size-threshold)
  (.put application-globals (str prefix ".sourceViewable") source-viewable))
 

@@ -14,7 +14,7 @@
 importClass(
 	java.lang.ClassLoader,
 	java.io.File,
-	java.util.ArrayList,
+	java.util.concurrent.CopyOnWriteArrayList,
 	java.util.concurrent.ConcurrentHashMap,
 	org.restlet.routing.Router,
 	org.restlet.routing.Redirector,
@@ -121,18 +121,22 @@ var languageManager = executable.manager
 // Libraries
 //
 
-var libraryDocumentSources = new ArrayList(2)
-libraryDocumentSources.add(new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'js', minimumTimeBetweenValidityChecks))
-libraryDocumentSources.add(new DocumentFileSource(applicationBase + '/../../libraries/javascript/', applicationBasePath + '/../../libraries/javascript/', documentsDefaultName, 'js', minimumTimeBetweenValidityChecks))
+var librariesDocumentSources = new CopyOnWriteArrayList()
+librariesDocumentSources.add(new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'js', minimumTimeBetweenValidityChecks))
+librariesDocumentSources.add(commonLibrariesDocumentSource)
 
 //
 // Dynamic web
 //
 
 var dynamicWebDocumentSource = new DocumentFileSource(applicationBase + dynamicWebBasePath, applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'js', minimumTimeBetweenValidityChecks)
+var fragmentsDocumentSources = new CopyOnWriteArrayList()
+fragmentsDocumentSources.add(new DocumentFileSource(applicationBase + fragmentsBasePath, applicationBasePath + fragmentsBasePath, dynamicWebDefaultDocument, 'js', minimumTimeBetweenValidityChecks))
+fragmentsDocumentSources.add(commonFragmentsDocumentSource)
 var cacheKeyPatternHandlers = new ConcurrentHashMap()
 var scriptletPlugins = new ConcurrentHashMap()
-applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.documentSource',dynamicWebDocumentSource)
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.documentSource', dynamicWebDocumentSource)
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources', fragmentsDocumentSources)
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName', dynamicWebDefaultDocument)
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.executionController', new PhpExecutionController()) // Adds PHP predefined variables
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.clientCachingMode', dynamicWebClientCachingMode)
@@ -188,7 +192,7 @@ if(resourcesDefrost) {
 //
 
 if(showDebugOnError) {
-	var documentSources = new ArrayList(2)
+	var documentSources = new CopyOnWriteArrayList()
 	documentSources.add(dynamicWebDocumentSource)
 	documentSources.add(resourcesDocumentSource)
 	applicationGlobals.put('com.threecrickets.prudence.SourceCodeResource.documentSources', documentSources)

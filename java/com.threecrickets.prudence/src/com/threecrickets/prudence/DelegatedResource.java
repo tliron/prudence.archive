@@ -630,7 +630,7 @@ public class DelegatedResource extends ServerResource
 
 		try
 		{
-			DocumentDescriptor<Executable> documentDescriptor = Executable.createOnce( documentName, false, attributes.createParsingContext() );
+			DocumentDescriptor<Executable> documentDescriptor = attributes.createOnce( documentName, false, true, true, false );
 			Executable executable = documentDescriptor.getDocument();
 
 			if( executable.getEnterableExecutionContext() == null )

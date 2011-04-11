@@ -13,12 +13,29 @@
 
 from java.lang import System
 from java.util.logging import LogManager
+from java.util.concurrent import Executors, CopyOnWriteArrayList
 from java.io import File
 from com.threecrickets.scripturian.document import DocumentFileSource
 from com.threecrickets.scripturian.exception import DocumentNotFoundException
 from com.threecrickets.prudence.service import ApplicationService
 
-document.librarySources.add(DocumentFileSource(File(document.source.basePath, 'libraries/python'), 'default', 'py', 5000))
+#
+# Common
+#
+
+common_libraries_document_source = DocumentFileSource('common/libraries/', File(document.source.basePath, 'common/libraries/'), 'default', 'py', 5000)
+common_fragments_document_source = DocumentFileSource('common/web/fragments/', File(document.source.basePath, 'common/web/fragments/'), 'index', 'py', 5000)
+
+common_tasks_document_sources = CopyOnWriteArrayList()
+common_tasks_document_sources.add(DocumentFileSource('common/tasks/', File(document.source.basePath, 'common/tasks/'), 'default', 'py', 5000))
+common_handlers_document_sources = CopyOnWriteArrayList()
+common_handlers_document_sources.add(DocumentFileSource('common/handlers/', File(document.source.basePath, 'common/handlers/'), 'default', 'py', 5000))
+
+document.librarySources.add(common_libraries_document_source)
+
+#
+# Utilities
+#
 
 def execute_or_default(name, default=None):
 	try:

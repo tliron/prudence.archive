@@ -14,12 +14,29 @@
 import java.lang.System
 import java.util.logging.LogManager
 import java.util.concurrent.Executors
+import java.util.concurrent.CopyOnWriteArrayList
 import java.io.File
 import com.threecrickets.scripturian.document.DocumentFileSource
 import com.threecrickets.scripturian.exception.DocumentNotFoundException
 import com.threecrickets.prudence.service.ApplicationService
 
-document.librarySources.add(new DocumentFileSource(new File(document.source.basePath, 'libraries/groovy'), 'default', 'gv', 5000))
+//
+// Common
+//
+
+commonLibrariesDocumentSource = new DocumentFileSource('common/libraries/', new File(document.source.basePath, 'common/libraries/'), 'default', 'gv', 5000)
+commonFragmentsDocumentSource = new DocumentFileSource('common/web/fragments/', new File(document.source.basePath, 'common/web/fragments/'), 'index', 'gv', 5000)
+
+commonTasksDocumentSources = new CopyOnWriteArrayList()
+commonTasksDocumentSources.add(new DocumentFileSource('common/tasks/', new File(document.source.basePath, 'common/tasks/'), 'default', 'gv', 5000))
+commonHandlersDocumentSources = new CopyOnWriteArrayList()
+commonHandlersDocumentSources.add(new DocumentFileSource('common/handlers/', new File(document.source.basePath, 'common/handlers/'), 'default', 'gv', 5000))
+
+document.librarySources.add(commonLibrariesDocumentSource)
+
+//
+// Utilities
+//
 
 executeOrDefault = { name, deflt = null ->
 	try {

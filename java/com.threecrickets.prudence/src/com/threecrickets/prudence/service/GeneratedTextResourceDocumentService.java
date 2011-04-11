@@ -12,7 +12,6 @@
 package com.threecrickets.prudence.service;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -41,13 +40,12 @@ import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.CacheEntry;
 import com.threecrickets.prudence.internal.CacheKeyPatternResolver;
 import com.threecrickets.prudence.internal.GeneratedTextDeferredRepresentation;
+import com.threecrickets.prudence.internal.attributes.GeneratedTextResourceAttributes;
 import com.threecrickets.prudence.util.CapturingRedirector;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
-import com.threecrickets.scripturian.ParsingContext;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.exception.DocumentException;
-import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
 
@@ -56,7 +54,7 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * 
  * @author Tal Liron
  */
-public class GeneratedTextResourceDocumentService extends ResourceDocumentServiceBase<GeneratedTextResource>
+public class GeneratedTextResourceDocumentService extends ResourceDocumentServiceBase<GeneratedTextResource, GeneratedTextResourceAttributes>
 {
 	//
 	// Construction
@@ -78,7 +76,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	{
 		super( resource, resource.getAttributes() );
 		this.executionContext = executionContext;
-		conversationService = new GeneratedTextResourceConversationService( resource, entity, preferences, resource.getAttributes().getDefaultCharacterSet() );
+		conversationService = new GeneratedTextResourceConversationService( resource, entity, preferences, attributes.getDefaultCharacterSet() );
 	}
 
 	/**
@@ -90,16 +88,16 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public GeneratedTextResourceDocumentService( GeneratedTextResourceDocumentService documentService )
 	{
-		super( documentService.resource, documentService.resource.getAttributes() );
+		super( documentService.resource, documentService.attributes );
 		conversationService = documentService.conversationService;
 		pushDocumentDescriptor( documentService.getCurrentDocumentDescriptor() );
 		executionContext = new ExecutionContext();
-		resource.getAttributes().addLibraryLocations( executionContext );
+		attributes.addLibraryLocations( executionContext );
 
 		// Initialize execution context
-		executionContext.getServices().put( resource.getAttributes().getDocumentServiceName(), this );
-		executionContext.getServices().put( resource.getAttributes().getApplicationServiceName(), applicationService );
-		executionContext.getServices().put( resource.getAttributes().getConversationServiceName(), conversationService );
+		executionContext.getServices().put( attributes.getDocumentServiceName(), this );
+		executionContext.getServices().put( attributes.getApplicationServiceName(), applicationService );
+		executionContext.getServices().put( attributes.getConversationServiceName(), conversationService );
 
 		conversationService.isDeferred = true;
 	}
@@ -187,7 +185,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public Cache getCache()
 	{
-		return resource.getAttributes().getCache();
+		return attributes.getCache();
 	}
 
 	//
@@ -210,7 +208,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	@SuppressWarnings("unchecked")
 	public Representation include( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
 	{
-		documentName = resource.getAttributes().validateDocumentName( documentName, resource.getAttributes().getDefaultIncludedName() );
+		documentName = attributes.validateDocumentName( documentName, attributes.getDefaultIncludedName() );
 
 		// This will be null if we're the initial document
 		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
@@ -223,27 +221,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			documentDescriptor = (DocumentDescriptor<Executable>) resource.getRequest().getAttributes().remove( DOCUMENT_DESCRIPTOR_ATTRIBUTE );
 
 		if( documentDescriptor == null )
-		{
-			ParsingContext parsingContext = resource.getAttributes().createParsingContext();
-			try
-			{
-				documentDescriptor = Executable.createOnce( documentName, true, parsingContext );
-			}
-			catch( DocumentNotFoundException x )
-			{
-				if( currentDocumentDescriptor != null )
-				{
-					// Try the fragment directory
-					File fragmentDirectory = getRelativeFile( resource.getAttributes().getFragmentDirectory() );
-					if( fragmentDirectory != null )
-						documentDescriptor = Executable.createOnce( fragmentDirectory.getPath() + "/" + documentName, true, parsingContext );
-					else
-						throw x;
-				}
-				else
-					throw x;
-			}
-		}
+			documentDescriptor = attributes.createOnce( documentName, true, true, currentDocumentDescriptor != null, false );
 
 		if( currentDocumentDescriptor == null )
 		{
@@ -285,10 +263,9 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public CacheEntry getCacheEntry( String documentName ) throws ParsingException, DocumentException
 	{
-		documentName = resource.getAttributes().validateDocumentName( documentName, resource.getAttributes().getDefaultIncludedName() );
+		documentName = attributes.validateDocumentName( documentName, attributes.getDefaultIncludedName() );
 
-		DocumentDescriptor<Executable> documentDescriptor;
-		documentDescriptor = Executable.createOnce( documentName, true, resource.getAttributes().createParsingContext() );
+		DocumentDescriptor<Executable> documentDescriptor = attributes.createOnce( documentName, true, true, true, false );
 
 		// Cache the document descriptor in the request
 		resource.getRequest().getAttributes().put( DOCUMENT_DESCRIPTOR_ATTRIBUTE, documentDescriptor );
@@ -305,7 +282,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		String cacheKey = castCacheKey( documentDescriptor );
 		if( cacheKey != null )
 		{
-			Cache cache = resource.getAttributes().getCache();
+			Cache cache = attributes.getCache();
 			if( cache != null )
 			{
 				// Try cache key for encoding first
@@ -331,6 +308,16 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		}
 
 		return null;
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Protected
+
+	@Override
+	protected DocumentDescriptor<Executable> getDocumentDescriptor( String documentName ) throws ParsingException, DocumentException
+	{
+		documentName = attributes.validateDocumentName( documentName );
+		return attributes.createOnce( documentName, false, false, false, true );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -511,7 +498,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 	private void callCacheKeyPatternHandlers( Template template, DocumentDescriptor<Executable> documentDescriptor )
 	{
-		Map<String, String> resourceCacheKeyPatternHandlers = resource.getAttributes().getCacheKeyPatternHandlers();
+		Map<String, String> resourceCacheKeyPatternHandlers = attributes.getCacheKeyPatternHandlers();
 		Map<String, String> documentCacheKeyPatternHandlers = getCacheKeyPatternHandlers( documentDescriptor.getDocument(), false );
 
 		// Make sure we have handlers
@@ -668,7 +655,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			cacheEntry = new CacheEntry( cacheEntry, encoding );
 
 			// Cache re-encoded entry
-			Cache cache = resource.getAttributes().getCache();
+			Cache cache = attributes.getCache();
 			if( cache != null )
 			{
 				String cacheKeyForEncoding = getCacheKeyForEncoding( cacheKey, encoding );
@@ -743,7 +730,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			cacheKey = castCacheKey( documentDescriptor );
 			if( cacheKey != null )
 			{
-				Cache cache = resource.getAttributes().getCache();
+				Cache cache = attributes.getCache();
 				if( cache != null )
 				{
 					// Try cache key for encoding first
@@ -761,18 +748,18 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		}
 
 		setCacheDuration( 0 );
-		setCacheKeyPattern( resource.getAttributes().getDefaultCacheKeyPattern() );
+		setCacheKeyPattern( attributes.getDefaultCacheKeyPattern() );
 		getCacheTags().clear();
 
 		try
 		{
 			executionContext.setWriter( writer );
-			executionContext.getServices().put( resource.getAttributes().getDocumentServiceName(), this );
-			executionContext.getServices().put( resource.getAttributes().getApplicationServiceName(), applicationService );
-			executionContext.getServices().put( resource.getAttributes().getConversationServiceName(), conversationService );
+			executionContext.getServices().put( attributes.getDocumentServiceName(), this );
+			executionContext.getServices().put( attributes.getApplicationServiceName(), applicationService );
+			executionContext.getServices().put( attributes.getConversationServiceName(), conversationService );
 
 			// Execute!
-			executable.execute( executionContext, this, resource.getAttributes().getExecutionController() );
+			executable.execute( executionContext, this, attributes.getExecutionController() );
 
 			// Propagate cache tags up the stack
 			Set<String> cacheTags = getCacheTags( executable, false );
@@ -816,7 +803,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 					if( cacheKey != null )
 					{
 						// Cache!
-						Cache cache = resource.getAttributes().getCache();
+						Cache cache = attributes.getCache();
 						if( cache != null )
 						{
 							String cacheKeyForEncoding = getCacheKeyForEncoding( cacheKey, encoding );

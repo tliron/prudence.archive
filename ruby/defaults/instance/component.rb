@@ -11,7 +11,7 @@
 # at http://threecrickets.com/
 #
 
-require 'java'
+include Java
 import java.lang.Runtime
 import java.util.concurrent.Executors
 import org.restlet.Component

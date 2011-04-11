@@ -14,6 +14,7 @@
 import java.lang.ClassLoader
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
 import org.restlet.routing.Router
 import org.restlet.routing.Redirector
 import org.restlet.routing.Template
@@ -119,19 +120,22 @@ languageManager = executable.manager
 // Libraries
 //
 
-libraryDocumentSources = [
-	new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks),
-	new DocumentFileSource(applicationBase + '/../../libraries/groovy/', applicationBasePath + '/../../libraries/groovy/', documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
-]
+librariesDocumentSources = new CopyOnWriteArrayList()
+librariesDocumentSources.add(new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks))
+librariesDocumentSources.add(commonLibrariesDocumentSource)
 
 //
 // Dynamic web
 //
 
 dynamicWebDocumentSource = new DocumentFileSource(applicationBase + dynamicWebBasePath, applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'gv', minimumTimeBetweenValidityChecks)
+fragmentsDocumentSources = new CopyOnWriteArrayList()
+fragmentsDocumentSources.add(new DocumentFileSource(applicationBase + fragmentsBasePath, applicationBasePath + fragmentsBasePath, dynamicWebDefaultDocument, 'gv', minimumTimeBetweenValidityChecks))
+fragmentsDocumentSources.add(commonFragmentsDocumentSource)
 cacheKeyPatternHandlers = new ConcurrentHashMap()
 scriptletPlugins = new ConcurrentHashMap()
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamicWebDocumentSource
+applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources'] = fragmentsDocumentSources
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = dynamicWebDefaultDocument
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController() // Adds PHP predefined variables
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamicWebClientCachingMode

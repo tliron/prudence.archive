@@ -63,7 +63,7 @@ var minimumTimeBetweenValidityChecks = 1000
 
 var documentsDefaultName = 'default'
 
-// Documents will always be looked for here.
+// Libraries will always be looked for here.
 
 var librariesBasePath = '/libraries/'
 
@@ -112,6 +112,7 @@ var resourcesDefrost = true
 
 var dynamicWebBaseURL = '/'
 var dynamicWebBasePath = '/web/dynamic/'
+var fragmentsBasePath = '/web/fragments/'
 
 // If the URL points to a directory rather than a file, and that directory
 // contains a file with this name, then it will be used. This allows

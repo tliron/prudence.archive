@@ -57,7 +57,7 @@
 		<attribute name="library" />
 		<sequential>
 			<copy todir="@{dist}/content/libraries">
-				<fileset dir="${lib}/@{library}/lib" />
+				<fileset dir="${lib}/@{library}/lib" includes="*.jar" />
 			</copy>
 			<copy todir="@{dist}/content/licenses/@{library}">
 				<fileset dir="${lib}/@{library}/license" />
@@ -372,6 +372,9 @@
 		<fetch-library dist="${dist-javascript}" library="succinct" />
 		<fetch-library dist="${dist-javascript}" library="velocity" />
 		<fetch-library dist="${dist-javascript}" library="${http-server}" />
+		<copy todir="${dist-javascript}/content/common/libraries">
+			<fileset dir="${lib}/mongo-rhino-driver/lib" includes="*.js" />
+		</copy>
 		<fetch-library-versions dist="${dist-javascript}" />
 	</target>
 	
@@ -429,10 +432,15 @@
 		<fetch-library dist="${dist-python}" library="servlet" />
 		<fetch-library dist="${dist-python}" library="slf4j" />
 		<fetch-library dist="${dist-python}" library="spymemcached" />
-		<fetch-library dist="${dist-python}" library="sqlalchemy" />
 		<fetch-library dist="${dist-python}" library="succinct" />
 		<fetch-library dist="${dist-python}" library="velocity" />
 		<fetch-library dist="${dist-python}" library="${http-server}" />
+		<copy todir="${dist-python}/content/common/libraries/Lib">
+			<fileset dir="${lib}/jython/lib/Lib" />
+		</copy>
+		<copy todir="${dist-python}/content/common/libraries/sqlalchemy">
+			<fileset dir="${lib}/sqlalchemy/lib" />
+		</copy>
 		<fetch-library-versions dist="${dist-python}" />
 	</target>
 	
@@ -749,6 +757,12 @@
 		<fetch-library dist="${dist-kitchensink}" library="succinct" />
 		<fetch-library dist="${dist-kitchensink}" library="velocity" />
 		<fetch-library dist="${dist-kitchensink}" library="${http-server}" />
+		<copy todir="${dist-kitchensink}/content/common/libraries">
+			<fileset dir="${lib}/mongo-rhino-driver/lib" includes="*.js" />
+		</copy>
+		<copy todir="${dist-kitchensink}/content/common/libraries/Lib">
+			<fileset dir="${lib}/jython/lib/Lib" />
+		</copy>
 		<fetch-library-versions dist="${dist-kitchensink}" />
 	</target>
 	

@@ -77,6 +77,7 @@ for(var key in predefinedGlobals) {
 
 var handlersDocumentSource = new DocumentFileSource(applicationBase + handlersBasePath, applicationBasePath + handlersBasePath, documentsDefaultName, 'js', minimumTimeBetweenValidityChecks)
 applicationGlobals.put('com.threecrickets.prudence.DelegatedHandler.documentSource', handlersDocumentSource)
+applicationGlobals.put('com.threecrickets.prudence.DelegatedHandler.extraDocumentSources', commonHandlersDocumentSources)
 
 //
 // Tasks
@@ -84,6 +85,7 @@ applicationGlobals.put('com.threecrickets.prudence.DelegatedHandler.documentSour
 
 var tasksDocumentSource = new DocumentFileSource(applicationBase + tasksBasePath, applicationBasePath + tasksBasePath, documentsDefaultName, 'js', minimumTimeBetweenValidityChecks)
 applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.documentSource', tasksDocumentSource)
+applicationGlobals.put('com.threecrickets.prudence.ApplicationTask.extraDocumentSources', commonTasksDocumentSources)
 
 scheduler.addTaskCollector(new ApplicationTaskCollector(new File(applicationBasePath + '/crontab'), applicationInstance))
 
@@ -95,7 +97,7 @@ function configureCommon(prefix) {
 	applicationGlobals.put(prefix + '.languageManager', languageManager)
 	applicationGlobals.put(prefix + '.defaultName', documentsDefaultName)
 	applicationGlobals.put(prefix + '.defaultLanguageTag', 'javascript')
-	applicationGlobals.put(prefix + '.libraryDocumentSources', libraryDocumentSources)
+	applicationGlobals.put(prefix + '.libraryDocumentSources', librariesDocumentSources)
 	applicationGlobals.put(prefix + '.fileUploadSizeThreshold', fileUploadSizeThreshold)
 	applicationGlobals.put(prefix + '.sourceViewable', sourceViewable)
 }

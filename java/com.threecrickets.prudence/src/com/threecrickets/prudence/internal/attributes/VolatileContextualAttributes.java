@@ -96,6 +96,15 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 	}
 
 	@SuppressWarnings("unchecked")
+	public Iterable<DocumentSource<Executable>> getExtraDocumentSources()
+	{
+		if( extraDocumentSources == null )
+			extraDocumentSources = (Iterable<DocumentSource<Executable>>) getAttributes().get( prefix + ".extraDocumentSources" );
+
+		return extraDocumentSources;
+	}
+
+	@SuppressWarnings("unchecked")
 	public Iterable<DocumentSource<Executable>> getLibraryDocumentSources()
 	{
 		if( libraryDocumentSources == null )
@@ -340,6 +349,11 @@ public abstract class VolatileContextualAttributes extends ContextualAttributes
 	 * The document source.
 	 */
 	protected volatile DocumentSource<Executable> documentSource;
+
+	/**
+	 * The extra document sources.
+	 */
+	protected volatile Iterable<DocumentSource<Executable>> extraDocumentSources;
 
 	/**
 	 * Executables might use these {@link DocumentSource} instances for

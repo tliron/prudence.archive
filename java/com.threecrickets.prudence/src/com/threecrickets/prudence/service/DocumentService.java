@@ -11,9 +11,7 @@
 
 package com.threecrickets.prudence.service;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
@@ -26,22 +24,21 @@ import org.restlet.resource.ClientResource;
 
 import com.threecrickets.prudence.internal.attributes.DocumentExecutionAttributes;
 import com.threecrickets.scripturian.Executable;
-import com.threecrickets.scripturian.ParsingContext;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
-import com.threecrickets.scripturian.exception.DocumentNotFoundException;
 import com.threecrickets.scripturian.exception.ExecutionException;
 import com.threecrickets.scripturian.exception.ParsingException;
-import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * Document service exposed to executables.
  * 
  * @author Tal Liron
+ * @param <A>
+ *        The attributes
  */
-public class DocumentService
+public class DocumentService<A extends DocumentExecutionAttributes>
 {
 	//
 	// Construction
@@ -53,7 +50,7 @@ public class DocumentService
 	 * @param attributes
 	 *        The attributes
 	 */
-	public DocumentService( DocumentExecutionAttributes attributes )
+	public DocumentService( A attributes )
 	{
 		this.attributes = attributes;
 	}
@@ -66,7 +63,7 @@ public class DocumentService
 	 * @param documentDescriptor
 	 *        The initial document descriptor
 	 */
-	public DocumentService( DocumentExecutionAttributes attributes, DocumentDescriptor<Executable> documentDescriptor )
+	public DocumentService( A attributes, DocumentDescriptor<Executable> documentDescriptor )
 	{
 		this( attributes );
 		pushDocumentDescriptor( documentDescriptor );
@@ -242,7 +239,7 @@ public class DocumentService
 	/**
 	 * The attributes.
 	 */
-	protected final DocumentExecutionAttributes attributes;
+	protected final A attributes;
 
 	/**
 	 * The document stack.
@@ -286,56 +283,18 @@ public class DocumentService
 	}
 
 	/**
-	 * If the {@link #getSource()} is a {@link DocumentFileSource}, then this is
-	 * the file relative to the {@link DocumentFileSource#getBasePath()} .
-	 * Otherwise, it's null.
+	 * Finds a document.
 	 * 
-	 * @return The relative library directory or null
+	 * @param documentName
+	 *        The document name
+	 * @return The document descriptor
+	 * @throws ParsingException
+	 * @throws DocumentException
 	 */
-	protected File getRelativeFile( File file )
-	{
-		if( file != null )
-		{
-			DocumentSource<Executable> documentSource = getSource();
-			if( documentSource instanceof DocumentFileSource<?> )
-				return ScripturianUtil.getRelativeFile( file, ( (DocumentFileSource<?>) documentSource ).getBasePath() );
-		}
-		return null;
-	}
-
 	protected DocumentDescriptor<Executable> getDocumentDescriptor( String documentName ) throws ParsingException, DocumentException
 	{
 		documentName = attributes.validateDocumentName( documentName );
-
-		Iterator<DocumentSource<Executable>> iterator = null;
-
-		ParsingContext parsingContext = attributes.createParsingContext();
-		while( true )
-		{
-			try
-			{
-				return Executable.createOnce( documentName, false, parsingContext );
-			}
-			catch( DocumentNotFoundException x )
-			{
-				DocumentSource<Executable> source = null;
-
-				if( iterator == null )
-				{
-					Iterable<DocumentSource<Executable>> sources = attributes.getLibraryDocumentSources();
-					if( sources != null )
-						iterator = sources.iterator();
-				}
-
-				if( ( iterator != null ) && iterator.hasNext() )
-					source = iterator.next();
-
-				if( source == null )
-					throw x;
-
-				parsingContext.setDocumentSource( source );
-			}
-		}
+		return attributes.createOnce( documentName, false, true, true, true );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -377,5 +336,4 @@ public class DocumentService
 		else
 			throw new DocumentException( "File document descriptors only available for DocumentFileSource" );
 	}
-
 }

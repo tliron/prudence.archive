@@ -78,6 +78,7 @@ predefinedGlobals.each() { key, value ->
 
 handlersDocumentSource = new DocumentFileSource(applicationBase + handlersBasePath, applicationBasePath + handlersBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
 applicationGlobals['com.threecrickets.prudence.DelegatedHandler.documentSource'] = handlersDocumentSource
+applicationGlobals['com.threecrickets.prudence.DelegatedHandler.extraDocumentSources'] = commonHandlersDocumentSources
 
 //
 // Tasks
@@ -85,6 +86,7 @@ applicationGlobals['com.threecrickets.prudence.DelegatedHandler.documentSource']
 
 tasksDocumentSource = new DocumentFileSource(applicationBase + tasksBasePath, applicationBasePath + tasksBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
 applicationGlobals['com.threecrickets.prudence.ApplicationTask.documentSource'] = tasksDocumentSource
+applicationGlobals['com.threecrickets.prudence.ApplicationTask.extraDocumentSources'] = commonTasksDocumentSources
 
 scheduler.addTaskCollector(new ApplicationTaskCollector(new File(applicationBasePath + '/crontab'), applicationInstance))
 
@@ -96,7 +98,7 @@ configureCommon = { prefix ->
 	applicationGlobals[prefix + '.languageManager'] = languageManager
 	applicationGlobals[prefix + '.defaultName'] = documentsDefaultName
 	applicationGlobals[prefix + '.defaultLanguageTag'] = 'groovy'
-	applicationGlobals[prefix + '.libraryDocumentSources'] = libraryDocumentSources
+	applicationGlobals[prefix + '.libraryDocumentSources'] = librariesDocumentSources
 	applicationGlobals[prefix + '.fileUploadSizeThreshold'] = fileUploadSizeThreshold
 	applicationGlobals[prefix + '.sourceViewable'] = sourceViewable
 }

@@ -14,11 +14,29 @@
 (import
  'java.util.logging.LogManager 
  'java.io.File
+ 'java.util.concurrent.Executors
+ 'java.util.concurrent.CopyOnWriteArrayList
  'com.threecrickets.scripturian.document.DocumentFileSource
  'com.threecrickets.scripturian.exception.DocumentNotFoundException
  'com.threecrickets.prudence.service.ApplicationService)
 
-(.. document getLibrarySources (add (DocumentFileSource. (File. (.. document getSource (getBasePath)) "libraries/clojure") "default" "clj" (.longValue 5000))))
+;
+; Common
+;
+
+(def common-libraries-document-source (DocumentFileSource. "common/libraries/" (File. (.. document getSource (getBasePath)) "common/libraries/") "default" "clj" (.longValue 5000)))
+(def common-fragments-document-source (DocumentFileSource. "common/web/fragments/" (File. (.. document getSource (getBasePath)) "common/web/fragments/") "index" "clj" (.longValue 5000)))
+
+(def common-tasks-document-sources (CopyOnWriteArrayList.))
+(.add common-tasks-document-sources (DocumentFileSource. "common/tasks/" (File. (.. document getSource (getBasePath)) "common/tasks/") "default" "clj" (.longValue 5000)))
+(def common-handlers-document-sources (CopyOnWriteArrayList.))
+(.add common-handlers-document-sources (DocumentFileSource. "common/handlers/" (File. (.. document getSource (getBasePath)) "common/handlers/") "default" "clj" (.longValue 5000)))
+
+(.. document getLibrarySources (add common-libraries-document-source))
+
+;
+; Utilities
+;
 
 (defn execute-or-default
 	([name default]

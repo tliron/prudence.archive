@@ -13,14 +13,33 @@
 //
 
 global $tasks, $scheduler, $component, $prudence_version, $prudence_revision, $prudence_flavor, $applications, $predefined_shared_globals;
+global $common_libraries_document_source, $common_fragments_document_source, $common_tasks_document_sources, $common_handlers_document_sources;
 
 import java.lang.System;
 import java.util.logging.LogManager;
+import java.util.concurrent.Executors;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.io.File;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.prudence.service.ApplicationService;
 
-$document->librarySources->add(new DocumentFileSource(new File($document->source->basePath, 'libraries/php'), 'default', 'php', 5000));
+//
+// Common
+//
+
+$common_libraries_document_source = new DocumentFileSource('common/libraries/', new File($document->source->basePath, 'common/libraries/'), 'default', 'php', 5000);
+$common_fragments_document_source = new DocumentFileSource('common/web/fragments/', new File($document->source->basePath, 'common/web/fragments/'), 'index', 'php', 5000);
+
+$common_tasks_document_sources = new CopyOnWriteArrayList();
+$common_tasks_document_sources->add(new DocumentFileSource('common/tasks/', new File($document->source->basePath, 'common/tasks/'), 'default', 'php', 5000));
+$common_handlers_document_sources = new CopyOnWriteArrayList();
+$common_handlers_document_sources->add(new DocumentFileSource('common/handlers/', new File($document->source->basePath, 'common/handlers/'), 'default', 'php', 5000));
+
+$document->librarySources->add($common_libraries_document_source);
+
+//
+// Utilities
+//
 
 function is_java_exception($x, $name) {
 	$name = $name . ':';

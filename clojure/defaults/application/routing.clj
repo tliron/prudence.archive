@@ -15,6 +15,7 @@
   'java.lang.ClassLoader
   'java.io.File
   'java.util.concurrent.ConcurrentHashMap
+  'java.util.concurrent.CopyOnWriteArrayList
   'org.restlet.routing.Router
   'org.restlet.routing.Redirector
   'org.restlet.routing.Template
@@ -107,18 +108,22 @@
 ; Libraries
 ;
 
-(def library-document-sources [
-  (DocumentFileSource. (str application-base libraries-base-path) (str application-base-path libraries-base-path) documents-default-name "clj" (.longValue minimum-time-between-validity-checks))
-  (DocumentFileSource. (str application-base "/../../libraries/clojure/") (str application-base-path "/../../libraries/clojure/") documents-default-name "clj" (.longValue minimum-time-between-validity-checks))])
+(def libraries-document-sources (CopyOnWriteArrayList.))
+(.add libraries-document-sources (DocumentFileSource. (str application-base libraries-base-path) (str application-base-path libraries-base-path) documents-default-name "clj" (.longValue minimum-time-between-validity-checks)))
+(.add libraries-document-sources common-libraries-document-source)
 
 ;
 ; Dynamic web
 ;
 
 (def dynamic-web-document-source (DocumentFileSource. (str application-base dynamic-web-base-path) (str application-base-path dynamic-web-base-path) dynamic-web-default-document "clj" (.longValue minimum-time-between-validity-checks)))
+(def fragments-document-sources (CopyOnWriteArrayList.))
+(.add fragments-document-sources (DocumentFileSource. (str application-base fragments-base-path) (str application-base-path fragments-base-path) dynamic-web-default-document "clj" (.longValue minimum-time-between-validity-checks)))
+(.add fragments-document-sources common-fragments-document-source)
 (def cache-key-pattern-handlers (ConcurrentHashMap.))
 (def scriptlet-plugins (ConcurrentHashMap.))
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.documentSource" dynamic-web-document-source)
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources" fragments-document-sources)
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName" dynamic-web-default-document)
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.executionController" (PhpExecutionController.)) ; Adds PHP predefined variables
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.clientCachingMode" dynamic-web-client-caching-mode)

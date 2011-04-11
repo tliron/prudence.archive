@@ -5751,6 +5751,15 @@ Relative to the application's subdirectory.
 \end_layout
 
 \begin_layout Paragraph
+fragmentsBasePath
+\end_layout
+
+\begin_layout Standard
+Relative to the application's subdirectory.
+ Defaults to ``/web/fragments/''.
+\end_layout
+
+\begin_layout Paragraph
 dynamicWebDefaultDocument
 \end_layout
 
@@ -24814,7 +24823,7 @@ The backend is one place where high-performance hardware can help.
  Ten expensive, powerful machines might be equal in total power to forty
  cheap machines, but they require a quarter of the synchronization overhead,
  giving you more elbow room to scale up.
- Fewer nodes is better.
+ Fewer nodes means better scalablity.
 \end_layout
 
 \begin_layout Standard
@@ -25265,26 +25274,28 @@ Document databases allow for straightforward distribution and very fine-grained
 \begin_layout Standard
 The cost of this scalability is the loss of your ability to do relational
  queries of your data.
- Instead, you'll be using distributed map/reduce, or rely on an external
- indexing service.
+ Instead, you'll be using distributed map/reduce, or rely on an an indexing
+ service.
  These are powerful tools, but they do not match relational queries in sheer
- speed of complex queries.
+ flexibility of complex queries.
  Implementing something as simple as a many-to-many connection, the bread-and-bu
-tter of relational databases, requires some specialization.
- Document databases shine at listing, sorting and searching through extremely
- large catalogs of documents.
+tter of relational databases, requires some specialization for document
+ database.
+ Where document databases shine is at listing, sorting and searching through
+ very large catalogs of documents.
 \end_layout
 
 \begin_layout Standard
 Candidate applications include online retail, blogs, wikis, archives, newspapers
 , contact lists, calendars, photo galleries, dating profiles\SpecialChar \ldots{}
- This is a long
- list, but by no means exhaustive of all that is possible in web applications.
- Many useful applications cannot be reduced to sets of lightly interconnected
- ``documents'' without giving up a lot of useful functionality.
- For example, merely adding social networking capabilities to a dating site
- would require complex relations that might be better handled with a graph
- database.
+ The list is
+ actually quite long, making document databases very attractive for many
+ products.
+ But, it's important to always be aware of their limitations: for example,
+ merely adding social networking capabilities to a dating site would require
+ complex relations that might be better handled with a graph database.
+ The combination of a document database with a graph database might, in
+ fact, be enough to remove any benefit a relational database could bring.
 \end_layout
 
 \begin_layout Standard
@@ -25344,8 +25355,8 @@ This requirement allows optimization for a truly massive scale.
 \end_layout
 
 \begin_layout Standard
-Column databases occupy the ``cloud'' market niche: they allow massive companies
- like Google and Amazon to cheaply offer database storage and services for
+Column databases occupy the ``cloud'' market niche: they allow companies
+ like Google and Amazon to offer cheap database storage and services for
  third parties.
  See Google's 
 \begin_inset CommandInset href
@@ -25393,11 +25404,19 @@ target "http://cassandra.apache.org/"
 
 \end_inset
 
- (originally developed by/for Facebook) and 
+ (originally developed by/for Facebook), 
 \begin_inset CommandInset href
 LatexCommand href
 name "HBase"
 target "http://hadoop.apache.org/hbase/"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset href
+LatexCommand href
+name "Redis"
+target "http://redis.io/"
 
 \end_inset
 
