@@ -155,7 +155,7 @@ $fragments_document_sources->add($common_fragments_document_source);
 $cache_key_pattern_handlers = new ConcurrentHashMap();
 $scriptlet_plugins = new ConcurrentHashMap();
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source;
-$application_blobals['com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources'] = $fragments_document_sources;
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources'] = $fragments_document_sources;
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = $dynamic_web_default_document;
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController(); // Adds PHP predefined variables
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode;
