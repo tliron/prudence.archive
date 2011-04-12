@@ -28,9 +28,9 @@ $common_libraries_document_source = DocumentFileSource.new 'common/libraries/', 
 $common_fragments_document_source = DocumentFileSource.new 'common/web/fragments/', java.io.File.new($document.source.base_path, 'common/web/fragments/'), 'index', 'rb', 5000
 
 $common_tasks_document_sources = CopyOnWriteArrayList.new
-$common_tasks_document_sources.add DocumentFileSource.new('common/tasks/', java.io.File.new($document.source.base_path, 'common/tasks/'), 'default', 'rb', 5000)
+$common_tasks_document_sources << DocumentFileSource.new('common/tasks/', java.io.File.new($document.source.base_path, 'common/tasks/'), 'default', 'rb', 5000)
 $common_handlers_document_sources = CopyOnWriteArrayList.new
-$common_handlers_document_sources.add DocumentFileSource.new('common/handlers/', java.io.File.new($document.source.base_path, 'common/handlers/'), 'default', 'rb', 5000)
+$common_handlers_document_sources << DocumentFileSource.new('common/handlers/', java.io.File.new($document.source.base_path, 'common/handlers/'), 'default', 'rb', 5000)
 
 $document.library_sources.add $common_libraries_document_source
 
@@ -40,20 +40,11 @@ $document.library_sources.add $common_libraries_document_source
 
 def execute_or_default(name, default=nil)
 	begin
-		begin
-			$document.execute name
-			
-			# Note: a bug in JRuby 1.5.1 causes the begin/rescue block to throw a
-			# "assigning non-exception to $!" exception, which is why we are wrapping
-			# this block in yet another begin/rescue block.
-			
-		rescue DocumentNotFoundException
-			if default.nil?
-				default = '/defaults/' + name
-			end
-			$document.execute default
-		end
-	rescue
+		# Note: a bug in JRuby 1.6.0 causes exceptions not to be caught if we call $document.execute normally
+		# from within compiled Ruby code
+
+		$document.java_send :execute, [java.lang.String], name
+	rescue DocumentNotFoundException
 		if default.nil?
 			default = '/defaults/' + name
 		end
@@ -164,13 +155,11 @@ for server in $component.servers
 	else
 		print "Listening on port #{server.port} for "
 	end
-	j = 0
-	for protocol in server.protocols
-		if j < server.protocols.size - 1
+	server.protocols.each_with_index do |protocol, i|
+		if i < server.protocols.size - 1
 			print ', '
 		end
 		print protocol
-		j += 1
 	end
 	puts '.'
 end
@@ -187,13 +176,13 @@ $scheduler.start
 
 $fixed_executor = Executors::new_fixed_thread_pool(Runtime::runtime.available_processors * 2 + 1)
 if $tasks.length > 0
-	futures = []
+	$futures = []
 	start_time = System::current_time_millis
 	puts "Executing #{$tasks.length} startup tasks..."
 	for task in $tasks
-		futures << $fixed_executor.submit(task)
+		$futures << $fixed_executor.submit(task)
 	end
-	for future in futures
+	for future in $futures
 		begin
 			future.get
 		rescue

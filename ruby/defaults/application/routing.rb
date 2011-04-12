@@ -60,8 +60,7 @@ $component.internal_router.attach('/' + $application_internal_name, $application
 $add_trailing_slash = Redirector.new($application_instance.context, '{ri}/', Redirector::MODE_CLIENT_PERMANENT)
 
 print "#{$application_instance.name}: "
-i = 0
-for entry in $hosts
+$hosts.each_with_index do |entry, i|
 	host = entry[0]
 	url = entry[1]
 	if url.nil?
@@ -79,7 +78,6 @@ for entry in $hosts
 	if i < $hosts.length - 1
 		print ', '
 	end
-	i += 1
 end
 puts '.'
 
@@ -121,8 +119,8 @@ $language_manager = $executable.manager
 #
 
 $libraries_document_sources = CopyOnWriteArrayList.new
-$libraries_document_sources.add DocumentFileSource.new($application_base + $libraries_base_path, $application_base_path + $libraries_base_path, $documents_default_name, 'rb', $minimum_time_between_validity_checks)
-$libraries_document_sources.add $common_libraries_document_source
+$libraries_document_sources << DocumentFileSource.new($application_base + $libraries_base_path, $application_base_path + $libraries_base_path, $documents_default_name, 'rb', $minimum_time_between_validity_checks)
+$libraries_document_sources << $common_libraries_document_source
 
 #
 # Dynamic web
@@ -130,8 +128,8 @@ $libraries_document_sources.add $common_libraries_document_source
 
 $dynamic_web_document_source = DocumentFileSource.new($application_base + $dynamic_web_base_path, $application_base_path + $dynamic_web_base_path, $dynamic_web_default_document, 'rb', $minimum_time_between_validity_checks)
 $fragments_document_sources = CopyOnWriteArrayList.new
-$fragments_document_sources.add DocumentFileSource.new($application_base + $fragments_base_path, $application_base_path + $fragments_base_path, $dynamic_web_default_document, 'rb', $minimum_time_between_validity_checks)
-$fragments_document_sources.add $common_fragments_document_source
+$fragments_document_sources << DocumentFileSource.new($application_base + $fragments_base_path, $application_base_path + $fragments_base_path, $dynamic_web_default_document, 'rb', $minimum_time_between_validity_checks)
+$fragments_document_sources << $common_fragments_document_source
 $cache_key_pattern_handlers = ConcurrentHashMap.new
 $scriptlet_plugins = ConcurrentHashMap.new
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source

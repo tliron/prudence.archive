@@ -6,7 +6,6 @@ document.execute('/defaults/application/routing/')
 
 import com.threecrickets.prudence.util.CssUnifyMinifyFilter
 import com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter
-import org.restlet.routing.Template
 
 router.captureAndHide(resourcesBaseURL + 'data/note/{id}/', '/data/note/')
 
