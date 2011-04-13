@@ -35,7 +35,7 @@ quercus				4.0.11
 restlet (JSE)		2.0.6
 rhino				1.7R2
 servlet (jetty)		2.5
-scripturian			1.0 (Revision 280)
+scripturian			1.0 (Revision 281)
 slf4j				1.6.1
 spymemcached		2.5
 sqlalchemy			0.6 (Revision 6720 + H2 patch)

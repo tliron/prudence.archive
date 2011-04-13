@@ -162,7 +162,7 @@
 		<attribute name="dist" />
 		<attribute name="name" />
 		<sequential>
-			<junit dir="." haltonfailure="true" fork="true" forkmode="perBatch" newenvironment="false" jvm="${test-jvm}">
+			<junit dir="." haltonfailure="true" fork="true" forkmode="perBatch" newenvironment="false" jvm="${test-jvm}" printsummary="true" timeout="60000">
 				<test name="com.threecrickets.prudence.test.@{name}" />
 				<classpath>
 					<file file="${lib}/junit/lib/org.junit.jar" />
@@ -182,9 +182,12 @@
 				<env key="PRUDENCE_TEST_IS_WINDOWS" value="${isWindows}" />
 				<!-- These are used for in-process mode -->
 				<jvmarg value="-Dscripturian.cache=@{dist}/content/cache" />
-				<jvmarg value="-Dpython.home=@{dist}/content/libraries/python" />
+				<jvmarg value="-Dhazelcast.config=@{dist}/content/configuration/hazelcast.conf" />
+				<jvmarg value="-Dpython.home=@{dist}/content/common/libraries" />
 				<jvmarg value="-Dpython.verbose=warning" />
 				<jvmarg value="-Djava.library.path=${jepp-path}" />
+				<jvmarg value="-Djava.util.logging.config.file=none" />
+				<jvmarg value="-Dnet.spy.log.LoggerImpl=net.spy.log.SunLogger" />
 			</junit>
 		</sequential>
 	</macrodef>
