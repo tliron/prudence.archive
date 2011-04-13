@@ -363,8 +363,7 @@
 		<fetch-library dist="${dist-javascript}" library="jygments" />
 		<fetch-library dist="${dist-javascript}" library="log4j" />
 		<fetch-library dist="${dist-javascript}" library="mime4j" />
-		<fetch-library dist="${dist-javascript}" library="mongo-java-driver" />
-		<fetch-library dist="${dist-javascript}" library="mongo-rhino-driver" />
+		<fetch-library dist="${dist-javascript}" library="mongodb-java-driver" />
 		<fetch-library dist="${dist-javascript}" library="mysqlconnector" />
 		<fetch-library dist="${dist-javascript}" library="restlet" />
 		<fetch-library dist="${dist-javascript}" library="rhino" />
@@ -375,9 +374,6 @@
 		<fetch-library dist="${dist-javascript}" library="succinct" />
 		<fetch-library dist="${dist-javascript}" library="velocity" />
 		<fetch-library dist="${dist-javascript}" library="${http-server}" />
-		<copy todir="${dist-javascript}/content/common/libraries">
-			<fileset dir="${lib}/mongo-rhino-driver/lib" includes="*.js" />
-		</copy>
 		<fetch-library-versions dist="${dist-javascript}" />
 	</target>
 	
@@ -748,7 +744,6 @@
 		<fetch-library dist="${dist-kitchensink}" library="log4j" />
 		<fetch-library dist="${dist-kitchensink}" library="mime4j" />
 		<fetch-library dist="${dist-kitchensink}" library="mongo-java-driver" />
-		<fetch-library dist="${dist-kitchensink}" library="mongo-rhino-driver" />
 		<fetch-library dist="${dist-kitchensink}" library="mysqlconnector" />
 		<fetch-library dist="${dist-kitchensink}" library="restlet" />
 		<fetch-library dist="${dist-kitchensink}" library="rhino" />
@@ -760,9 +755,6 @@
 		<fetch-library dist="${dist-kitchensink}" library="succinct" />
 		<fetch-library dist="${dist-kitchensink}" library="velocity" />
 		<fetch-library dist="${dist-kitchensink}" library="${http-server}" />
-		<copy todir="${dist-kitchensink}/content/common/libraries">
-			<fileset dir="${lib}/mongo-rhino-driver/lib" includes="*.js" />
-		</copy>
 		<copy todir="${dist-kitchensink}/content/common/libraries/Lib">
 			<fileset dir="${lib}/jython/lib/Lib" />
 		</copy>
