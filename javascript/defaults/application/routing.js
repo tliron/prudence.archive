@@ -25,6 +25,7 @@ importClass(
 	com.threecrickets.scripturian.util.DefrostTask,
 	com.threecrickets.scripturian.document.DocumentFileSource,
 	com.threecrickets.prudence.PrudenceRouter,
+	com.threecrickets.prudence.util.Fallback,
 	com.threecrickets.prudence.util.PreheatTask,
 	com.threecrickets.prudence.util.PhpExecutionController)
 
@@ -158,9 +159,16 @@ if(dynamicWebDefrost) {
 // Static web
 //
 
-var staticWeb = new Directory(applicationInstance.context, new File(applicationBasePath + staticWebBasePath).toURI().toString())
-staticWeb.listingAllowed = staticWebDirectoryListingAllowed
-staticWeb.negotiatingContent = true
+var staticWeb = new Fallback(applicationInstance.context, minimumTimeBetweenValidityChecks)
+var directory = new Directory(applicationInstance.context, new File(applicationBasePath + staticWebBasePath).toURI().toString())
+directory.listingAllowed = staticWebDirectoryListingAllowed
+directory.negotiatingContent = true
+staticWeb.addTarget(directory)
+directory = new Directory(applicationInstance.context, new File(document.source.basePath, 'common/web/static/').toURI().toString())
+directory.listingAllowed = staticWebDirectoryListingAllowed
+directory.negotiatingContent = true
+staticWeb.addTarget(directory)
+
 staticWebBaseURL = fixURL(staticWebBaseURL)
 if(staticWebCompress) {
 	var encoder = new Encoder(applicationInstance.context)

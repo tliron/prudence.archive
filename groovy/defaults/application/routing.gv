@@ -24,6 +24,7 @@ import org.restlet.engine.application.Encoder
 import com.threecrickets.scripturian.util.DefrostTask
 import com.threecrickets.scripturian.document.DocumentFileSource
 import com.threecrickets.prudence.PrudenceRouter
+import com.threecrickets.prudence.util.Fallback
 import com.threecrickets.prudence.util.PreheatTask
 import com.threecrickets.prudence.util.PhpExecutionController
 
@@ -157,9 +158,16 @@ if(dynamicWebDefrost) {
 // Static web
 //
 
-staticWeb = new Directory(applicationInstance.context, new File(applicationBasePath + staticWebBasePath).toURI().toString())
-staticWeb.listingAllowed = staticWebDirectoryListingAllowed
-staticWeb.negotiatingContent = true
+var staticWeb = new Fallback(applicationInstance.context, minimumTimeBetweenValidityChecks)
+var directory = new Directory(applicationInstance.context, new File(applicationBasePath + staticWebBasePath).toURI().toString())
+directory.listingAllowed = staticWebDirectoryListingAllowed
+directory.negotiatingContent = true
+staticWeb.addTarget(directory)
+directory = new Directory(applicationInstance.context, new File(document.source.basePath, 'common/web/static/').toURI().toString())
+directory.listingAllowed = staticWebDirectoryListingAllowed
+directory.negotiatingContent = true
+staticWeb.addTarget(directory)
+
 staticWebBaseURL = fixURL(staticWebBaseURL)
 if(staticWebCompress) {
 	encoder = new Encoder(applicationInstance.context)

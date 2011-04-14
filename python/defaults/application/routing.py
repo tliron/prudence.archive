@@ -22,7 +22,7 @@ from org.restlet.resource import Finder, Directory
 from org.restlet.engine.application import Encoder
 from com.threecrickets.scripturian.util import DefrostTask
 from com.threecrickets.scripturian.document import DocumentFileSource
-from com.threecrickets.prudence import PrudenceRouter
+from com.threecrickets.prudence import PrudenceRouter, Fallback
 from com.threecrickets.prudence.util import PreheatTask, PhpExecutionController
 
 class_loader = ClassLoader.getSystemClassLoader()
@@ -137,9 +137,16 @@ if dynamic_web_defrost:
 # Static web
 #
 
-static_web = Directory(application_instance.context, File(application_base_path + static_web_base_path).toURI().toString())
-static_web.listingAllowed = static_web_directory_listing_allowed
-static_web.negotiateContent = True
+static_web = Fallback(application_instance.context, minimum_time_between_validity_checks)
+directory = Directory(application_instance.context, File(application_base_path + static_web_base_path).toURI().toString())
+directory.listingAllowed = static_web_directory_listing_allowed
+directory.negotiatingContent = True
+static_web.addTarget(directory)
+directory = Directory(application_instance.context, File(document.source.basePath + 'common/web/static/').toURI().toString())
+directory.listingAllowed = static_web_directory_listing_allowed
+directory.negotiatingContent = True
+static_web.addTarget(directory)
+
 static_web_base_url = fix_url(static_web_base_url)
 if static_web_compress:
 	encoder = Encoder(application_instance.context)

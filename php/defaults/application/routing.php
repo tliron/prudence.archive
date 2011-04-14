@@ -26,6 +26,7 @@ import org.restlet.engine.application.Encoder;
 import com.threecrickets.scripturian.util.DefrostTask;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.prudence.PrudenceRouter;
+import com.threecrickets.prudence.util.Fallback;
 import com.threecrickets.prudence.util.PreheatTask;
 import com.threecrickets.prudence.util.PhpExecutionController;
 
@@ -177,9 +178,16 @@ if($dynamic_web_defrost) {
 // Static web
 //
 
-$static_web = new Directory($application_instance->context, new File($application_base_path . $static_web_base_path)->toURI()->toString());
-$static_web->listingAllowed = $static_web_directory_listing_allowed;
-$static_web->negotiatingContent = TRUE;
+$static_web = new Fallback($application_instance->context, $minimum_time_between_validity_checks);
+$directory = new Directory($application_instance->context, new File($application_base_path . $static_web_base_path)->toURI()->toString());
+$directory->listingAllowed = $static_web_directory_listing_allowed;
+$directory->negotiatingContent = TRUE;
+$static_web->addTarget($directory);
+$directory = new Directory($application_instance->context, new File($document.source.basePath . 'common/web/static/')->toURI()->toString());
+$directory->listingAllowed = $static_web_directory_listing_allowed;
+$directory->negotiatingContent = TRUE;
+$static_web->addTarget($directory);
+
 $static_web_base_url = fix_url($static_web_base_url);
 if ($static_web_compress) {
 	$encoder = new Encoder($application_instance->context);

@@ -25,6 +25,7 @@
   'com.threecrickets.scripturian.util.DefrostTask
   'com.threecrickets.scripturian.document.DocumentFileSource
   'com.threecrickets.prudence.PrudenceRouter
+  'com.threecrickets.prudence.util.Fallback
   'com.threecrickets.prudence.util.PreheatTask
   'com.threecrickets.prudence.util.PhpExecutionController)
 
@@ -142,9 +143,16 @@
 ; Static web
 ;
 
-(def static-web (Directory. (.getContext application-instance) (.. (File. (str application-base-path static-web-base-path)) toURI (toString))))
-(.setListingAllowed static-web static-web-directory-listing-allowed)
-(.setNegotiateContent static-web true)
+(def static-web (Fallback. (.getContext application-instance) minimum-time-between-validity-checks))
+(def directory (Directory. (.getContext application-instance) (.. (File. (str application-base-path static-web-base-path)) toURI (toString))))
+(.setListingAllowed directory static-web-directory-listing-allowed)
+(.setNegotiatingContent directory true)
+(.addTarget static-web directory)
+(def directory (Directory. (.getContext application-instance) (.. (File. (str (.. document getSource (getBasePath)) "common/web/static/")) toURI (toString))))
+(.setListingAllowed directory static-web-directory-listing-allowed)
+(.setNegotiatingContent directory true)
+(.addTarget static-web directory)
+
 (def static-web-base-url (fix-url static-web-base-url))
 (if static-web-compress
   (let [encoder (Encoder. (.getContext application-instance))]

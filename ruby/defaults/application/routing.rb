@@ -23,6 +23,7 @@ import org.restlet.engine.application.Encoder
 import com.threecrickets.scripturian.util.DefrostTask
 import com.threecrickets.scripturian.document.DocumentFileSource
 import com.threecrickets.prudence.PrudenceRouter
+import com.threecrickets.prudence.util.Fallback
 import com.threecrickets.prudence.util.PreheatTask
 import com.threecrickets.prudence.util.PhpExecutionController
 
@@ -155,9 +156,16 @@ end
 # Static web
 #
 
-$static_web = Directory.new($application_instance.context, java.io.File.new($application_base_path + $static_web_base_path).to_uri.to_string)
-$static_web.listing_allowed = $static_web_directory_listing_allowed
-$static_web.negotiating_content = true
+$static_web = Fallback.new($application_instance.context, $minimum_time_between_validity_checks)
+$directory = Directory.new($application_instance.context, java.io.File.new($application_base_path + $static_web_base_path).to_uri.to_string)
+$directory.listing_allowed = $static_web_directory_listing_allowed
+$directory.negotiating_content = true
+$static_web.add_target $directory
+$directory = Directory.new($application_instance.context, java.io.File.new($document.source.base_path + 'common/web/static/').to_uri.to_string)
+$directory.listing_allowed = $static_web_directory_listing_allowed
+$directory.negotiating_content = true
+$static_web.add_target $directory
+
 $static_web_base_url = fix_url $static_web_base_url
 if $static_web_compress
 	encoder = Encoder.new($application_instance.context)
