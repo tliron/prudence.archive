@@ -3684,7 +3684,7 @@ The /applications/ subdirectory is ``zip-aware,'' meaning that zip archives
 \begin_layout Standard
 See 
 \bar under
-configuring applications (page 
+Prudence applications (page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "../application/"
@@ -3694,6 +3694,39 @@ reference "../application/"
 )
 \bar default
  for a complete reference.
+\end_layout
+
+\begin_layout Subsubsection
+/common/
+\begin_inset CommandInset label
+LatexCommand label
+name "../instance/|common"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This subdirectory is similar in structure to that of an application, and
+ acts as a shared area for all applications to use.
+ You can thus install libraries, fragments and other resources here without
+ having to duplicate them in each application.
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+Prudence applications (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/"
+
+\end_inset
+
+)
+\bar default
+ for more information on how /common/ is used.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3917,37 +3950,19 @@ name "../instance/|libraries"
 
 \begin_layout Standard
 Here you will find Prudence's main libraries as well as support libraries.
- The main /libraries/ subdirectory is for Java archives (JARs), but you
- may find subdirectories for libraries in other languages, such as /libraries/py
-thon/ for Python.
+ The main /libraries/ subdirectory is for Java archives (JARs).
 \end_layout
 
 \begin_layout Standard
-This directory also serves as a common /libraries/ directory for all application
-s, similarly to how an 
-\bar under
-individual application's /libraries/ directory (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../application/|libraries"
-
-\end_inset
-
-)
-\bar default
- works.
- You can thus put source code here that you want to share for all your applicati
-ons.
-\end_layout
-
-\begin_layout Standard
-If you add your own JARs, make sure to edit the scripts in /bin/ to accommodate
- your additions.
+We've named or renamed all Prudence JARs according to their main Java package
+ prefix, but you do not have to follow this convention.
 \end_layout
 
 \begin_layout Quote
-We've named or renamed all Prudence JARs according to their main Java package
- prefix, but you do not have to follow this convention.
+For JVM 5, if you add your own JARs, you may need to edit the scripts in
+ /bin/ to accommodate your additions.
+ You do not need to do this in JVM 6 and above, which supports wildcard
+ classpaths.
 \end_layout
 
 \begin_layout Subsection
@@ -4874,10 +4889,17 @@ reference "../routing/|pretty-uris"
 \end_layout
 
 \begin_layout Standard
-This subdirectory works like a standard ``static'' web server.
+This subdirectory works like a standard static web server.
  Files put here are attached to URLs and accessible to clients as is.
  Prudence uses non-blocking I/O for high performance, scalable delivery
  of data to clients.
+\end_layout
+
+\begin_layout Standard
+The ``/common/web/static/'' instance subdirectory is used as a fallback
+ for files not found in the application's ``/web/static/'' subdirectory.
+ You can thus use ``/common/web/static/'' to serve static web files for
+ all applications.
 \end_layout
 
 \begin_layout Standard
@@ -4916,6 +4938,13 @@ Your dynamic pages in /web/dynamic/ can include any page fragments from
  will not be attached to URLs.
  Fragments are normally hidden from users, visible only if they're included
  into a page in /web/dynamic/.
+\end_layout
+
+\begin_layout Standard
+The ``/common/web/fragments/'' instance subdirectory is used as a fallback
+ for files not found in the application's ``/web/fragments/'' subdirectory.
+ You can thus use ``/common/web/fragments/'' to serve web fragments for
+ all applications.
 \end_layout
 
 \begin_layout Standard
@@ -4991,6 +5020,12 @@ reference "../handlers/"
  Instead, they must be explicitly used for specific purposes.
 \end_layout
 
+\begin_layout Standard
+The ``/common/handlers/'' instance subdirectory is used as a fallback for
+ files not found in the application's ``/handlers/'' subdirectory.
+ You can thus use ``/common/handlers/'' to install handlers for all applications.
+\end_layout
+
 \begin_layout Subsubsection
 /tasks/
 \end_layout
@@ -5012,6 +5047,12 @@ reference "../tasks/"
  They are straightforward in that, upon execution, the code is simply run
  as is.
  There is no particular entry point as with /resources/ or /handlers/.
+\end_layout
+
+\begin_layout Standard
+The ``/common/tasks/'' instance subdirectory is used as a fallback for files
+ not found in the application's ``/tasks/'' subdirectory.
+ You can thus use ``/common/tasks/'' to install tasks for all applications.
 \end_layout
 
 \begin_layout Subsubsection
@@ -5046,6 +5087,13 @@ reference "../api/|document-execute"
 )
 \bar default
 .
+\end_layout
+
+\begin_layout Standard
+The ``/common/libraries/'' instance subdirectory is used as a fallback for
+ files not found in the application's ``/handlers/'' subdirectory.
+ You can thus use ``/common/libraries/'' to install libraries for all applicatio
+ns.
 \end_layout
 
 \begin_layout Standard
