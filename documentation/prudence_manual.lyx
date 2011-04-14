@@ -14676,6 +14676,21 @@ router.detach(staticWeb)
 
 \end_layout
 
+\begin_layout Standard
+The difference between ``attach'' and ``attachBase'' is the default URI
+ template matching pattern: MODE_EQUALS vs.
+ MODE_STARTS_WITH.
+ See the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet documentation"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/routing/Template.html"
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Subsubsection
 Filtering
 \begin_inset CommandInset label
@@ -14921,6 +14936,13 @@ applicationInstance.inboundRoot = myFilter
 
 \end_layout
 
+\begin_layout Standard
+Generally in Purdence, you would want to filter either ``dynamicWeb,'' ``staticW
+eb,'' ``resources'' or ``applicationInstance.inboundRoot.'' However, some
+ applications may be using other resources and have more complex routing
+ schemes, allowing you to install filters at many more places.
+\end_layout
+
 \begin_layout Paragraph
 Custom Filters
 \end_layout
@@ -14953,7 +14975,7 @@ status open
 \begin_layout Plain Layout
 
 router.filterBase(dynamicWebBaseURL, '/remove-foul-language/', applicationInstanc
-e.context, dynamicWebBase)
+e.context, dynamicWeb)
 \end_layout
 
 \end_inset
