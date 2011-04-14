@@ -148,7 +148,7 @@
 (.setListingAllowed directory static-web-directory-listing-allowed)
 (.setNegotiatingContent directory true)
 (.addTarget static-web directory)
-(def directory (Directory. (.getContext application-instance) (.. (File. (str (.. document getSource (getBasePath)) "common/web/static/")) toURI (toString))))
+(def directory (Directory. (.getContext application-instance) (.. (File. (.. document getSource (getBasePath)) "common/web/static/") toURI (toString))))
 (.setListingAllowed directory static-web-directory-listing-allowed)
 (.setNegotiatingContent directory true)
 (.addTarget static-web directory)

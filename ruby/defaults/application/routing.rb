@@ -161,7 +161,7 @@ $directory = Directory.new($application_instance.context, java.io.File.new($appl
 $directory.listing_allowed = $static_web_directory_listing_allowed
 $directory.negotiating_content = true
 $static_web.add_target $directory
-$directory = Directory.new($application_instance.context, java.io.File.new($document.source.base_path + 'common/web/static/').to_uri.to_string)
+$directory = Directory.new($application_instance.context, java.io.File.new($document.source.base_path, 'common/web/static/').to_uri.to_string)
 $directory.listing_allowed = $static_web_directory_listing_allowed
 $directory.negotiating_content = true
 $static_web.add_target $directory

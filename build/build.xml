@@ -162,7 +162,7 @@
 		<attribute name="dist" />
 		<attribute name="name" />
 		<sequential>
-			<junit dir="." haltonfailure="true" fork="true" forkmode="perBatch" newenvironment="false" jvm="${test-jvm}" printsummary="true" timeout="60000">
+			<junit dir="." haltonfailure="true" fork="true" forkmode="perBatch" newenvironment="false" jvm="${test-jvm}" printsummary="true" timeout="120000">
 				<test name="com.threecrickets.prudence.test.@{name}" />
 				<classpath>
 					<file file="${lib}/junit/lib/org.junit.jar" />

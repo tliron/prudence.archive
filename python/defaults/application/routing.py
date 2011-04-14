@@ -22,8 +22,8 @@ from org.restlet.resource import Finder, Directory
 from org.restlet.engine.application import Encoder
 from com.threecrickets.scripturian.util import DefrostTask
 from com.threecrickets.scripturian.document import DocumentFileSource
-from com.threecrickets.prudence import PrudenceRouter, Fallback
-from com.threecrickets.prudence.util import PreheatTask, PhpExecutionController
+from com.threecrickets.prudence import PrudenceRouter
+from com.threecrickets.prudence.util import Fallback, PreheatTask, PhpExecutionController
 
 class_loader = ClassLoader.getSystemClassLoader()
 
@@ -142,7 +142,7 @@ directory = Directory(application_instance.context, File(application_base_path +
 directory.listingAllowed = static_web_directory_listing_allowed
 directory.negotiatingContent = True
 static_web.addTarget(directory)
-directory = Directory(application_instance.context, File(document.source.basePath + 'common/web/static/').toURI().toString())
+directory = Directory(application_instance.context, File(document.source.basePath, 'common/web/static/').toURI().toString())
 directory.listingAllowed = static_web_directory_listing_allowed
 directory.negotiatingContent = True
 static_web.addTarget(directory)

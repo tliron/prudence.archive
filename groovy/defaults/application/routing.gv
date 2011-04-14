@@ -158,8 +158,8 @@ if(dynamicWebDefrost) {
 // Static web
 //
 
-var staticWeb = new Fallback(applicationInstance.context, minimumTimeBetweenValidityChecks)
-var directory = new Directory(applicationInstance.context, new File(applicationBasePath + staticWebBasePath).toURI().toString())
+staticWeb = new Fallback(applicationInstance.context, minimumTimeBetweenValidityChecks)
+directory = new Directory(applicationInstance.context, new File(applicationBasePath + staticWebBasePath).toURI().toString())
 directory.listingAllowed = staticWebDirectoryListingAllowed
 directory.negotiatingContent = true
 staticWeb.addTarget(directory)

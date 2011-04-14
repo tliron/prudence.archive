@@ -51,6 +51,17 @@ public class Fallback extends Restlet
 	//
 
 	/**
+	 * Construct a fallback with a default cache duration of 5 seconds.
+	 * 
+	 * @param context
+	 *        The context
+	 */
+	public Fallback( Context context )
+	{
+		this( context, 5000 );
+	}
+
+	/**
 	 * Construct a fallback for an array of target restlets with a default cache
 	 * duration of 5 seconds.
 	 * 
@@ -62,6 +73,21 @@ public class Fallback extends Restlet
 	public Fallback( Context context, Restlet... targets )
 	{
 		this( context, 5000, targets );
+	}
+
+	/**
+	 * Construct a fallback.
+	 * 
+	 * @param context
+	 *        The context
+	 * @param cacheDuration
+	 *        The cache duration, in milliseconds
+	 */
+	public Fallback( Context context, int cacheDuration )
+	{
+		super( context );
+		describe();
+		this.cacheDuration = cacheDuration;
 	}
 
 	/**

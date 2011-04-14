@@ -183,7 +183,7 @@ $directory = new Directory($application_instance->context, new File($application
 $directory->listingAllowed = $static_web_directory_listing_allowed;
 $directory->negotiatingContent = TRUE;
 $static_web->addTarget($directory);
-$directory = new Directory($application_instance->context, new File($document.source.basePath . 'common/web/static/')->toURI()->toString());
+$directory = new Directory($application_instance->context, new File($document.source.basePath, 'common/web/static/')->toURI()->toString());
 $directory->listingAllowed = $static_web_directory_listing_allowed;
 $directory->negotiatingContent = TRUE;
 $static_web->addTarget($directory);
