@@ -13875,7 +13875,7 @@ document.execute('/defaults/application/routing/')
 
 \begin_layout Plain Layout
 
-router.filter(dynamicWebBaseURL, '/page-filter/', dynamicWeb)
+router.filterBase(dynamicWebBaseURL, '/page-filter/', dynamicWeb)
 \end_layout
 
 \end_inset
@@ -14937,7 +14937,7 @@ applicationInstance.inboundRoot = myFilter
 \end_layout
 
 \begin_layout Standard
-Generally in Purdence, you would want to filter either ``dynamicWeb,'' ``staticW
+Generally in Prudence, you would want to filter either ``dynamicWeb,'' ``staticW
 eb,'' ``resources'' or ``applicationInstance.inboundRoot.'' However, some
  applications may be using other resources and have more complex routing
  schemes, allowing you to install filters at many more places.
