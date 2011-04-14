@@ -120,8 +120,7 @@ public class DebugRepresentation extends StringRepresentation
 				{
 					html.append( "<a href=\"" );
 					html.append( request.getRootRef() );
-					if( sourceCodeUri.startsWith( "/" ) )
-						html.append( sourceCodeUri.substring( 1 ) );
+					html.append( sourceCodeUri );
 					html.append( '?' );
 					html.append( SourceCodeResource.DOCUMENT );
 					html.append( '=' );

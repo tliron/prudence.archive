@@ -49,7 +49,7 @@ public class SourceCodeResourceAttributes extends ResourceContextualAttributes
 	{
 		if( documentSources == null )
 		{
-			documentSources = (Iterable<DocumentSource<Executable>>) getAttributes().get( prefix + "documentSources" );
+			documentSources = (Iterable<DocumentSource<Executable>>) getAttributes().get( prefix + ".documentSources" );
 
 			if( documentSources == null )
 				throw new RuntimeException( "Attribute " + prefix + ".documentSources must be set in context" );
