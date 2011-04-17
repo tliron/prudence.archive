@@ -12,18 +12,21 @@
 package com.threecrickets.prudence.service;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.restlet.Application;
 import org.restlet.data.LocalReference;
 import org.restlet.data.MediaType;
 import org.restlet.data.Preference;
-import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 
 import com.threecrickets.prudence.internal.attributes.DocumentExecutionAttributes;
 import com.threecrickets.scripturian.Executable;
+import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentFileSource;
 import com.threecrickets.scripturian.document.DocumentSource;
@@ -98,7 +101,7 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 	 * @throws DocumentException
 	 * @throws IOException
 	 */
-	public Representation execute( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
+	public void execute( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
 	{
 		DocumentDescriptor<Executable> documentDescriptor = getDocumentDescriptor( documentName );
 
@@ -117,8 +120,52 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 		{
 			popDocumentDescriptor();
 		}
+	}
 
-		return null;
+	/**
+	 * As {@link #execute(String)}, but will only execute once per this thread.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @throws ParsingException
+	 * @throws ExecutionException
+	 * @throws DocumentException
+	 * @throws IOException
+	 * @see #markExecuted(String)
+	 */
+	public void executeOnce( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
+	{
+		if( markExecuted( documentName ) )
+			execute( documentName );
+	}
+
+	/**
+	 * Marks a document as executed for this thread's {@link ExecutionContext}.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @return True if the document was marked as executed by this call, false
+	 *         if it was already marked as executed
+	 * @see #executeOnce(String)
+	 */
+	@SuppressWarnings("unchecked")
+	public boolean markExecuted( String documentName )
+	{
+		ExecutionContext executionContext = ExecutionContext.getCurrent();
+		if( executionContext != null )
+		{
+			Map<String, Object> attributes = executionContext.getAttributes();
+			Set<String> executed = (Set<String>) attributes.get( EXECUTED_ATTRIBUTE );
+			if( executed == null )
+			{
+				executed = new HashSet<String>();
+				attributes.put( EXECUTED_ATTRIBUTE, executed );
+			}
+
+			return executed.add( documentName );
+		}
+
+		return true;
 	}
 
 	/**
@@ -299,6 +346,11 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
+
+	/**
+	 * Executed attribute for an {@link ExecutionContext}.
+	 */
+	private static final String EXECUTED_ATTRIBUTE = "com.threecrickets.prudence.service.DocumentService.executed";
 
 	/**
 	 * Get a media type by its MIME type name.

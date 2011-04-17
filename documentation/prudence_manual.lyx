@@ -17493,6 +17493,18 @@ name "../api/|document-execute"
 Executes a program defined by source code in another document.
  Global variables, function definitions, class definitions, etc., in the
  other document would be made available locally.
+ See 
+\bar under
+document.executeOnce (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-execute-once"
+
+\end_inset
+
+)
+\bar default
+ for a useful variant.
 \end_layout
 
 \begin_layout Standard
@@ -17509,8 +17521,9 @@ Prudence might compile or otherwise prepare and cache code in the executed
  document.
  What ``preparation'' actually involves depends on the language of the source
  code.
- This means that the first time it is executed it would be delayed, but
- subsequent execution would be much faster.
+ This means that the first time the document is executed would likely be
+ slower than normal, due to the preparation, but subsequent execution would
+ be much faster.
  To avoid that first-time wait, Prudence supports ``defrosting'' of your
  documents when it starts.
  This is enabled by default for all documents in /resources/, and would
@@ -17565,21 +17578,31 @@ The executed code can be re-usable, such as function and class definitions.
 
 \begin_deeper
 \begin_layout Enumerate
+For JavaScript and Groovy flavors: Prudence's document.execute is your only
+ option for code inclusion in Prudence, because both JavaScript and Groovy
+ do not have a code inclusion mechanism.
+ Note that in many of these cases you are treating the code as a library,
+ and are better off using 
+\bar under
+document.executeOnce (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-execute-once"
+
+\end_inset
+
+)
+\bar default
+ instead.
+\end_layout
+
+\begin_layout Enumerate
 In most cases, you would probably want to use your language's code inclusion
  mechanism instead of document.execute.
  For example, use ``import'' in Python, Ruby and PHP, and ``require'' in
  Clojure.
- The native inclusion mechanism would do a better job at caching code, managing
+ The native inclusion mechanism might do a better job at caching code, managing
  namespaces, avoiding duplication, etc.
- For example, if you use document.execute in Clojure, then you would have
- to use defonce rather than def to avoid duplication in case you execute
- the same document multiple times in the same context.
-\end_layout
-
-\begin_layout Enumerate
-For JavaScript and Groovy flavors: Prudence's document.execute is your only
- option for code inclusion in Prudence, because both JavaScript and Groovy
- do not have a code inclusion mechanism.
 \end_layout
 
 \end_deeper
@@ -17597,7 +17620,85 @@ The executed code does not have to be in the same language as the calling
 Use document.execute as an alternative to document.include if you prefer not
  to use scriptlets.
  For example, executing ``mylibrary.js'' might be more readable than including
- a fragment called mylibrary.html that is all just one JavaScript scriptlet.
+ a fragment called mylibrary.html, if it is all just one JavaScript scriptlet.
+\end_layout
+
+\begin_layout Paragraph
+document.executeOnce
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-execute-once"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is identical to 
+\bar under
+document.execute (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-execute"
+
+\end_inset
+
+)
+\bar default
+, except that it does nothing if the document was already called with document.ex
+ecuteOnce for this thread.
+ It is thus similar to ``require'' or ``import'' functionality in many programmi
+ng languages.
+\end_layout
+
+\begin_layout Standard
+The use case is for documents that constitute libraries: functions, classes
+ and utilities that need only be added once to the global space.
+ Using document.executeOnce instead of document.execute would allow for greater
+ efficiency and performance if you have a complex tree of documents that
+ execute each other.
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+document.markExecuted (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-mark-executed"
+
+\end_inset
+
+)
+\bar default
+ for a way to control this mechanism explicitly.
+\end_layout
+
+\begin_layout Paragraph
+document.markExecuted
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|document-mark-executed"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Explicitly marks a document as executed, so that subsequent calls to 
+\bar under
+document.executeOnce (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-execute-once"
+
+\end_inset
+
+)
+\bar default
+ for the document will do nothing.
 \end_layout
 
 \begin_layout Paragraph
