@@ -35,6 +35,7 @@ case "$1" in
 		rm -f /usr/lib/prudence-ruby/instance
 		rm -f /usr/lib/prudence-ruby/configuration
 		rm -f /usr/lib/prudence-ruby/applications
+		rm -f /usr/lib/prudence-ruby/common
 		rm -f /usr/lib/prudence-ruby/logs
 		rm -f /usr/lib/prudence-ruby/cache
 	;;

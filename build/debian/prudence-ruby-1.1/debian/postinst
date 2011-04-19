@@ -31,6 +31,7 @@ case "$1" in
 		ln -fsT /var/lib/prudence-ruby/instance/      /usr/lib/prudence-ruby/instance
 		ln -fsT /etc/prudence-ruby/                   /usr/lib/prudence-ruby/configuration
 		ln -fsT /var/lib/prudence-ruby/applications/  /usr/lib/prudence-ruby/applications
+		ln -fsT /var/lib/prudence-ruby/common/        /usr/lib/prudence-ruby/common
 		ln -fsT /var/log/prudence-ruby/               /usr/lib/prudence-ruby/logs
 		ln -fsT /var/lib/prudence-ruby/cache/         /usr/lib/prudence-ruby/cache
 	;;

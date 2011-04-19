@@ -2,9 +2,9 @@
 bin/*                /usr/lib/prudence-ruby/bin/
 libraries/*          /usr/lib/prudence-ruby/libraries/
 defaults/*           /usr/lib/prudence-ruby/defaults/
+common/*             /usr/lib/prudence-ruby/common/
 documentation/*      /usr/lib/prudence-ruby/documentation/
 licenses/*           /usr/lib/prudence-ruby/licenses/
 instance/*           /var/lib/prudence-ruby/instance/
 applications/*       /var/lib/prudence-ruby/applications/
 configuration/*      /etc/prudence-ruby/
-

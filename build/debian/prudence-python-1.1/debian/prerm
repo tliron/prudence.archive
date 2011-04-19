@@ -35,6 +35,7 @@ case "$1" in
 		rm -f /usr/lib/prudence-python/instance
 		rm -f /usr/lib/prudence-python/configuration
 		rm -f /usr/lib/prudence-python/applications
+		rm -f /usr/lib/prudence-python/common
 		rm -f /usr/lib/prudence-python/logs
 		rm -f /usr/lib/prudence-python/cache
 	;;

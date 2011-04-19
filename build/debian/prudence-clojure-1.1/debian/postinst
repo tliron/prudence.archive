@@ -31,6 +31,7 @@ case "$1" in
 		ln -fsT /var/lib/prudence-clojure/instance/      /usr/lib/prudence-clojure/instance
 		ln -fsT /etc/prudence-clojure/                   /usr/lib/prudence-clojure/configuration
 		ln -fsT /var/lib/prudence-clojure/applications/  /usr/lib/prudence-clojure/applications
+		ln -fsT /var/lib/prudence-clojure/common/        /usr/lib/prudence-clojure/common
 		ln -fsT /var/log/prudence-clojure/               /usr/lib/prudence-clojure/logs
 		ln -fsT /var/lib/prudence-clojure/cache/         /usr/lib/prudence-clojure/cache
 	;;

@@ -31,6 +31,7 @@ case "$1" in
 		ln -fsT /var/lib/prudence-python/instance/      /usr/lib/prudence-python/instance
 		ln -fsT /etc/prudence-python/                   /usr/lib/prudence-python/configuration
 		ln -fsT /var/lib/prudence-python/applications/  /usr/lib/prudence-python/applications
+		ln -fsT /var/lib/prudence-python/common/        /usr/lib/prudence-python/common
 		ln -fsT /var/log/prudence-python/               /usr/lib/prudence-python/logs
 		ln -fsT /var/lib/prudence-python/cache/         /usr/lib/prudence-python/cache
 	;;

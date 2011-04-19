@@ -31,6 +31,7 @@ case "$1" in
 		ln -fsT /var/lib/prudence-javascript/instance/      /usr/lib/prudence-javascript/instance
 		ln -fsT /etc/prudence-javascript/                   /usr/lib/prudence-javascript/configuration
 		ln -fsT /var/lib/prudence-javascript/applications/  /usr/lib/prudence-javascript/applications
+		ln -fsT /var/lib/prudence-javascript/common/        /usr/lib/prudence-javascript/common
 		ln -fsT /var/log/prudence-javascript/               /usr/lib/prudence-javascript/logs
 		ln -fsT /var/lib/prudence-javascript/cache/         /usr/lib/prudence-javascript/cache
 	;;

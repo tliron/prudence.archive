@@ -2,9 +2,9 @@
 bin/*                /usr/lib/prudence-groovy/bin/
 libraries/*          /usr/lib/prudence-groovy/libraries/
 defaults/*           /usr/lib/prudence-groovy/defaults/
+common/*             /usr/lib/prudence-groovy/common/
 documentation/*      /usr/lib/prudence-groovy/documentation/
 licenses/*           /usr/lib/prudence-groovy/licenses/
 instance/*           /var/lib/prudence-groovy/instance/
 applications/*       /var/lib/prudence-groovy/applications/
 configuration/*      /etc/prudence-groovy/
-

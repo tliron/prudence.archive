@@ -2,9 +2,9 @@
 bin/*                /usr/lib/prudence-python/bin/
 libraries/*          /usr/lib/prudence-python/libraries/
 defaults/*           /usr/lib/prudence-python/defaults/
+common/*             /usr/lib/prudence-python/common/
 documentation/*      /usr/lib/prudence-python/documentation/
 licenses/*           /usr/lib/prudence-python/licenses/
 instance/*           /var/lib/prudence-python/instance/
 applications/*       /var/lib/prudence-python/applications/
 configuration/*      /etc/prudence-python/
-

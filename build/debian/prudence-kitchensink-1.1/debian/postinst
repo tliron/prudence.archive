@@ -31,6 +31,7 @@ case "$1" in
 		ln -fsT /var/lib/prudence-kitchensink/instance/      /usr/lib/prudence-kitchensink/instance
 		ln -fsT /etc/prudence-kitchensink/                   /usr/lib/prudence-kitchensink/configuration
 		ln -fsT /var/lib/prudence-kitchensink/applications/  /usr/lib/prudence-kitchensink/applications
+		ln -fsT /var/lib/prudence-kitchensink/common/        /usr/lib/prudence-kitchensink/common
 		ln -fsT /var/log/prudence-kitchensink/               /usr/lib/prudence-kitchensink/logs
 		ln -fsT /var/lib/prudence-kitchensink/cache/         /usr/lib/prudence-kitchensink/cache
 	;;

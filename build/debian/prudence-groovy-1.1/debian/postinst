@@ -31,6 +31,7 @@ case "$1" in
 		ln -fsT /var/lib/prudence-groovy/instance/      /usr/lib/prudence-groovy/instance
 		ln -fsT /etc/prudence-groovy/                   /usr/lib/prudence-groovy/configuration
 		ln -fsT /var/lib/prudence-groovy/applications/  /usr/lib/prudence-groovy/applications
+		ln -fsT /var/lib/prudence-groovy/common/        /usr/lib/prudence-groovy/common
 		ln -fsT /var/log/prudence-groovy/               /usr/lib/prudence-groovy/logs
 		ln -fsT /var/lib/prudence-groovy/cache/         /usr/lib/prudence-groovy/cache
 	;;

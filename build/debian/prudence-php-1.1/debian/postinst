@@ -31,6 +31,7 @@ case "$1" in
 		ln -fsT /var/lib/prudence-php/instance/      /usr/lib/prudence-php/instance
 		ln -fsT /etc/prudence-php/                   /usr/lib/prudence-php/configuration
 		ln -fsT /var/lib/prudence-php/applications/  /usr/lib/prudence-php/applications
+		ln -fsT /var/lib/prudence-php/common/        /usr/lib/prudence-php/common
 		ln -fsT /var/log/prudence-php/               /usr/lib/prudence-php/logs
 		ln -fsT /var/lib/prudence-php/cache/         /usr/lib/prudence-php/cache
 	;;

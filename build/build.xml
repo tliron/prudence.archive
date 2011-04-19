@@ -130,6 +130,7 @@
 			<copy todir="@{dist}/content/applications/prudence-test/web">
 				<fileset dir="${velocity}/applications/prudence-test/web" />
 			</copy>
+			<mkdir dir="@{dist}/content/common" />
 		</sequential>
 	</macrodef>
 

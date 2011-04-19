@@ -2,9 +2,9 @@
 bin/*                /usr/lib/prudence-php/bin/
 libraries/*          /usr/lib/prudence-php/libraries/
 defaults/*           /usr/lib/prudence-php/defaults/
+common/*             /usr/lib/prudence-php/common/
 documentation/*      /usr/lib/prudence-php/documentation/
 licenses/*           /usr/lib/prudence-php/licenses/
 instance/*           /var/lib/prudence-php/instance/
 applications/*       /var/lib/prudence-php/applications/
 configuration/*      /etc/prudence-php/
-
