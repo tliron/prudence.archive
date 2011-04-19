@@ -2,7 +2,6 @@
 bin/*                /usr/lib/prudence-clojure/bin/
 libraries/*          /usr/lib/prudence-clojure/libraries/
 defaults/*           /usr/lib/prudence-clojure/defaults/
-common/*             /usr/lib/prudence-clojure/common/
 documentation/*      /usr/lib/prudence-clojure/documentation/
 licenses/*           /usr/lib/prudence-clojure/licenses/
 instance/*           /var/lib/prudence-clojure/instance/

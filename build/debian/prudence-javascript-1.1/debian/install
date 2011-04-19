@@ -2,7 +2,6 @@
 bin/*                /usr/lib/prudence-javascript/bin/
 libraries/*          /usr/lib/prudence-javascript/libraries/
 defaults/*           /usr/lib/prudence-javascript/defaults/
-common/*             /usr/lib/prudence-javascript/common/
 documentation/*      /usr/lib/prudence-javascript/documentation/
 licenses/*           /usr/lib/prudence-javascript/licenses/
 instance/*           /var/lib/prudence-javascript/instance/
