@@ -331,6 +331,9 @@ public class ApplicationService
 	 * Submits or schedules an {@link ApplicationTask} on the the shared
 	 * executor service.
 	 * 
+	 * @param applicationName
+	 *        The application's full name, or null to default to current
+	 *        application's name
 	 * @param documentName
 	 *        The document name
 	 * @param context
@@ -345,8 +348,12 @@ public class ApplicationService
 	 * @return A future for the task
 	 * @see #getExecutor()
 	 */
-	public Future<?> task( String documentName, Object context, int delay, int repeatEvery, boolean fixedRepeat )
+	public Future<?> task( String applicationName, String documentName, Object context, int delay, int repeatEvery, boolean fixedRepeat )
 	{
+		Application application = this.application;
+		if( applicationName != null )
+			application = InstanceUtil.getApplication( applicationName );
+
 		ExecutorService executor = getExecutor();
 		ApplicationTask task = new ApplicationTask( application, documentName, context );
 		if( ( delay > 0 ) || ( repeatEvery > 0 ) )

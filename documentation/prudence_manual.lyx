@@ -16048,7 +16048,7 @@ name "../api/|application-task"
 \end_layout
 
 \begin_layout Standard
-Spawns or schedules in-process asynchronous tasks from the application's
+Asynchronously spawns or schedules in-process tasks from the application's
  /tasks/ subdirectory.
  See 
 \bar under
@@ -16077,6 +16077,21 @@ reference "../api/|application-distributed-task"
 
 \begin_layout Standard
 There are five arguments:
+\end_layout
+
+\begin_layout Enumerate
+The application's full name, per the 
+\bar under
+application setting (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|application-name"
+
+\end_inset
+
+)
+\bar default
+, or null to run in this application.
 \end_layout
 
 \begin_layout Enumerate
@@ -16128,7 +16143,7 @@ status open
 
 \begin_layout Plain Layout
 
-application.task('/email/reminders/', null, 0, 10 * 60 * 1000, true)
+application.task(null, '/email/reminders/', null, 0, 10 * 60 * 1000, true)
 \end_layout
 
 \end_inset
@@ -16153,7 +16168,7 @@ status open
 
 \begin_layout Plain Layout
 
-application.task('/database/cleanup/', 'fast', 0, 0, false).get()
+application.task(null, '/database/cleanup/', 'fast', 0, 0, false).get()
 \end_layout
 
 \end_inset
@@ -16194,8 +16209,8 @@ if(cleanup && cleanup.done) {
 
 \begin_layout Plain Layout
 
-	application.globals.put('myapp.task.cleanup', application.task('/database/cleanup/',
- 0, 0, false))
+	application.globals.put('myapp.task.cleanup', application.task(null, '/database/clea
+nup/', 0, 0, false))
 \end_layout
 
 \begin_layout Plain Layout
@@ -16220,7 +16235,7 @@ name "../api/|application-distributed-task"
 \end_layout
 
 \begin_layout Standard
-Spawns asynchronous tasks on any Prudence instance which is part of the
+Asynchronously spawns tasks on any Prudence instance which is part of the
  
 \bar under
 Prudence cluster (page 
@@ -16264,7 +16279,7 @@ reference "../application/|application-name"
 
 )
 \bar default
-.
+, or null to run in this application.
 \end_layout
 
 \begin_layout Enumerate
