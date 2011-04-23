@@ -193,5 +193,5 @@ end
 
 for application in $applications
 	application_service = ApplicationService.new application
-	application_service.task '/startup/', 'initial', 0, 0, false
+	application_service.task nil, '/startup/', 'initial', 0, 0, false
 end
