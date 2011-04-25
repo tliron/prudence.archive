@@ -17,6 +17,7 @@ import org.restlet.resource.ResourceException;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.LanguageManager;
+import com.threecrickets.scripturian.ParsingContext;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
 import com.threecrickets.scripturian.document.DocumentSource;
 import com.threecrickets.scripturian.exception.DocumentException;
@@ -150,6 +151,26 @@ public interface DocumentExecutionAttributes
 	 */
 	public String validateDocumentName( String documentName, String defaultDocumentName ) throws ResourceException;
 
-	public DocumentDescriptor<Executable> createOnce( String documentName, boolean isTextWithScriptlets, boolean includeMainSource, boolean includeExtraSources, boolean includeLibrarySources ) throws ParsingException,
-		DocumentException;
+	/**
+	 * Calls {@link Executable#createOnce(String, boolean, ParsingContext)},
+	 * trying various document sources that we support one at a time.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @param isTextWithScriptlets
+	 *        Whether it's a text-with-scriptlets document
+	 * @param includeMainSource
+	 *        Whether to include {@link #getDocumentSource()} in the search
+	 * @param includeExtraSources
+	 *        Whether to include {@link #getExtraDocumentSources()} in the
+	 *        search
+	 * @param includeLibrarySources
+	 *        Whether to include {@link #getLibraryDocumentSources()} in the
+	 *        search
+	 * @return A document descriptor with a valid executable as its document
+	 * @throws ParsingException
+	 * @throws DocumentException
+	 */
+	public DocumentDescriptor<Executable> createDocumentOnce( String documentName, boolean isTextWithScriptlets, boolean includeMainSource, boolean includeExtraSources, boolean includeLibrarySources )
+		throws ParsingException, DocumentException;
 }

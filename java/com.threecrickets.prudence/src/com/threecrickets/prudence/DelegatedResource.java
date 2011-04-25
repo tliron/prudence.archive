@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.data.CharacterSet;
@@ -178,7 +179,7 @@ public class DelegatedResource extends ServerResource
 	//
 
 	/**
-	 * The attributes.
+	 * The attributes as configured in the {@link Application} context.
 	 * 
 	 * @return The attributes
 	 */
@@ -477,7 +478,7 @@ public class DelegatedResource extends ServerResource
 	private static final String TRUE = "true";
 
 	/**
-	 * The attributes.
+	 * The attributes as configured in the {@link Application} context.
 	 */
 	private final DelegatedResourceAttributes attributes = new DelegatedResourceAttributes( this );
 
@@ -625,12 +626,13 @@ public class DelegatedResource extends ServerResource
 	{
 		String documentName = getRequest().getResourceRef().getRemainingPart( true, false );
 		documentName = attributes.validateDocumentName( documentName );
+		boolean isPassThrough = attributes.getPassThroughDocuments().contains( "/" + documentName );
 
 		ConcurrentMap<String, Boolean> entryPointValidityCache = null;
 
 		try
 		{
-			DocumentDescriptor<Executable> documentDescriptor = attributes.createOnce( documentName, false, true, true, false );
+			DocumentDescriptor<Executable> documentDescriptor = attributes.createDocumentOnce( documentName, false, true, true, isPassThrough );
 			Executable executable = documentDescriptor.getDocument();
 
 			if( executable.getEnterableExecutionContext() == null )

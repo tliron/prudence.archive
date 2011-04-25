@@ -205,8 +205,29 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 * @throws DocumentException
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	public Representation include( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
+	{
+		return include( documentName, false );
+	}
+
+	/**
+	 * Includes a text document into the current location. The document may be a
+	 * "text-with-scriptlets" executable, in which case its output could be
+	 * dynamically generated.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @param isPassThrough
+	 *        Whether to force looking for the document in the extra document
+	 *        sources (otherwise is only allowed for non-initial documents)
+	 * @return A representation of the document's output
+	 * @throws ParsingException
+	 * @throws ExecutionException
+	 * @throws DocumentException
+	 * @throws IOException
+	 */
+	@SuppressWarnings("unchecked")
+	public Representation include( String documentName, boolean isPassThrough ) throws ParsingException, ExecutionException, DocumentException, IOException
 	{
 		documentName = attributes.validateDocumentName( documentName, attributes.getDefaultIncludedName() );
 
@@ -221,7 +242,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			documentDescriptor = (DocumentDescriptor<Executable>) resource.getRequest().getAttributes().remove( DOCUMENT_DESCRIPTOR_ATTRIBUTE );
 
 		if( documentDescriptor == null )
-			documentDescriptor = attributes.createOnce( documentName, true, true, currentDocumentDescriptor != null, false );
+			documentDescriptor = attributes.createDocumentOnce( documentName, true, true, isPassThrough || ( currentDocumentDescriptor != null ), false );
 
 		if( currentDocumentDescriptor == null )
 		{
@@ -257,15 +278,18 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 * 
 	 * @param documentName
 	 *        The document name
+	 * @param isPassThrough
+	 *        Whether to force looking for the document in the extra document
+	 *        sources
 	 * @return The cache entry
 	 * @throws ParsingException
 	 * @throws DocumentException
 	 */
-	public CacheEntry getCacheEntry( String documentName ) throws ParsingException, DocumentException
+	public CacheEntry getCacheEntry( String documentName, boolean isPassThrough ) throws ParsingException, DocumentException
 	{
 		documentName = attributes.validateDocumentName( documentName, attributes.getDefaultIncludedName() );
 
-		DocumentDescriptor<Executable> documentDescriptor = attributes.createOnce( documentName, true, true, true, false );
+		DocumentDescriptor<Executable> documentDescriptor = attributes.createDocumentOnce( documentName, true, true, isPassThrough, false );
 
 		// Cache the document descriptor in the request
 		resource.getRequest().getAttributes().put( DOCUMENT_DESCRIPTOR_ATTRIBUTE, documentDescriptor );
@@ -317,7 +341,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	protected DocumentDescriptor<Executable> getDocumentDescriptor( String documentName ) throws ParsingException, DocumentException
 	{
 		documentName = attributes.validateDocumentName( documentName );
-		return attributes.createOnce( documentName, false, false, false, true );
+		return attributes.createDocumentOnce( documentName, false, false, false, true );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

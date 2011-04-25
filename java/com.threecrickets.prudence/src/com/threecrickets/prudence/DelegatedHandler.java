@@ -133,7 +133,7 @@ public class DelegatedHandler
 	//
 
 	/**
-	 * The attributes.
+	 * The attributes as configured in the {@link Application} context.
 	 * 
 	 * @return The attributes
 	 */
@@ -171,7 +171,7 @@ public class DelegatedHandler
 
 		try
 		{
-			DocumentDescriptor<Executable> documentDescriptor = attributes.createOnce( documentName, false, true, true, false );
+			DocumentDescriptor<Executable> documentDescriptor = attributes.createDocumentOnce( documentName, false, true, true, false );
 			Executable executable = documentDescriptor.getDocument();
 
 			if( executable.getEnterableExecutionContext() == null )
@@ -279,7 +279,7 @@ public class DelegatedHandler
 	// Private
 
 	/**
-	 * The attributes.
+	 * The attributes as configured in the {@link Application} context.
 	 */
 	private final DelegatedHandlerAttributes attributes;
 

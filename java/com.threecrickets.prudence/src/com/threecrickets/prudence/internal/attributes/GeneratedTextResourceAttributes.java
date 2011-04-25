@@ -242,13 +242,54 @@ public class GeneratedTextResourceAttributes extends ResourceContextualAttribute
 		return scriptletPlugins;
 	}
 
+	/**
+	 * Gets a document descriptor from our supported document sources.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @param includeExtraSources
+	 *        Whether to include {@link #getExtraDocumentSources()} in the
+	 *        search
+	 * @return A document descriptor
+	 * @throws DocumentException
+	 */
+	public DocumentDescriptor<Executable> getDocument( String documentName, boolean includeExtraSources ) throws DocumentException
+	{
+		DocumentSource<Executable> documentSource = getDocumentSource();
+		Iterator<DocumentSource<Executable>> iterator = null;
+		while( true )
+		{
+			try
+			{
+				if( documentSource == null )
+					throw new DocumentNotFoundException( documentName );
+
+				return documentSource.getDocument( documentName );
+			}
+			catch( DocumentNotFoundException x )
+			{
+				if( ( ( iterator == null ) || !iterator.hasNext() ) && includeExtraSources )
+				{
+					Iterable<DocumentSource<Executable>> sources = getExtraDocumentSources();
+					iterator = sources != null ? sources.iterator() : null;
+					includeExtraSources = false;
+				}
+
+				if( ( iterator == null ) || !iterator.hasNext() )
+					throw new DocumentNotFoundException( documentName );
+
+				documentSource = iterator.next();
+			}
+		}
+	}
+
 	//
 	// DocumentExecutionAttributes
 	//
 
 	@Override
-	public DocumentDescriptor<Executable> createOnce( String documentName, boolean isTextWithScriptlets, boolean includeMainSource, boolean includeExtraSources, boolean includeLibrarySources ) throws ParsingException,
-		DocumentException
+	public DocumentDescriptor<Executable> createDocumentOnce( String documentName, boolean isTextWithScriptlets, boolean includeMainSource, boolean includeExtraSources, boolean includeLibrarySources )
+		throws ParsingException, DocumentException
 	{
 		ParsingContext parsingContext = new ParsingContext();
 		parsingContext.setLanguageManager( getLanguageManager() );

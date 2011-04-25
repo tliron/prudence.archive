@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.data.CacheDirective;
@@ -203,7 +204,7 @@ public class GeneratedTextResource extends ServerResource
 	//
 
 	/**
-	 * The attributes.
+	 * The attributes as configured in the {@link Application} context.
 	 * 
 	 * @return The attributes
 	 */
@@ -237,9 +238,11 @@ public class GeneratedTextResource extends ServerResource
 			attributes.put( DOCUMENT_NAME_ATTRIBUTE, documentName );
 		}
 
+		boolean isPassThrough = this.attributes.getPassThroughDocuments().contains( "/" + documentName );
+
 		try
 		{
-			DocumentDescriptor<Executable> documentDescriptor = this.attributes.getDocumentSource().getDocument( documentName );
+			DocumentDescriptor<Executable> documentDescriptor = this.attributes.getDocument( documentName, isPassThrough );
 
 			// Media type is chosen according to the document descriptor tag
 			MediaType mediaType = getMetadataService().getMediaType( documentDescriptor.getTag() );
@@ -360,10 +363,12 @@ public class GeneratedTextResource extends ServerResource
 			attributes.put( DOCUMENT_NAME_ATTRIBUTE, documentName );
 		}
 
+		boolean isPassThrough = this.attributes.getPassThroughDocuments().contains( "/" + documentName );
+
 		GeneratedTextResourceDocumentService documentService = new GeneratedTextResourceDocumentService( this, null, null, variant );
 		try
 		{
-			CacheEntry cacheEntry = documentService.getCacheEntry( documentName );
+			CacheEntry cacheEntry = documentService.getCacheEntry( documentName, isPassThrough );
 			if( cacheEntry != null )
 				return cacheEntry.getInfo();
 			else
@@ -409,7 +414,7 @@ public class GeneratedTextResource extends ServerResource
 	private static final String TRUE = "true";
 
 	/**
-	 * The attributes.
+	 * The attributes as configured in the {@link Application} context.
 	 */
 	private final GeneratedTextResourceAttributes attributes = new GeneratedTextResourceAttributes( this );
 
@@ -444,6 +449,8 @@ public class GeneratedTextResource extends ServerResource
 			documentName = this.attributes.validateDocumentName( documentName, this.attributes.getDefaultIncludedName() );
 			attributes.put( DOCUMENT_NAME_ATTRIBUTE, documentName );
 		}
+
+		boolean isPassThrough = this.attributes.getPassThroughDocuments().contains( "/" + documentName );
 
 		try
 		{
@@ -482,7 +489,7 @@ public class GeneratedTextResource extends ServerResource
 			try
 			{
 				// Execute and represent output
-				representation = documentService.include( documentName );
+				representation = documentService.include( documentName, isPassThrough );
 
 				List<CacheDirective> cacheDirectives = getResponse().getCacheDirectives();
 				switch( this.attributes.getClientCachingMode() )

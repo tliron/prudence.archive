@@ -228,7 +228,7 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 	// DocumentExecutionAttributes
 	//
 
-	public DocumentDescriptor<Executable> createOnce( String documentName, boolean isTextWithScriptlets, boolean includeMainSource, boolean includeExtraSources, boolean includeLibrarySources ) throws ParsingException,
+	public DocumentDescriptor<Executable> createDocumentOnce( String documentName, boolean isTextWithScriptlets, boolean includeMainSource, boolean includeExtraSources, boolean includeLibrarySources ) throws ParsingException,
 		DocumentException
 	{
 		ParsingContext parsingContext = new ParsingContext();

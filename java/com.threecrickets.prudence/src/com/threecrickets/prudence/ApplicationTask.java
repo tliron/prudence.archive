@@ -136,6 +136,16 @@ public class ApplicationTask implements Runnable
 	//
 
 	/**
+	 * The attributes as configured in the {@link Application} context.
+	 * 
+	 * @return The attributes
+	 */
+	public ApplicationTaskAttributes getAttributes()
+	{
+		return attributes;
+	}
+
+	/**
 	 * The Restlet application in which this task will execute.
 	 * 
 	 * @return The application
@@ -178,7 +188,7 @@ public class ApplicationTask implements Runnable
 
 			try
 			{
-				DocumentDescriptor<Executable> documentDescriptor = attributes.createOnce( documentName, false, true, true, false );
+				DocumentDescriptor<Executable> documentDescriptor = attributes.createDocumentOnce( documentName, false, true, true, false );
 				Executable executable = documentDescriptor.getDocument();
 
 				ExecutionContext executionContext = new ExecutionContext( attributes.getWriter(), attributes.getErrorWriter() );
@@ -225,7 +235,7 @@ public class ApplicationTask implements Runnable
 	// Private
 
 	/**
-	 * The attributes.
+	 * The attributes as configured in the {@link Application} context.
 	 */
 	private final ApplicationTaskAttributes attributes;
 
