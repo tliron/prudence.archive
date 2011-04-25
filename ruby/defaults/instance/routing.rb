@@ -11,35 +11,55 @@
 # at http://threecrickets.com/
 #
 
-import java.util.ArrayList
+import java.util.concurrent.CopyOnWriteArrayList
 import com.threecrickets.prudence.util.IoUtil
 
 # Hosts
 
 execute_or_default 'instance/hosts/'
 
-# Applications
+# Unzip
 
-$applications = ArrayList.new
-$component.context.attributes['com.threecrickets.prudence.applications'] = $applications
-$applications_dir = java.io.File.new($document.source.base_path, 'applications')
-
-$properties_file = java.io.File.new($applications_dir, 'applications.properties')
+$common_dir = java.io.File.new($document.source.base_path, 'common')
+$properties_file = java.io.File.new($common_dir, 'common.properties')
 $properties = IoUtil::load_properties $properties_file
 $save_properties = false
-$application_files = $applications_dir.list_files
-for application_file in $application_files
-	last_modified = application_file.last_modified.to_s
-	if not application_file.directory and application_file.name =~ /.zip$/ and $properties.get_property(application_file.name, '') != last_modified
-		puts "Unpacking \"#{application_file.name}\"..."
-		IoUtil::unzip application_file, $applications_dir
-		$properties.set_property application_file.name, last_modified
+$common_files = $common_dir.list_files
+for common_file in $common_files
+	last_modified = common_file.last_modified.to_s
+	if not common_file.directory and common_file.name =~ /.zip$/ and $properties.get_property(common_file.name, '') != last_modified
+		puts "Unpacking common \"#{common_file.name}\"..."
+		IoUtil::unzip common_file, $common_dir
+		$properties.set_property common_file.name, last_modified
 		$save_properties = true
 	end
 end
 if $save_properties
 	IoUtil::save_properties $properties, $properties_file
 end
+
+$applications_dir = java.io.File.new($document.source.base_path, 'applications')
+$properties_file = java.io.File.new($applications_dir, 'applications.properties')
+$properties = IoUtil::load_properties $properties_file
+$save_properties = false
+$applications_files = $applications_dir.list_files
+for applications_file in $applications_files
+	last_modified = applications_file.last_modified.to_s
+	if not applications_file.directory and applications_file.name =~ /.zip$/ and $properties.get_property(applications_file.name, '') != last_modified
+		puts "Unpacking applications \"#{applications_file.name}\"..."
+		IoUtil::unzip applications_file, $applications_dir
+		$properties.set_property applications_file.name, last_modified
+		$save_properties = true
+	end
+end
+if $save_properties
+	IoUtil::save_properties $properties, $properties_file
+end
+
+# Applications
+
+$applications = CopyOnWriteArrayList.new
+$component.context.attributes['com.threecrickets.prudence.applications'] = $applications
 
 $application_dirs = $applications_dir.list_files
 for application_dir in $application_dirs

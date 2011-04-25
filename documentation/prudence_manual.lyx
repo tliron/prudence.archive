@@ -3715,6 +3715,11 @@ This subdirectory is similar in structure to that of an application, and
 \end_layout
 
 \begin_layout Standard
+The /common/ subdirectory is ``zip-aware,'' meaning that zip archives placed
+ here will be automatically expanded.
+\end_layout
+
+\begin_layout Standard
 See 
 \bar under
 Prudence applications (page 
@@ -4804,31 +4809,21 @@ name "../application/|deploy-by-zip"
 \end_layout
 
 \begin_layout Standard
-The /applications/ subdirectory is ``zip-aware,'' meaning that any archive
- file with the .zip extension placed here will automatically be unzipped
- when Prudence starts up.
+The /applications/ and /common/ subdirectories are both ``zip-aware,'' meaning
+ that any archive file with the .zip extension placed there will automatically
+ be unzipped when Prudence starts up.
 \end_layout
 
 \begin_layout Standard
-There's no reason to delete the archive: Prudence will only unzip the file
- again if its modification date changes (it creates an ``applications.properties'
-' file to keep track of that).
- In fact, a good way to restore an application to its defaults if you've
- made modifications is to delete the subdirectory, but not the archive.
- The next time Prudence is started, it will unzip the archive again.
-\end_layout
-
-\begin_layout Quote
-This above is true for Prudence 1.1.
- A future version of Prudence will feature ``live'' zip-awareness, so that
- you will not have to restart the Prudence instance in order to take new
- or updates zips into account.
+The unzipping will happen again only if the zip's modification date changes:
+ Prudence creates a ``.properties'' file to keep track of the modification
+ dates.
 \end_layout
 
 \begin_layout Standard
 Zips can contain pre-packaged single applications, groups of applications,
- and even patches for individual applications.
- Zip-awareness makes it very easy to package, deploy and upgrade applications
+ common libraries, and even patches for individual applications.
+ Zip-awareness makes it very easy to package, deploy and upgrade components
  and even large sites containing many applications.
 \end_layout
 
@@ -14771,7 +14766,7 @@ There are many use cases for filters.
 
 \begin_layout Itemize
 Guards: they check if the client's request has the right authorization (has
- the right cookie, originated at a white-listed IP address, etc.) before
+ the right cookie, has originated from a white-listed IP address, etc.) before
  letting it continue.
  On stopping, they usually set the 
 \bar under
@@ -14820,7 +14815,7 @@ reference "../api/|conversation-status-code"
 \end_layout
 
 \begin_layout Itemize
-Cachers: they can fetch from a cache according to request attributes, and
+Caches: they can fetch from a cache according to request attributes, and
  store in a cache according to response attributes.
 \end_layout
 
@@ -14916,7 +14911,13 @@ router.filterBase(staticWebBaseURL, filter, staticWeb)
 
 \begin_layout Plain Layout
 
-// The above is equivalent to this:
+// This next step is to allows us to easily install further filters before
+ staticWeb,
+\end_layout
+
+\begin_layout Plain Layout
+
+// which should from now on go before the filter we just installed
 \end_layout
 
 \begin_layout Plain Layout
@@ -14925,22 +14926,7 @@ router.filterBase(staticWebBaseURL, filter, staticWeb)
 
 \begin_layout Plain Layout
 
-var filter = new JavaScriptUnifyMinifyFilter(staticWeb.context, staticWeb,
-\end_layout
-
-\begin_layout Plain Layout
-
-	new File(applicationBasePath + staticWebBasePath), minimumTimeBetweenValidityCh
-ecks)
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-router.reattachBase(staticWebBaseURL, staticWeb)
+staticWeb = filter
 \end_layout
 
 \end_inset
@@ -14996,7 +14982,7 @@ Custom Filters
 \end_layout
 
 \begin_layout Standard
-Prudence lets you easily create your own 
+Prudence lets you create your own 
 \bar under
 custom filters (page 
 \begin_inset CommandInset ref
@@ -15022,8 +15008,8 @@ status open
 
 \begin_layout Plain Layout
 
-router.filterBase(dynamicWebBaseURL, '/remove-foul-language/', applicationInstanc
-e.context, dynamicWeb)
+dynamicWeb = router.filterBase(dynamicWebBaseURL, '/remove-foul-language/',
+ applicationInstance.context, dynamicWeb).next
 \end_layout
 
 \end_inset
@@ -15032,9 +15018,22 @@ e.context, dynamicWeb)
 \end_layout
 
 \begin_layout Standard
-The above is a useful shortcut, but in some cases you will need access to
- the actual filter instance.
- You would then need to explicitly create a 
+Note how we gain access to the created filter instance via the ``next''
+ attribute of the created 
+\begin_inset CommandInset href
+LatexCommand href
+name "route"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/routing/Route.html"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The above is a useful shortcut, but in some cases you may want more direct
+ access to the filter instance.
+ You can explicitly create a 
 \begin_inset CommandInset href
 LatexCommand href
 name "DelegatedFilter instance"
@@ -15063,7 +15062,7 @@ importClass(com.threecrickets.prudence.DelegatedFilter)
 
 \begin_layout Plain Layout
 
-var cleanupFilter = new DelegatedFilter(applicationInstance.context,
+var cleanupFilter = new DelegatedFilter(null,
 \end_layout
 
 \begin_layout Plain Layout
@@ -15078,6 +15077,15 @@ var cleanupFilter = new DelegatedFilter(applicationInstance.context,
 \begin_layout Plain Layout
 
 router.filterBase(dynamicWebBaseURL, cleanupFilter, dynamicWeb)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+dynamicWeb = cleanupFilter
 \end_layout
 
 \end_inset

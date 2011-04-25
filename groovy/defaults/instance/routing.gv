@@ -12,34 +12,55 @@
 //
 
 import java.io.File
+import java.util.concurrent.CopyOnWriteArrayList
 import com.threecrickets.prudence.util.IoUtil
 
 // Hosts
 
 executeOrDefault('instance/hosts/')
 
-// Applications
+// Unzip
 
-applications = []
-componentInstance.context.attributes['com.threecrickets.prudence.applications'] = applications
-applicationsDir = new File(document.source.basePath, 'applications')
-
-propertiesFile = new File(applicationsDir, 'applications.properties')
+commonDir = new File(document.source.basePath, 'common')
+propertiesFile = new File(commonDir, 'common.properties')
 properties = IoUtil.loadProperties(propertiesFile)
 saveProperties = false
-applicationFiles = applicationsDir.listFiles()
-for(applicationFile in applicationFiles) {
-	lastModified = applicationFile.lastModified().toString()
-	if(!applicationFile.directory && applicationFile.name.endsWith('.zip') && properties.getProperty(applicationFile.name, '') != lastModified) {
-		println('Unpacking "' + applicationFile.name + '"...')
-		IoUtil.unzip(applicationFile, applicationsDir)
-		properties.setProperty(applicationFile.name, lastModified)
+commonFiles = commonDir.listFiles()
+for(commonFile in commonFiles) {
+	lastModified = commonFile.lastModified().toString()
+	if(!commonFile.directory && commonFile.name.endsWith('.zip') && properties.getProperty(commonFile.name, '') != lastModified) {
+		println('Unpacking common "' + commonFile.name + '"...')
+		IoUtil.unzip(commonFile, commonDir)
+		properties.setProperty(commonFile.name, lastModified)
 		saveProperties = true
 	}
 }
 if(saveProperties) {
 	IoUtil.saveProperties(properties, propertiesFile)
 }
+
+applicationsDir = new File(document.source.basePath, 'applications')
+propertiesFile = new File(applicationsDir, 'applications.properties')
+properties = IoUtil.loadProperties(propertiesFile)
+saveProperties = false
+applicationsFiles = applicationsDir.listFiles()
+for(applicationsFile in applicationsFiles) {
+	lastModified = applicationsFile.lastModified().toString()
+	if(!applicationsFile.directory && applicationsFile.name.endsWith('.zip') && properties.getProperty(applicationsFile.name, '') != lastModified) {
+		println('Unpacking applications "' + applicationsFile.name + '"...')
+		IoUtil.unzip(applicationsFile, applicationsDir)
+		properties.setProperty(applicationsFile.name, lastModified)
+		saveProperties = true
+	}
+}
+if(saveProperties) {
+	IoUtil.saveProperties(properties, propertiesFile)
+}
+
+// Applications
+
+applications = new CopyOnWriteArrayList()
+componentInstance.context.attributes['com.threecrickets.prudence.applications'] = applications
 
 applicationDirs = applicationsDir.listFiles()
 for(applicationDir in applicationDirs) {
