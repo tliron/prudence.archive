@@ -205,11 +205,9 @@ public class PrudenceRouter extends FallbackRouter
 	 */
 	public Route filterBase( String uriTemplate, Filter filter, Restlet target )
 	{
-		detach( target );
-		if( filter.getContext() == null )
-			filter.setContext( target.getContext() );
-		filter.setNext( target );
-		return attachBase( uriTemplate, filter );
+		Route route = filter( uriTemplate, filter, target );
+		route.setMatchingMode( Template.MODE_STARTS_WITH );
+		return route;
 	}
 
 	/**
@@ -439,6 +437,26 @@ public class PrudenceRouter extends FallbackRouter
 	public Route captureOther( String uriTemplate, String application, String internalUriTemplate )
 	{
 		return captureOther( uriTemplate, application, internalUriTemplate, true );
+	}
+
+	/**
+	 * Shortcut for calling {@link #captureOther(String, String, String)} and
+	 * {@link #hide(String)}.
+	 * 
+	 * @param uriTemplate
+	 *        The URI path template that must match the relative part of the
+	 *        resource URI
+	 * @param application
+	 *        The internal application name
+	 * @param internalUriTemplate
+	 *        The internal URI path to which we will redirect
+	 * @return The created route
+	 */
+	public Route captureOtherAndHide( String uriTemplate, String application, String internalUriTemplate )
+	{
+		Route route = captureOther( uriTemplate, application, internalUriTemplate );
+		hide( internalUriTemplate );
+		return route;
 	}
 
 	/**

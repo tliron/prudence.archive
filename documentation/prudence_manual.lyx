@@ -15474,6 +15474,10 @@ Add the following modifiers to URI values above in order to access the various
 \end_layout
 
 \begin_layout Itemize
+{-h}: the host identifier (protocol + authority)
+\end_layout
+
+\begin_layout Itemize
 {-p}: the path
 \end_layout
 
