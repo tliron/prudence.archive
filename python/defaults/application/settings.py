@@ -97,6 +97,11 @@ hosts = {component.defaultHost: None}
 resources_base_url = '/'
 resources_base_path = '/resources/'
 
+# These documents are allowed to be under libraries_base_path as well as under
+# resources_base_path.
+
+resources_pass_through = []
+
 # Set this to True if you want to start to load and compile your
 # resources as soon as Prudence starts.
 
@@ -119,6 +124,11 @@ fragments_base_path = '/web/fragments/'
 # contain filenames.
 
 dynamic_web_default_document = 'index'
+
+# These documents are allowed to be under fragments_base_path as well as under
+# dynamic_web_base_path.
+
+dynamic_web_pass_through = []
 
 # Set this to true if you want to compile your scriptlets as soon as Prudence
 # starts.

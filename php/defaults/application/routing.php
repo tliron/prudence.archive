@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import org.restlet.routing.Router;
 import org.restlet.routing.Redirector;
 import org.restlet.routing.Template;
@@ -36,8 +37,8 @@ global $application_name, $application_description, $application_author, $applic
 global $show_debug_on_error, $show_source_code_url;
 global $hosts, $documents_default_name, $minimum_time_between_validity_checks;
 global $libraries_document_sources, $libraries_base_path;
-global $resources_base_url, $resources_base_path, $resources_defrost;
-global $dynamic_web_base_url, $dynamic_web_base_path, $fragments_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_client_caching_mode;
+global $resources_base_url, $resources_base_path, $resources_pass_through, $resources_defrost;
+global $dynamic_web_base_url, $dynamic_web_base_path, $fragments_base_path, $dynamic_web_default_document, $dynamic_web_pass_through, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_client_caching_mode;
 global $cache_key_pattern_handlers, $scriptlet_plugins;
 global $static_web_base_url, $static_web_base_path, $static_web_compress, $static_web_directory_listing_allowed;
 global $preheat_resources;
@@ -155,8 +156,11 @@ $fragments_document_sources->add(new DocumentFileSource($application_base . $fra
 $fragments_document_sources->add($common_fragments_document_source);
 $cache_key_pattern_handlers = new ConcurrentHashMap();
 $scriptlet_plugins = new ConcurrentHashMap();
+$pass_through_documents = new CopyOnWriteArraySet();
+$pass_through_documents->addAll($dynamic_web_pass_through);
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source;
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources'] = $fragments_document_sources;
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.passThroughDocuments'] = $pass_through_documents;
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = $dynamic_web_default_document;
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController(); // Adds PHP predefined variables
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode;
@@ -201,7 +205,10 @@ $router->attachBase($static_web_base_url, $static_web);
 //
 
 $resources_document_source = new DocumentFileSource($application_base . $resources_base_path, $application_base_path . $resources_base_path, $documents_default_name, 'php', $minimum_time_between_validity_checks);
+$pass_through_documents = new CopyOnWriteArraySet();
+$pass_through_documents->addAll($resources_pass_through);
 $application_globals['com.threecrickets.prudence.DelegatedResource.documentSource'] = $resources_document_source;
+$application_globals['com.threecrickets.prudence.DelegatedResource.passThroughDocuments'] = $pass_through_documents;
 
 $resources = new Finder($application_instance->context, $class_loader->loadClass('com.threecrickets.prudence.DelegatedResource'));
 $resources_base_url = fix_url($resources_base_url);

@@ -15,6 +15,7 @@ importClass(
 	java.lang.ClassLoader,
 	java.io.File,
 	java.util.concurrent.CopyOnWriteArrayList,
+	java.util.concurrent.CopyOnWriteArraySet,
 	java.util.concurrent.ConcurrentHashMap,
 	org.restlet.routing.Router,
 	org.restlet.routing.Redirector,
@@ -136,8 +137,13 @@ fragmentsDocumentSources.add(new DocumentFileSource(applicationBase + fragmentsB
 fragmentsDocumentSources.add(commonFragmentsDocumentSource)
 var cacheKeyPatternHandlers = new ConcurrentHashMap()
 var scriptletPlugins = new ConcurrentHashMap()
+var passThroughDocuments = new CopyOnWriteArraySet()
+for (var i in dynamicWebPassThrough) {
+	passThroughDocuments.add(dynamicWebPassThrough[i])
+}
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.documentSource', dynamicWebDocumentSource)
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources', fragmentsDocumentSources)
+applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.passThroughDocuments', passThroughDocuments)
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName', dynamicWebDefaultDocument)
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.executionController', new PhpExecutionController()) // Adds PHP predefined variables
 applicationGlobals.put('com.threecrickets.prudence.GeneratedTextResource.clientCachingMode', dynamicWebClientCachingMode)
@@ -182,7 +188,12 @@ router.attachBase(staticWebBaseURL, staticWeb)
 //
 
 var resourcesDocumentSource = new DocumentFileSource(applicationBase + resourcesBasePath, applicationBasePath + resourcesBasePath, documentsDefaultName, 'js', minimumTimeBetweenValidityChecks)
+passThroughDocuments = new CopyOnWriteArraySet()
+for (var i in resourcesPassThrough) {
+	passThroughDocuments.add(resourcesPassThrough[i])
+}
 applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource)
+applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.passThroughDocuments', passThroughDocuments)
 
 resources = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 resourcesBaseURL = fixURL(resourcesBaseURL)

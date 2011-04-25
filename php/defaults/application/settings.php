@@ -17,8 +17,8 @@ global $application_name, $application_description, $application_author, $applic
 global $show_debug_on_error, $show_source_code_url;
 global $application_logger_name;
 global $hosts, $documents_default_name, $minimum_time_between_validity_checks, $source_viewable, $libraries_base_path;
-global $resources_base_url, $resources_base_path, $resources_defrost;
-global $dynamic_web_base_url, $dynamic_web_base_path, $fragments_base_path, $dynamic_web_default_document, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_client_caching_mode;
+global $resources_base_url, $resources_base_path, $resources_pass_through, $resources_defrost;
+global $dynamic_web_base_url, $dynamic_web_base_path, $fragments_base_path, $dynamic_web_default_document, $dynamic_web_pass_through, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_client_caching_mode;
 global $static_web_base_url, $static_web_base_path, $static_web_compress, $static_web_directory_listing_allowed;
 global $file_upload_size_threshold;
 global $handlers_base_path;
@@ -114,6 +114,11 @@ $hosts = array(array($component->defaultHost, null));
 $resources_base_url = '/';
 $resources_base_path = '/resources/';
 
+// These documents are allowed to be under $libraries_base_path as well as under
+// $resources_base_path.
+
+$resources_pass_through = array();
+
 // Set this to TRUE if you want to start to load and compile your
 // resources as soon as Prudence starts.
 
@@ -136,6 +141,11 @@ $fragments_base_path = '/web/fragments/';
 // contain filenames.
 
 $dynamic_web_default_document = 'index';
+
+// These documents are allowed to be under $fragments_base_path as well as under
+// $dynamic_web_base_path.
+
+$dynamic_web_pass_through = array();
 
 // Set this to TRUE if you want to compile your scriptlets as soon as Prudence
 // starts.

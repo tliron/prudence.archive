@@ -15,6 +15,7 @@ import java.lang.ClassLoader
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.CopyOnWriteArraySet
 import org.restlet.routing.Router
 import org.restlet.routing.Redirector
 import org.restlet.routing.Template
@@ -135,8 +136,11 @@ fragmentsDocumentSources.add(new DocumentFileSource(applicationBase + fragmentsB
 fragmentsDocumentSources.add(commonFragmentsDocumentSource)
 cacheKeyPatternHandlers = new ConcurrentHashMap()
 scriptletPlugins = new ConcurrentHashMap()
+passThroughDocuments = new CopyOnWriteArraySet()
+passThroughDocuments.addAll(dynamicWebPassThrough)
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamicWebDocumentSource
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources'] = fragmentsDocumentSources
+applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.passThroughDocuments'] = passThroughDocuments
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = dynamicWebDefaultDocument
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = new PhpExecutionController() // Adds PHP predefined variables
 applicationGlobals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamicWebClientCachingMode
@@ -181,7 +185,10 @@ router.attachBase(staticWebBaseURL, staticWeb)
 //
 
 resourcesDocumentSource = new DocumentFileSource(applicationBase + resourcesBasePath, applicationBasePath + resourcesBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
+passThroughDocuments = new CopyOnWriteArraySet()
+passThroughDocuments.addAll(resourcesPassThrough)
 applicationGlobals['com.threecrickets.prudence.DelegatedResource.documentSource'] = resourcesDocumentSource
+applicationGlobals['com.threecrickets.prudence.DelegatedResource.passThroughDocuments'] = passThroughDocuments
 
 resources = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 resourcesBaseURL = fixURL(resourcesBaseURL)

@@ -15,7 +15,7 @@ import sys
 
 from java.lang import ClassLoader
 from java.io import File
-from java.util.concurrent import ConcurrentHashMap, CopyOnWriteArrayList
+from java.util.concurrent import ConcurrentHashMap, CopyOnWriteArrayList, CopyOnWriteArraySet
 
 from org.restlet.routing import Router, Redirector, Template
 from org.restlet.resource import Finder, Directory
@@ -117,8 +117,11 @@ fragments_document_sources.add(DocumentFileSource(application_base + fragments_b
 fragments_document_sources.add(common_fragments_document_source)
 cache_key_pattern_handlers = ConcurrentHashMap()
 scriptlet_plugins = ConcurrentHashMap()
+pass_through_documents = CopyOnWriteArraySet()
+pass_through_documents.addAll(dynamic_web_pass_through)
 application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = dynamic_web_document_source
 application_globals['com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources'] = fragments_document_sources
+application_globals['com.threecrickets.prudence.GeneratedTextResource.passThroughDocuments'] = pass_through_documents
 application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = dynamic_web_default_document
 application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController() # Adds PHP predefined variables
 application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = dynamic_web_client_caching_mode
@@ -159,7 +162,10 @@ router.attachBase(static_web_base_url, static_web)
 #
 
 resources_document_source = DocumentFileSource(application_base + resources_base_path, application_base_path + resources_base_path, documents_default_name, 'py', minimum_time_between_validity_checks)
+pass_through_documents = CopyOnWriteArraySet()
+pass_through_documents.addAll(resources_pass_through)
 application_globals['com.threecrickets.prudence.DelegatedResource.documentSource'] = resources_document_source
+application_globals['com.threecrickets.prudence.DelegatedResource.passThroughDocuments'] = pass_through_documents
 
 resources = Finder(application_instance.context, class_loader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 resources_base_url = fix_url(resources_base_url)

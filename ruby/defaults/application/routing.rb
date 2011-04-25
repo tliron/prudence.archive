@@ -14,6 +14,7 @@
 import java.lang.ClassLoader
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.CopyOnWriteArraySet
 import org.restlet.routing.Router
 import org.restlet.routing.Redirector
 import org.restlet.routing.Template
@@ -133,8 +134,11 @@ $fragments_document_sources << DocumentFileSource.new($application_base + $fragm
 $fragments_document_sources << $common_fragments_document_source
 $cache_key_pattern_handlers = ConcurrentHashMap.new
 $scriptlet_plugins = ConcurrentHashMap.new
+$pass_through_documents = CopyOnWriteArraySet.new
+$pass_through_documents.add_all $dynamic_web_pass_through
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.documentSource'] = $dynamic_web_document_source
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources'] = $fragments_document_sources
+$application_globals['com.threecrickets.prudence.GeneratedTextResource.passThroughDocuments'] = $pass_through_documents
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName'] = $dynamic_web_default_document
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.executionController'] = PhpExecutionController.new # Adds PHP predefined variables
 $application_globals['com.threecrickets.prudence.GeneratedTextResource.clientCachingMode'] = $dynamic_web_client_caching_mode
@@ -179,7 +183,10 @@ $router.attach_base $static_web_base_url, $static_web
 #
 
 $resources_document_source = DocumentFileSource.new($application_base + $resources_base_path, $application_base_path + $resources_base_path, $documents_default_name, 'rb', $minimum_time_between_validity_checks)
+$pass_through_documents = CopyOnWriteArraySet.new
+$pass_through_documents.add_all $resources_pass_through
 $application_globals['com.threecrickets.prudence.DelegatedResource.documentSource'] = $resources_document_source
+$application_globals['com.threecrickets.prudence.DelegatedResource.passThroughDocuments'] = $pass_through_documents
 
 $resources = Finder.new($application_instance.context, $class_loader.load_class('com.threecrickets.prudence.DelegatedResource'))
 $resources_base_url = fix_url $resources_base_url

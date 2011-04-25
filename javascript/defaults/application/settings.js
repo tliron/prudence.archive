@@ -98,6 +98,11 @@ var hosts = [[component.defaultHost, null]]
 var resourcesBaseURL = '/'
 var resourcesBasePath = '/resources/'
 
+// These documents are allowed to be under librariesBasePath as well as under
+// resourcesBasePath.
+
+var resourcesPassThrough = []
+
 // Set this to true if you want to start to load and compile your
 // resources as soon as Prudence starts.
 
@@ -120,6 +125,11 @@ var fragmentsBasePath = '/web/fragments/'
 // contain filenames.
 
 var dynamicWebDefaultDocument = 'index'
+
+// These documents are allowed to be under fragmentsBasePath as well as under
+// dynamicWebBasePath.
+
+var dynamicWebPassThrough = []
 
 // Set this to true if you want to compile your scriptlets as soon as Prudence
 // starts.

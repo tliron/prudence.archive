@@ -16,6 +16,7 @@
   'java.io.File
   'java.util.concurrent.ConcurrentHashMap
   'java.util.concurrent.CopyOnWriteArrayList
+  'java.util.concurrent.CopyOnWriteArraySet
   'org.restlet.routing.Router
   'org.restlet.routing.Redirector
   'org.restlet.routing.Template
@@ -123,8 +124,11 @@
 (.add fragments-document-sources common-fragments-document-source)
 (def cache-key-pattern-handlers (ConcurrentHashMap.))
 (def scriptlet-plugins (ConcurrentHashMap.))
+(def pass-through-documents (CopyOnWriteArraySet.))
+(.addAll pass-through-documents dynamic-web-pass-through)
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.documentSource" dynamic-web-document-source)
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.extraDocumentSources" fragments-document-sources)
+(.put application-globals "com.threecrickets.prudence.GeneratedTextResource.passThroughDocuments" pass-through-documents)
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.defaultIncludedName" dynamic-web-default-document)
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.executionController" (PhpExecutionController.)) ; Adds PHP predefined variables
 (.put application-globals "com.threecrickets.prudence.GeneratedTextResource.clientCachingMode" dynamic-web-client-caching-mode)
@@ -165,7 +169,10 @@
 ;
 
 (def resources-document-source (DocumentFileSource. (str application-base resources-base-path) (str application-base-path resources-base-path) documents-default-name "clj" (.longValue minimum-time-between-validity-checks))) 
+(def pass-through-documents (CopyOnWriteArraySet.))
+(.addAll pass-through-documents resources-pass-through)
 (.put application-globals "com.threecrickets.prudence.DelegatedResource.documentSource" resources-document-source)
+(.put application-globals "com.threecrickets.prudence.DelegatedResource.passThroughDocuments" pass-through-documents)
 
 (def resources (Finder. (.getContext application-instance) (.loadClass classLoader "com.threecrickets.prudence.DelegatedResource")))
 (def resources-base-url (fix-url resources-base-url))

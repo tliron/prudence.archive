@@ -97,6 +97,11 @@
 (def resources-base-url "/")
 (def resources-base-path "/resources/")
 
+; These documents are allowed to be under libraries-base-path as well as under
+; resources-base-path.
+
+(def resources-pass-through [])
+
 ; Set this to True if you want to start to load and compile your
 ; resources as soon as Prudence starts.
 
@@ -119,6 +124,11 @@
 ; contain filenames.
 
 (def dynamic-web-default-document "index")
+
+; These documents are allowed to be under fragments-base-path as well as under
+; dynamic-web-base-path.
+
+(def dynamic-web-pass-through [])
 
 ; Set this to true if you want to compile your scriptlets as soon as Prudence
 ; starts.

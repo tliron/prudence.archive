@@ -5558,6 +5558,34 @@ Defaults to the application's subdirectory name.
 \end_layout
 
 \begin_layout Subsubsection
+Documents
+\end_layout
+
+\begin_layout Paragraph
+librariesBasePath
+\end_layout
+
+\begin_layout Standard
+If documents are not found in the main locations, they are looked for here.
+ Relative to the application's subdirectory.
+ Defaults to ``/libaries/''.
+\end_layout
+
+\begin_layout Paragraph
+documentsDefaultName
+\end_layout
+
+\begin_layout Standard
+If the document name points to a directory rather than a file, and that
+ directory contains a file with this name, then it will be used.
+ This allows you to use the directory structure to create nice URLs without
+ relying on filenames.
+ This is true for ``/resources/'', ``/tasks/'', ``/handlers/'' and ``/libraries/
+''.
+ Defaults to ``default''.
+\end_layout
+
+\begin_layout Subsubsection
 Routing
 \end_layout
 
@@ -5709,15 +5737,13 @@ Relative to the application's subdirectory.
 \end_layout
 
 \begin_layout Paragraph
-resourcesDefaultName
+resourcesPassThrough
 \end_layout
 
 \begin_layout Standard
-If the URL points to a directory rather than a file, and that directory
- contains a file with this name, then it will be used.
- This allows you to use the directory structure to create nice URLs without
- relying on filenames.
- Defaults to ``default''.
+An array of document names that can ``pass through,'' meaning they can exist
+ in the ``/libraries/'' as well as ``/resources/''.
+ In fact, the can exist in ``/common/libraries/'', too.
 \end_layout
 
 \begin_layout Paragraph
@@ -5812,6 +5838,16 @@ If the URL points to a directory rather than a file, and that directory
  This allows you to use the directory structure to create nice URLs that
  do not contain filenames.
  Defaults to ``index''.
+\end_layout
+
+\begin_layout Paragraph
+dynamicWebPassThrough
+\end_layout
+
+\begin_layout Standard
+An array of document names that can ``pass through,'' meaning they can exist
+ in the ``/web/fragments/'' as well as ``/web/dynamic/''.
+ In fact, the can exist in ``/common/web/fragments/'', too.
 \end_layout
 
 \begin_layout Paragraph
