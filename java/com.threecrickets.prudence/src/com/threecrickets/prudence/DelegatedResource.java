@@ -634,8 +634,9 @@ public class DelegatedResource extends ServerResource
 		{
 			DocumentDescriptor<Executable> documentDescriptor = attributes.createDocumentOnce( documentName, false, true, true, isPassThrough );
 			Executable executable = documentDescriptor.getDocument();
+			Object enteringKey = getApplication().hashCode();
 
-			if( executable.getEnterableExecutionContext() == null )
+			if( executable.getEnterableExecutionContext( enteringKey ) == null )
 			{
 				ExecutionContext executionContext = new ExecutionContext( attributes.getWriter(), attributes.getErrorWriter() );
 				attributes.addLibraryLocations( executionContext );
@@ -645,7 +646,7 @@ public class DelegatedResource extends ServerResource
 
 				try
 				{
-					if( !executable.makeEnterable( executionContext, this, attributes.getExecutionController() ) )
+					if( !executable.makeEnterable( enteringKey, executionContext, this, attributes.getExecutionController() ) )
 						executionContext.release();
 				}
 				catch( ParsingException x )
@@ -672,7 +673,7 @@ public class DelegatedResource extends ServerResource
 				throw new NoSuchMethodException( entryPointName );
 
 			// Enter!
-			Object r = executable.enter( entryPointName, conversationService );
+			Object r = executable.enter( enteringKey, entryPointName, conversationService );
 
 			return r;
 		}

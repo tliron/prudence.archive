@@ -173,8 +173,9 @@ public class DelegatedHandler
 		{
 			DocumentDescriptor<Executable> documentDescriptor = attributes.createDocumentOnce( documentName, false, true, true, false );
 			Executable executable = documentDescriptor.getDocument();
+			Object enteringKey = Application.getCurrent().hashCode();
 
-			if( executable.getEnterableExecutionContext() == null )
+			if( executable.getEnterableExecutionContext( enteringKey ) == null )
 			{
 				ExecutionContext executionContext = new ExecutionContext( attributes.getWriter(), attributes.getErrorWriter() );
 				attributes.addLibraryLocations( executionContext );
@@ -184,7 +185,7 @@ public class DelegatedHandler
 
 				try
 				{
-					if( !executable.makeEnterable( executionContext, this, attributes.getExecutionController() ) )
+					if( !executable.makeEnterable( enteringKey, executionContext, this, attributes.getExecutionController() ) )
 						executionContext.release();
 				}
 				catch( ParsingException x )
@@ -218,10 +219,10 @@ public class DelegatedHandler
 				argumentList.add( new ConversationService( attributes.getFileUploadSizeThreshold(), attributes.getFileUploadDirectory() ) );
 				for( Object argument : arguments )
 					argumentList.add( argument );
-				r = executable.enter( entryPointName, argumentList.toArray() );
+				r = executable.enter( enteringKey, entryPointName, argumentList.toArray() );
 			}
 			else
-				r = executable.enter( entryPointName, new ConversationService( attributes.getFileUploadSizeThreshold(), attributes.getFileUploadDirectory() ) );
+				r = executable.enter( enteringKey, entryPointName, new ConversationService( attributes.getFileUploadSizeThreshold(), attributes.getFileUploadDirectory() ) );
 
 			return r;
 		}
