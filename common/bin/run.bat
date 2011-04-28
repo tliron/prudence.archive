@@ -36,8 +36,8 @@ EXIT /B
 
 :console
 
-%JAVA% ^
--cp %JARS% ^
+"%JAVA%" ^
+-cp "%JARS%" ^
 -Dscripturian.cache=cache ^
 -Dhazelcast.config=configuration\hazelcast.conf ^
 #if(($distribution == 'python') || ($distribution == 'kitchensink'))
