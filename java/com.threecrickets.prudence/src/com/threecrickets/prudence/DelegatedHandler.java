@@ -163,7 +163,7 @@ public class DelegatedHandler
 	 *        Extra arguments to add to entry point
 	 * @return The result of the entry
 	 * @throws ResourceException
-	 * @see {@link Executable#enter(Object, String, Object...)}
+	 * @see Executable#enter(Object, String, Object...)
 	 */
 	public Object handle( String entryPointName, Object... arguments )
 	{
