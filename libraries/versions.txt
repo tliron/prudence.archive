@@ -1,41 +1,41 @@
 clojure						1.2.0
-commons-codec				1.4
+commons-codec				1.5
 commons-daemon				1.0.5
 commons-dbcp				1.3
-commons-fileupload			1.2.1
-commons-io					1.4
+commons-fileupload			1.2.2
+commons-io					2.0.1
 commons-logging				1.1.1
-commons-pool				1.5.5
+commons-pool				1.5.6
 cron4j						2.2.3
 firewall-friendly-agent		1.0 (Revision 3e32f63)
 grizzly						1.9.32
 groboutils					5 (note: we've removed the internal log4j distribution)
-groovy						1.7.5
+groovy						1.8.0
 h2							1.3.154
-hazelcast					1.9.2.2
-httpclient					4.0.3
-httpcore					4.0.1 (blocking version)
-httpmime					4.0.3
-jackson						1.7.4
+hazelcast					1.9.2.3
+httpclient					4.1.1
+httpcore					4.1 (blocking version)
+httpmime					4.1.1
+jackson						1.8.0
 jcip-annotations			
 jepp						2.4
 jetty						7.2.2 (note: 7.3 conflicts with Restlet 2.0)
-jruby						1.6.0
+jruby						1.6.1
 json						
 jsr-223						
 junit						4.8.2
 jython						2.5.2
 jygments					1.0 (Revision 21)
 log4j						1.2.16
-mime4j						0.6
+mime4j						0.6.1
 mongodb-java-driver			2.5.3
-mysqlconnector				5.1.14
+mysqlconnector				5.1.16
 pygments					1.1.1
 quercus						4.0.11
 restlet (JSE)				2.0.7
 rhino						1.7R2
 servlet (jetty)				2.5
-scripturian					1.0 (Revision 286)
+scripturian					1.0 (Revision 291)
 slf4j						1.6.1
 spymemcached				2.5
 sqlalchemy					0.6 (Revision 6720 + H2 patch)
