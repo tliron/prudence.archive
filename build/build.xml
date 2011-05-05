@@ -275,14 +275,14 @@
 			<link href="http://threecrickets.com/scripturian/api/" />
 			<link href="http://www.restlet.org/documentation/2.0/jse/api/" />
 			<link href="http://commons.apache.org/dbcp/api-1.3/" />
-			<link href="http://commons.apache.org/pool/api-1.5.5/" />
+			<link href="http://commons.apache.org/pool/api-1.5.6/" />
 			<link href="http://commons.apache.org/fileupload/apidocs/" />
 			<link href="http://www.sauronsoftware.it/projects/cron4j/api/" />
 			<link href="http://www.h2database.com/javadoc/" />
 			<link href="http://www.hazelcast.com/javadoc/" />
 			<link href="http://dustin.github.com/java-memcached-client/apidocs/" />
 			<link href="http://commons.apache.org/daemon/apidocs/" />
-			<link href="http://api.mongodb.org/java/2.3/" />
+			<link href="http://api.mongodb.org/java/2.5.3/" />
 			<classpath>
 				<fileset dir="${lib}/cron4j/lib" />
 				<fileset dir="${lib}/hazelcast/lib" />
@@ -353,6 +353,7 @@
 		<fetch-library dist="${dist-javascript}" library="commons-logging" />
 		<fetch-library dist="${dist-javascript}" library="commons-pool" />
 		<fetch-library dist="${dist-javascript}" library="cron4j" />
+		<fetch-library dist="${dist-javascript}" library="firewall-friendly-agent" />
 		<fetch-library dist="${dist-javascript}" library="h2" />
 		<fetch-library dist="${dist-javascript}" library="hazelcast" />
 		<fetch-library dist="${dist-javascript}" library="httpclient" />
@@ -411,6 +412,7 @@
 		<fetch-library dist="${dist-python}" library="commons-logging" />
 		<fetch-library dist="${dist-python}" library="commons-pool" />
 		<fetch-library dist="${dist-python}" library="cron4j" />
+		<fetch-library dist="${dist-python}" library="firewall-friendly-agent" />
 		<fetch-library dist="${dist-python}" library="h2" />
 		<fetch-library dist="${dist-python}" library="hazelcast" />
 		<fetch-library dist="${dist-python}" library="httpclient" />
@@ -478,6 +480,7 @@
 		<fetch-library dist="${dist-clojure}" library="commons-logging" />
 		<fetch-library dist="${dist-clojure}" library="commons-pool" />
 		<fetch-library dist="${dist-clojure}" library="cron4j" />
+		<fetch-library dist="${dist-clojure}" library="firewall-friendly-agent" />
 		<fetch-library dist="${dist-clojure}" library="h2" />
 		<fetch-library dist="${dist-clojure}" library="hazelcast" />
 		<fetch-library dist="${dist-clojure}" library="httpclient" />
@@ -535,6 +538,7 @@
 		<fetch-library dist="${dist-groovy}" library="commons-logging" />
 		<fetch-library dist="${dist-groovy}" library="commons-pool" />
 		<fetch-library dist="${dist-groovy}" library="cron4j" />
+		<fetch-library dist="${dist-groovy}" library="firewall-friendly-agent" />
 		<fetch-library dist="${dist-groovy}" library="groovy" />
 		<fetch-library dist="${dist-groovy}" library="h2" />
 		<fetch-library dist="${dist-groovy}" library="hazelcast" />
@@ -593,6 +597,7 @@
 		<fetch-library dist="${dist-ruby}" library="commons-logging" />
 		<fetch-library dist="${dist-ruby}" library="commons-pool" />
 		<fetch-library dist="${dist-ruby}" library="cron4j" />
+		<fetch-library dist="${dist-ruby}" library="firewall-friendly-agent" />
 		<fetch-library dist="${dist-ruby}" library="h2" />
 		<fetch-library dist="${dist-ruby}" library="hazelcast" />
 		<fetch-library dist="${dist-ruby}" library="httpclient" />
@@ -655,6 +660,7 @@
 		<fetch-library dist="${dist-php}" library="commons-logging" />
 		<fetch-library dist="${dist-php}" library="commons-pool" />
 		<fetch-library dist="${dist-php}" library="cron4j" />
+		<fetch-library dist="${dist-php}" library="firewall-friendly-agent" />
 		<fetch-library dist="${dist-php}" library="h2" />
 		<fetch-library dist="${dist-php}" library="hazelcast" />
 		<fetch-library dist="${dist-php}" library="httpclient" />
@@ -726,6 +732,7 @@
 		<fetch-library dist="${dist-kitchensink}" library="commons-logging" />
 		<fetch-library dist="${dist-kitchensink}" library="commons-pool" />
 		<fetch-library dist="${dist-kitchensink}" library="cron4j" />
+		<fetch-library dist="${dist-kitchensink}" library="firewall-friendly-agent" />
 		<fetch-library dist="${dist-kitchensink}" library="groboutils" />
 		<fetch-library dist="${dist-kitchensink}" library="groovy" />
 		<fetch-library dist="${dist-kitchensink}" library="h2" />
