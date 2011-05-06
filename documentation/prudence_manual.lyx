@@ -1,5 +1,5 @@
-#LyX 1.6.7 created this file. For more info see http://www.lyx.org/
-\lyxformat 345
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
 \begin_document
 \begin_header
 \textclass article
@@ -9,18 +9,26 @@
 \sloppy
 \end_preamble
 \use_default_options true
+\maintain_unincluded_children false
 \language english
+\language_package default
 \inputencoding auto
+\fontencoding global
 \font_roman newcent
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
 
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
 \paperfontsize default
 \spacing single
 \use_hyperref false
@@ -28,9 +36,18 @@
 \use_geometry true
 \use_amsmath 1
 \use_esint 1
+\use_mhchem 1
+\use_mathdots 1
 \cite_engine basic
 \use_bibtopic false
+\use_indices false
 \paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
 \leftmargin 2cm
 \topmargin 2cm
 \rightmargin 2cm
@@ -38,15 +55,16 @@
 \secnumdepth 0
 \tocdepth 2
 \paragraph_separation indent
-\defskip medskip
+\paragraph_indentation default
 \quotes_language english
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
 \tracking_changes false
 \output_changes false
-\author "" 
-\author "" 
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
 \end_header
 
 \begin_body
@@ -3963,13 +3981,6 @@ We've named or renamed all Prudence JARs according to their main Java package
  prefix, but you do not have to follow this convention.
 \end_layout
 
-\begin_layout Quote
-For JVM 5, if you add your own JARs, you may need to edit the scripts in
- /bin/ to accommodate your additions.
- You do not need to do this in JVM 6 and above, which supports wildcard
- classpaths.
-\end_layout
-
 \begin_layout Subsection
 Configuration Scripts
 \begin_inset CommandInset label
@@ -4443,7 +4454,7 @@ target "http://www.jboss.org/netty"
 \end_inset
 
  and an ``internal'' connector.
- To change the HTTP server technology, you have to adds JARs it to /libraries/.
+ To change the HTTP server technology, you have to add its JARs to /libraries/.
  See the 
 \begin_inset CommandInset href
 LatexCommand href
@@ -8442,7 +8453,7 @@ Compression does require some additional computation overhead.
  in its compressed state, such that subsequent cache retrievals would not
  involve any additional overhead.
  Additionally, if an uncompressed version already exists in the cache, it
- will be compressed, cached and used, for optmal efficiency.
+ will be compressed, cached and used, for optimal efficiency.
  Thus, the total overhead would likely be insignificant for cached documents,
  while the bandwidth savings and performance benefits could be considerable.
  Caching and compression are good friends!
@@ -8487,11 +8498,12 @@ HTTP clients, such as web browsers, store downloaded content in their cache,
  marking it with a modification date and tag according to HTTP headers in
  the response.
  Subsequent requests to the same URL will be ``conditional,'' meaning that
- the client will tell the server what the latest modification date it has.
- If the server does not have new data, then it returns an empty response
+ the client will tell the server which version it has.
+ If the server still has the same version, then it returns an empty response
  with the 304 ``not modified'' HTTP status, letting the client know that
  it is safe to use its cached version.
- This saves both bandwidth and processing resources on the server.
+ This saves both bandwidth and processing resources on the server, because
+ it can avoid generating the representation.
 \end_layout
 
 \begin_layout Standard
@@ -21002,6 +21014,26 @@ reference "../logging/"
 \end_layout
 
 \begin_layout Subsection
+Management and Monitoring
+\end_layout
+
+\begin_layout Standard
+Another useful debugging feature is the JVM's built-in support for 
+\bar under
+management and monitoring (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../management-and-monitoring/"
+
+\end_inset
+
+)
+\bar default
+, which lets you use tools such as VisualVM and JConsole to probe into threads
+ and memory use.
+\end_layout
+
+\begin_layout Subsection
 The Debug Page
 \begin_inset CommandInset label
 LatexCommand label
@@ -21680,6 +21712,435 @@ logs/web.log
 \end_layout
 
 \begin_layout Section
+Management and Monitoring
+\begin_inset CommandInset label
+LatexCommand label
+name "../management-and-monitoring/"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Because Prudence runs on the JVM, you get the benefit of its built-in support
+ for remote management and monitoring, and array of tools such as VisualVM
+ and JConsole.
+ These are essential tools for administration of production deployments.
+ There is nothing unique in how Prudence uses these tools, but this section
+ is included to help you get started with them.
+\end_layout
+
+\begin_layout Standard
+The JVM is an impressive piece of engineering, balancing code execution
+ with memory management for optimal performance under diverse circumstances,
+ and you get to appreciate it all that more through the lens of management
+ and monitoring.
+ Even if you don't need to tightly manage a deployment, you should give
+ monitoring a spin, if only to better understand your powerful deployment
+ platform.
+\end_layout
+
+\begin_layout Subsubsection
+JMX and VisualVM
+\end_layout
+
+\begin_layout Standard
+The JVM's native management and monitoring standard is 
+\begin_inset CommandInset href
+LatexCommand href
+name "JMX (Java Management Extensions)"
+target "http://www.oracle.com/technetwork/java/javase/tech/javamanagement-140525.html"
+
+\end_inset
+
+, which in turn uses 
+\begin_inset CommandInset href
+LatexCommand href
+name "RMI (Remote Method Invocation)"
+target "http://www.oracle.com/technetwork/java/javase/tech/index-jsp-136424.html"
+
+\end_inset
+
+ as its network protocol.
+ JMX lets applications and systems expose management ``beans,'' which are
+ simply objects with attributes and methods.
+\end_layout
+
+\begin_layout Standard
+An example of a management bean is a thread pool: attributes can show you
+ how many threads are used by the thread pool at any given time, and perhaps
+ the number of threads in the pool can be changed live.
+\end_layout
+
+\begin_layout Standard
+The ``monitoring'' part involves watching these attributes as they change
+ over time.
+ A good monitoring client can accumulate this data, display it in graphs,
+ and trigger alerts for system administrators when bad things happen that
+ would require human attention.
+ ``Management'' involves calling methods on these beans, but also changing
+ some attributes for beans that support it.
+ JMX is, in essense, an API.
+\end_layout
+
+\begin_layout Standard
+Most JMX clients will give you raw access to this API, but the real power
+ comes with dedicated plugins for specific beans, which give you a specialized
+ UI and tracking tools.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "VisualVM"
+target "http://visualvm.java.net/"
+
+\end_inset
+
+ is a good desktop client that supports many plugins that can easily be
+ downloaded and installed from a central repository, and also supports the
+ older JConsole plugins via a compatibility plugin.
+ VisualVM is included with Oracle's JDK distribution, and may already be
+ installed on your development machine.
+ (The executable is sometimes called ``visualvm'' and sometimes called ``jvisual
+vm.'')
+\end_layout
+
+\begin_layout Standard
+Fire it up! JMX is enabled by default for local connections, so you should
+ see your local Prudence instance under the ``Local'' branch of connections,
+ as ``com.threecrickets.scripturian.Scripturian'' (which is the name of the
+ entry point JVM class).
+ You'll even see VisualVM itself there, and any other JVMs running on your
+ machine.
+ Have fun exploring them! Try installing various VisualVM plugins and see
+ what new options they give you.
+\end_layout
+
+\begin_layout Standard
+You'll various management beans: the default ones that come with the JVM,
+ beans exposed by your daemon wrapper (such as JSW), beans exposed by your
+ database driver, etc.
+\end_layout
+
+\begin_layout Standard
+Note that Hazelcast's management bean is not enabled by default.
+ To enable it, add this option to your JVM:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+-Dhazelcast.jmx=true
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+See 
+\bar under
+Prudence clusters (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../cluster/"
+
+\end_inset
+
+)
+\bar default
+ for more information on how Hazelcast is used by Prudence.
+\end_layout
+
+\begin_layout Subsubsection
+Remote JMX
+\end_layout
+
+\begin_layout Standard
+More useful, though, is the ability to monitor and manage your remote servers.
+\end_layout
+
+\begin_layout Standard
+Enabling remote JMX requires command line arguments to the JVM.
+ Depending on how you run Prudence, you can set these in your ``/bin/run.sh''
+ or ``/bin/run.bat,'' or in your ``/configuration/wrapper.conf'' if you're
+ using 
+\bar under
+JSW (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../daemon/"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+A basic setup for remote JMX would look something like this:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+-Dcom.sun.management.jmxremote
+\end_layout
+
+\begin_layout Plain Layout
+
+-Dcom.sun.management.jmxremote.port=1650
+\end_layout
+
+\begin_layout Plain Layout
+
+-Djava.rmi.server.hostname=myhost.org
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Setting the hostname may not be required if your operating system has a
+ well-defined public hostname set up, but is often necessary.
+ If it's incorrect, RMI's two-way communication cannot work.
+\end_layout
+
+\begin_layout Standard
+In VisualVM, you will need to explicitly add your connection under the ``Remote'
+' branch.
+ Make sure to add the JMX port you configured.
+\end_layout
+
+\begin_layout Subsubsection
+Securing JMX
+\end_layout
+
+\begin_layout Standard
+If you've enabled remote JMX, you obviously do not want anybody to be able
+ to access it.
+ There are two things you can do to secure the connection.
+\end_layout
+
+\begin_layout Standard
+The first is to require login credentials:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+-Dcom.sun.management.jmxremote.password.file=/path/jmxremote.password
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The password file is a simple text file where every row represents a user,
+ and is made of user+whitespace+password:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+monitorRole thepassword
+\end_layout
+
+\begin_layout Plain Layout
+
+controlRole theotherpassword
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These two users are by default given full read-write and full read-only
+ access respectively.
+ Refer to the JMX documentation if you need to create more users or more
+ subtle security roles.
+\end_layout
+
+\begin_layout Standard
+After you've enabled password security, you will need to enter the login
+ credentials with VisualVM in order to connect.
+\end_layout
+
+\begin_layout Standard
+The second way to secure your connection is to encrypt it:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+-Djavax.net.ssl.keyStore=/path/my.jks
+\end_layout
+
+\begin_layout Plain Layout
+
+-Djavax.net.ssl.keyStorePassword=mypassword
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The key store is in the JVM's standard format.
+ Instructions for managing your key store go beyond the scope of this guide,
+ but there is a somewhat elaborated example in 
+\bar under
+the section on secure servers (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../instance/|secure-servers"
+
+\end_inset
+
+)
+\bar default
+.
+ Note that if you do not need public https access, you may be better off
+ using a self-signed key instead of one issued by a trusted certificate
+ authority.
+\end_layout
+
+\begin_layout Standard
+To allow VisualVM to connect to your server via encryption, you will need
+ to install the ``VisualVM-Security'' plugin.
+ Once you do that, you will have a new ``Security'' tab under Tools/Options.
+ You want to set the ``Trust Store'' (not the ``Key Store''!) to either
+ the same key store as your server, or to a key store that contains the
+ right key.
+\end_layout
+
+\begin_layout Subsubsection
+JMX and Firewalls
+\end_layout
+
+\begin_layout Standard
+If you've enabled a firewall on your server (and you should!), you will
+ have to open 
+\emph on
+two
+\emph default
+ ports for JMX to work: one for JMX (see ``enabling JMX,'' above), and one
+ for the RMI registry.
+\end_layout
+
+\begin_layout Standard
+Unfortunately, mosts JVMs (including Oracle's) do not allow you to configure
+ the RMI registry port.
+ Much worse for this use case, the RMI registry port is selected at 
+\emph on
+random
+\emph default
+ during JVM startup.
+ This means that you cannot configure your firewall for it!
+\end_layout
+
+\begin_layout Standard
+Prudence comes with a workaround for this sticky problem, as suggested by
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "Daniel Fuchs"
+target "http://blogs.sun.com/jmxetc/entry/connecting_through_firewall_using_jmx"
+
+\end_inset
+
+ and implemented by 
+\begin_inset CommandInset href
+LatexCommand href
+name "Oleg Ilyenko"
+target "https://github.com/OlegIlyenko/jmx-firewall-friendly-agent"
+
+\end_inset
+
+.
+ It involves setting a different, ``firewall-friendly'' agent for the JVM
+ that can use a set port:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+-javaagent:libraries/org.am.rmi.firewall.jar 
+\end_layout
+
+\begin_layout Plain Layout
+
+-Dorg.am.rmi.port=1651
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So, following our example here, you would need to open ports 1650 and 1651
+ in your firewall for remote JMX to work.
+\end_layout
+
+\begin_layout Standard
+Using the agent also requires a special connection in VisualVM, in which
+ the RMI port is explicitly stated.
+ Instead of adding a remote connection, choose File/Add JMX Connection,
+ and enter a URI in this format:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+service:jmx:rmi://myhost.org:1651/jndi/rmi://myhost.org:1651/jmxrmi
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
 Administration
 \begin_inset CommandInset label
 LatexCommand label
@@ -21946,6 +22407,7 @@ target "http://commons.apache.org/daemon/"
  binary.
  Prudence comes with binaries for Linux, Solaris, Darwin (OS X) and Windows,
  for both 32bit and 64bit architectures.
+ For the script to work, the binaries need to be executable (chmod +x).
 \end_layout
 
 \begin_layout Subsubsection
