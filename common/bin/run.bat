@@ -13,11 +13,10 @@ REM #
 SET ORIGINAL="%CD%"
 CD /D "%0%\..\.."
 
-SET JARS=#foreach($jar in $jars.split(':'))
-%CD%\libraries\\$jar#if($foreach.hasNext);^
-#end
-#end
-
+SETLOCAL ENABLEDELAYEDEXPANSION
+SET JARS=
+FOR /F %%J IN ('DIR /B libraries\*.jar') DO SET JARS=!JARS!;%CD%\libraries\%%~J
+SET JARS=%JARS:~1%
 
 SET JAVA=java
 SET PRUNSRV="%CD%\bin\commons-daemon\windows\i386\prunsrv.exe"
