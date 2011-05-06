@@ -137,6 +137,10 @@ public abstract class UnifyMinifyFilter extends Filter
 	 */
 	public void unify( File sourceDirectory, boolean minify ) throws IOException
 	{
+		String[] sourceFilenames = sourceDirectory.list( sourceFilenameFilter );
+		if( sourceFilenames == null )
+			return;
+
 		File unifiedSourceFile = IoUtil.getUniqueFile( new File( sourceDirectory, minify ? unifiedMinifiedFilename : unifiedFilename ) );
 
 		synchronized( unifiedSourceFile )
@@ -149,8 +153,6 @@ public abstract class UnifyMinifyFilter extends Filter
 			if( unifiedSourceFile.exists() )
 				if( !unifiedSourceFile.delete() )
 					throw new IOException( "Could not delete file: " + unifiedSourceFile );
-
-			String[] sourceFilenames = sourceDirectory.list( sourceFilenameFilter );
 
 			long newLastModified = 0;
 
@@ -241,7 +243,14 @@ public abstract class UnifyMinifyFilter extends Filter
 				if( lastValidityCheck == 0 || ( now - lastValidityCheck > minimumTimeBetweenValidityChecks ) )
 				{
 					if( this.lastValidityCheck.compareAndSet( lastValidityCheck, now ) )
-						unify( new File( sourceDirectory, path ).getParentFile(), minify );
+					{
+						File file = new File( sourceDirectory, path ).getParentFile();
+
+						if( !file.isDirectory() )
+							response.setStatus( Status.CLIENT_ERROR_NOT_FOUND );
+
+						unify( file, minify );
+					}
 				}
 			}
 		}
