@@ -21741,7 +21741,7 @@ The JVM is an impressive piece of engineering, balancing code execution
  platform.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 JMX and VisualVM
 \end_layout
 
@@ -21859,7 +21859,7 @@ reference "../cluster/"
  for more information on how Hazelcast is used by Prudence.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Remote JMX
 \end_layout
 
@@ -21926,7 +21926,7 @@ In VisualVM, you will need to explicitly add your connection under the ``Remote'
  Make sure to add the JMX port you configured.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Securing JMX
 \end_layout
 
@@ -22045,7 +22045,7 @@ To allow VisualVM to connect to your server via encryption, you will need
  right key.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 JMX and Firewalls
 \end_layout
 
