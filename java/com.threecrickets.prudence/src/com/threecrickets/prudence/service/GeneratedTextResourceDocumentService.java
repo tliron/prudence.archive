@@ -252,8 +252,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 			// Set the initial document encoding to that of the conversation
 			Encoding encoding = conversationService.getEncoding();
-			if( encoding != null )
-				setEncoding( documentDescriptor.getDocument(), encoding );
+			setEncoding( documentDescriptor.getDocument(), encoding );
 		}
 		else
 		{
@@ -300,8 +299,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 		// Set the initial document encoding to that of the conversation
 		Encoding encoding = conversationService.getEncoding();
-		if( encoding != null )
-			setEncoding( documentDescriptor.getDocument(), encoding );
+		setEncoding( documentDescriptor.getDocument(), encoding );
 
 		String cacheKey = castCacheKey( documentDescriptor );
 		if( cacheKey != null )
@@ -431,7 +429,10 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	private static void setEncoding( Executable executable, Encoding encoding )
 	{
-		executable.getAttributes().put( ENCODING_ATTRIBUTE, encoding );
+		if( ( encoding == null ) || Encoding.IDENTITY.equals( encoding ) )
+			executable.getAttributes().remove( ENCODING_ATTRIBUTE );
+		else
+			executable.getAttributes().put( ENCODING_ATTRIBUTE, encoding );
 	}
 
 	/**

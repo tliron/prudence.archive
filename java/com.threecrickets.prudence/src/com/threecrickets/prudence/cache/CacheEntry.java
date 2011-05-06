@@ -114,9 +114,7 @@ public class CacheEntry implements Externalizable
 		this.expirationDate = expirationDate;
 
 		if( IoUtil.SUPPORTED_COMPRESSION_ENCODINGS.contains( encoding ) )
-		{
 			bytes = IoUtil.compress( string, encoding, "text" );
-		}
 		else
 			this.string = string;
 	}

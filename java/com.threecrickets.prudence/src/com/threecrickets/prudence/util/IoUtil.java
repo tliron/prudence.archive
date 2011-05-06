@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
@@ -173,7 +174,7 @@ public abstract class IoUtil
 	}
 
 	/**
-	 * Compresses an input stream into a byte array.
+	 * Compresses an input stream into a byte array, without the initial two
 	 * 
 	 * @param in
 	 *        The input stream
@@ -194,7 +195,8 @@ public abstract class IoUtil
 		else if( encoding.equals( Encoding.ZIP ) )
 			encoder = new ZipOutputStream( buffer );
 		else if( encoding.equals( Encoding.DEFLATE ) )
-			encoder = new DeflaterOutputStream( buffer );
+			// Note: Internet Explorer absolutely requires "no wrap" mode!
+			encoder = new DeflaterOutputStream( buffer, new Deflater( Deflater.BEST_COMPRESSION, true ) );
 
 		if( encoder == null )
 			throw new IOException( "Unsupported encoding: " + encoding );
