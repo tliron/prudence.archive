@@ -22140,6 +22140,12 @@ service:jmx:rmi://myhost.org:1651/jndi/rmi://myhost.org:1651/jmxrmi
 
 \end_layout
 
+\begin_layout Standard
+Note that only the RMI registry port is used in the above URI: information
+ about the management beans, including which port to use to access them,
+ will be read from the RMI registry.
+\end_layout
+
 \begin_layout Section
 Administration
 \begin_inset CommandInset label
