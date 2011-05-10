@@ -219,12 +219,14 @@ public class DelegatedStatusService extends StatusService
 				response.setStatus( status );
 
 				Representation representation = response.getEntity();
-
-				// Avoid caching, which could require other interchanges
-				// with client that we can't handle from here
-				representation.setExpirationDate( null );
-				representation.setModificationDate( null );
-				representation.setTag( null );
+				if( representation != null )
+				{
+					// Avoid caching, which could require other interchanges
+					// with client that we can't handle from here
+					representation.setExpirationDate( null );
+					representation.setModificationDate( null );
+					representation.setTag( null );
+				}
 
 				attributes.put( PASSTHROUGH_ATTRIBUTE, true );
 				return representation;
