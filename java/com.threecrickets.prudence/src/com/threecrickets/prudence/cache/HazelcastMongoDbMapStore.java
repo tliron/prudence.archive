@@ -14,7 +14,9 @@ package com.threecrickets.prudence.cache;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.bson.types.Binary;
 import org.restlet.Component;
@@ -141,6 +143,24 @@ public abstract class HazelcastMongoDbMapStore<K, V> implements MapStore<K, V>
 		}
 
 		return map;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Set<K> loadAllKeys()
+	{
+		DBCollection collection = getCollection();
+		DBObject fields = new BasicDBObject();
+
+		fields.put( "_id", 1 );
+
+		Set<K> keys = new HashSet<K>();
+		for( DBCursor cursor = collection.find( null, fields ); cursor.hasNext(); )
+		{
+			DBObject value = cursor.next();
+			keys.add( (K) value.get( "_id" ) );
+		}
+
+		return keys;
 	}
 
 	public void store( K key, V value )
