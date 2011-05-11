@@ -150,10 +150,6 @@ public abstract class UnifyMinifyFilter extends Filter
 			else
 				getLogger().info( "Unifying directory \"" + sourceDirectory + "\" into file \"" + unifiedSourceFile + "\"" );
 
-			if( unifiedSourceFile.exists() )
-				if( !unifiedSourceFile.delete() )
-					throw new IOException( "Could not delete file: " + unifiedSourceFile );
-
 			long newLastModified = 0;
 
 			for( String sourceFilename : sourceFilenames )
@@ -165,6 +161,10 @@ public abstract class UnifyMinifyFilter extends Filter
 
 			if( unifiedSourceFile.lastModified() == newLastModified )
 				return;
+
+			if( unifiedSourceFile.exists() )
+				if( !unifiedSourceFile.delete() )
+					throw new IOException( "Could not delete file: " + unifiedSourceFile );
 
 			Arrays.sort( sourceFilenames );
 			Vector<InputStream> ins = new Vector<InputStream>();
