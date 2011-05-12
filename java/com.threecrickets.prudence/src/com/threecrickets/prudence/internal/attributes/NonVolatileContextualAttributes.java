@@ -294,7 +294,7 @@ public abstract class NonVolatileContextualAttributes extends ContextualAttribut
 				DocumentSource<Executable> documentSource = getDocumentSource();
 				if( documentSource instanceof DocumentFileSource<?> )
 				{
-					fileUploadDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), "../uploads/" );
+					fileUploadDirectory = new File( ( (DocumentFileSource<?>) documentSource ).getBasePath(), ".." + File.separatorChar + "uploads" + File.separatorChar );
 
 					File existing = (File) attributes.putIfAbsent( prefix + ".fileUploadDirectory", fileUploadDirectory );
 					if( existing != null )
