@@ -166,7 +166,7 @@ Our base unit is a ``resource,'' which, like an object in object-oriented
  architectures, encapsulates data with some functionality.
  However, we've learned from object-orientation that implementing arbitrary
  interfaces is a recipe for complexity: proxy generation, support for arbitrary
- types, marshalling, etc.
+ types, marshaling, etc.
  Instead, then, we'll keep it simple and define a limited, unified interface
  that would be just useful enough.
 \end_layout
@@ -659,7 +659,7 @@ Our resource identifiers are simple URLs.
  ``Conditional'' and ``negotiated'' modes are handled by headers, as are
  ``cookies'' for shared state.
  Version stamps are e-tags.
- Command parameters are query matrixes appended to URLs.
+ Command parameters are query matrices appended to URLs.
  It's all there.
 \end_layout
 
@@ -728,7 +728,7 @@ d architecture,'' as we have here.
  Fielding, one of the authors of the HTTP protocol, was intimately familiar
  with its challenges, and the name ``REST'' is intended to point out the
  key characteristic of its infrastructure: HTTP and similar protocols are
- designed for transfering lightly annotated data representations.
+ designed for transferring lightly annotated data representations.
  ``Resources'' are merely logical encapsulations of these representations,
  depending on a contract between client and server.
  The infrastructure does not, in itself, do anything in particular to maintain,
@@ -3622,7 +3622,7 @@ Filters
 \begin_layout Standard
 Prudence lets you write code that will filter every incoming and outgoing
  request.
- This makes it easy to do a wide variery of general work such as authenticating,
+ This makes it easy to do a wide variety of general work such as authenticating,
  sanitizing, transformation/encoding, monitoring, throttling, caching, processin
 g, etc.
  See 
@@ -3647,7 +3647,7 @@ Tasks
 Prudence lets you write and run tasks asynchronously, and even to schedule
  them using a crontab-like configuration file.
  This is very useful for maintenance work such as releasing unused connections
- and sessions, for sending email reminders and administrative alterts, for
+ and sessions, for sending email reminders and administrative alerts, for
  monitoring services, etc.
  See 
 \bar under
@@ -4848,6 +4848,22 @@ We encourage you to follow our convention and name your deployable zips
 Subdirectory Structure
 \end_layout
 
+\begin_layout Standard
+Note that these subdirectory names are defaults, but they can be configured
+ in the 
+\bar under
+application's settings (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|settings"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
 \begin_layout Subsubsection
 /web/dynamic/
 \end_layout
@@ -5139,6 +5155,11 @@ reference "../api/|conversation-form"
  for more information.
 \end_layout
 
+\begin_layout Quote
+Note: You need to create this subdirectory explicitly for file uploads to
+ work!
+\end_layout
+
 \begin_layout Subsection
 Configuration Scripts
 \end_layout
@@ -5357,7 +5378,7 @@ reference "../restlet-container/"
 
 \begin_layout Standard
 This is the configuration file that not a script.
- It lets you schedule tasks to run at certain Calendrical times.
+ It lets you schedule tasks to run at certain calendrical times.
  See 
 \bar under
 tasks (
@@ -6111,6 +6132,28 @@ If the URL points to a directory rather than a file, then this will allow
 
 \begin_layout Subsubsection
 File Uploads
+\end_layout
+
+\begin_layout Paragraph
+fileUploadBasePath
+\begin_inset CommandInset label
+LatexCommand label
+name "../application/|file-upload-base-path"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Relative to the application's subdirectory.
+ Defaults to ``/uploads/''.
+\end_layout
+
+\begin_layout Standard
+File uploads will be stored here.
+ Note that you have to create this directory yourself in order to handle
+ file uploads.
 \end_layout
 
 \begin_layout Paragraph
@@ -8717,7 +8760,18 @@ status open
 
 \begin_layout Plain Layout
 
-<% if(conversation.request.method == 'POST') { %>
+<% if(conversation.request.method == 'POST') {
+\end_layout
+
+\begin_layout Plain Layout
+
+// TODO: write code that actually sends the message.
+ :)
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
 \end_layout
 
 \begin_layout Plain Layout
@@ -8788,6 +8842,123 @@ m.get('email') %> soon.
 
 \begin_layout Standard
 Pretty simple!
+\end_layout
+
+\begin_layout Standard
+And now, for handling uploaded files:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<html>
+\end_layout
+
+\begin_layout Plain Layout
+
+<body>
+\end_layout
+
+\begin_layout Plain Layout
+
+<% if(conversation.request.method == 'POST') { %>
+\end_layout
+
+\begin_layout Plain Layout
+
+Thank you for uploading your user avatar! It is temporarily stored at:
+\end_layout
+
+\begin_layout Plain Layout
+
+<%
+\end_layout
+
+\begin_layout Plain Layout
+
+	var attachment = conversation.form.get('attachment')
+\end_layout
+
+\begin_layout Plain Layout
+
+	print(attachment.file)
+\end_layout
+
+\begin_layout Plain Layout
+
+%>
+\end_layout
+
+\begin_layout Plain Layout
+
+<% } else { %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<form enctype="multipart/form-data" name="upload" method="POST">
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p>Upload your user avatar:</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p><input name="attachment" type="file"></input></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<p><button type="submit">Send</button></p>
+\end_layout
+
+\begin_layout Plain Layout
+
+</form>
+\end_layout
+
+\begin_layout Plain Layout
+
+<% } %>
+\end_layout
+
+\begin_layout Plain Layout
+
+</body>
+\end_layout
+
+\begin_layout Plain Layout
+
+</html>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that you will need to create an ``/uploads/'' subdirectory under your
+ application's directory for uploads to work.
+ See 
+\bar under
+fileUploadBasePath (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../application/|file-upload-base-path"
+
+\end_inset
+
+)
+\bar default
+ to change this.
 \end_layout
 
 \begin_layout Paragraph
@@ -11953,7 +12124,7 @@ reference "../api/|document-context"
 )
 \bar default
 .
- This is so you can distinguish between this initial run and possible subequent
+ This is so you can distinguish between this initial run and possible subsequent
  runs that you spawn yourself.
 \end_layout
 
@@ -12050,7 +12221,7 @@ reference "../api/|application-task"
 
 )
 \bar default
- in the application's configuration scripts, but allows for more succint,
+ in the application's configuration scripts, but allows for more succinct,
  calendrical repetition patterns.
 \end_layout
 
@@ -12160,7 +12331,7 @@ not
 \end_layout
 
 \begin_layout Enumerate
-The scheduler does not check to see if a task finished running before swapning
+The scheduler does not check to see if a task finished running before spawning
  a new instance of it, so that even if a task is not done yet, but it's
  time for it to be spawned again, you'll have multiple instances of the
  task running at the same time.
@@ -12179,7 +12350,7 @@ reference "../api/|application-task"
 
 )
 \bar default
- in your confuguration scripts instead, with ``false'' as the last argument.
+ in your configuration scripts instead, with ``false'' as the last argument.
 \end_layout
 
 \begin_layout Standard
@@ -12902,7 +13073,7 @@ Note that you can create a ``nested'' URI scheme for your applications.
  beneath the root, ``/wackywiki'' and ``/wackywiki/support/forum''.
  The root application will not ``steal'' requests from the other applications,
  because the request is routed to the right application by the virtual host.
- The fact that the latter URI is the hierarchical descendent of the former
+ The fact that the latter URI is the hierarchical descendant of the former
  makes no difference to the virtual host router.
 \end_layout
 
@@ -13008,7 +13179,7 @@ The three application handlers---resources, dynamic web pages and static
 \begin_layout Standard
 This is exactly the scheme used by most static web servers, and it has the
  benefit of using a readily-available, easy-to-use hierarchical structure---the
- filesystem---as a striaghtforward way for creating URIs.
+ filesystem---as a straightforward way for creating URIs.
 \end_layout
 
 \begin_layout Standard
@@ -13365,7 +13536,7 @@ name "../routing/|static-capturing"
 \end_layout
 
 \begin_layout Standard
-Prudence lets you ``capture'' abitrary URI patterns into any internal URI
+Prudence lets you ``capture'' arbitrary URI patterns into any internal URI
  you wish, whether they're implemented as /resources/, /web/dynamic/ or
  /web/static/.
  This lets you turn a single URI implementation to into a multitude of URIs,
@@ -13376,7 +13547,7 @@ Prudence lets you ``capture'' abitrary URI patterns into any internal URI
 Static capturing is handled in your application's ``routing.*'', via the
  router.capture API.
  The first argument is the pattern your want to capture, the second is the
- interal URI to which the request will be redirected.
+ internal URI to which the request will be redirected.
  You use curly-bracket-delimited tags in the URI to parse URI segments and
  store them in 
 \bar under
@@ -15499,7 +15670,7 @@ We'll use a hyphen to show that you need to add one of the modifiers detailed
 \end_layout
 
 \begin_layout Itemize
-{r-} or {R-}: actual URI (the capital ``R'' here referes to the response,
+{r-} or {R-}: actual URI (the capital ``R'' here refers to the response,
  which may be different from the request if you're redirecting)
 \end_layout
 
@@ -18630,6 +18801,21 @@ reference "../application/|file-upload-size-threshold"
 .
 \end_layout
 
+\begin_layout Standard
+See 
+\bar under
+a complete example for handling forms and file uploads (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../generating-html/|handling-html-forms"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
 \begin_layout Paragraph
 conversation.query, conversation.queryAll
 \begin_inset CommandInset label
@@ -20530,10 +20716,10 @@ Note for Clojure flavor: All Clojure vars are VM-wide globals equivalent
  in scope to executable.globals.
  You usually work with namespaces that Prudence creates on the fly, so they
  do not persist beyond the execution.
- However, if you explicitly define a namespace, then you can use it as a
- place for shared state.
- It will then be up to you to make sure that your namescape doesn't collide
- with that of another application installed in the Prudence insstance.
+ However, if you explicitly define a name space, then you can use it as
+ a place for shared state.
+ It will then be up to you to make sure that your namespace doesn't collide
+ with that of another application installed in the Prudence instance.
  Though this approach might seem to break our rule of thumb here, of preferring
  application.globals to application.sharedGlobals, it is more idiomatic to
  Clojure and Lisps more generally.
@@ -20706,7 +20892,7 @@ The problem is that in the short interval between comparing the value in
 \end_layout
 
 \begin_layout Quote
-This may seem like a very rare occurence to you: another thread would have
+This may seem like a very rare occurrence to you: another thread would have
  to set the value 
 \emph on
 exactly
@@ -21045,8 +21231,8 @@ name "../debugging/|the-debug-page"
 \end_layout
 
 \begin_layout Standard
-The debug page is returned as a response whenever an un-handled exception
- is thrown in your code (or, if there is a bug in Prudence!).
+The debug page is returned as a response whenever an exception is thrown
+ in your code, which is not handled (or, if there is a bug in Prudence!).
 \end_layout
 
 \begin_layout Quote
@@ -21346,8 +21532,8 @@ application.logger.severe: ``Severe'' messages are used for unrecoverable
 
 \begin_layout Enumerate
 application.logger.warning: While not quite severe, the event could still
- point out a problem that, if left un-handled, might become severe, either
- now or in the future.
+ point out a problem that if not handled might become severe, either now
+ or in the future.
  Many applications emit copious warnings that can be safely ignored.
 \end_layout
 
@@ -21441,7 +21627,7 @@ A ``logger'' is the service to which you send your log messages.
 You do not have to define all your loggers in logging.conf.
  Any logger name can be used by your application.
  If it is not found in logging.conf, then default attributes are inherited.
- Inheritence works by treating logger names hierarchically: if you do not
+ Inheritance works by treating logger names hierarchically: if you do not
  specify a certain attribute for a logger, then its parent logger is used.
  The nameless root logger, configured with the ``log4j.rootLogger'' prefix,
  defines defaults for all loggers.
@@ -23658,6 +23844,19 @@ reference "../application/"
 )
 \bar default
  on the same component
+\end_layout
+
+\begin_layout Enumerate
+Cloud-ready with 
+\bar under
+instant clusters (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../cluster/"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Enumerate
@@ -26594,8 +26793,8 @@ How to avoid the ``Adapter not available for language: xml'' parsing exception
 \end_layout
 
 \begin_layout Standard
-The problem is that the XML header confuses Scripturian, Prudence's langauge
- parser, which considers the ``<?'' a possible scriptlet delimeter:
+The problem is that the XML header confuses Scripturian, Prudence's language
+ parser, which considers the ``<?'' a possible scriptlet delimiter:
 \end_layout
 
 \begin_layout Standard
