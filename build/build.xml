@@ -324,7 +324,7 @@
 			<arg value="${tmp}/documentation/prudence_manual.lyx" />
 		</exec>
 		<exec executable="elyxer" failifexecutionfails="false">
-			<arg value="--html" />
+			<arg value="--unicode" />
 			<arg value="--title" />
 			<arg value="Prudence Manual" />
 			<arg value="${tmp}/documentation/prudence_manual.lyx" />
