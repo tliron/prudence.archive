@@ -92,11 +92,13 @@ $scheduler.add_task_collector ApplicationTaskCollector.new(java.io.File.new($app
 # Common Configurations
 #
 
+$file_upload_directory = java.io.File.new($application_base_path + $file_upload_base_path)
 def configure_common(prefix)
 	$application_globals[prefix + '.languageManager'] = $language_manager
 	$application_globals[prefix + '.defaultName'] = $documents_default_name
 	$application_globals[prefix + '.defaultLanguageTag'] = 'ruby'
 	$application_globals[prefix + '.libraryDocumentSources'] = $libraries_document_sources
+	$application_globals[prefix + '.fileUploadDirectory'] = $file_upload_directory
 	$application_globals[prefix + '.fileUploadSizeThreshold'] = $file_upload_size_threshold
 	$application_globals[prefix + '.sourceViewable'] = $source_viewable
 end

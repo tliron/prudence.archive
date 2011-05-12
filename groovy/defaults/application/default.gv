@@ -94,11 +94,13 @@ scheduler.addTaskCollector(new ApplicationTaskCollector(new File(applicationBase
 // Common Configurations
 //
 
+fileUploadDirectory = new File(applicationBasePath + fileUploadBasePath)
 configureCommon = { prefix ->
 	applicationGlobals[prefix + '.languageManager'] = languageManager
 	applicationGlobals[prefix + '.defaultName'] = documentsDefaultName
 	applicationGlobals[prefix + '.defaultLanguageTag'] = 'groovy'
 	applicationGlobals[prefix + '.libraryDocumentSources'] = librariesDocumentSources
+	applicationGlobals[prefix + '.fileUploadDirectory'] = fileUploadDirectory
 	applicationGlobals[prefix + '.fileUploadSizeThreshold'] = fileUploadSizeThreshold
 	applicationGlobals[prefix + '.sourceViewable'] = sourceViewable
 }

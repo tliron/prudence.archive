@@ -20,7 +20,7 @@ global $hosts, $documents_default_name, $minimum_time_between_validity_checks, $
 global $resources_base_url, $resources_base_path, $resources_pass_through, $resources_defrost;
 global $dynamic_web_base_url, $dynamic_web_base_path, $fragments_base_path, $dynamic_web_default_document, $dynamic_web_pass_through, $dynamic_web_defrost, $dynamic_web_preheat, $dynamic_web_client_caching_mode;
 global $static_web_base_url, $static_web_base_path, $static_web_compress, $static_web_directory_listing_allowed;
-global $file_upload_size_threshold;
+global $file_upload_base_path, $file_upload_size_threshold;
 global $handlers_base_path;
 global $tasks_base_path;
 global $preheat_resources;
@@ -184,6 +184,10 @@ $static_web_directory_listing_allowed = TRUE;
 //
 // File Uploads
 //
+
+// Temporary files for uploads will be stored in this subdirectory.
+
+$file_upload_base_path = '/uploads/';
 
 // The size in bytes beyond which uploaded files will be stored to disk.
 // Defaults to zero, meaning that all uploaded files will be stored to disk.

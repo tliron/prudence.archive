@@ -90,11 +90,13 @@
 ; Common Configurations
 ;
 
+(def file-upload-directory (File. (str application-base-path file-upload-base-path)))
 (defn configure-common [prefix]
  (.put application-globals (str prefix ".languageManager") language-manager)
  (.put application-globals (str prefix ".defaultName") documents-default-name)
  (.put application-globals (str prefix ".defaultLanguageTag") "clojure")
  (.put application-globals (str prefix ".libraryDocumentSources") libraries-document-sources)
+ (.put application-globals (str prefix ".fileUploadDirectory") file-upload-directory)
  (.put application-globals (str prefix ".fileUploadSizeThreshold") file-upload-size-threshold)
  (.put application-globals (str prefix ".sourceViewable") source-viewable))
 

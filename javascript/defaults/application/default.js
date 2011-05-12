@@ -93,11 +93,13 @@ scheduler.addTaskCollector(new ApplicationTaskCollector(new File(applicationBase
 // Common Configurations
 //
 
+var fileUploadDirectory = new File(applicationBasePath + fileUploadBasePath)
 function configureCommon(prefix) {
 	applicationGlobals.put(prefix + '.languageManager', languageManager)
 	applicationGlobals.put(prefix + '.defaultName', documentsDefaultName)
 	applicationGlobals.put(prefix + '.defaultLanguageTag', 'javascript')
 	applicationGlobals.put(prefix + '.libraryDocumentSources', librariesDocumentSources)
+	applicationGlobals.put(prefix + '.fileUploadDirectory', fileUploadDirectory)
 	applicationGlobals.put(prefix + '.fileUploadSizeThreshold', fileUploadSizeThreshold)
 	applicationGlobals.put(prefix + '.sourceViewable', sourceViewable)
 }

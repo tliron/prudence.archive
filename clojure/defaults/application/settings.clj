@@ -168,6 +168,10 @@
 ; File Uploads
 ;
 
+; Temporary files for uploads will be stored in this subdirectory.
+
+(def file-upload-base-path "/uploads/")
+
 ; The size in bytes beyond which uploaded files will be stored to disk.
 ; Defaults to zero, meaning that all uploaded files will be stored to disk.
 
