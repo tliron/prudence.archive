@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -336,6 +337,8 @@ public class ApplicationService
 	 *        application's name
 	 * @param documentName
 	 *        The document name
+	 * @param entryPointName
+	 *        The entry point name or null
 	 * @param context
 	 *        The context made available to the task
 	 * @param delay
@@ -348,14 +351,15 @@ public class ApplicationService
 	 * @return A future for the task
 	 * @see #getExecutor()
 	 */
-	public Future<?> task( String applicationName, String documentName, Object context, int delay, int repeatEvery, boolean fixedRepeat )
+	@SuppressWarnings("unchecked")
+	public <T> Future<T> task( String applicationName, String documentName, String entryPointName, Object context, int delay, int repeatEvery, boolean fixedRepeat )
 	{
 		Application application = this.application;
 		if( applicationName != null )
 			application = InstanceUtil.getApplication( applicationName );
 
 		ExecutorService executor = getExecutor();
-		ApplicationTask task = new ApplicationTask( application, documentName, context );
+		ApplicationTask<T> task = new ApplicationTask<T>( application, documentName, entryPointName, context );
 		if( ( delay > 0 ) || ( repeatEvery > 0 ) )
 		{
 			if( !( executor instanceof ScheduledExecutorService ) )
@@ -365,15 +369,15 @@ public class ApplicationService
 			if( repeatEvery > 0 )
 			{
 				if( fixedRepeat )
-					return scheduledExecutor.scheduleAtFixedRate( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
+					return (ScheduledFuture<T>) scheduledExecutor.scheduleAtFixedRate( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
 				else
-					return scheduledExecutor.scheduleWithFixedDelay( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
+					return (ScheduledFuture<T>) scheduledExecutor.scheduleWithFixedDelay( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
 			}
 			else
-				return scheduledExecutor.schedule( task, delay, TimeUnit.MILLISECONDS );
+				return (ScheduledFuture<T>) scheduledExecutor.schedule( (Callable<T>) task, delay, TimeUnit.MILLISECONDS );
 		}
 		else
-			return executor.submit( task );
+			return (Future<T>) executor.submit( (Callable<T>) task );
 	}
 
 	/**
@@ -384,6 +388,8 @@ public class ApplicationService
 	 *        application's name
 	 * @param documentName
 	 *        The document name
+	 * @param entryPointName
+	 *        The entry point name or null
 	 * @param context
 	 *        The context made available to the task (must be serializable)
 	 * @param where
@@ -395,25 +401,25 @@ public class ApplicationService
 	 * @see Hazelcast#getExecutorService()
 	 */
 	@SuppressWarnings("unchecked")
-	public Future<?> distributedTask( String applicationName, String documentName, Object context, Object where, boolean multi )
+	public <T> Future<T> distributedTask( String applicationName, String documentName, String entryPointName, Object context, Object where, boolean multi )
 	{
 		if( applicationName == null )
 			applicationName = getApplication().getName();
 
 		ExecutorService executor = Hazelcast.getExecutorService();
-		Callable<Void> task = DistributedTask.callable( new SerializableApplicationTask( applicationName, documentName, context ), null );
+		SerializableApplicationTask<T> task = new SerializableApplicationTask<T>( applicationName, documentName, entryPointName, context );
 
-		DistributedTask<Void> distributedTask;
+		DistributedTask<T> distributedTask;
 		if( where == null )
-			distributedTask = new DistributedTask<Void>( task );
+			distributedTask = new DistributedTask<T>( task );
 		else if( where instanceof Member )
-			distributedTask = new DistributedTask<Void>( task, (Member) where );
+			distributedTask = new DistributedTask<T>( task, (Member) where );
 		else if( where instanceof Set )
 		{
 			if( multi )
-				distributedTask = new MultiTask<Void>( task, (Set<Member>) where );
+				distributedTask = new MultiTask<T>( task, (Set<Member>) where );
 			else
-				distributedTask = new DistributedTask<Void>( task, (Set<Member>) where );
+				distributedTask = new DistributedTask<T>( task, (Set<Member>) where );
 		}
 		else if( where instanceof Iterable )
 		{
@@ -421,14 +427,14 @@ public class ApplicationService
 			for( Member member : (Iterable<Member>) where )
 				members.add( member );
 			if( multi )
-				distributedTask = new MultiTask<Void>( task, members );
+				distributedTask = new MultiTask<T>( task, members );
 			else
-				distributedTask = new DistributedTask<Void>( task, members );
+				distributedTask = new DistributedTask<T>( task, members );
 		}
 		else
-			distributedTask = new DistributedTask<Void>( task, where );
+			distributedTask = new DistributedTask<T>( task, where );
 
-		return executor.submit( distributedTask );
+		return (Future<T>) executor.submit( distributedTask );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

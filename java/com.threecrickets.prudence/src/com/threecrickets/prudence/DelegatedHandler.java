@@ -17,6 +17,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
 
 import org.restlet.Application;
 import org.restlet.Context;
@@ -168,12 +169,13 @@ public class DelegatedHandler
 	public Object handle( String entryPointName, Object... arguments )
 	{
 		ConcurrentMap<String, Boolean> entryPointValidityCache = null;
+		Application application = Application.getCurrent();
 
 		try
 		{
 			DocumentDescriptor<Executable> documentDescriptor = attributes.createDocumentOnce( documentName, false, true, true, false );
 			Executable executable = documentDescriptor.getDocument();
-			Object enteringKey = Application.getCurrent().hashCode();
+			Object enteringKey = application.hashCode();
 
 			if( executable.getEnterableExecutionContext( enteringKey ) == null )
 			{
@@ -228,14 +230,17 @@ public class DelegatedHandler
 		}
 		catch( DocumentNotFoundException x )
 		{
+			application.getLogger().warning( "Handler not found: " + documentName );
 			return null;
 		}
 		catch( DocumentException x )
 		{
+			application.getLogger().log( Level.SEVERE, "Exception or error caught in handler", x );
 			throw new ResourceException( x );
 		}
 		catch( ParsingException x )
 		{
+			application.getLogger().log( Level.SEVERE, "Exception or error caught in handler", x );
 			throw new ResourceException( x );
 		}
 		catch( ExecutionException x )
@@ -245,14 +250,12 @@ public class DelegatedHandler
 			{
 				if( ConversationStoppedException.isConversationStopped( request ) )
 				{
-					Application application = Application.getCurrent();
-					if( application != null )
-						application.getLogger().fine( "conversation.stop() was called" );
-
+					application.getLogger().fine( "conversation.stop() was called" );
 					return null;
 				}
 			}
 
+			application.getLogger().log( Level.SEVERE, "Exception or error caught in handler", x );
 			throw new ResourceException( x );
 		}
 		catch( NoSuchMethodException x )

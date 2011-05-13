@@ -140,7 +140,7 @@ public class ApplicationTaskCollector implements TaskCollector
 					}
 
 					// Add the task
-					taskTable.add( pattern, new ApplicationCronTask( application, documentName, context ) );
+					taskTable.add( pattern, new ApplicationCronTask( application, documentName, null, context ) );
 				}
 			}
 			catch( IOException x )

@@ -12,6 +12,7 @@
 package com.threecrickets.prudence;
 
 import java.io.Serializable;
+import java.util.concurrent.Callable;
 
 import org.restlet.Application;
 
@@ -23,8 +24,10 @@ import com.threecrickets.prudence.util.InstanceUtil;
  * @author Tal Liron
  * @see ApplicationTask
  * @see InstanceUtil#getApplication(String)
+ * @param <T>
+ *        The return type
  */
-public class SerializableApplicationTask implements Runnable, Serializable
+public class SerializableApplicationTask<T> implements Callable<T>, Serializable
 {
 	//
 	// Construction
@@ -38,13 +41,16 @@ public class SerializableApplicationTask implements Runnable, Serializable
 	 *        execute
 	 * @param documentName
 	 *        The document name
+	 * @param entryPointName
+	 *        The entry point name or null
 	 * @param context
 	 *        The context made available to the task
 	 */
-	public SerializableApplicationTask( String applicationName, String documentName, Object context )
+	public SerializableApplicationTask( String applicationName, String documentName, String entryPointName, Object context )
 	{
 		this.applicationName = applicationName;
 		this.documentName = documentName;
+		this.entryPointName = entryPointName;
 		this.context = context;
 	}
 
@@ -58,29 +64,29 @@ public class SerializableApplicationTask implements Runnable, Serializable
 	 * @return The application task or null if the application was not found
 	 * @see InstanceUtil#getApplication(String)
 	 */
-	public ApplicationTask getApplicationTask()
+	public ApplicationTask<T> getApplicationTask()
 	{
 		if( applicationTask == null )
 		{
 			Application application = InstanceUtil.getApplication( applicationName );
 			if( application != null )
-				applicationTask = new ApplicationTask( application, documentName, context );
+				applicationTask = new ApplicationTask<T>( application, documentName, entryPointName, context );
 		}
 
 		return applicationTask;
 	}
 
 	//
-	// Runnable
+	// Callable
 	//
 
-	public void run()
+	public T call()
 	{
-		ApplicationTask applicationTask = getApplicationTask();
+		ApplicationTask<T> applicationTask = getApplicationTask();
 		if( applicationTask == null )
 			throw new RuntimeException( "Could not find an application named: " + applicationName );
 
-		applicationTask.run();
+		return applicationTask.call();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -99,6 +105,11 @@ public class SerializableApplicationTask implements Runnable, Serializable
 	private String documentName;
 
 	/**
+	 * The entry point name.
+	 */
+	private String entryPointName;
+
+	/**
 	 * The context made available to the task.
 	 */
 	private Object context;
@@ -106,5 +117,5 @@ public class SerializableApplicationTask implements Runnable, Serializable
 	/**
 	 * Cache for the generated application task.
 	 */
-	private transient ApplicationTask applicationTask;
+	private transient ApplicationTask<T> applicationTask;
 }

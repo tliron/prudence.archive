@@ -192,5 +192,5 @@ if(tasks.size() > 0) {
 
 for(application in applications) {
 	applicationService = new ApplicationService(application)
-	applicationService.task(null, '/startup/', 'initial', 0, 0, false)
+	applicationService.task(null, '/startup/', null, 'initial', 0, 0, false)
 }

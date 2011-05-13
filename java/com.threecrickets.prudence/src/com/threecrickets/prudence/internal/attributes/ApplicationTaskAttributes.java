@@ -11,11 +11,13 @@
 
 package com.threecrickets.prudence.internal.attributes;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Application;
 
 import com.threecrickets.prudence.ApplicationTask;
+import com.threecrickets.scripturian.Executable;
 
 /**
  * @author Tal Liron
@@ -39,6 +41,33 @@ public class ApplicationTaskAttributes extends NonVolatileContextualAttributes
 	}
 
 	//
+	// Attributes
+	//
+
+	/**
+	 * A cache for entry point validity.
+	 * 
+	 * @param executable
+	 *        The executable
+	 * @return The entry point validity cache
+	 */
+	@SuppressWarnings("unchecked")
+	public ConcurrentMap<String, Boolean> getEntryPointValidityCache( Executable executable )
+	{
+		ConcurrentMap<String, Object> attributes = executable.getAttributes();
+		entryPointValidityCache = (ConcurrentMap<String, Boolean>) attributes.get( prefix + ".entryPointValidityCache" );
+		if( entryPointValidityCache == null )
+		{
+			entryPointValidityCache = new ConcurrentHashMap<String, Boolean>();
+			ConcurrentMap<String, Boolean> existing = (ConcurrentMap<String, Boolean>) attributes.putIfAbsent( prefix + ".entryPointValidityCache", entryPointValidityCache );
+			if( existing != null )
+				entryPointValidityCache = existing;
+		}
+
+		return entryPointValidityCache;
+	}
+
+	//
 	// ContextualAttributes
 	//
 
@@ -55,4 +84,9 @@ public class ApplicationTaskAttributes extends NonVolatileContextualAttributes
 	 * The application.
 	 */
 	private final Application application;
+
+	/**
+	 * A cache for entry point validity.
+	 */
+	private ConcurrentMap<String, Boolean> entryPointValidityCache;
 }

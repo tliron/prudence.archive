@@ -42,12 +42,14 @@ public class ApplicationCronTask extends Task
 	 *        The Restlet application in which this task will execute
 	 * @param documentName
 	 *        The document name
+	 * @param entryPointName
+	 *        The entry point name or null
 	 * @param context
 	 *        The context made available to the task
 	 */
-	public ApplicationCronTask( Application application, String documentName, Object context )
+	public ApplicationCronTask( Application application, String documentName, String entryPointName, Object context )
 	{
-		this( new ApplicationTask( application, documentName, context ) );
+		this( new ApplicationTask<Void>( application, documentName, entryPointName, context ) );
 	}
 
 	/**
@@ -56,7 +58,7 @@ public class ApplicationCronTask extends Task
 	 * @param applicationTask
 	 *        The application task
 	 */
-	public ApplicationCronTask( ApplicationTask applicationTask )
+	public ApplicationCronTask( ApplicationTask<?> applicationTask )
 	{
 		this.applicationTask = applicationTask;
 	}
@@ -68,7 +70,7 @@ public class ApplicationCronTask extends Task
 	@Override
 	public void execute( TaskExecutionContext context ) throws RuntimeException
 	{
-		applicationTask.run();
+		applicationTask.call();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -77,5 +79,5 @@ public class ApplicationCronTask extends Task
 	/**
 	 * The application task.
 	 */
-	private final ApplicationTask applicationTask;
+	private final ApplicationTask<?> applicationTask;
 }

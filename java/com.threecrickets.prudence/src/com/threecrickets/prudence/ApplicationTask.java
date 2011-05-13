@@ -13,10 +13,13 @@ package com.threecrickets.prudence;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
 import org.restlet.Application;
 import org.restlet.Context;
+import org.restlet.resource.ResourceException;
 
 import com.threecrickets.prudence.internal.attributes.ApplicationTaskAttributes;
 import com.threecrickets.prudence.service.ApplicationService;
@@ -92,8 +95,10 @@ import com.threecrickets.scripturian.exception.ParsingException;
  * href="http://www.restlet.org/about/legal">Noelios Technologies</a>.</i>
  * 
  * @author Tal Liron
+ * @param <T>
+ *        The return type
  */
-public class ApplicationTask implements Runnable
+public class ApplicationTask<T> implements Callable<T>, Runnable
 {
 	//
 	// Construction
@@ -104,13 +109,15 @@ public class ApplicationTask implements Runnable
 	 * 
 	 * @param documentName
 	 *        The document name
+	 * @param entryPointName
+	 *        The entry point name or null
 	 * @param context
 	 *        The context made available to the task
 	 * @see Application#getCurrent()
 	 */
-	public ApplicationTask( String documentName, Object context )
+	public ApplicationTask( String documentName, String entryPointName, Object context )
 	{
-		this( Application.getCurrent(), documentName, context );
+		this( Application.getCurrent(), documentName, entryPointName, context );
 	}
 
 	/**
@@ -120,14 +127,17 @@ public class ApplicationTask implements Runnable
 	 *        The Restlet application in which this task will execute
 	 * @param documentName
 	 *        The document name
+	 * @param entryPointName
+	 *        The entry point name or null
 	 * @param context
 	 *        The context made available to the task
 	 */
-	public ApplicationTask( Application application, String documentName, Object context )
+	public ApplicationTask( Application application, String documentName, String entryPointName, Object context )
 	{
 		attributes = new ApplicationTaskAttributes( application );
 		this.application = application;
 		this.documentName = documentName;
+		this.entryPointName = entryPointName;
 		this.context = context;
 	}
 
@@ -166,6 +176,16 @@ public class ApplicationTask implements Runnable
 	}
 
 	/**
+	 * The entry point name.
+	 * 
+	 * @return The entry point name or null
+	 */
+	public String getEntryPointName()
+	{
+		return entryPointName;
+	}
+
+	/**
 	 * The context made available to the task.
 	 * 
 	 * @return The context
@@ -176,28 +196,86 @@ public class ApplicationTask implements Runnable
 	}
 
 	//
-	// Runnable
+	// Callable
 	//
 
-	public void run()
+	public T call()
 	{
 		Application oldApplication = Application.getCurrent();
 		try
 		{
 			Application.setCurrent( application );
 
+			ConcurrentMap<String, Boolean> entryPointValidityCache = null;
+
 			try
 			{
 				DocumentDescriptor<Executable> documentDescriptor = attributes.createDocumentOnce( documentName, false, true, true, false );
 				Executable executable = documentDescriptor.getDocument();
 
-				ExecutionContext executionContext = new ExecutionContext( attributes.getWriter(), attributes.getErrorWriter() );
-				attributes.addLibraryLocations( executionContext );
+				if( entryPointName == null )
+				{
+					// Simple execution
 
-				executionContext.getServices().put( attributes.getDocumentServiceName(), new ApplicationTaskDocumentService( attributes, documentDescriptor, context ) );
-				executionContext.getServices().put( attributes.getApplicationServiceName(), new ApplicationService( application ) );
+					ExecutionContext executionContext = new ExecutionContext( attributes.getWriter(), attributes.getErrorWriter() );
+					attributes.addLibraryLocations( executionContext );
 
-				executable.execute( executionContext, this, attributes.getExecutionController() );
+					executionContext.getServices().put( attributes.getDocumentServiceName(), new ApplicationTaskDocumentService( attributes, documentDescriptor, context ) );
+					executionContext.getServices().put( attributes.getApplicationServiceName(), new ApplicationService( application ) );
+
+					executable.execute( executionContext, this, attributes.getExecutionController() );
+				}
+				else
+				{
+					// Enter
+
+					Object enteringKey = application.hashCode();
+
+					if( executable.getEnterableExecutionContext( enteringKey ) == null )
+					{
+						ExecutionContext executionContext = new ExecutionContext( attributes.getWriter(), attributes.getErrorWriter() );
+						attributes.addLibraryLocations( executionContext );
+
+						executionContext.getServices().put( attributes.getDocumentServiceName(), new DocumentService<ApplicationTaskAttributes>( attributes, documentDescriptor ) );
+						executionContext.getServices().put( attributes.getApplicationServiceName(), new ApplicationService() );
+
+						try
+						{
+							if( !executable.makeEnterable( enteringKey, executionContext, this, attributes.getExecutionController() ) )
+								executionContext.release();
+						}
+						catch( ParsingException x )
+						{
+							executionContext.release();
+							throw new ResourceException( x );
+						}
+						catch( ExecutionException x )
+						{
+							executionContext.release();
+							throw new ResourceException( x );
+						}
+						catch( IOException x )
+						{
+							executionContext.release();
+							throw new ResourceException( x );
+						}
+					}
+
+					// Check for validity, if cached
+					entryPointValidityCache = attributes.getEntryPointValidityCache( executable );
+					Boolean isValid = entryPointValidityCache.get( entryPointName );
+					if( ( isValid != null ) && !isValid.booleanValue() )
+						throw new NoSuchMethodException( entryPointName );
+
+					// Enter!
+					@SuppressWarnings("unchecked")
+					T r = (T) executable.enter( enteringKey, entryPointName, new Object[]
+					{
+						context
+					} );
+
+					return r;
+				}
 			}
 			catch( DocumentNotFoundException x )
 			{
@@ -224,11 +302,28 @@ public class ApplicationTask implements Runnable
 				application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
 				throw new RuntimeException( x );
 			}
+			catch( NoSuchMethodException x )
+			{
+				// We are invalid
+				if( entryPointValidityCache != null )
+					entryPointValidityCache.put( entryPointName, false );
+			}
 		}
 		finally
 		{
 			Application.setCurrent( oldApplication );
 		}
+
+		return null;
+	}
+
+	//
+	// Runnable
+	//
+
+	public void run()
+	{
+		call();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -248,6 +343,11 @@ public class ApplicationTask implements Runnable
 	 * The document name.
 	 */
 	private final String documentName;
+
+	/**
+	 * The entry point name.
+	 */
+	private final String entryPointName;
 
 	/**
 	 * The context made available to the task.

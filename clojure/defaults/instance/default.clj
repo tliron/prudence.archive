@@ -175,4 +175,4 @@
 
 (doseq [application applications]
   (let [application-service (ApplicationService. application)]
-    (.task application-service nil "/startup/" "initial" 0 0 false)))
+    (.task application-service nil "/startup/" nil "initial" 0 0 false)))

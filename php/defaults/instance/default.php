@@ -213,6 +213,6 @@ if(count($tasks) > 0) {
 
 for($i = 0; $i < $applications->size(); $i++) {
 	$application_service = new ApplicationService($applications->get($i));
-	$application_service->task(NULL, '/startup/', 'initial', 0, 0, FALSE);
+	$application_service->task(NULL, '/startup/', NULL, 'initial', 0, 0, FALSE);
 }
 ?>
