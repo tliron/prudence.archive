@@ -109,7 +109,6 @@ public abstract class HazelcastMongoDbMapStore<K, V> implements MapStore<K, V>
 	// MapStore
 	//
 
-	@SuppressWarnings("unchecked")
 	public V load( K key )
 	{
 		DBCollection collection = getCollection();
@@ -119,11 +118,14 @@ public abstract class HazelcastMongoDbMapStore<K, V> implements MapStore<K, V>
 
 		DBObject value = collection.findOne( query );
 		if( value != null )
-			return (V) fromBinary( (byte[]) value.get( "value" ) );
+		{
+			@SuppressWarnings("unchecked")
+			V fromBinary = (V) fromBinary( (byte[]) value.get( "value" ) );
+			return fromBinary;
+		}
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	public Map<K, V> loadAll( Collection<K> keys )
 	{
 		DBCollection collection = getCollection();
@@ -139,13 +141,16 @@ public abstract class HazelcastMongoDbMapStore<K, V> implements MapStore<K, V>
 		for( DBCursor cursor = collection.find( query ); cursor.hasNext(); )
 		{
 			DBObject value = cursor.next();
-			map.put( (K) value.get( "_id" ), (V) fromBinary( (byte[]) value.get( "value" ) ) );
+			@SuppressWarnings("unchecked")
+			K key = (K) value.get( "_id" );
+			@SuppressWarnings("unchecked")
+			V fromBinary = (V) fromBinary( (byte[]) value.get( "value" ) );
+			map.put( key, fromBinary );
 		}
 
 		return map;
 	}
 
-	@SuppressWarnings("unchecked")
 	public Set<K> loadAllKeys()
 	{
 		DBCollection collection = getCollection();
@@ -157,7 +162,9 @@ public abstract class HazelcastMongoDbMapStore<K, V> implements MapStore<K, V>
 		for( DBCursor cursor = collection.find( null, fields ); cursor.hasNext(); )
 		{
 			DBObject value = cursor.next();
-			keys.add( (K) value.get( "_id" ) );
+			@SuppressWarnings("unchecked")
+			K id = (K) value.get( "_id" );
+			keys.add( id );
 		}
 
 		return keys;

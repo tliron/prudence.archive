@@ -595,14 +595,15 @@ public class DelegatedResource extends ServerResource
 	 *        The executable
 	 * @return The entry point validity cache
 	 */
-	@SuppressWarnings("unchecked")
 	private ConcurrentMap<String, Boolean> getEntryPointValidityCache( Executable executable )
 	{
 		ConcurrentMap<String, Object> attributes = executable.getAttributes();
+		@SuppressWarnings("unchecked")
 		ConcurrentMap<String, Boolean> entryPointValidityCache = (ConcurrentMap<String, Boolean>) attributes.get( ENTRY_POINT_VALIDITY_CACHE_ATTRIBUTE );
 		if( entryPointValidityCache == null )
 		{
 			entryPointValidityCache = new ConcurrentHashMap<String, Boolean>();
+			@SuppressWarnings("unchecked")
 			ConcurrentMap<String, Boolean> existing = (ConcurrentMap<String, Boolean>) attributes.putIfAbsent( ENTRY_POINT_VALIDITY_CACHE_ATTRIBUTE, entryPointValidityCache );
 			if( existing != null )
 				entryPointValidityCache = existing;

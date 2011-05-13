@@ -148,13 +148,13 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 	 *         if it was already marked as executed
 	 * @see #executeOnce(String)
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean markExecuted( String documentName )
 	{
 		ExecutionContext executionContext = ExecutionContext.getCurrent();
 		if( executionContext != null )
 		{
 			Map<String, Object> attributes = executionContext.getAttributes();
+			@SuppressWarnings("unchecked")
 			Set<String> executed = (Set<String>) attributes.get( EXECUTED_ATTRIBUTE );
 			if( executed == null )
 			{

@@ -123,10 +123,11 @@ public class ResolvingTemplate extends Template
 	 * @param application
 	 * @return The constructor for the map resolver
 	 */
-	@SuppressWarnings("unchecked")
 	public static Constructor<Resolver<?>> getMapResolverConstructor( Application application )
 	{
-		return (Constructor<Resolver<?>>) application.getContext().getAttributes().get( MAP_RESOLVER_CONSTRUCTOR );
+		@SuppressWarnings("unchecked")
+		Constructor<Resolver<?>> constructor = (Constructor<Resolver<?>>) application.getContext().getAttributes().get( MAP_RESOLVER_CONSTRUCTOR );
+		return constructor;
 	}
 
 	/**
@@ -159,10 +160,11 @@ public class ResolvingTemplate extends Template
 	 * @param application
 	 * @return The constructor for the call resolver
 	 */
-	@SuppressWarnings("unchecked")
 	public static Constructor<Resolver<?>> getCallResolverConstructor( Application application )
 	{
-		return (Constructor<Resolver<?>>) application.getContext().getAttributes().get( CALL_RESOLVER_CONSTRUCTOR );
+		@SuppressWarnings("unchecked")
+		Constructor<Resolver<?>> constructor = (Constructor<Resolver<?>>) application.getContext().getAttributes().get( CALL_RESOLVER_CONSTRUCTOR );
+		return constructor;
 	}
 
 	/**

@@ -226,7 +226,6 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 * @throws DocumentException
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	public Representation include( String documentName, boolean isPassThrough ) throws ParsingException, ExecutionException, DocumentException, IOException
 	{
 		documentName = attributes.validateDocumentName( documentName, attributes.getDefaultIncludedName() );
@@ -239,7 +238,11 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		// For initial documents, see if a document descriptor is cached for us
 		// in the request
 		if( currentDocumentDescriptor == null )
-			documentDescriptor = (DocumentDescriptor<Executable>) resource.getRequest().getAttributes().remove( DOCUMENT_DESCRIPTOR_ATTRIBUTE );
+		{
+			@SuppressWarnings("unchecked")
+			DocumentDescriptor<Executable> existing = (DocumentDescriptor<Executable>) resource.getRequest().getAttributes().remove( DOCUMENT_DESCRIPTOR_ATTRIBUTE );
+			documentDescriptor = existing;
+		}
 
 		if( documentDescriptor == null )
 			documentDescriptor = attributes.createDocumentOnce( documentName, true, true, isPassThrough || ( currentDocumentDescriptor != null ), false );
@@ -454,13 +457,14 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 *        Whether to create a handler map if it doesn't exist
 	 * @return The handler map or null
 	 */
-	@SuppressWarnings("unchecked")
 	private static ConcurrentMap<String, String> getCacheKeyPatternHandlers( Executable executable, boolean create )
 	{
+		@SuppressWarnings("unchecked")
 		ConcurrentMap<String, String> handlers = (ConcurrentMap<String, String>) executable.getAttributes().get( CACHE_KEY_PATTERN_HANDLERS_ATTRIBUTE );
 		if( handlers == null && create )
 		{
 			handlers = new ConcurrentHashMap<String, String>();
+			@SuppressWarnings("unchecked")
 			ConcurrentMap<String, String> existing = (ConcurrentMap<String, String>) executable.getAttributes().putIfAbsent( CACHE_KEY_PATTERN_HANDLERS_ATTRIBUTE, handlers );
 			if( existing != null )
 				handlers = existing;
@@ -476,13 +480,14 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 *        Whether to create a cache tag set if it doesn't exist
 	 * @return The cache tags or null
 	 */
-	@SuppressWarnings("unchecked")
 	private static Set<String> getCacheTags( Executable executable, boolean create )
 	{
+		@SuppressWarnings("unchecked")
 		Set<String> cacheTags = (Set<String>) executable.getAttributes().get( CACHE_TAGS_ATTRIBUTE );
 		if( cacheTags == null && create )
 		{
 			cacheTags = new CopyOnWriteArraySet<String>();
+			@SuppressWarnings("unchecked")
 			Set<String> existing = (Set<String>) executable.getAttributes().putIfAbsent( CACHE_TAGS_ATTRIBUTE, cacheTags );
 			if( existing != null )
 				cacheTags = existing;

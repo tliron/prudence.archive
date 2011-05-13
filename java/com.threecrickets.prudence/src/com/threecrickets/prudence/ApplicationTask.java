@@ -237,7 +237,7 @@ public class ApplicationTask<T> implements Callable<T>, Runnable
 						attributes.addLibraryLocations( executionContext );
 
 						executionContext.getServices().put( attributes.getDocumentServiceName(), new DocumentService<ApplicationTaskAttributes>( attributes, documentDescriptor ) );
-						executionContext.getServices().put( attributes.getApplicationServiceName(), new ApplicationService() );
+						executionContext.getServices().put( attributes.getApplicationServiceName(), new ApplicationService( application ) );
 
 						try
 						{
@@ -246,16 +246,19 @@ public class ApplicationTask<T> implements Callable<T>, Runnable
 						}
 						catch( ParsingException x )
 						{
+							application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
 							executionContext.release();
 							throw new ResourceException( x );
 						}
 						catch( ExecutionException x )
 						{
+							application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
 							executionContext.release();
 							throw new ResourceException( x );
 						}
 						catch( IOException x )
 						{
+							application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
 							executionContext.release();
 							throw new ResourceException( x );
 						}
@@ -269,10 +272,7 @@ public class ApplicationTask<T> implements Callable<T>, Runnable
 
 					// Enter!
 					@SuppressWarnings("unchecked")
-					T r = (T) executable.enter( enteringKey, entryPointName, new Object[]
-					{
-						context
-					} );
+					T r = (T) executable.enter( enteringKey, entryPointName, context );
 
 					return r;
 				}

@@ -351,7 +351,6 @@ public class ApplicationService
 	 * @return A future for the task
 	 * @see #getExecutor()
 	 */
-	@SuppressWarnings("unchecked")
 	public <T> Future<T> task( String applicationName, String documentName, String entryPointName, Object context, int delay, int repeatEvery, boolean fixedRepeat )
 	{
 		Application application = this.application;
@@ -369,9 +368,17 @@ public class ApplicationService
 			if( repeatEvery > 0 )
 			{
 				if( fixedRepeat )
-					return (ScheduledFuture<T>) scheduledExecutor.scheduleAtFixedRate( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
+				{
+					@SuppressWarnings("unchecked")
+					ScheduledFuture<T> future = (ScheduledFuture<T>) scheduledExecutor.scheduleAtFixedRate( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
+					return future;
+				}
 				else
-					return (ScheduledFuture<T>) scheduledExecutor.scheduleWithFixedDelay( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
+				{
+					@SuppressWarnings("unchecked")
+					ScheduledFuture<T> future = (ScheduledFuture<T>) scheduledExecutor.scheduleWithFixedDelay( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
+					return future;
+				}
 			}
 			else
 				return (ScheduledFuture<T>) scheduledExecutor.schedule( (Callable<T>) task, delay, TimeUnit.MILLISECONDS );
