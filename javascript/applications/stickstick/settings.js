@@ -19,4 +19,4 @@ predefinedGlobals['stickstick.database'] = applicationBasePath + '/data/sticksti
 
 showDebugOnError = true
 
-preheatResources = ['data/']
+preheatResources = ['/data/']
