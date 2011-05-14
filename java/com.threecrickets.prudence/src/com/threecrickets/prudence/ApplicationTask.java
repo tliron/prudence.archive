@@ -25,6 +25,7 @@ import com.threecrickets.prudence.internal.attributes.ApplicationTaskAttributes;
 import com.threecrickets.prudence.service.ApplicationService;
 import com.threecrickets.prudence.service.ApplicationTaskDocumentService;
 import com.threecrickets.prudence.service.DocumentService;
+import com.threecrickets.prudence.util.LoggingUtil;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
@@ -246,19 +247,19 @@ public class ApplicationTask<T> implements Callable<T>, Runnable
 						}
 						catch( ParsingException x )
 						{
-							application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
+							LoggingUtil.getLogger( application ).log( Level.SEVERE, "Exception or error caught in task", x );
 							executionContext.release();
 							throw new ResourceException( x );
 						}
 						catch( ExecutionException x )
 						{
-							application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
+							LoggingUtil.getLogger( application ).log( Level.SEVERE, "Exception or error caught in task", x );
 							executionContext.release();
 							throw new ResourceException( x );
 						}
 						catch( IOException x )
 						{
-							application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
+							LoggingUtil.getLogger( application ).log( Level.SEVERE, "Exception or error caught in task", x );
 							executionContext.release();
 							throw new ResourceException( x );
 						}
@@ -279,27 +280,27 @@ public class ApplicationTask<T> implements Callable<T>, Runnable
 			}
 			catch( DocumentNotFoundException x )
 			{
-				application.getLogger().warning( "Task not found: " + documentName );
+				LoggingUtil.getLogger( application ).warning( "Task not found: " + documentName );
 				throw new RuntimeException( x );
 			}
 			catch( DocumentException x )
 			{
-				application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
+				LoggingUtil.getLogger( application ).log( Level.SEVERE, "Exception or error caught in task", x );
 				throw new RuntimeException( x );
 			}
 			catch( ParsingException x )
 			{
-				application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
+				LoggingUtil.getLogger( application ).log( Level.SEVERE, "Exception or error caught in task", x );
 				throw new RuntimeException( x );
 			}
 			catch( ExecutionException x )
 			{
-				application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
+				LoggingUtil.getLogger( application ).log( Level.SEVERE, "Exception or error caught in task", x );
 				throw new RuntimeException( x );
 			}
 			catch( IOException x )
 			{
-				application.getLogger().log( Level.SEVERE, "Exception or error caught in task", x );
+				LoggingUtil.getLogger( application ).log( Level.SEVERE, "Exception or error caught in task", x );
 				throw new RuntimeException( x );
 			}
 			catch( NoSuchMethodException x )

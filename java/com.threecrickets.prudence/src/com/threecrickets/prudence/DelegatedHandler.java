@@ -29,6 +29,7 @@ import com.threecrickets.prudence.service.ApplicationService;
 import com.threecrickets.prudence.service.ConversationService;
 import com.threecrickets.prudence.service.ConversationStoppedException;
 import com.threecrickets.prudence.service.DocumentService;
+import com.threecrickets.prudence.util.LoggingUtil;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.ExecutionController;
@@ -230,17 +231,17 @@ public class DelegatedHandler
 		}
 		catch( DocumentNotFoundException x )
 		{
-			application.getLogger().warning( "Handler not found: " + documentName );
+			LoggingUtil.getLogger( application ).warning( "Handler not found: " + documentName );
 			return null;
 		}
 		catch( DocumentException x )
 		{
-			application.getLogger().log( Level.SEVERE, "Exception or error caught in handler", x );
+			LoggingUtil.getLogger( application ).log( Level.SEVERE, "Exception or error caught in handler", x );
 			throw new ResourceException( x );
 		}
 		catch( ParsingException x )
 		{
-			application.getLogger().log( Level.SEVERE, "Exception or error caught in handler", x );
+			LoggingUtil.getLogger( application ).log( Level.SEVERE, "Exception or error caught in handler", x );
 			throw new ResourceException( x );
 		}
 		catch( ExecutionException x )
@@ -250,12 +251,12 @@ public class DelegatedHandler
 			{
 				if( ConversationStoppedException.isConversationStopped( request ) )
 				{
-					application.getLogger().fine( "conversation.stop() was called" );
+					LoggingUtil.getLogger( application ).fine( "conversation.stop() was called" );
 					return null;
 				}
 			}
 
-			application.getLogger().log( Level.SEVERE, "Exception or error caught in handler", x );
+			LoggingUtil.getLogger( application ).log( Level.SEVERE, "Exception or error caught in handler", x );
 			throw new ResourceException( x );
 		}
 		catch( NoSuchMethodException x )
