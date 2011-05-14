@@ -22,9 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -142,7 +145,9 @@ public class SqlCache implements Cache
 	{
 		try
 		{
-			Connection connection = dataSource.getConnection();
+			Connection connection = connect();
+			if( connection == null )
+				return;
 
 			try
 			{
@@ -174,8 +179,7 @@ public class SqlCache implements Cache
 		}
 		catch( SQLException x )
 		{
-			if( debug )
-				x.printStackTrace();
+			logger.log( Level.WARNING, "Could not validate that tables exist", x );
 		}
 	}
 
@@ -185,14 +189,15 @@ public class SqlCache implements Cache
 
 	public void store( String key, Iterable<String> tags, CacheEntry entry )
 	{
-		if( debug )
-			System.out.println( "Store: " + key + " " + tags );
+		logger.fine( "Store: " + key + " " + tags );
 
 		Lock lock = getLock( key ).writeLock();
 		lock.lock();
 		try
 		{
-			Connection connection = dataSource.getConnection();
+			Connection connection = connect();
+			if( connection == null )
+				return;
 
 			try
 			{
@@ -214,8 +219,7 @@ public class SqlCache implements Cache
 					statement.setString( 8, key );
 					if( !statement.execute() && statement.getUpdateCount() > 0 )
 					{
-						if( debug )
-							System.out.println( "Updated " + key );
+						logger.fine( "Updated " + key );
 
 						// Update worked, so no need to try insertion
 
@@ -241,9 +245,7 @@ public class SqlCache implements Cache
 						size = countEntries( connection );
 						if( size >= maxSize )
 						{
-							if( debug )
-								System.out.println( "No room in cache (" + size + ", " + maxSize + ")" );
-
+							logger.fine( "No room in cache (" + size + ", " + maxSize + ")" );
 							return;
 						}
 					}
@@ -312,8 +314,7 @@ public class SqlCache implements Cache
 		}
 		catch( SQLException x )
 		{
-			if( debug )
-				x.printStackTrace();
+			logger.log( Level.WARNING, "Could not store cache entry", x );
 		}
 		finally
 		{
@@ -327,7 +328,10 @@ public class SqlCache implements Cache
 		lock.lock();
 		try
 		{
-			Connection connection = dataSource.getConnection();
+			Connection connection = connect();
+			if( connection == null )
+				return null;
+
 			try
 			{
 				String sql = "SELECT data, media_type, language, character_set, encoding, document_modification_date, expiration_date FROM " + cacheTableName + " WHERE key=?";
@@ -348,8 +352,7 @@ public class SqlCache implements Cache
 							Timestamp documentModificationDate = rs.getTimestamp( 6 );
 							Timestamp expirationDate = rs.getTimestamp( 7 );
 
-							if( debug )
-								System.out.println( "Fetched: " + key );
+							logger.fine( "Fetched: " + key );
 
 							CacheEntry entry;
 							if( encoding != null )
@@ -371,9 +374,7 @@ public class SqlCache implements Cache
 								lock.unlock();
 								try
 								{
-									if( debug )
-										System.out.println( "Stale entry: " + key );
-
+									logger.fine( "Stale entry: " + key );
 									delete( connection, key );
 
 									// (Note that this also discarded our lock,
@@ -406,17 +407,14 @@ public class SqlCache implements Cache
 		}
 		catch( SQLException x )
 		{
-			if( debug )
-				x.printStackTrace();
+			logger.log( Level.WARNING, "Could not fetch cache entry", x );
 		}
 		finally
 		{
 			lock.unlock();
 		}
 
-		if( debug )
-			System.out.println( "Did not fetch: " + key );
-
+		logger.fine( "Did not fetch: " + key );
 		return null;
 	}
 
@@ -424,7 +422,10 @@ public class SqlCache implements Cache
 	{
 		try
 		{
-			Connection connection = dataSource.getConnection();
+			Connection connection = connect();
+			if( connection == null )
+				return;
+
 			try
 			{
 				List<String> tagged = getTagged( connection, tag );
@@ -452,10 +453,7 @@ public class SqlCache implements Cache
 						for( String key : tagged )
 							statement.setString( i++, key );
 						if( !statement.execute() )
-						{
-							if( debug )
-								System.out.println( "Invalidated " + statement.getUpdateCount() );
-						}
+							logger.fine( "Invalidated " + statement.getUpdateCount() );
 					}
 					finally
 					{
@@ -478,8 +476,7 @@ public class SqlCache implements Cache
 		}
 		catch( SQLException x )
 		{
-			if( debug )
-				x.printStackTrace();
+			logger.log( Level.WARNING, "Could not invalidate cache tag", x );
 		}
 	}
 
@@ -489,7 +486,10 @@ public class SqlCache implements Cache
 
 		try
 		{
-			Connection connection = dataSource.getConnection();
+			Connection connection = connect();
+			if( connection == null )
+				return;
+
 			try
 			{
 				String sql = "DELETE FROM " + cacheTableName + " WHERE expiration_date<?";
@@ -498,10 +498,7 @@ public class SqlCache implements Cache
 				{
 					statement.setTimestamp( 1, new Timestamp( System.currentTimeMillis() ) );
 					if( !statement.execute() )
-					{
-						if( debug )
-							System.out.println( "Pruned " + statement.getUpdateCount() );
-					}
+						logger.fine( "Pruned " + statement.getUpdateCount() );
 				}
 				finally
 				{
@@ -515,8 +512,7 @@ public class SqlCache implements Cache
 		}
 		catch( SQLException x )
 		{
-			if( debug )
-				x.printStackTrace();
+			logger.log( Level.WARNING, "Could not prune", x );
 		}
 	}
 
@@ -532,12 +528,30 @@ public class SqlCache implements Cache
 	// Protected
 
 	/**
-	 * Whether to print debug messages to standard out.
+	 * Call when server is up.
 	 */
-	protected volatile boolean debug = false;
+	protected void up()
+	{
+		if( up.compareAndSet( false, true ) )
+			logger.info( "Up! " + dataSource );
+	}
+
+	/**
+	 * Call when server is down.
+	 */
+	protected void down()
+	{
+		if( up.compareAndSet( true, false ) )
+			logger.severe( "Down! " + dataSource );
+	}
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
+
+	/**
+	 * The logger.
+	 */
+	private final Logger logger = Logger.getLogger( this.getClass().getCanonicalName() );
 
 	/**
 	 * The data source.
@@ -563,6 +577,31 @@ public class SqlCache implements Cache
 	 * A pool of read/write locks per key.
 	 */
 	private ConcurrentMap<String, ReadWriteLock> locks = new ConcurrentHashMap<String, ReadWriteLock>();
+
+	/**
+	 * Whether the server has last been seen as up.
+	 */
+	private AtomicBoolean up = new AtomicBoolean();
+
+	/**
+	 * Connect to data source.
+	 * 
+	 * @return The connection or null if failed
+	 */
+	private Connection connect()
+	{
+		try
+		{
+			Connection connection = dataSource.getConnection();
+			up();
+			return connection;
+		}
+		catch( SQLException x )
+		{
+			down();
+			return null;
+		}
+	}
 
 	/**
 	 * Count all entries.
@@ -619,8 +658,8 @@ public class SqlCache implements Cache
 				statement.setString( 1, key );
 				if( !statement.execute() )
 				{
-					if( debug && statement.getUpdateCount() > 0 )
-						System.out.println( "Deleted: " + key );
+					if( logger.isLoggable( Level.FINE ) && statement.getUpdateCount() > 0 )
+						logger.fine( "Deleted: " + key );
 				}
 			}
 			finally

@@ -14,6 +14,9 @@ package com.threecrickets.prudence.cache;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bson.types.Binary;
 import org.restlet.data.CharacterSet;
@@ -110,7 +113,7 @@ public class MongoDbCache implements Cache
 	 */
 	public MongoDbCache( DB db, String collectionName )
 	{
-		cacheCollection = db.getCollection( collectionName );
+		this( db.getCollection( collectionName ) );
 	}
 
 	/**
@@ -125,9 +128,11 @@ public class MongoDbCache implements Cache
 		{
 			collection.ensureIndex( TAG_INDEX );
 			collection.ensureIndex( EXPIRATION_DATE_INDEX );
+			up();
 		}
 		catch( com.mongodb.MongoException.Network x )
 		{
+			down();
 		}
 	}
 
@@ -162,8 +167,7 @@ public class MongoDbCache implements Cache
 
 	public void store( String key, Iterable<String> tags, CacheEntry entry )
 	{
-		if( debug )
-			System.out.println( "Store: " + key + " " + tags );
+		logger.fine( "Store: " + key + " " + tags );
 
 		DBObject query = new BasicDBObject();
 		query.put( "_id", key );
@@ -188,8 +192,7 @@ public class MongoDbCache implements Cache
 			}
 			catch( IOException x )
 			{
-				if( debug )
-					x.printStackTrace();
+				logger.log( Level.WARNING, "Could not serialize binary", x );
 			}
 		}
 		else
@@ -230,9 +233,11 @@ public class MongoDbCache implements Cache
 		try
 		{
 			cacheCollection.update( query, document, true, false );
+			up();
 		}
 		catch( com.mongodb.MongoException.Network x )
 		{
+			down();
 		}
 	}
 
@@ -243,16 +248,14 @@ public class MongoDbCache implements Cache
 		try
 		{
 			DBObject document = cacheCollection.findOne( query );
+			up();
 			if( document != null )
 			{
 				Date expirationDate = (Date) document.get( "expirationDate" );
 				if( expirationDate.before( new Date() ) )
 				{
 					cacheCollection.remove( query );
-
-					if( debug )
-						System.out.println( "Stale entry: " + key );
-
+					logger.fine( "Stale entry: " + key );
 					return null;
 				}
 
@@ -281,30 +284,24 @@ public class MongoDbCache implements Cache
 							cacheEntry = new CacheEntry( bytes, mediaType, language, characterSet, encoding, documentModificationDate, expirationDate );
 					}
 
-					if( debug )
-						System.out.println( "Fetched: " + key );
-
+					logger.fine( "Fetched: " + key );
 					return cacheEntry;
 				}
 				catch( IOException x )
 				{
-					if( debug )
-						x.printStackTrace();
+					logger.log( Level.WARNING, "Could not deserialize cache entry", x );
 				}
 				catch( ClassNotFoundException x )
 				{
-					if( debug )
-						x.printStackTrace();
+					logger.log( Level.WARNING, "Could not deserialize cache entry", x );
 				}
 			}
 			else
-			{
-				if( debug )
-					System.out.println( "Did not fetch: " + key );
-			}
+				logger.fine( "Did not fetch: " + key );
 		}
 		catch( com.mongodb.MongoException.Network x )
 		{
+			down();
 		}
 
 		return null;
@@ -314,7 +311,16 @@ public class MongoDbCache implements Cache
 	{
 		DBObject query = new BasicDBObject();
 		query.put( "tags", tag );
-		cacheCollection.remove( query );
+
+		try
+		{
+			cacheCollection.remove( query );
+			up();
+		}
+		catch( com.mongodb.MongoException.Network x )
+		{
+			down();
+		}
 	}
 
 	public void prune()
@@ -330,6 +336,7 @@ public class MongoDbCache implements Cache
 		}
 		catch( com.mongodb.MongoException.Network x )
 		{
+			down();
 		}
 	}
 
@@ -338,9 +345,11 @@ public class MongoDbCache implements Cache
 		try
 		{
 			cacheCollection.remove( new BasicDBObject() );
+			up();
 		}
 		catch( com.mongodb.MongoException.Network x )
 		{
+			down();
 		}
 	}
 
@@ -360,7 +369,7 @@ public class MongoDbCache implements Cache
 	static
 	{
 		TAG_INDEX.put( "tags", 1 );
-		TAG_INDEX.put( "expirationDate", 1 );
+		EXPIRATION_DATE_INDEX.put( "expirationDate", 1 );
 	}
 
 	/**
@@ -369,17 +378,40 @@ public class MongoDbCache implements Cache
 	private static final byte BINARY_TYPE = 0;
 
 	/**
+	 * The logger.
+	 */
+	private final Logger logger = Logger.getLogger( this.getClass().getCanonicalName() );
+
+	/**
 	 * The MongoDB collection used for the cache.
 	 */
 	private final DBCollection cacheCollection;
 
 	/**
-	 * Whether to print debug messages to standard out.
-	 */
-	private volatile boolean debug = false;
-
-	/**
 	 * Whether to store entries by serializing them into BSON binaries.
 	 */
 	private volatile boolean isBinary = false;
+
+	/**
+	 * Whether MongoDB has last been seen as up.
+	 */
+	private AtomicBoolean up = new AtomicBoolean();
+
+	/**
+	 * Call when MongoDB is up.
+	 */
+	private void up()
+	{
+		if( up.compareAndSet( false, true ) )
+			logger.info( "Up! " + cacheCollection.getDB().getMongo() );
+	}
+
+	/**
+	 * Call when MongoDB is down.
+	 */
+	private void down()
+	{
+		if( up.compareAndSet( true, false ) )
+			logger.severe( "Down! " + cacheCollection.getDB().getMongo() );
+	}
 }

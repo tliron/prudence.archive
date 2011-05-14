@@ -14,6 +14,7 @@ package com.threecrickets.prudence.cache;
 import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Logger;
 
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
@@ -75,8 +76,7 @@ public class HazelcastCache implements Cache
 
 	public void store( String key, Iterable<String> tags, CacheEntry entry )
 	{
-		if( debug )
-			System.out.println( "Store: " + key + " " + tags );
+		logger.fine( "Store: " + key + " " + tags );
 
 		ConcurrentMap<String, CacheEntry> cache = getCache();
 		cache.put( key, entry );
@@ -97,25 +97,17 @@ public class HazelcastCache implements Cache
 		{
 			if( new Date().after( entry.getExpirationDate() ) )
 			{
-				if( debug )
-					System.out.println( "Stale entry: " + key );
-
+				logger.fine( "Stale entry: " + key );
 				cache.remove( key );
 				entry = null;
 			}
 			else
-			{
-				if( debug )
-					System.out.println( "Fetched: " + key );
-			}
+				logger.fine( "Fetched: " + key );
 		}
 		else
-		{
-			if( debug )
-				System.out.println( "Did not fetch: " + key );
-		}
-		return entry;
+			logger.fine( "Did not fetch: " + key );
 
+		return entry;
 	}
 
 	public void invalidate( String tag )
@@ -127,9 +119,7 @@ public class HazelcastCache implements Cache
 			ConcurrentMap<String, CacheEntry> cache = getCache();
 			for( String key : tagged )
 			{
-				if( debug )
-					System.out.println( "Invalidate " + tag + ": " + key );
-
+				logger.fine( "Invalidate " + tag + ": " + key );
 				cache.remove( key );
 			}
 		}
@@ -153,6 +143,11 @@ public class HazelcastCache implements Cache
 	// Private
 
 	/**
+	 * The logger.
+	 */
+	private final Logger logger = Logger.getLogger( this.getClass().getCanonicalName() );
+
+	/**
 	 * The Hazelcast instance.
 	 */
 	private final HazelcastInstance hazelcast;
@@ -166,11 +161,6 @@ public class HazelcastCache implements Cache
 	 * The Hazelcast map name for the tag map.
 	 */
 	private final String cacheTagsName;
-
-	/**
-	 * Whether to print debug messages to standard out.
-	 */
-	private volatile boolean debug = false;
 
 	/**
 	 * The cache.

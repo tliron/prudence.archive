@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.spy.memcached.AddrUtil;
 import net.spy.memcached.BinaryConnectionFactory;
@@ -112,8 +115,7 @@ public class MemcachedCache implements Cache
 
 	public void store( String key, Iterable<String> tags, CacheEntry entry )
 	{
-		if( debug )
-			System.out.println( "Store: " + key + " " + tags );
+		logger.info( "Store: " + key + " " + tags );
 
 		Object theEntry = entry;
 
@@ -121,21 +123,29 @@ public class MemcachedCache implements Cache
 		if( ( tags != null ) && ( tags.iterator().hasNext() ) )
 			theEntry = new TaggedCacheEntry( entry, tags );
 
-		Future<Boolean> stored = memcached.set( key, (int) ( entry.getExpirationDate().getTime() / 1000 ), theEntry );
-		if( waitForCompletion )
+		try
 		{
-			try
+			Future<Boolean> stored = memcached.set( key, (int) ( entry.getExpirationDate().getTime() / 1000 ), theEntry );
+			if( waitForCompletion )
 			{
-				stored.get();
+				try
+				{
+					stored.get();
+				}
+				catch( InterruptedException x )
+				{
+					// Restore interrupt status
+					Thread.currentThread().interrupt();
+				}
+				catch( ExecutionException x )
+				{
+				}
 			}
-			catch( InterruptedException x )
-			{
-				// Restore interrupt status
-				Thread.currentThread().interrupt();
-			}
-			catch( ExecutionException x )
-			{
-			}
+			up();
+		}
+		catch( OperationTimeoutException x )
+		{
+			down();
 		}
 	}
 
@@ -173,8 +183,7 @@ public class MemcachedCache implements Cache
 								// Tag is newer, so this entry should be
 								// considered invalid
 
-								if( debug )
-									System.out.println( "Invalidated tagged entry: " + key + ", tag: " + tag );
+								logger.info( "Invalidated tagged entry: " + key + ", tag: " + tag );
 
 								Future<Boolean> deleted = memcached.delete( key );
 								if( waitForCompletion )
@@ -206,8 +215,7 @@ public class MemcachedCache implements Cache
 					// This should never happen with memcached, but it doesn't
 					// hurt to double check.
 
-					if( debug )
-						System.out.println( "Stale entry: " + key );
+					logger.info( "Stale entry: " + key );
 
 					Future<Boolean> deleted = memcached.delete( key );
 					if( waitForCompletion )
@@ -230,42 +238,49 @@ public class MemcachedCache implements Cache
 				}
 			}
 
-			if( debug )
+			if( logger.isLoggable( Level.FINE ) )
 			{
 				if( cacheEntry != null )
-					System.out.println( "Fetched: " + key );
+					logger.info( "Fetched: " + key );
 				else
-					System.out.println( "Did not fetch: " + key );
+					logger.info( "Did not fetch: " + key );
 			}
 
+			up();
 			return cacheEntry;
 		}
 		catch( OperationTimeoutException x )
 		{
-			if( debug )
-				System.out.println( "memcached is down" );
-
+			down();
 			return null;
 		}
 	}
 
 	public void invalidate( String tag )
 	{
-		Future<Boolean> set = memcached.set( tagPrefix + tag, 0, System.currentTimeMillis() );
-		if( waitForCompletion )
+		try
 		{
-			try
+			Future<Boolean> set = memcached.set( tagPrefix + tag, 0, System.currentTimeMillis() );
+			if( waitForCompletion )
 			{
-				set.get();
+				try
+				{
+					set.get();
+				}
+				catch( InterruptedException x )
+				{
+					// Restore interrupt status
+					Thread.currentThread().interrupt();
+				}
+				catch( ExecutionException x )
+				{
+				}
 			}
-			catch( InterruptedException x )
-			{
-				// Restore interrupt status
-				Thread.currentThread().interrupt();
-			}
-			catch( ExecutionException x )
-			{
-			}
+			up();
+		}
+		catch( OperationTimeoutException x )
+		{
+			down();
 		}
 	}
 
@@ -279,27 +294,40 @@ public class MemcachedCache implements Cache
 		// Only allow flushing if we are the sole clients of the cluster
 		if( soleClient )
 		{
-			Future<Boolean> flushed = memcached.flush();
-			if( waitForCompletion )
+			try
 			{
-				try
+				Future<Boolean> flushed = memcached.flush();
+				if( waitForCompletion )
 				{
-					flushed.get();
+					try
+					{
+						flushed.get();
+					}
+					catch( InterruptedException x )
+					{
+						// Restore interrupt status
+						Thread.currentThread().interrupt();
+					}
+					catch( ExecutionException x )
+					{
+					}
 				}
-				catch( InterruptedException x )
-				{
-					// Restore interrupt status
-					Thread.currentThread().interrupt();
-				}
-				catch( ExecutionException x )
-				{
-				}
+				up();
+			}
+			catch( OperationTimeoutException x )
+			{
+				down();
 			}
 		}
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
+
+	/**
+	 * The logger.
+	 */
+	private final Logger logger = Logger.getLogger( this.getClass().getCanonicalName() );
 
 	/**
 	 * The memcached client.
@@ -322,7 +350,25 @@ public class MemcachedCache implements Cache
 	private final String tagPrefix;
 
 	/**
-	 * Whether to print debug messages to standard out.
+	 * Whether memcached has last been seen as up.
 	 */
-	private volatile boolean debug = false;
+	private AtomicBoolean up = new AtomicBoolean();
+
+	/**
+	 * Call when memcached is up.
+	 */
+	private void up()
+	{
+		if( up.compareAndSet( false, true ) )
+			logger.info( "Up! " + memcached.getAvailableServers() );
+	}
+
+	/**
+	 * Call when memcached is down.
+	 */
+	private void down()
+	{
+		if( up.compareAndSet( true, false ) )
+			logger.severe( "Down! " + memcached.getAvailableServers() );
+	}
 }
