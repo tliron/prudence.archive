@@ -121,8 +121,14 @@ public class MongoDbCache implements Cache
 	public MongoDbCache( DBCollection collection )
 	{
 		this.cacheCollection = collection;
-		collection.ensureIndex( TAG_INDEX );
-		collection.ensureIndex( EXPIRATION_DATE_INDEX );
+		try
+		{
+			collection.ensureIndex( TAG_INDEX );
+			collection.ensureIndex( EXPIRATION_DATE_INDEX );
+		}
+		catch( com.mongodb.MongoException.Network x )
+		{
+		}
 	}
 
 	//
@@ -221,72 +227,84 @@ public class MongoDbCache implements Cache
 		}
 
 		// Upsert
-		cacheCollection.update( query, document, true, false );
+		try
+		{
+			cacheCollection.update( query, document, true, false );
+		}
+		catch( com.mongodb.MongoException.Network x )
+		{
+		}
 	}
 
 	public CacheEntry fetch( String key )
 	{
 		DBObject query = new BasicDBObject();
 		query.put( "_id", key );
-		DBObject document = cacheCollection.findOne( query );
-		if( document != null )
+		try
 		{
-			Date expirationDate = (Date) document.get( "expirationDate" );
-			if( expirationDate.before( new Date() ) )
+			DBObject document = cacheCollection.findOne( query );
+			if( document != null )
 			{
-				cacheCollection.remove( query );
-
-				if( debug )
-					System.out.println( "Stale entry: " + key );
-
-				return null;
-			}
-
-			try
-			{
-				CacheEntry cacheEntry = null;
-
-				byte[] bytes = (byte[]) document.get( "binary" );
-				if( bytes != null )
+				Date expirationDate = (Date) document.get( "expirationDate" );
+				if( expirationDate.before( new Date() ) )
 				{
-					return new CacheEntry( bytes );
+					cacheCollection.remove( query );
+
+					if( debug )
+						System.out.println( "Stale entry: " + key );
+
+					return null;
 				}
-				else
-				{
-					Date documentModificationDate = (Date) document.get( "documentModificationDate" );
-					String string = (String) document.get( "string" );
-					bytes = (byte[]) document.get( "bytes" );
-					MediaType mediaType = MediaType.valueOf( (String) document.get( "mediaType" ) );
-					Language language = Language.valueOf( (String) document.get( "language" ) );
-					Encoding encoding = Encoding.valueOf( (String) document.get( "encoding" ) );
-					CharacterSet characterSet = CharacterSet.valueOf( (String) document.get( "characterSet" ) );
 
-					if( string != null )
-						cacheEntry = new CacheEntry( string, mediaType, language, characterSet, encoding, documentModificationDate, expirationDate );
+				try
+				{
+					CacheEntry cacheEntry = null;
+
+					byte[] bytes = (byte[]) document.get( "binary" );
+					if( bytes != null )
+					{
+						return new CacheEntry( bytes );
+					}
 					else
-						cacheEntry = new CacheEntry( bytes, mediaType, language, characterSet, encoding, documentModificationDate, expirationDate );
+					{
+						Date documentModificationDate = (Date) document.get( "documentModificationDate" );
+						String string = (String) document.get( "string" );
+						bytes = (byte[]) document.get( "bytes" );
+						MediaType mediaType = MediaType.valueOf( (String) document.get( "mediaType" ) );
+						Language language = Language.valueOf( (String) document.get( "language" ) );
+						Encoding encoding = Encoding.valueOf( (String) document.get( "encoding" ) );
+						CharacterSet characterSet = CharacterSet.valueOf( (String) document.get( "characterSet" ) );
+
+						if( string != null )
+							cacheEntry = new CacheEntry( string, mediaType, language, characterSet, encoding, documentModificationDate, expirationDate );
+						else
+							cacheEntry = new CacheEntry( bytes, mediaType, language, characterSet, encoding, documentModificationDate, expirationDate );
+					}
+
+					if( debug )
+						System.out.println( "Fetched: " + key );
+
+					return cacheEntry;
 				}
-
-				if( debug )
-					System.out.println( "Fetched: " + key );
-
-				return cacheEntry;
+				catch( IOException x )
+				{
+					if( debug )
+						x.printStackTrace();
+				}
+				catch( ClassNotFoundException x )
+				{
+					if( debug )
+						x.printStackTrace();
+				}
 			}
-			catch( IOException x )
+			else
 			{
 				if( debug )
-					x.printStackTrace();
-			}
-			catch( ClassNotFoundException x )
-			{
-				if( debug )
-					x.printStackTrace();
+					System.out.println( "Did not fetch: " + key );
 			}
 		}
-		else
+		catch( com.mongodb.MongoException.Network x )
 		{
-			if( debug )
-				System.out.println( "Did not fetch: " + key );
 		}
 
 		return null;
@@ -306,12 +324,24 @@ public class MongoDbCache implements Cache
 		query.put( "$lt", lt );
 
 		lt.put( "expirationDate", new Date() );
-		cacheCollection.remove( query );
+		try
+		{
+			cacheCollection.remove( query );
+		}
+		catch( com.mongodb.MongoException.Network x )
+		{
+		}
 	}
 
 	public void reset()
 	{
-		cacheCollection.remove( new BasicDBObject() );
+		try
+		{
+			cacheCollection.remove( new BasicDBObject() );
+		}
+		catch( com.mongodb.MongoException.Network x )
+		{
+		}
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
