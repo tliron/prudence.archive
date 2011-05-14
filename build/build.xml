@@ -60,7 +60,7 @@
 				<fileset dir="${lib}/@{library}/lib" includes="*.jar" />
 			</copy>
 			<copy todir="@{dist}/content/licenses/@{library}">
-				<fileset dir="${lib}/@{library}/license" />
+				<fileset dir="${lib}/@{library}/license" excludes="**/.svn/" />
 			</copy>
 		</sequential>
 	</macrodef>
@@ -102,8 +102,8 @@
 		<attribute name="name" />
 		<sequential>
 			<copy todir="@{dist}/content">
-				<fileset dir="${common}" excludes="bin/run.sh, bin/run.bat" />
-				<fileset dir="@{base}" />
+				<fileset dir="${common}" excludes="bin/run.sh, bin/run.bat, **/.svn/" />
+				<fileset dir="@{base}" excludes="**/.svn/" />
 			</copy>
 			<pathconvert property="@{dist}-jars" pathsep=":">
 				<fileset dir="@{dist}/content/libraries" includes="*.jar" />
@@ -128,7 +128,7 @@
 			</copy>
 			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%REVISION%" value="${revision.max}" />
 			<copy todir="@{dist}/content/applications/prudence-test/web">
-				<fileset dir="${velocity}/applications/prudence-test/web" />
+				<fileset dir="${velocity}/applications/prudence-test/web" excludes="**/.svn/" />
 			</copy>
 			<mkdir dir="@{dist}/content/common" />
 		</sequential>
@@ -139,7 +139,7 @@
 		<sequential>
 			<mkdir dir="debian/prudence-@{name}-1.1/debian" />
 			<vppcopy todir="debian/prudence-@{name}-1.1/debian">
-				<fileset dir="debian/common" />
+				<fileset dir="debian/common" excludes="**/.svn/" />
 				<config>
 					<context>
 						<property key="distribution" value="@{name}" />
@@ -315,7 +315,7 @@
 	<target name="documentation-unless" description="Create Prudence Manual" unless="documentation-present">
 		<mkdir dir="${tmp}/documentation" />
 		<copy todir="${tmp}/documentation">
-			<fileset dir="${documentation}" excludes="*~" />
+			<fileset dir="${documentation}" excludes="*~, **/.svn/" />
 		</copy>
 		<replace dir="${tmp}/documentation" includes="prudence_manual.lyx" token="%REVISION%" value="${revision.max}" />
 		<exec executable="lyx" failifexecutionfails="false">
@@ -438,10 +438,10 @@
 		<fetch-library dist="${dist-python}" library="velocity" />
 		<fetch-library dist="${dist-python}" library="${http-server}" />
 		<copy todir="${dist-python}/content/common/libraries/Lib">
-			<fileset dir="${lib}/jython/lib/Lib" />
+			<fileset dir="${lib}/jython/lib/Lib" excludes="**/.svn/" />
 		</copy>
 		<copy todir="${dist-python}/content/common/libraries/sqlalchemy">
-			<fileset dir="${lib}/sqlalchemy/lib" />
+			<fileset dir="${lib}/sqlalchemy/lib" excludes="**/.svn/" />
 		</copy>
 		<fetch-library-versions dist="${dist-python}" />
 	</target>
@@ -764,7 +764,7 @@
 		<fetch-library dist="${dist-kitchensink}" library="velocity" />
 		<fetch-library dist="${dist-kitchensink}" library="${http-server}" />
 		<copy todir="${dist-kitchensink}/content/common/libraries/Lib">
-			<fileset dir="${lib}/jython/lib/Lib" />
+			<fileset dir="${lib}/jython/lib/Lib" excludes="**/.svn/" />
 		</copy>
 		<fetch-library-versions dist="${dist-kitchensink}" />
 	</target>
@@ -773,29 +773,29 @@
 		<echo>Using ${kitchensink-base} as base for Kitchen Sink distribution.</echo>
 		<!-- Fetch Prudence Tests -->
 		<copy todir="${dist-kitchensink}/content/applications/prudence-test/web">
-			<fileset dir="${python}/applications/prudence-test/web" excludes="**/velocity-helper.html" />
-			<fileset dir="${ruby}/applications/prudence-test/web" excludes="**/velocity-helper.html" />
-			<fileset dir="${groovy}/applications/prudence-test/web" excludes="**/velocity-helper.html" />
-			<fileset dir="${clojure}/applications/prudence-test/web" excludes="**/velocity-helper.html" />
-			<fileset dir="${javascript}/applications/prudence-test/web" excludes="**/velocity-helper.html" />
-			<fileset dir="${php}/applications/prudence-test/web" excludes="**/velocity-helper.html" />
-			<fileset dir="${velocity}/applications/prudence-test/web" />
+			<fileset dir="${python}/applications/prudence-test/web" excludes="**/velocity-helper.html, **/.svn/" />
+			<fileset dir="${ruby}/applications/prudence-test/web" excludes="**/velocity-helper.html, **/.svn/" />
+			<fileset dir="${groovy}/applications/prudence-test/web" excludes="**/velocity-helper.html, **/.svn/" />
+			<fileset dir="${clojure}/applications/prudence-test/web" excludes="**/velocity-helper.html, **/.svn/" />
+			<fileset dir="${javascript}/applications/prudence-test/web" excludes="**/velocity-helper.html, **/.svn/" />
+			<fileset dir="${php}/applications/prudence-test/web" excludes="**/velocity-helper.html, **/.svn/" />
+			<fileset dir="${velocity}/applications/prudence-test/web" excludes="**/.svn/" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/applications/prudence-test/resources">
-			<fileset dir="${python}/applications/prudence-test/resources" />
-			<fileset dir="${ruby}/applications/prudence-test/resources" />
-			<fileset dir="${groovy}/applications/prudence-test/resources" />
-			<fileset dir="${clojure}/applications/prudence-test/resources" />
-			<fileset dir="${javascript}/applications/prudence-test/resources" />
-			<fileset dir="${php}/applications/prudence-test/resources" />
+			<fileset dir="${python}/applications/prudence-test/resources" excludes="**/.svn/" />
+			<fileset dir="${ruby}/applications/prudence-test/resources" excludes="**/.svn/" />
+			<fileset dir="${groovy}/applications/prudence-test/resources" excludes="**/.svn/" />
+			<fileset dir="${clojure}/applications/prudence-test/resources" excludes="**/.svn/" />
+			<fileset dir="${javascript}/applications/prudence-test/resources" excludes="**/.svn/" />
+			<fileset dir="${php}/applications/prudence-test/resources" excludes="**/.svn/" />
 		</copy>
 		<copy todir="${dist-kitchensink}/content/applications/prudence-test/libraries">
-			<fileset dir="${python}/applications/prudence-test/libraries" />
-			<fileset dir="${ruby}/applications/prudence-test/libraries" />
-			<fileset dir="${groovy}/applications/prudence-test/libraries" />
-			<fileset dir="${clojure}/applications/prudence-test/libraries" />
-			<fileset dir="${javascript}/applications/prudence-test/libraries" />
-			<fileset dir="${php}/applications/prudence-test/libraries" />
+			<fileset dir="${python}/applications/prudence-test/libraries" excludes="**/.svn/" />
+			<fileset dir="${ruby}/applications/prudence-test/libraries" excludes="**/.svn/" />
+			<fileset dir="${groovy}/applications/prudence-test/libraries" excludes="**/.svn/" />
+			<fileset dir="${clojure}/applications/prudence-test/libraries" excludes="**/.svn/" />
+			<fileset dir="${javascript}/applications/prudence-test/libraries" excludes="**/.svn/" />
+			<fileset dir="${php}/applications/prudence-test/libraries" excludes="**/.svn/" />
 		</copy>
 		<fetch-common-content dist="${dist-kitchensink}" base="${kitchensink-base}" name="KitchenSink" />
 	</target>
@@ -818,19 +818,19 @@
 	
 	<target name="src-standalone" description="Fetch Prudence source">
 		<copy todir="${dist-standalone}/content/src">
-			<fileset dir="${java-src}" />
+			<fileset dir="${java-src}" excludes="**/.svn/" />
 		</copy>
 	</target>
 	
 	<target name="javadoc-standalone" depends="javadoc" description="Fetch Prudence API docs">
 		<copy todir="${dist-standalone}/content/api">
-			<fileset dir="${tmp}/api" />
+			<fileset dir="${tmp}/api" excludes="**/.svn/" />
 		</copy>
 	</target>
 	
 	<target name="content-standalone" depends="javadoc-standalone" description="Fetch content">
 		<copy todir="${dist-standalone}/content">
-			<fileset dir="${common}" excludes="log/, configuration/, applications/, bin/" />
+			<fileset dir="${common}" excludes="log/, configuration/, applications/, bin/, **/.svn/" />
 		</copy>
 	</target>
 	
