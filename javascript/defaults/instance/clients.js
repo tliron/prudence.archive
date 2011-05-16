@@ -18,5 +18,5 @@ importClass(
 component.clients.add(Protocol.FILE)
 
 // Required for accessing external resources
-component.clients.add(Protocol.HTTP)
-component.clients.add(Protocol.HTTPS)
+component.clients.add(Protocol.HTTP).context.parameters.set('socketTimeout', 10000)
+component.clients.add(Protocol.HTTPS).context.parameters.set('socketTimeout', 10000)

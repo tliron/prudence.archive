@@ -17,5 +17,5 @@
 (.. component getClients (add Protocol/FILE))
 
 ; Required for accessing external resources
-(.. component getClients (add Protocol/HTTP))
-(.. component getClients (add Protocol/HTTPS))
+(.set (.getParameters (.getContext (.. component getClients (add Protocol/HTTP)))) "socketTimeout" "10000")
+(.set (.getParameters (.getContext (.. component getClients (add Protocol/HTTPS)))) "socketTimeout" "10000")

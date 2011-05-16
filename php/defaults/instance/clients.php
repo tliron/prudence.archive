@@ -23,6 +23,6 @@ import org.restlet.data.Protocol;
 $component->clients->add(Protocol::valueOf('FILE'));
 
 // Required for accessing external resources
-$component->clients->add(Protocol::valueOf('HTTP'));
-$component->clients->add(Protocol::valueOf('HTTPS'));
+$component->clients->add(Protocol::valueOf('HTTP'))->context->parameters->set('socketTimeout', 10000);
+$component->clients->add(Protocol::valueOf('HTTPS'))->context->parameters->set('socketTimeout', 10000);
 ?>
