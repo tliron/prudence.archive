@@ -18,6 +18,6 @@ $client_file = $component.clients.add Protocol::FILE
 
 # Required for accessing external resources
 $client_http = $component.clients.add(Protocol::HTTP)
-$client_http.context.parameters.set('socketTimeout', 10000)
+$client_http.context.parameters.set('socketTimeout', '10000')
 $client_https = $component.clients.add(Protocol::HTTPS)
-$client_https.context.parameters.set('socketTimeout', 10000)
+$client_https.context.parameters.set('socketTimeout', '10000')
