@@ -14,8 +14,10 @@
 import org.restlet.data.Protocol
 
 # Required for use of Directory
-$component.clients.add Protocol::FILE
+$client_file = $component.clients.add Protocol::FILE
 
 # Required for accessing external resources
-$component.clients.add(Protocol::HTTP).context.parameters.set('socketTimeout', 10000)
-$component.clients.add(Protocol::HTTPS).context.parameters.set('socketTimeout', 10000)
+$client_http = $component.clients.add(Protocol::HTTP)
+$client_http.context.parameters.set('socketTimeout', 10000)
+$client_https = $component.clients.add(Protocol::HTTPS)
+$client_https.context.parameters.set('socketTimeout', 10000)

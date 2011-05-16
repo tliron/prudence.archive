@@ -14,8 +14,10 @@
 (import 'org.restlet.data.Protocol)
 
 ; Required for use of Directory
-(.. component getClients (add Protocol/FILE))
+(def client-file (.. component getClients (add Protocol/FILE)))
 
 ; Required for accessing external resources
-(.set (.getParameters (.getContext (.. component getClients (add Protocol/HTTP)))) "socketTimeout" "10000")
-(.set (.getParameters (.getContext (.. component getClients (add Protocol/HTTPS)))) "socketTimeout" "10000")
+(def client-http (.. component getClients (add Protocol/HTTP)))
+(.set (.getParameters (.getContext client-http)) "socketTimeout" "10000")
+(def client-https (.. component getClients (add Protocol/HTTPS)))
+(.set (.getParameters (.getContext client-https)) "socketTimeout" "10000")

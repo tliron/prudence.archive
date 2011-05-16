@@ -4325,6 +4325,18 @@ The default script adds file and HTTP clients.
  the web.
 \end_layout
 
+\begin_layout Standard
+Configuration parameters for clients are documented 
+\begin_inset CommandInset href
+LatexCommand href
+name "in the HttpClientHelper"
+target "http://www.restlet.org/documentation/2.0/jse/ext/index.html?org/restlet/ext/httpclient/HttpClientHelper.html"
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Subsubsection
 /instance/routing.*
 \end_layout
@@ -16307,7 +16319,7 @@ reference "../api/|application-distributed-task"
 \end_layout
 
 \begin_layout Standard
-There are five arguments:
+There are seven arguments:
 \end_layout
 
 \begin_layout Enumerate
@@ -16327,6 +16339,33 @@ reference "../application/|application-name"
 
 \begin_layout Enumerate
 The document name in /tasks/.
+\end_layout
+
+\begin_layout Enumerate
+The entry point name (or null).
+ If not specified, then the document in /tasks/ will be simply executed.
+ If specified, then the document will be executed only 
+\emph on
+once
+\emph default
+, and subsequent calls will involve calling the entry point names here.
+ This may result in better performance for tasks that are called very often.
+ See 
+\bar under
+handlers (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../handlers/"
+
+\end_inset
+
+)
+\bar default
+ for more information on how entry points work.
+ Note that entry points are specified in camel case, and are converted to
+ format appropriate for your flavor of Prudence.
+ For example, an entry point named ``handleTask'' will be called as ``handle_tas
+k'' in Python and ``handle-task'' in Clojure.
 \end_layout
 
 \begin_layout Enumerate
@@ -16374,7 +16413,8 @@ status open
 
 \begin_layout Plain Layout
 
-application.task(null, '/email/reminders/', null, 0, 10 * 60 * 1000, true)
+application.task(null, '/email/reminders/', null, null, 0, 10 * 60 * 1000,
+ true)
 \end_layout
 
 \end_inset
@@ -16399,7 +16439,7 @@ status open
 
 \begin_layout Plain Layout
 
-application.task(null, '/database/cleanup/', 'fast', 0, 0, false).get()
+application.task(null, '/database/cleanup/', null, 'fast', 0, 0, false).get()
 \end_layout
 
 \end_inset
@@ -16441,7 +16481,7 @@ if(cleanup && cleanup.done) {
 \begin_layout Plain Layout
 
 	application.globals.put('myapp.task.cleanup', application.task(null, '/database/clea
-nup/', 0, 0, false))
+nup/', null, null, 0, 0, false))
 \end_layout
 
 \begin_layout Plain Layout
@@ -16495,7 +16535,19 @@ reference "../api/|application-task"
 \end_layout
 
 \begin_layout Standard
-There are five arguments:
+There are six arguments, where the first four are identical to those in
+ 
+\bar under
+application.task (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|application-task"
+
+\end_inset
+
+)
+\bar default
+:
 \end_layout
 
 \begin_layout Enumerate
@@ -16518,19 +16570,11 @@ The document name in /tasks/.
 \end_layout
 
 \begin_layout Enumerate
+The entry point name (or null).
+\end_layout
+
+\begin_layout Enumerate
 The context (or null).
- This is later available for the task as 
-\bar under
-document.context (page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "../api/|document-context"
-
-\end_inset
-
-)
-\bar default
-.
  Note that for distributed tasks, unlike in-process tasks, the context 
 \emph on
 must be serializable
@@ -16559,8 +16603,11 @@ String: the particular cluster member for this key
 \end_layout
 
 \begin_layout Enumerate
-Iterable of Member instances: all these members (see the fifth argument,
- below)
+Iterable of Member instances: run on 
+\emph on
+one or all of 
+\emph default
+these members (see the sixth argument, below)
 \end_layout
 
 \end_deeper
@@ -21527,14 +21574,16 @@ The logging methods and their common uses are these (shown for the base
 application.logger.severe: ``Severe'' messages are used for unrecoverable
  errors, alerts about unavailable computing resources, network backends,
  etc.
- You'd always want to configure logging to include these messages!
+ You'd likely always want to configure logging to include at least these
+ messages!
 \end_layout
 
 \begin_layout Enumerate
 application.logger.warning: While not quite severe, the event could still
  point out a problem that if not handled might become severe, either now
  or in the future.
- Many applications emit copious warnings that can be safely ignored.
+ Many applications and services emit warnings that can be safely ignored
+ normally, but may be helpful when trying to debug a specific problem.
 \end_layout
 
 \begin_layout Enumerate
@@ -21589,7 +21638,7 @@ target "http://logging.apache.org/log4j/"
 \begin_layout Quote
 The Prudence defaults are mostly at ``info'' level.
  You are encouraged to experiment with lower levels in order to see how
- Prudence's internals function!
+ Prudence's internals function.
 \end_layout
 
 \begin_layout Subsubsection
@@ -21661,31 +21710,27 @@ Log levels in logging.conf are named a bit differently from the commands
 \end_layout
 
 \begin_layout Enumerate
-application.logger.severe: ERROR
+OFF: no logging
 \end_layout
 
 \begin_layout Enumerate
-application.logger.warning: WARN
+ERROR: application.logger.severe
 \end_layout
 
 \begin_layout Enumerate
-application.logger.info: INFO
+WARN: application.logger.warning
 \end_layout
 
 \begin_layout Enumerate
-application.logger.config: DEBUG
+INFO: application.logger.info
 \end_layout
 
 \begin_layout Enumerate
-application.logger.fine: DEBUG
+DEBUG: application.logger.config, application.logger.fine, application.logger.finer
 \end_layout
 
 \begin_layout Enumerate
-application.logger.finer: DEBUG
-\end_layout
-
-\begin_layout Enumerate
-application.logger.finest: TRACE (or ALL)
+TRACE (or ALL): application.logger.finest
 \end_layout
 
 \begin_layout Quote

@@ -12,7 +12,7 @@
 // at http://threecrickets.com/
 //
 
-global $component;
+global $component, $client_file, $client_http, $client_https;
 
 import org.restlet.data.Protocol;
 
@@ -20,9 +20,11 @@ import org.restlet.data.Protocol;
 // Protocol::FILE or Protocol::HTTP directly.
 
 // Required for use of Directory
-$component->clients->add(Protocol::valueOf('FILE'));
+$client_file = $component->clients->add(Protocol::valueOf('FILE'));
 
 // Required for accessing external resources
-$component->clients->add(Protocol::valueOf('HTTP'))->context->parameters->set('socketTimeout', 10000);
-$component->clients->add(Protocol::valueOf('HTTPS'))->context->parameters->set('socketTimeout', 10000);
+$client_http = $component->clients->add(Protocol::valueOf('HTTP'));
+$client_http->context->parameters->set('socketTimeout', 10000);
+$client_https = $component->clients->add(Protocol::valueOf('HTTPS'));
+$client_https->context->parameters->set('socketTimeout', 10000);
 ?>

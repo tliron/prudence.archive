@@ -14,8 +14,10 @@
 import org.restlet.data.Protocol
 
 // Required for use of Directory
-componentInstance.clients.add(Protocol.FILE)
+clientFile = componentInstance.clients.add(Protocol.FILE)
 
 // Required for accessing external resources
-componentInstance.clients.add(Protocol.HTTP).context.parameters.set('socketTimeout', 10000)
-componentInstance.clients.add(Protocol.HTTPS).context.parameters.set('socketTimeout', 10000)
+clientHttp = componentInstance.clients.add(Protocol.HTTP)
+clientHttp.context.parameters.set('socketTimeout', 10000)
+clientHttps = componentInstance.clients.add(Protocol.HTTPS)
+clientHttps.context.parameters.set('socketTimeout', 10000)
