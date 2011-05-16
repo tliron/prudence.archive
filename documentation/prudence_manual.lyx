@@ -12114,7 +12114,7 @@ application.logger.info('Scheduling monitor task to repeat every second')
 
 \begin_layout Plain Layout
 
-application.task('/monitor/', null, 1000, 1000, false) 
+application.task(null, '/monitor/', null, null, 1000, 1000, false) 
 \end_layout
 
 \end_inset
@@ -12195,8 +12195,8 @@ document.execute('/defaults/application/')
 
 \begin_layout Plain Layout
 
-applicationService.task('/poll/', {name: 'mypoll', maxDuration: 5000}, 1000,
- 1000, false) 
+applicationService.task(null, '/poll/', null, {name: 'mypoll', maxDuration:
+ 5000}, 1000, 1000, false) 
 \end_layout
 
 \end_inset
