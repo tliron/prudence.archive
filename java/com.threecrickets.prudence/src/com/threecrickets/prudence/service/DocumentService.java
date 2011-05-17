@@ -278,6 +278,11 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 	{
 		ClientResource clientResource = new ClientResource( uri );
 		clientResource.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( getMediaType( mediaTypeName ), 1f ) );
+
+		// The following is a workaround for a Restlet bug:
+		// http://restlet.tigris.org/ds/viewMessage.do?dsForumId=4447&dsMessageId=2738502
+		clientResource.setFollowingRedirects( false );
+
 		return clientResource;
 	}
 
