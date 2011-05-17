@@ -17,20 +17,14 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import org.restlet.Application;
-import org.restlet.Client;
-import org.restlet.Component;
 import org.restlet.data.LocalReference;
 import org.restlet.data.MediaType;
 import org.restlet.data.Preference;
-import org.restlet.data.Protocol;
 import org.restlet.resource.ClientResource;
 
 import com.threecrickets.prudence.internal.attributes.DocumentExecutionAttributes;
-import com.threecrickets.prudence.util.InstanceUtil;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
@@ -267,12 +261,7 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 			resourceUri = "/" + resourceUri;
 
 		ClientResource clientResource = new ClientResource( LocalReference.createRiapReference( LocalReference.RIAP_COMPONENT, "/" + applicationInternalName + resourceUri ) );
-
-		Client client = getClient( clientResource.getProtocol() );
-		if( client != null )
-			clientResource.setNext( client );
 		clientResource.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( getMediaType( mediaTypeName ), 1f ) );
-
 		return clientResource;
 	}
 
@@ -288,12 +277,7 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 	public ClientResource external( String uri, String mediaTypeName )
 	{
 		ClientResource clientResource = new ClientResource( uri );
-
-		Client client = getClient( clientResource.getProtocol() );
-		if( client != null )
-			clientResource.setNext( client );
 		clientResource.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( getMediaType( mediaTypeName ), 1f ) );
-
 		return clientResource;
 	}
 
@@ -368,42 +352,6 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 	 * Executed attribute for an {@link ExecutionContext}.
 	 */
 	private static final String EXECUTED_ATTRIBUTE = "com.threecrickets.prudence.service.DocumentService.executed";
-
-	/**
-	 * Cache of clients for this instance.
-	 */
-	private static ConcurrentMap<Protocol, Client> clients = new ConcurrentHashMap<Protocol, Client>();
-
-	/**
-	 * Gets clients from the cache or finds them in the component.
-	 * 
-	 * @param protocol
-	 * @return
-	 */
-	private static Client getClient( Protocol protocol )
-	{
-		Client client = clients.get( protocol );
-		if( client == null )
-		{
-			Component component = InstanceUtil.getComponent();
-			if( component != null )
-			{
-				for( Client potentialClient : component.getClients() )
-				{
-					if( potentialClient.getProtocols().contains( protocol ) )
-					{
-						Client existing = clients.putIfAbsent( protocol, potentialClient );
-						if( existing != null )
-							client = existing;
-
-						break;
-					}
-				}
-			}
-		}
-
-		return client;
-	}
 
 	/**
 	 * Get a media type by its MIME type name.
