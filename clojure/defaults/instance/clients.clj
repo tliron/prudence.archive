@@ -18,6 +18,10 @@
 
 ; Required for accessing external resources
 (def client-http (.. component getClients (add Protocol/HTTP)))
+(.setConnectTimeout client-http 10000)
 (.set (.getParameters (.getContext client-http)) "socketTimeout" "10000")
+
+; Required for accessing external resources
 (def client-https (.. component getClients (add Protocol/HTTPS)))
+(.setConnectTimeout client-https 10000)
 (.set (.getParameters (.getContext client-https)) "socketTimeout" "10000")

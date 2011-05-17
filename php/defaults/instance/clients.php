@@ -24,7 +24,11 @@ $client_file = $component->clients->add(Protocol::valueOf('FILE'));
 
 // Required for accessing external resources
 $client_http = $component->clients->add(Protocol::valueOf('HTTP'));
+$client_http->connectTimeout = 10000;
 $client_http->context->parameters->set('socketTimeout', 10000);
+
+// Required for accessing external resources
 $client_https = $component->clients->add(Protocol::valueOf('HTTPS'));
+$client_https->connectTimeout = 10000;
 $client_https->context->parameters->set('socketTimeout', 10000);
 ?>

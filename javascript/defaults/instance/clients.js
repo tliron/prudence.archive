@@ -19,6 +19,10 @@ var clientFile = component.clients.add(Protocol.FILE)
 
 // Required for accessing external resources
 var clientHttp = component.clients.add(Protocol.HTTP)
+clientHttp.connectTimeout = 10000
 clientHttp.context.parameters.set('socketTimeout', 10000)
+
+// Required for accessing external resources
 var clientHttps = component.clients.add(Protocol.HTTPS)
+clientHttps.connectTimeout = 10000
 clientHttps.context.parameters.set('socketTimeout', 10000)

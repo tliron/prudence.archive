@@ -18,6 +18,10 @@ clientFile = componentInstance.clients.add(Protocol.FILE)
 
 // Required for accessing external resources
 clientHttp = componentInstance.clients.add(Protocol.HTTP)
+clientHttp.connectTimeout = 10000
 clientHttp.context.parameters.set('socketTimeout', '10000')
+
+// Required for accessing external resources
 clientHttps = componentInstance.clients.add(Protocol.HTTPS)
+clientHttps.connectTimeout = 10000
 clientHttps.context.parameters.set('socketTimeout', '10000')
