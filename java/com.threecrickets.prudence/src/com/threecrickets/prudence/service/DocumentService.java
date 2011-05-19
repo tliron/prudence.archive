@@ -135,7 +135,7 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 	 */
 	public void executeOnce( String documentName ) throws ParsingException, ExecutionException, DocumentException, IOException
 	{
-		if( markExecuted( documentName ) )
+		if( markExecuted( documentName, true ) )
 			execute( documentName );
 	}
 
@@ -144,11 +144,13 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 	 * 
 	 * @param documentName
 	 *        The document name
-	 * @return True if the document was marked as executed by this call, false
-	 *         if it was already marked as executed
+	 * @param wasExecuted
+	 *        True if marked as executed, false to clear execution flag
+	 * @return True if the document was marked as executed or not by this call,
+	 *         false if it was already marked as such
 	 * @see #executeOnce(String)
 	 */
-	public boolean markExecuted( String documentName )
+	public boolean markExecuted( String documentName, boolean wasExecuted )
 	{
 		ExecutionContext executionContext = ExecutionContext.getCurrent();
 		if( executionContext != null )
@@ -162,7 +164,7 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 				attributes.put( EXECUTED_ATTRIBUTE, executed );
 			}
 
-			return executed.add( documentName );
+			return wasExecuted ? executed.add( documentName ) : executed.remove( documentName );
 		}
 
 		return true;
