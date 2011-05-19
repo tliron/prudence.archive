@@ -17980,7 +17980,8 @@ name "../api/|document-mark-executed"
 \end_layout
 
 \begin_layout Standard
-Explicitly marks a document as executed, so that subsequent calls to 
+Explicitly marks a document as executed or not-executed, thus controlling
+ the result of subsequent calls to 
 \bar under
 document.executeOnce (page 
 \begin_inset CommandInset ref
@@ -17991,7 +17992,9 @@ reference "../api/|document-execute-once"
 
 )
 \bar default
- for the document will do nothing.
+.
+ The first argument is the document name, the second is a boolean for the
+ execution flag.
 \end_layout
 
 \begin_layout Paragraph
