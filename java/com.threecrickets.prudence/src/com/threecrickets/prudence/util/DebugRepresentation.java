@@ -14,6 +14,7 @@ package com.threecrickets.prudence.util;
 import java.util.Collection;
 import java.util.Map;
 
+import org.restlet.Application;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.CacheDirective;
@@ -150,6 +151,18 @@ public class DebugRepresentation extends StringRepresentation
 				html.append( "<br />" );
 			}
 			html.append( "</div>" );
+		}
+
+		Application application = Application.getCurrent();
+		if( application != null )
+		{
+			html.append( "<h3>Application</h3>" );
+			String name = application.getName();
+			if( name != null )
+			{
+				appendName( html, "Name" );
+				appendValue( html, name );
+			}
 		}
 
 		html.append( "<h3>References</h3>" );
