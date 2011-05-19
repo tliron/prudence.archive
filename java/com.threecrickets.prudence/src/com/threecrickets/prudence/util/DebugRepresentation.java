@@ -153,18 +153,6 @@ public class DebugRepresentation extends StringRepresentation
 			html.append( "</div>" );
 		}
 
-		Application application = Application.getCurrent();
-		if( application != null )
-		{
-			html.append( "<h3>Application</h3>" );
-			String name = application.getName();
-			if( name != null )
-			{
-				appendName( html, "Name" );
-				appendValue( html, name );
-			}
-		}
-
 		html.append( "<h3>References</h3>" );
 		html.append( "<div id=\"references\">" );
 		appendName( html, "Resource" );
@@ -377,6 +365,32 @@ public class DebugRepresentation extends StringRepresentation
 				appendValue( html, warning.getText(), " from ", warning.getAgent(), " (", warning.getStatus(), ")" );
 			}
 			html.append( "</div>" );
+		}
+
+		Application application = Application.getCurrent();
+		if( application != null )
+		{
+			String name = application.getName();
+			if( name != null )
+				html.append( "<h3>Application: " + name + "</h3>" );
+			else
+				html.append( "<h3>Application</h3>" );
+
+			for( Map.Entry<String, Object> attribute : application.getContext().getAttributes().entrySet() )
+			{
+				appendName( html, attribute.getKey() );
+				if( attribute.getValue() instanceof Collection<?> )
+				{
+					html.append( "<br />" );
+					for( Object o : (Collection<?>) attribute.getValue() )
+					{
+						html.append( "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" );
+						appendValue( html, o );
+					}
+				}
+				else
+					appendValue( html, attribute.getValue() );
+			}
 		}
 
 		if( throwable.getStackTrace() != null )
