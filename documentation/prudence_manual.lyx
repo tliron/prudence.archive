@@ -18774,7 +18774,7 @@ name "../manual/api/|conversation-form"
 
 \begin_layout Standard
 Use these to access data sent via HTML forms, or any other request with
- a data entity of the ``application/x-www-form-urlencoded'' MIME type.
+ a data entity of the ``actual'' MIME type.
 \end_layout
 
 \begin_layout Standard
@@ -18784,8 +18784,17 @@ conversation.form is a map of form names to values.
 \end_layout
 
 \begin_layout Standard
-conversation.formAll is a list of parameters.
+conversation.formAll is a list of 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet Parameter instances"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/Parameter.html"
+
+\end_inset
+
+.
  Use this if you need to support multiple values for the same name.
+ The most useful attributes are ``name'' and ``value''.
 \end_layout
 
 \begin_layout Standard
@@ -18888,8 +18897,17 @@ conversation.query is a map of query parameter names to values.
 \end_layout
 
 \begin_layout Standard
-conversation.queryAll is a list of parameters.
+conversation.queryAll is a list of 
+\begin_inset CommandInset href
+LatexCommand href
+name "Restlet Parameter instances"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/Parameter.html"
+
+\end_inset
+
+.
  Use this if you need to support multiple values for the same name.
+ The most useful attributes are ``name'' and ``value''.
 \end_layout
 
 \begin_layout Paragraph
@@ -18897,7 +18915,7 @@ conversation.entity
 \end_layout
 
 \begin_layout Standard
-(only available in HTTP PUT and POST commands)
+(only available in HTTP PUT and POST handling)
 \end_layout
 
 \begin_layout Standard
@@ -18934,7 +18952,7 @@ target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/
 \end_inset
 
 .
- A few useful representation attributes:
+ A few useful attributes of this:
 \end_layout
 
 \begin_layout Itemize
