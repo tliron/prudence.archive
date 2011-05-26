@@ -195,7 +195,7 @@ for (var i in resourcesPassThrough) {
 applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.documentSource', resourcesDocumentSource)
 applicationGlobals.put('com.threecrickets.prudence.DelegatedResource.passThroughDocuments', passThroughDocuments)
 
-resources = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
+var resources = new Finder(applicationInstance.context, classLoader.loadClass('com.threecrickets.prudence.DelegatedResource'))
 resourcesBaseURL = fixURL(resourcesBaseURL)
 router.attachBase(resourcesBaseURL, resources)
 
