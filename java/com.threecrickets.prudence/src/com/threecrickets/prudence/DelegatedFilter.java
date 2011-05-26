@@ -33,6 +33,10 @@ import com.threecrickets.prudence.util.CapturingRedirector;
  */
 public class DelegatedFilter extends Filter
 {
+	//
+	// Construction
+	//
+
 	/**
 	 * Constructor.
 	 * 
