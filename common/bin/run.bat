@@ -71,10 +71,10 @@ ECHO Installing service Prudence${service}...
 --StopClass=com.threecrickets.prudence.PrudenceDaemon ^
 --StopMethod=stop ^
 --Jvm=auto ^
---JvmOptions=-Dscripturian.cache=cache ^
-++JvmOptions=-Dhazelcast.config=configuration\hazelcast.conf ^
+--JvmOptions=-Dscripturian.cache="%CD%\cache" ^
+++JvmOptions=-Dhazelcast.config="%CD%\configuration\hazelcast.conf" ^
 #if(($distribution == 'python') || ($distribution == 'kitchensink'))
-++JvmOptions=-Dpython.home=common\libraries ^
+++JvmOptions=-Dpython.home="%CD%\common\libraries" ^
 ++JvmOptions=-Dpython.verbose=warning ^
 #end
 ++JvmOptions=-Djava.util.logging.config.file=none ^
