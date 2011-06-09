@@ -8003,7 +8003,7 @@ The reason is that, by necessity, Prudence runs scriptlets of different
 But, fear not, Prudence lets you solve this problem via the ``in-flow''
  scriptlet, marked by a colon.
  Here's the exact same code as above, but with the Velocity scriptlet marked
- with a extra colon:
+ with an extra colon:
 \end_layout
 
 \begin_layout Standard
