@@ -1,4 +1,4 @@
-clojure						1.2.0
+clojure						1.2.1
 commons-codec				1.5
 commons-daemon				1.0.5
 commons-dbcp				1.3
@@ -20,7 +20,7 @@ jackson						1.8.0
 jcip-annotations			
 jepp						2.4
 jetty						7.2.2 (note: 7.3 conflicts with Restlet 2.0)
-jruby						1.6.1
+jruby						1.6.2
 json						
 jsr-223						
 junit						4.8.2
@@ -31,7 +31,7 @@ mime4j						0.6.1
 mongodb-java-driver			2.6.3
 mysqlconnector				5.1.16
 pygments					1.1.1
-quercus						4.0.11
+quercus						4.0.18
 restlet (JSE)				2.0.7
 rhino						1.7R2
 servlet (jetty)				2.5
