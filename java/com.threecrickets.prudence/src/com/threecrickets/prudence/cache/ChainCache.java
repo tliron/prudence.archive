@@ -16,8 +16,13 @@ import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Allows chaining of caches together. During fetch, caches are tested in order.
- * Other operations work on all caches.
+ * Allows chaining of caches together in order, where the faster, less reliable
+ * caches are assumed to be before the slower, more reliable caches.
+ * <p>
+ * During fetch, caches are tested in order. In backtrack mode (the default),
+ * when a hit occurs, the entry is stored in all previous caches before the hit,
+ * so that subsequent fetches would find the entry in the faster caches. Other
+ * operations always work on all caches indiscriminately.
  * 
  * @author Tal Liron
  */
@@ -59,6 +64,36 @@ public class ChainCache implements Cache
 		return caches;
 	}
 
+	/**
+	 * When true (the default), makes sure to store a cache hit in previous
+	 * caches along the chain.
+	 * 
+	 * @return The backtrack mode
+	 */
+	public boolean isBacktrack()
+	{
+		return backtrack;
+	}
+
+	/**
+	 * @return The backtrack mode
+	 * @see #isBacktrack()
+	 */
+	public boolean getBacktrack()
+	{
+		return isBacktrack();
+	}
+
+	/**
+	 * @param backtrack
+	 *        The backtrack mode
+	 * @see #isBacktrack()
+	 */
+	public void setBacktrack( boolean backtrack )
+	{
+		this.backtrack = backtrack;
+	}
+
 	//
 	// Cache
 	//
@@ -77,13 +112,16 @@ public class ChainCache implements Cache
 			CacheEntry entry = cache.fetch( key );
 			if( entry != null )
 			{
-				// Store in previous caches
-				if( iterator.hasPrevious() )
-					iterator.previous();
-				while( iterator.hasPrevious() )
+				if( backtrack )
 				{
-					cache = iterator.previous();
-					cache.store( key, entry );
+					// Store in previous caches
+					if( iterator.hasPrevious() )
+						iterator.previous();
+					while( iterator.hasPrevious() )
+					{
+						cache = iterator.previous();
+						cache.store( key, entry );
+					}
 				}
 
 				return entry;
@@ -118,4 +156,10 @@ public class ChainCache implements Cache
 	 * The chained caches.
 	 */
 	private CopyOnWriteArrayList<Cache> caches = new CopyOnWriteArrayList<Cache>();
+
+	/**
+	 * When true, makes sure to store a cache hit in previous caches along the
+	 * chain.
+	 */
+	private volatile boolean backtrack = true;
 }
