@@ -113,15 +113,11 @@ public class MemcachedCache implements Cache
 	// Cache
 	//
 
-	public void store( String key, Iterable<String> tags, CacheEntry entry )
+	public void store( String key, CacheEntry entry )
 	{
-		logger.info( "Store: " + key + " " + tags );
+		logger.info( "Store: " + key );
 
 		Object theEntry = entry;
-
-		// Use tagged cache entry if we're tagged
-		if( ( tags != null ) && ( tags.iterator().hasNext() ) )
-			theEntry = new TaggedCacheEntry( entry, tags );
 
 		try
 		{
@@ -153,32 +149,18 @@ public class MemcachedCache implements Cache
 	{
 		try
 		{
-			Object entry = memcached.get( key );
-			CacheEntry cacheEntry = null;
-			if( entry != null )
+			CacheEntry cacheEntry = (CacheEntry) memcached.get( key );
+			if( cacheEntry != null )
 			{
-				String[] tags = null;
-				long timestamp = 0;
-				if( entry instanceof TaggedCacheEntry )
-				{
-					TaggedCacheEntry taggedCacheEntry = (TaggedCacheEntry) entry;
-					cacheEntry = taggedCacheEntry.entry;
-					tags = taggedCacheEntry.tags;
-					timestamp = taggedCacheEntry.timestamp;
-				}
-				else
-					cacheEntry = (CacheEntry) entry;
-
-				Date now = new Date();
-
-				if( tags != null )
+				String[] tags = cacheEntry.getTags();
+				if( ( tags != null ) && ( tags.length > 0 ) )
 				{
 					for( String tag : tags )
 					{
 						Long tagTimestamp = (Long) memcached.get( tagPrefix + tag );
 						if( tagTimestamp != null )
 						{
-							if( tagTimestamp > timestamp )
+							if( tagTimestamp > cacheEntry.getModificationDate().getTime() )
 							{
 								// Tag is newer, so this entry should be
 								// considered invalid
@@ -210,7 +192,7 @@ public class MemcachedCache implements Cache
 					}
 				}
 
-				if( ( cacheEntry != null ) && now.after( cacheEntry.getExpirationDate() ) )
+				if( ( cacheEntry != null ) && new Date().after( cacheEntry.getExpirationDate() ) )
 				{
 					// This should never happen with memcached, but it doesn't
 					// hurt to double check.

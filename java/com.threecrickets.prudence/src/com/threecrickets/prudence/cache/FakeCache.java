@@ -25,7 +25,7 @@ public class FakeCache implements Cache
 	// Cache
 	//
 
-	public void store( String key, Iterable<String> tags, CacheEntry entry )
+	public void store( String key, CacheEntry entry )
 	{
 	}
 

@@ -187,9 +187,9 @@ public class SqlCache implements Cache
 	// Cache
 	//
 
-	public void store( String key, Iterable<String> tags, CacheEntry entry )
+	public void store( String key, CacheEntry entry )
 	{
-		logger.fine( "Store: " + key + " " + tags );
+		logger.fine( "Store: " + key );
 
 		Lock lock = getLock( key ).writeLock();
 		lock.lock();
@@ -288,7 +288,8 @@ public class SqlCache implements Cache
 
 				// Add tags for this key
 
-				if( tags.iterator().hasNext() )
+				String[] tags = entry.getTags();
+				if( ( tags != null ) && ( tags.length > 0 ) )
 				{
 					sql = "INSERT INTO " + cacheTagsTableName + " (key, tag) VALUES (?, ?)";
 					statement = connection.prepareStatement( sql );

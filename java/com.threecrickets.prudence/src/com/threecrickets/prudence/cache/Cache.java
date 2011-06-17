@@ -37,12 +37,10 @@ public interface Cache
 	 * 
 	 * @param key
 	 *        A key unique to the cache
-	 * @param tags
-	 *        An optional list of tags associated with this entry
 	 * @param entry
 	 *        The entry
 	 */
-	public void store( String key, Iterable<String> tags, CacheEntry entry );
+	public void store( String key, CacheEntry entry );
 
 	/**
 	 * Fetches an entry from the cache if it's there and has not yet expired.

@@ -74,14 +74,15 @@ public class HazelcastCache implements Cache
 	// Cache
 	//
 
-	public void store( String key, Iterable<String> tags, CacheEntry entry )
+	public void store( String key, CacheEntry entry )
 	{
-		logger.fine( "Store: " + key + " " + tags );
+		logger.fine( "Store: " + key );
 
 		ConcurrentMap<String, CacheEntry> cache = getCache();
 		cache.put( key, entry );
 
-		if( tags != null )
+		String[] tags = entry.getTags();
+		if( ( tags != null ) && ( tags.length > 0 ) )
 		{
 			MultiMap<String, String> tagMap = getTagMap();
 			for( String tag : tags )

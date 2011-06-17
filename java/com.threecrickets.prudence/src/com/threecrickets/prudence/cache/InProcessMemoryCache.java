@@ -92,12 +92,12 @@ public class InProcessMemoryCache implements Cache
 	// Cache
 	//
 
-	public void store( String key, Iterable<String> tags, CacheEntry entry )
+	public void store( String key, CacheEntry entry )
 	{
 		int entrySize = entry.getSize();
 
 		if( debug )
-			System.out.println( "Store: " + key + " " + tags );
+			System.out.println( "Store: " + key );
 
 		CacheEntry removed = cache.put( key, entry );
 		if( removed != null )
@@ -127,7 +127,8 @@ public class InProcessMemoryCache implements Cache
 			}
 		}
 
-		if( tags != null )
+		String[] tags = entry.getTags();
+		if( ( tags != null ) && ( tags.length > 0 ) )
 		{
 			for( String tag : tags )
 			{

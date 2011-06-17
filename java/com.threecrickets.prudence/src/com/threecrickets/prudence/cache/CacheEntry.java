@@ -229,6 +229,16 @@ public class CacheEntry implements Externalizable
 	// Attributes
 	//
 
+	public String[] getTags()
+	{
+		return tags;
+	}
+
+	public void setTags( String[] tags )
+	{
+		this.tags = tags;
+	}
+
 	/**
 	 * @return The string
 	 */
@@ -392,6 +402,14 @@ public class CacheEntry implements Externalizable
 
 	public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
 	{
+		int tagsLength = in.readInt();
+		tags = new String[tagsLength];
+		for( int i = 0; i < tagsLength; i++ )
+		{
+			String tag = IoUtil.readUtf8( in );
+			tags[i] = tag;
+		}
+
 		if( in.readBoolean() )
 		{
 			bytes = new byte[in.readInt()];
@@ -411,6 +429,15 @@ public class CacheEntry implements Externalizable
 
 	public void writeExternal( ObjectOutput out ) throws IOException
 	{
+		if( tags == null )
+			out.writeInt( 0 );
+		else
+		{
+			out.writeInt( tags.length );
+			for( String tag : tags )
+				IoUtil.writeUtf8( out, tag );
+		}
+
 		if( bytes != null )
 		{
 			out.writeBoolean( true );
@@ -434,6 +461,11 @@ public class CacheEntry implements Externalizable
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
+
+	/**
+	 * The cache tags.
+	 */
+	private String[] tags;
 
 	/**
 	 * The stored bytes.

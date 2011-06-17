@@ -12,6 +12,7 @@
 package com.threecrickets.prudence.cache;
 
 import java.util.Arrays;
+import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -62,19 +63,31 @@ public class ChainCache implements Cache
 	// Cache
 	//
 
-	public void store( String key, Iterable<String> tags, CacheEntry entry )
+	public void store( String key, CacheEntry entry )
 	{
 		for( Cache cache : caches )
-			cache.store( key, tags, entry );
+			cache.store( key, entry );
 	}
 
 	public CacheEntry fetch( String key )
 	{
-		for( Cache cache : caches )
+		for( ListIterator<Cache> iterator = caches.listIterator(); iterator.hasNext(); )
 		{
+			Cache cache = iterator.next();
 			CacheEntry entry = cache.fetch( key );
 			if( entry != null )
+			{
+				// Store in previous caches
+				if( iterator.hasPrevious() )
+					iterator.previous();
+				while( iterator.hasPrevious() )
+				{
+					cache = iterator.previous();
+					cache.store( key, entry );
+				}
+
 				return entry;
+			}
 		}
 
 		return null;

@@ -690,7 +690,9 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			{
 				String cacheKeyForEncoding = getCacheKeyForEncoding( cacheKey, encoding );
 				Set<String> cacheTags = getCacheTags( executable, false );
-				cache.store( cacheKeyForEncoding, cacheTags, cacheEntry );
+				if( cacheTags != null )
+					cacheEntry.setTags( cacheTags.toArray( new String[] {} ) );
+				cache.store( cacheKeyForEncoding, cacheEntry );
 			}
 		}
 
@@ -836,12 +838,20 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 						Cache cache = attributes.getCache();
 						if( cache != null )
 						{
+							String[] tags = null;
+							if( cacheTags != null )
+								tags = cacheTags.toArray( new String[] {} );
+
 							String cacheKeyForEncoding = getCacheKeyForEncoding( cacheKey, encoding );
-							cache.store( cacheKeyForEncoding, cacheTags, encodedCacheEntry );
+							encodedCacheEntry.setTags( tags );
+							cache.store( cacheKeyForEncoding, encodedCacheEntry );
 
 							// Cache un-encoded entry separately
 							if( encoding != null )
-								cache.store( cacheKey, cacheTags, cacheEntry );
+							{
+								cacheEntry.setTags( tags );
+								cache.store( cacheKey, cacheEntry );
+							}
 						}
 					}
 				}

@@ -165,9 +165,9 @@ public class MongoDbCache implements Cache
 	// Cache
 	//
 
-	public void store( String key, Iterable<String> tags, CacheEntry entry )
+	public void store( String key, CacheEntry entry )
 	{
-		logger.fine( "Store: " + key + " " + tags );
+		logger.fine( "Store: " + key );
 
 		DBObject query = new BasicDBObject();
 		query.put( "_id", key );
@@ -180,7 +180,8 @@ public class MongoDbCache implements Cache
 		// dump, however we need it here, too, to allow for fast pruning.
 		set.put( "expirationDate", entry.getExpirationDate() );
 
-		if( ( tags != null ) && tags.iterator().hasNext() )
+		String[] tags = entry.getTags();
+		if( ( tags != null ) && ( tags.length > 0 ) )
 			set.put( "tags", tags );
 
 		if( isBinary )
