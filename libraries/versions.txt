@@ -11,8 +11,8 @@ firewall-friendly-agent		1.0 (Revision 3e32f63)
 grizzly						1.9.32
 groboutils					5 (note: we've removed the internal log4j distribution)
 groovy						1.8.0
-h2							1.3.154
-hazelcast					1.9.3
+h2							1.3.156
+hazelcast					1.9.3.1
 httpclient					4.1.1
 httpcore					4.1 (blocking version)
 httpmime					4.1.1
