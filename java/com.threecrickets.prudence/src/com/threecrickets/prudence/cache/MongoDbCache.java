@@ -13,17 +13,22 @@ package com.threecrickets.prudence.cache;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bson.BSONObject;
 import org.bson.types.Binary;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Encoding;
+import org.restlet.data.Form;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
+import org.restlet.data.Parameter;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -228,6 +233,20 @@ public class MongoDbCache implements Cache
 			CharacterSet characterSet = entry.getCharacterSet();
 			if( characterSet != null )
 				set.put( "characterSet", characterSet.getName() );
+
+			Form headers = entry.getHeaders();
+			if( headers != null )
+			{
+				BasicDBList list = new BasicDBList();
+				for( Parameter header : headers )
+				{
+					BasicDBObject object = new BasicDBObject();
+					object.put( "name", header.getName() );
+					object.put( "value", header.getValue() );
+					list.add( object );
+				}
+				set.put( "headers", list );
+			}
 		}
 
 		// Upsert
@@ -279,10 +298,28 @@ public class MongoDbCache implements Cache
 						Encoding encoding = Encoding.valueOf( (String) document.get( "encoding" ) );
 						CharacterSet characterSet = CharacterSet.valueOf( (String) document.get( "characterSet" ) );
 
+						Form headers = null;
+						Object storedHeaders = document.get( "headers" );
+						if( storedHeaders instanceof Collection )
+						{
+							headers = new Form();
+							for( Object storedHeader : (Collection<?>) storedHeaders )
+							{
+								if( storedHeader instanceof BSONObject )
+								{
+									BSONObject storedHeaderBson = (BSONObject) storedHeader;
+									Object name = storedHeaderBson.get( "name" );
+									Object value = storedHeaderBson.get( "value" );
+									if( ( name != null ) && ( value != null ) )
+										headers.add( name.toString(), value.toString() );
+								}
+							}
+						}
+
 						if( string != null )
-							cacheEntry = new CacheEntry( string, mediaType, language, characterSet, encoding, documentModificationDate, expirationDate );
+							cacheEntry = new CacheEntry( string, mediaType, language, characterSet, encoding, headers, documentModificationDate, expirationDate );
 						else
-							cacheEntry = new CacheEntry( bytes, mediaType, language, characterSet, encoding, documentModificationDate, expirationDate );
+							cacheEntry = new CacheEntry( bytes, mediaType, language, characterSet, encoding, headers, documentModificationDate, expirationDate );
 					}
 
 					logger.fine( "Fetched: " + key );

@@ -309,12 +309,15 @@ public abstract class IoUtil
 	 * Serializes an object.
 	 * 
 	 * @param o
-	 *        The object
+	 *        The object or null
 	 * @return The bytes
 	 * @throws IOException
 	 */
 	public static byte[] serialize( Object o ) throws IOException
 	{
+		if( o == null )
+			return new byte[0];
+
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		try
 		{
@@ -347,7 +350,7 @@ public abstract class IoUtil
 	 */
 	public static Object deserialize( byte[] bytes ) throws IOException, ClassNotFoundException
 	{
-		if( bytes == null )
+		if( ( bytes == null ) || ( bytes.length == 0 ) )
 			return null;
 
 		ByteArrayInputStream byteStream = new ByteArrayInputStream( bytes );

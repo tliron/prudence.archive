@@ -37,6 +37,7 @@ import org.apache.commons.dbcp.PoolingDataSource;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Encoding;
+import org.restlet.data.Form;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Metadata;
@@ -163,7 +164,7 @@ public class SqlCache implements Cache
 					statement
 						.execute( "CREATE TABLE IF NOT EXISTS "
 							+ cacheTableName
-							+ " (key VARCHAR(255) PRIMARY KEY, data BLOB, media_type VARCHAR(255), language VARCHAR(255), character_set VARCHAR(255), encoding VARCHAR(255), document_modification_date TIMESTAMP, expiration_date TIMESTAMP)" );
+							+ " (key VARCHAR(255) PRIMARY KEY, data BLOB, media_type VARCHAR(255), language VARCHAR(255), character_set VARCHAR(255), encoding VARCHAR(255), headers TEXT, document_modification_date TIMESTAMP, expiration_date TIMESTAMP)" );
 					statement.execute( "CREATE TABLE IF NOT EXISTS " + cacheTagsTableName + " (key VARCHAR(255), tag VARCHAR(255), FOREIGN KEY(key) REFERENCES " + cacheTableName + "(key) ON DELETE CASCADE)" );
 					statement.execute( "CREATE INDEX IF NOT EXISTS " + cacheTagsTableName + "_tag_idx ON " + cacheTagsTableName + " (tag)" );
 				}
@@ -205,7 +206,7 @@ public class SqlCache implements Cache
 
 				// Try updating this key
 
-				String sql = "UPDATE " + cacheTableName + " SET data=?, media_type=?, language=?, character_set=?, encoding=?, document_modification_date=?, expiration_date=? WHERE key=?";
+				String sql = "UPDATE " + cacheTableName + " SET data=?, media_type=?, language=?, character_set=?, encoding=?, headers=?, document_modification_date=?, expiration_date=? WHERE key=?";
 				PreparedStatement statement = connection.prepareStatement( sql );
 				try
 				{
@@ -214,9 +215,10 @@ public class SqlCache implements Cache
 					statement.setString( 3, entry.getLanguage() != null ? entry.getLanguage().getName() : null );
 					statement.setString( 4, entry.getCharacterSet() != null ? entry.getCharacterSet().getName() : null );
 					statement.setString( 5, entry.getEncoding() != null ? entry.getEncoding().getName() : null );
-					statement.setTimestamp( 6, new Timestamp( entry.getDocumentModificationDate().getTime() ) );
-					statement.setTimestamp( 7, new Timestamp( entry.getExpirationDate().getTime() ) );
-					statement.setString( 8, key );
+					statement.setString( 6, entry.getHeaders() == null ? "" : entry.getHeaders().getQueryString() );
+					statement.setTimestamp( 7, new Timestamp( entry.getDocumentModificationDate().getTime() ) );
+					statement.setTimestamp( 8, new Timestamp( entry.getExpirationDate().getTime() ) );
+					statement.setString( 9, key );
 					if( !statement.execute() && statement.getUpdateCount() > 0 )
 					{
 						logger.fine( "Updated " + key );
@@ -252,7 +254,7 @@ public class SqlCache implements Cache
 
 					// delete( connection, key );
 
-					sql = "INSERT INTO " + cacheTableName + " (key, data, media_type, language, character_set, encoding, document_modification_date, expiration_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+					sql = "INSERT INTO " + cacheTableName + " (key, data, media_type, language, character_set, encoding, headers, document_modification_date, expiration_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 					statement = connection.prepareStatement( sql );
 					try
 					{
@@ -262,8 +264,9 @@ public class SqlCache implements Cache
 						statement.setString( 4, getName( entry.getLanguage() ) );
 						statement.setString( 5, getName( entry.getCharacterSet() ) );
 						statement.setString( 6, getName( entry.getEncoding() ) );
-						statement.setTimestamp( 7, new Timestamp( entry.getDocumentModificationDate().getTime() ) );
-						statement.setTimestamp( 8, new Timestamp( entry.getExpirationDate().getTime() ) );
+						statement.setString( 7, entry.getHeaders() == null ? "" : entry.getHeaders().getQueryString() );
+						statement.setTimestamp( 8, new Timestamp( entry.getDocumentModificationDate().getTime() ) );
+						statement.setTimestamp( 9, new Timestamp( entry.getExpirationDate().getTime() ) );
 						statement.execute();
 					}
 					finally
@@ -335,7 +338,7 @@ public class SqlCache implements Cache
 
 			try
 			{
-				String sql = "SELECT data, media_type, language, character_set, encoding, document_modification_date, expiration_date FROM " + cacheTableName + " WHERE key=?";
+				String sql = "SELECT data, media_type, language, character_set, encoding, headers, document_modification_date, expiration_date FROM " + cacheTableName + " WHERE key=?";
 				PreparedStatement statement = connection.prepareStatement( sql );
 				try
 				{
@@ -350,19 +353,21 @@ public class SqlCache implements Cache
 							Language language = Language.valueOf( rs.getString( 3 ) );
 							CharacterSet characterSet = CharacterSet.valueOf( rs.getString( 4 ) );
 							Encoding encoding = Encoding.valueOf( rs.getString( 5 ) );
-							Timestamp documentModificationDate = rs.getTimestamp( 6 );
-							Timestamp expirationDate = rs.getTimestamp( 7 );
+							String rawHeaders = rs.getString( 6 );
+							Form headers = ( rawHeaders != null ) && ( rawHeaders.length() > 0 ) ? new Form( rawHeaders ) : null;
+							Timestamp documentModificationDate = rs.getTimestamp( 7 );
+							Timestamp expirationDate = rs.getTimestamp( 8 );
 
 							logger.fine( "Fetched: " + key );
 
 							CacheEntry entry;
 							if( encoding != null )
-								entry = new CacheEntry( data, mediaType, language, characterSet, encoding, documentModificationDate, expirationDate );
+								entry = new CacheEntry( data, mediaType, language, characterSet, encoding, headers, documentModificationDate, expirationDate );
 							else
 							{
 								try
 								{
-									entry = new CacheEntry( new String( data ), mediaType, language, characterSet, null, documentModificationDate, expirationDate );
+									entry = new CacheEntry( new String( data ), mediaType, language, characterSet, null, headers, documentModificationDate, expirationDate );
 								}
 								catch( IOException x )
 								{

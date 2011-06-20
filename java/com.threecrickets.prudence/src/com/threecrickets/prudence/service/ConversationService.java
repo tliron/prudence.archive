@@ -36,8 +36,20 @@ import com.threecrickets.prudence.util.FormWithFiles;
  * 
  * @author Tal Liron
  */
+/**
+ * @author emblemparade
+ */
 public class ConversationService
 {
+	//
+	// Constants
+	//
+
+	/**
+	 * The headers response attributes.
+	 */
+	public static final String HEADERS_ATTRIBUTES = "org.restlet.http.headers";
+
 	//
 	// Construction
 	//
@@ -302,6 +314,23 @@ public class ConversationService
 	public Disposition getDisposition()
 	{
 		return disposition;
+	}
+
+	/**
+	 * The extra response headers
+	 * 
+	 * @return The headers
+	 */
+	public Form getHeaders()
+	{
+		Map<String, Object> attributes = getResponse().getAttributes();
+		Form headers = (Form) attributes.get( HEADERS_ATTRIBUTES );
+		if( headers == null )
+		{
+			headers = new Form();
+			attributes.put( HEADERS_ATTRIBUTES, headers );
+		}
+		return headers;
 	}
 
 	/**

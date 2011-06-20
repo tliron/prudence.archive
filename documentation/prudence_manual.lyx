@@ -16723,8 +16723,8 @@ name "../api/|document-cache-duration"
 \end_layout
 
 \begin_layout Standard
-The duration in milleseconds for which the output of this document will
- be cached.
+The duration in milleseconds for which the output of this document, along
+ with all its response characteristics, will be cached.
  If this value is zero, the default, then caching is disabled.
  So, you must explicitly set this to a greater than zero value to enable
  caching.
@@ -19549,6 +19549,70 @@ conversation.disposition.type = 'attachment'
 \begin_layout Plain Layout
 
 conversation.disposition.filename = 'revenue.csv'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+conversation.headers
+\begin_inset CommandInset label
+LatexCommand label
+name "../api/|conversation-headers"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Access to the response headers as a 
+\begin_inset CommandInset href
+LatexCommand href
+name "form"
+target "http://www.restlet.org/documentation/2.0/jse/api/index.html?org/restlet/data/Parameter.html"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Note that these are 
+\emph on
+extra
+\emph default
+ headers in addition to those set automatically by Prudence, and that you
+ cannot use this API to override the automatic headers.
+ Also note that these extra headers are cached together with the rest of
+ the response characteristics: see 
+\bar under
+document.cacheDuration (page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "../api/|document-cache-duration"
+
+\end_inset
+
+)
+\bar default
+.
+\end_layout
+
+\begin_layout Standard
+Example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+conversation.headers.add('X-Pingback', 'http://mysite.org/pingback/')
 \end_layout
 
 \end_inset

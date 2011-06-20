@@ -23,9 +23,11 @@ import java.util.Date;
 
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Encoding;
+import org.restlet.data.Form;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Metadata;
+import org.restlet.data.Parameter;
 import org.restlet.representation.Representation;
 import org.restlet.representation.RepresentationInfo;
 import org.restlet.representation.StringRepresentation;
@@ -68,7 +70,7 @@ public class CacheEntry implements Externalizable
 	 */
 	public CacheEntry( CacheEntry cacheEntry, Encoding encoding ) throws IOException
 	{
-		this( cacheEntry.string, cacheEntry.mediaType, cacheEntry.language, cacheEntry.characterSet, encoding, cacheEntry.modificationDate, cacheEntry.expirationDate );
+		this( cacheEntry.string, cacheEntry.mediaType, cacheEntry.language, cacheEntry.characterSet, encoding, cacheEntry.headers, cacheEntry.modificationDate, cacheEntry.expirationDate );
 	}
 
 	/**
@@ -82,7 +84,7 @@ public class CacheEntry implements Externalizable
 	 */
 	public CacheEntry( CacheEntry cacheEntry, String string ) throws IOException
 	{
-		this( string, cacheEntry.mediaType, cacheEntry.language, cacheEntry.characterSet, cacheEntry.encoding, cacheEntry.modificationDate, cacheEntry.expirationDate );
+		this( string, cacheEntry.mediaType, cacheEntry.language, cacheEntry.characterSet, cacheEntry.encoding, cacheEntry.headers, cacheEntry.modificationDate, cacheEntry.expirationDate );
 	}
 
 	/**
@@ -98,18 +100,21 @@ public class CacheEntry implements Externalizable
 	 *        The character set
 	 * @param encoding
 	 *        The encoding
+	 * @param headers
+	 *        The headers
 	 * @param documentModificationDate
 	 *        The document modification date
 	 * @param expirationDate
 	 *        The expiration date
 	 * @throws IOException
 	 */
-	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, Encoding encoding, Date documentModificationDate, Date expirationDate ) throws IOException
+	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, Encoding encoding, Form headers, Date documentModificationDate, Date expirationDate ) throws IOException
 	{
 		this.mediaType = mediaType;
 		this.language = language;
 		this.characterSet = characterSet;
 		this.encoding = encoding;
+		this.headers = headers;
 		this.documentModificationDate = documentModificationDate;
 		this.expirationDate = expirationDate;
 
@@ -132,18 +137,21 @@ public class CacheEntry implements Externalizable
 	 *        The character set
 	 * @param encoding
 	 *        The encoding
+	 * @param headers
+	 *        The headers
 	 * @param documentModificationDate
 	 *        The document modification date
 	 * @param expirationDate
 	 *        The expiration date
 	 */
-	public CacheEntry( byte[] bytes, MediaType mediaType, Language language, CharacterSet characterSet, Encoding encoding, Date documentModificationDate, Date expirationDate )
+	public CacheEntry( byte[] bytes, MediaType mediaType, Language language, CharacterSet characterSet, Encoding encoding, Form headers, Date documentModificationDate, Date expirationDate )
 	{
 		this.bytes = bytes;
 		this.mediaType = mediaType;
 		this.language = language;
 		this.characterSet = characterSet;
 		this.encoding = encoding;
+		this.headers = headers;
 		this.documentModificationDate = documentModificationDate;
 		this.expirationDate = expirationDate;
 	}
@@ -161,15 +169,17 @@ public class CacheEntry implements Externalizable
 	 *        The character set
 	 * @param encoding
 	 *        The encoding
+	 * @param headers
+	 *        The headers
 	 * @param docmuentModificationTimestamp
 	 *        The document modification timestamp
 	 * @param expirationTimestamp
 	 *        The expiration timestamp or 0 for no expiration
 	 * @throws IOException
 	 */
-	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, Encoding encoding, long docmuentModificationTimestamp, long expirationTimestamp ) throws IOException
+	public CacheEntry( String string, MediaType mediaType, Language language, CharacterSet characterSet, Encoding encoding, Form headers, long docmuentModificationTimestamp, long expirationTimestamp ) throws IOException
 	{
-		this( string, mediaType, language, characterSet, encoding, new Date( docmuentModificationTimestamp ), expirationTimestamp > 0 ? new Date( expirationTimestamp ) : null );
+		this( string, mediaType, language, characterSet, encoding, headers, new Date( docmuentModificationTimestamp ), expirationTimestamp > 0 ? new Date( expirationTimestamp ) : null );
 	}
 
 	/**
@@ -185,15 +195,17 @@ public class CacheEntry implements Externalizable
 	 *        The character set
 	 * @param encoding
 	 *        The encoding
+	 * @param headers
+	 *        The headers
 	 * @param docmuentModificationTimestamp
 	 *        The document modification timestamp
 	 * @param expirationTimestamp
 	 *        The expiration timestamp or 0 for no expiration
 	 * @throws IOException
 	 */
-	public CacheEntry( byte[] bytes, MediaType mediaType, Language language, CharacterSet characterSet, Encoding encoding, long docmuentModificationTimestamp, long expirationTimestamp )
+	public CacheEntry( byte[] bytes, MediaType mediaType, Language language, CharacterSet characterSet, Encoding encoding, Form headers, long docmuentModificationTimestamp, long expirationTimestamp )
 	{
-		this( bytes, mediaType, language, characterSet, encoding, new Date( docmuentModificationTimestamp ), expirationTimestamp > 0 ? new Date( expirationTimestamp ) : null );
+		this( bytes, mediaType, language, characterSet, encoding, headers, new Date( docmuentModificationTimestamp ), expirationTimestamp > 0 ? new Date( expirationTimestamp ) : null );
 	}
 
 	/**
@@ -296,6 +308,14 @@ public class CacheEntry implements Externalizable
 	public Encoding getEncoding()
 	{
 		return encoding;
+	}
+
+	/**
+	 * @return The headers
+	 */
+	public Form getHeaders()
+	{
+		return headers;
 	}
 
 	/**
@@ -422,6 +442,19 @@ public class CacheEntry implements Externalizable
 		language = Language.valueOf( in.readUTF() );
 		characterSet = CharacterSet.valueOf( in.readUTF() );
 		encoding = Encoding.valueOf( in.readUTF() );
+
+		int headersLength = in.readInt();
+		if( headersLength > 0 )
+		{
+			headers = new Form();
+			for( int i = 0; i < headersLength; i++ )
+			{
+				String name = IoUtil.readUtf8( in );
+				String value = IoUtil.readUtf8( in );
+				headers.add( name, value );
+			}
+		}
+
 		documentModificationDate = new Date( in.readLong() );
 		modificationDate = new Date( in.readLong() );
 		expirationDate = new Date( in.readLong() );
@@ -454,6 +487,19 @@ public class CacheEntry implements Externalizable
 		out.writeUTF( nonNull( language ) );
 		out.writeUTF( nonNull( characterSet ) );
 		out.writeUTF( nonNull( encoding ) );
+
+		if( headers == null )
+			out.writeInt( 0 );
+		else
+		{
+			out.writeInt( headers.size() );
+			for( Parameter header : headers )
+			{
+				IoUtil.writeUtf8( out, header.getName() );
+				IoUtil.writeUtf8( out, header.getValue() );
+			}
+		}
+
 		out.writeLong( documentModificationDate.getTime() );
 		out.writeLong( modificationDate.getTime() );
 		out.writeLong( expirationDate.getTime() );
@@ -496,6 +542,11 @@ public class CacheEntry implements Externalizable
 	 * The encoding.
 	 */
 	private Encoding encoding;
+
+	/**
+	 * The headers.
+	 */
+	private Form headers;
 
 	/**
 	 * The document modification date.

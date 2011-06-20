@@ -28,6 +28,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Encoding;
+import org.restlet.data.Form;
 import org.restlet.data.Reference;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
@@ -699,6 +700,13 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		// We want to write this, too, for includes
 		if( ( writer != null ) && ( cacheEntry.getString() != null ) )
 			writer.write( cacheEntry.getString() );
+		
+		System.out.println("cache hit "+System.currentTimeMillis());
+
+		// Apply headers
+		Form headers = cacheEntry.getHeaders();
+		if( headers != null )
+			this.resource.getResponse().getAttributes().put( ConversationService.HEADERS_ATTRIBUTES, headers );
 
 		return cacheEntry.represent();
 	}
@@ -730,8 +738,8 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			if( writer != null )
 				writer.write( pureText );
 
-			return new CacheEntry( pureText, conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), getEncoding( executable ), executable.getDocumentTimestamp(),
-				getExpirationTimestamp( executable ) ).represent();
+			return new CacheEntry( pureText, conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), getEncoding( executable ), conversationService.getHeaders(),
+				executable.getDocumentTimestamp(), getExpirationTimestamp( executable ) ).represent();
 		}
 
 		int startPosition = 0;
@@ -823,7 +831,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 				// Get the buffer from when we executed the executable
 				CacheEntry cacheEntry = new CacheEntry( writerBuffer.substring( startPosition ), conversationService.getMediaType(), conversationService.getLanguage(), conversationService.getCharacterSet(), null,
-					executable.getDocumentTimestamp(), expirationTimestamp );
+					conversationService.getHeaders(), executable.getDocumentTimestamp(), expirationTimestamp );
 
 				// Encoded version
 				CacheEntry encodedCacheEntry = new CacheEntry( cacheEntry, encoding );
