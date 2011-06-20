@@ -700,8 +700,6 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		// We want to write this, too, for includes
 		if( ( writer != null ) && ( cacheEntry.getString() != null ) )
 			writer.write( cacheEntry.getString() );
-		
-		System.out.println("cache hit "+System.currentTimeMillis());
 
 		// Apply headers
 		Form headers = cacheEntry.getHeaders();
