@@ -102,13 +102,30 @@
 		<attribute name="name" />
 		<sequential>
 			<copy todir="@{dist}/content">
-				<fileset dir="${common}" excludes="bin/run.sh, bin/run.bat, **/.svn/" />
+				<fileset dir="${common}" excludes="bin/run.sh, bin/run.bat, readme.txt, **/.svn/" />
 				<fileset dir="@{base}" excludes="**/.svn/" />
 			</copy>
 			<pathconvert property="@{dist}-jars" pathsep=":">
 				<fileset dir="@{dist}/content/libraries" includes="*.jar" />
 				<flattenmapper />
 			</pathconvert>
+			<vppcopy tofile="@{dist}/content/readme.txt">
+				<fileset file="${common}/readme.txt" />
+				<config>
+					<context>
+						<property key="distribution" value="@{dist}" />
+					</context>
+				</config>
+			</vppcopy>
+			<vppcopy tofile="@{dist}/content/readme-windows.txt">
+				<fileset file="${common}/readme.txt" />
+				<config>
+					<context>
+						<property key="distribution" value="@{dist}" />
+						<property key="os" value="windows" />
+					</context>
+				</config>
+			</vppcopy>
 			<vppcopy todir="@{dist}/content/bin">
 				<fileset dir="${common}/bin" includes="run.sh, run.bat" />
 				<config>
@@ -131,6 +148,8 @@
 				<fileset dir="${velocity}/applications/prudence-test/web" excludes="**/.svn/" />
 			</copy>
 			<mkdir dir="@{dist}/content/common" />
+			<!-- This makes the txt files Windows-friendly -->
+			<fixcrlf srcdir="@{dist}/content" includes="**/*.txt" eol="crlf" eof="remove" tab="remove" tablength="4" />
 		</sequential>
 	</macrodef>
 
