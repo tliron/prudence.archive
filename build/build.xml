@@ -154,7 +154,8 @@
 		<attribute name="name" />
 		<sequential>
 			<zip destfile="prudence-@{name}-R${revision.max}.zip" level="9">
-				<fileset dir="@{dist}/content" excludes="cache/, logs/, data/, libraries/com.caucho.quercus.jar" />
+				<zipfileset dir="@{dist}/content" excludes="cache/, logs/, data/, **/com.caucho.quercus.jar, **/run.sh, **/jsvc" />
+				<zipfileset dir="@{dist}/content/" filemode="755" includes="**/run.sh, **/jsvc" />
 			</zip>
 		</sequential>
 	</macrodef>
@@ -282,7 +283,7 @@
 			<link href="http://www.hazelcast.com/javadoc/" />
 			<link href="http://dustin.github.com/java-memcached-client/apidocs/" />
 			<link href="http://commons.apache.org/daemon/apidocs/" />
-			<link href="http://api.mongodb.org/java/2.5.3/" />
+			<link href="http://api.mongodb.org/java/2.6.5/" />
 			<classpath>
 				<fileset dir="${lib}/cron4j/lib" />
 				<fileset dir="${lib}/hazelcast/lib" />
