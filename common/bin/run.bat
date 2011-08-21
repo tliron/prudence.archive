@@ -29,7 +29,12 @@ IF "%1"=="install" GOTO install
 IF "%1"=="uninstall" GOTO uninstall
 IF "%1"=="monitor" GOTO monitor
 IF "%1"=="settings" GOTO settings
-ECHO Usage: {console^|start^|stop^|install^|uninstall^|monitor^|settings}
+ECHO Usage: run.bat {console^|start^|stop^|install^|uninstall^|monitor^|settings}
+ECHO.
+ECHO If you are unsure which option to use, "console" mode is recommended.
+ECHO.
+ECHO For information on setting up Prudence to start and stop as a daemon, see:
+ECHO http://threecrickets.com/prudence/manual/daemon/ 
 CD /D "%ORIGINAL%"
 EXIT /B
 

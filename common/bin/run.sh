@@ -247,7 +247,12 @@ case "$1" in
 		status
 		;;
 	*)
-		echo "Usage: {console|start|stop|restart|status}"
+		echo "Usage: run.sh {console|start|stop|restart|status}"
+		echo
+		echo "If you are unsure which option to use, \"console\" mode is recommended."
+		echo
+		echo "For information on setting up Prudence to start and stop as a daemon, see"
+		echo "http://threecrickets.com/prudence/manual/daemon/" 
 		exit 1
 		;; 
 esac
