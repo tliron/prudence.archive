@@ -167,15 +167,48 @@
 			</vppcopy>
 		</sequential>
 	</macrodef>
+	
+	<macrodef name="dmg">
+		<!-- See: http://stackoverflow.com/questions/286419/how-to-build-a-dmg-mac-os-x-file-on-a-non-mac-platform -->
+		<!-- Requires package hfsprogs in Ubuntu -->
+		<attribute name="destfile" />
+		<attribute name="name" />
+		<attribute name="dir" />
+		<sequential>
+			<exec executable="dd" failifexecutionfails="false">
+				<arg value="if=/dev/zero" />
+				<arg value="of=@{destfile}" />
+				<arg value="bs=1M" />
+				<arg value="count=64" />
+			</exec>
+			<exec executable="mkfs.hfsplus" failifexecutionfails="false">
+				<arg value="-v @{name}" />
+				<arg value="@{destfile}" />
+			</exec>
+			<!-- We need root access for this to work -->
+			<exec executable="mount" failifexecutionfails="false">
+				<arg value="-o loop" />
+				<arg value="@{destfile}" />
+				<arg value="dmg" />
+			</exec>
+			<copy todir="dmg">
+				<fileset dir="@{dist}/content" excludes="cache/, logs/, data/, **/com.caucho.quercus.jar" />
+			</copy>
+			<exec executable="umount" failifexecutionfails="false">
+				<arg value="@{destfile}" />
+			</exec>
+		</sequential>
+	</macrodef>
 
 	<macrodef name="package">
 		<attribute name="dist" />
 		<attribute name="name" />
 		<sequential>
 			<zip destfile="prudence-@{name}-R${revision.max}.zip" level="9">
-				<zipfileset dir="@{dist}/content" excludes="cache/, logs/, data/, **/com.caucho.quercus.jar, **/run.sh, **/jsvc" />
-				<zipfileset dir="@{dist}/content/" filemode="755" includes="**/run.sh, **/jsvc" />
+				<zipfileset prefix="prudence-@{name}-R${revision.max}" dir="@{dist}/content" excludes="cache/, logs/, data/, **/com.caucho.quercus.jar, **/run.sh, **/jsvc" />
+				<zipfileset prefix="prudence-@{name}-R${revision.max}" dir="@{dist}/content" filemode="755" includes="**/run.sh, **/jsvc" />
 			</zip>
+			<!-- <dmg destfile="prudence-@{name}-R${revision.max}.dmg" name="Prudence (@{name}-R${revision.max})" dir="@{dist}/content" /> -->
 		</sequential>
 	</macrodef>
 
