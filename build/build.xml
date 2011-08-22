@@ -52,6 +52,16 @@
 	
 	<!-- Macros -->
 
+	<macrodef name="fetch-license">
+		<attribute name="dist" />
+		<attribute name="library" />
+		<sequential>
+			<copy todir="@{dist}/content/licenses/@{library}">
+				<fileset dir="${lib}/@{library}/license" excludes="**/.svn/" />
+			</copy>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="fetch-library">
 		<attribute name="dist" />
 		<attribute name="library" />
@@ -104,6 +114,9 @@
 			<copy todir="@{dist}/content">
 				<fileset dir="${common}" excludes="bin/run.sh, bin/run.bat, readme.txt, **/.svn/" />
 				<fileset dir="@{base}" excludes="**/.svn/" />
+			</copy>
+			<copy todir="@{dist}/content/applications/stickstick/web/static/script">
+				<fileset dir="${lib}/jquery/lib" excludes="**/.svn/" />
 			</copy>
 			<pathconvert property="@{dist}-jars" pathsep=":">
 				<fileset dir="@{dist}/content/libraries" includes="*.jar" />
@@ -414,6 +427,7 @@
 		<fetch-library dist="${dist-javascript}" library="httpmime" />
 		<fetch-library dist="${dist-javascript}" library="jackson" />
 		<fetch-library dist="${dist-javascript}" library="jcip-annotations" />
+		<fetch-license dist="${dist-javascript}" library="jquery" />
 		<fetch-library dist="${dist-javascript}" library="json" />
 		<fetch-library dist="${dist-javascript}" library="jygments" />
 		<fetch-library dist="${dist-javascript}" library="log4j" />
@@ -474,6 +488,7 @@
 		<fetch-library dist="${dist-python}" library="jackson" />
 		<fetch-library dist="${dist-python}" library="jcip-annotations" />
 		<fetch-library dist="${dist-python}" library="jepp" />
+		<fetch-license dist="${dist-python}" library="jquery" />
 		<fetch-library dist="${dist-python}" library="json" />
 		<fetch-library dist="${dist-python}" library="jsr223" />
 		<fetch-library dist="${dist-python}" library="jygments" />
@@ -541,6 +556,7 @@
 		<fetch-library dist="${dist-clojure}" library="httpmime" />
 		<fetch-library dist="${dist-clojure}" library="jackson" />
 		<fetch-library dist="${dist-clojure}" library="jcip-annotations" />
+		<fetch-license dist="${dist-clojure}" library="jquery" />
 		<fetch-library dist="${dist-clojure}" library="json" />
 		<fetch-library dist="${dist-clojure}" library="jygments" />
 		<fetch-library dist="${dist-clojure}" library="log4j" />
@@ -600,6 +616,7 @@
 		<fetch-library dist="${dist-groovy}" library="httpmime" />
 		<fetch-library dist="${dist-groovy}" library="jackson" />
 		<fetch-library dist="${dist-groovy}" library="jcip-annotations" />
+		<fetch-license dist="${dist-groovy}" library="jquery" />
 		<fetch-library dist="${dist-groovy}" library="json" />
 		<fetch-library dist="${dist-groovy}" library="jygments" />
 		<fetch-library dist="${dist-groovy}" library="log4j" />
@@ -658,6 +675,7 @@
 		<fetch-library dist="${dist-ruby}" library="httpmime" />
 		<fetch-library dist="${dist-ruby}" library="jackson" />
 		<fetch-library dist="${dist-ruby}" library="jcip-annotations" />
+		<fetch-license dist="${dist-ruby}" library="jquery" />
 		<fetch-library dist="${dist-ruby}" library="jruby" />
 		<fetch-library dist="${dist-ruby}" library="json" />
 		<fetch-library dist="${dist-ruby}" library="jygments" />
@@ -721,6 +739,7 @@
 		<fetch-library dist="${dist-php}" library="httpmime" />
 		<fetch-library dist="${dist-php}" library="jackson" />
 		<fetch-library dist="${dist-php}" library="jcip-annotations" />
+		<fetch-license dist="${dist-php}" library="jquery" />
 		<fetch-library dist="${dist-php}" library="json" />
 		<fetch-library dist="${dist-php}" library="jygments" />
 		<fetch-library dist="${dist-php}" library="log4j" />
@@ -796,6 +815,7 @@
 		<fetch-library dist="${dist-kitchensink}" library="jackson" />
 		<fetch-library dist="${dist-kitchensink}" library="jcip-annotations" />
 		<fetch-library dist="${dist-kitchensink}" library="jepp" />
+		<fetch-license dist="${dist-kitchensink}" library="jquery" />
 		<fetch-library dist="${dist-kitchensink}" library="jruby" />
 		<fetch-library dist="${dist-kitchensink}" library="json" />
 		<fetch-library dist="${dist-kitchensink}" library="jsr223" />
