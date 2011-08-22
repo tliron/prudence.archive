@@ -115,6 +115,9 @@
 				<fileset dir="${common}" excludes="bin/run.sh, bin/run.bat, readme.txt, **/.svn/" />
 				<fileset dir="@{base}" excludes="**/.svn/" />
 			</copy>
+			<copy todir="@{dist}/content/applications/prudence-test/web/static/script">
+				<fileset dir="${lib}/jquery/lib" excludes="**/.svn/" />
+			</copy>
 			<copy todir="@{dist}/content/applications/stickstick/web/static/script">
 				<fileset dir="${lib}/jquery/lib" excludes="**/.svn/" />
 			</copy>

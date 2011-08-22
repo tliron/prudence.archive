@@ -24,6 +24,7 @@ jquery						1.6.2
 jquery-ui					1.8.16
 jquery-loading
 jquery-stickynote
+jquery-json					2.2
 jruby						1.6.3
 json						
 jsr-223						
