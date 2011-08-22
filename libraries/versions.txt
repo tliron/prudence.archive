@@ -10,9 +10,9 @@ cron4j						2.2.3
 firewall-friendly-agent		1.0 (Revision 3e32f63)
 grizzly						1.9.32
 groboutils					5 (note: we've removed the internal log4j distribution)
-groovy						1.8.0
-h2							1.3.156
-hazelcast					1.9.3.1
+groovy						1.8.1
+h2							1.3.159
+hazelcast					1.9.3.4
 httpclient					4.1.1
 httpcore					4.1 (blocking version)
 httpmime					4.1.1
@@ -20,7 +20,11 @@ jackson						1.8.0
 jcip-annotations			
 jepp						2.4
 jetty						7.2.2 (note: 7.3 conflicts with Restlet 2.0)
-jruby						1.6.2
+jquery						1.6.2
+jquery-ui					1.8.16
+jquery-loading
+jquery-stickynote
+jruby						1.6.3
 json						
 jsr-223						
 junit						4.8.2
