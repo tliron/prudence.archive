@@ -71,8 +71,8 @@ TESTING AND TROUBLESHOOTING YOUR INSTALLATION
 =============================================
 
 #if($os == 'windows')
-Open a command line interface (cmd.exe) and run "bin\run.bat" from your Prudence distribution.
-This should output usage information.
+Open a terminal (cmd.exe) and run "bin\run.bat" from your Prudence distribution. This should output
+usage information.
 
 If that worked, you can now try to run Prudence in console mode: "bin\run.bat console".
 #else
@@ -88,6 +88,8 @@ If that worked, you can now try to run Prudence in console mode: "bin/run.sh con
 #end
 
 If all goes well, Prudence should announce its version and let you know when it's up and running!
+You can stop Prudence at any time by pressing CTRL-C at the terminal.
+
 You can then point your web browser to "http://localhost:8080/" to see the demo site. You will
 be greeted with the Prudence Administration application, from where you can click on links to see
 the installed applications. From there, you can continue to the tutorial to learn how to create
