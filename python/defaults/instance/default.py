@@ -49,7 +49,7 @@ def execute_or_default(name, default=None):
 # Version
 #
 
-prudence_version = '1.1'
+prudence_version = '%VERSION%'
 prudence_revision = '-%REVISION%'
 if len(prudence_revision) == 1:
 	prudence_revision = ''

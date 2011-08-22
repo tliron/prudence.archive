@@ -156,6 +156,7 @@
 			<copy todir="@{dist}/content/documentation">
 				<fileset dir="${tmp}/documentation" />
 			</copy>
+			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%VERSION%" value="${version}" />
 			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%REVISION%" value="${revision.max}" />
 			<copy todir="@{dist}/content/applications/prudence-test/web">
 				<fileset dir="${velocity}/applications/prudence-test/web" excludes="**/.svn/" />
@@ -335,7 +336,7 @@
 	</target>
 
 	<target name="javadoc-unless" description="Create Prudence API docs" unless="javadoc-present">
-		<javadoc sourcepath="${java-src}" source="1.5" excludepackagenames="**.internal.*,**.test.*" destdir="${tmp}/api" stylesheetfile="${documentation}/soft-cricket-api.css" windowtitle="Prudence 1.1-R${revision.max}" doctitle="Prudence 1.1-R${revision.max}" access="protected" author="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" splitindex="true" use="true" version="true" verbose="true">
+		<javadoc sourcepath="${java-src}" source="1.5" excludepackagenames="**.internal.*,**.test.*" destdir="${tmp}/api" stylesheetfile="${documentation}/soft-cricket-api.css" windowtitle="Prudence ${version}-R${revision.max}" doctitle="Prudence ${version}-R${revision.max}" access="protected" author="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" splitindex="true" use="true" version="true" verbose="true">
 			<link href="http://download.oracle.com/javase/1.5.0/docs/api/" />
 			<link href="http://download.oracle.com/javase/6/docs/api/" />
 			<link href="http://threecrickets.com/scripturian/api/" />

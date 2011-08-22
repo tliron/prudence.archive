@@ -76,7 +76,7 @@ function execute_or_default($name, $def=NULL) {
 // Version
 //
 
-$prudence_version = '1.1';
+$prudence_version = '%VERSION%';
 $prudence_revision = '-%REVISION%';
 if(strlen($prudence_revision) == 1) {
 	$prudence_revision = '';

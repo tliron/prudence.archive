@@ -54,7 +54,7 @@ function executeOrDefault(name, def) {
 // Version
 //
 
-var prudenceVersion = '1.1'
+var prudenceVersion = '%VERSION%'
 var prudenceRevision = '-%REVISION%'
 if(prudenceRevision.length == 1) {
 	prudenceRevision = ''

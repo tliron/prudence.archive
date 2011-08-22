@@ -54,7 +54,7 @@
 ; Version
 ;
 
-(def prudence-version "1.1")
+(def prudence-version "%VERSION%")
 (def prudence-revision "-%REVISION%")
 (if (= (.length prudence-revision) 1)
 	(def prudence-revision ""))

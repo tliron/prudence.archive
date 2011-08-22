@@ -2,6 +2,8 @@
 # Copy this file as "prudence.properties" and change it as necessary.
 #
 
+version=1.1.1
+
 # Hardcode a revision
 # (If this is not provided, the revision will be fetched dynamically from
 # the Subversion tree. It's a bit slow to do so!)
