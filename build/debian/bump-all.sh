@@ -17,7 +17,7 @@ REVISION=$2
 TIMESTAMP=$3
 
 if [[ -z "$UPDATE" || -z "$REVISION" ]]; then
-	echo "Must an update number, and a revision number (and optionally a date string)"
+	echo "Must provide an update number, and a revision number (and optionally a date string)"
 	exit 1
 fi
 if [ -z "$TIMESTAMP" ]; then
