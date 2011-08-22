@@ -24,9 +24,14 @@ You need a JVM-enabled operating system. Prudence requires at least at least JVM
 "Standard Edition" JVM is just fine; Prudence does not require or use the "Enterprise Edition"
 features.
 
-Open a terminal, and run "java" to see if you have a JVM installed.
+Open a terminal, and see what version, if any, of the JVM you have installed:
 
-Otherwise, an excellent free JVM is available from the OpenJDK project:
+  java -version
+  
+It should show something like "java version 1.5": "version 1.5" means JVM 5, "version 1.6" means
+JVM 6, etc.
+
+If you don't have at least JVM 5, you can download one from the OpenJDK project:
 
   http://openjdk.java.net/
 #if(($distribution == 'php') || ($distribution == 'kitchensink'))
@@ -83,7 +88,12 @@ If that worked, you can now try to run Prudence in console mode: "bin/run.sh con
 #end
 
 If all goes well, Prudence should announce its version and let you know when it's up and running!
-You can then point your web browser to "http://localhost:8080/" to see the demo site.
+You can then point your web browser to "http://localhost:8080/" to see the demo site. You will
+be greeted with the Prudence Administration application, from where you can click on links to see
+the installed applications. From there, you can continue to the tutorial to learn how to create
+your own Prudence applications:
+
+  http://threecrickets.com/prudence/manual/tutorial/
 
 If that did not work, it could be that your JVM is improperly installed. See REQUIREMENTS above.
 #if($os != 'windows')
