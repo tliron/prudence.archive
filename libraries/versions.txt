@@ -6,7 +6,7 @@ commons-fileupload			1.2.2
 commons-io					2.0.1
 commons-logging				1.1.1
 commons-pool				1.5.6
-cron4j						2.2.3
+cron4j						2.2.4
 firewall-friendly-agent		1.0 (Revision 3e32f63)
 grizzly						1.9.32
 groboutils					5 (note: we've removed the internal log4j distribution)
