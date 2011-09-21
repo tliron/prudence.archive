@@ -7514,7 +7514,8 @@ In the example above, our ``/web/dynamic/lines/simple.html'' file would be
 \end_layout
 
 \begin_layout Standard
-To avoid external exposure, put files in /web/framents/ instead of /web/dynamic/.
+To avoid external exposure, put files in /web/fragments/ instead of /web/dynamic
+/.
  Use is otherwise identical.
  For example, we'd move our file above to ``/web/fragments/lines/simple.html''.
  Files in /web/fragments/ are only available via include scriptlets.
@@ -24753,7 +24754,7 @@ s, no doubt.
  it would be a poor choice for scalable applications.
  Does a certain programming language execute faster than another? That's
  great if you're doing video compression, but speed of execution might not
- have have noticeable effect on scalability.
+ have a noticeable effect on scalability.
  Web applications mostly do I/O, not computation.
  The same web application might have very similar performance characteristics
  whether it's written in C++ or PHP.
@@ -24770,7 +24771,7 @@ Speed of execution can actually help scalability in its financial aspect:
  If your application servers are constantly at maximum CPU load, then a
  faster execution platform would let you cram more web threads into each
  server.
- This will help you reduce costs.
+ This could help you reduce costs.
  For example, see 
 \begin_inset CommandInset href
 LatexCommand href
@@ -26289,8 +26290,8 @@ Document Databases
 \end_layout
 
 \begin_layout Standard
-If your data contains mostly ``documents''---self-contained records with
- few relationships to other documents---then consider a document database.
+If your data is composed mostly of ``documents''---self-contained records
+ with few relationships to other documents---then consider a document database.
  
 \end_layout
 
@@ -26305,13 +26306,12 @@ Document databases allow for straightforward distribution and very fine-grained
 \begin_layout Standard
 The cost of this scalability is the loss of your ability to do relational
  queries of your data.
- Instead, you'll be using distributed map/reduce, or rely on an an indexing
+ Instead, you'll be using distributed map/reduce, or rely on an indexing
  service.
  These are powerful tools, but they do not match relational queries in sheer
  flexibility of complex queries.
  Implementing something as simple as a many-to-many connection, the bread-and-bu
-tter of relational databases, requires some specialization for document
- database.
+tter of relational databases, is non-trivial in document databases.
  Where document databases shine is at listing, sorting and searching through
  very large catalogs of documents.
 \end_layout
