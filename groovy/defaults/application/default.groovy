@@ -76,7 +76,7 @@ predefinedGlobals.each() { key, value ->
 // Handlers
 //
 
-handlersDocumentSource = new DocumentFileSource(applicationBase + handlersBasePath, applicationBasePath + handlersBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
+handlersDocumentSource = new DocumentFileSource(applicationBase + handlersBasePath, applicationBasePath + handlersBasePath, documentsDefaultName, 'groovy', minimumTimeBetweenValidityChecks)
 applicationGlobals['com.threecrickets.prudence.DelegatedHandler.documentSource'] = handlersDocumentSource
 applicationGlobals['com.threecrickets.prudence.DelegatedHandler.extraDocumentSources'] = commonHandlersDocumentSources
 
@@ -84,7 +84,7 @@ applicationGlobals['com.threecrickets.prudence.DelegatedHandler.extraDocumentSou
 // Tasks
 //
 
-tasksDocumentSource = new DocumentFileSource(applicationBase + tasksBasePath, applicationBasePath + tasksBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
+tasksDocumentSource = new DocumentFileSource(applicationBase + tasksBasePath, applicationBasePath + tasksBasePath, documentsDefaultName, 'groovy', minimumTimeBetweenValidityChecks)
 applicationGlobals['com.threecrickets.prudence.ApplicationTask.documentSource'] = tasksDocumentSource
 applicationGlobals['com.threecrickets.prudence.ApplicationTask.extraDocumentSources'] = commonTasksDocumentSources
 

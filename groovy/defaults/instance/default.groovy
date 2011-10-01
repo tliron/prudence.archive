@@ -24,13 +24,13 @@ import com.threecrickets.prudence.service.ApplicationService
 // Common
 //
 
-commonLibrariesDocumentSource = new DocumentFileSource('common/libraries/', new File(document.source.basePath, 'common/libraries/'), 'default', 'gv', 5000)
-commonFragmentsDocumentSource = new DocumentFileSource('common/web/fragments/', new File(document.source.basePath, 'common/web/fragments/'), 'index', 'gv', 5000)
+commonLibrariesDocumentSource = new DocumentFileSource('common/libraries/', new File(document.source.basePath, 'common/libraries/'), 'default', 'groovy', 5000)
+commonFragmentsDocumentSource = new DocumentFileSource('common/web/fragments/', new File(document.source.basePath, 'common/web/fragments/'), 'index', 'groovy', 5000)
 
 commonTasksDocumentSources = new CopyOnWriteArrayList()
-commonTasksDocumentSources.add(new DocumentFileSource('common/tasks/', new File(document.source.basePath, 'common/tasks/'), 'default', 'gv', 5000))
+commonTasksDocumentSources.add(new DocumentFileSource('common/tasks/', new File(document.source.basePath, 'common/tasks/'), 'default', 'groovy', 5000))
 commonHandlersDocumentSources = new CopyOnWriteArrayList()
-commonHandlersDocumentSources.add(new DocumentFileSource('common/handlers/', new File(document.source.basePath, 'common/handlers/'), 'default', 'gv', 5000))
+commonHandlersDocumentSources.add(new DocumentFileSource('common/handlers/', new File(document.source.basePath, 'common/handlers/'), 'default', 'groovy', 5000))
 
 document.librarySources.add(commonLibrariesDocumentSource)
 

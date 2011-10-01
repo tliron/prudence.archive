@@ -11,5 +11,5 @@
 // at http://threecrickets.com/
 //
 
-document.preferredExtension = 'gv'
+document.preferredExtension = 'groovy'
 document.execute('/defaults/instance/')

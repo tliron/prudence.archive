@@ -57,7 +57,7 @@ componentInstance.internalRouter.attach('/' + applicationInternalName, applicati
 // Hosts
 //
 // Note that the application's context will not be created until we attach the application to at least one
-// virtual host. See defaults/instance/hosts.gv for more information.
+// virtual host. See defaults/instance/hosts.groovy for more information.
 //
 
 addTrailingSlash = new Redirector(applicationInstance.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)
@@ -123,16 +123,16 @@ languageManager = executable.manager
 //
 
 librariesDocumentSources = new CopyOnWriteArrayList()
-librariesDocumentSources.add(new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks))
+librariesDocumentSources.add(new DocumentFileSource(applicationBase + librariesBasePath, applicationBasePath + librariesBasePath, documentsDefaultName, 'groovy', minimumTimeBetweenValidityChecks))
 librariesDocumentSources.add(commonLibrariesDocumentSource)
 
 //
 // Dynamic web
 //
 
-dynamicWebDocumentSource = new DocumentFileSource(applicationBase + dynamicWebBasePath, applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'gv', minimumTimeBetweenValidityChecks)
+dynamicWebDocumentSource = new DocumentFileSource(applicationBase + dynamicWebBasePath, applicationBasePath + dynamicWebBasePath, dynamicWebDefaultDocument, 'groovy', minimumTimeBetweenValidityChecks)
 fragmentsDocumentSources = new CopyOnWriteArrayList()
-fragmentsDocumentSources.add(new DocumentFileSource(applicationBase + fragmentsBasePath, applicationBasePath + fragmentsBasePath, dynamicWebDefaultDocument, 'gv', minimumTimeBetweenValidityChecks))
+fragmentsDocumentSources.add(new DocumentFileSource(applicationBase + fragmentsBasePath, applicationBasePath + fragmentsBasePath, dynamicWebDefaultDocument, 'groovy', minimumTimeBetweenValidityChecks))
 fragmentsDocumentSources.add(commonFragmentsDocumentSource)
 cacheKeyPatternHandlers = new ConcurrentHashMap()
 scriptletPlugins = new ConcurrentHashMap()
@@ -184,7 +184,7 @@ router.attachBase(staticWebBaseURL, staticWeb)
 // Resources
 //
 
-resourcesDocumentSource = new DocumentFileSource(applicationBase + resourcesBasePath, applicationBasePath + resourcesBasePath, documentsDefaultName, 'gv', minimumTimeBetweenValidityChecks)
+resourcesDocumentSource = new DocumentFileSource(applicationBase + resourcesBasePath, applicationBasePath + resourcesBasePath, documentsDefaultName, 'groovy', minimumTimeBetweenValidityChecks)
 passThroughDocuments = new CopyOnWriteArraySet()
 passThroughDocuments.addAll(resourcesPassThrough)
 applicationGlobals['com.threecrickets.prudence.DelegatedResource.documentSource'] = resourcesDocumentSource
