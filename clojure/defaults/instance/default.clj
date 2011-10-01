@@ -42,11 +42,13 @@
 	([name default]
 		(try
 			(.execute document name)
-			(catch DocumentNotFoundException _
-				(.execute document
-					(if (nil? default)
-						(str "/defaults/" name)
-						default)))))
+			(catch Exception x
+				(if (instance? DocumentNotFoundException (.getCause x))
+					(.execute document
+						(if (nil? default)
+							(str "/defaults/" name)
+							default))
+					(throw x)))))
 	([name]
 		(execute-or-default name nil)))
 

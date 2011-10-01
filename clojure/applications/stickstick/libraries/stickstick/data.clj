@@ -4,19 +4,19 @@
 (ns stickstick.data)
 
 (use
-	'clojure.contrib.sql
+	'clojure.java.jdbc
 	'stickstick.shared)
 
 (import
-	'java.sql.Timestamp
-	'java.sql.Clob
+  'java.sql.Timestamp
+  'java.sql.Clob
   'java.io.StringWriter
   'org.apache.commons.pool.impl.GenericObjectPool
   'org.apache.commons.dbcp.DataSourceConnectionFactory
   'org.apache.commons.dbcp.PoolableConnectionFactory
   'org.apache.commons.dbcp.PoolingDataSource)
 
-; clojure.contrib.sql annoyingly prints exceptions to *err* 
+; clojure.java.jdbc annoyingly prints exceptions to *err* 
 (defmacro with-connection-silent [db-spec & body]
   `(binding [*err* (StringWriter.)]
     (with-connection ~db-spec ~@body)))
@@ -80,7 +80,7 @@
 		(finally
 			(.unlock stickstick.shared/connection-pool-lock))))
 
-; DB specs for getting clojure.contrib.sql to use our connection pool
+; DB specs for getting clojure.java.jdbc to use our connection pool
 (defn connection-factory [params] (get-connection (params :application) (params :fresh)))
 (defn from-pool [application] {:factory connection-factory :application application :fresh false})
 (defn fresh-from-pool [application] {:factory connection-factory :application application :fresh true})
@@ -94,7 +94,7 @@
 		(seq? o)
 			(map jsonable o)
 		(instance? Clob o)
-			; clojure.contrib.sql doesn't convert clobs to strings, so we'll do it ourselves
+			; clojure.java.jdbc doesn't convert clobs to strings, so we'll do it ourselves
 			(.getSubString o 1 (.length o))
 		(instance? Timestamp o)
 			(.getTime o)

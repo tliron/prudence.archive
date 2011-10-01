@@ -1,7 +1,7 @@
 
 (use
-	'clojure.contrib.json
-	'clojure.contrib.sql
+	'clojure.data.json
+	'clojure.java.jdbc
 	'stickstick.data)
 
 (import 'java.io.File)

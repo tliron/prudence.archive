@@ -1,7 +1,7 @@
 
 (use
-	'clojure.contrib.json
-	'clojure.contrib.sql
+	'clojure.data.json
+	'clojure.java.jdbc
 	'stickstick.data)
 
 (import 'java.io.File)
@@ -41,7 +41,7 @@
 				    (json-str {:boards board-list :notes notes})))))))
 
 (defn handle-get-info [conversation]
-	(with-connection from-pool
+	(with-connection (from-pool application)
   	(get-board-max-timestamp)))
 
 (defn handle-put [conversation]
