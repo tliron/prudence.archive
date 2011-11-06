@@ -13,6 +13,7 @@ package com.threecrickets.prudence;
 
 import org.restlet.Context;
 
+import com.threecrickets.scripturian.LanguageAdapter;
 import com.threecrickets.scripturian.ScriptletPlugin;
 
 /**
@@ -70,9 +71,9 @@ public class DelegatedScriptletPlugin extends DelegatedHandler implements Script
 	// ScriptletPlugin
 	//
 
-	public String getScriptlet( String code, String content )
+	public String getScriptlet( String code, LanguageAdapter languageAdapter, String content )
 	{
-		Object r = handle( entryPointNameForGetScriptlet, code, content );
+		Object r = handle( entryPointNameForGetScriptlet, code, languageAdapter, content );
 		return r != null ? r.toString() : null;
 	}
 
