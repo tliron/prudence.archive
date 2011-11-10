@@ -113,7 +113,7 @@
 		<sequential>
 			<copy todir="@{dist}/content">
 				<fileset dir="${common}" excludes="bin/run.sh, bin/run.bat, readme.txt, **/.svn/" />
-				<fileset dir="@{base}" excludes="**/.svn/" />
+				<fileset dir="@{base}" excludes="**/.svn/, maven/" />
 			</copy>
 			<copy todir="@{dist}/content/applications/prudence-test/web/static/script">
 				<fileset dir="${lib}/jquery/lib" excludes="**/.svn/" />
