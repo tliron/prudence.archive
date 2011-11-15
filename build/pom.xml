@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.threecrickets</groupId>
-	<artifactId>com.threecrickets.prudence</artifactId>
+	<artifactId>prudence</artifactId>
 	<version>1.1.0</version>
 	<packaging>pom</packaging>
 
@@ -58,6 +58,14 @@
 	<modules>
 		<module>maven/clojure</module>
 	</modules>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.threecrickets</groupId>
+			<artifactId>scripturian</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<directory>maven/tmp</directory>
