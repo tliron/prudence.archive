@@ -18,6 +18,10 @@
 			<includes>
 				<include>instance/**</include>
 				<include>defaults/**</include>
+				<include>bin/**</include>
+				<include>configuration/**</include>
+				<include>documentation/**</include>
+				<include>applications/**</include>
 			</includes>
 		</fileSet>
 	</fileSets>

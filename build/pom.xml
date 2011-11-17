@@ -57,6 +57,15 @@
 
 	<modules>
 		<module>maven/clojure</module>
+		<module>../libraries/commons-codec</module>
+		<module>../libraries/commons-daemon</module>
+		<module>../libraries/commons-dbcp</module>
+		<module>../libraries/commons-fileupload</module>
+		<module>../libraries/commons-io</module>
+		<module>../libraries/commons-logging</module>
+		<module>../libraries/commons-pool</module>
+		<module>../libraries/cron4j</module>
+		<module>../libraries/firewall-friendly-agent</module>
 	</modules>
 
 	<dependencies>
@@ -64,6 +73,11 @@
 			<groupId>com.threecrickets</groupId>
 			<artifactId>scripturian</artifactId>
 			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.5</version>
 		</dependency>
 	</dependencies>
 
