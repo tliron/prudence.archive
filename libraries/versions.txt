@@ -2,7 +2,7 @@ clojure						1.3.0
 clojure.data.json			0.1.1
 clojure.java.jdbc			0.0.6
 commons-codec				1.5
-commons-daemon				1.0.5
+commons-daemon				1.0.7 (binaries for darwin, sunos and linux are from 1.0.5)
 commons-dbcp				1.3
 commons-fileupload			1.2.2
 commons-io					2.0.1
