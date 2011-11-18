@@ -73,6 +73,7 @@
 		<module>../../libraries/httpmime/maven</module>
 		<module>../../libraries/jackson/maven</module>
 		<module>../../libraries/jcip-annotations/maven</module>
+		<module>../../libraries/jetty/maven</module>
 	</modules>
 
 	<dependencies>
