@@ -4,18 +4,18 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.apache.commons</groupId>
-	<artifactId>commons-codec</artifactId>
-	<version>1.5</version>
+	<artifactId>commons-daemon</artifactId>
+	<version>1.0.7</version>
 	<packaging>pom</packaging>
 
-	<name>Commons Codec</name>
-	<description>Base64 and hexadecimal codecs, plus phonetic encoding utilities.</description>
+	<name>Apache Commons Daemon</name>
+	<description>Allows JVM programs to run as daemons or services.</description>
 	<inceptionYear>2002</inceptionYear>
-	<url>https://commons.apache.org/codec/</url>
+	<url>https://commons.apache.org/daemon/</url>
 
 	<scm>
-		<connection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/codec/trunk</connection>
-		<url>https://svn.apache.org/viewvc/commons/proper/codec/trunk</url>
+		<connection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/daemon/trunk</connection>
+		<url>https://svn.apache.org/viewvc/commons/proper/daemon/trunk</url>
 	</scm>
 
 	<licenses>
@@ -51,7 +51,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>lib/org.apache.commons.codec.jar</file>
+									<file>../lib/org.apache.commons.daemon.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>

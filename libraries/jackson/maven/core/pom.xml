@@ -3,19 +3,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.apache.commons</groupId>
-	<artifactId>commons-daemon</artifactId>
-	<version>1.0.7</version>
+	<groupId>org.codehaus.jackson</groupId>
+	<artifactId>jackson-asl</artifactId>
+	<version>1.8.0</version>
 	<packaging>pom</packaging>
 
-	<name>Commons Daemon</name>
-	<description>Allows JVM programs to run as daemons or services.</description>
-	<inceptionYear>2002</inceptionYear>
-	<url>https://commons.apache.org/daemon/</url>
+	<name>Jackson Core</name>
+	<description>A high-performance JSON processor (parser, generator).</description>
+	<url>http://jackson.codehaus.org</url>
 
 	<scm>
-		<connection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/daemon/trunk</connection>
-		<url>https://svn.apache.org/viewvc/commons/proper/daemon/trunk</url>
+		<connection>scm:svn:http://svn.codehaus.org/jackson/trunk</connection>
+		<url>http://xircles.codehaus.org/projects/jackson/repo/primary/repo</url>
 	</scm>
 
 	<licenses>
@@ -51,7 +50,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>lib/org.apache.commons.daemon.jar</file>
+									<file>../../lib/org.codehaus.jackson.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>

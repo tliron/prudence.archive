@@ -3,25 +3,24 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.apache.commons</groupId>
-	<artifactId>commons-logging</artifactId>
-	<version>1.1.1</version>
+	<groupId>net.sourceforge</groupId>
+	<artifactId>groboutils</artifactId>
+	<version>5</version>
 	<packaging>pom</packaging>
 
-	<name>Commons Logging</name>
-	<description>Configurable bridging to various logging systems.</description>
-	<inceptionYear>2001</inceptionYear>
-	<url>https://commons.apache.org/logging/</url>
+	<name>GroboUtils</name>
+	<description>Testing utilities. This is a modified distribution that does not have log4j.</description>
+	<url>http://groboutils.sourceforge.net/</url>
 
 	<scm>
-		<connection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/logging/trunk</connection>
-		<url>https://svn.apache.org/viewvc/commons/proper/logging/trunk</url>
+		<connection>scm:cvs:pserver:groboutils.cvs.sourceforge.net:/cvsroot/groboutils</connection>
+		<url>http://groboutils.cvs.sourceforge.net/viewvc/groboutils/</url>
 	</scm>
 
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<name>The MIT License</name>
+			<url>http://groboutils.sourceforge.net/license.html</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -51,7 +50,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>lib/org.apache.commons.logging.jar</file>
+									<file>../lib/net.sourceforge.groboutils.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>

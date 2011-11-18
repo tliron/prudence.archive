@@ -3,19 +3,25 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>it.sauronsoftware</groupId>
-	<artifactId>cron4j</artifactId>
-	<version>2.2.4</version>
+	<groupId>org.apache.commons</groupId>
+	<artifactId>commons-codec</artifactId>
+	<version>1.5</version>
 	<packaging>pom</packaging>
 
-	<name>cron4j</name>
-	<description>A scheduler for the Java platform which is very similar to the UNIX cron daemon.</description>
-	<url>http://www.sauronsoftware.it/projects/cron4j</url>
+	<name>Apache Commons Codec</name>
+	<description>Base64 and hexadecimal codecs, plus phonetic encoding utilities.</description>
+	<inceptionYear>2002</inceptionYear>
+	<url>https://commons.apache.org/codec/</url>
+
+	<scm>
+		<connection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/codec/trunk</connection>
+		<url>https://svn.apache.org/viewvc/commons/proper/codec/trunk</url>
+	</scm>
 
 	<licenses>
 		<license>
-			<name>GNU Lesser General Public License, Version 3</name>
-			<url>https://www.gnu.org/licenses/lgpl.html</url>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -45,7 +51,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>lib/it.sauronsoftware.cron4j.jar</file>
+									<file>../lib/org.apache.commons.codec.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>

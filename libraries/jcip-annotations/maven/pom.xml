@@ -3,25 +3,19 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.apache.commons</groupId>
-	<artifactId>commons-pool</artifactId>
-	<version>1.5.6</version>
+	<groupId>net.jcip</groupId>
+	<artifactId>jcip-annotations</artifactId>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
-	<name>Commons Daemon</name>
-	<description>Resource pools.</description>
-	<inceptionYear>2001</inceptionYear>
-	<url>https://commons.apache.org/pool/</url>
-
-	<scm>
-		<connection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/pool/trunk</connection>
-		<url>https://svn.apache.org/viewvc/commons/proper/pool/trunk</url>
-	</scm>
+	<name>Java Concurrency in Practice Annotations</name>
+	<description>Java annotations for concurrency.</description>
+	<url>http://jcip.net/</url>
 
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<name>Creative Commons Attribution License, Version 2.5</name>
+			<url>https://creativecommons.org/licenses/by/2.5/</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -51,7 +45,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>lib/org.apache.commons.pool.jar</file>
+									<file>../lib/net.jcip.annotations.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>
