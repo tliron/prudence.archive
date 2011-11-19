@@ -86,6 +86,7 @@
 		<module>../../libraries/mysqlconnector/maven</module>
 		<module>../../libraries/restlet/maven</module>
 		<!-- <module>../../libraries/rhino/maven</module> -->
+		<!-- <module>../../libraries/scripturian/maven</module> -->
 		<module>../../libraries/servlet/maven</module>
 		<module>../../libraries/slf4j/maven</module>
 		<module>../../libraries/spymemcached/maven</module>
