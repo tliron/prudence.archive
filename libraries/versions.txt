@@ -44,7 +44,7 @@ rhino						1.7R2
 servlet (jetty)				2.5
 scripturian					1.0 (Revision 309)
 slf4j						1.6.4
-spymemcached				2.5
+spymemcached				2.7.3
 sqlalchemy					0.6 (Revision 6720 + H2 patch)
 succinct					1.0 (Revision 21)
 svnant						1.3.0
