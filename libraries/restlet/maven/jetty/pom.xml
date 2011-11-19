@@ -3,24 +3,34 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.eclipse.jetty</groupId>
-	<artifactId>jetty-io</artifactId>
-	<version>7.2.2</version>
+	<groupId>org.restlet.jse</groupId>
+	<artifactId>restlet-jetty</artifactId>
+	<version>2.0.10</version>
 	<packaging>pom</packaging>
 
-	<name>Jetty I/O</name>
-	<description>Jetty I/O library.</description>
-	<url>http://jetty.codehaus.org/jetty/</url>
+	<name>Restlet Jetty Connector</name>
+	<description>RESTful Web framework for Java: Jetty connector.</description>
+	<url>http://www.restlet.org/</url>
 
 	<scm>
-		<connection>scm:svn:http://dev.eclipse.org/svnroot/rt/org.eclipse.jetty/jetty/trunk/</connection>
-		<url>http://dev.eclipse.org/viewcvs/viewvc.cgi/?root=RT_JETTY</url>
+		<connection>scm:svn:http://restlet.tigris.org/svn/restlet/trunk</connection>
+		<url>http://restlet.tigris.org/source/browse/restlet/</url>
 	</scm>
 
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<name>GNU Lesser General Public License, Version 3</name>
+			<url>https://www.gnu.org/licenses/lgpl.html</url>
+			<distribution>repo</distribution>
+		</license>
+		<license>
+			<name>GNU Lesser General Public License, Version 2.1</name>
+			<url>https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
+			<distribution>repo</distribution>
+		</license>
+		<license>
+			<name>Common Development and Distribution License (CDDL), Version 1.0</name>
+			<url>http://www.opensource.org/licenses/CDDL-1.0</url>
 			<distribution>repo</distribution>
 		</license>
 		<license>
@@ -54,7 +64,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>../../lib/org.eclipse.jetty.io.jar</file>
+									<file>../../../jetty/lib/org.restlet.ext.jetty.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>

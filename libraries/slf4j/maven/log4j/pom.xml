@@ -3,29 +3,25 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.eclipse.jetty</groupId>
-	<artifactId>jetty-io</artifactId>
-	<version>7.2.2</version>
+	<groupId>org.slf4j</groupId>
+	<artifactId>slf4j-log4j12</artifactId>
+	<version>1.6.4</version>
 	<packaging>pom</packaging>
 
-	<name>Jetty I/O</name>
-	<description>Jetty I/O library.</description>
-	<url>http://jetty.codehaus.org/jetty/</url>
+	<name>SLF4J log4j 1.2 Binding</name>
+	<description>Simple Logging Facade for Java: binding for log4j 1.2.</description>
+	<url>http://www.slf4j.org</url>
 
 	<scm>
-		<connection>scm:svn:http://dev.eclipse.org/svnroot/rt/org.eclipse.jetty/jetty/trunk/</connection>
-		<url>http://dev.eclipse.org/viewcvs/viewvc.cgi/?root=RT_JETTY</url>
+		<connection>scm:git:git://github.com/ceki/slf4j.git</connection>
+		<url>http://github.com/ceki/slf4j</url>
 	</scm>
 
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<name>MIT-style License</name>
+			<url>http://www.slf4j.org/license.html</url>
 			<distribution>repo</distribution>
-		</license>
-		<license>
-			<name>Eclipse Public License, Version 1.0</name>
-			<url>http://www.eclipse.org/legal/epl-v10.html</url>
 		</license>
 	</licenses>
 
@@ -54,7 +50,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>../../lib/org.eclipse.jetty.io.jar</file>
+									<file>../../lib/org.slf4j.impl.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>

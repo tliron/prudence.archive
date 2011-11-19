@@ -3,29 +3,25 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.eclipse.jetty</groupId>
-	<artifactId>jetty-io</artifactId>
-	<version>7.2.2</version>
+	<groupId>com.mysql</groupId>
+	<artifactId>mysql-connector-java</artifactId>
+	<version>5.1.16</version>
 	<packaging>pom</packaging>
 
-	<name>Jetty I/O</name>
-	<description>Jetty I/O library.</description>
-	<url>http://jetty.codehaus.org/jetty/</url>
+	<name>MySQL Connector/J</name>
+	<description>The official Java/JDBC driver for MySQL.</description>
+	<url>http://dev.mysql.com/usingmysql/java/</url>
 
 	<scm>
-		<connection>scm:svn:http://dev.eclipse.org/svnroot/rt/org.eclipse.jetty/jetty/trunk/</connection>
-		<url>http://dev.eclipse.org/viewcvs/viewvc.cgi/?root=RT_JETTY</url>
+		<connection>scm:bzr:lp:connectorj</connection>
+		<url>https://code.launchpad.net/connectorj</url>
 	</scm>
 
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<name>GNU General Public License, Version 2.0</name>
+			<url>https://www.gnu.org/licenses/old-licenses/gpl-2.0.html</url>
 			<distribution>repo</distribution>
-		</license>
-		<license>
-			<name>Eclipse Public License, Version 1.0</name>
-			<url>http://www.eclipse.org/legal/epl-v10.html</url>
 		</license>
 	</licenses>
 
@@ -54,7 +50,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>../../lib/org.eclipse.jetty.io.jar</file>
+									<file>../lib/com.mysql.jdbc.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>

@@ -74,6 +74,15 @@
 		<module>../../libraries/jackson/maven</module>
 		<module>../../libraries/jcip-annotations/maven</module>
 		<module>../../libraries/jetty/maven</module>
+		<module>../../libraries/json/maven</module>
+		<module>../../libraries/log4j/maven</module>
+		<module>../../libraries/mime4j/maven</module>
+		<module>../../libraries/mongodb-java-driver/maven</module>
+		<module>../../libraries/mysqlconnector/maven</module>
+		<module>../../libraries/restlet/maven</module>
+		<module>../../libraries/servlet/maven</module>
+		<module>../../libraries/slf4j/maven</module>
+		<module>../../libraries/spymemcached/maven</module>
 	</modules>
 
 	<dependencies>

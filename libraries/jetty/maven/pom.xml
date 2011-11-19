@@ -23,6 +23,10 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
+		<license>
+			<name>Eclipse Public License, Version 1.0</name>
+			<url>http://www.eclipse.org/legal/epl-v10.html</url>
+		</license>
 	</licenses>
 
 	<distributionManagement>
@@ -37,7 +41,6 @@
 		<module>continuation</module>
 		<module>io</module>
 		<module>server</module>
-		<module>servlet</module>
 		<module>util</module>
 	</modules>
 

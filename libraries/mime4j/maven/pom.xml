@@ -3,18 +3,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>javax.servlet</groupId>
-	<artifactId>servlet-api</artifactId>
-	<version>2.5</version>
+	<groupId>org.apache.james</groupId>
+	<artifactId>mime4j</artifactId>
+	<version>0.6.1</version>
 	<packaging>pom</packaging>
 
-	<name>Servlet API</name>
-	<description>Java servlet API, as implemented in Jetty.</description>
-	<url>http://jetty.codehaus.org/jetty/</url>
+	<name>Mime4J</name>
+	<description>A parser for e-mail message streams in plain rfc822 and MIME format.</description>
+	<url>https://james.apache.org/mime4j/</url>
 
 	<scm>
-		<connection>scm:svn:http://dev.eclipse.org/svnroot/rt/org.eclipse.jetty/jetty/trunk/</connection>
-		<url>http://dev.eclipse.org/viewcvs/viewvc.cgi/?root=RT_JETTY</url>
+		<connection>scm:svn:https://svn.apache.org/repos/asf/james/mime4j/trunk</connection>
+		<url>https://svn.apache.org/viewvc/james/mime4j/trunk</url>
 	</scm>
 
 	<licenses>
@@ -50,7 +50,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>../../lib/javax.servlet.jar</file>
+									<file>../lib/org.apache.james.mime4j.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>
