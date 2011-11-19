@@ -3,18 +3,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.eclipse.jetty</groupId>
-	<artifactId>jetty-server</artifactId>
-	<version>7.2.2</version>
+	<groupId>com.threecrickets.scripturian</groupId>
+	<artifactId>org.apache.velocity</artifactId>
+	<version>1.7</version>
 	<packaging>pom</packaging>
 
-	<name>Jetty Server</name>
-	<description>Jetty server.</description>
-	<url>http://jetty.codehaus.org/jetty/</url>
+	<name>Velocity</name>
+	<description>The Velocity language engine.</description>
+	<url>https://velocity.apache.org</url>
 
 	<scm>
-		<connection>scm:svn:http://dev.eclipse.org/svnroot/rt/org.eclipse.jetty/jetty/trunk/</connection>
-		<url>http://dev.eclipse.org/viewcvs/viewvc.cgi/?root=RT_JETTY</url>
+		<connection>scm:svn:http://svn.apache.org/repos/asf/velocity/engine/trunk/</connection>
+		<url>http://svn.apache.org/viewvc/velocity/engine/trunk</url>
 	</scm>
 
 	<licenses>
@@ -22,10 +22,6 @@
 			<name>The Apache Software License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
-		</license>
-		<license>
-			<name>Eclipse Public License, Version 1.0</name>
-			<url>http://www.eclipse.org/legal/epl-v10.html</url>
 		</license>
 	</licenses>
 
@@ -36,33 +32,9 @@
 		</repository>
 	</distributionManagement>
 
-	<modules>
-		<module>ajp</module>
-		<module>continuation</module>
-		<module>http</module>
-		<module>io</module>
-		<module>util</module>
-	</modules>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-continuation</artifactId>
-			<version>7.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-http</artifactId>
-			<version>7.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-		</dependency>
-	</dependencies>
-
 	<build>
+		<directory>maven</directory>
+
 		<plugins>
 			<!-- jar artifact -->
 			<plugin>
@@ -80,7 +52,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>../lib/org.eclipse.jetty.server.jar</file>
+									<file>../lib/org.apache.velocity.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>

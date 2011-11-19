@@ -38,6 +38,14 @@
 		</repository>
 	</distributionManagement>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>7.2.2</version>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<plugins>
 			<!-- jar artifact -->

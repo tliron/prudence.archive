@@ -56,6 +56,7 @@
 
 	<modules>
 		<module>clojure</module>
+		<!-- <module>../../libraries/clojure/maven</module> -->
 		<module>../../libraries/commons-codec/maven</module>
 		<module>../../libraries/commons-daemon/maven</module>
 		<module>../../libraries/commons-dbcp/maven</module>
@@ -65,7 +66,8 @@
 		<module>../../libraries/commons-pool/maven</module>
 		<module>../../libraries/cron4j/maven</module>
 		<module>../../libraries/firewall-friendly-agent/maven</module>
-		<module>../../libraries/groboutils/maven</module>
+		<module>../../libraries/grizzly/maven</module>
+		<!-- <module>../../libraries/groovy/maven</module> -->
 		<module>../../libraries/h2/maven</module>
 		<module>../../libraries/hazelcast/maven</module>
 		<module>../../libraries/httpclient/maven</module>
@@ -74,15 +76,19 @@
 		<module>../../libraries/jackson/maven</module>
 		<module>../../libraries/jcip-annotations/maven</module>
 		<module>../../libraries/jetty/maven</module>
+		<!-- <module>../../libraries/jruby/maven</module> -->
 		<module>../../libraries/json/maven</module>
+		<!-- <module>../../libraries/jython/maven</module> -->
 		<module>../../libraries/log4j/maven</module>
 		<module>../../libraries/mime4j/maven</module>
 		<module>../../libraries/mongodb-java-driver/maven</module>
 		<module>../../libraries/mysqlconnector/maven</module>
 		<module>../../libraries/restlet/maven</module>
+		<!-- <module>../../libraries/rhino/maven</module> -->
 		<module>../../libraries/servlet/maven</module>
 		<module>../../libraries/slf4j/maven</module>
 		<module>../../libraries/spymemcached/maven</module>
+		<!-- <module>../../libraries/velocity/maven</module> -->
 	</modules>
 
 	<dependencies>

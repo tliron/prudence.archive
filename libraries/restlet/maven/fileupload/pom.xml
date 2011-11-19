@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.restlet.jse</groupId>
-	<artifactId>restlet</artifactId>
+	<artifactId>restlet-fileupload</artifactId>
 	<version>2.0.10</version>
 	<packaging>pom</packaging>
 
-	<name>Restlet</name>
-	<description>RESTful Web framework for Java (API and engine).</description>
+	<name>Restlet Apache Commons File Upload Extension</name>
+	<description>RESTful Web framework for Java: Apache Commons File Upload extension.</description>
 	<url>http://www.restlet.org/</url>
 
 	<scm>
@@ -45,16 +45,19 @@
 			<url>http://localhost:8081/nexus/content/repositories/sincerity/</url>
 		</repository>
 	</distributionManagement>
-	
-	<modules>
-		<module>fileupload</module>
-		<module>grizzly</module>
-		<module>httpclient</module>
-		<module>jackson</module>
-		<module>jetty</module>
-		<module>json</module>
-		<module>slf4j</module>
-	</modules>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.restlet.jse</groupId>
+			<artifactId>restlet</artifactId>
+			<version>2.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
@@ -74,7 +77,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>../lib/org.restlet.jar</file>
+									<file>../../../commons-fileupload/lib/org.restlet.ext.fileupload.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>

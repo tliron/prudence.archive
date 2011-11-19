@@ -3,39 +3,30 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.restlet.jse</groupId>
-	<artifactId>restlet</artifactId>
-	<version>2.0.10</version>
+	<groupId>com.sun.grizzly</groupId>
+	<artifactId>grizzly-nio-framework</artifactId>
+	<version>1.9.36</version>
 	<packaging>pom</packaging>
 
-	<name>Restlet</name>
-	<description>RESTful Web framework for Java (API and engine).</description>
-	<url>http://www.restlet.org/</url>
+	<name>Grizzly Core Framework</name>
+	<description>The Grizzly core framework bundle (includes util and LZMA classes).</description>
+	<url>http://grizzly.java.net/</url>
 
 	<scm>
-		<connection>scm:svn:http://restlet.tigris.org/svn/restlet/trunk</connection>
-		<url>http://restlet.tigris.org/source/browse/restlet/</url>
+		<connection>scm:git:git://java.net/grizzly~git</connection>
+		<url>http://java.net/projects/grizzly/sources/git/show</url>
 	</scm>
 
 	<licenses>
-		<license>
-			<name>GNU Lesser General Public License, Version 3</name>
-			<url>https://www.gnu.org/licenses/lgpl.html</url>
-			<distribution>repo</distribution>
-		</license>
-		<license>
-			<name>GNU Lesser General Public License, Version 2.1</name>
-			<url>https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
-			<distribution>repo</distribution>
-		</license>
 		<license>
 			<name>Common Development and Distribution License (CDDL), Version 1.0</name>
 			<url>http://www.opensource.org/licenses/CDDL-1.0</url>
 			<distribution>repo</distribution>
 		</license>
 		<license>
-			<name>Eclipse Public License, Version 1.0</name>
-			<url>http://www.eclipse.org/legal/epl-v10.html</url>
+			<name>GNU General Public License, Version 2.0</name>
+			<url>https://www.gnu.org/licenses/old-licenses/gpl-2.0.html</url>
+			<distribution>repo</distribution>
 		</license>
 	</licenses>
 
@@ -45,16 +36,6 @@
 			<url>http://localhost:8081/nexus/content/repositories/sincerity/</url>
 		</repository>
 	</distributionManagement>
-	
-	<modules>
-		<module>fileupload</module>
-		<module>grizzly</module>
-		<module>httpclient</module>
-		<module>jackson</module>
-		<module>jetty</module>
-		<module>json</module>
-		<module>slf4j</module>
-	</modules>
 
 	<build>
 		<plugins>
@@ -74,7 +55,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>../lib/org.restlet.jar</file>
+									<file>../lib/com.sun.grizzly.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>

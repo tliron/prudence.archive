@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.eclipse.jetty</groupId>
-	<artifactId>jetty-server</artifactId>
+	<artifactId>jetty-http</artifactId>
 	<version>7.2.2</version>
 	<packaging>pom</packaging>
 
-	<name>Jetty Server</name>
-	<description>Jetty server library.</description>
+	<name>Jetty HTTP</name>
+	<description>Jetty HTTP library.</description>
 	<url>http://jetty.codehaus.org/jetty/</url>
 
 	<scm>
@@ -36,6 +36,19 @@
 		</repository>
 	</distributionManagement>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-io</artifactId>
+			<version>7.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-util</artifactId>
+			<version>7.2.2</version>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<plugins>
 			<!-- jar artifact -->
@@ -54,7 +67,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>../../lib/org.eclipse.jetty.server.jar</file>
+									<file>../../lib/org.eclipse.jetty.http.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>

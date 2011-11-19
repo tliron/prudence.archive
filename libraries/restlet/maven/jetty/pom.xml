@@ -46,6 +46,19 @@
 		</repository>
 	</distributionManagement>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.restlet.jse</groupId>
+			<artifactId>restlet</artifactId>
+			<version>2.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-ajp</artifactId>
+			<version>7.2.2</version>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<plugins>
 			<!-- jar artifact -->

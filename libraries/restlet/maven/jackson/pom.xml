@@ -46,6 +46,19 @@
 		</repository>
 	</distributionManagement>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.restlet.jse</groupId>
+			<artifactId>restlet</artifactId>
+			<version>2.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<plugins>
 			<!-- jar artifact -->
