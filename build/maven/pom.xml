@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.threecrickets</groupId>
+	<groupId>com.threecrickets.prudence</groupId>
 	<artifactId>prudence</artifactId>
 	<version>1.1.0</version>
 	<packaging>pom</packaging>
@@ -78,6 +78,7 @@
 		<module>../../libraries/jetty/maven</module>
 		<!-- <module>../../libraries/jruby/maven</module> -->
 		<module>../../libraries/json/maven</module>
+		<!-- <module>../../libraries/jygments/maven</module> -->
 		<!-- <module>../../libraries/jython/maven</module> -->
 		<module>../../libraries/log4j/maven</module>
 		<module>../../libraries/mime4j/maven</module>
@@ -88,20 +89,72 @@
 		<module>../../libraries/servlet/maven</module>
 		<module>../../libraries/slf4j/maven</module>
 		<module>../../libraries/spymemcached/maven</module>
+		<!-- <module>../../libraries/succinct/maven</module> -->
 		<!-- <module>../../libraries/velocity/maven</module> -->
 	</modules>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.threecrickets</groupId>
+			<groupId>com.threecrickets.scripturian</groupId>
 			<artifactId>scripturian</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.0-R309</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>1.5</version>
+			<groupId>com.threecrickets.jygments</groupId>
+			<artifactId>jygments</artifactId>
+			<version>1.0.0-R21</version>
 		</dependency>
+		<dependency>
+			<groupId>org.restlet.jse</groupId>
+			<artifactId>restlet</artifactId>
+			<version>2.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jse</groupId>
+			<artifactId>restlet-fileupload</artifactId>
+			<version>2.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast</artifactId>
+			<version>1.9.4.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.3.159</version>
+		</dependency>
+		<dependency>
+			<groupId>net.spy</groupId>
+			<artifactId>spymemcached</artifactId>
+			<version>2.7.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.mongodb</groupId>
+			<artifactId>java-driver</artifactId>
+			<version>2.6.5</version>
+		</dependency>
+		<dependency>
+			<groupId>it.sauronsoftware</groupId>
+			<artifactId>cron4j</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>1.6.4</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

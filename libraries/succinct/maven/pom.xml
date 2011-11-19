@@ -3,24 +3,24 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.apache.velocity</groupId>
-	<artifactId>velocity</artifactId>
-	<version>1.7</version>
+	<groupId>com.threecrickets.succinct</groupId>
+	<artifactId>succinct</artifactId>
+	<version>1.0.0-R21</version>
 	<packaging>pom</packaging>
 
-	<name>Velocity</name>
-	<description>The Velocity language engine.</description>
-	<url>https://velocity.apache.org</url>
+	<name>Succinct</name>
+	<description>A minimal templating engine designed for concurrency and efficiency.</description>
+	<url>http://threecrickets.com/succinct/</url>
 
 	<scm>
-		<connection>scm:svn:http://svn.apache.org/repos/asf/velocity/engine/trunk/</connection>
-		<url>http://svn.apache.org/viewvc/velocity/engine/trunk</url>
+		<connection>scm:svn:https://succinct.googlecode.com/svn/trunk/</connection>
+		<url>https://code.google.com/p/succinct/source/checkout</url>
 	</scm>
 
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<name>GNU Lesser General Public License, Version 3</name>
+			<url>https://www.gnu.org/licenses/lgpl.html</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -33,8 +33,6 @@
 	</distributionManagement>
 
 	<build>
-		<directory>maven</directory>
-
 		<plugins>
 			<!-- jar artifact -->
 			<plugin>
@@ -52,7 +50,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>../lib/org.apache.velocity.jar</file>
+									<file>../lib/com.threecrickets.succinct.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>
