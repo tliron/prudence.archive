@@ -9,18 +9,14 @@
 		<format>jar</format>
 	</formats>
 
-	<baseDirectory>prudence-flavor-clojure</baseDirectory>
+	<baseDirectory>stickstick-clojure</baseDirectory>
 
 	<fileSets>
 		<fileSet>
-			<directory>../../clojure/content</directory>
+			<directory>../../../clojure/content</directory>
 			<outputDirectory>.</outputDirectory>
 			<includes>
-				<include>instance/**</include>
-				<include>defaults/**</include>
-				<include>bin/**</include>
-				<include>configuration/**</include>
-				<include>documentation/**</include>
+				<include>applications/stickstick/**</include>
 			</includes>
 		</fileSet>
 	</fileSets>

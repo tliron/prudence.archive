@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.hazelcast</groupId>
-	<artifactId>hazelcast</artifactId>
+	<artifactId>hazelcast-all</artifactId>
 	<version>1.9.4.4</version>
 	<packaging>pom</packaging>
 
-	<name>Hazelcast</name>
-	<description>In-memory data grid.</description>
+	<name>Hazelcast: Complete</name>
+	<description>In-memory data grid: this artifact contains all Hazelcast libraries.</description>
 	<url>http://www.hazelcast.com/</url>
 
 	<scm>

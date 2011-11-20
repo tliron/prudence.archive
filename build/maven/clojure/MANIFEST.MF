@@ -1,2 +1,2 @@
 Package-Name: prudence-flavor-clojure
-Package-Contents: defaults/application/application.clj,defaults/application/default.clj,defaults/application/routing.clj,defaults/application/settings.clj
+Package-Contents2: defaults/application/application.clj,defaults/application/default.clj,defaults/application/routing.clj,defaults/application/settings.clj,instance/default.clj,instance/component.clj

@@ -1,0 +1,2 @@
+Package-Name: stickstick-clojure
+Package-Contents2: applications/stickstick/settings.clj,applications/stickstick/routing.clj,applications/stickstick/libraries/stickstick/data.clj,applications/stickstick/libraries/stickstick/shared.clj,applications/stickstick/resources/data/default.clj,applications/stickstick/resources/data/note.clj,applications/stickstick/resources/data/default.clj
