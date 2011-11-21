@@ -1,6 +1,6 @@
 ; Use the JSON libraries and our context library
 (use
-	'clojure.contrib.json
+	'clojure.data.json
 	'clojure.context)
 
 (import
