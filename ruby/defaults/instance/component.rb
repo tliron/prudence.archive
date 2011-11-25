@@ -28,7 +28,6 @@ $component = Component.new
 $executable.globals['com.threecrickets.prudence.component'] = $component
 
 $component.context.attributes['com.threecrickets.prudence.version'] = $prudence_version
-$component.context.attributes['com.threecrickets.prudence.revision'] = $prudence_revision
 $component.context.attributes['com.threecrickets.prudence.flavor'] = $prudence_flavor
 
 #

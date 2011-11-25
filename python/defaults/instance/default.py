@@ -50,16 +50,13 @@ def execute_or_default(name, default=None):
 #
 
 prudence_version = '%VERSION%'
-prudence_revision = '-%REVISION%'
-if len(prudence_revision) == 1:
-	prudence_revision = ''
 prudence_flavor = 'Python'
 
 #
 # Welcome
 #
 
-print 'Prudence %s%s for %s.' % (prudence_version, prudence_revision, prudence_flavor)
+print 'Prudence %s for %s.' % (prudence_version, prudence_flavor)
 
 #
 # Logging

@@ -12,7 +12,7 @@
 // at http://threecrickets.com/
 //
 
-global $tasks, $scheduler, $component, $prudence_version, $prudence_revision, $prudence_flavor, $applications, $predefined_shared_globals;
+global $tasks, $scheduler, $component, $prudence_version, $prudence_flavor, $applications, $predefined_shared_globals;
 global $common_libraries_document_source, $common_fragments_document_source, $common_tasks_document_sources, $common_handlers_document_sources;
 
 import java.lang.System;
@@ -77,17 +77,13 @@ function execute_or_default($name, $def=NULL) {
 //
 
 $prudence_version = '%VERSION%';
-$prudence_revision = '-%REVISION%';
-if(strlen($prudence_revision) == 1) {
-	$prudence_revision = '';
-}
 $prudence_flavor = 'PHP';
 
 //
 // Welcome
 //
 
-print 'Prudence ' . $prudence_version . $prudence_revision . ' for ' . $prudence_flavor . ".\n";
+print 'Prudence ' . $prudence_version . ' for ' . $prudence_flavor . ".\n";
 
 //
 // Logging

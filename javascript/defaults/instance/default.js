@@ -55,17 +55,13 @@ function executeOrDefault(name, def) {
 //
 
 var prudenceVersion = '%VERSION%'
-var prudenceRevision = '-%REVISION%'
-if(prudenceRevision.length == 1) {
-	prudenceRevision = ''
-}
 var prudenceFlavor = 'JavaScript'
 
 //
 // Welcome
 //
 
-print('Prudence ' + prudenceVersion + prudenceRevision + ' for ' + prudenceFlavor + '.\n')
+print('Prudence ' + prudenceVersion + ' for ' + prudenceFlavor + '.\n')
 
 //
 // Logging

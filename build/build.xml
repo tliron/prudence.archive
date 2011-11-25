@@ -44,12 +44,6 @@
 		</classpath>
 	</taskdef>
 
-	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml">
-		<classpath>
-			<fileset dir="${lib}/svnant/lib" includes="*.jar" />
-		</classpath>
-	</typedef>
-	
 	<!-- Macros -->
 
 	<macrodef name="fetch-license">
@@ -160,7 +154,6 @@
 				<fileset dir="${tmp}/documentation" />
 			</copy>
 			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%VERSION%" value="${version}" />
-			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%REVISION%" value="${revision.max}" />
 			<copy todir="@{dist}/content/applications/prudence-test/web">
 				<fileset dir="${velocity}/applications/prudence-test/web" excludes="**/.svn/" />
 			</copy>
@@ -221,11 +214,11 @@
 		<attribute name="dist" />
 		<attribute name="name" />
 		<sequential>
-			<zip destfile="prudence-@{name}-R${revision.max}.zip" level="9">
-				<zipfileset prefix="prudence-@{name}-R${revision.max}" dir="@{dist}/content" excludes="cache/, logs/, data/, **/com.caucho.quercus.jar, **/run.sh, **/jsvc" />
-				<zipfileset prefix="prudence-@{name}-R${revision.max}" dir="@{dist}/content" filemode="755" includes="**/run.sh, **/jsvc" />
+			<zip destfile="prudence-@{name}-${version}.zip" level="9">
+				<zipfileset prefix="prudence-@{name}-${version}" dir="@{dist}/content" excludes="cache/, logs/, data/, **/com.caucho.quercus.jar, **/run.sh, **/jsvc" />
+				<zipfileset prefix="prudence-@{name}-${version}" dir="@{dist}/content" filemode="755" includes="**/run.sh, **/jsvc" />
 			</zip>
-			<!-- <dmg destfile="prudence-@{name}-R${revision.max}.dmg" name="Prudence (@{name}-R${revision.max})" dir="@{dist}/content" /> -->
+			<!-- <dmg destfile="prudence-@{name}-${version}.dmg" name="Prudence (@{name}-${version})" dir="@{dist}/content" /> -->
 		</sequential>
 	</macrodef>
 
@@ -293,13 +286,6 @@
 
 	<!-- Essentials -->
 
-	<target name="revision" unless="revision.max">
-		<svn svnkit="true" javahl="false">
-			<wcVersion path=".." />
-		</svn>
-		<echo>Revision ${revision.max}.</echo>
-	</target>
-
 	<target name="compile" description="Compile Prudence code">
 		<mkdir dir="${tmp}/classes" />
 		<javac srcdir="${java-src}" destdir="${tmp}/classes" target="1.5" debug="${debug}" includeAntRuntime="false">
@@ -339,7 +325,7 @@
 	</target>
 
 	<target name="javadoc-unless" description="Create Prudence API docs" unless="javadoc-present">
-		<javadoc sourcepath="${java-src}" source="1.5" excludepackagenames="**.internal.*,**.test.*" destdir="${tmp}/api" stylesheetfile="${documentation}/soft-cricket-api.css" windowtitle="Prudence ${version}-R${revision.max}" doctitle="Prudence ${version}-R${revision.max}" access="protected" author="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" splitindex="true" use="true" version="true" verbose="true">
+		<javadoc sourcepath="${java-src}" source="1.5" excludepackagenames="**.internal.*,**.test.*" destdir="${tmp}/api" stylesheetfile="${documentation}/soft-cricket-api.css" windowtitle="Prudence ${version}" doctitle="Prudence ${version}" access="protected" author="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" splitindex="true" use="true" version="true" verbose="true">
 			<link href="http://download.oracle.com/javase/1.5.0/docs/api/" />
 			<link href="http://download.oracle.com/javase/6/docs/api/" />
 			<link href="http://threecrickets.com/scripturian/api/" />
@@ -373,7 +359,7 @@
 		</javadoc>
 	</target>
 
-	<target name="documentation" depends="revision" description="Create Prudence Manual">
+	<target name="documentation" description="Create Prudence Manual">
 		<available file="${tmp}/documentation" property="documentation-present" />
 		<antcall target="documentation-unless" />
 	</target>
@@ -387,7 +373,7 @@
 		<copy todir="${tmp}/documentation">
 			<fileset dir="${documentation}" excludes="*~, **/.svn/" />
 		</copy>
-		<replace dir="${tmp}/documentation" includes="prudence_manual.lyx" token="%REVISION%" value="${revision.max}" />
+		<replace dir="${tmp}/documentation" includes="prudence_manual.lyx" token="%VERSION%" value="${version}" />
 		<exec executable="lyx" failifexecutionfails="false">
 			<arg value="--export" />
 			<arg value="pdf" />

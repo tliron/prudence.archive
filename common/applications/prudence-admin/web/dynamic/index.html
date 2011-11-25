@@ -2,7 +2,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 #set($applications = $application.sharedGlobals['com.threecrickets.prudence.applications'])
 #set($version = $application.sharedGlobals['com.threecrickets.prudence.version'])
-#set($revision = $application.sharedGlobals['com.threecrickets.prudence.revision'])
 #set($flavor = $application.sharedGlobals['com.threecrickets.prudence.flavor'])
 #set($component = $application.component)
 
@@ -61,7 +60,7 @@
 					be lost when you restart Prudence.
 				</p>
 				<p>
-					This Prudence is $version$revision for $flavor.
+					This Prudence is $version for $flavor.
 				</p>
 				<p>
 					<a href="http://threecrickets.com/prudence/" class="neutral"><img src="$!{prefix}media/prudence-small.png" border="0"></a>

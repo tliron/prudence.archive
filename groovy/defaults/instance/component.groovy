@@ -27,7 +27,6 @@ componentInstance = new Component()
 executable.globals['com.threecrickets.prudence.component'] = componentInstance
 
 componentInstance.context.attributes['com.threecrickets.prudence.version'] = prudenceVersion
-componentInstance.context.attributes['com.threecrickets.prudence.revision'] = prudenceRevision
 componentInstance.context.attributes['com.threecrickets.prudence.flavor'] = prudenceFlavor
 
 //

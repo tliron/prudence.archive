@@ -57,16 +57,13 @@
 ;
 
 (def prudence-version "%VERSION%")
-(def prudence-revision "-%REVISION%")
-(if (= (.length prudence-revision) 1)
-	(def prudence-revision ""))
 (def prudence-flavor "Clojure")
 
 ;
 ; Welcome
 ;
 
-(println (str "Prudence " prudence-version prudence-revision " for " prudence-flavor "."))
+(println (str "Prudence " prudence-version " for " prudence-flavor "."))
 
 ;
 ; Logging

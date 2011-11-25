@@ -57,17 +57,13 @@ end
 #
 
 $prudence_version = '%VERSION%'
-$prudence_revision = '-%REVISION%'
-if $prudence_revision.length == 1
-	$prudence_revision = ''
-end
 $prudence_flavor = 'Ruby'
 
 #
 # Welcome
 #
 
-puts "Prudence #{$prudence_version}#{$prudence_revision} for #{$prudence_flavor}."
+puts "Prudence #{$prudence_version} for #{$prudence_flavor}."
 
 #
 # Logging

@@ -54,17 +54,13 @@ executeOrDefault = { name, deflt = null ->
 //
 
 prudenceVersion = '%VERSION%'
-prudenceRevision = '-%REVISION%'
-if(prudenceRevision.size() == 1) {
-	prudenceRevision = ''
-}
 prudenceFlavor = 'Groovy'
 
 //
 // Welcome
 //
 
-println('Prudence ' + prudenceVersion + prudenceRevision + ' for ' + prudenceFlavor + '.')
+println('Prudence ' + prudenceVersion + ' for ' + prudenceFlavor + '.')
 out.flush()
 
 //
