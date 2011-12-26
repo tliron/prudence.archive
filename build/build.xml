@@ -1,912 +1,116 @@
 <?xml version="1.0"?>
-<project name="Prudence" default="build">
+<project name="Prudence" default="build" xmlns:ivy="antlib:org.apache.ivy.ant">
 
-	<property file="prudence.properties" />
-
-	<!-- Configuration -->
-
-	<property name="lib" value="../libraries" />
-	<property name="common" value="../common" />
-	<property name="documentation" value="../documentation" />
-	<property name="java" value="../java" />
-	<property name="java-src" value="${java}/com.threecrickets.prudence/src" />
-	<property name="python" value="../python" />
-	<property name="ruby" value="../ruby" />
-	<property name="groovy" value="../groovy" />
-	<property name="clojure" value="../clojure" />
-	<property name="javascript" value="../javascript" />
-	<property name="php" value="../php" />
-	<property name="velocity" value="../velocity" />
-
-	<property name="tmp" value="./tmp" />
-	<property name="dist-kitchensink" value="kitchensink" />
-	<property name="dist-standalone" value="standalone" />
-	<property name="dist-javascript" value="javascript" />
-	<property name="dist-python" value="python" />
-	<property name="dist-clojure" value="clojure" />
-	<property name="dist-groovy" value="groovy" />
-	<property name="dist-ruby" value="ruby" />
-	<property name="dist-php" value="php" />
+	<!--
+	A straightforward Ant build file that can build a distribution for single-component projects,
+	using Ivy to pull in dependencies.
 	
-	<condition property="isUnix">
-		<os family="unix" />
-	</condition>
-	<condition property="isWindows">
-		<os family="windows" />
-	</condition>
-
-	<!-- Extensions -->
-
-	<taskdef resource="foundrylogic/vpp/taskdef.properties" >
-		<classpath>
-			<fileset dir="${lib}/vpp/lib" includes="*.jar" />
-			<fileset dir="${lib}/velocity/lib" includes="*.jar" />
-		</classpath>
-	</taskdef>
-
-	<!-- Macros -->
-
-	<macrodef name="fetch-license">
-		<attribute name="dist" />
-		<attribute name="library" />
-		<sequential>
-			<copy todir="@{dist}/content/licenses/@{library}">
-				<fileset dir="${lib}/@{library}/license" excludes="**/.svn/" />
-			</copy>
-		</sequential>
-	</macrodef>
-
-	<macrodef name="fetch-library">
-		<attribute name="dist" />
-		<attribute name="library" />
-		<sequential>
-			<copy todir="@{dist}/content/libraries">
-				<fileset dir="${lib}/@{library}/lib" includes="*.jar" />
-			</copy>
-			<copy todir="@{dist}/content/licenses/@{library}">
-				<fileset dir="${lib}/@{library}/license" excludes="**/.svn/" />
-			</copy>
-		</sequential>
-	</macrodef>
-
-	<macrodef name="fetch-library-versions">
-		<attribute name="dist" />
-		<sequential>
-			<copy todir="@{dist}/content/libraries" file="${lib}/versions.txt" />
-		</sequential>
-	</macrodef>
-
-	<macrodef name="fetch-javadocs">
-		<attribute name="dist" />
-		<sequential>
-			<copy todir="@{dist}/content/applications/prudence-test/web/static/api">
-				<fileset dir="${tmp}/api" />
-			</copy>
-			<copy tofile="@{dist}/content/applications/prudence-test/web/static/manual/index.html" file="${tmp}/documentation/prudence_manual.html" />
-		</sequential>
-	</macrodef>
-
-	<macrodef name="fetch-prudence-jar">
-		<attribute name="dist" />
-		<sequential>
-			<copy todir="@{dist}/content/libraries" file="${tmp}/lib/com.threecrickets.prudence.jar" />
-		</sequential>
-	</macrodef>
-
-	<macrodef name="fetch-prudence-test-jar">
-		<attribute name="dist" />
-		<sequential>
-			<copy todir="@{dist}/content/libraries" file="${tmp}/lib/com.threecrickets.prudence.test.jar" />
-		</sequential>
-	</macrodef>
-
-	<macrodef name="fetch-common-content">
-		<attribute name="dist" />
-		<attribute name="base" />
-		<attribute name="name" />
-		<sequential>
-			<copy todir="@{dist}/content">
-				<fileset dir="${common}" excludes="bin/run.sh, bin/run.bat, readme.txt, **/.svn/" />
-				<fileset dir="@{base}" excludes="**/.svn/, maven/" />
-			</copy>
-			<copy todir="@{dist}/content/applications/prudence-test/web/static/script">
-				<fileset dir="${lib}/jquery/lib" excludes="**/.svn/" />
-			</copy>
-			<copy todir="@{dist}/content/applications/stickstick/web/static/script">
-				<fileset dir="${lib}/jquery/lib" excludes="**/.svn/" />
-			</copy>
-			<pathconvert property="@{dist}-jars" pathsep=":">
-				<fileset dir="@{dist}/content/libraries" includes="*.jar" />
-				<flattenmapper />
-			</pathconvert>
-			<vppcopy tofile="@{dist}/content/readme.txt">
-				<fileset file="${common}/readme.txt" />
-				<config>
-					<context>
-						<property key="distribution" value="@{dist}" />
-					</context>
-				</config>
-			</vppcopy>
-			<vppcopy tofile="@{dist}/content/readme-windows.txt">
-				<fileset file="${common}/readme.txt" />
-				<config>
-					<context>
-						<property key="distribution" value="@{dist}" />
-						<property key="os" value="windows" />
-					</context>
-				</config>
-			</vppcopy>
-			<vppcopy todir="@{dist}/content/bin">
-				<fileset dir="${common}/bin" includes="run.sh, run.bat" />
-				<config>
-					<context>
-						<property key="distribution" value="@{dist}" />
-						<property key="service" value="@{name}" />
-						<property key="jars" value="${@{dist}-jars}" />
-						<property key="leftbracket" value="{" />
-					</context>
-				</config>
-			</vppcopy>
-			<chmod perm="ugo+rx">
-				<fileset dir="@{dist}/content/bin" includes="**/run.sh, **/jsvc" />
-			</chmod>
-			<copy todir="@{dist}/content/documentation">
-				<fileset dir="${tmp}/documentation" />
-			</copy>
-			<replace dir="@{dist}/content/defaults/instance" includes="default.*" token="%VERSION%" value="${version}" />
-			<copy todir="@{dist}/content/applications/prudence-test/web">
-				<fileset dir="${velocity}/applications/prudence-test/web" excludes="**/.svn/" />
-			</copy>
-			<mkdir dir="@{dist}/content/common" />
-			<!-- This makes the txt files Windows-friendly -->
-			<fixcrlf srcdir="@{dist}/content" includes="**/*.txt" eol="crlf" eof="remove" tab="remove" tablength="4" />
-		</sequential>
-	</macrodef>
-
-	<macrodef name="fetch-debian">
-		<attribute name="name" />
-		<sequential>
-			<mkdir dir="debian/prudence-@{name}-1.1/debian" />
-			<vppcopy todir="debian/prudence-@{name}-1.1/debian">
-				<fileset dir="debian/common" excludes="**/.svn/" />
-				<config>
-					<context>
-						<property key="distribution" value="@{name}" />
-					</context>
-				</config>
-			</vppcopy>
-		</sequential>
-	</macrodef>
+	The distribution's directory structure is compatible with Sincerity containers.
+	See: http://threecrickets.com/sincerity/
 	
-	<macrodef name="dmg">
-		<!-- See: http://stackoverflow.com/questions/286419/how-to-build-a-dmg-mac-os-x-file-on-a-non-mac-platform -->
-		<!-- Requires package hfsprogs in Ubuntu -->
-		<attribute name="destfile" />
-		<attribute name="name" />
-		<attribute name="dir" />
-		<sequential>
-			<exec executable="dd" failifexecutionfails="false">
-				<arg value="if=/dev/zero" />
-				<arg value="of=@{destfile}" />
-				<arg value="bs=1M" />
-				<arg value="count=64" />
-			</exec>
-			<exec executable="mkfs.hfsplus" failifexecutionfails="false">
-				<arg value="-v @{name}" />
-				<arg value="@{destfile}" />
-			</exec>
-			<!-- We need root access for this to work -->
-			<exec executable="mount" failifexecutionfails="false">
-				<arg value="-o loop" />
-				<arg value="@{destfile}" />
-				<arg value="dmg" />
-			</exec>
-			<copy todir="dmg">
-				<fileset dir="@{dist}/content" excludes="cache/, logs/, data/, **/com.caucho.quercus.jar" />
-			</copy>
-			<exec executable="umount" failifexecutionfails="false">
-				<arg value="@{destfile}" />
-			</exec>
-		</sequential>
-	</macrodef>
+	Version: 1.0
+	-->
 
-	<macrodef name="package">
-		<attribute name="dist" />
-		<attribute name="name" />
-		<sequential>
-			<zip destfile="prudence-@{name}-${version}.zip" level="9">
-				<zipfileset prefix="prudence-@{name}-${version}" dir="@{dist}/content" excludes="cache/, logs/, data/, **/com.caucho.quercus.jar, **/run.sh, **/jsvc" />
-				<zipfileset prefix="prudence-@{name}-${version}" dir="@{dist}/content" filemode="755" includes="**/run.sh, **/jsvc" />
-			</zip>
-			<!-- <dmg destfile="prudence-@{name}-${version}.dmg" name="Prudence (@{name}-${version})" dir="@{dist}/content" /> -->
-		</sequential>
-	</macrodef>
+	<property file="component.properties" />
+	
+	<property name="component.source" value="../components/${component}/source" />
+	<property name="component.resources" value="../components/${component}/resources" />
+	<property name="component.notices" value="../components/notices" />
+	
+	<property name="dependencies" value="../dependencies" />
 
-	<macrodef name="test">
-		<attribute name="dist" />
-		<attribute name="name" />
-		<sequential>
-			<junit dir="." haltonfailure="true" fork="true" forkmode="perBatch" newenvironment="false" jvm="${test-jvm}" printsummary="true" timeout="120000">
-				<test name="com.threecrickets.prudence.test.@{name}" />
-				<classpath>
-					<file file="${lib}/junit/lib/org.junit.jar" />
-					<file file="${lib}/groboutils/lib/net.sourceforge.groboutils.jar" />
-					<file file="${lib}/restlet/lib/org.restlet.jar" />
-					<file file="${lib}/log4j/lib/org.apache.log4j.jar" />
-					<file file="${tmp}/lib/com.threecrickets.prudence.test.jar" />
-					<!-- These are used for in-process mode -->
-					<fileset dir="@{dist}/content/libraries">
-						<include name="*.jar" />
-					</fileset>
-				</classpath>
-				<formatter type="plain" usefile="false" />
-				<env key="PRUDENCE_TEST_IN_PROCESS" value="${isWindows}" />
-				<env key="PRUDENCE_TEST_THREADS" value="${test-threads}" />
-				<env key="PRUDENCE_TEST_ITERATIONS" value="${test-iterations}" />
-				<env key="PRUDENCE_TEST_IS_WINDOWS" value="${isWindows}" />
-				<!-- These are used for in-process mode -->
-				<jvmarg value="-Dscripturian.cache=@{dist}/content/cache" />
-				<jvmarg value="-Dhazelcast.config=@{dist}/content/configuration/hazelcast.conf" />
-				<jvmarg value="-Dpython.home=@{dist}/content/common/libraries" />
-				<jvmarg value="-Dpython.verbose=warning" />
-				<jvmarg value="-Djava.library.path=${jepp-path}" />
-				<jvmarg value="-Djava.util.logging.config.file=none" />
-				<jvmarg value="-Dnet.spy.log.LoggerImpl=net.spy.log.SunLogger" />
-			</junit>
-		</sequential>
-	</macrodef>
+	<property name="cache" value="./cache" />
+	<property name="cache.classes" value="${cache}/classes" />
+	<property name="cache.jars" value="${cache}/jars" />
 
-	<!-- Basic -->
+	<property name="distribution" value="./distribution" />
+	<property name="distribution.content" value="${distribution}/content" />
+	<property name="distribution.libraries" value="${distribution.content}/libraries" />
+	<property name="distribution.jars" value="${distribution.libraries}/jars" />
+	<property name="distribution.reference" value="${distribution.content}/reference" />
+	<property name="distribution.api" value="${distribution.reference}/documentation/api" />
+	<property name="distribution.source" value="${distribution.content}/reference/source" />
 
-	<target name="build" depends="kitchensink, standalone, javascript, python, clojure, groovy, ruby, php" description="Build all distributions" />
+	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${dependencies}/libraries/jars/org.apache.ivy/ivy/${ivy.version}/ivy.jar" />
 
-	<target name="package" depends="package-kitchensink, package-standalone, package-javascript, package-python, package-clojure, package-groovy, package-ruby, package-php" description="Package all distributions" />
-
-	<target name="test" depends="test-kitchensink, test-javascript, test-python, test-clojure, test-groovy, test-ruby, test-php" description="Test all distributions" />
-
-	<target name="clean-distributions" description="Clean">
-		<delete dir="${dist-kitchensink}" />
-		<delete dir="${dist-standalone}" />
-		<delete dir="${dist-javascript}" />
-		<delete dir="${dist-python}" />
-		<delete dir="${dist-clojure}" />
-		<delete dir="${dist-groovy}" />
-		<delete dir="${dist-ruby}" />
-		<delete dir="${dist-php}" />
-		<delete>
-			<fileset dir="." includes="*.zip" />
-		</delete>
+	<target name="ivy" description="Settings for Ivy">
+		<ivy:settings file="ivy/settings.xml" />
 	</target>
 
-	<target name="clean" depends="clean-distributions" description="Clean">
-		<delete dir="${tmp}" />
+	<target name="dependencies" depends="ivy" description="Resolve dependencies">
+		<ivy:resolve file="ivy/${component}.xml" type="jar" log="download-only" resolveId="${component}" />
+		<ivy:cachepath pathid="dependencies" type="jar" resolveId="${component}" />
 	</target>
 
-	<target name="rebuild" depends="clean, build" description="Rebuild all distributions" />
-
-	<!-- Essentials -->
-
-	<target name="compile" description="Compile Prudence code">
-		<mkdir dir="${tmp}/classes" />
-		<javac srcdir="${java-src}" destdir="${tmp}/classes" target="1.5" debug="${debug}" includeAntRuntime="false">
-			<classpath>
-				<fileset dir="${lib}/commons-daemon/lib" />
-				<fileset dir="${lib}/commons-dbcp/lib" />
-				<fileset dir="${lib}/commons-fileupload/lib" />
-				<fileset dir="${lib}/commons-pool/lib" />
-				<fileset dir="${lib}/cron4j/lib" />
-				<fileset dir="${lib}/groboutils/lib" />
-				<fileset dir="${lib}/hazelcast/lib" />
-				<fileset dir="${lib}/h2/lib" />
-				<fileset dir="${lib}/junit/lib" />
-				<fileset dir="${lib}/jygments/lib" />
-				<fileset dir="${lib}/mongodb-java-driver/lib" />
-				<fileset dir="${lib}/restlet/lib" />
-				<fileset dir="${lib}/scripturian/lib" />
-				<fileset dir="${lib}/servlet/lib" />
-				<fileset dir="${lib}/spymemcached/lib" />
-			</classpath>
+	<target name="classes" depends="dependencies" description="Compile Java code">
+		<mkdir dir="${cache.classes}" />
+		<javac srcdir="${component.source}" destdir="${cache.classes}" source="${jvm.version}" target="${jvm.version}" includeAntRuntime="false" debug="${compile.debug}">
+			<classpath refid="dependencies" />
 		</javac>
 	</target>
 
-	<target name="jar" depends="compile" description="Create Prudence jar">
-		<mkdir dir="${tmp}/lib" />
-		<jar destfile="${tmp}/lib/com.threecrickets.prudence.jar" basedir="${tmp}/classes" excludes="com/threecrickets/prudence/test/**" />
-		<jar destfile="${tmp}/lib/com.threecrickets.prudence.test.jar" basedir="${tmp}/classes" includes="com/threecrickets/prudence/test/**" />
+	<target name="javadocs" description="Create API documentation if not present">
+		<available file="${distribution.api}" property="javadocs-present" />
+		<antcall target="javadocs-overwrite" />
 	</target>
 
-	<target name="javadoc" description="Create Prudence API docs">
-		<available file="${tmp}/api" property="javadoc-present" />
-		<antcall target="javadoc-unless" />
-	</target>
+	<target name="javadocs-overwrite" depends="dependencies" description="Create API documentation" unless="javadocs-present">
+		<javadoc
+			destdir="${distribution.api}" sourcepath="${component.source}" excludepackagenames="**.internal.*"
+			access="protected" source="${jvm.version}"
+			windowtitle="${documentation.title} ${version}" doctitle="${documentation.title} ${version}"
+			author="true" splitindex="true" use="true" version="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false">
 
-	<target name="clean-javadoc" description="Clean Prudence API docs">
-		<delete dir="${tmp}/api" />
-	</target>
-
-	<target name="javadoc-unless" description="Create Prudence API docs" unless="javadoc-present">
-		<javadoc sourcepath="${java-src}" source="1.5" excludepackagenames="**.internal.*,**.test.*" destdir="${tmp}/api" stylesheetfile="${documentation}/soft-cricket-api.css" windowtitle="Prudence ${version}" doctitle="Prudence ${version}" access="protected" author="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" splitindex="true" use="true" version="true" verbose="true">
-			<link href="http://download.oracle.com/javase/1.5.0/docs/api/" />
-			<link href="http://download.oracle.com/javase/6/docs/api/" />
-			<link href="http://threecrickets.com/scripturian/api/" />
-			<link href="http://www.restlet.org/documentation/2.0/jse/api/" />
-			<link href="http://commons.apache.org/dbcp/api-1.3/" />
-			<link href="http://commons.apache.org/pool/api-1.5.6/" />
-			<link href="http://commons.apache.org/fileupload/apidocs/" />
-			<link href="http://www.sauronsoftware.it/projects/cron4j/api/" />
-			<link href="http://www.h2database.com/javadoc/" />
-			<link href="http://www.hazelcast.com/javadoc/" />
-			<link href="http://dustin.github.com/java-memcached-client/apidocs/" />
+			<link href="${jvm.docs}" />
 			<link href="http://commons.apache.org/daemon/apidocs/" />
-			<link href="http://api.mongodb.org/java/2.6.5/" />
-			<classpath>
-				<fileset dir="${lib}/cron4j/lib" />
-				<fileset dir="${lib}/hazelcast/lib" />
-				<fileset dir="${lib}/h2/lib" />
-				<fileset dir="${lib}/commons-daemon/lib" />
-				<fileset dir="${lib}/commons-dbcp/lib" />
-				<fileset dir="${lib}/commons-pool/lib" />
-				<fileset dir="${lib}/commons-fileupload/lib" />
-				<fileset dir="${lib}/jygments/lib" />
-				<fileset dir="${lib}/mongodb-java-driver/lib" />
-				<fileset dir="${lib}/restlet/lib" />
-				<fileset dir="${lib}/scripturian/lib" />
-				<fileset dir="${lib}/spymemcached/lib" />
-			</classpath>
+			<link href="http://commons.apache.org/dbcp/api-1.3/" />
+			<link href="http://commons.apache.org/fileupload/apidocs/" />
+			<link href="http://commons.apache.org/pool/api-1.5.7/" />
+			<link href="http://www.sauronsoftware.it/projects/cron4j/api/" />
+			<link href="http://groboutils.sourceforge.net/docs/projects/5/api/" />
+			<link href="http://www.hazelcast.com/javadoc/" />
+			<link href="http://www.h2database.com/javadoc/" />
+			<link href="http://junit.sourceforge.net/javadoc/" />
+			<!-- Jygments as no online javadocs -->
+			<link href="http://api.mongodb.org/java/2.7.2/" />
+			<link href="http://www.restlet.org/documentation/2.0/jse/api/" />
+			<link href="http://threecrickets.com/scripturian/api/" />
+			<link href="http://docs.oracle.com/cd/E17802_01/products/products/servlet/2.5/docs/servlet-2_5-mr2/" />
+			<link href="http://dustin.github.com/java-memcached-client/apidocs/" />
+			<classpath refid="dependencies" />
 			<bottom>
-				<![CDATA[<i>Copyright &#169; 2009-2011 <a target="_top" href="http://threecrickets.com/">Three Crickets LLC</a>.</i>]]>
+				<![CDATA[<i>${documentation.copyright}</i>]]>
 			</bottom>
 		</javadoc>
 	</target>
-
-	<target name="documentation" description="Create Prudence Manual">
-		<available file="${tmp}/documentation" property="documentation-present" />
-		<antcall target="documentation-unless" />
-	</target>
 	
-	<target name="clean-documentation" description="Clean Prudence Manual">
-		<delete dir="${tmp}/documentation" />
+	<target name="libraries" depends="classes" description="Create jar">
+		<mkdir dir="${distribution.jars}" />
+		<jar destfile="${distribution.jars}/${maven.group}/${maven.artifact}/${version}/${maven.artifact}.jar" basedir="${cache.classes}" />
 	</target>
 
-	<target name="documentation-unless" description="Create Prudence Manual" unless="documentation-present">
-		<mkdir dir="${tmp}/documentation" />
-		<copy todir="${tmp}/documentation">
-			<fileset dir="${documentation}" excludes="*~, **/.svn/" />
+	<target name="distribution" depends="libraries, javadocs" description="Assemble distribution">
+		<copy todir="${distribution.source}/${maven.group}/${maven.artifact}/${version}">
+			<fileset dir="${component.source}" />
 		</copy>
-		<replace dir="${tmp}/documentation" includes="prudence_manual.lyx" token="%VERSION%" value="${version}" />
-		<exec executable="lyx" failifexecutionfails="false">
-			<arg value="--export" />
-			<arg value="pdf" />
-			<arg value="${tmp}/documentation/prudence_manual.lyx" />
-		</exec>
-		<exec executable="elyxer" failifexecutionfails="false">
-			<arg value="--unicode" />
-			<arg value="--title" />
-			<arg value="Prudence Manual" />
-			<arg value="${tmp}/documentation/prudence_manual.lyx" />
-			<arg value="${tmp}/documentation/prudence_manual.html" />
-		</exec>
-	</target>
-	
-	<!-- JavaScript -->
-	
-	<target name="javascript" depends="libraries-javascript, content-javascript" description="Create distribution" />
-	
-	<target name="package-javascript" depends="javascript" description="Create distribution zip">
-		<package dist="${dist-javascript}" name="javascript" />
-	</target>
-	
-	<target name="jar-javascript" depends="jar" description="Fetch Prudence jar">
-		<fetch-prudence-jar dist="${dist-javascript}" />
-	</target>
-	
-	<target name="libraries-javascript" depends="jar-javascript" description="Fetch libraries">
-		<fetch-library dist="${dist-javascript}" library="commons-codec" />
-		<fetch-library dist="${dist-javascript}" library="commons-daemon" />
-		<fetch-library dist="${dist-javascript}" library="commons-dbcp" />
-		<fetch-library dist="${dist-javascript}" library="commons-fileupload" />
-		<fetch-library dist="${dist-javascript}" library="commons-io" />
-		<fetch-library dist="${dist-javascript}" library="commons-logging" />
-		<fetch-library dist="${dist-javascript}" library="commons-pool" />
-		<fetch-library dist="${dist-javascript}" library="cron4j" />
-		<fetch-library dist="${dist-javascript}" library="firewall-friendly-agent" />
-		<fetch-library dist="${dist-javascript}" library="h2" />
-		<fetch-library dist="${dist-javascript}" library="hazelcast" />
-		<fetch-library dist="${dist-javascript}" library="httpclient" />
-		<fetch-library dist="${dist-javascript}" library="httpcore" />
-		<fetch-library dist="${dist-javascript}" library="httpmime" />
-		<fetch-library dist="${dist-javascript}" library="jackson" />
-		<fetch-library dist="${dist-javascript}" library="jcip-annotations" />
-		<fetch-license dist="${dist-javascript}" library="jquery" />
-		<fetch-library dist="${dist-javascript}" library="json" />
-		<fetch-library dist="${dist-javascript}" library="jygments" />
-		<fetch-library dist="${dist-javascript}" library="log4j" />
-		<fetch-library dist="${dist-javascript}" library="mime4j" />
-		<fetch-library dist="${dist-javascript}" library="mongodb-java-driver" />
-		<fetch-library dist="${dist-javascript}" library="mysqlconnector" />
-		<fetch-library dist="${dist-javascript}" library="restlet" />
-		<fetch-library dist="${dist-javascript}" library="rhino" />
-		<fetch-library dist="${dist-javascript}" library="scripturian" />
-		<fetch-library dist="${dist-javascript}" library="servlet" />
-		<fetch-library dist="${dist-javascript}" library="slf4j" />
-		<fetch-library dist="${dist-javascript}" library="spymemcached" />
-		<fetch-library dist="${dist-javascript}" library="succinct" />
-		<fetch-library dist="${dist-javascript}" library="velocity" />
-		<fetch-library dist="${dist-javascript}" library="${http-server}" />
-		<fetch-library-versions dist="${dist-javascript}" />
-	</target>
-	
-	<target name="javadoc-javascript" depends="javadoc, documentation" description="Fetch Prudence API docs">
-		<fetch-javadocs dist="${dist-javascript}" />
-	</target>
-	
-	<target name="content-javascript" depends="javadoc-javascript" description="Fetch content">
-		<fetch-common-content dist="${dist-javascript}" base="${javascript}" name="JavaScript" />
-	</target>
-	
-	<target name="test-javascript" depends="javascript" description="Unit tests">
-		<test dist="${dist-javascript}" name="JavaScript" />
-	</target>
-	
-	<!-- Python -->
-	
-	<target name="python" depends="libraries-python, content-python" description="Create distribution" />
-	
-	<target name="package-python" depends="python" description="Create distribution zip">
-		<package dist="${dist-python}" name="python" />
-	</target>
-	
-	<target name="jar-python" depends="jar" description="Fetch Prudence jar">
-		<fetch-prudence-jar dist="${dist-python}" />
-	</target>
-	
-	<target name="libraries-python" depends="jar-python" description="Fetch libraries">
-		<fetch-library dist="${dist-python}" library="commons-codec" />
-		<fetch-library dist="${dist-python}" library="commons-daemon" />
-		<fetch-library dist="${dist-python}" library="commons-dbcp" />
-		<fetch-library dist="${dist-python}" library="commons-fileupload" />
-		<fetch-library dist="${dist-python}" library="commons-io" />
-		<fetch-library dist="${dist-python}" library="commons-logging" />
-		<fetch-library dist="${dist-python}" library="commons-pool" />
-		<fetch-library dist="${dist-python}" library="cron4j" />
-		<fetch-library dist="${dist-python}" library="firewall-friendly-agent" />
-		<fetch-library dist="${dist-python}" library="h2" />
-		<fetch-library dist="${dist-python}" library="hazelcast" />
-		<fetch-library dist="${dist-python}" library="httpclient" />
-		<fetch-library dist="${dist-python}" library="httpcore" />
-		<fetch-library dist="${dist-python}" library="httpmime" />
-		<fetch-library dist="${dist-python}" library="jackson" />
-		<fetch-library dist="${dist-python}" library="jcip-annotations" />
-		<fetch-library dist="${dist-python}" library="jepp" />
-		<fetch-license dist="${dist-python}" library="jquery" />
-		<fetch-library dist="${dist-python}" library="json" />
-		<fetch-library dist="${dist-python}" library="jsr223" />
-		<fetch-library dist="${dist-python}" library="jygments" />
-		<fetch-library dist="${dist-python}" library="jython" />
-		<fetch-library dist="${dist-python}" library="log4j" />
-		<fetch-library dist="${dist-python}" library="mime4j" />
-		<fetch-library dist="${dist-python}" library="mongodb-java-driver" />
-		<fetch-library dist="${dist-python}" library="mysqlconnector" />
-		<fetch-library dist="${dist-python}" library="restlet" />
-		<fetch-library dist="${dist-python}" library="scripturian" />
-		<fetch-library dist="${dist-python}" library="servlet" />
-		<fetch-library dist="${dist-python}" library="slf4j" />
-		<fetch-library dist="${dist-python}" library="spymemcached" />
-		<fetch-library dist="${dist-python}" library="succinct" />
-		<fetch-library dist="${dist-python}" library="velocity" />
-		<fetch-library dist="${dist-python}" library="${http-server}" />
-		<copy todir="${dist-python}/content/common/libraries/Lib">
-			<fileset dir="${lib}/jython/lib/Lib" excludes="**/.svn/" />
-		</copy>
-		<copy todir="${dist-python}/content/common/libraries/sqlalchemy">
-			<fileset dir="${lib}/sqlalchemy/lib" excludes="**/.svn/" />
-		</copy>
-		<fetch-library-versions dist="${dist-python}" />
-	</target>
-	
-	<target name="javadoc-python" depends="javadoc, documentation" description="Fetch Prudence API docs">
-		<fetch-javadocs dist="${dist-python}" />
-	</target>
-	
-	<target name="content-python" depends="javadoc-python" description="Fetch content">
-		<fetch-common-content dist="${dist-python}" base="${python}" name="Python" />
-	</target>
-	
-	<target name="test-python" depends="python" description="Unit tests">
-		<test dist="${dist-python}" name="Python" />
-	</target>
-	
-	<!-- Clojure -->
-	
-	<target name="clojure" depends="libraries-clojure, content-clojure" description="Create distribution" />
-	
-	<target name="package-clojure" depends="clojure" description="Create distribution zip">
-		<package dist="${dist-clojure}" name="clojure" />
-	</target>
-	
-	<target name="jar-clojure" depends="jar" description="Fetch Prudence jar">
-		<fetch-prudence-jar dist="${dist-clojure}" />
-	</target>
-	
-	<target name="libraries-clojure" depends="jar-clojure" description="Fetch libraries">
-		<fetch-library dist="${dist-clojure}" library="clojure" />
-		<fetch-library dist="${dist-clojure}" library="commons-codec" />
-		<fetch-library dist="${dist-clojure}" library="commons-daemon" />
-		<fetch-library dist="${dist-clojure}" library="commons-dbcp" />
-		<fetch-library dist="${dist-clojure}" library="commons-fileupload" />
-		<fetch-library dist="${dist-clojure}" library="commons-io" />
-		<fetch-library dist="${dist-clojure}" library="commons-logging" />
-		<fetch-library dist="${dist-clojure}" library="commons-pool" />
-		<fetch-library dist="${dist-clojure}" library="cron4j" />
-		<fetch-library dist="${dist-clojure}" library="firewall-friendly-agent" />
-		<fetch-library dist="${dist-clojure}" library="h2" />
-		<fetch-library dist="${dist-clojure}" library="hazelcast" />
-		<fetch-library dist="${dist-clojure}" library="httpclient" />
-		<fetch-library dist="${dist-clojure}" library="httpcore" />
-		<fetch-library dist="${dist-clojure}" library="httpmime" />
-		<fetch-library dist="${dist-clojure}" library="jackson" />
-		<fetch-library dist="${dist-clojure}" library="jcip-annotations" />
-		<fetch-license dist="${dist-clojure}" library="jquery" />
-		<fetch-library dist="${dist-clojure}" library="json" />
-		<fetch-library dist="${dist-clojure}" library="jygments" />
-		<fetch-library dist="${dist-clojure}" library="log4j" />
-		<fetch-library dist="${dist-clojure}" library="mime4j" />
-		<fetch-library dist="${dist-clojure}" library="mongodb-java-driver" />
-		<fetch-library dist="${dist-clojure}" library="mysqlconnector" />
-		<fetch-library dist="${dist-clojure}" library="restlet" />
-		<fetch-library dist="${dist-clojure}" library="scripturian" />
-		<fetch-library dist="${dist-clojure}" library="servlet" />
-		<fetch-library dist="${dist-clojure}" library="slf4j" />
-		<fetch-library dist="${dist-clojure}" library="spymemcached" />
-		<fetch-library dist="${dist-clojure}" library="succinct" />
-		<fetch-library dist="${dist-clojure}" library="velocity" />
-		<fetch-library dist="${dist-clojure}" library="${http-server}" />
-		<fetch-library-versions dist="${dist-clojure}" />
-	</target>
-	
-	<target name="javadoc-clojure" depends="javadoc, documentation" description="Fetch Prudence API docs">
-		<fetch-javadocs dist="${dist-clojure}" />
-	</target>
-	
-	<target name="content-clojure" depends="javadoc-clojure" description="Fetch content">
-		<fetch-common-content dist="${dist-clojure}" base="${clojure}" name="Clojure" />
-	</target>
-	
-	<target name="test-clojure" depends="clojure" description="Unit tests">
-		<test dist="${dist-clojure}" name="Clojure" />
-	</target>
-	
-	<!-- Groovy -->
-	
-	<target name="groovy" depends="libraries-groovy, content-groovy" description="Create distribution" />
-	
-	<target name="package-groovy" depends="groovy" description="Create distribution zip">
-		<package dist="${dist-groovy}" name="groovy" />
-	</target>
-	
-	<target name="jar-groovy" depends="jar" description="Fetch Prudence jar">
-		<fetch-prudence-jar dist="${dist-groovy}" />
-	</target>
-	
-	<target name="libraries-groovy" depends="jar-groovy" description="Fetch libraries">
-		<fetch-library dist="${dist-groovy}" library="commons-codec" />
-		<fetch-library dist="${dist-groovy}" library="commons-daemon" />
-		<fetch-library dist="${dist-groovy}" library="commons-dbcp" />
-		<fetch-library dist="${dist-groovy}" library="commons-fileupload" />
-		<fetch-library dist="${dist-groovy}" library="commons-io" />
-		<fetch-library dist="${dist-groovy}" library="commons-logging" />
-		<fetch-library dist="${dist-groovy}" library="commons-pool" />
-		<fetch-library dist="${dist-groovy}" library="cron4j" />
-		<fetch-library dist="${dist-groovy}" library="firewall-friendly-agent" />
-		<fetch-library dist="${dist-groovy}" library="groovy" />
-		<fetch-library dist="${dist-groovy}" library="h2" />
-		<fetch-library dist="${dist-groovy}" library="hazelcast" />
-		<fetch-library dist="${dist-groovy}" library="httpclient" />
-		<fetch-library dist="${dist-groovy}" library="httpcore" />
-		<fetch-library dist="${dist-groovy}" library="httpmime" />
-		<fetch-library dist="${dist-groovy}" library="jackson" />
-		<fetch-library dist="${dist-groovy}" library="jcip-annotations" />
-		<fetch-license dist="${dist-groovy}" library="jquery" />
-		<fetch-library dist="${dist-groovy}" library="json" />
-		<fetch-library dist="${dist-groovy}" library="jygments" />
-		<fetch-library dist="${dist-groovy}" library="log4j" />
-		<fetch-library dist="${dist-groovy}" library="mime4j" />
-		<fetch-library dist="${dist-groovy}" library="mongodb-java-driver" />
-		<fetch-library dist="${dist-groovy}" library="mysqlconnector" />
-		<fetch-library dist="${dist-groovy}" library="restlet" />
-		<fetch-library dist="${dist-groovy}" library="scripturian" />
-		<fetch-library dist="${dist-groovy}" library="servlet" />
-		<fetch-library dist="${dist-groovy}" library="slf4j" />
-		<fetch-library dist="${dist-groovy}" library="spymemcached" />
-		<fetch-library dist="${dist-groovy}" library="succinct" />
-		<fetch-library dist="${dist-groovy}" library="velocity" />
-		<fetch-library dist="${dist-groovy}" library="${http-server}" />
-		<fetch-library-versions dist="${dist-groovy}" />
-	</target>
-	
-	<target name="javadoc-groovy" depends="javadoc, documentation" description="Fetch Prudence API docs">
-		<fetch-javadocs dist="${dist-groovy}" />
-	</target>
-	
-	<target name="content-groovy" depends="javadoc-groovy" description="Fetch content">
-		<fetch-common-content dist="${dist-groovy}" base="${groovy}" name="Groovy" />
-	</target>
-	
-	<target name="test-groovy" depends="groovy" description="Unit tests">
-		<test dist="${dist-groovy}" name="Groovy" />
-	</target>
-	
-	<!-- Ruby -->
-	
-	<target name="ruby" depends="libraries-ruby, content-ruby" description="Create distribution" />
-	
-	<target name="package-ruby" depends="ruby" description="Create distribution zip">
-		<package dist="${dist-ruby}" name="ruby" />
-	</target>
-	
-	<target name="jar-ruby" depends="jar" description="Fetch Prudence jar">
-		<fetch-prudence-jar dist="${dist-ruby}" />
-	</target>
-	
-	<target name="libraries-ruby" depends="jar-ruby" description="Fetch libraries">
-		<fetch-library dist="${dist-ruby}" library="commons-codec" />
-		<fetch-library dist="${dist-ruby}" library="commons-daemon" />
-		<fetch-library dist="${dist-ruby}" library="commons-dbcp" />
-		<fetch-library dist="${dist-ruby}" library="commons-fileupload" />
-		<fetch-library dist="${dist-ruby}" library="commons-io" />
-		<fetch-library dist="${dist-ruby}" library="commons-logging" />
-		<fetch-library dist="${dist-ruby}" library="commons-pool" />
-		<fetch-library dist="${dist-ruby}" library="cron4j" />
-		<fetch-library dist="${dist-ruby}" library="firewall-friendly-agent" />
-		<fetch-library dist="${dist-ruby}" library="h2" />
-		<fetch-library dist="${dist-ruby}" library="hazelcast" />
-		<fetch-library dist="${dist-ruby}" library="httpclient" />
-		<fetch-library dist="${dist-ruby}" library="httpcore" />
-		<fetch-library dist="${dist-ruby}" library="httpmime" />
-		<fetch-library dist="${dist-ruby}" library="jackson" />
-		<fetch-library dist="${dist-ruby}" library="jcip-annotations" />
-		<fetch-license dist="${dist-ruby}" library="jquery" />
-		<fetch-library dist="${dist-ruby}" library="jruby" />
-		<fetch-library dist="${dist-ruby}" library="json" />
-		<fetch-library dist="${dist-ruby}" library="jygments" />
-		<fetch-library dist="${dist-ruby}" library="log4j" />
-		<fetch-library dist="${dist-ruby}" library="mime4j" />
-		<fetch-library dist="${dist-ruby}" library="mongodb-java-driver" />
-		<fetch-library dist="${dist-ruby}" library="mysqlconnector" />
-		<fetch-library dist="${dist-ruby}" library="restlet" />
-		<fetch-library dist="${dist-ruby}" library="scripturian" />
-		<fetch-library dist="${dist-ruby}" library="servlet" />
-		<fetch-library dist="${dist-ruby}" library="slf4j" />
-		<fetch-library dist="${dist-ruby}" library="spymemcached" />
-		<fetch-library dist="${dist-ruby}" library="succinct" />
-		<fetch-library dist="${dist-ruby}" library="velocity" />
-		<fetch-library dist="${dist-ruby}" library="${http-server}" />
-		<fetch-library-versions dist="${dist-ruby}" />
-	</target>
-	
-	<target name="javadoc-ruby" depends="javadoc, documentation" description="Fetch Prudence API docs">
-		<fetch-javadocs dist="${dist-ruby}" />
-	</target>
-	
-	<target name="content-ruby" depends="javadoc-ruby" description="Fetch content">
-		<fetch-common-content dist="${dist-ruby}" base="${ruby}" name="Ruby" />
-	</target>
-	
-	<target name="test-ruby" depends="ruby" description="Unit tests">
-		<test dist="${dist-ruby}" name="Ruby" />
-	</target>
-	
-	<!-- PHP -->
-	
-	<target name="php" depends="libraries-php, content-php" description="Create distribution" />
-	
-	<target name="package-php" depends="php" description="Create distribution zip">
-		<package dist="${dist-php}" name="php" />
-	</target>
-	
-	<target name="jar-php" depends="jar" description="Fetch Prudence jar">
-		<fetch-prudence-jar dist="${dist-php}" />
-	</target>
-	
-	<target name="libraries-php-quercus" description="Fetch libraries" if="quercus">
-		<fetch-library dist="${dist-php}" library="quercus" />
-	</target>
-	
-	<target name="libraries-php" depends="jar-php, libraries-php-quercus" description="Fetch libraries">
-		<fetch-library dist="${dist-php}" library="commons-codec" />
-		<fetch-library dist="${dist-php}" library="commons-daemon" />
-		<fetch-library dist="${dist-php}" library="commons-dbcp" />
-		<fetch-library dist="${dist-php}" library="commons-fileupload" />
-		<fetch-library dist="${dist-php}" library="commons-io" />
-		<fetch-library dist="${dist-php}" library="commons-logging" />
-		<fetch-library dist="${dist-php}" library="commons-pool" />
-		<fetch-library dist="${dist-php}" library="cron4j" />
-		<fetch-library dist="${dist-php}" library="firewall-friendly-agent" />
-		<fetch-library dist="${dist-php}" library="h2" />
-		<fetch-library dist="${dist-php}" library="hazelcast" />
-		<fetch-library dist="${dist-php}" library="httpclient" />
-		<fetch-library dist="${dist-php}" library="httpcore" />
-		<fetch-library dist="${dist-php}" library="httpmime" />
-		<fetch-library dist="${dist-php}" library="jackson" />
-		<fetch-library dist="${dist-php}" library="jcip-annotations" />
-		<fetch-license dist="${dist-php}" library="jquery" />
-		<fetch-library dist="${dist-php}" library="json" />
-		<fetch-library dist="${dist-php}" library="jygments" />
-		<fetch-library dist="${dist-php}" library="log4j" />
-		<fetch-library dist="${dist-php}" library="mime4j" />
-		<fetch-library dist="${dist-php}" library="mongodb-java-driver" />
-		<fetch-library dist="${dist-php}" library="mysqlconnector" />
-		<fetch-library dist="${dist-php}" library="restlet" />
-		<fetch-library dist="${dist-php}" library="scripturian" />
-		<fetch-library dist="${dist-php}" library="servlet" />
-		<fetch-library dist="${dist-php}" library="slf4j" />
-		<fetch-library dist="${dist-php}" library="spymemcached" />
-		<fetch-library dist="${dist-php}" library="succinct" />
-		<fetch-library dist="${dist-php}" library="velocity" />
-		<fetch-library dist="${dist-php}" library="${http-server}" />
-		<fetch-library-versions dist="${dist-php}" />
-	</target>
-	
-	<target name="javadoc-php" depends="javadoc, documentation" description="Fetch Prudence API docs">
-		<fetch-javadocs dist="${dist-php}" />
-	</target>
-	
-	<target name="content-php" depends="javadoc-php" description="Fetch content">
-		<fetch-common-content dist="${dist-php}" base="${php}" name="PHP" />
-	</target>
-	
-	<target name="test-php" depends="php" description="Unit tests">
-		<test dist="${dist-php}" name="PHP" />
-	</target>
-
-	<!-- Kitchensink -->
-	
-	<target name="kitchensink" depends="libraries-kitchensink, content-kitchensink" description="Create distribution" />
-	
-	<target name="clean-kitchensink" description="Clean distribution">
-		<delete dir="${dist-kitchensink}" />
-	</target>
-	
-	<target name="package-kitchensink" depends="kitchensink" description="Create distribution zip">
-		<package dist="${dist-kitchensink}" name="kitchensink" />
-	</target>
-	
-	<target name="jar-kitchensink" depends="jar" description="Fetch Prudence jar">
-		<fetch-prudence-jar dist="${dist-kitchensink}" />
-		<fetch-prudence-test-jar dist="${dist-kitchensink}" />
-	</target>
-	
-	<target name="javadoc-kitchensink" depends="javadoc, documentation" description="Fetch Prudence API docs">
-		<fetch-javadocs dist="${dist-kitchensink}" />
-	</target>
-	
-	<target name="libraries-kitchensink-quercus" description="Fetch libraries" if="quercus">
-		<fetch-library dist="${dist-kitchensink}" library="quercus" />
-	</target>
-	
-	<target name="libraries-kitchensink" depends="jar-kitchensink, libraries-kitchensink-quercus" description="Fetch libraries">
-		<fetch-library dist="${dist-kitchensink}" library="clojure" />
-		<fetch-library dist="${dist-kitchensink}" library="commons-codec" />
-		<fetch-library dist="${dist-kitchensink}" library="commons-daemon" />
-		<fetch-library dist="${dist-kitchensink}" library="commons-dbcp" />
-		<fetch-library dist="${dist-kitchensink}" library="commons-fileupload" />
-		<fetch-library dist="${dist-kitchensink}" library="commons-io" />
-		<fetch-library dist="${dist-kitchensink}" library="commons-logging" />
-		<fetch-library dist="${dist-kitchensink}" library="commons-pool" />
-		<fetch-library dist="${dist-kitchensink}" library="cron4j" />
-		<fetch-library dist="${dist-kitchensink}" library="firewall-friendly-agent" />
-		<fetch-library dist="${dist-kitchensink}" library="groboutils" />
-		<fetch-library dist="${dist-kitchensink}" library="groovy" />
-		<fetch-library dist="${dist-kitchensink}" library="h2" />
-		<fetch-library dist="${dist-kitchensink}" library="hazelcast" />
-		<fetch-library dist="${dist-kitchensink}" library="httpclient" />
-		<fetch-library dist="${dist-kitchensink}" library="httpcore" />
-		<fetch-library dist="${dist-kitchensink}" library="httpmime" />
-		<fetch-library dist="${dist-kitchensink}" library="jackson" />
-		<fetch-library dist="${dist-kitchensink}" library="jcip-annotations" />
-		<fetch-library dist="${dist-kitchensink}" library="jepp" />
-		<fetch-license dist="${dist-kitchensink}" library="jquery" />
-		<fetch-library dist="${dist-kitchensink}" library="jruby" />
-		<fetch-library dist="${dist-kitchensink}" library="json" />
-		<fetch-library dist="${dist-kitchensink}" library="jsr223" />
-		<fetch-library dist="${dist-kitchensink}" library="junit" />
-		<fetch-library dist="${dist-kitchensink}" library="jygments" />
-		<fetch-library dist="${dist-kitchensink}" library="jython" />
-		<fetch-library dist="${dist-kitchensink}" library="log4j" />
-		<fetch-library dist="${dist-kitchensink}" library="mime4j" />
-		<fetch-library dist="${dist-kitchensink}" library="mongodb-java-driver" />
-		<fetch-library dist="${dist-kitchensink}" library="mysqlconnector" />
-		<fetch-library dist="${dist-kitchensink}" library="restlet" />
-		<fetch-library dist="${dist-kitchensink}" library="rhino" />
-		<fetch-library dist="${dist-kitchensink}" library="scripturian" />
-		<fetch-library dist="${dist-kitchensink}" library="servlet" />
-		<fetch-library dist="${dist-kitchensink}" library="slf4j" />
-		<fetch-library dist="${dist-kitchensink}" library="spymemcached" />
-		<fetch-library dist="${dist-kitchensink}" library="sqlalchemy" />
-		<fetch-library dist="${dist-kitchensink}" library="succinct" />
-		<fetch-library dist="${dist-kitchensink}" library="velocity" />
-		<fetch-library dist="${dist-kitchensink}" library="${http-server}" />
-		<copy todir="${dist-kitchensink}/content/common/libraries/Lib">
-			<fileset dir="${lib}/jython/lib/Lib" excludes="**/.svn/" />
-		</copy>
-		<fetch-library-versions dist="${dist-kitchensink}" />
-	</target>
-	
-	<target name="content-kitchensink" depends="javadoc-kitchensink" description="Fetch content">
-		<echo>Using ${kitchensink-base} as base for Kitchen Sink distribution.</echo>
-		<!-- Fetch Prudence Tests -->
-		<copy todir="${dist-kitchensink}/content/applications/prudence-test/web">
-			<fileset dir="${python}/applications/prudence-test/web" excludes="**/velocity-helper.html, **/.svn/" />
-			<fileset dir="${ruby}/applications/prudence-test/web" excludes="**/velocity-helper.html, **/.svn/" />
-			<fileset dir="${groovy}/applications/prudence-test/web" excludes="**/velocity-helper.html, **/.svn/" />
-			<fileset dir="${clojure}/applications/prudence-test/web" excludes="**/velocity-helper.html, **/.svn/" />
-			<fileset dir="${javascript}/applications/prudence-test/web" excludes="**/velocity-helper.html, **/.svn/" />
-			<fileset dir="${php}/applications/prudence-test/web" excludes="**/velocity-helper.html, **/.svn/" />
-			<fileset dir="${velocity}/applications/prudence-test/web" excludes="**/.svn/" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/applications/prudence-test/resources">
-			<fileset dir="${python}/applications/prudence-test/resources" excludes="**/.svn/" />
-			<fileset dir="${ruby}/applications/prudence-test/resources" excludes="**/.svn/" />
-			<fileset dir="${groovy}/applications/prudence-test/resources" excludes="**/.svn/" />
-			<fileset dir="${clojure}/applications/prudence-test/resources" excludes="**/.svn/" />
-			<fileset dir="${javascript}/applications/prudence-test/resources" excludes="**/.svn/" />
-			<fileset dir="${php}/applications/prudence-test/resources" excludes="**/.svn/" />
-		</copy>
-		<copy todir="${dist-kitchensink}/content/applications/prudence-test/libraries">
-			<fileset dir="${python}/applications/prudence-test/libraries" excludes="**/.svn/" />
-			<fileset dir="${ruby}/applications/prudence-test/libraries" excludes="**/.svn/" />
-			<fileset dir="${groovy}/applications/prudence-test/libraries" excludes="**/.svn/" />
-			<fileset dir="${clojure}/applications/prudence-test/libraries" excludes="**/.svn/" />
-			<fileset dir="${javascript}/applications/prudence-test/libraries" excludes="**/.svn/" />
-			<fileset dir="${php}/applications/prudence-test/libraries" excludes="**/.svn/" />
-		</copy>
-		<fetch-common-content dist="${dist-kitchensink}" base="${kitchensink-base}" name="KitchenSink" />
-	</target>
-	
-	<target name="test-kitchensink" depends="kitchensink" description="Unit tests">
-		<test dist="${dist-kitchensink}" name="KitchenSink" />
-	</target>
-	
-	<!-- Standalone -->
-	
-	<target name="standalone" depends="src-standalone, jar-standalone, content-standalone" description="Create distribution" />
-	
-	<target name="package-standalone" depends="standalone" description="Create distribution zip">
-		<package dist="${dist-standalone}" name="standalone" />
-	</target>
-	
-	<target name="jar-standalone" depends="jar" description="Fetch Prudence jar">
-		<fetch-prudence-jar dist="${dist-standalone}" />
-	</target>
-	
-	<target name="src-standalone" description="Fetch Prudence source">
-		<copy todir="${dist-standalone}/content/src">
-			<fileset dir="${java-src}" excludes="**/.svn/" />
+		<copy todir="${distribution.content}">
+			<fileset dir="${component.notices}" />
 		</copy>
 	</target>
 	
-	<target name="javadoc-standalone" depends="javadoc" description="Fetch Prudence API docs">
-		<copy todir="${dist-standalone}/content/api">
-			<fileset dir="${tmp}/api" excludes="**/.svn/" />
-		</copy>
+	<target name="package" depends="distribution" description="Create distribution package">
+		<zip destfile="${distribution}/${component}-${version}.zip">
+			<fileset dir="${distribution.content}" />
+		</zip>
 	</target>
 	
-	<target name="content-standalone" depends="javadoc-standalone" description="Fetch content">
-		<copy todir="${dist-standalone}/content">
-			<fileset dir="${common}" excludes="log/, configuration/, applications/, bin/, **/.svn/" />
-		</copy>
+	<target name="build" depends="package" description="Build distribution" />
+	
+	<target name="clean" description="Clean">
+		<delete dir="${cache}" />
+		<delete dir="${distribution}" />
 	</target>
 	
-	<!-- Debian packaging -->
+	<target name="rebuild" depends="clean, build" description="First clean and then build distribution" />
 	
-	<target name="debian">
-		<fetch-debian name="python" />
-		<fetch-debian name="ruby" />
-		<fetch-debian name="javascript" />
-		<fetch-debian name="php" />
-		<fetch-debian name="clojure" />
-		<fetch-debian name="groovy" />
-		<fetch-debian name="kitchensink" />
-	</target>
-
 </project>

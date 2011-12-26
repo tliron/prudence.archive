@@ -5,17 +5,17 @@
 
 	<groupId>com.threecrickets.prudence</groupId>
 	<artifactId>prudence</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.3</version>
 	<packaging>pom</packaging>
 
 	<name>Prudence</name>
-	<description>A container for RESTful web applications.</description>
+	<description>A RESTful web development platform.</description>
 	<url>http://threecrickets.com/prudence/</url>
 	<inceptionYear>2009</inceptionYear>
 
 	<scm>
-		<connection>scm:svn:https://prudence.googlecode.com/svn/trunk/</connection>
-		<url>https://code.google.com/p/prudence/source/checkout</url>
+		<connection>scm:git:https://code.google.com/p/prudence/</connection>
+		<url>http://code.google.com/p/prudence/source/browse/</url>
 	</scm>
 
 	<organization>
@@ -47,126 +47,8 @@
 		</mailingList>
 	</mailingLists>
 
-	<distributionManagement>
-		<repository>
-			<id>sincerity</id>
-			<url>http://localhost:8081/nexus/content/repositories/sincerity/</url>
-		</repository>
-	</distributionManagement>
-
-	<modules>
-		<module>clojure</module>
-		<!-- <module>../../libraries/clojure/maven</module> -->
-		<module>../../libraries/commons-codec/maven</module>
-		<module>../../libraries/commons-daemon/maven</module>
-		<module>../../libraries/commons-dbcp/maven</module>
-		<module>../../libraries/commons-fileupload/maven</module>
-		<module>../../libraries/commons-io/maven</module>
-		<module>../../libraries/commons-logging/maven</module>
-		<module>../../libraries/commons-pool/maven</module>
-		<module>../../libraries/cron4j/maven</module>
-		<module>../../libraries/firewall-friendly-agent/maven</module>
-		<module>../../libraries/grizzly/maven</module>
-		<!-- <module>../../libraries/groovy/maven</module> -->
-		<module>../../libraries/h2/maven</module>
-		<module>../../libraries/hazelcast/maven</module>
-		<module>../../libraries/httpclient/maven</module>
-		<module>../../libraries/httpcore/maven</module>
-		<module>../../libraries/httpmime/maven</module>
-		<module>../../libraries/jackson/maven</module>
-		<module>../../libraries/jcip-annotations/maven</module>
-		<module>../../libraries/jetty/maven</module>
-		<!-- <module>../../libraries/jruby/maven</module> -->
-		<module>../../libraries/json/maven</module>
-		<!-- <module>../../libraries/jygments/maven</module> -->
-		<!-- <module>../../libraries/jython/maven</module> -->
-		<module>../../libraries/log4j/maven</module>
-		<module>../../libraries/mime4j/maven</module>
-		<module>../../libraries/mongodb-java-driver/maven</module>
-		<module>../../libraries/mysqlconnector/maven</module>
-		<module>../../libraries/restlet/maven</module>
-		<!-- <module>../../libraries/rhino/maven</module> -->
-		<!-- <module>../../libraries/scripturian/maven</module> -->
-		<module>../../libraries/servlet/maven</module>
-		<module>../../libraries/slf4j/maven</module>
-		<module>../../libraries/spymemcached/maven</module>
-		<!-- <module>../../libraries/succinct/maven</module> -->
-		<!-- <module>../../libraries/velocity/maven</module> -->
-	</modules>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.threecrickets.scripturian</groupId>
-			<artifactId>scripturian</artifactId>
-			<version>1.0.0-R309</version>
-		</dependency>
-		<dependency>
-			<groupId>com.threecrickets.jygments</groupId>
-			<artifactId>jygments</artifactId>
-			<version>1.0.0-R21</version>
-		</dependency>
-		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>restlet</artifactId>
-			<version>2.0.10</version>
-		</dependency>
-		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>restlet-fileupload</artifactId>
-			<version>2.0.10</version>
-		</dependency>
-		<dependency>
-			<groupId>com.hazelcast</groupId>
-			<artifactId>hazelcast-all</artifactId>
-			<version>1.9.4.4</version>
-		</dependency>
-		<dependency>
-			<groupId>it.sauronsoftware</groupId>
-			<artifactId>cron4j</artifactId>
-			<version>2.2.4</version>
-		</dependency>
-		<!-- Cache backends: -->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.3.161</version>
-		</dependency>
-		<dependency>
-			<groupId>net.spy</groupId>
-			<artifactId>spymemcached</artifactId>
-			<version>2.7.3</version>
-		</dependency>
-		<dependency>
-			<groupId>com.mongodb</groupId>
-			<artifactId>java-driver</artifactId>
-			<version>2.7.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.3</version>
-		</dependency>
-		<!-- Logging: -->
-		<dependency>
-			<groupId>org.apache.logging</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>1.6.4</version>
-		</dependency>
-
-	</dependencies>
-
 	<build>
-		<directory>tmp</directory>
+		<directory>../cache/maven</directory>
 
 		<plugins>
 			<!-- Delegate to the Ant build script -->
@@ -179,7 +61,7 @@
 						<phase>generate-resources</phase>
 						<configuration>
 							<tasks>
-								<ant dir=".." antfile="build.xml" target="build" />
+								<ant dir=".." antfile="build.xml" target="libraries" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -191,7 +73,7 @@
 					<dependency>
 						<groupId>com.sun</groupId>
 						<artifactId>tools</artifactId>
-						<version>1.5.0</version>
+						<version>${java.vm.version}</version>
 						<scope>system</scope>
 						<systemPath>${java.home}/../lib/tools.jar</systemPath>
 					</dependency>
@@ -214,7 +96,7 @@
 							<artifacts>
 								<artifact>
 									<type>jar</type>
-									<file>../standalone/content/libraries/com.threecrickets.prudence.jar</file>
+									<file>../distribution/content/libraries/jars/${project.groupId}/${project.artifactId}/${project.version}/${project.artifactId}.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>
@@ -236,7 +118,7 @@
 						</goals>
 						<configuration>
 							<classifier>javadoc</classifier>
-							<classesDirectory>../standalone/content/api</classesDirectory>
+							<classesDirectory>../distribution/content/reference/documentation/api</classesDirectory>
 						</configuration>
 					</execution>
 
@@ -249,7 +131,7 @@
 						</goals>
 						<configuration>
 							<classifier>sources</classifier>
-							<classesDirectory>../standalone/content/src</classesDirectory>
+							<classesDirectory>../distribution/content/reference/source/${project.groupId}/${project.artifactId}/${project.version}</classesDirectory>
 						</configuration>
 					</execution>
 				</executions>

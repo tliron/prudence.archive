@@ -14,9 +14,8 @@
 	<inceptionYear>2009</inceptionYear>
 
 	<scm>
-		<connection>scm:svn:https://prudence.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://prudence.googlecode.com/svn/trunk/</developerConnection>
-		<url>https://code.google.com/p/prudence/source/checkout</url>
+		<connection>scm:git:https://code.google.com/p/prudence/</connection>
+		<url>http://code.google.com/p/prudence/source/browse/</url>
 	</scm>
 
 	<organization>
