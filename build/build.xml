@@ -15,6 +15,7 @@
 	
 	<property name="component.source" value="../components/${component}/source" />
 	<property name="component.notices" value="../components/notices" />
+	<property name="reference" value="../components/reference" />
 	
 	<property name="dependencies" value="../dependencies" />
 
@@ -28,6 +29,7 @@
 	<property name="distribution.jars" value="${distribution.libraries}/jars" />
 	<property name="distribution.reference" value="${distribution.content}/reference" />
 	<property name="distribution.api" value="${distribution.reference}/documentation/api" />
+	<property name="distribution.manual" value="${distribution.reference}/documentation/manual" />
 	<property name="distribution.source" value="${distribution.content}/reference/source" />
 
 	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${dependencies}/libraries/jars/org.apache.ivy/ivy/${ivy.version}/ivy.jar" />
@@ -70,7 +72,7 @@
 			<link href="http://www.hazelcast.com/javadoc/" />
 			<link href="http://www.h2database.com/javadoc/" />
 			<link href="http://junit.sourceforge.net/javadoc/" />
-			<!-- Jygments as no online javadocs -->
+			<!-- Jygments has no online javadocs -->
 			<link href="http://api.mongodb.org/java/2.7.2/" />
 			<link href="http://www.restlet.org/documentation/2.0/jse/api/" />
 			<link href="http://threecrickets.com/scripturian/api/" />
@@ -82,13 +84,42 @@
 			</bottom>
 		</javadoc>
 	</target>
+
+	<target name="manual" description="Create manual if not present">
+		<available file="${distribution.manual}" property="manual-present" />
+		<antcall target="manual-overwrite" />
+	</target>
 	
+	<target name="clean-manual" description="Clean manual">
+		<delete dir="${distribution.manual}" />
+	</target>
+
+	<target name="manual-overwrite" description="Create manual" unless="manual-present">
+		<mkdir dir="${distribution.manual}" />
+		<copy todir="${distribution.manual}">
+			<fileset dir="${reference}/manual" excludes="*~" />
+		</copy>
+		<replace dir="${distribution.manual}" includes="${component}_manual.lyx" token="%VERSION%" value="${version}" />
+		<exec executable="lyx" failifexecutionfails="false">
+			<arg value="--export" />
+			<arg value="pdf" />
+			<arg value="${distribution.manual}/${component}_manual.lyx" />
+		</exec>
+		<exec executable="elyxer" failifexecutionfails="false">
+			<arg value="--unicode" />
+			<arg value="--title" />
+			<arg value="${documentation.title} Manual" />
+			<arg value="${distribution.manual}/${component}_manual.lyx" />
+			<arg value="${distribution.manual}/${component}_manual.html" />
+		</exec>
+	</target>
+
 	<target name="libraries" depends="classes" description="Create jar">
 		<mkdir dir="${distribution.jars}" />
 		<jar destfile="${distribution.jars}/${maven.group}/${maven.artifact}/${version}/${maven.artifact}.jar" basedir="${cache.classes}" />
 	</target>
 
-	<target name="distribution" depends="libraries, javadocs" description="Assemble distribution">
+	<target name="distribution" depends="libraries, javadocs, manual" description="Assemble distribution">
 		<copy todir="${distribution.source}/${maven.group}/${maven.artifact}/${version}">
 			<fileset dir="${component.source}" />
 		</copy>

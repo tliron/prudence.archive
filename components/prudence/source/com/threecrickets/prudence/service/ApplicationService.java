@@ -28,10 +28,6 @@ import org.restlet.Component;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
 
-import com.hazelcast.core.DistributedTask;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.Member;
-import com.hazelcast.core.MultiTask;
 import com.threecrickets.prudence.ApplicationTask;
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.prudence.GeneratedTextResource;
@@ -203,7 +199,7 @@ public class ApplicationService
 	 */
 	public ConcurrentMap<String, Object> getDistributedGlobals()
 	{
-		return Hazelcast.getMap( "com.threecrickets.prudence.distributedGlobals" );
+		return com.hazelcast.core.Hazelcast.getMap( "com.threecrickets.prudence.distributedGlobals" );
 	}
 
 	/**
@@ -413,33 +409,33 @@ public class ApplicationService
 		if( applicationName == null )
 			applicationName = getApplication().getName();
 
-		ExecutorService executor = Hazelcast.getExecutorService();
+		ExecutorService executor = com.hazelcast.core.Hazelcast.getExecutorService();
 		SerializableApplicationTask<T> task = new SerializableApplicationTask<T>( applicationName, documentName, entryPointName, context );
 
-		DistributedTask<T> distributedTask;
+		com.hazelcast.core.DistributedTask<T> distributedTask;
 		if( where == null )
-			distributedTask = new DistributedTask<T>( task );
-		else if( where instanceof Member )
-			distributedTask = new DistributedTask<T>( task, (Member) where );
+			distributedTask = new com.hazelcast.core.DistributedTask<T>( task );
+		else if( where instanceof com.hazelcast.core.Member )
+			distributedTask = new com.hazelcast.core.DistributedTask<T>( task, (com.hazelcast.core.Member) where );
 		else if( where instanceof Set )
 		{
 			if( multi )
-				distributedTask = new MultiTask<T>( task, (Set<Member>) where );
+				distributedTask = new com.hazelcast.core.MultiTask<T>( task, (Set<com.hazelcast.core.Member>) where );
 			else
-				distributedTask = new DistributedTask<T>( task, (Set<Member>) where );
+				distributedTask = new com.hazelcast.core.DistributedTask<T>( task, (Set<com.hazelcast.core.Member>) where );
 		}
 		else if( where instanceof Iterable )
 		{
-			Set<Member> members = new HashSet<Member>();
-			for( Member member : (Iterable<Member>) where )
+			Set<com.hazelcast.core.Member> members = new HashSet<com.hazelcast.core.Member>();
+			for( com.hazelcast.core.Member member : (Iterable<com.hazelcast.core.Member>) where )
 				members.add( member );
 			if( multi )
-				distributedTask = new MultiTask<T>( task, members );
+				distributedTask = new com.hazelcast.core.MultiTask<T>( task, members );
 			else
-				distributedTask = new DistributedTask<T>( task, members );
+				distributedTask = new com.hazelcast.core.DistributedTask<T>( task, members );
 		}
 		else
-			distributedTask = new DistributedTask<T>( task, where );
+			distributedTask = new com.hazelcast.core.DistributedTask<T>( task, where );
 
 		return (Future<T>) executor.submit( distributedTask );
 	}
