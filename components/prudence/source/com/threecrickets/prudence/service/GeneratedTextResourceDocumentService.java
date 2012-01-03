@@ -1,5 +1,5 @@
 /**
- * Copyright 2009-2011 Three Crickets LLC.
+ * Copyright 2009-2012 Three Crickets LLC.
  * <p>
  * The contents of this file are subject to the terms of the LGPL version 3.0:
  * http://www.opensource.org/licenses/lgpl-3.0.html
@@ -397,7 +397,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	/**
 	 * The application service.
 	 */
-	private final ApplicationService applicationService = new ApplicationService();
+	private final ApplicationService applicationService = ApplicationService.create();
 
 	/**
 	 * The execution context.

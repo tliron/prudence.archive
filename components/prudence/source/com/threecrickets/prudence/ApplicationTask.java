@@ -1,5 +1,5 @@
 /**
- * Copyright 2009-2011 Three Crickets LLC.
+ * Copyright 2009-2012 Three Crickets LLC.
  * <p>
  * The contents of this file are subject to the terms of the LGPL version 3.0:
  * http://www.opensource.org/licenses/lgpl-3.0.html
@@ -222,7 +222,7 @@ public class ApplicationTask<T> implements Callable<T>, Runnable
 					attributes.addLibraryLocations( executionContext );
 
 					executionContext.getServices().put( attributes.getDocumentServiceName(), new ApplicationTaskDocumentService( attributes, documentDescriptor, context ) );
-					executionContext.getServices().put( attributes.getApplicationServiceName(), new ApplicationService( application ) );
+					executionContext.getServices().put( attributes.getApplicationServiceName(), ApplicationService.create( application ) );
 
 					executable.execute( executionContext, this, attributes.getExecutionController() );
 				}
@@ -238,7 +238,7 @@ public class ApplicationTask<T> implements Callable<T>, Runnable
 						attributes.addLibraryLocations( executionContext );
 
 						executionContext.getServices().put( attributes.getDocumentServiceName(), new DocumentService<ApplicationTaskAttributes>( attributes, documentDescriptor ) );
-						executionContext.getServices().put( attributes.getApplicationServiceName(), new ApplicationService( application ) );
+						executionContext.getServices().put( attributes.getApplicationServiceName(), ApplicationService.create( application ) );
 
 						try
 						{

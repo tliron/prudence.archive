@@ -1,5 +1,5 @@
 /**
- * Copyright 2009-2011 Three Crickets LLC.
+ * Copyright 2009-2012 Three Crickets LLC.
  * <p>
  * The contents of this file are subject to the terms of the LGPL version 3.0:
  * http://www.opensource.org/licenses/lgpl-3.0.html
@@ -11,8 +11,6 @@
 
 package com.threecrickets.prudence.service;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
@@ -31,7 +29,6 @@ import org.restlet.data.MediaType;
 import com.threecrickets.prudence.ApplicationTask;
 import com.threecrickets.prudence.DelegatedResource;
 import com.threecrickets.prudence.GeneratedTextResource;
-import com.threecrickets.prudence.SerializableApplicationTask;
 import com.threecrickets.prudence.util.InstanceUtil;
 import com.threecrickets.prudence.util.LoggingUtil;
 
@@ -45,7 +42,7 @@ import com.threecrickets.prudence.util.LoggingUtil;
 public class ApplicationService
 {
 	//
-	// Construction
+	// Static operations
 	//
 
 	/**
@@ -53,9 +50,9 @@ public class ApplicationService
 	 * 
 	 * @see Application#getCurrent()
 	 */
-	public ApplicationService()
+	public static ApplicationService create()
 	{
-		this( Application.getCurrent() );
+		return create( Application.getCurrent() );
 	}
 
 	/**
@@ -64,14 +61,22 @@ public class ApplicationService
 	 * @param application
 	 *        The application
 	 */
-	public ApplicationService( Application application )
+	public static ApplicationService create( Application application )
 	{
-		this.application = application;
+		try
+		{
+			return new DistributedApplicationService( application );
+		}
+		catch( NoClassDefFoundError x )
+		{
+			return new ApplicationService( application );
+		}
 	}
 
 	//
 	// Attributes
 	//
+
 	/**
 	 * The underlying application.
 	 * 
@@ -383,61 +388,18 @@ public class ApplicationService
 			return (Future<T>) executor.submit( (Callable<T>) task );
 	}
 
+	// //////////////////////////////////////////////////////////////////////////
+	// Protected
+
 	/**
-	 * Submits a task on the Hazelcast cluster.
+	 * Constructor.
 	 * 
-	 * @param applicationName
-	 *        The application's full name, or null to default to current
-	 *        application's name
-	 * @param documentName
-	 *        The document name
-	 * @param entryPointName
-	 *        The entry point name or null
-	 * @param context
-	 *        The context made available to the task (must be serializable)
-	 * @param where
-	 *        A {@link Member}, an iterable of {@link Member}, any other object
-	 *        (the member key), or null to let Hazelcast decide
-	 * @param multi
-	 *        Whether the task should be executed on all members in the set
-	 * @return A future for the task
-	 * @see Hazelcast#getExecutorService()
+	 * @param application
+	 *        The application
 	 */
-	@SuppressWarnings("unchecked")
-	public <T> Future<T> distributedTask( String applicationName, String documentName, String entryPointName, Object context, Object where, boolean multi )
+	protected ApplicationService( Application application )
 	{
-		if( applicationName == null )
-			applicationName = getApplication().getName();
-
-		ExecutorService executor = com.hazelcast.core.Hazelcast.getExecutorService();
-		SerializableApplicationTask<T> task = new SerializableApplicationTask<T>( applicationName, documentName, entryPointName, context );
-
-		com.hazelcast.core.DistributedTask<T> distributedTask;
-		if( where == null )
-			distributedTask = new com.hazelcast.core.DistributedTask<T>( task );
-		else if( where instanceof com.hazelcast.core.Member )
-			distributedTask = new com.hazelcast.core.DistributedTask<T>( task, (com.hazelcast.core.Member) where );
-		else if( where instanceof Set )
-		{
-			if( multi )
-				distributedTask = new com.hazelcast.core.MultiTask<T>( task, (Set<com.hazelcast.core.Member>) where );
-			else
-				distributedTask = new com.hazelcast.core.DistributedTask<T>( task, (Set<com.hazelcast.core.Member>) where );
-		}
-		else if( where instanceof Iterable )
-		{
-			Set<com.hazelcast.core.Member> members = new HashSet<com.hazelcast.core.Member>();
-			for( com.hazelcast.core.Member member : (Iterable<com.hazelcast.core.Member>) where )
-				members.add( member );
-			if( multi )
-				distributedTask = new com.hazelcast.core.MultiTask<T>( task, members );
-			else
-				distributedTask = new com.hazelcast.core.DistributedTask<T>( task, members );
-		}
-		else
-			distributedTask = new com.hazelcast.core.DistributedTask<T>( task, where );
-
-		return (Future<T>) executor.submit( distributedTask );
+		this.application = application;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

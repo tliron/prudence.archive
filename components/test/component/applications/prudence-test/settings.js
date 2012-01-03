@@ -1,19 +1,20 @@
-//
-// Prudence Guide Settings
-//
-/*
-document.execute('/defaults/application/settings/')
 
-applicationName = 'Prudence Test'
-applicationDescription = 'Prudence tests'
-applicationAuthor = 'Tal Liron'
-applicationOwner = 'Three Crickets'
-applicationHomeURL = 'http://threecrickets.com/prudence/'
-applicationContactEmail = 'prudence@threecrickets.com'
+document.executeOnce('/sincerity/objects/')
 
-hosts = [[component.defaultHost, null], [mysiteHost, null]]
+Sincerity.Objects.merge(app.settings, {
+	description: {
+		name: 'Prudence Test',
+		description: 'A test application for Prudence',
+		author: 'Three Crickets',
+		owner: 'Free Software'
+	},
 
-showDebugOnError = true
-
-preheatResources = ['/data/jython/', '/data/jruby/', '/data/groovy/', '/data/clojure/', '/data/quercus/', '/data/rhino/']
-*/
+	code: {
+		defaultLanguageTag: 'javascript',
+		defaultExtension: 'js',
+		defaultDocumentName: 'default',
+		minimumTimeBetweenValidityChecks: 1000,
+		libraries: ['libraries'],
+		sourceVisible: true
+	}
+})
