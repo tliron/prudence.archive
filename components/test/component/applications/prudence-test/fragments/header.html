@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%velocity
+#set($base = $conversation.pathToBase)
+#set($component = $application.globals.get('com.threecrickets.prudence.component'))
+#set($applications = $component.context.attributes.get('com.threecrickets.prudence.applications'))
+#set($version = $component.context.attributes.get('com.threecrickets.prudence.version'))
+#set($revision = $component.context.attributes.get('com.threecrickets.prudence.revision'))
+#set($flavor = $component.context.attributes.get('com.threecrickets.prudence.flavor'))
+<html>
+<head>
+	<title>Prudence - Three Crickets</title>
+	<link rel="stylesheet" type="text/css" href="$!{base}/style/soft-cricket.css" />
+	<link rel="shortcut icon" href="$!{base}/media/prudence.ico"/>
+	<script type="text/javascript" src="$!{base}/script/jquery.core.min.js"></script>
+	<script type="text/javascript" src="$!{base}/script/jquery.json.min.js"></script>
+</head>
+<body>
+	<table width="100%" cellspacing="20">
+		<tr valign="top">
+			<td width="25%">
+
+				<h1>Prudence Tests</h1>
+
+				<div class="navigation">
+					<ul>
+						<li><a href="$!{base}/.">About</a></li>
+						<li><span class="heading">Tests</span>
+							<ul>
+								<li><a href="$!{base}/resource-tests/">REST Resources</a></li>
+								<li><a href="$!{base}/html-tests/">HTML Generation</a></li>
+							</ul>
+						</li>
+						<li><span class="heading">Documentation</span>
+							<ul>
+								<li><a href="$!{base}/manual/">Manual</a></li>
+								<li><a href="$!{base}/api/" class="closed">Java API</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<p>
+					<a href="$!{base}/" class="neutral"><img src="$!{base}/media/prudence-small.png" border="0"></a>
+				</p>
+				<p>
+					Prudence $version$revision for $flavor
+				</p>
+				
+			</td>
+			<td width="50%" id="main">
+%>

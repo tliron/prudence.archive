@@ -1,0 +1,85 @@
+<html>
+<head>
+	<title>Velocity Scriptlets Demo</title>
+	<link rel="stylesheet" type="text/css" href="../../style/soft-cricket.css" />
+</head>
+<body>
+<table width="100%"><tr valign="top"><td>
+<%velocity
+
+##
+## Defer this page
+##
+
+#if($conversation.query.defer == 'true')
+	#if($conversation.defer())
+		$conversation.stop()
+	#end
+#end
+
+##
+## Cache this page
+##
+
+#set($document.cacheDuration = 5000)
+
+##
+## Calling Java
+##
+
+## Velocity is a templating language, not a full-blown scripting language. As such, it's missing some
+## features we need! In this case, we want to call a static method. So, we'll just use a programming
+## language scriptlet to fill in the gaps.
+
+## Let's make sure Velocity interprets this before switching to the helper
+#set($thisAdapter = $executable.context.adapter)
+
+%><%& '/test/velocity-helper/' %><%
+
+<p>This page was dynamically generated at $conversation.locals.currentTimeMillis</p>
+
+##
+## An example of a macro
+##
+
+#macro(printAdapter $adapter)
+	<p>
+	<i>Adapter:</i> $adapter.attributes.name version $adapter.attributes.version <br />
+	<i>Language:</i> $adapter.attributes['language.name'] version $adapter.attributes['language.version'] <br />
+	<i>Tags:</i> 
+	#foreach($tag in $adapter.attributes.tags)
+		$tag#if($foreach.hasNext),#end
+	#end
+#end
+
+<h3>Language used:</h3>
+#printAdapter($thisAdapter)
+<h3>Available languages:</h3>
+#foreach($adapter in $executable.manager.adapters)
+	#printAdapter($adapter)
+#end
+</td><td>
+<h3>The "id" attribute in the URL query is:</h3>
+<p>$!conversation.query.id</p>
+<h3>A few tests:</h3>
+<p>
+##
+## Including a document
+##
+## This is identical to:
+##
+##   $document.include('path')
+##
+
+%><%& "/test/velocity-triple/" %><%
+
+#foreach($i in [0..9])
+	A multiple of three:
+	#printTriple($i)
+	<br />
+#end
+</p>
+%>
+</td></tr></table>
+</body>
+<html>

@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.threecrickets.prudence</groupId>
-	<artifactId>prudence-project</artifactId>
-	<version>1.1.3</version>
+	<groupId>com.threecrickets.sincerity.skeleton</groupId>
+	<artifactId>prudence-test</artifactId>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
-	<name>Prudence</name>
-	<description>A RESTful web development platform.</description>
+	<name>Sincerity Skeleton Add-on: Prudence Test</name>
+	<description>Adds a multilingual test application to the Prudence skeleton.</description>
 	<url>http://threecrickets.com/prudence/</url>
 	<inceptionYear>2009</inceptionYear>
 
@@ -47,16 +47,45 @@
 		</mailingList>
 	</mailingLists>
 
-	<modules>
-		<module>prudence</module>
-		<module>skeleton</module>
-		<module>distributed</module>
-		<module>cache-h2</module>
-		<module>cache-hazelcast</module>
-		<module>cache-memcached</module>
-		<module>cache-mongodb</module>
-		<module>example</module>
-		<module>test</module>
-	</modules>
+	<dependencies>
+		<dependency>
+			<groupId>com.threecrickets.sincerity.skeleton</groupId>
+			<artifactId>prudence</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<directory>../../cache/maven</directory>
+
+		<plugins>
+			<!-- jar artifact -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<appendAssemblyId>false</appendAssemblyId>
+							<archive>
+								<manifestEntries>
+									<Package-Folders>package</Package-Folders>
+								</manifestEntries>
+							</archive>
+							<descriptors>
+								<descriptor>package.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
