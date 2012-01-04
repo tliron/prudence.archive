@@ -142,6 +142,8 @@ var Prudence = Prudence || function() {
 	        		}
         		}
         	}
+			
+			this.globals['com.threecrickets.prudence.component'] = component
 
         	// Apply globals
         	var globals = Sincerity.Objects.flatten(this.globals)
