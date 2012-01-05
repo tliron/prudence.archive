@@ -1,6 +1,6 @@
 
-document.execute('../libraries/stickstick/data/')
-document.execute('../libraries/json2/')
+document.execute('/stickstick/data/')
+document.execute('/sincerity/json/')
 
 function handleInit(conversation) {
     conversation.addMediaTypeByName('text/plain')
@@ -40,7 +40,7 @@ function handleGet(conversation) {
     if(maxTimestamp != null) {
         conversation.modificationTimestamp = maxTimestamp
     }
-    return JSON.stringify({boards: boardList, notes: notes})
+    return Sincerity.JSON.to({boards: boardList, notes: notes})
 }
 
 function handleGetInfo(conversation) {
@@ -59,7 +59,7 @@ function handlePut(conversation) {
     // a reference to that text.
     
     var text = conversation.entity.text
-    var note = JSON.parse(String(text))
+    var note = Sincerity.JSON.from(String(text))
     
     var connection = new Stickstick.Connection()
     try {

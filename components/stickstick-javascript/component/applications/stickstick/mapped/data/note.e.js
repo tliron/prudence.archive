@@ -1,6 +1,6 @@
 
-document.execute('../libraries/stickstick/data/')
-document.execute('../libraries/json2/')
+document.execute('/stickstick/data/')
+document.execute('/sincerity/json/')
 
 importClass(java.lang.System)
 
@@ -46,7 +46,7 @@ function handleGet(conversation) {
 
     conversation.modificationTimestamp = note.timestamp
     delete note.timestamp
-    return JSON.stringify(note)
+    return Sincerity.JSON.to(note)
 }
 
 function handleGetInfo(conversation) {
@@ -75,7 +75,7 @@ function handlePost(conversation) {
     // a reference to that text.
     
     var text = conversation.entity.text
-    var note = JSON.parse(String(text))
+    var note = Sincerity.JSON.from(String(text))
 
     var connection = new Stickstick.Connection()
     try {
@@ -100,7 +100,7 @@ function handlePost(conversation) {
 
     conversation.modificationTimestamp = note.timestamp
     delete note.timestamp
-    return JSON.stringify(note)
+    return Sincerity.JSON.to(note)
 }
 
 function handleDelete(conversation) {

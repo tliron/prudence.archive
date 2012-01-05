@@ -59,6 +59,7 @@
 		<module>test</module>
 		<module>stickstick-common</module>
 		<module>stickstick-javascript</module>
+		<module>stickstick-groovy</module>
 	</modules>
 
 </project>
