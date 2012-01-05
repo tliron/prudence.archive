@@ -4,8 +4,6 @@ var base = conversation.pathToBase
 var component = application.globals.get('com.threecrickets.prudence.component')
 var applications = component.context.attributes.get('com.threecrickets.prudence.applications')
 var version = component.context.attributes.get('com.threecrickets.prudence.version')
-var revision = component.context.attributes.get('com.threecrickets.prudence.revision')
-var flavor = component.context.attributes.get('com.threecrickets.prudence.flavor')
 %>
 <html>
 <head>
@@ -43,7 +41,7 @@ var flavor = component.context.attributes.get('com.threecrickets.prudence.flavor
 					<a href="<%= base %>/" class="neutral"><img src="<%= base %>/media/prudence-small.png" border="0"></a>
 				</p>
 				<p>
-					Prudence <%= version + revision %> for <%= flavor %>
+					Runnong on Prudence version <%= version %>
 				</p>
 				
 			</td>

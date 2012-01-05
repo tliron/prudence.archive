@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.threecrickets.sincerity.skeleton</groupId>
-	<artifactId>prudence-cache-h2</artifactId>
+	<groupId>com.threecrickets.prudence</groupId>
+	<artifactId>cache-h2</artifactId>
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
-	<name>Sincerity Skeleton Add-on: Prudence H2 Cache</name>
+	<name>Prudence: H2 Cache</name>
 	<description>Adds an H2 database cache backend to the Prudence skeleton.</description>
 	<url>http://threecrickets.com/prudence/</url>
 	<inceptionYear>2009</inceptionYear>
@@ -49,8 +49,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.threecrickets.sincerity.skeleton</groupId>
-			<artifactId>prudence</artifactId>
+			<groupId>com.threecrickets.prudence</groupId>
+			<artifactId>skeleton</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

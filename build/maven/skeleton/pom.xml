@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.threecrickets.sincerity.skeleton</groupId>
-	<artifactId>prudence</artifactId>
+	<groupId>com.threecrickets.prudence</groupId>
+	<artifactId>skeleton</artifactId>
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
-	<name>Sincerity Skeleton: Prudence</name>
-	<description>A Sincerity plugin that turns your container into a RESTful web application server using Prudence.</description>
+	<name>Prudence: Sincerity Skeleton</name>
+	<description>A Sincerity skeleton that turns your container into a RESTful web application server using Prudence.</description>
 	<url>http://threecrickets.com/prudence/</url>
 	<inceptionYear>2009</inceptionYear>
 

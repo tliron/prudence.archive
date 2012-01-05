@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.threecrickets.prudence</groupId>
-	<artifactId>cache-mongodb</artifactId>
+	<groupId>com.threecrickets.stickstick</groupId>
+	<artifactId>stickstick-common</artifactId>
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
-	<name>Prudence: MongoDB Cache</name>
-	<description>Adds a MongoDB cache backend to the Prudence skeleton.</description>
+	<name>Stickstick: Common</name>
+	<description>The common basis for the Stickstick demo application for Prudence.</description>
 	<url>http://threecrickets.com/prudence/</url>
 	<inceptionYear>2009</inceptionYear>
 
@@ -54,9 +54,9 @@
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.mongodb</groupId>
-			<artifactId>java-driver</artifactId>
-			<version>2.7.2</version>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.3.161</version>
 		</dependency>
 	</dependencies>
 

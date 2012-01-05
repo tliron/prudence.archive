@@ -57,6 +57,8 @@
 		<module>cache-mongodb</module>
 		<module>example</module>
 		<module>test</module>
+		<module>stickstick-common</module>
+		<module>stickstick-javascript</module>
 	</modules>
 
 </project>
