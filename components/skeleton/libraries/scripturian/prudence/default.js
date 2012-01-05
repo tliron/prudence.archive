@@ -164,6 +164,9 @@ var Prudence = Prudence || function() {
     				this.instance.inboundRoot.hide(uri)
     				return null
     			}
+    			else if (restlet[0] == '/') {
+    				return new Module.Capture({uri: restlet}).create(this, uri)
+    			}
     			else {
         			var type = Module[Sincerity.Objects.capitalize(restlet)]
     				if (Sincerity.Objects.exists(type)) {
@@ -464,6 +467,48 @@ var Prudence = Prudence || function() {
     }(Public))
 
 	/**
+	 * @class
+	 * @name Prudence.Capture
+	 * @augments Prudence.Resource
+	 */
+    Public.Capture = Sincerity.Classes.define(function(Module) {
+		/** @exports Public as Prudence.Capture */
+    	var Public = {}
+    	
+	    /** @ignore */
+    	Public._inherit = Module.Resource
+
+		/** @ignore */
+    	Public._configure = ['uri', 'hidden', 'locals']
+
+    	Public.create = function(app, uri) {
+    		importClass(
+    			com.threecrickets.prudence.util.Injector,
+    			com.threecrickets.prudence.util.CapturingRedirector)
+    			
+       		var capture = new CapturingRedirector(app.context, 'riap://application' + this.uri + '?{rq}', false)
+
+    		if (Sincerity.Objects.exists(this.locals)) {
+        		var injector = new Injector(app.context, capture)
+
+        		for (var i in this.locals) {
+    				injector.values.put(i, this.locals[i])
+    			}
+        		
+        		capture = injector
+    		}
+    		
+    		if (true == this.hidden) {
+    			app.instance.inboundRoot.hide(uri)    			
+    		}
+   
+    		return capture
+    	}
+    	
+    	return Public
+    }(Public))
+
+    /**
 	 * @class
 	 * @name Prudence.Chain
 	 * @augments Prudence.Resource 

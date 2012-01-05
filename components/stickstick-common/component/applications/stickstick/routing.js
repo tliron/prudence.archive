@@ -10,7 +10,9 @@ app.routes = {
 			'staticWeb',
 			{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}
 		]
-	]
+	],
+	'/data/note/{id}/': '/data/note/',
+	'/data/note/': 'hidden'
 }
 
 app.hosts = {
