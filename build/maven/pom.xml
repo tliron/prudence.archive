@@ -58,8 +58,9 @@
 		<module>example</module>
 		<module>test</module>
 		<module>stickstick-common</module>
-		<module>stickstick-javascript</module>
+		<module>stickstick-clojure</module>
 		<module>stickstick-groovy</module>
+		<module>stickstick-javascript</module>
 	</modules>
 
 </project>
