@@ -192,7 +192,7 @@ var Prudence = Prudence || function() {
     			com.threecrickets.scripturian.document.DocumentFileSource)
 
         	return new DocumentFileSource(
-				String(root),
+				'container/' + sincerity.container.getRelativePath(root) + '/',
 				root,
 				defaultDocumentName || this.settings.code.defaultDocumentName,
 				defaultExtension || this.settings.code.defaultExtension,

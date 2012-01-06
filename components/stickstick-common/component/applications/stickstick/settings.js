@@ -25,6 +25,7 @@ Sincerity.Objects.merge(app.globals, {
 		username: 'root',
 		password: 'root',
 		host: '',
-		database: String(Sincerity.Container.getFileFromHere('data', 'stickstick'))
+		database: String(Sincerity.Container.getFileFromHere('data', 'stickstick')),
+		log: String(sincerity.container.getLogsFile('stickstick.log')) // this is only used by Python 
 	}
 })
