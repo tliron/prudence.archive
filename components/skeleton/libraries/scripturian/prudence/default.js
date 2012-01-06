@@ -83,6 +83,14 @@ var Prudence = Prudence || function() {
         	// Libraries
 			this.libraryDocumentSources = new CopyOnWriteArrayList()
 
+        	// Container library
+        	var containerLibraryDocumentSource = component.context.attributes.get('prudence.containerLibraryDocumentSource')
+        	if (!Sincerity.Objects.exists(containerLibraryDocumentSource)) {
+	    		var library = sincerity.container.getLibrariesFile('scripturian')
+				containerLibraryDocumentSource = this.createDocumentSource(library)
+	    		component.context.attributes.put('prudence.containerLibraryDocumentSource', containerLibraryDocumentSource)
+        	}
+
         	if (Sincerity.Objects.exists(this.settings.code.libraries)) {
     			for (var i in this.settings.code.libraries) {
     				var library = this.settings.code.libraries[i]
@@ -92,17 +100,38 @@ var Prudence = Prudence || function() {
     	    		}
     				
     				print('Adding library: "' + library + '"\n')
-    				this.libraryDocumentSources.add(this.createDocumentSource(library))
+    				var documentSource = this.createDocumentSource(library)
+    				this.libraryDocumentSources.add(documentSource)
+    				
+    				if (i == 0) {
+    					var extraDocumentSources = new CopyOnWriteArrayList()
+    					extraDocumentSources.add(containerLibraryDocumentSource)
+    					
+    					// Handlers
+						this.globals['com.threecrickets.prudence.DelegatedHandler'] = {
+							documentSource: documentSource,
+							extraDocumentSources: extraDocumentSources,
+				    		libraryDocumentSources: this.libraryDocumentSources,
+				    		defaultName: this.settings.code.defaultDocumentName,
+				    		defaultLanguageTag: this.settings.code.defaultLanguageTag,
+				    		languageManager: executable.manager
+						}
+						print('Handlers: ' + library + '\n')
+
+    					// Tasks
+						this.globals['com.threecrickets.prudence.ApplicationTask'] = {
+							documentSource: documentSource,
+							extraDocumentSources: extraDocumentSources,
+				    		libraryDocumentSources: this.libraryDocumentSources,
+				    		defaultName: this.settings.code.defaultDocumentName,
+				    		defaultLanguageTag: this.settings.code.defaultLanguageTag,
+				    		languageManager: executable.manager
+						}
+						print('Tasks: ' + library + '\n')
+    				}
     			}
         	}
         	
-        	// Container library
-        	var containerLibraryDocumentSource = component.context.attributes.get('prudence.containerLibraryDocumentSource')
-        	if (!Sincerity.Objects.exists(containerLibraryDocumentSource)) {
-	    		var library = sincerity.container.getLibrariesFile('scripturian')
-				containerLibraryDocumentSource = this.createDocumentSource(library)
-	    		component.context.attributes.put('prudence.containerLibraryDocumentSource', containerLibraryDocumentSource)
-        	}
 			print('Adding library: "' + containerLibraryDocumentSource.basePath + '"\n')
 			this.libraryDocumentSources.add(containerLibraryDocumentSource)
 
@@ -145,42 +174,6 @@ var Prudence = Prudence || function() {
         		}
         	}
 
-			// Handlers
-			if (Sincerity.Objects.exists(this.settings.handlers)) {
-				if (Sincerity.Objects.exists(this.settings.handlers.root)) {
-		    		if (!(this.settings.handlers.root instanceof File)) {
-		    			this.settings.handlers.root = new File(this.root, this.settings.handlers.root).absoluteFile
-		    		}
-					this.globals['com.threecrickets.prudence.DelegatedHandler'] = {
-						documentSource: this.createDocumentSource(this.settings.handlers.root),
-						// extraDocumentSources: TODO
-			    		libraryDocumentSources: this.libraryDocumentSources,
-			    		defaultName: this.settings.code.defaultDocumentName,
-			    		defaultLanguageTag: this.settings.code.defaultLanguageTag,
-			    		languageManager: executable.manager
-					}
-					print('Handlers: ' + this.settings.handlers.root + '\n')
-				}
-			}
-
-			// Programs
-			if (Sincerity.Objects.exists(this.settings.programs)) {
-				if (Sincerity.Objects.exists(this.settings.programs.root)) {
-		    		if (!(this.settings.programs.root instanceof File)) {
-		    			this.settings.programs.root = new File(this.root, this.settings.programs.root).absoluteFile
-		    		}
-					this.globals['com.threecrickets.prudence.ApplicationTask'] = {
-						documentSource: this.createDocumentSource(this.settings.programs.root),
-						// extraDocumentSources: TODO
-			    		libraryDocumentSources: this.libraryDocumentSources,
-			    		defaultName: this.settings.code.defaultDocumentName,
-			    		defaultLanguageTag: this.settings.code.defaultLanguageTag,
-			    		languageManager: executable.manager
-					}
-					print('Programs: ' + this.settings.programs.root + '\n')
-				}
-			}
-			
 			// crontab
 			var crontab = new File(this.root, 'crontab').absoluteFile
 			if (crontab.exists() && !crontab.directory) {

@@ -16,14 +16,5 @@ Sincerity.Objects.merge(app.settings, {
 		defaultLanguageTag: 'javascript',
 		libraries: ['libraries'],
 		sourceVisible: true //TODO
-	},
-	
-	programs: {
-		root: 'programs',
-		startup: '/startup/'
-	},
-	
-	handlers: {
-		root: 'handlers'
 	}
 })
