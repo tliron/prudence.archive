@@ -58,6 +58,11 @@
 			<artifactId>jython-standalone</artifactId>
 			<version>2.5.2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.sqlalchemy</groupId>
+			<artifactId>sqlalchemy</artifactId>
+			<version>0.6-h2</version>
+		</dependency>
 	</dependencies>
 
 	<build>

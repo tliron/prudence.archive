@@ -19,7 +19,7 @@
 
 	<licenses>
 		<license>
-			<name>The MIT License</name>
+			<name>MIT-style License</name>
 			<url>http://groboutils.sourceforge.net/license.html</url>
 			<distribution>repo</distribution>
 		</license>
