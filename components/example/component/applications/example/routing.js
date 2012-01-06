@@ -2,8 +2,6 @@
 document.executeOnce('/sincerity/objects/')
 document.executeOnce('/prudence/')
 
-//var staticWeb = new Prudence.StaticWeb({root: 'static'})
-
 app.routes = {
 	'/*': [
 		'explicit',
@@ -13,6 +11,7 @@ app.routes = {
 			{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}
 		]
 	],
+	
 	/*'/*': [
 		{type: 'explicit', root: 'mapped', passThroughs: ['/prudence/fish/'], implicit: {routerDocumentName: '/prudence/implicit/', resourcesDocumentName: '/resources/'}},
 		{type: 'dynamicWeb', root: 'mapped', fragmentsRoot: 'fragments'},
@@ -27,5 +26,5 @@ app.routes = {
 
 app.hosts = {
 	'default': '/',
-	internal: '/skeleton/'
+	internal: '/skeleton/' // If not provided will default to the application subdirectory name
 }

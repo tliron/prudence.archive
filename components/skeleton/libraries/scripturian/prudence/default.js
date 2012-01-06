@@ -41,6 +41,7 @@ var Prudence = Prudence || function() {
     		importClass(
     			com.threecrickets.prudence.PrudenceApplication,
     			com.threecrickets.prudence.PrudenceRouter,
+    			com.threecrickets.prudence.ApplicationTaskCollector,
     			org.restlet.routing.Router,
     			org.restlet.routing.Template,
 				java.util.concurrent.CopyOnWriteArrayList,
@@ -55,6 +56,7 @@ var Prudence = Prudence || function() {
     			Sincerity.Objects.merge(this.instance, this.settings.description, ['name', 'description', 'author', 'owner'])
     		}
     		
+    		// Default internal host
     		if (!Sincerity.Objects.exists(this.hosts.internal)) {
     			this.hosts.internal = this.root.name
     		}
@@ -94,15 +96,15 @@ var Prudence = Prudence || function() {
     			}
         	}
         	
-        	// Common library
-        	var commonLibraryDocumentSource = component.context.attributes.get('prudence.commonLibraryDocumentSource')
-        	if (!Sincerity.Objects.exists(commonLibraryDocumentSource)) {
+        	// Container library
+        	var containerLibraryDocumentSource = component.context.attributes.get('prudence.containerLibraryDocumentSource')
+        	if (!Sincerity.Objects.exists(containerLibraryDocumentSource)) {
 	    		var library = sincerity.container.getLibrariesFile('scripturian')
-				commonLibraryDocumentSource = this.createDocumentSource(library)
-	    		component.context.attributes.put('prudence.commonLibraryDocumentSource', commonLibraryDocumentSource)
+				containerLibraryDocumentSource = this.createDocumentSource(library)
+	    		component.context.attributes.put('prudence.containerLibraryDocumentSource', containerLibraryDocumentSource)
         	}
-			print('Adding library: "' + commonLibraryDocumentSource.basePath + '"\n')
-			this.libraryDocumentSources.add(commonLibraryDocumentSource)
+			print('Adding library: "' + containerLibraryDocumentSource.basePath + '"\n')
+			this.libraryDocumentSources.add(containerLibraryDocumentSource)
 
         	// Sincerity library
         	var sincerityLibraryDocumentSource = component.context.attributes.get('prudence.sincerityLibraryDocumentSource')
@@ -142,7 +144,51 @@ var Prudence = Prudence || function() {
 	        		}
         		}
         	}
+
+			// Handlers
+			if (Sincerity.Objects.exists(this.settings.handlers)) {
+				if (Sincerity.Objects.exists(this.settings.handlers.root)) {
+		    		if (!(this.settings.handlers.root instanceof File)) {
+		    			this.settings.handlers.root = new File(this.root, this.settings.handlers.root).absoluteFile
+		    		}
+					this.globals['com.threecrickets.prudence.DelegatedHandler'] = {
+						documentSource: this.createDocumentSource(this.settings.handlers.root),
+						// extraDocumentSources: TODO
+			    		libraryDocumentSources: this.libraryDocumentSources,
+			    		defaultName: this.settings.code.defaultDocumentName,
+			    		defaultLanguageTag: this.settings.code.defaultLanguageTag,
+			    		languageManager: executable.manager
+					}
+					print('Handlers: ' + this.settings.handlers.root + '\n')
+				}
+			}
+
+			// Programs
+			if (Sincerity.Objects.exists(this.settings.programs)) {
+				if (Sincerity.Objects.exists(this.settings.programs.root)) {
+		    		if (!(this.settings.programs.root instanceof File)) {
+		    			this.settings.programs.root = new File(this.root, this.settings.programs.root).absoluteFile
+		    		}
+					this.globals['com.threecrickets.prudence.ApplicationTask'] = {
+						documentSource: this.createDocumentSource(this.settings.programs.root),
+						// extraDocumentSources: TODO
+			    		libraryDocumentSources: this.libraryDocumentSources,
+			    		defaultName: this.settings.code.defaultDocumentName,
+			    		defaultLanguageTag: this.settings.code.defaultLanguageTag,
+			    		languageManager: executable.manager
+					}
+					print('Programs: ' + this.settings.programs.root + '\n')
+				}
+			}
 			
+			// crontab
+			var crontab = new File(this.root, 'crontab').absoluteFile
+			if (crontab.exists() && !crontab.directory) {
+				print('Adding crontab: ' + crontab + '\n')
+				var scheduler = component.context.attributes.get('com.threecrickets.prudence.scheduler')
+				scheduler.addTaskCollector(new ApplicationTaskCollector(crontab, this.instance))
+			}
+
 			this.globals['com.threecrickets.prudence.component'] = component
 
         	// Apply globals

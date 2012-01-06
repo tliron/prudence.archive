@@ -10,11 +10,20 @@ Sincerity.Objects.merge(app.settings, {
 	},
 
 	code: {
-		defaultLanguageTag: 'javascript',
-		defaultExtension: 'js',
-		defaultDocumentName: 'default',
 		minimumTimeBetweenValidityChecks: 1000,
+		defaultDocumentName: 'default',
+		defaultExtension: 'js',
+		defaultLanguageTag: 'javascript',
 		libraries: ['libraries'],
 		sourceVisible: true //TODO
+	},
+	
+	programs: {
+		root: 'programs',
+		startup: '/startup/'
+	},
+	
+	handlers: {
+		root: 'handlers'
 	}
 })

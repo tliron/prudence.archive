@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json-java</artifactId>
-			<version>1.0.0</version>
+			<version>0.9</version>
 		</dependency>
 	</dependencies>
 

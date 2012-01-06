@@ -65,7 +65,7 @@
 		<dependency>
 			<groupId>net.jcip</groupId>
 			<artifactId>jcip-annotations</artifactId>
-			<version>1.0.0</version>
+			<version>0.9</version>
 		</dependency>
 	</dependencies>
 
