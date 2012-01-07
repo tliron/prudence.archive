@@ -9,7 +9,13 @@ Person = Sincerity.Classes.define(function() {
 	}
 
 	Public.handleGet = function(conversation) {
-		return 'I am person ' + conversation.locals.get('name')
+		var id = conversation.locals.get('id')
+		if (id == 13) {
+			// This will generate an error!
+			// (We're doing it on purpose in order to see the debug page)
+			abc()
+		}
+		return 'I am person ' + id
 	}
 
 	return Public

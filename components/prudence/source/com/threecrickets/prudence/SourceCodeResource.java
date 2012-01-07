@@ -132,6 +132,7 @@ public class SourceCodeResource extends ServerResource
 			{
 				try
 				{
+					System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ try " + documentSource);
 					DocumentDescriptor<Executable> documentDescriptor = documentSource.getDocument( name );
 					if( documentDescriptor != null )
 						return documentDescriptor;

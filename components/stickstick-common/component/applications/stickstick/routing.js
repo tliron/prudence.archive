@@ -2,6 +2,10 @@
 document.executeOnce('/sincerity/objects/')
 document.executeOnce('/prudence/')
 
+app.hosts = {
+	'default': '/'
+}
+
 app.routes = {
 	'/*': [
 		'explicit',
@@ -13,9 +17,4 @@ app.routes = {
 	],
 	'/data/note/{id}/': '/data/note/',
 	'/data/note/': 'hidden'
-}
-
-app.hosts = {
-	'default': '/',
-	internal: '/test/'
 }

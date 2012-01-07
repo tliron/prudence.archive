@@ -2,6 +2,11 @@
 document.executeOnce('/sincerity/objects/')
 document.executeOnce('/prudence/')
 
+app.hosts = {
+	'default': '/',
+	internal: '/skeleton/' // If not provided will default to the application subdirectory name
+}
+
 app.routes = {
 	'/*': [
 		'explicit',
@@ -21,10 +26,5 @@ app.routes = {
 	//'/dynamic/*': 'dynamicWeb',
 	//'/explicit/*': 'explicit',
 	//'/prudence/router/': 'hidden',
-	'/person/{name}/': 'person'
-}
-
-app.hosts = {
-	'default': '/',
-	internal: '/skeleton/' // If not provided will default to the application subdirectory name
+	'/person/{id}/': {type: 'filter', library: '/colorize/', next: 'person'}
 }

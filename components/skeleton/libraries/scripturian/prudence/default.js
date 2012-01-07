@@ -42,21 +42,63 @@ var Prudence = Prudence || function() {
     			com.threecrickets.prudence.PrudenceApplication,
     			com.threecrickets.prudence.PrudenceRouter,
     			com.threecrickets.prudence.ApplicationTaskCollector,
+    			com.threecrickets.prudence.DelegatedStatusService,
+    			com.threecrickets.prudence.util.LoggingUtil,
+    			org.restlet.resource.Finder,
     			org.restlet.routing.Router,
     			org.restlet.routing.Template,
+    			org.restlet.data.Reference,
+    			org.restlet.data.MediaType,
 				java.util.concurrent.CopyOnWriteArrayList,
     			java.io.File)
+
+    		this.settings.description = Sincerity.Objects.ensure(this.settings.description, {})
+    		this.settings.error = Sincerity.Objects.ensure(this.settings.error, {})
+    		this.settings.code = Sincerity.Objects.ensure(this.settings.code, {})
+    		this.settings.mediaTypes = Sincerity.Objects.ensure(this.settings.mediaTypes, {})
 
     		this.component = component
     		this.context = component.context.createChildContext()
         	this.instance = new PrudenceApplication(this.context)
     		
-    		// Description
-    		if (Sincerity.Objects.exists(this.settings.description)) {
-    			Sincerity.Objects.merge(this.instance, this.settings.description, ['name', 'description', 'author', 'owner'])
-    		}
+    		// Logger from subdirectory name
+    		this.context.logger = LoggingUtil.getRestletLogger(this.root.name)
     		
-    		// Default internal host
+    		// Status service
+    		this.instance.statusService = new DelegatedStatusService(Sincerity.Objects.ensure(this.settings.code.sourceViewable, false) ? '/source/' : null)
+			this.instance.statusService.debugging = true == this.settings.errors.debug
+			if (Sincerity.Objects.exists(this.settings.errors.homeUrl)) {
+				print('Home URL: "' + this.settings.errors.homeUrl + '"\n')
+				this.instance.statusService.homeRef = new Reference(this.settings.errors.homeUrl)
+			}
+			if (Sincerity.Objects.exists(this.settings.errors.contactEmail)) {
+				this.instance.statusService.contactEmail = this.settings.errors.contactEmail
+			}
+
+    		// Description
+			if (Sincerity.Objects.exists(this.settings.description.name)) {
+				this.instance.name = this.settings.description.name
+			}
+			if (Sincerity.Objects.exists(this.settings.description.description)) {
+				this.instance.description = this.settings.description.description
+			}
+			if (Sincerity.Objects.exists(this.settings.description.author)) {
+				this.instance.author = this.settings.description.author
+			}
+			if (Sincerity.Objects.exists(this.settings.description.owner)) {
+				this.instance.owner = this.settings.description.owner
+			}
+
+    		// Media types
+			for (var extension in this.settings.mediaTypes) {
+				var type = this.settings.mediaTypes[extension]
+				if (Sincerity.Objects.isString(type)) {
+					type = MediaType.valueOf(type)
+				}
+				this.instance.metadataService.addExtension(extension, type)
+			}
+    		
+    		// Default internal host to subdirectory name
     		if (!Sincerity.Objects.exists(this.hosts.internal)) {
     			this.hosts.internal = this.root.name
     		}
@@ -104,6 +146,7 @@ var Prudence = Prudence || function() {
     				this.libraryDocumentSources.add(documentSource)
     				
     				if (i == 0) {
+    					// We'll use the first library for handlers and tasks
     					var extraDocumentSources = new CopyOnWriteArrayList()
     					extraDocumentSources.add(containerLibraryDocumentSource)
     					
@@ -114,9 +157,10 @@ var Prudence = Prudence || function() {
 				    		libraryDocumentSources: this.libraryDocumentSources,
 				    		defaultName: this.settings.code.defaultDocumentName,
 				    		defaultLanguageTag: this.settings.code.defaultLanguageTag,
-				    		languageManager: executable.manager
+				    		languageManager: executable.manager,
+				    		sourceViewable: this.settings.code.sourceViewable
 						}
-						print('Handlers: ' + library + '\n')
+						print('Handlers: "' + library + '"\n')
 
     					// Tasks
 						this.globals['com.threecrickets.prudence.ApplicationTask'] = {
@@ -125,9 +169,10 @@ var Prudence = Prudence || function() {
 				    		libraryDocumentSources: this.libraryDocumentSources,
 				    		defaultName: this.settings.code.defaultDocumentName,
 				    		defaultLanguageTag: this.settings.code.defaultLanguageTag,
-				    		languageManager: executable.manager
+				    		languageManager: executable.manager,
+				    		sourceViewable: this.settings.code.sourceViewable
 						}
-						print('Tasks: ' + library + '\n')
+						print('Tasks: "' + library + '"\n')
     				}
     			}
         	}
@@ -144,6 +189,15 @@ var Prudence = Prudence || function() {
         	}
 			print('Adding library: "' + sincerityLibraryDocumentSource.basePath + '"\n')
 			this.libraryDocumentSources.add(sincerityLibraryDocumentSource)
+
+    		// Source viewer
+    		if (true == this.settings.code.sourceViewable) {
+    			this.sourceViewableDocumentSources = new CopyOnWriteArrayList()
+				this.globals['com.threecrickets.prudence.SourceCodeResource.documentSources'] = this.sourceViewableDocumentSources
+				var sourceViewer = new Finder(this.context, Sincerity.Container.getClass('com.threecrickets.prudence.SourceCodeResource'))
+				this.instance.inboundRoot.attach('/source/', sourceViewer).matchingMode = Template.MODE_EQUALS
+				print('Attaching "/source/" to ' + sourceViewer + '\n')
+    		}
 
         	// Create and attach restlets
         	for (var uri in this.routes) {
@@ -169,7 +223,7 @@ var Prudence = Prudence || function() {
 	        		}
 	        		else {
 	            		print('Attaching "' + uri + '" to ' + restlet + '\n')
-	        			this.instance.inboundRoot.attach(uri, restlet, Template.MODE_EQUALS)
+	        			this.instance.inboundRoot.attach(uri, restlet).matchingMode = Template.MODE_EQUALS
 	        		}
         		}
         	}
@@ -182,9 +236,17 @@ var Prudence = Prudence || function() {
 				scheduler.addTaskCollector(new ApplicationTaskCollector(crontab, this.instance))
 			}
 
+			// Use common cache, if exists
+			var cache = component.context.attributes.get('com.threecrickets.prudence.cache')
+			if (Sincerity.Objects.exists(cache)) {
+				this.globals['com.threecrickets.prudence.cache'] = cache
+			}
+
+			// Allow access to component
+			// (This can be considered a security breach, because it allows applications to access other applications)
 			this.globals['com.threecrickets.prudence.component'] = component
 
-        	// Apply globals
+			// Apply globals
         	var globals = Sincerity.Objects.flatten(this.globals)
         	for (var g in globals) {
         		this.context.attributes.put(g, globals[g])
@@ -233,8 +295,8 @@ var Prudence = Prudence || function() {
         	return new DocumentFileSource(
 				'container/' + sincerity.container.getRelativePath(root) + '/',
 				root,
-				defaultDocumentName || this.settings.code.defaultDocumentName,
-				defaultExtension || this.settings.code.defaultExtension,
+				Sincerity.Objects.ensure(defaultDocumentName, this.settings.code.defaultDocumentName),
+				Sincerity.Objects.ensure(defaultExtension, this.settings.code.defaultExtension),
 				Sincerity.Objects.ensure(preExtension, null),
 				this.settings.code.minimumTimeBetweenValidityChecks
 			)
@@ -245,10 +307,10 @@ var Prudence = Prudence || function() {
 
 	/**
 	 * @class
-	 * @name Prudence.Resource
+	 * @name Prudence.Restlet
 	 */
     Public.Resource = Sincerity.Classes.define(function() {
-		/** @exports Public as Prudence.Resource */
+		/** @exports Public as Prudence.Restlet */
     	var Public = {}
     	
     	Public.create = function(app, uri) {
@@ -260,21 +322,22 @@ var Prudence = Prudence || function() {
 	/**
 	 * @class
 	 * @name Prudence.StaticWeb
-	 * @augments Prudence.Resource
+	 * @augments Prudence.Restlet
 	 */
     Public.StaticWeb = Sincerity.Classes.define(function(Module) {
 		/** @exports Public as Prudence.StaticWeb */
     	var Public = {}
     	
 	    /** @ignore */
-    	Public._inherit = Module.Resource
+    	Public._inherit = Module.Restlet
 
 		/** @ignore */
-    	Public._configure = ['root', 'listingAllowed', 'negotiatingContent']
+    	Public._configure = ['root', 'listingAllowed', 'negotiate', 'compress']
 
     	Public.create = function(app, uri) {
     		importClass(
     			org.restlet.resource.Directory,
+    			org.restlet.engine.application.Encoder,
     			java.io.File)
     		
     		this.root = Sincerity.Objects.ensure(this.root, 'mapped')
@@ -283,8 +346,15 @@ var Prudence = Prudence || function() {
     		}
     		
     		var directory = new Directory(app.context, this.root.toURI())
-    		directory.listingAllowed = this.listingAllowed || false
-    		directory.negotiatingContent = this.negotiatingContent || true
+    		directory.listingAllowed = Sincerity.Objects.ensure(this.listingAllowed, false)
+    		directory.negotiatingContent = Sincerity.Objects.ensure(this.negotiate, true)
+    		
+    		if (Sincerity.Objects.ensure(this.compress, true)) {
+    			var encoder = new Encoder(app.context)
+    			encoder.next = directory
+    			directory = encoder
+    		}
+    		
     		return directory
     	}
     	
@@ -294,14 +364,14 @@ var Prudence = Prudence || function() {
 	/**
 	 * @class
 	 * @name Prudence.DynamicWeb
-	 * @augments Prudence.Resource
+	 * @augments Prudence.Restlet
 	 */
     Public.DynamicWeb = Sincerity.Classes.define(function(Module) {
 		/** @exports Public as Prudence.DynamicWeb */
     	var Public = {}
     	
 	    /** @ignore */
-    	Public._inherit = Module.Resource
+    	Public._inherit = Module.Restlet
 
 		/** @ignore */
     	Public._configure = ['root', 'fragmentsRoot', 'passThroughs', 'preExtension', 'defaultDocumentName', 'defaultExtension', 'clientCachingMode']
@@ -349,12 +419,9 @@ var Prudence = Prudence || function() {
     			this.clientCachingMode = 1
     		}
 
-    		this.defaultDocumentName = this.defaultDocumentName || 'index'
-    		this.defaultExtension = this.defaultExtension || 'html'
-
-    		if (undefined === this.preExtension) {
-    			this.preExtension = 'd'
-    		}
+    		this.defaultDocumentName = Sincerity.Objects.ensure(this.defaultDocumentName, 'index')
+    		this.defaultExtension = Sincerity.Objects.ensure(this.defaultExtension, 'html')
+			this.preExtension = Sincerity.Objects.ensure(this.preExtension, 'd')
 
     		var generatedTextResource = app.globals['com.threecrickets.prudence.GeneratedTextResource'] = {
     			documentSource: app.createDocumentSource(this.root, this.preExtension, this.defaultDocumentName, this.defaultExtenion),
@@ -366,7 +433,8 @@ var Prudence = Prudence || function() {
 	    		clientCachingMode: this.clientCachingMode,
 	    		defaultIncludedName: this.defaultDocumentName,
 	    		executionController: new PhpExecutionController(), // Adds PHP predefined variables
-    			languageManager: executable.manager
+    			languageManager: executable.manager,
+	    		sourceViewable: app.settings.code.sourceViewable
     		}
 
     		// Fragments
@@ -383,7 +451,14 @@ var Prudence = Prudence || function() {
         	}
 
         	generatedTextResource.extraDocumentSources.add(commonFragmentsDocumentSource)
+
+        	// Viewable source
+        	if (true == app.settings.code.sourceViewable) {
+    			app.sourceViewableDocumentSources.add(generatedTextResource.documentSource)
+    			app.sourceViewableDocumentSources.addAll(generatedTextResource.extraDocumentSources)
+        	}
     		
+        	// Pass-throughs
     		if (Sincerity.Objects.exists(this.passThroughs)) {
 	    		for (var i in this.passThroughs) {
 	    			print('Pass through: "' + this.passThroughs[i] + '"\n')
@@ -400,14 +475,14 @@ var Prudence = Prudence || function() {
 	/**
 	 * @class
 	 * @name Prudence.Explicit
-	 * @augments Prudence.Resource
+	 * @augments Prudence.Restlet
 	 */
     Public.Explicit = Sincerity.Classes.define(function(Module) {
 		/** @exports Public as Prudence.Explicit */
     	var Public = {}
     	
 	    /** @ignore */
-    	Public._inherit = Module.Resource
+    	Public._inherit = Module.Restlet
 
 		/** @ignore */
     	Public._configure = ['root', 'passThroughs', 'implicit', 'preExtension']
@@ -427,12 +502,10 @@ var Prudence = Prudence || function() {
     			this.root = new File(app.root, this.root).absoluteFile
     		}
 
-    		if (undefined === this.preExtension) {
-    			this.preExtension = 'e'
-    		}
+    		this.preExtension = Sincerity.Objects.ensure(this.preExtension, 'e')
     		
-    		app.implicit = this.implicit = this.implicit || {}
-    		this.implicit.routerDocumentName = this.implicit.routerDocumentName || '/prudence/implicit/'
+    		app.implicit = this.implicit = Sincerity.Objects.ensure(this.implicit, {})
+    		this.implicit.routerDocumentName = Sincerity.Objects.ensure(this.implicit.routerDocumentName, '/prudence/implicit/')
 
     		var delegatedResource = app.globals['com.threecrickets.prudence.DelegatedResource'] = {
     			documentSource: app.createDocumentSource(this.root, this.preExtension),
@@ -440,9 +513,11 @@ var Prudence = Prudence || function() {
 	    		passThroughDocuments: new CopyOnWriteArraySet(),
 	    		defaultName: app.settings.code.defaultDocumentName,
 	    		defaultLanguageTag: app.settings.code.defaultLanguageTag,
-	    		languageManager: executable.manager
+	    		languageManager: executable.manager,
+	    		sourceViewable: app.settings.code.sourceViewable
     		}
 
+        	// Pass-throughs
     		if (Sincerity.Objects.exists(this.passThroughs)) {
 	    		for (var i in this.passThroughs) {
 	    			print('Pass through: "' + this.passThroughs[i] + '"\n')
@@ -450,6 +525,12 @@ var Prudence = Prudence || function() {
 	    		}
     		}
 
+        	// Viewable source
+        	if (true == app.settings.code.sourceViewable) {
+    			app.sourceViewableDocumentSources.add(delegatedResource.documentSource)
+    			app.sourceViewableDocumentSources.addAll(app.libraryDocumentSources)
+        	}
+    		
     		// Implicit router
     		delegatedResource.passThroughDocuments.add(this.implicit.routerDocumentName)
        		app.implicit.routerUri = Module.cleanUri(uri + this.implicit.routerDocumentName)
@@ -464,14 +545,14 @@ var Prudence = Prudence || function() {
 	/**
 	 * @class
 	 * @name Prudence.Implicit
-	 * @augments Prudence.Resource
+	 * @augments Prudence.Restlet
 	 */
     Public.Implicit = Sincerity.Classes.define(function(Module) {
 		/** @exports Public as Prudence.Implicit */
     	var Public = {}
     	
 	    /** @ignore */
-    	Public._inherit = Module.Resource
+    	Public._inherit = Module.Restlet
 
 		/** @ignore */
     	Public._configure = ['id', 'locals']
@@ -485,12 +566,13 @@ var Prudence = Prudence || function() {
     			throw new SincerityException('An Explicit must be attached before an Implicit can be created')
        		}
     		
-    		app.implicit.resourcesDocumentName = app.implicit.resourcesDocumentName || '/resources/'
+    		app.implicit.resourcesDocumentName = Sincerity.Objects.ensure(app.implicit.resourcesDocumentName, '/resources/')
 
        		var capture = new CapturingRedirector(app.context, 'riap://application' + app.implicit.routerUri + '?{rq}', false)
     		var injector = new Injector(app.context, capture)
     		injector.values.put('prudence.id', this.id)
 
+    		// Extra locals
     		if (Sincerity.Objects.exists(this.locals)) {
     			for (var i in this.locals) {
     				injector.values.put(i, this.locals[i])
@@ -498,7 +580,7 @@ var Prudence = Prudence || function() {
     		}
    
         	app.globals['prudence.implicit.resourcesDocumentName'] = app.implicit.resourcesDocumentName
-   
+
     		return injector
     	}
     	
@@ -508,14 +590,14 @@ var Prudence = Prudence || function() {
 	/**
 	 * @class
 	 * @name Prudence.Capture
-	 * @augments Prudence.Resource
+	 * @augments Prudence.Restlet
 	 */
     Public.Capture = Sincerity.Classes.define(function(Module) {
 		/** @exports Public as Prudence.Capture */
     	var Public = {}
     	
 	    /** @ignore */
-    	Public._inherit = Module.Resource
+    	Public._inherit = Module.Restlet
 
 		/** @ignore */
     	Public._configure = ['uri', 'hidden', 'locals']
@@ -550,14 +632,14 @@ var Prudence = Prudence || function() {
     /**
 	 * @class
 	 * @name Prudence.Chain
-	 * @augments Prudence.Resource 
+	 * @augments Prudence.Restlet 
 	 */
     Public.Chain = Sincerity.Classes.define(function(Module) {
 		/** @exports Public as Prudence.Chain */
     	var Public = {}
     	
 	    /** @ignore */
-    	Public._inherit = Module.Resource
+    	Public._inherit = Module.Restlet
 
 		/** @ignore */
     	Public._configure = ['restlets']
@@ -577,6 +659,33 @@ var Prudence = Prudence || function() {
     		}
     		
     		return fallback
+    	}
+    	
+    	return Public
+    }(Public))
+    
+    /**
+	 * @class
+	 * @name Prudence.Filter
+	 * @augments Prudence.Restlet 
+	 */
+    Public.Filter = Sincerity.Classes.define(function(Module) {
+		/** @exports Public as Prudence.Filter */
+    	var Public = {}
+    	
+	    /** @ignore */
+    	Public._inherit = Module.Restlet
+
+		/** @ignore */
+    	Public._configure = ['library', 'next']
+
+    	Public.create = function(app, uri) {
+    		importClass(com.threecrickets.prudence.DelegatedFilter)
+    		
+    		this.next = app.createRestlet(this.next, uri)
+    		var filter = new DelegatedFilter(app.context, this.next, this.library)
+    		
+    		return filter
     	}
     	
     	return Public

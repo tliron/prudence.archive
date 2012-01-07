@@ -16,6 +16,10 @@ Sincerity.Objects.merge(app.settings, {
 		minimumTimeBetweenValidityChecks: 1000,
 		libraries: ['libraries'],
 		sourceVisible: true
+	},
+	
+	mediaTypes: {
+		php: 'text/html'
 	}
 })
 

@@ -2,6 +2,10 @@
 document.executeOnce('/sincerity/objects/')
 document.executeOnce('/prudence/')
 
+app.hosts = {
+	'default': '/'
+}
+
 app.routes = {
 	'/*': [
 		'explicit',
@@ -11,9 +15,4 @@ app.routes = {
 			{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}
 		]
 	]
-}
-
-app.hosts = {
-	'default': '/',
-	internal: '/test/'
 }

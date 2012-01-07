@@ -9,12 +9,22 @@ Sincerity.Objects.merge(app.settings, {
 		owner: 'Free Software'
 	},
 
+	errors: {
+		debug: true, // TODO: problems with false
+		homeUrl: 'http://threecrickets/prudence/', // Only used when debug=false
+		contactEmail: 'info@threecrickets.com' // Only used when debug=false
+	},
+	
 	code: {
 		minimumTimeBetweenValidityChecks: 1000,
 		defaultDocumentName: 'default',
 		defaultExtension: 'js',
 		defaultLanguageTag: 'javascript',
-		libraries: ['libraries'],
-		sourceVisible: true //TODO
+		libraries: ['libraries'], // Handlers and tasks will be found here
+		sourceViewable: true
+	},
+	
+	mediaTypes: {
+		php: 'text/html'
 	}
 })
