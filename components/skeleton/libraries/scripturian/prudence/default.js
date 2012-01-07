@@ -36,6 +36,7 @@ var Prudence = Prudence || function() {
         	this.globals = {}
     		this.hosts = {}
         	this.routes = {}
+    		this.preheat = {}
     	}
 
     	Public.create = function(component) {
@@ -45,6 +46,7 @@ var Prudence = Prudence || function() {
     			com.threecrickets.prudence.ApplicationTaskCollector,
     			com.threecrickets.prudence.DelegatedStatusService,
     			com.threecrickets.prudence.util.LoggingUtil,
+    			com.threecrickets.prudence.util.PreheatTask,
     			org.restlet.resource.Finder,
     			org.restlet.routing.Router,
     			org.restlet.routing.Template,
@@ -53,20 +55,28 @@ var Prudence = Prudence || function() {
 				java.util.concurrent.CopyOnWriteArrayList,
     			java.io.File)
 
+    		// Ensure settings exist
     		this.settings.description = Sincerity.Objects.ensure(this.settings.description, {})
-    		this.settings.error = Sincerity.Objects.ensure(this.settings.error, {})
+    		this.settings.errors = Sincerity.Objects.ensure(this.settings.errors, {})
     		this.settings.code = Sincerity.Objects.ensure(this.settings.code, {})
     		this.settings.mediaTypes = Sincerity.Objects.ensure(this.settings.mediaTypes, {})
+
+    		// Sensible default settings
+			this.settings.code.minimumTimeBetweenValidityChecks = Sincerity.Objects.ensure(this.settings.code.minimumTimeBetweenValidityChecks, 1000)
+			this.settings.code.defaultDocumentName = Sincerity.Objects.ensure(this.settings.code.defaultDocumentName, 'default')
+			this.settings.code.defaultExtension = Sincerity.Objects.ensure(this.settings.code.defaultExtension, 'js')
+			this.settings.code.defaultLanguageTag = Sincerity.Objects.ensure(this.settings.code.defaultLanguageTag, 'javascript')
+    		this.settings.logger = Sincerity.Objects.ensure(this.settings.logger, this.root.name)
 
     		this.component = component
     		this.context = component.context.createChildContext()
         	this.instance = new PrudenceApplication(this.context)
     		
-    		// Logger from subdirectory name
-    		this.context.logger = LoggingUtil.getRestletLogger(this.root.name)
+    		// Logger
+    		this.context.logger = LoggingUtil.getRestletLogger(this.settings.logger)
     		
     		// Status service
-    		this.instance.statusService = new DelegatedStatusService(Sincerity.Objects.ensure(this.settings.code.sourceViewable, false) ? '/source/' : null)
+    		this.instance.statusService = new DelegatedStatusService(this.settings.code.sourceViewable ? '/source/' : null)
 			this.instance.statusService.debugging = true == this.settings.errors.debug
 			if (Sincerity.Objects.exists(this.settings.errors.homeUrl)) {
 				println('Home URL: "{0}"'.cast(this.settings.errors.homeUrl))
@@ -249,9 +259,16 @@ var Prudence = Prudence || function() {
 
 			// Apply globals
         	var globals = Sincerity.Objects.flatten(this.globals)
-        	for (var g in globals) {
-        		this.context.attributes.put(g, globals[g])
+        	for (var name in globals) {
+        		this.context.attributes.put(name, globals[name])
         	}
+			
+			// Preheat tasks
+			var internal = this.hosts.internal.replace(/\//g, '')
+			for (var p in this.preheat) {
+				var uri = this.preheat[p]
+				executorTasks.push(new PreheatTask(internal, uri, this.instance, this.settings.logger))
+			}
         	
         	return this.instance
     	}
@@ -301,6 +318,18 @@ var Prudence = Prudence || function() {
 				Sincerity.Objects.ensure(preExtension, null),
 				this.settings.code.minimumTimeBetweenValidityChecks
 			)
+    	}
+    	
+    	Public.defrost = function(documentSource) {
+    		importClass(
+    			com.threecrickets.scripturian.util.DefrostTask)
+    			
+    		if (true == this.settings.code.defrost) {
+				var tasks = DefrostTask.forDocumentSource(documentSource, executable.manager, this.settings.code.defaultLanguageTag, false, true)
+				for (var t in tasks) {
+					executorTasks.push(tasks[t])
+				}
+    		}
     	}
     	
     	return Public    
@@ -383,8 +412,8 @@ var Prudence = Prudence || function() {
     		}
 
     		importClass(
-    			org.restlet.resource.Finder,
     			com.threecrickets.prudence.util.PhpExecutionController,
+    			org.restlet.resource.Finder,
     			java.util.concurrent.CopyOnWriteArrayList,
     			java.util.concurrent.CopyOnWriteArraySet,
     			java.util.concurrent.ConcurrentHashMap,
@@ -467,6 +496,9 @@ var Prudence = Prudence || function() {
 	    		}
     		}
     		
+    		// Defrost
+    		app.defrost(generatedTextResource.documentSource)
+    		
     		return new Finder(app.context, Sincerity.Container.getClass('com.threecrickets.prudence.GeneratedTextResource'))
     	}
     	
@@ -531,11 +563,14 @@ var Prudence = Prudence || function() {
     			app.sourceViewableDocumentSources.add(delegatedResource.documentSource)
     			app.sourceViewableDocumentSources.addAll(app.libraryDocumentSources)
         	}
-    		
+
     		// Implicit router
     		delegatedResource.passThroughDocuments.add(this.implicit.routerDocumentName)
        		app.implicit.routerUri = Module.cleanUri(uri + this.implicit.routerDocumentName)
     		app.instance.inboundRoot.hide(app.implicit.routerUri)
+
+    		// Defrost
+    		app.defrost(delegatedResource.documentSource)
 
     		return new Finder(app.context, Sincerity.Container.getClass('com.threecrickets.prudence.DelegatedResource'))
     	}

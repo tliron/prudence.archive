@@ -15,6 +15,7 @@ app.settings = {
 	
 	code: {
 		libraries: ['libraries'], // Handlers and tasks will be found here
+		defrost: true,
 		minimumTimeBetweenValidityChecks: 1000,
 		defaultDocumentName: 'default',
 		defaultExtension: 'js',

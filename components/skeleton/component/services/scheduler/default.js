@@ -5,6 +5,6 @@ importClass(
 var scheduler = new Scheduler()
 component.context.attributes.put('com.threecrickets.prudence.scheduler', scheduler)
 
-startupTasks.push(function() {
+initializers.push(function() {
 	scheduler.start()
 })
