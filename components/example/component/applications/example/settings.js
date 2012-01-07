@@ -1,7 +1,5 @@
 
-document.executeOnce('/sincerity/objects/')
-
-Sincerity.Objects.merge(app.settings, {
+app.settings = {
 	description: {
 		name: 'Skeleton',
 		description: 'The example application for the Prudence skeleton',
@@ -16,15 +14,15 @@ Sincerity.Objects.merge(app.settings, {
 	},
 	
 	code: {
+		libraries: ['libraries'], // Handlers and tasks will be found here
 		minimumTimeBetweenValidityChecks: 1000,
 		defaultDocumentName: 'default',
 		defaultExtension: 'js',
 		defaultLanguageTag: 'javascript',
-		libraries: ['libraries'], // Handlers and tasks will be found here
 		sourceViewable: true
 	},
 	
 	mediaTypes: {
 		php: 'text/html'
 	}
-})
+}

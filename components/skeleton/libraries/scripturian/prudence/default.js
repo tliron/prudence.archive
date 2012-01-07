@@ -1,6 +1,7 @@
 
 document.executeOnce('/sincerity/classes/')
 document.executeOnce('/sincerity/objects/')
+document.executeOnce('/sincerity/templates/')
 document.executeOnce('/restlet/')
 
 importClass(com.threecrickets.sincerity.exception.SincerityException)
@@ -68,7 +69,7 @@ var Prudence = Prudence || function() {
     		this.instance.statusService = new DelegatedStatusService(Sincerity.Objects.ensure(this.settings.code.sourceViewable, false) ? '/source/' : null)
 			this.instance.statusService.debugging = true == this.settings.errors.debug
 			if (Sincerity.Objects.exists(this.settings.errors.homeUrl)) {
-				print('Home URL: "' + this.settings.errors.homeUrl + '"\n')
+				println('Home URL: "{0}"'.cast(this.settings.errors.homeUrl))
 				this.instance.statusService.homeRef = new Reference(this.settings.errors.homeUrl)
 			}
 			if (Sincerity.Objects.exists(this.settings.errors.contactEmail)) {
@@ -114,7 +115,7 @@ var Prudence = Prudence || function() {
         			// No trailing slash
         			uri = uri.slice(0, -1)
         		}
-        		print('Attaching application to "' + uri + '/" on host "' + name + '"\n')
+        		println('Attaching application to "{0}/" on host "{1}"'.cast(uri, host))
         		host.attach(uri, this.instance)
         	}
 
@@ -141,7 +142,7 @@ var Prudence = Prudence || function() {
     	    			library = new File(this.root, library).absoluteFile
     	    		}
     				
-    				print('Adding library: "' + library + '"\n')
+    				println('Adding library: "{0}"'.cast(library))
     				var documentSource = this.createDocumentSource(library)
     				this.libraryDocumentSources.add(documentSource)
     				
@@ -160,7 +161,7 @@ var Prudence = Prudence || function() {
 				    		languageManager: executable.manager,
 				    		sourceViewable: this.settings.code.sourceViewable
 						}
-						print('Handlers: "' + library + '"\n')
+						println('Handlers: "{0}"'.cast(library))
 
     					// Tasks
 						this.globals['com.threecrickets.prudence.ApplicationTask'] = {
@@ -172,12 +173,12 @@ var Prudence = Prudence || function() {
 				    		languageManager: executable.manager,
 				    		sourceViewable: this.settings.code.sourceViewable
 						}
-						print('Tasks: "' + library + '"\n')
+						println('Tasks: "{0}"'.cast(library))
     				}
     			}
         	}
         	
-			print('Adding library: "' + containerLibraryDocumentSource.basePath + '"\n')
+			println('Adding library: "{0}"'.cast(containerLibraryDocumentSource.basePath))
 			this.libraryDocumentSources.add(containerLibraryDocumentSource)
 
         	// Sincerity library
@@ -187,7 +188,7 @@ var Prudence = Prudence || function() {
 				sincerityLibraryDocumentSource = this.createDocumentSource(library)
 	    		component.context.attributes.put('prudence.sincerityLibraryDocumentSource', sincerityLibraryDocumentSource)
         	}
-			print('Adding library: "' + sincerityLibraryDocumentSource.basePath + '"\n')
+			println('Adding library: "{0}"'.cast(sincerityLibraryDocumentSource.basePath))
 			this.libraryDocumentSources.add(sincerityLibraryDocumentSource)
 
     		// Source viewer
@@ -196,7 +197,7 @@ var Prudence = Prudence || function() {
 				this.globals['com.threecrickets.prudence.SourceCodeResource.documentSources'] = this.sourceViewableDocumentSources
 				var sourceViewer = new Finder(this.context, Sincerity.Container.getClass('com.threecrickets.prudence.SourceCodeResource'))
 				this.instance.inboundRoot.attach('/source/', sourceViewer).matchingMode = Template.MODE_EQUALS
-				print('Attaching "/source/" to ' + sourceViewer + '\n')
+				println('Attaching "/source/" to "{0}"'.cast(sourceViewer))
     		}
 
         	// Create and attach restlets
@@ -218,11 +219,11 @@ var Prudence = Prudence || function() {
         		restlet = this.createRestlet(restlet, uri)
         		if (Sincerity.Objects.exists(restlet)) {
 	        		if (attachBase) {
-	            		print('Attaching "' + uri + '*" to ' + restlet + '\n')
+	            		println('Attaching "{0}*" to {1}'.cast(uri, restlet))
 	        			this.instance.inboundRoot.attachBase(uri, restlet)
 	        		}
 	        		else {
-	            		print('Attaching "' + uri + '" to ' + restlet + '\n')
+	            		println('Attaching "{0}" to {1}'.cast(uri, restlet))
 	        			this.instance.inboundRoot.attach(uri, restlet).matchingMode = Template.MODE_EQUALS
 	        		}
         		}
@@ -231,7 +232,7 @@ var Prudence = Prudence || function() {
 			// crontab
 			var crontab = new File(this.root, 'crontab').absoluteFile
 			if (crontab.exists() && !crontab.directory) {
-				print('Adding crontab: ' + crontab + '\n')
+				println('Adding crontab: "{0}"'.cast(crontab))
 				var scheduler = component.context.attributes.get('com.threecrickets.prudence.scheduler')
 				scheduler.addTaskCollector(new ApplicationTaskCollector(crontab, this.instance))
 			}
@@ -261,7 +262,7 @@ var Prudence = Prudence || function() {
     		}
     		else if (Sincerity.Objects.isString(restlet)) {
     			if (restlet == 'hidden') {
-            		print('Hiding "' + uri + '"\n')
+            		println('Hiding "{0}"'.cast(uri))
     				this.instance.inboundRoot.hide(uri)
     				return null
     			}
@@ -394,7 +395,7 @@ var Prudence = Prudence || function() {
     			this.root = new File(app.root, this.root).absoluteFile
     		}
     		
-    		print('DynamicWeb at "' + this.root + '"\n')
+    		println('DynamicWeb at "{0}"'.cast(this.root))
     		
     		this.fragmentsRoot = Sincerity.Objects.ensure(this.fragmentsRoot, 'fragments')
     		if (!(this.fragmentsRoot instanceof File)) {
@@ -461,7 +462,7 @@ var Prudence = Prudence || function() {
         	// Pass-throughs
     		if (Sincerity.Objects.exists(this.passThroughs)) {
 	    		for (var i in this.passThroughs) {
-	    			print('Pass through: "' + this.passThroughs[i] + '"\n')
+	    			println('Pass through: "{0}"'.cast(this.passThroughs[i]))
 	    			generatedTextResource.passThroughDocuments.add(this.passThroughs[i])
 	    		}
     		}
@@ -520,7 +521,7 @@ var Prudence = Prudence || function() {
         	// Pass-throughs
     		if (Sincerity.Objects.exists(this.passThroughs)) {
 	    		for (var i in this.passThroughs) {
-	    			print('Pass through: "' + this.passThroughs[i] + '"\n')
+	    			println('Pass through: "{0}"'.cast(this.passThroughs[i]))
 	    			delegatedResource.passThroughDocuments.add(this.passThroughs[i])
 	    		}
     		}

@@ -1,10 +1,12 @@
 
 document.executeOnce('/sincerity/classes/')
+document.executeOnce('/sincerity/templates/')
 
 Person = Sincerity.Classes.define(function() {
 	var Public = {}
 	
 	Public.handleInit = function(conversation) {
+		conversation.addMediaTypeByName('text/html')
 		conversation.addMediaTypeByName('text/plain')
 	}
 
@@ -15,7 +17,7 @@ Person = Sincerity.Classes.define(function() {
 			// (We're doing it on purpose in order to see the debug page)
 			abc()
 		}
-		return 'I am person ' + id
+		return 'I am person {0} in {1}'.cast(id, conversation.mediaTypeName)
 	}
 
 	return Public

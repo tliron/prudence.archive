@@ -1,6 +1,6 @@
 
 document.executeOnce('/resources/person/')
 
-resources= {
+resources = {
 	person: new Person()
 }

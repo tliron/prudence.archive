@@ -26,5 +26,7 @@ app.routes = {
 	//'/dynamic/*': 'dynamicWeb',
 	//'/explicit/*': 'explicit',
 	//'/prudence/router/': 'hidden',
-	'/person/{id}/': {type: 'filter', library: '/colorize/', next: 'person'}
+	'/person/{id}/': {type: 'filter', library: '/filters/statistics/', next: 'person'}
 }
+
+app.preheat = ['/person/1/']

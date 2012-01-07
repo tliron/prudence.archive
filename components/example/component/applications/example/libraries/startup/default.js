@@ -1,2 +1,2 @@
 
-print('Yo yo yo!\n')
+println('Yo yo yo!')
