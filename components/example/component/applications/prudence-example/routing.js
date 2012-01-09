@@ -9,7 +9,7 @@ app.routes = {
 		'explicit',
 		'dynamicWeb',
 		[
-			'staticWeb',
+			{type: 'cacheControl', 'default': 1, mediaTypes: {'text/html': 2}, next: 'staticWeb'},
 			{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}
 		]
 	],

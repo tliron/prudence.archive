@@ -890,8 +890,9 @@ var Prudence = Prudence || function() {
     		if (Sincerity.Objects.exists(this.mediaTypes)) {
     			for (var mediaType in this.mediaTypes) {
     				var maxAge = this.mediaTypes[mediaType]
-    				mediaType = MediaType.valueOf(mediaType) 
+    				mediaType = MediaType.valueOf(mediaType)
     				filter.maxAgeForMediaType.put(mediaType, maxAge)
+    				println('Setting max age for {0} to {1}'.cast(mediaType, maxAge))
     			}
     		}
     		
