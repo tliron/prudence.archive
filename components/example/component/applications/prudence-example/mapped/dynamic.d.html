@@ -1,7 +1,10 @@
 <%& '/site/header/' %>
-<% document.executeOnce('/util/'); %>
+<%
+document.executeOnce('/util/')
+document.cacheDuration = 5000
+%>
 	<h2>Prudence Example</h2>
 	<p>
-		This is a dynamic page, generated via a scriptlet, at <%= getNow() %>
+		This is a dynamic page, generated via a scriptlet, at <%= getNow() %>. It is being cached for <%= document.cacheDuration / 1000 %> seconds.
 	</p>
 <%& '/site/footer/' %>
