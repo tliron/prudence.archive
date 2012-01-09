@@ -1,6 +1,7 @@
 <%& '/site/header/' %>
 	<h2>Prudence Example</h2>
-<% if (conversation.request.method == 'POST') {
+<%
+if (conversation.request.method == 'POST') {
 	importClass(java.io.File)
 	
 	var name = conversation.form.get('name')
