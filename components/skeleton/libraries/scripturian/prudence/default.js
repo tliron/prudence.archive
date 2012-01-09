@@ -74,10 +74,13 @@ var Prudence = Prudence || function() {
 				java.util.concurrent.CopyOnWriteArrayList,
     			java.io.File)
 
+    		this.component = component
+    			
     		// Ensure settings exist
     		this.settings.description = Sincerity.Objects.ensure(this.settings.description, {})
     		this.settings.errors = Sincerity.Objects.ensure(this.settings.errors, {})
     		this.settings.code = Sincerity.Objects.ensure(this.settings.code, {})
+    		this.settings.uploads = Sincerity.Objects.ensure(this.settings.code, {})
     		this.settings.mediaTypes = Sincerity.Objects.ensure(this.settings.mediaTypes, {})
 
     		// Sensible default settings
@@ -86,8 +89,14 @@ var Prudence = Prudence || function() {
 			this.settings.code.defaultExtension = Sincerity.Objects.ensure(this.settings.code.defaultExtension, 'js')
 			this.settings.code.defaultLanguageTag = Sincerity.Objects.ensure(this.settings.code.defaultLanguageTag, 'javascript')
     		this.settings.logger = Sincerity.Objects.ensure(this.settings.logger, this.root.name)
+    		
+    		this.settings.uploads.sizeThreshold = Sincerity.Objects.ensure(this.settings.uploads.sizeThreshold, 0)
+    		this.settings.uploads.root = Sincerity.Objects.ensure(this.settings.uploads.root, 'uploads')
+    		if (!(this.settings.uploads.root instanceof File)) {
+    			this.settings.uploads.root = new File(this.root, this.settings.uploads.root).absoluteFile
+    		}
 
-    		this.component = component
+    		// Create instance
     		this.context = component.context.createChildContext()
         	this.instance = new PrudenceApplication(this.context)
     		
@@ -193,7 +202,9 @@ var Prudence = Prudence || function() {
 				    		defaultName: this.settings.code.defaultDocumentName,
 				    		defaultLanguageTag: this.settings.code.defaultLanguageTag,
 				    		languageManager: executable.manager,
-				    		sourceViewable: this.settings.code.sourceViewable
+				    		sourceViewable: this.settings.code.sourceViewable,
+				    		fileUploadDirectory: this.settings.uploads.root,
+				    		fileUploadSizeThreshold: this.settings.uploads.sizeThreshold
 						}
 						println('Handlers: "{0}"'.cast(library))
 
@@ -205,7 +216,9 @@ var Prudence = Prudence || function() {
 				    		defaultName: this.settings.code.defaultDocumentName,
 				    		defaultLanguageTag: this.settings.code.defaultLanguageTag,
 				    		languageManager: executable.manager,
-				    		sourceViewable: this.settings.code.sourceViewable
+				    		sourceViewable: this.settings.code.sourceViewable,
+				    		fileUploadDirectory: this.settings.uploads.root,
+				    		fileUploadSizeThreshold: this.settings.uploads.sizeThreshold
 						}
 						println('Tasks: "{0}"'.cast(library))
     				}
@@ -508,7 +521,9 @@ var Prudence = Prudence || function() {
 	    		defaultIncludedName: this.defaultDocumentName,
 	    		executionController: new PhpExecutionController(), // Adds PHP predefined variables
     			languageManager: executable.manager,
-	    		sourceViewable: app.settings.code.sourceViewable
+	    		sourceViewable: app.settings.code.sourceViewable,
+	    		fileUploadDirectory: app.settings.uploads.root,
+	    		fileUploadSizeThreshold: app.settings.uploads.sizeThreshold
     		}
 
     		// Fragments
@@ -591,7 +606,9 @@ var Prudence = Prudence || function() {
 	    		defaultName: app.settings.code.defaultDocumentName,
 	    		defaultLanguageTag: app.settings.code.defaultLanguageTag,
 	    		languageManager: executable.manager,
-	    		sourceViewable: app.settings.code.sourceViewable
+	    		sourceViewable: app.settings.code.sourceViewable,
+	    		fileUploadDirectory: app.settings.uploads.root,
+	    		fileUploadSizeThreshold: app.settings.uploads.sizeThreshold
     		}
 
         	// Pass-throughs
@@ -832,6 +849,51 @@ var Prudence = Prudence || function() {
 
     		this.next = app.createRestlet(this.next, uri)
     		var filter = new CssUnifyMinifyFilter(app.context, this.next, this.root, app.settings.code.minimumTimeBetweenValidityChecks)
+    		
+    		return filter
+    	}
+    	
+    	return Public
+    }(Public))
+
+    /**
+	 * @class
+	 * @name Prudence.CacheControl
+	 * @augments Prudence.Restlet 
+	 */
+    Public.CacheControl = Sincerity.Classes.define(function(Module) {
+		/** @exports Public as Prudence.CacheControl */
+    	var Public = {}
+    	
+	    /** @ignore */
+    	Public._inherit = Module.Restlet
+
+		/** @ignore */
+    	Public._configure = ['mediaTypes', 'default', 'next']
+
+    	Public.create = function(app, uri) {
+    		importClass(
+    			com.threecrickets.prudence.util.CacheControlFilter,
+    			org.restlet.data.MediaType,
+    			java.io.File)
+   
+    		this.root = Sincerity.Objects.ensure(this.root, 'mapped')
+    		if (!(this.root instanceof File)) {
+    			this.root = new File(app.root, this.root).absoluteFile
+    		}
+    		
+    		this['default'] = Sincerity.Objects.ensure(this['default'], CacheControlFilter.FAR_FUTURE)
+    		
+    		this.next = app.createRestlet(this.next, uri)
+    		var filter = new CacheControlFilter(app.context, this.next, this['default'])
+    		
+    		if (Sincerity.Objects.exists(this.mediaTypes)) {
+    			for (var mediaType in this.mediaTypes) {
+    				var maxAge = this.mediaTypes[mediaType]
+    				mediaType = MediaType.valueOf(mediaType) 
+    				filter.maxAgeForMediaType.put(mediaType, maxAge)
+    			}
+    		}
     		
     		return filter
     	}

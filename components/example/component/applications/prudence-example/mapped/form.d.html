@@ -1,0 +1,44 @@
+<%& '/site/header/' %>
+	<h2>Prudence Example</h2>
+<% if (conversation.request.method == 'POST') {
+	importClass(java.io.File)
+	
+	var name = conversation.form.get('name')
+	var tmpAvatar = conversation.form.get('avatar').file
+	var mediaType = conversation.form.get('avatar').mediaType
+	
+	// The metadata service can provide us with a default extension for the media type
+	var extension = application.application.metadataService.getExtension(mediaType)
+
+	// We will put all avatars under the /mapped/avatars/ directory, so that they
+	// can be visible to the world
+	var avatars = new File(document.source.basePath, 'avatars')
+	avatars.mkdirs()
+
+	var avatar = new File(avatars, name + '.' + extension)
+	
+	// Move the file to the new location
+	tmpAvatar.renameTo(avatar)
+%>
+	<p>
+		Thank you for uploading your avatar, <%= name %>! Here's the image:
+	</p>
+	<p>
+		<img src="../avatars/<%= avatar.name %>" />
+	</p>
+	<p>
+		It was temporarily stored at:<br /><%= tmpAvatar %>
+	</p>
+	<p>
+		Click <a href="..">here</a> to return to the main page.
+	</p>
+<% } else { %>
+	<form enctype="multipart/form-data" name="upload" method="POST">
+		<p>Your name:</p>
+		<p><input name="name" type="text"></input></p>
+		<p>Upload your avatar (an image file):</p>
+		<p><input name="avatar" type="file"></input></p>
+		<p><button type="submit">Send</button></p>
+	</form>
+<% } %>
+<%& '/site/footer/' %>

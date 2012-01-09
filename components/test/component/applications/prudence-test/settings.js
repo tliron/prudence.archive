@@ -23,6 +23,11 @@ Sincerity.Objects.merge(app.settings, {
 		sourceViewable: true
 	},
 	
+	uploads: {
+		root: 'uploads',
+		sizeThreshold: 0
+	},
+	
 	mediaTypes: {
 		php: 'text/html'
 	}

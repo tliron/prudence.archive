@@ -274,7 +274,10 @@ public class ConversationService
 		if( formAll == null )
 		{
 			if( getRequest().isEntityAvailable() )
+			{
+				fileUploadDirectory.mkdirs();
 				formAll = new FormWithFiles( getRequest().getEntity(), fileUploadSizeThreshold, fileUploadDirectory );
+			}
 			else
 				formAll = new Form();
 		}
