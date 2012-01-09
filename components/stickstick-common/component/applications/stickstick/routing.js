@@ -1,7 +1,4 @@
 
-document.executeOnce('/sincerity/objects/')
-document.executeOnce('/prudence/')
-
 app.hosts = {
 	'default': '/stickstick/'
 }
@@ -11,7 +8,7 @@ app.routes = {
 		'explicit',
 		'dynamicWeb',
 		[
-			'staticWeb',
+			{type: 'cssUnifyMinify', next: {type: 'javaScriptUnifyMinify', next: 'staticWeb'}},
 			{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}
 		]
 	],

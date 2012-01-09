@@ -12,7 +12,7 @@ var Prudence = Prudence || function() {
     
     Public.cleanUri = function(uri) {
     	// No doubles
-    	uri = uri.replace(/\/\//g, '/')
+    	uri = String(uri).replace(/\/\//g, '/')
     	if ((uri == '') || (uri[0] != '/')) {
     		// Always at the beginning
     		uri = '/' + uri
@@ -26,7 +26,7 @@ var Prudence = Prudence || function() {
 
     Public.cleanBaseUri = function(uri) {
     	// No doubles
-    	uri = uri.replace(/\/\//g, '/')
+    	uri = String(uri).replace(/\/\//g, '/')
     	if ((uri == '') || (uri[0] != '/')) {
     		// Always at the beginning
     		uri = '/' + uri
@@ -133,7 +133,7 @@ var Prudence = Prudence || function() {
 
     		// Default internal host to subdirectory name
     		if (!Sincerity.Objects.exists(this.hosts.internal)) {
-    			this.hosts.internal = this.root.name
+    			this.hosts.internal = String(this.root.name)
     		}
     		
         	// Attach to hosts
@@ -291,7 +291,7 @@ var Prudence = Prudence || function() {
         	}
 			
 			// Preheat tasks
-			var internal = this.hosts.internal.replace(/\//g, '')
+			var internal = String(this.hosts.internal).replace(/\//g, '')
 			for (var p in this.preheat) {
 				var uri = this.preheat[p]
 				executorTasks.push(new PreheatTask(internal, uri, this.instance, this.settings.logger))
@@ -324,20 +324,26 @@ var Prudence = Prudence || function() {
     			else if (restlet[0] == '/') {
     				return new Module.Capture({uri: restlet}).create(this, uri)
     			}
-    			else {
-        			var type = Module[Sincerity.Objects.capitalize(restlet)]
-    				if (Sincerity.Objects.exists(type)) {
-    					return new type().create(this, uri)
-    				}
-    				else {
-    					return new Module.Implicit({id: restlet}).create(this, uri)
-    				}
-    			}
+				else {
+					var type = Module[Sincerity.Objects.capitalize(restlet)]
+					if (Sincerity.Objects.exists(type)) {
+	    				return this.createRestlet({type: restlet}, uri)
+					}
+					else {
+						return new Module.Implicit({id: restlet}).create(this, uri)
+					}
+				}
     		}
     		else if (Sincerity.Objects.isString(restlet.type)) {
     			var type = Module[Sincerity.Objects.capitalize(restlet.type)]
     			delete restlet.type
-    			return new type(restlet).create(this, uri)        			
+				if (Sincerity.Objects.exists(type)) {
+					restlet = new type(restlet)
+					if (!Sincerity.Objects.exists(restlet.create)) {
+						return null
+					}
+					return restlet.create(this, uri)
+				}
     		}
     		else {
     			return restlet.create(this, uri)
@@ -764,6 +770,74 @@ var Prudence = Prudence || function() {
     	
     	return Public
     }(Public))
-    
+
+    /**
+	 * @class
+	 * @name Prudence.JavaScriptUnifyMinify
+	 * @augments Prudence.Restlet 
+	 */
+    Public.JavaScriptUnifyMinify = Sincerity.Classes.define(function(Module) {
+		/** @exports Public as Prudence.JavaScriptUnifyMinify */
+    	var Public = {}
+    	
+	    /** @ignore */
+    	Public._inherit = Module.Restlet
+
+		/** @ignore */
+    	Public._configure = ['root', 'next']
+
+    	Public.create = function(app, uri) {
+    		importClass(
+    			com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter,
+    			java.io.File)
+   
+    		this.root = Sincerity.Objects.ensure(this.root, 'mapped')
+    		if (!(this.root instanceof File)) {
+    			this.root = new File(app.root, this.root).absoluteFile
+    		}
+
+    		this.next = app.createRestlet(this.next, uri)
+    		var filter = new JavaScriptUnifyMinifyFilter(app.context, this.next, this.root, app.settings.code.minimumTimeBetweenValidityChecks)
+    		
+    		return filter
+    	}
+    	
+    	return Public
+    }(Public))
+
+    /**
+	 * @class
+	 * @name Prudence.CssUnifyMinify
+	 * @augments Prudence.Restlet 
+	 */
+    Public.CssUnifyMinify = Sincerity.Classes.define(function(Module) {
+		/** @exports Public as Prudence.CssUnifyMinify */
+    	var Public = {}
+    	
+	    /** @ignore */
+    	Public._inherit = Module.Restlet
+
+		/** @ignore */
+    	Public._configure = ['root', 'next']
+
+    	Public.create = function(app, uri) {
+    		importClass(
+    			com.threecrickets.prudence.util.CssUnifyMinifyFilter,
+    			java.io.File)
+   
+    		this.root = Sincerity.Objects.ensure(this.root, 'mapped')
+    		if (!(this.root instanceof File)) {
+    			this.root = new File(app.root, this.root).absoluteFile
+    		}
+
+    		this.next = app.createRestlet(this.next, uri)
+    		var filter = new CssUnifyMinifyFilter(app.context, this.next, this.root, app.settings.code.minimumTimeBetweenValidityChecks)
+    		
+    		return filter
+    	}
+    	
+    	return Public
+    }(Public))
+
     return Public
 }()
