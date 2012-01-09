@@ -54,7 +54,8 @@ var Prudence = Prudence || function() {
         	this.globals = {}
     		this.hosts = {}
         	this.routes = {}
-    		this.preheat = {}
+        	this.delegates = {}
+    		this.preheat = []
     	}
 
     	Public.create = function(component) {
@@ -596,11 +597,12 @@ var Prudence = Prudence || function() {
 
     		this.preExtension = Sincerity.Objects.ensure(this.preExtension, 'e')
     		
+    		/*
     		app.implicit = this.implicit = Sincerity.Objects.ensure(this.implicit, {})
     		this.implicit.resource = Sincerity.Objects.ensure(this.implicit.resource, '/prudence/implicit/' + app.settings.code.defaultLanguageTag + '/')
         	if (this.implicit.resource[0] != '/') {
         		this.implicit.resource = '/' + this.implicit.resource
-        	}
+        	}*/
 
     		var delegatedResource = app.globals['com.threecrickets.prudence.DelegatedResource'] = {
     			documentSource: app.createDocumentSource(this.root, this.preExtension),
@@ -628,10 +630,15 @@ var Prudence = Prudence || function() {
     			app.sourceViewableDocumentSources.addAll(app.libraryDocumentSources)
         	}
 
-    		// Implicit router
-    		delegatedResource.passThroughDocuments.add(this.implicit.resource)
-       		app.implicit.routerUri = Module.cleanBaseUri(uri) + this.implicit.resource
-    		app.instance.inboundRoot.hide(app.implicit.routerUri)
+    		// Pass-through and hide delegates
+        	var delegateBaseUri = Module.cleanBaseUri(uri)
+        	for (var name in app.delegates) {
+        		var delegate = app.delegates[name]
+	    		delegatedResource.passThroughDocuments.add(delegate.explicit)
+	    		delegate.explicit = delegateBaseUri + delegate.explicit
+	    		app.instance.inboundRoot.hide(delegate.explicit)
+	    		println('Enabling delegate "{0}": "{1}"'.cast(name, delegate.explicit))
+        	}
 
     		// Defrost
     		app.defrost(delegatedResource.documentSource)
@@ -655,20 +662,26 @@ var Prudence = Prudence || function() {
     	Public._inherit = Module.Restlet
 
 		/** @ignore */
-    	Public._configure = ['id', 'locals']
+    	Public._configure = ['id', 'locals', 'delegate']
 
     	Public.create = function(app, uri) {
     		importClass(
     			com.threecrickets.prudence.util.Injector,
     			com.threecrickets.prudence.util.CapturingRedirector)
     			
-       		if (!Sincerity.Objects.exists(app.implicit)) {
+    		if (!Sincerity.Objects.exists(app.globals['com.threecrickets.prudence.DelegatedResource'])) {
     			throw new SincerityException('An Explicit must be attached before an Implicit can be created')
        		}
-    		
-    		app.implicit.resources = Sincerity.Objects.ensure(app.implicit.resources, '/resources/')
+    			
+    		this.delegate = Sincerity.Objects.ensure(this.delegate, 'javascript')
+    		var delegate = app.delegates[this.delegate]
+    		if (!Sincerity.Objects.exists(delegate)) {
+    			throw new SincerityException('Undefined delegate: "{0}"'.cast(this.delegate))
+    		}
 
-       		var capture = new CapturingRedirector(app.context, 'riap://application' + app.implicit.routerUri + '?{rq}', false)
+        	app.globals['prudence.delegate.' + this.delegate + '.library'] = delegate.library
+    		
+       		var capture = new CapturingRedirector(app.context, 'riap://application' + delegate.explicit + '?{rq}', false)
     		var injector = new Injector(app.context, capture)
     		injector.values.put('prudence.id', this.id)
 
@@ -679,8 +692,6 @@ var Prudence = Prudence || function() {
     			}
     		}
    
-        	app.globals['prudence.implicit.resources'] = app.implicit.resources
-
     		return injector
     	}
     	

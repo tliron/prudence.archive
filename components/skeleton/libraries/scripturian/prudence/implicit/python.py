@@ -1,12 +1,9 @@
 
-from java.lang import System
-
 resources = {}
 
-document.executeOnce(application.globals['prudence.implicit.resources'])
+document.executeOnce(application.globals['prudence.delegate.python.library'])
 
 def handle(conversation, method):
-    System.out.println(method)
     id = conversation.locals['prudence.id']
     resource = resources.get(id, None)
     if resource is None:

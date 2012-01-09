@@ -1,7 +1,7 @@
 
 var resources = {}
 
-document.executeOnce(application.globals.get('prudence.implicit.resources'))
+document.executeOnce(application.globals.get('prudence.delegate.javascript.library'))
 
 function handle(conversation, method) {
 	var id = conversation.locals.get('prudence.id')

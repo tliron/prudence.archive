@@ -17,7 +17,7 @@ Person = Sincerity.Classes.define(function() {
 			// (We're doing it on purpose in order to see the debug page)
 			abc()
 		}
-		return 'I am person {0} in {1}'.cast(id, conversation.mediaTypeName)
+		return 'I am person {0}, formatted as "{1}", encased in JavaScript'.cast(id, conversation.mediaTypeName)
 	}
 
 	return Public
