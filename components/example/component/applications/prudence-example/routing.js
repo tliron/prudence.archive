@@ -14,16 +14,17 @@ app.routes = {
 		]
 	],
 	'/person/{id}/': {type: 'filter', library: '/filters/statistics/', next: 'person'},
-	'/pythonperson/{id}/': {type: 'implicit', id: 'person', delegate: 'python'}
+	'/pythonperson/{id}/': {type: 'implicit', id: 'person', delegate: 'python'},
+	'/groovyperson/{id}/': {type: 'implicit', id: 'person', delegate: 'groovy'}
 }
 
 app.delegates = {
-	javascript: {explicit: '/prudence/implicit/javascript/', library: '/resources/javascript/'},
-	python: {explicit: '/prudence/implicit/python/', library: '/resources/python/'},
-	ruby: {explicit: '/prudence/implicit/ruby/', library: '/resources/ruby/'},
-	groovy: {explicit: '/prudence/implicit/groovy/', library: '/resources/groovy/'},
-	clojure: {explicit: '/prudence/implicit/clojure/', library: '/resources/clojure/'},
-	php: {explicit: '/prudence/implicit/php/', library: '/resources/php/'}
+	javascript: {explicit: '/prudence/delegate/javascript/', library: '/resources/javascript/'},
+	python: {explicit: '/prudence/delegate/python/', library: '/resources/python/'},
+	ruby: {explicit: '/prudence/delegate/ruby/', library: '/resources/ruby/'},
+	groovy: {explicit: '/prudence/delegate/groovy/', library: '/resources/groovy/'},
+	clojure: {explicit: '/prudence/delegate/clojure/', library: '/resources/clojure/'},
+	php: {explicit: '/prudence/delegate/php/', library: '/resources/php/'}
 }
 
 app.preheat = ['/person/1/']

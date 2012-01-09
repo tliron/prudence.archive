@@ -597,13 +597,6 @@ var Prudence = Prudence || function() {
 
     		this.preExtension = Sincerity.Objects.ensure(this.preExtension, 'e')
     		
-    		/*
-    		app.implicit = this.implicit = Sincerity.Objects.ensure(this.implicit, {})
-    		this.implicit.resource = Sincerity.Objects.ensure(this.implicit.resource, '/prudence/implicit/' + app.settings.code.defaultLanguageTag + '/')
-        	if (this.implicit.resource[0] != '/') {
-        		this.implicit.resource = '/' + this.implicit.resource
-        	}*/
-
     		var delegatedResource = app.globals['com.threecrickets.prudence.DelegatedResource'] = {
     			documentSource: app.createDocumentSource(this.root, this.preExtension),
 	    		libraryDocumentSources: app.libraryDocumentSources,
