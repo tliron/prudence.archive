@@ -1,9 +1,0 @@
-As far as we can tell, this library is in the public domain.
-
-See:
-
-https://github.com/OlegIlyenko/jmx-firewall-friendly-agent
-
-And:
-
-http://blogs.sun.com/jmxetc/entry/connecting_through_firewall_using_jmx

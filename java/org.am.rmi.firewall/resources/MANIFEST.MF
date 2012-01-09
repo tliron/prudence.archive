@@ -1,1 +1,0 @@
-Premain-Class: org.am.rmi.firewall.FirewallFriendlyAgent
