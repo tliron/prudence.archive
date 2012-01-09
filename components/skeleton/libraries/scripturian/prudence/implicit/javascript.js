@@ -1,7 +1,7 @@
 
 var resources = {}
 
-document.executeOnce(application.globals.get('prudence.implicit.resourcesDocumentName'))
+document.executeOnce(application.globals.get('prudence.implicit.resources'))
 
 function handle(conversation, method) {
 	var id = conversation.locals.get('prudence.id')
@@ -19,7 +19,7 @@ function handle(conversation, method) {
 }
 
 function handleInit(conversation) {
-	return handle(conversation, 'handleInit')
+	handle(conversation, 'handleInit')
 }
 
 function handleGet(conversation) {

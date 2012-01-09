@@ -6,7 +6,8 @@ app.hosts = {
 
 app.routes = {
 	'/*': [
-		'explicit',
+		{type: 'explicit', implicit: {resource: '/prudence/implicit/python/', resources: '/resources/python/'}},
+		//'explicit',
 		'dynamicWeb',
 		[
 			{type: 'cacheControl', 'default': 1, mediaTypes: {'text/html': 2}, next: 'staticWeb'},
@@ -15,7 +16,7 @@ app.routes = {
 	],
 	
 	/*'/*': [
-		{type: 'explicit', root: 'mapped', passThroughs: ['/prudence/fish/'], implicit: {routerDocumentName: '/prudence/implicit/', resourcesDocumentName: '/resources/'}},
+		{type: 'explicit', root: 'mapped', passThroughs: ['/prudence/fish/'], implicit: {resource: '/prudence/implicit/', resources: '/resources/'}},
 		{type: 'dynamicWeb', root: 'mapped', fragmentsRoot: 'fragments'},
 		{type: 'staticWeb', root: 'mapped'}
 	],*/

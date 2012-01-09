@@ -152,7 +152,7 @@ var Prudence = Prudence || function() {
         			throw new SavoryException('Unknown host: ' + name)
         		}
         		var uri = Module.cleanBaseUri(this.hosts[name])
-        		println('Attaching application to "{0}" on host "{1}"'.cast(uri, host))
+        		println('Attaching application to "{0}" on host "{1}"'.cast(uri, name))
         		if (uri != '') {
         			host.attach(uri, addTrailingSlashRedirector).matchingMode = Template.MODE_EQUALS
         		}
@@ -247,7 +247,7 @@ var Prudence = Prudence || function() {
 				this.globals['com.threecrickets.prudence.SourceCodeResource.documentSources'] = this.sourceViewableDocumentSources
 				var sourceViewer = new Finder(this.context, Sincerity.Container.getClass('com.threecrickets.prudence.SourceCodeResource'))
 				this.instance.inboundRoot.attach('/source/', sourceViewer).matchingMode = Template.MODE_EQUALS
-				println('Attaching "/source/" to "{0}"'.cast(sourceViewer))
+				println('Attaching "/source/" to "{0}"'.cast(sourceViewer['class'].simpleName))
     		}
 
         	// Create and attach restlets
@@ -269,11 +269,11 @@ var Prudence = Prudence || function() {
         		restlet = this.createRestlet(restlet, uri)
         		if (Sincerity.Objects.exists(restlet)) {
 	        		if (attachBase) {
-	            		println('Attaching "{0}*" to {1}'.cast(uri, restlet))
+	            		println('Attaching "{0}*" to {1}'.cast(uri, restlet['class'].simpleName))
 	        			this.instance.inboundRoot.attachBase(uri, restlet)
 	        		}
 	        		else {
-	            		println('Attaching "{0}" to {1}'.cast(uri, restlet))
+	            		println('Attaching "{0}" to {1}'.cast(uri, restlet['class'].simpleName))
 	        			this.instance.inboundRoot.attach(uri, restlet).matchingMode = Template.MODE_EQUALS
 	        		}
         		}
@@ -597,7 +597,10 @@ var Prudence = Prudence || function() {
     		this.preExtension = Sincerity.Objects.ensure(this.preExtension, 'e')
     		
     		app.implicit = this.implicit = Sincerity.Objects.ensure(this.implicit, {})
-    		this.implicit.routerDocumentName = Sincerity.Objects.ensure(this.implicit.routerDocumentName, '/prudence/implicit/')
+    		this.implicit.resource = Sincerity.Objects.ensure(this.implicit.resource, '/prudence/implicit/' + app.settings.code.defaultLanguageTag + '/')
+        	if (this.implicit.resource[0] != '/') {
+        		this.implicit.resource = '/' + this.implicit.resource
+        	}
 
     		var delegatedResource = app.globals['com.threecrickets.prudence.DelegatedResource'] = {
     			documentSource: app.createDocumentSource(this.root, this.preExtension),
@@ -626,8 +629,8 @@ var Prudence = Prudence || function() {
         	}
 
     		// Implicit router
-    		delegatedResource.passThroughDocuments.add(this.implicit.routerDocumentName)
-       		app.implicit.routerUri = Module.cleanUri(uri + this.implicit.routerDocumentName)
+    		delegatedResource.passThroughDocuments.add(this.implicit.resource)
+       		app.implicit.routerUri = Module.cleanBaseUri(uri) + this.implicit.resource
     		app.instance.inboundRoot.hide(app.implicit.routerUri)
 
     		// Defrost
@@ -663,7 +666,7 @@ var Prudence = Prudence || function() {
     			throw new SincerityException('An Explicit must be attached before an Implicit can be created')
        		}
     		
-    		app.implicit.resourcesDocumentName = Sincerity.Objects.ensure(app.implicit.resourcesDocumentName, '/resources/')
+    		app.implicit.resources = Sincerity.Objects.ensure(app.implicit.resources, '/resources/')
 
        		var capture = new CapturingRedirector(app.context, 'riap://application' + app.implicit.routerUri + '?{rq}', false)
     		var injector = new Injector(app.context, capture)
@@ -676,7 +679,7 @@ var Prudence = Prudence || function() {
     			}
     		}
    
-        	app.globals['prudence.implicit.resourcesDocumentName'] = app.implicit.resourcesDocumentName
+        	app.globals['prudence.implicit.resources'] = app.implicit.resources
 
     		return injector
     	}
