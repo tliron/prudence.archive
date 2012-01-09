@@ -1,9 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
 var base = conversation.pathToBase
-var component = application.globals.get('com.threecrickets.prudence.component')
-var applications = component.context.attributes.get('com.threecrickets.prudence.applications')
-var version = component.context.attributes.get('com.threecrickets.prudence.version')
+var applications = application.sharedGlobals.get('com.threecrickets.prudence.applications')
+var version = application.sharedGlobals.get('com.threecrickets.prudence.version')
 %>
 <html>
 <head>
@@ -41,7 +40,7 @@ var version = component.context.attributes.get('com.threecrickets.prudence.versi
 					<a href="<%= base %>/" class="neutral"><img src="<%= base %>/media/prudence-small.png" border="0"></a>
 				</p>
 				<p>
-					Runnong on Prudence version <%= version %>
+					Running on Prudence version <%= version %>.
 				</p>
 				
 			</td>
