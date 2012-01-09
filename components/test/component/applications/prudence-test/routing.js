@@ -1,9 +1,6 @@
 
-document.executeOnce('/sincerity/objects/')
-document.executeOnce('/prudence/')
-
 app.hosts = {
-	'default': '/'
+	'default': '/prudence-test/'
 }
 
 app.routes = {

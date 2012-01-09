@@ -1,7 +1,7 @@
 
 app.hosts = {
-	'default': '/example/',
-	internal: '/example/' // If not provided will default to the application subdirectory name
+	'default': '/prudence-example/',
+	internal: '/prudence-example/' // If not provided will default to the application subdirectory name
 }
 
 app.routes = {
