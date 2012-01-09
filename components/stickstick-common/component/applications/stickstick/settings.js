@@ -3,10 +3,10 @@ document.executeOnce('/sincerity/objects/')
 
 Sincerity.Objects.merge(app.settings, {
 	description: {
-		name: 'Stickstick: JavaScript Edition',
-		description: 'A test application for Prudence',
+		name: 'Stickstick',
+		description: 'A demo application for Prudence',
 		author: 'Three Crickets',
-		owner: 'Free Software'
+		owner: 'Prudence'
 	},
 
 	code: {

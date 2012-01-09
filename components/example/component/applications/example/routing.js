@@ -1,10 +1,7 @@
 
-document.executeOnce('/sincerity/objects/')
-document.executeOnce('/prudence/')
-
 app.hosts = {
-	'default': '/',
-	internal: '/skeleton/' // If not provided will default to the application subdirectory name
+	'default': '/example/',
+	internal: '/example/' // If not provided will default to the application subdirectory name
 }
 
 app.routes = {

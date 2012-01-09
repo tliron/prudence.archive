@@ -11,13 +11,31 @@ var Prudence = Prudence || function() {
     var Public = {}
     
     Public.cleanUri = function(uri) {
-    	uri = uri.replace(/\/\//g, '/') // no doubles
-    	if (uri == '' || uri[0] != '/') { // always at the beginning
+    	// No doubles
+    	uri = uri.replace(/\/\//g, '/')
+    	if ((uri == '') || (uri[0] != '/')) {
+    		// Always at the beginning
     		uri = '/' + uri
     	}
-    	if ((uri != '/') && (uri[uri.length - 1] != '/')) { // always at the end
+    	if ((uri != '/') && (uri[uri.length - 1] != '/')) {
+    		// Always at the end
     		uri += '/'
     	}
+    	return uri
+    }
+
+    Public.cleanBaseUri = function(uri) {
+    	// No doubles
+    	uri = uri.replace(/\/\//g, '/')
+    	if ((uri == '') || (uri[0] != '/')) {
+    		// Always at the beginning
+    		uri = '/' + uri
+    	}
+    	var length = uri.length
+		if ((length > 0) && (uri[length - 1] == '/')) {
+			// No trailing slash
+			uri = uri.substring(0, length - 1)
+		}
     	return uri
     }
 
@@ -50,6 +68,7 @@ var Prudence = Prudence || function() {
     			org.restlet.resource.Finder,
     			org.restlet.routing.Router,
     			org.restlet.routing.Template,
+    			org.restlet.routing.Redirector,
     			org.restlet.data.Reference,
     			org.restlet.data.MediaType,
 				java.util.concurrent.CopyOnWriteArrayList,
@@ -108,7 +127,10 @@ var Prudence = Prudence || function() {
 				}
 				this.instance.metadataService.addExtension(extension, type)
 			}
-    		
+
+			// Trailing-slash redirector
+		    var addTrailingSlashRedirector = new Redirector(this.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)
+
     		// Default internal host to subdirectory name
     		if (!Sincerity.Objects.exists(this.hosts.internal)) {
     			this.hosts.internal = this.root.name
@@ -120,12 +142,11 @@ var Prudence = Prudence || function() {
         		if (!Sincerity.Objects.exists(host)) {
         			throw new SavoryException('Unknown host: ' + name)
         		}
-        		var uri = this.hosts[name]
-        		if ((uri != '') && (uri[uri.length - 1] == '/')) {
-        			// No trailing slash
-        			uri = uri.slice(0, -1)
+        		var uri = Module.cleanBaseUri(this.hosts[name])
+        		println('Attaching application to "{0}" on host "{1}"'.cast(uri, host))
+        		if (uri != '') {
+        			host.attach(uri, addTrailingSlashRedirector).matchingMode = Template.MODE_EQUALS
         		}
-        		println('Attaching application to "{0}/" on host "{1}"'.cast(uri, host))
         		host.attach(uri, this.instance)
         	}
 
@@ -141,7 +162,10 @@ var Prudence = Prudence || function() {
         	if (!Sincerity.Objects.exists(containerLibraryDocumentSource)) {
 	    		var library = sincerity.container.getLibrariesFile('scripturian')
 				containerLibraryDocumentSource = this.createDocumentSource(library)
-	    		component.context.attributes.put('prudence.containerLibraryDocumentSource', containerLibraryDocumentSource)
+	    		var existing = component.context.attributes.put('prudence.containerLibraryDocumentSource', containerLibraryDocumentSource)
+	    		if (Sincerity.Objects.exists(existing)) {
+	    			containerLibraryDocumentSource = existing
+	    		}
         	}
 
         	if (Sincerity.Objects.exists(this.settings.code.libraries)) {
@@ -196,7 +220,10 @@ var Prudence = Prudence || function() {
         	if (!Sincerity.Objects.exists(sincerityLibraryDocumentSource)) {
 	    		var library = sincerity.getHomeFile('libraries', 'scripturian')
 				sincerityLibraryDocumentSource = this.createDocumentSource(library)
-	    		component.context.attributes.put('prudence.sincerityLibraryDocumentSource', sincerityLibraryDocumentSource)
+	    		var existing = component.context.attributes.put('prudence.sincerityLibraryDocumentSource', sincerityLibraryDocumentSource)
+	    		if (Sincerity.Objects.exists(existing)) {
+	    			sincerityLibraryDocumentSource = existing
+	    		}
         	}
 			println('Adding library: "{0}"'.cast(sincerityLibraryDocumentSource.basePath))
 			this.libraryDocumentSources.add(sincerityLibraryDocumentSource)
@@ -256,7 +283,7 @@ var Prudence = Prudence || function() {
 			// Allow access to component
 			// (This can be considered a security breach, because it allows applications to access other applications)
 			this.globals['com.threecrickets.prudence.component'] = component
-
+			
 			// Apply globals
         	var globals = Sincerity.Objects.flatten(this.globals)
         	for (var name in globals) {
@@ -269,7 +296,18 @@ var Prudence = Prudence || function() {
 				var uri = this.preheat[p]
 				executorTasks.push(new PreheatTask(internal, uri, this.instance, this.settings.logger))
 			}
-        	
+
+			// Add to application list
+			var applications = component.context.attributes.get('com.threecrickets.prudence.applications')
+			if (!Sincerity.Objects.exists(applications)) {
+				applications = new CopyOnWriteArrayList()
+				var existing = component.context.attributes.putIfAbsent('com.threecrickets.prudence.applications', applications)
+				if (Sincerity.Objects.exists(existing)) {
+					applications = existing
+				}
+			}
+			applications.add(this.instance)
+
         	return this.instance
     	}
     	
@@ -726,6 +764,6 @@ var Prudence = Prudence || function() {
     	
     	return Public
     }(Public))
-
+    
     return Public
 }()

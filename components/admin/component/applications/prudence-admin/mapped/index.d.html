@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%
+var applications = application.sharedGlobals.get('com.threecrickets.prudence.applications')
+var version = application.sharedGlobals.get('com.threecrickets.prudence.version')
+var component = application.component
+
+var action = conversation.query.get('action')
+var item = conversation.query.get('item')
+var index = conversation.query.get('index')
+if (null !== index) {
+	if (item == 'host') {
+		item = component.hosts.get(index)
+	}
+	else if (item == 'server') {
+		item = component.servers.get(index)
+	}
+	else if (item == 'application') {
+		item = applications.get(index)
+	}
+	else {
+		item = null
+	}
+	if (null !== item) {
+		if (action == 'stop') {
+			item.stop()
+		}
+		else if (action == 'start') {
+			item.start()
+		}
+
+		conversation.response.locationRef = conversation.request.resourceRef.baseRef
+		conversation.statusCode = 303
+		conversation.stop()
+	}
+}
+%>
+<html>
+<head>
+	<title>Prudence Administration</title>
+	<link rel="stylesheet" type="text/css" href="<%= conversation.pathToBase %>/style/soft-cricket.css" />
+	<link rel="shortcut icon" href="<%= conversation.pathToBase %>/media/prudence.ico"/>
+	<style>
+	div.node {
+		padding: 0px 20px 0px 20px;
+		border: 1px black solid;
+	}
+	</style>
+</head>
+<body>
+	<table width="100%" cellspacing="20">
+		<tr valign="top">
+			<td width="25%">
+
+				<h1>Prudence Administration</h1>
+				<p>
+					Welcome!
+				</p>
+				<p>
+					Here you'll be able to control an instance of Prudence, its applications,
+					virtual hosts and servers. Note that live changes you make here will
+					be lost when you restart Prudence.
+				</p>
+				<p>
+					Running on Prudence version <%= version %>.
+				</p>
+				<p>
+					<a href="http://threecrickets.com/prudence/" class="neutral"><img src="<%= conversation.pathToBase %>/media/prudence-small.png" border="0"></a>
+				</p>
+				
+			</td>
+			<td width="50%" id="main">
+			
+				<table width="100%" cellpadding="10" cellspacing="0"><tr valign="top">
+					<td width="50%">
+				
+						<h2>Applications</h2>
+						
+						<% for (var i = applications.iterator(), index = 0; i.hasNext(); index++) { var app = i.next(); %>
+						<h3><%= app.name %></h3>
+						<div class="node">
+							<p><%= app.description %></p>
+							<p>
+								<b>Owner:</b> <%= app.owner %><br />
+								<b>Author:</b> <%= app.author %>
+							</p>
+							<p align="right">
+						 		<% if (app.started) { %>
+						 			<span style="color: green;">Running</span> (<a href="?action=stop&item=application&index=<%= index %>">stop</a>)
+						 		<% } else { %>
+						 			<span style="color: red;">Stopped</span> (<a href="?action=start&item=application&index=<%= index %>">start</a>)
+						 		<% } %>
+						 	</p>
+						</div>
+						<% } %>
+
+					</td>
+					<td width="50%">
+						
+						<h2>Virtual Hosts</h2>
+						
+						<% for (var i = component.hosts.iterator(), index = 0; i.hasNext(); index++) { var host = i.next(); %>
+						<h3><%= host.name %></h3>
+						<div class="node">
+							<p>
+							Requests handled:
+							<ul>
+								<li><b>To hosts:</b> <%= host.hostScheme + '://' + host.hostDomain + ':' + host.hostPort %></li>
+								<li><b>For resources:</b> <%= host.resourceScheme + '://' + host.resourceDomain + ':' + host.resourcePort %></li>
+								<li><b>Via servers on:</b> <%= host.serverAddress + ':' + host.serverPort %></li>
+								<li><b>Via local hosts:</b> <%= host.localHostName + ', ' + host.localHostAddress %></li>
+							</ul>
+							<p>
+							Routes:
+							<ul>
+							<% for (var ii = host.routes.iterator(); ii.hasNext(); ) { var route = ii.next(); %>
+								<li><a href="<%= route.template.pattern %>"><%= route.template.pattern + (route.matchingMode == 1 ? '*' : '') %></a> -
+								<%= route.next['class'].simpleName %>
+								<% if (route.next instanceof org.restlet.Application) { %>
+									- <%= route.next.name %>
+								<% } else if (route.next instanceof org.restlet.routing.Redirector) { %>
+									- <%= route.next.targetTemplate %>
+								<% } %>
+								</li>
+							<% } %>
+							</ul>
+							</p>
+							<p align="right">
+						 		<% if (host.started) { %>
+						 			<span style="color: green;">Running</span> (<a href="?action=stop&item=host&index=<%= index %>">stop</a>)
+						 		<% } else { %>
+						 			<span style="color: red;">Stopped</span> (<a href="?action=start&item=host&index=<%= index %>">start</a>)
+						 		<% } %>
+						 	</p>
+						</div>
+						<% } %>
+						
+						<h2>Servers</h2>
+						
+						<% for (var i = component.servers.iterator(), index = 0; i.hasNext(); index++) { var server = i.next(); %>
+						<h3><%= server.name %></h3>
+						<div class="node">
+							<p>
+								<b>Listening on:</b> <%= (server.address ? server.address : '*') + ':' + server.port %><br />
+								<b>For protocols:</b> <%= server.protocols %>
+							</p>
+							<p align="right">
+						 		<% if (server.started) { %>
+						 			<span style="color: green;">Running</span> (<a href="?action=stop&item=server&index=<%= index %>">stop</a>)
+						 		<% } else { %>
+						 			<span style="color: red;">Stopped</span> (<a href="?action=start&item=server&index=<%= index %>">start</a>)
+						 		<% } %>
+						 	</p>
+						</div>
+						<% } %>
+						
+					</td>
+				</tr></table>
+
+			</td>
+			<td width="25%" align="right">
+				<a href="http://threecrickets.com/" class="neutral"><img src="<%= conversation.pathToBase %>/media/three-crickets-small.png" border="0" /></a>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

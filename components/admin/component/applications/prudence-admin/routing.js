@@ -1,9 +1,7 @@
 
-document.executeOnce('/sincerity/objects/')
-document.executeOnce('/prudence/')
-
 app.hosts = {
-	'default': '/stickstick/'
+	'default': '/',
+	internal: '/skeleton/' // If not provided will default to the application subdirectory name
 }
 
 app.routes = {
@@ -14,7 +12,7 @@ app.routes = {
 			'staticWeb',
 			{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}
 		]
-	],
-	'/data/note/{id}/': '/data/note/',
-	'/data/note/': 'hidden'
+	]
 }
+
+app.preheat = ['/person/1/']
