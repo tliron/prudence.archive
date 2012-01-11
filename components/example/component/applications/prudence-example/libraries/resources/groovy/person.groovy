@@ -1,6 +1,4 @@
 
-//java.lang.System.out.println('ZXXXXXXXXXXXXXXXXXXXXXXXX')
-
 class Person {
 	def handleInit(conversation) {
 		conversation.addMediaTypeByName('text/html')

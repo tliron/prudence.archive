@@ -15,7 +15,8 @@ app.routes = {
 	],
 	'/person/{id}/': {type: 'filter', library: '/filters/statistics/', next: 'person'},
 	'/pythonperson/{id}/': {type: 'implicit', id: 'person', delegate: 'python'},
-	'/groovyperson/{id}/': {type: 'implicit', id: 'person', delegate: 'groovy'}
+	'/groovyperson/{id}/': {type: 'implicit', id: 'person', delegate: 'groovy'},
+	'/phpperson/{id}/': {type: 'implicit', id: 'person', delegate: 'php'}
 }
 
 app.delegates = {
