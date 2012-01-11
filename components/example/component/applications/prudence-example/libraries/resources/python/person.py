@@ -6,4 +6,4 @@ class Person:
         
     def handle_get(self, conversation):
         id = conversation.locals['id']
-        return 'I am person %s, formatted as "%s", encased in Python'  % (id, conversation.mediaTypeName)
+        return 'I am person %s, formatted as "%s", encased in Python' % (id, conversation.mediaTypeName)
