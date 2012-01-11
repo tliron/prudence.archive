@@ -54,7 +54,7 @@ var Prudence = Prudence || function() {
         	this.globals = {}
     		this.hosts = {}
         	this.routes = {}
-        	this.delegates = {}
+        	this.dispatch = {}
     		this.preheat = []
     	}
 
@@ -597,7 +597,7 @@ var Prudence = Prudence || function() {
 
     		this.preExtension = Sincerity.Objects.ensure(this.preExtension, 'e')
     		
-    		var delegatedResource = app.globals['com.threecrickets.prudence.DelegatedResource'] = {
+    		var dispatchdResource = app.globals['com.threecrickets.prudence.DelegatedResource'] = {
     			documentSource: app.createDocumentSource(this.root, this.preExtension),
 	    		libraryDocumentSources: app.libraryDocumentSources,
 	    		passThroughDocuments: new CopyOnWriteArraySet(),
@@ -613,28 +613,28 @@ var Prudence = Prudence || function() {
     		if (Sincerity.Objects.exists(this.passThroughs)) {
 	    		for (var i in this.passThroughs) {
 	    			println('Pass through: "{0}"'.cast(this.passThroughs[i]))
-	    			delegatedResource.passThroughDocuments.add(this.passThroughs[i])
+	    			dispatchdResource.passThroughDocuments.add(this.passThroughs[i])
 	    		}
     		}
 
         	// Viewable source
         	if (true == app.settings.code.sourceViewable) {
-    			app.sourceViewableDocumentSources.add(delegatedResource.documentSource)
+    			app.sourceViewableDocumentSources.add(dispatchdResource.documentSource)
     			app.sourceViewableDocumentSources.addAll(app.libraryDocumentSources)
         	}
 
-    		// Pass-through and hide delegates
-        	var delegateBaseUri = Module.cleanBaseUri(uri)
-        	for (var name in app.delegates) {
-        		var delegate = app.delegates[name]
-	    		delegatedResource.passThroughDocuments.add(delegate.explicit)
-	    		delegate.explicit = delegateBaseUri + delegate.explicit
-	    		app.instance.inboundRoot.hide(delegate.explicit)
-	    		println('Enabling delegate "{0}": "{1}"'.cast(name, delegate.explicit))
+    		// Pass-through and hide dispatch
+        	var dispatchBaseUri = Module.cleanBaseUri(uri)
+        	for (var name in app.dispatch) {
+        		var dispatch = app.dispatch[name]
+	    		dispatchdResource.passThroughDocuments.add(dispatch.explicit)
+	    		dispatch.explicit = dispatchBaseUri + dispatch.explicit
+	    		app.instance.inboundRoot.hide(dispatch.explicit)
+	    		println('Enabling dispatch "{0}": "{1}"'.cast(name, dispatch.explicit))
         	}
 
     		// Defrost
-    		app.defrost(delegatedResource.documentSource)
+    		app.defrost(dispatchdResource.documentSource)
 
     		return new Finder(app.context, Sincerity.Container.getClass('com.threecrickets.prudence.DelegatedResource'))
     	}
@@ -655,7 +655,7 @@ var Prudence = Prudence || function() {
     	Public._inherit = Module.Restlet
 
 		/** @ignore */
-    	Public._configure = ['id', 'locals', 'delegate']
+    	Public._configure = ['id', 'locals', 'dispatch']
 
     	Public.create = function(app, uri) {
     		importClass(
@@ -666,15 +666,15 @@ var Prudence = Prudence || function() {
     			throw new SincerityException('An Explicit must be attached before an Implicit can be created')
        		}
     			
-    		this.delegate = Sincerity.Objects.ensure(this.delegate, 'javascript')
-    		var delegate = app.delegates[this.delegate]
-    		if (!Sincerity.Objects.exists(delegate)) {
-    			throw new SincerityException('Undefined delegate: "{0}"'.cast(this.delegate))
+    		this.dispatch = Sincerity.Objects.ensure(this.dispatch, 'javascript')
+    		var dispatch = app.dispatch[this.dispatch]
+    		if (!Sincerity.Objects.exists(dispatch)) {
+    			throw new SincerityException('Undefined dispatch: "{0}"'.cast(this.dispatch))
     		}
 
-        	app.globals['prudence.delegate.' + this.delegate + '.library'] = delegate.library
+        	app.globals['prudence.dispatch.' + this.dispatch + '.library'] = dispatch.library
     		
-       		var capture = new CapturingRedirector(app.context, 'riap://application' + delegate.explicit + '?{rq}', false)
+       		var capture = new CapturingRedirector(app.context, 'riap://application' + dispatch.explicit + '?{rq}', false)
     		var injector = new Injector(app.context, capture)
     		injector.values.put('prudence.id', this.id)
 

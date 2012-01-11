@@ -3,7 +3,7 @@ global $resources;
 
 $resources = array();
 
-$document->executeOnce($application->globals['prudence.delegate.php.library']);
+$document->executeOnce($application->globals['prudence.dispatch.php.library']);
 
 function handle($conversation, $method) {
 	global $resources;

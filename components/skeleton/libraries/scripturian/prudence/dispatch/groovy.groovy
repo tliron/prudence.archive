@@ -1,7 +1,7 @@
 
 resources = [:]
 
-document.executeOnce(application.globals['prudence.delegate.groovy.library'])
+document.executeOnce(application.globals['prudence.dispatch.groovy.library'])
 
 handle = { conversation, method ->
 	id = conversation.locals['prudence.id']

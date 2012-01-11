@@ -1,7 +1,7 @@
 
 resources = {}
 
-document.executeOnce(application.globals['prudence.delegate.python.library'])
+document.executeOnce(application.globals['prudence.dispatch.python.library'])
 
 def handle(conversation, method):
     id = conversation.locals['prudence.id']
