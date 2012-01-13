@@ -33,6 +33,20 @@ if (null !== index) {
 		conversation.stop()
 	}
 }
+
+function findRoutes(app) {
+	var routes = []
+	for (var i = component.hosts.iterator(), index = 0; i.hasNext(); index++) {
+		var host = i.next();
+		for (var ii = host.routes.iterator(); ii.hasNext(); ) {
+			var route = ii.next();
+			if (route.next === app) {
+				routes.push({route: route, host: host})
+			}
+		}
+	}
+	return routes
+}
 %>
 <html>
 <head>
@@ -83,6 +97,16 @@ if (null !== index) {
 								<b>Owner:</b> <%= app.owner %><br />
 								<b>Author:</b> <%= app.author %>
 							</p>
+							<% var routes = findRoutes(app); if (routes.length > 0) { %>
+							<p>
+							Routes:
+							<ul>
+							<% for (var ii in routes) { var route = routes[ii]; %>
+								<li><a href="<%= route.route.template.pattern %>"><%= route.route.template.pattern + (route.route.matchingMode == 1 ? '*' : '') %> on virtual host "<%= route.host.name %>"</a></li>
+							<% } %>
+							</ul>
+							</p>
+							<% } %>
 							<p align="right">
 						 		<% if (app.started) { %>
 						 			<span style="color: green;">Running</span> (<a href="?action=stop&item=application&index=<%= index %>">stop</a>)
@@ -102,23 +126,25 @@ if (null !== index) {
 						<h3><%= host.name %></h3>
 						<div class="node">
 							<p>
-							Requests handled:
+							URI patterns to match:
 							<ul>
-								<li><b>To hosts:</b> <%= host.hostScheme + '://' + host.hostDomain + ':' + host.hostPort %></li>
-								<li><b>For resources:</b> <%= host.resourceScheme + '://' + host.resourceDomain + ':' + host.resourcePort %></li>
-								<li><b>Via servers on:</b> <%= host.serverAddress + ':' + host.serverPort %></li>
-								<li><b>Via local hosts:</b> <%= host.localHostName + ', ' + host.localHostAddress %></li>
+								<li><b>Hosts:</b> <%= host.hostScheme + '://' + host.hostDomain + ':' + host.hostPort %></li>
+								<li><b>Resources:</b> <%= host.resourceScheme + '://' + host.resourceDomain + ':' + host.resourcePort %></li>
+								<li><b>Servers:</b> <%= host.serverAddress + ':' + host.serverPort %></li>
 							</ul>
 							<p>
-							Routes:
+							Localhost: <%= host.localHostName + ' (' + host.localHostAddress + ')' %>
+							</p>
+							<p>
+							Base routes:
 							<ul>
 							<% for (var ii = host.routes.iterator(); ii.hasNext(); ) { var route = ii.next(); %>
 								<li><a href="<%= route.template.pattern %>"><%= route.template.pattern + (route.matchingMode == 1 ? '*' : '') %></a> -
 								<%= route.next['class'].simpleName %>
 								<% if (route.next instanceof org.restlet.Application) { %>
-									- <%= route.next.name %>
+									"<%= route.next.name %>"
 								<% } else if (route.next instanceof org.restlet.routing.Redirector) { %>
-									- <%= route.next.targetTemplate %>
+									to "<%= route.next.targetTemplate %>"
 								<% } %>
 								</li>
 							<% } %>
@@ -140,8 +166,8 @@ if (null !== index) {
 						<h3><%= server.name %></h3>
 						<div class="node">
 							<p>
-								<b>Listening on:</b> <%= (server.address ? server.address : '*') + ':' + server.port %><br />
-								<b>For protocols:</b> <%= server.protocols %>
+								<b>Address and port:</b> <%= (server.address ? server.address : '*') + ':' + server.port %><br />
+								<b>Protocols:</b> <%= server.protocols %>
 							</p>
 							<p align="right">
 						 		<% if (server.started) { %>

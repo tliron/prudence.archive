@@ -30,22 +30,40 @@ app.dispatch = {
 	php: {explicit: '/prudence/dispatch/php/', library: '/resources/php/'}
 }
 
-app.preheat = [
-	'/person/1/'
-]
+//
+// Preheat
+//
 
+if (executable.manager.getAdapterByTag('javscript')) {
+	app.preheat.push('/scriptlets/javascript/')
+	app.preheat.push('/explicit/javascript/')
+	app.preheat.push('/person/1/')
+}
 if (executable.manager.getAdapterByTag('jython')) {
+	app.preheat.push('/scriptlets/python/')
+	app.preheat.push('/explicit/python/')
 	app.preheat.push('/pythonperson/1/')
 }
 if (executable.manager.getAdapterByTag('groovy')) {
+	app.preheat.push('/scriptlets/groovy/')
+	app.preheat.push('/explicit/groovy/')
 	app.preheat.push('/groovyperson/1/')
 }
 if (executable.manager.getAdapterByTag('php')) {
+	app.preheat.push('/scriptlets/php/')
+	app.preheat.push('/explicit/php/')
 	app.preheat.push('/phpperson/1/')
 }
 if (executable.manager.getAdapterByTag('ruby')) {
+	app.preheat.push('/scriptlets/ruby/')
+	app.preheat.push('/explicit/ruby/')
 	app.preheat.push('/rubyperson/1/')
 }
 if (executable.manager.getAdapterByTag('clojure')) {
+	app.preheat.push('/scriptlets/clojure/')
+	app.preheat.push('/explicit/clojure/')
 	app.preheat.push('/clojureperson/1/')
+}
+if (executable.manager.getAdapterByTag('velocity')) {
+	app.preheat.push('/scriptlets/velocity/')
 }

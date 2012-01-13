@@ -1,47 +1,26 @@
 <%& '/site/header/' %>
-	<h2>Prudence Examples</h2>
+	<h2>Prudence Example Application</h2>
 	<p>
-		Click <a href="scriptlets/">here</a> for scriptlet demos.
+		Welcome to Prudence!	
 	</p>
 	<p>
-		Click <a href="explicit/">here</a> for explicit resources.
-	</p>
-	<ul>
-		<li>
-			Click <a href="person/12/">here</a> for an implicit resource implemented in JavaScript (with a filter: check the log to see its activity).
-		</li>
-<% if (executable.manager.getAdapterByTag('python')) { %>
-		<li>
-			Click <a href="pythonperson/12/">here</a> for an implicit resource implemented in Python.
-		</li>
-<% } if (executable.manager.getAdapterByTag('groovy')) { %>
-		<li>
-			Click <a href="groovyperson/12/">here</a> for an implicit resource implemented in Groovy.
-		</li>
-<% } if (executable.manager.getAdapterByTag('php')) { %>
-		<li>
-			Click <a href="phpperson/12/">here</a> for an implicit resource implemented in PHP.
-		</li>
-<% } if (executable.manager.getAdapterByTag('ruby')) { %>
-		<li>
-			Click <a href="rubyperson/12/">here</a> for an implicit resource implemented in Ruby.
-		</li>
-<% } if (executable.manager.getAdapterByTag('clojure')) { %>
-		<li>
-			Click <a href="clojureperson/12/">here</a> for an implicit resource implemented in Clojure.
-		</li>
-<% } %>
-	</ul>
-	<p>
-		Click <a href="ask-whats-up/">here</a> to execute a background task (check the log to see its activity).
+		This application is meant to provide straightforward reference examples of
+		Prudence's core features, for you to examine the source code and configuration and get
+		a sense of how the pieces fit together. It doesn't really do anything fun!
+		And it's also quite repetitive, as each feature is implemented again in a different
+		language. Click on the menu on the left to see them. 
 	</p>
 	<p>
-		Click <a href="form/">here</a> for a form with support for file uploads.
+		The multilingual examples are dynamically enabled according to which language engines
+		you have installed in your container. By default, only the JavaScript examples will work.
+		To install all languages:
 	</p>
+	<pre>sincerity add python : add ruby : add groovy : add clojure : add php : install</pre>
 	<p>
-		Click <a href="external/">here</a> to fetch an external resource.
+		To see a "real" demo application for Prudence, install Stickstick, which uses "AJAX"
+		and a few data-driven resources (backed by a relational database) to allow for
+		shared online sticky-notes. Stickstick is available in six editions, one per language.
+		To install it: 
 	</p>
-	<p>
-		Click <a href="person/13/">here</a> for an error page.
-	</p>
+	<pre>sincerity add stickstick-javascript : install</pre>
 <%& '/site/footer/' %>
