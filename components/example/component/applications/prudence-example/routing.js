@@ -31,10 +31,21 @@ app.dispatch = {
 }
 
 app.preheat = [
-	'/person/1/',
-	'/pythonperson/1/',
-	'/groovyperson/1/',
-	'/phpperson/1/',
-	'/rubyperson/1/',
-	'/clojureperson/1/'
+	'/person/1/'
 ]
+
+if (executable.manager.getAdapterByTag('jython')) {
+	app.preheat.push('/pythonperson/1/')
+}
+if (executable.manager.getAdapterByTag('groovy')) {
+	app.preheat.push('/groovyperson/1/')
+}
+if (executable.manager.getAdapterByTag('php')) {
+	app.preheat.push('/phpperson/1/')
+}
+if (executable.manager.getAdapterByTag('ruby')) {
+	app.preheat.push('/rubyperson/1/')
+}
+if (executable.manager.getAdapterByTag('clojure')) {
+	app.preheat.push('/clojureperson/1/')
+}

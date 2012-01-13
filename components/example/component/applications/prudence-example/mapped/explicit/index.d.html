@@ -1,0 +1,146 @@
+<% document.cacheDuration = 30000; %><%& '/site/header/' %>
+
+<script>
+function call(verb) {
+	var resource = $('#resource').val();
+	var mime = $('#mime').val();
+	$.ajax({
+		type: verb,
+		url: resource,
+		cache: false,
+		data: ((verb == 'POST') || (verb == 'PUT')) ? $('#content').val() : null,
+		contentType: 'application/json', // What we are sending
+		dataType: (mime == 'application/json') ? 'json' : 'text', // What we're requesting
+		beforeSend: function(request) {
+
+			// By default, jQuery adds the "*/*" wildcard to our Accept header, so
+			// that the resource will respond using whatever MIME type it desires.
+			// For our testing purposes, we want to request a specific MIME type.
+			
+			request.setRequestHeader('Accept', mime);
+		},
+		error: function(request, status, ex) {
+			update(status, request.responseText);
+		},
+		success: function(data, status) {
+			update(status, data);
+		}
+	});
+	function update(status, result) {
+		$('#status').html(
+			'Resource: ' + resource + '<br />' +
+			'Verb: ' + verb + '<br />' +
+			'MIME type preferred: ' + mime + '<br />' +
+			'Status: ' + status + '<br />' +
+			'Timestamp: ' + new Date().getTime()
+		);
+		
+		if (mime == 'application/json') {
+
+			// Note: When dataType is 'json', jQuery automatically converts the JSON returned
+			// into a JavaScript object. To print it out, we need to translate it back to JSON!
+			// (This is good for this demo, because it proves that the JSON is valid.)
+		
+			result = 'Text dump of valid JSON received:<p>' + $.toJSON(result) + '</p>';
+		}
+		else {
+			result = 'Text received:<p>' + result + '</p>';
+		}
+		
+		var width = $('#main').width() - 5;
+		$('#result').width(width).html(result);
+	}
+}
+
+function seeMainSource() {
+	var resource = $('#resource').val();
+	window.location = resource + '?source=true';
+}
+</script>
+
+<table width="100%" cellpadding="10" cellspacing="0"><tr valign="top"><td width="50%">
+	<h1>Resource Tests</h1>
+	<p>
+		The following tests shows how to use JavaScript (in your browser) to communicate with Prudence resources.
+		Each resource is implemented in a different programming language, and each has its own state, which is a <a href="http://www.json.org/">JSON</a>
+		object. Press a verb button to activate.
+	</p>
+	<p>
+		Note that other people may be playing with this test at the same time as you are,
+		in which case you might see their changes reflected in your results!
+		(It may be even possible to use this side effect for a terribly geeky chat app...)
+	</p>
+	<p>
+		Post (update) only changes keys that you specify in the JSON object, while leaving the others intact.
+		Put (create) replaces the entire object.
+	</p>
+	<p>
+		The source code demonstrates how to synchronize data between threads using a read-write
+		lock protocol for scalable performance.
+	</p>
+	<p>
+		Note that PHP cannot at this time be used for creating REST resources.
+	</p>
+</td><td width="50%">
+	<h3>Resource</h3>
+	<p>
+		<select id="resource">
+<% if (executable.manager.getAdapterByTag('jython')) { %>
+			<option value="python/">Python</option>
+<% } %>
+<!-- 
+<% if (executable.manager.getAdapterByTag('jepp')) { %>
+			<option value="python-jepp/">Python (Jepp)</option>
+<% } %>
+ -->
+<% if (executable.manager.getAdapterByTag('ruby')) { %>
+			<option value="ruby/">Ruby</option>
+<% } %>
+<% if (executable.manager.getAdapterByTag('groovy')) { %>
+			<option value="groovy/">Groovy</option>
+<% } %>
+<% if (executable.manager.getAdapterByTag('clojure')) { %>
+			<option value="clojure/">Clojure</option>
+<% } %>
+<% if (executable.manager.getAdapterByTag('javascript')) { %>
+			<option value="javascript/">JavaScript</option>
+<% } %>
+<% if (executable.manager.getAdapterByTag('quercus')) { %>
+			<option value="php/">PHP</option>
+<% } %>
+		</select>
+		<input type="button" onclick="seeMainSource()" value="Source" />
+	</p>
+	<h3>MIME type to prefer (for Get, Post and Put)</h3>
+	<p>
+		<select id="mime">
+			<option>application/json</option>
+			<option>text/plain</option>
+		</select>
+	</p>
+	<h3>JSON to send (for Post and Put)</h3>
+	<p>
+		<textarea id="content" cols="40" rows="5"></textarea>
+	</p>
+	<p>
+		<i>Verbs:</i>
+	</p>
+	<p>
+		<input type="button" onclick="call('GET')" value="Get (read)" />
+		<input type="button" onclick="call('POST')" value="Post (update)" />
+		<input type="button" onclick="call('PUT')" value="Put (create)" />
+		<input type="button" onclick="call('DELETE')" value="Delete" />
+	</p>
+</td></tr></table>
+
+<div class="hr"><hr /></div>
+
+<h3>Result of last verb</h3>
+<p>
+	<div id="status">n/a</div>
+</p>
+<p>
+	<div id="result" class="result"></div>
+</p>
+
+<%& '/site/footer/' %>

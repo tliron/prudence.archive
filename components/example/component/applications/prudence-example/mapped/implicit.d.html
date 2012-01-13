@@ -1,0 +1,80 @@
+<% document.cacheDuration = 30000; %><%& '/site/header/' %>
+
+<h1>Implicit Resources</h1>
+<p>
+These tests all do pretty much the same thing, except that each uses a different language. They're here as
+as examples of how to write scriptlets. Note that at the top of each
+page you will see a timestamp -- this is used to test caching mode, during which the timestamp should stay constant for 5 seconds, no matter
+how many times you refresh the page.
+</p>
+
+<div class="hr"><hr /></div>
+
+<table width="100%"><tr valign="top"><td>
+<h3>JavaScript</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('javascript')) { %>
+<a href="../person/17/">Person #17</a>
+<% } else { %>
+n/a
+<% } %>
+</p>
+</td><td>
+<h3>PHP</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('php')) { %>
+<a href="../phpperson/17/">Person #17</a>
+<% } else { %>
+n/a
+<% } %>
+</p>
+</td></tr><tr valign="top"><td>
+<h3>Python (Jython)</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('jython')) { %>
+<a href="../pythonperson/17/">Person #17</a>
+<% } else { %>
+n/a
+<% } %>
+</p>
+</td><td>
+<h3>Python (Jepp)</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('jep')) { %>
+<a href="../jeppperson/17/">Person #17</a>
+<% } else { %>
+n/a
+<% } %>
+</p>
+</td></tr valign="top"><tr><td>
+<h3>Ruby</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('ruby')) { %>
+<a href="../rubyperson/17/">Person #17</a>
+<% } else { %>
+n/a
+<% } %>
+</p>
+</td><td>
+<h3>Groovy</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('groovy')) { %>
+<a href="../groovyperson/17/">Person #17</a>
+</p>
+<% } else { %>
+n/a
+<% } %>
+</td></tr><tr valign="top"><td>
+<h3>Clojure</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('clojure')) { %>
+<a href="../clojureperson/17/">Person #17</a>
+<% } else { %>
+n/a
+<% } %>
+</p>
+</td><td>
+</td>
+</tr></table>
+
+<%& '/site/footer/' %>

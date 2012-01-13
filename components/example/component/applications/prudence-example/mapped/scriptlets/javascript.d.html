@@ -1,0 +1,94 @@
+<html>
+<head>
+	<title>JavaScript Scriptlets Demo</title>
+	<link rel="stylesheet" type="text/css" href="../../style/soft-cricket.css" />
+</head>
+<body>
+<table width="100%"><tr valign="top"><td>
+<%javascript
+
+//
+// Defer this page
+//
+
+if(conversation.query.get('defer') == 'true') if(conversation.defer()) conversation.stop()
+
+//
+// Cache this page 
+//
+
+document.cacheDuration = 5000
+
+//
+// Calling Java
+//
+
+print('<p>This page was dynamically generated at ' + java.lang.System.currentTimeMillis() + '</p>')
+
+//
+// An example of a function
+//
+
+function printAdapter(adapter) {
+%>
+<p>
+	<i>Adapter:</i> <%= adapter.attributes.get('name') %> version <%= adapter.attributes.get('version') %><br />
+	<i>Language:</i> <%= adapter.attributes.get('language.name') %> version <%= adapter.attributes.get('language.version') %><br />
+	<i>Tags:</i> 
+<%
+	var tags = adapter.attributes.get('tags').toArray()
+	for(var i = 0; i < tags.length; i++) {
+		print(tags[i])
+		if(i < tags.length - 1) {
+			print(', ')
+		}
+	}
+%>
+</p>
+<%
+}
+%>
+<h3>Language used:</h3>
+<%
+printAdapter(executable.context.adapter)
+%>
+<h3>Available languages:</h3>
+<%
+var adapters = executable.manager.adapters.toArray()
+for(var i = 0; i < adapters.length; i++) {
+	printAdapter(adapters[i])
+}
+%>
+</td><td>
+<h3>The "id" attribute in the URL query is:</h3>
+<p><%= conversation.query.get('id') || '' %></p>
+<h3>A few tests:</h3>
+<p>
+<%
+
+//
+// Including a document
+//
+// This is identical to:
+//
+//   document.include('/triple/javascript/')
+//
+
+%>
+<%& '/triple/javascript/' %>
+<%
+
+for(var i = 0; i < 10; i++) {
+%>
+A multiple of three:
+<%
+	printTriple(i)
+%>
+<br />
+<%
+}
+%>
+</p>
+</td></tr></table>
+</body>
+<html>

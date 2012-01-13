@@ -851,7 +851,194 @@ reference "../manual/tutorial/"
  You'll find it easy, fun, and powerful enough for you to create large-scale
  applications that take full advantage of the inherently scalable infrastructure
  of REST.
- Happy RESTing! 
+ Happy RESTing!
+\end_layout
+
+\begin_layout Section
+Overview
+\end_layout
+
+\begin_layout Subsection
+Prudence Is Really REST
+\end_layout
+
+\begin_layout Standard
+Most frameworks are function-oriented: they connect a URL to a function
+ that processes the user's request and generates a representation.
+ The most minimal frameworks do this directly.
+ The more elaborate provide you with a functional dispatching layer that
+ enforces a standard, configurable space.
+ This layer is often called a 
+\begin_inset Quotes eld
+\end_inset
+
+controller,
+\begin_inset Quotes erd
+\end_inset
+
+ and is the core of the Model-View-Controller pattern: on the one side you
+ have 
+\begin_inset Quotes eld
+\end_inset
+
+models,
+\begin_inset Quotes erd
+\end_inset
+
+ and on the other there are 
+\begin_inset Quotes eld
+\end_inset
+
+views,
+\begin_inset Quotes erd
+\end_inset
+
+ which are the dynamically generated representations sent to the client.
+ MVC is attractive because the plumbing is all handle by the controller:
+ you just have to configure it.
+ But it's also not very attractive, because configuration can only take
+ you so far.
+ In any non-trivial application you 
+\emph on
+do
+\emph default
+ care about the plumbing, and may find yourself having to hack deep into
+ the controller implementation of your framework.
+ This is not fun, and the results are often awkward compromises.
+ It's indeed from this perspective that extreme minimalist frameworks, such
+ as Sinatra and Node.js are rising in popularity: developers would rather
+ implement the plumbing on their own rather than have to fight with someone
+ else's.
+\end_layout
+
+\begin_layout Standard
+But the plumbing is anything but trivial.
+ More often than not, the do-it-yourself approach conveniently passes over
+ the hard parts of HTTP, even though they are very rewarding: content negotiatio
+n, conditional requests, linking client-side caching to server-side cache
+ backends.
+ Minimalism is aesthetically, but you end up throwing the baby out with
+ the bathwater.
+ 
+\end_layout
+
+\begin_layout Standard
+Prudence takes a fresh look at the problem.
+ In some ways, it's more like the 
+\begin_inset Quotes eld
+\end_inset
+
+big
+\begin_inset Quotes erd
+\end_inset
+
+ frameworks, in that it implements a configurable controller layer of sorts.
+ But, it's 
+\emph on
+not
+\emph default
+ MVC: in Prudence, the 
+\emph on
+model is the view
+\emph default
+.
+ This singular concept is called a 
+\begin_inset Quotes eld
+\end_inset
+
+resource,
+\begin_inset Quotes erd
+\end_inset
+
+ and we call working with resources a 
+\begin_inset Quotes eld
+\end_inset
+
+resource-oriented architecture.
+\begin_inset Quotes erd
+\end_inset
+
+ You may have heard this called REST, but the two concepts are one and the
+ same: 
+\begin_inset Quotes eld
+\end_inset
+
+resource-oriented
+\begin_inset Quotes erd
+\end_inset
+
+ comes at it from the application level, while REST looks at the same architectu
+re from its infrastructure.
+\end_layout
+
+\begin_layout Standard
+This doesn't mean that Prudence can't do traditional MVC.
+ In fact, this manual includes a whole chapter on how to do MVC with Prudence,
+ without losing most of the benefits of REST.
+ At the same time, it encourages you to take a step back and look at your
+ problem from a resource-oriented approach.
+ Mixing both approaches for different parts of your application can work
+ very well.
+\end_layout
+
+\begin_layout Standard
+One of the consequences of REST is that a function-oriented paradigm isn't
+ good enough, because a 
+\begin_inset Quotes eld
+\end_inset
+
+resource
+\begin_inset Quotes erd
+\end_inset
+
+ is conceptually stateful, not functional.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Functions
+\begin_inset Quotes erd
+\end_inset
+
+ in REST are no more and no less than the limited set of HTTP verbs: GET,
+ POST, PUT, DELETE (and a few minor others), which act upon your resources.
+ It ends up being more like simple edge case of 
+\begin_inset Quotes eld
+\end_inset
+
+object,
+\begin_inset Quotes erd
+\end_inset
+
+ as the term is used in object-oriented architecture: we're encapsulating
+ state with functionality, but the functionality is always the same.
+ What this means is that Prudence is actually very minimal after all: you
+ connect a URL to a 
+\begin_inset Quotes eld
+\end_inset
+
+resource
+\begin_inset Quotes erd
+\end_inset
+
+ (instead of a function) with a standard, simple interface, and the entire
+ Prudence framework -- and, indeed, the entire infrastructure of the internet
+ -- is optimized for that one task.
+\end_layout
+
+\begin_layout Standard
+It's that last part that makes REST especially exciting: instead of abstracting
+ away HTTP, like so many conventional web development frameworks have attempted
+ with mixed success, in Prudence you are embracing HTTP.
+ Out in the open, not hidden away from you from your framework, you might
+ be surprised to discover how well thought-out, rich and scalable this protocol
+ is.
+ After all, it runs the biggest application ever created: the world wide
+ web.
+\end_layout
+
+\begin_layout Section
+Different Kinds of Resources
 \end_layout
 
 \begin_layout Section

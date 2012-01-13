@@ -1,0 +1,104 @@
+<% document.cacheDuration = 30000; %><%& '/site/header/' %>
+
+<h1>HTML Generation Tests</h1>
+<p>
+These tests all do pretty much the same thing, except that each uses a different language. They're here as
+as examples of how to write scriptlets. Note that at the top of each
+page you will see a timestamp -- this is used to test caching mode, during which the timestamp should stay constant for 5 seconds, no matter
+how many times you refresh the page.
+</p>
+
+<div class="hr"><hr /></div>
+
+<table width="100%"><tr valign="top"><td>
+<h3>JavaScript</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('javascript')) { %>
+<a href="javascript/?id=hello">caching mode</a><br />
+<a href="javascript/?id=hello&defer=true">deferred mode</a><br />
+<a href="javascript/?source=true">source</a>
+<% } else { %>
+n/a
+<% } %>
+</p>
+</td><td>
+<h3>PHP</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('php')) { %>
+<a href="php/?id=hello">caching mode</a><br />
+<a href="php/?id=hello&defer=true">deferred mode</a><br />
+<a href="php/?source=true">source</a>
+<% } else { %>
+n/a
+<% } %>
+</p>
+</td></tr><tr valign="top"><td>
+<h3>Python (Jython)</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('jython')) { %>
+<a href="python/?id=hello">caching mode</a><br />
+<a href="python/?id=hello&defer=true">deferred mode</a><br />
+<a href="python/?source=true">source</a>
+<% } else { %>
+n/a
+<% } %>
+</p>
+</td><td>
+<h3>Python (Jepp)</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('jep')) { %>
+<a href="python-jepp/?id=hello">caching mode</a><br />
+<a href="python-jepp/?id=hello&defer=true">deferred mode</a><br />
+<a href="python-jepp/?source=true">source</a>
+<% } else { %>
+n/a
+<% } %>
+</p>
+</td></tr valign="top"><tr><td>
+<h3>Ruby</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('ruby')) { %>
+<a href="ruby/?id=hello">caching mode</a><br />
+<a href="ruby/?id=hello&defer=true">deferred mode</a><br />
+<a href="ruby/?source=true">source</a>
+<% } else { %>
+n/a
+<% } %>
+</p>
+</td><td>
+<h3>Groovy</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('groovy')) { %>
+<a href="groovy/?id=hello">caching mode</a><br />
+<a href="groovy/?id=hello&defer=true">deferred mode</a><br />
+<a href="groovy/?source=true">source</a>
+</p>
+<% } else { %>
+n/a
+<% } %>
+</td></tr><tr valign="top"><td>
+<h3>Clojure</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('clojure')) { %>
+<a href="clojure/?id=hello">caching mode</a><br />
+<a href="clojure/?id=hello&defer=true">deferred mode</a><br />
+<a href="clojure/?source=true">source</a>
+<% } else { %>
+n/a
+<% } %>
+</p>
+</td><td>
+<h3>Velocity</h3>
+<p>
+<% if (executable.manager.getAdapterByTag('velocity')) { %>
+<a href="velocity/?id=hello">caching mode</a><br />
+<a href="velocity/?id=hello&defer=true">deferred mode</a><br />
+<a href="velocity/?source=true">source</a>
+<% } else { %>
+n/a
+<% } %>
+</p>
+</td>
+</tr></table>
+
+<%& '/site/footer/' %>

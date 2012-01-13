@@ -1,6 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%
+var base = conversation.pathToBase
+var version = application.sharedGlobals.get('com.threecrickets.prudence.version')
+%>
 <html>
 <head>
-	<title>Prudence Example</title>
-	<link rel="stylesheet" type="text/css" href="<%= conversation.pathToBase %>/style/soft-cricket.css" />
+	<title>Prudence - Three Crickets</title>
+	<link rel="stylesheet" type="text/css" href="<%= base %>/style/soft-cricket.css" />
+	<link rel="shortcut icon" href="<%= base %>/media/prudence.ico"/>
+	<script type="text/javascript" src="<%= base %>/script/jquery.core.min.js"></script>
+	<script type="text/javascript" src="<%= base %>/script/jquery.json.min.js"></script>
 </head>
 <body>
+	<table width="100%" cellspacing="20">
+		<tr valign="top">
+			<td width="25%">
+
+				<h1>Prudence Examples</h1>
+
+				<div class="navigation">
+					<ul>
+						<li><a href="<%= base %>/scriptlets/">Scriptlets</a></li>
+						<li><a href="<%= base %>/explicit/">Explicit Resources</a></li>
+						<li><a href="<%= base %>/implicit/">Implicit Resources</a></li>
+						<li><a href="<%= base %>/form/" class="closed">Form with File Uploads</a></li>
+					</ul>
+				</div>
+				<p>
+					<a href="<%= base %>/" class="neutral"><img src="<%= base %>/media/prudence-small.png" border="0"></a>
+				</p>
+				<p>
+					Running on Prudence version <%= version %>.
+				</p>
+				
+			</td>
+			<td width="50%" id="main">

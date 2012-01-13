@@ -1,0 +1,94 @@
+<html>
+<head>
+	<title>Clojure Scriptlets Demo</title>
+	<link rel="stylesheet" type="text/css" href="../../style/soft-cricket.css" />
+</head>
+<body>
+<table width="100%"><tr valign="top"><td>
+<%clojure
+
+;
+; Defer this page
+;
+
+(if (= (.. conversation getQuery (get "defer")) "true") 
+	(if (.defer conversation)
+		(.stop conversation)))
+
+;
+; Cache this page
+;
+
+(.setCacheDuration document 5000)
+
+;
+; Calling Java
+;
+
+(print "<p>This page was dynamically generated at " (System/currentTimeMillis) "</p>")
+
+;
+; An example of a function
+;
+
+(defn print-adapter [adapter]
+	(let [attributes (.getAttributes adapter)]
+%>
+<p>
+	<i>Engine:</i> <%= (get attributes "name") %> version <%= (get attributes "version") %><br />
+	<i>Language:</i> <%= (get attributes "language.name") %> version <%= (get attributes "language.version") %><br />
+	<i>Tags:</i> 
+<%
+		(def tags (get attributes "tags"))
+		(doseq [tag (butlast tags)]
+			(print tag)
+			(print ", "))
+		(print (last tags))
+%>
+</p>
+<%
+))
+%>
+<h3>Language used:</h3>
+<%
+(print-adapter (.. executable getContext getAdapter))
+%>
+<h3>Available languages:</h3>
+<%
+(def adapters (.. executable getManager getAdapters))
+(doseq [adapter adapters]
+	(print-adapter adapter))
+%>
+</td><td>
+<h3>The "id" attribute in the URL query is:</h3>
+<p><%= (or (.. conversation getQuery (get "id")) "") %></p>
+<h3>A few tests:</h3>
+<p>
+<%
+
+;
+; Including a document
+;
+; This is identical to:
+;
+;   (.include document "/triple/clojure/")
+;
+
+%>
+<%& "/triple/clojure/" %>
+<%
+
+(doseq [i (range 10)]
+%>
+A multiple of three: 
+<%
+	(print-triple i)
+%>
+<br />
+<%
+)
+%>
+</p>
+</td></tr></table>
+</body>
+<html>

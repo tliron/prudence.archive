@@ -1,0 +1,91 @@
+<html>
+<head>
+	<title>Python (Jepp) Scriptlets Demo</title>
+	<link rel="stylesheet" type="text/css" href="../../style/soft-cricket.css" />
+</head>
+<body>
+<table width="100%"><tr valign="top"><td>
+<%jepp
+
+#
+# Defer this page
+#
+
+if str(conversation.getQuery().get('defer')) == 'true':
+	if conversation.defer():
+		conversation.stop()
+
+#
+# Cache this page
+#
+
+document.setCacheDuration(5000)
+
+#
+# Calling Java
+#
+
+from java.lang import *
+sys.stdout.write('<p>This page was dynamically generated at %s</p>' % System.currentTimeMillis())
+
+# (Note: Python's print statement can be used here, too, but it may not be the best choice
+# for outputting HTML due to its "softspace" feature. It is meant more for debugging than
+# for clean output. Also, it is no longer supported in Python 3. We'll prefer sys.stdout
+# in this example.)
+
+#
+# An example of a method
+#
+
+def print_adapter(adapter):
+	%><p>
+	<i>Adapter:</i> <%= adapter.getAttributes().get('name') %> version <%= adapter.getAttributes().get('version') %><br />
+	<i>Language:</i> <%= adapter.getAttributes().get('language.name') %> version <%= adapter.getAttributes().get('language.version') %><br />
+	<i>Tags:</i> <%
+	tags = adapter.getAttributes().get('tags').toArray()
+	for i in range(len(tags)):
+		sys.stdout.write(str(tags[i]))
+		if i < len(tags) - 1:
+			sys.stdout.write(', ')
+	%></p><%
+
+%>
+<h3>Language used:</h3>
+<%
+print_adapter(executable.getContext().getAdapter())
+%>
+<h3>Available languages:</h3>
+<%
+adapters = executable.getManager().getAdapters().toArray()
+for adapter in adapters:
+	print_adapter(adapter)
+%>
+</td><td>
+<h3>The "id" attribute in the URL query is:</h3>
+<p><%= conversation.getQuery().get('id') or '' %></p>
+<h3>A few tests:</h3>
+<p>
+<%
+
+#
+# Including a document
+#
+# This is identical to:
+#
+#   document.include('/triple/python-jepp/')
+#
+
+%>
+<%& '/triple/python-jepp/' %>
+<%
+
+for i in range(10):
+	%>A multiple of three: <%
+	print_triple(i)
+	%><br /><%
+
+%>
+</p>
+</td></tr></table>
+</body>
+<html>
