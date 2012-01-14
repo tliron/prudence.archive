@@ -1,26 +1,28 @@
 <%& '/site/header/' %>
-	<h2>Prudence Example Application</h2>
-	<p>
-		Welcome to Prudence!	
-	</p>
-	<p>
-		This application is meant to provide straightforward reference examples of
-		Prudence's core features, for you to examine the source code and configuration and get
-		a sense of how the pieces fit together. It doesn't really do anything fun!
-		And it's also quite repetitive, as each feature is implemented again in a different
-		language. Click on the menu on the left to see them. 
-	</p>
-	<p>
-		The multilingual examples are dynamically enabled according to which language engines
-		you have installed in your container. By default, only the JavaScript examples will work.
-		To install all languages:
-	</p>
-	<pre>sincerity add python : add ruby : add groovy : add clojure : add php : install</pre>
-	<p>
-		To see a "real" demo application for Prudence, install Stickstick, which uses "AJAX"
-		and a few data-driven resources (backed by a relational database) to allow for
-		shared online sticky-notes. Stickstick is available in six editions, one per language.
-		To install it: 
-	</p>
-	<pre>sincerity add stickstick-javascript : install</pre>
+
+<h1>Prudence Example Application</h1>
+<p>
+	Welcome to Prudence!	
+</p>
+<p>
+	This application is meant to provide straightforward reference examples of
+	Prudence's core features, for you to examine the source code and configuration so that you can
+	get a sense of how the pieces fit together. It's not a very useful application
+	otherwise, and it's also quite repetitive, as each feature is implemented again in a different
+	language. Click on the menu on the left to see them all.
+</p>
+<p>
+	The multilingual examples are dynamically enabled according to which language engines
+	you have installed in your container. By default, only the JavaScript examples will work.
+	To install all languages:
+</p>
+<pre>sincerity add python : add ruby : add groovy : add clojure : add php : install</pre>
+<p>
+	To see a "real" demo application for Prudence, install Stickstick, which uses "AJAX"
+	and a few data-driven resources (backed by a relational database) to allow for
+	shared online sticky-notes. Stickstick is available in six editions: JavaScript, Python,
+	Ruby, Clojure and Groovy. For example, to install the JavaScript edition:
+</p>
+<pre>sincerity add stickstick-javascript : install</pre>
+
 <%& '/site/footer/' %>

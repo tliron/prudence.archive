@@ -2,8 +2,8 @@
 
 <script>
 function call(verb) {
-	var resource = $('#resource').val();
-	var mime = $('#mime').val();
+	var resource = $('input[name=resource]:checked').val();
+	var mime = $('input[name=mime]:checked').val();
 	$.ajax({
 		type: verb,
 		url: resource,
@@ -53,81 +53,86 @@ function call(verb) {
 }
 
 function seeMainSource() {
-	var resource = $('#resource').val();
+	var resource = $('input[name=resource]:checked').val();
 	window.location = resource + '?source=true';
 }
 </script>
 
 <table width="100%" cellpadding="10" cellspacing="0"><tr valign="top"><td width="50%">
-	<h1>Resource Tests</h1>
+	<h2>Explicit Resources</h2>
 	<p>
-		The following tests shows how to use JavaScript (in your browser) to communicate with Prudence resources.
-		Each resource is implemented in a different programming language, and each has its own state, which is a <a href="http://www.json.org/">JSON</a>
-		object. Press a verb button to activate.
+		The following examples are of explicit resources written in all supported languages.
+		The resource state is stored in the application globals, so the source code, purposely verbose,
+		is a good example of how to optimize shared state access for high concurrency.
 	</p>
 	<p>
-		Post (update) only changes keys that you specify in the JSON object, while leaving the others intact.
-		Put (create) replaces the entire object.
+		We'll be using JavaScript (in your browser) to communicate with Prudence resources,
+		using jQuery. Thus, this is also a useful example of "AJAX" essentials: JSON representations
+		are consumed as native JavaScript data structures in the browser.
+	</p>
+	<p> 
+		The representations are all in <a href="http://www.json.org/">JSON</a>.
+		Press an action button to try it out.
 	</p>
 	<p>
-		The source code demonstrates how to synchronize data between threads using a read-write
-		lock protocol for scalable performance.
+		POST ("update") only changes JSON keys that you specify in the resource, while leaving the others intact.
+		PUT ("create/replace") replaces the entire resource.
 	</p>
-</td><td width="50%">
 	<h3>Resource</h3>
 	<p>
-		<select id="resource">
+		<input type="radio" name="resource" value="javascript/" checked="true">JavaScript</input><br />
 <% if (executable.manager.getAdapterByTag('jython')) { %>
-			<option value="python/">Python</option>
+		<input type="radio" name="resource" value="python/">Python</input><br />
 <% } %>
 <!-- 
 <% if (executable.manager.getAdapterByTag('jepp')) { %>
-			<option value="python-jepp/">Python (Jepp)</option>
+		<input type="radio" name="resource" value="python-jepp/">Python (Jepp)</input><br />
 <% } %>
  -->
 <% if (executable.manager.getAdapterByTag('ruby')) { %>
-			<option value="ruby/">Ruby</option>
+		<input type="radio" name="resource" value="ruby/">Ruby</input><br />
 <% } %>
 <% if (executable.manager.getAdapterByTag('groovy')) { %>
-			<option value="groovy/">Groovy</option>
+		<input type="radio" name="resource" value="groovy/">Groovy</input><br />
 <% } %>
 <% if (executable.manager.getAdapterByTag('clojure')) { %>
-			<option value="clojure/">Clojure</option>
-<% } %>
-<% if (executable.manager.getAdapterByTag('javascript')) { %>
-			<option value="javascript/">JavaScript</option>
+		<input type="radio" name="resource" value="clojure/">Clojure</input><br />
 <% } %>
 <% if (executable.manager.getAdapterByTag('quercus')) { %>
-			<option value="php/">PHP</option>
+		<input type="radio" name="resource" value="php/">PHP</input><br />
 <% } %>
-		</select>
-		<input type="button" onclick="seeMainSource()" value="Source" />
 	</p>
-	<h3>MIME type to prefer (for Get, Post and Put)</h3>
 	<p>
-		<select id="mime">
-			<option>application/json</option>
-			<option>text/plain</option>
-		</select>
+		<input type="button" onclick="seeMainSource()" value="See source code" />
 	</p>
-	<h3>JSON to send (for Post and Put)</h3>
+</td><td width="50%">
+	<h3>MIME type to prefer</h3>
+	<p>
+		(Used in GET, POST and PUT only)
+	</p>
+	<p>
+		<input type="radio" name="mime" value="application/json" checked="true">application/json</input><br />
+		<input type="radio" name="mime" value="text/plain">text/plain</input>
+	</p>
+	<h3>JSON to send</h3>
+	<p>
+	 	(Used in POST and PUT only)
+	</p>
 	<p>
 		<textarea id="content" cols="40" rows="5"></textarea>
 	</p>
+	<h3>Actions</h3>
 	<p>
-		<i>Verbs:</i>
-	</p>
-	<p>
-		<input type="button" onclick="call('GET')" value="Get (read)" />
-		<input type="button" onclick="call('POST')" value="Post (update)" />
-		<input type="button" onclick="call('PUT')" value="Put (create)" />
-		<input type="button" onclick="call('DELETE')" value="Delete" />
+		<input type="button" onclick="call('GET')" value="GET (read)" /><br />
+		<input type="button" onclick="call('POST')" value="POST (update)" /><br />
+		<input type="button" onclick="call('PUT')" value="PUT (create/replace)" /><br />
+		<input type="button" onclick="call('DELETE')" value="DELETE" />
 	</p>
 </td></tr></table>
 
 <div class="hr"><hr /></div>
 
-<h3>Result of last verb</h3>
+<h3>Result of last action</h3>
 <p>
 	<div id="status">n/a</div>
 </p>

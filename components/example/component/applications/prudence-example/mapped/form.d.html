@@ -1,5 +1,9 @@
 <%& '/site/header/' %>
-	<h2>Form with File Uploads</h2>
+
+<h2>Form with File Uploads</h2>
+
+<div class="hr"><hr /></div>
+	
 <%
 if (conversation.request.method == 'POST') {
 	importClass(java.io.File)
@@ -42,4 +46,5 @@ if (conversation.request.method == 'POST') {
 		<p><button type="submit">Send</button></p>
 	</form>
 <% } %>
+
 <%& '/site/footer/' %>
