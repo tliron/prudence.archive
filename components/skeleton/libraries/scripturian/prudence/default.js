@@ -336,6 +336,17 @@ var Prudence = Prudence || function() {
     				return null
     			}
     			else if (restlet[0] == '/') {
+    				/*for (var i = this.instance.inboundRoot.routes.iterator(); i.hasNext(); ) {
+    					var route = i.next()
+    					var pattern = route.template.pattern
+    					if (route.matchingMode == Template.MODE_STARTS_WITH) {
+    						pattern += '*'
+    					}
+    					if (pattern == restlet) {
+        					println('Connecting to pattern: ' + pattern)
+    						return route.next
+    					}
+    				}*/
     				return new Module.Capture({uri: restlet}).create(this, uri)
     			}
 				else {

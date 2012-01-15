@@ -7,13 +7,13 @@ app.hosts = {
 app.routes = {
 	'/*': [
 		'explicit',
-		'dynamicWeb',
+		{type: 'filter', library: '/filters/statistics/', next: 'dynamicWeb'},
 		[
 			{type: 'cacheControl', 'default': 1, mediaTypes: {'text/html': 2}, next: 'staticWeb'},
 			{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}
 		]
 	],
-	'/person/{id}/': {type: 'filter', library: '/filters/statistics/', next: 'person'},
+	'/person/{id}/': {type: 'implicit', id: 'person', dispatch: 'javascript'},
 	'/pythonperson/{id}/': {type: 'implicit', id: 'person', dispatch: 'python'},
 	'/groovyperson/{id}/': {type: 'implicit', id: 'person', dispatch: 'groovy'},
 	'/phpperson/{id}/': {type: 'implicit', id: 'person', dispatch: 'php'},

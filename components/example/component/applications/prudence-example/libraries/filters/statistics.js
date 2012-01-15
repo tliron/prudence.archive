@@ -1,10 +1,14 @@
 
 document.executeOnce('/sincerity/templates/')
 
+importClass(java.util.concurrent.atomic.AtomicInteger)
+
+var logger = application.getSubLogger('statistics')
+
 function getCounter() {
 	var counter = application.globals.get('counter')
 	if (null === counter) {
-		counter = java.util.concurrent.atomic.AtomicInteger()
+		counter = new AtomicInteger()
 		var existing = application.globals.put('counter', counter)
 		if (null !== existing) {
 			counter = existing
@@ -14,12 +18,14 @@ function getCounter() {
 }
 
 function handleBefore(conversation) {
-	application.logger.info('Counting this request')
+	logger.fine('Statistics filter will check this request')
 	return 'continue'
 }
 
 function handleAfter(conversation) {
-	var counter = getCounter()
-	var count = counter.incrementAndGet()
-	application.logger.info('Counted {0} so far'.cast(count))
+	if (conversation.request.method == 'POST') {
+		var counter = getCounter()
+		var count = counter.incrementAndGet()
+		logger.info('Counted {0} POSTs so far'.cast(count))
+	}
 }

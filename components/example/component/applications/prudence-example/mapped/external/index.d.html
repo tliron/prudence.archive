@@ -1,5 +1,17 @@
 <%& '/site/header/' %>
-	<h2>Prudence Example</h2>
+
+<h2>External Resources</h2>
+<p>
+	In this example we'll access an external JSON document and display it on the page.
+	We'll do a simple GET, though all HTTP verbs are supported.
+</p>
+<p>
+	The default URL provided is for a static JSON resource served by this application,
+	but you can, of course, use any resource on the Inernet.
+</p>
+
+<div class="hr"><hr /></div>
+
 <%
 if (conversation.request.method == 'POST') {
 	var url = conversation.form.get('url')
@@ -16,14 +28,12 @@ if (conversation.request.method == 'POST') {
 		The resource is:
 	</p>
 	<pre><%= text %></pre>
-	<p>
-		Click <a href="..">here</a> to return to the main page.
-	</p>
 <% } else { %>
 	<form name="external" method="POST">
 		<p>Enter the URL of a JSON resource:</p>
-		<p><input name="url" type="text" value="<%= conversation.reference.baseRef %>house.json" size="100"></input></p>
+		<p><input name="url" type="text" value="<%= conversation.reference.baseRef %>/external/house.json" size="100"></input></p>
 		<p><button type="submit">Fetch it!</button></p>
 	</form>
 <% } %>
+
 <%& '/site/footer/' %>

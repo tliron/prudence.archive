@@ -1,0 +1,24 @@
+<%& '/site/header/' %>
+
+<h2>Error Handling</h2>
+<p>
+	In this example we'll using a scriptlet that purposely causes an exception to be thrown
+	(we're calling a non-existent function) in order for you to see Prudence's detailed debug
+	page.
+</p>
+<p>
+	Of course, you can and should disable the debug page for production deployments.
+</p>
+
+<div class="hr"><hr /></div>
+
+<%
+if (conversation.request.method == 'POST') {
+	abcdefg()
+} else { %>
+	<form name="external" method="POST">
+		<p><button type="submit">Click to produce an error</button></p>
+	</form>
+<% } %>
+
+<%& '/site/footer/' %>

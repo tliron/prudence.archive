@@ -1,2 +1,0 @@
-
-component.logService.loggerName = 'web'

@@ -1,6 +1,13 @@
 <%& '/site/header/' %>
 
-<h2>Form with File Uploads</h2>
+<h2>Forms with File Uploads</h2>
+<p>
+	There are a few ways to deal with HTML forms in Prudence.
+	In this example, we'll deal with it straightforwardly, using scriptlets.
+</p>
+<p>
+	We'll also handle file uploads, using the effective, and very simple API.
+</p>
 
 <div class="hr"><hr /></div>
 	
@@ -25,26 +32,23 @@ if (conversation.request.method == 'POST') {
 	// Move the file to the new location
 	tmpAvatar.renameTo(avatar)
 %>
-	<p>
-		Thank you for uploading your avatar, <%= name %>! Here's the image:
-	</p>
-	<p>
-		<img src="../avatars/<%= avatar.name %>" />
-	</p>
-	<p>
-		It was temporarily stored at:<br /><%= tmpAvatar %>
-	</p>
-	<p>
-		Click <a href="..">here</a> to return to the main page.
-	</p>
+<p>
+	Thank you for uploading your avatar, <%= name %>! Here's the image:
+</p>
+<p>
+	<img src="../avatars/<%= avatar.name %>" />
+</p>
+<p>
+	It was temporarily stored at:<br /><%= tmpAvatar %>
+</p>
 <% } else { %>
-	<form enctype="multipart/form-data" name="upload" method="POST">
-		<p>Your name:</p>
-		<p><input name="name" type="text"></input></p>
-		<p>Upload your avatar (an image file):</p>
-		<p><input name="avatar" type="file"></input></p>
-		<p><button type="submit">Send</button></p>
-	</form>
+<form enctype="multipart/form-data" name="upload" method="POST">
+	<p>Your name:</p>
+	<p><input name="name" type="text"></input></p>
+	<p>Upload your avatar (an image file):</p>
+	<p><input name="avatar" type="file"></input></p>
+	<p><button type="submit">Send</button></p>
+</form>
 <% } %>
 
 <%& '/site/footer/' %>

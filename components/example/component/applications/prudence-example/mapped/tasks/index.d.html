@@ -1,0 +1,23 @@
+<%& '/site/header/' %>
+
+<h2>Background Tasks</h2>
+<p>
+	In this simple example we'll start a background task.
+</p>
+
+<div class="hr"><hr /></div>
+	
+<%
+if (conversation.request.method == 'POST') {
+	application.task(null, '/tasks/background/', 'run', null, 0, 0, false)
+%>
+<p>
+	The task was launched! Check your logs to see.
+</p>
+<% } else { %>
+<form method="POST">
+	<p><button type="submit">Click to start a background task</button></p>
+</form>
+<% } %>
+
+<%& '/site/footer/' %>
