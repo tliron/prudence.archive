@@ -1,8 +1,8 @@
 
 document.executeOnce('/sincerity/container/')
-document.executeOnce('/prudence/')
+document.executeOnce('/prudence/routing/')
 
-var app = new Prudence.Application()
+var app = new Prudence.Routing.Application()
 
 Sincerity.Container.execute('settings')
 Sincerity.Container.execute('routing')

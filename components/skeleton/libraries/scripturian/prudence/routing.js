@@ -4,10 +4,12 @@ document.executeOnce('/sincerity/objects/')
 document.executeOnce('/sincerity/templates/')
 document.executeOnce('/restlet/')
 
+var Prudence = Prudence || {}
+
 importClass(com.threecrickets.sincerity.exception.SincerityException)
 
-var Prudence = Prudence || function() {
-	/** @exports Public as Prudence */
+Prudence.Routing = Prudence.Routing || function() {
+	/** @exports Public as Prudence.Routing */
     var Public = {}
     
     Public.cleanUri = function(uri) {
