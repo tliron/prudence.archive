@@ -5,7 +5,7 @@
 
 	<groupId>com.threecrickets.stickstick</groupId>
 	<artifactId>stickstick-php</artifactId>
-	<version>2.0</version>
+	<version>2.0-rc1</version>
 	<packaging>pom</packaging>
 
 	<name>Stickstick: PHP Edition</name>
@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>com.threecrickets.stickstick</groupId>
 			<artifactId>stickstick-common</artifactId>
-			<version>2.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.caucho</groupId>

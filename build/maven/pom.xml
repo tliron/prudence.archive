@@ -5,7 +5,7 @@
 
 	<groupId>com.threecrickets.prudence</groupId>
 	<artifactId>prudence-project</artifactId>
-	<version>2.0</version>
+	<version>2.0-rc1</version>
 	<packaging>pom</packaging>
 
 	<name>Prudence</name>
@@ -49,6 +49,7 @@
 
 	<modules>
 		<module>prudence</module>
+		<module>prudence-foundation</module>
 		<module>skeleton</module>
 		<module>distributed</module>
 		<module>cache-h2</module>

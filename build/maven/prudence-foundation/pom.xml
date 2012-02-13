@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.threecrickets.prudence</groupId>
-	<artifactId>distributed</artifactId>
+	<artifactId>foundation</artifactId>
 	<version>2.0-rc1</version>
 	<packaging>pom</packaging>
 
-	<name>Prudence: Distributed</name>
-	<description>Adds distributed support using Hazelcast to the Prudence skeleton.</description>
+	<name>Prudence Foundation Library</name>
+	<description>A collection of utility code that greatly enhances the use of Prudence using JavaScript.</description>
 	<url>http://threecrickets.com/prudence/</url>
 	<inceptionYear>2009</inceptionYear>
 
@@ -50,13 +50,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.threecrickets.prudence</groupId>
-			<artifactId>skeleton</artifactId>
+			<artifactId>prudence</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.hazelcast</groupId>
-			<artifactId>hazelcast-all</artifactId>
-			<version>1.9.4.5</version>
 		</dependency>
 	</dependencies>
 
