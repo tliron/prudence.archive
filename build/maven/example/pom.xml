@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.threecrickets.prudence</groupId>
-	<artifactId>example</artifactId>
+	<artifactId>prudence-example</artifactId>
 	<version>2.0-rc1</version>
 	<packaging>pom</packaging>
 
-	<name>Prudence: Example</name>
+	<name>Prudence: Example Application</name>
 	<description>Adds an example application to the Prudence skeleton.</description>
 	<url>http://threecrickets.com/prudence/</url>
 	<inceptionYear>2009</inceptionYear>
@@ -50,7 +50,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.threecrickets.prudence</groupId>
-			<artifactId>admin</artifactId>
+			<artifactId>prudence-admin</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

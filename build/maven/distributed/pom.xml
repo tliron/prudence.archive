@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.threecrickets.prudence</groupId>
-	<artifactId>distributed</artifactId>
+	<artifactId>prudence-distributed</artifactId>
 	<version>2.0-rc1</version>
 	<packaging>pom</packaging>
 
@@ -50,13 +50,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.threecrickets.prudence</groupId>
-			<artifactId>skeleton</artifactId>
+			<artifactId>prudence-skeleton</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast-all</artifactId>
-			<version>1.9.4.5</version>
+			<version>1.9.4.8</version>
 		</dependency>
 	</dependencies>
 

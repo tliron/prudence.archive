@@ -50,7 +50,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.threecrickets.prudence</groupId>
-			<artifactId>admin</artifactId>
+			<artifactId>prudence-admin</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -66,7 +66,7 @@
 	</dependencies>
 
 	<build>
-		<directory>../../cache/maven</directory>
+		<directory>../../../cache/maven</directory>
 
 		<plugins>
 			<!-- jar artifact -->

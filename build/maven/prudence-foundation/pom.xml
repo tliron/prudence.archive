@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.threecrickets.prudence</groupId>
-	<artifactId>foundation</artifactId>
+	<artifactId>prudence-foundation</artifactId>
 	<version>2.0-rc1</version>
 	<packaging>pom</packaging>
 

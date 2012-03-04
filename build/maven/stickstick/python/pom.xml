@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.threecrickets.stickstick</groupId>
-	<artifactId>stickstick-clojure</artifactId>
+	<artifactId>stickstick-python</artifactId>
 	<version>2.0-rc1</version>
 	<packaging>pom</packaging>
 
-	<name>Stickstick: Clojure Edition</name>
-	<description>Stickstick is a demo application for Prudence. This is the Clojure edition.</description>
+	<name>Stickstick: Python Edition</name>
+	<description>Stickstick is a demo application for Prudence. This is the Python edition.</description>
 	<url>http://threecrickets.com/prudence/</url>
 	<inceptionYear>2009</inceptionYear>
 
@@ -54,29 +54,19 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.clojure</groupId>
-			<artifactId>clojure</artifactId>
-			<version>1.3.0</version>
+			<groupId>org.python</groupId>
+			<artifactId>jython-standalone</artifactId>
+			<version>2.5.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.clojure</groupId>
-			<artifactId>data.json</artifactId>
-			<version>0.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.clojure</groupId>
-			<artifactId>java.jdbc</artifactId>
-			<version>0.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.3</version>
+			<groupId>org.sqlalchemy</groupId>
+			<artifactId>sqlalchemy</artifactId>
+			<version>0.6-h2</version>
 		</dependency>
 	</dependencies>
 
 	<build>
-		<directory>../../cache/maven</directory>
+		<directory>../../../cache/maven</directory>
 
 		<plugins>
 			<!-- jar artifact -->

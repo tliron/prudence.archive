@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.threecrickets.stickstick</groupId>
-	<artifactId>stickstick-php</artifactId>
+	<artifactId>stickstick-groovy</artifactId>
 	<version>2.0-rc1</version>
 	<packaging>pom</packaging>
 
-	<name>Stickstick: PHP Edition</name>
-	<description>Stickstick is a demo application for Prudence. This is the PHP edition.</description>
+	<name>Stickstick: Groovy Edition</name>
+	<description>Stickstick is a demo application for Prudence. This is the Groovy edition.</description>
 	<url>http://threecrickets.com/prudence/</url>
 	<inceptionYear>2009</inceptionYear>
 
@@ -54,9 +54,14 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.caucho</groupId>
-			<artifactId>quercus</artifactId>
-			<version>4.0.18</version>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy</artifactId>
+			<version>1.8.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json-java</artifactId>
+			<version>1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -66,7 +71,7 @@
 	</dependencies>
 
 	<build>
-		<directory>../../cache/maven</directory>
+		<directory>../../../cache/maven</directory>
 
 		<plugins>
 			<!-- jar artifact -->
