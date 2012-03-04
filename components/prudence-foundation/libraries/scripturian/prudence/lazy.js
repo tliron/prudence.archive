@@ -90,9 +90,9 @@ Prudence.Lazy = Prudence.Lazy || function() {
 		var lazyName = name + '.lazy'
 		var lazyEntry = application.globals.get(lazyName)
 
-		if (!Savory.Objects.exists(lazyEntry)) {
+		if (!Sincerity.Objects.exists(lazyEntry)) {
 			var value = application.globals.get(name)
-			if (Savory.Objects.exists(value)) {
+			if (Sincerity.Objects.exists(value)) {
 				lazyEntry = Public.createEntry(value)
 				lazyEntry = application.getGlobal(lazyName, lazyEntry)
 			}
@@ -122,9 +122,9 @@ Prudence.Lazy = Prudence.Lazy || function() {
 		var lazyName = name + '.lazy'
 		var lazyList = application.globals.get(lazyName)
 
-		if (!Savory.Objects.exists(lazyList)) {
+		if (!Sincerity.Objects.exists(lazyList)) {
 			var list = application.globals.get(name)
-			if (Savory.Objects.exists(list)) {
+			if (Sincerity.Objects.exists(list)) {
 				lazyList = new Public.List({logger: logger})
 				lazyList.addAll(list)
 				lazyList = application.getGlobal(lazyName, lazyList)
@@ -150,9 +150,9 @@ Prudence.Lazy = Prudence.Lazy || function() {
 		var lazyName = name + '.lazy'
 		var lazyMap = application.globals.get(lazyName)
 
-		if (!Savory.Objects.exists(lazyMap)) {
+		if (!Sincerity.Objects.exists(lazyMap)) {
 			var map = application.globals.get(name)
-			if (Savory.Objects.exists(map)) {
+			if (Sincerity.Objects.exists(map)) {
 				lazyMap = new Public.Map({logger: logger})
 				lazyMap.putAll(map)
 				lazyMap = application.getGlobal(lazyName, lazyMap)
@@ -174,7 +174,7 @@ Prudence.Lazy = Prudence.Lazy || function() {
 	Public.buildOne = function(config) {
 		var fn = 'function(){\n'
 		if (config.dependencies) {
-			config.dependencies = Savory.Objects.array(config.dependencies)
+			config.dependencies = Sincerity.Objects.array(config.dependencies)
 			for (var d in config.dependencies) {
 				fn += 'document.executeOnce(\'' + config.dependencies[d].escapeSingleQuotes() + '\');\n'
 			}
@@ -184,7 +184,7 @@ Prudence.Lazy = Prudence.Lazy || function() {
 		}
 		fn += 'return new ' + config.name + '('
 		if (config.config) {
-			fn += 'Savory.JSON.fromExtendedJSON(' + Savory.JSON.to(config.config, true) + ')'
+			fn += 'Sincerity.JSON.fromExtendedJSON(' + Sincerity.JSON.to(config.config, true) + ')'
 		}
 		fn += ');\n}'
 		return fn
@@ -197,7 +197,7 @@ Prudence.Lazy = Prudence.Lazy || function() {
 	 */
 	Public.build = function(configs) {
 		var r
-		if (Savory.Objects.isArray(configs)) {
+		if (Sincerity.Objects.isArray(configs)) {
 			r = []
 		}
 		else {
@@ -222,7 +222,7 @@ Prudence.Lazy = Prudence.Lazy || function() {
 	 * @name Prudence.Lazy.Entry
 	 * @param instance The value to wrap
 	 */
-	Public.Entry = Savory.Classes.define(function() {
+	Public.Entry = Sincerity.Classes.define(function() {
 		/** @exports Public as Prudence.Lazy.Entry */
 	    var Public = {}
 	    
@@ -264,7 +264,7 @@ Prudence.Lazy = Prudence.Lazy || function() {
 	 * @augments Prudence.Lazy.Entry
 	 * @param {Function|String} instantiator The function used to create the wrapped value
 	 */
-	Public.LazyEntry = Savory.Classes.define(function(Module) {
+	Public.LazyEntry = Sincerity.Classes.define(function(Module) {
 		/** @exports Public as Prudence.Lazy.LazyEntry */
 	    var Public = {}
 	    
@@ -278,7 +278,7 @@ Prudence.Lazy = Prudence.Lazy || function() {
 			this.instantiator = String(instantiator)
 
 			this.instance = null
-			this.lock = Savory.JVM.newLock(true)
+			this.lock = Sincerity.JVM.newLock(true)
 	    }
 
 	    Public.get = function(createFn, logger) {
@@ -351,13 +351,13 @@ Prudence.Lazy = Prudence.Lazy || function() {
 	 * @param {Prudence.Logging.Logger} config.logger The logger
 	 * @param {java.util.List} [config.list] You can provide your own (thread-safe) list, or let the class create its own
 	 */
-	Public.List = Savory.Classes.define(function(Module) {
+	Public.List = Sincerity.Classes.define(function(Module) {
 		/** @exports Public as Prudence.Lazy.List */
 	    var Public = {}
 
 	    /** @ignore */
 	    Public._construct = function(config) {
-			this.list = config.list || Savory.JVM.newList(true)
+			this.list = config.list || Sincerity.JVM.newList(true)
 			this.logger = config.logger || application.logger
 	    }
 
@@ -446,7 +446,7 @@ Prudence.Lazy = Prudence.Lazy || function() {
 			for (var i = this.list.iterator(); i.hasNext(); ) {
 				var entry = i.next()
 				entry = entry.get(createFn, this.logger)
-				if (Savory.Objects.exists(entry)) {
+				if (Sincerity.Objects.exists(entry)) {
 					if (entry.created) {
 						this.logger.info('Created lazy entry: ' + index)
 					}
@@ -467,13 +467,13 @@ Prudence.Lazy = Prudence.Lazy || function() {
 	 * @param {Prudence.Logging.Logger} config.logger The logger
 	 * @param {java.util.ConcurrentMap} [config.map] You can provide your own (thread-safe) map, or let the class create its own
 	 */
-	Public.Map = Savory.Classes.define(function(Module) {
+	Public.Map = Sincerity.Classes.define(function(Module) {
 		/** @exports Public as Prudence.Lazy.Map */
 	    var Public = {}
 	    
 	    /** @ignore */
 	    Public._construct = function(config) {
-			this.map = config.map || Savory.JVM.newMap(true)
+			this.map = config.map || Sincerity.JVM.newMap(true)
 			this.logger = config.logger || application.logger
 	    }
 
@@ -548,7 +548,7 @@ Prudence.Lazy = Prudence.Lazy || function() {
 			for (var i = this.map.entrySet().iterator(); i.hasNext(); ) {
 				var mapEntry = i.next()
 				var entry = mapEntry.value.get(createFn, this.logger)
-				if (Savory.Objects.exists(entry)) {
+				if (Sincerity.Objects.exists(entry)) {
 					if (entry.created) {
 						this.logger.info('Created lazy entry: ' + mapEntry.key)
 					}
@@ -566,7 +566,7 @@ Prudence.Lazy = Prudence.Lazy || function() {
 	//
 	
 	function isConstructor(value) {
-		return (typeof value == 'function') || Savory.Objects.isString(value)
+		return (typeof value == 'function') || Sincerity.Objects.isString(value)
 	}
 
 	return Public

@@ -78,14 +78,14 @@ Prudence.Tasks = Prudence.Tasks || function() {
 	 * @returns {java.util.concurrent.Future}
 	 */
 	Public.task = function(params) {
-		if (Savory.Objects.isString(params)) {
+		if (Sincerity.Objects.isString(params)) {
 			params = {name: params}
 		}
 		else if (typeof params == 'function') {
 			params = {fn: String(params)}
 		}
 		else {
-			params = Savory.Objects.clone(params)
+			params = Sincerity.Objects.clone(params)
 		}
 
 		if (params.fn) {
@@ -97,17 +97,17 @@ Prudence.Tasks = Prudence.Tasks || function() {
 		}
 		
 		var extraContext = {
-			'savory.task': Savory.Objects.clone(params)
+			'savory.task': Sincerity.Objects.clone(params)
 		}
 		
 		if (!params.pure) {
 			params.context = params.context || {}
-			Savory.Objects.merge(params.context, extraContext)
+			Sincerity.Objects.merge(params.context, extraContext)
 		}
 
 		params.json = params.json === undefined ? (params.pure ? false : true) : params.json
 		if (params.json) {
-			params.context = params.context ? Savory.JSON.to(params.context) : null
+			params.context = params.context ? Sincerity.JSON.to(params.context) : null
 		}
 
 		var future
@@ -138,7 +138,7 @@ Prudence.Tasks = Prudence.Tasks || function() {
 	 */
 	Public.getContext = function(json) {
 		json = json === undefined ? true : json
-		return json ? Savory.JSON.from(document.context) : document.context
+		return json ? Sincerity.JSON.from(document.context) : document.context
 	}
 	
 	/**
@@ -149,7 +149,7 @@ Prudence.Tasks = Prudence.Tasks || function() {
 	 * @see #task
 	 */
 	Public.eval = function(code, params) {
-		params = Savory.Objects.merge({
+		params = Sincerity.Objects.merge({
 			name: '/savory/eval/',
 			context: String(code),
 			pure: true
@@ -168,7 +168,7 @@ Prudence.Tasks = Prudence.Tasks || function() {
  * @see Prudence.Tasks#task
  */
 Function.prototype.task = Function.prototype.task || function(params) {
-	params = Savory.Objects.clone(params) || {}
+	params = Sincerity.Objects.clone(params) || {}
 	params.fn = this
 	Prudence.Tasks.task(params)
 }

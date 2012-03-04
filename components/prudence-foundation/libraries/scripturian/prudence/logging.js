@@ -58,7 +58,7 @@ Prudence.Logging = Prudence.Logging || function() {
 	 * @class
 	 * @see Prudence.Logging#getLogger
 	 */
-	Public.Logger = Savory.Classes.define(function() {
+	Public.Logger = Sincerity.Classes.define(function() {
 		/** @exports Public as Prudence.Logging.Logger */
 	    var Public = {}
 	    
@@ -70,7 +70,7 @@ Prudence.Logging = Prudence.Logging || function() {
 	    /**
 		 * Sends a log message.
 		 * <p>
-		 * Note that any arguments after 'message' will be sent as arguments to {@link Savory.Templates#cast}
+		 * Note that any arguments after 'message' will be sent as arguments to {@link Sincerity.Templates#cast}
 		 * on the message.
 		 * 
 		 * @param {String|Number} [level='info'] Logging level can be
@@ -82,7 +82,7 @@ Prudence.Logging = Prudence.Logging || function() {
 		 * @returns {Prudence.Logging.Logger} This logger
 		 */
 	    Public.log = function(level, message/*, arguments */) {
-			if (Savory.Objects.isString(level)) {
+			if (Sincerity.Objects.isString(level)) {
 				level = levels[level.toLowerCase()]
 			}
 			
@@ -94,7 +94,7 @@ Prudence.Logging = Prudence.Logging || function() {
 				}
 				
 				if (arguments.length > 2) {
-					var args = Savory.Objects.slice(arguments, 2)
+					var args = Sincerity.Objects.slice(arguments, 2)
 					message = message.cast.apply(message, args)
 				}
 				
@@ -112,7 +112,7 @@ Prudence.Logging = Prudence.Logging || function() {
 	    Public.info = function(message/*, arguments */) {
 			var args = [java.util.logging.Level.INFO, message]
 			if (arguments.length > 1) {
-				args = args.concat(Savory.Objects.slice(arguments, 1))
+				args = args.concat(Sincerity.Objects.slice(arguments, 1))
 			}
 			return this.log.apply(this, args)
 		}
@@ -125,7 +125,7 @@ Prudence.Logging = Prudence.Logging || function() {
 	    Public.config = function(message/*, arguments */) {
 			var args = [java.util.logging.Level.CONFIG, message]
 			if (arguments.length > 1) {
-				args = args.concat(Savory.Objects.slice(arguments, 1))
+				args = args.concat(Sincerity.Objects.slice(arguments, 1))
 			}
 			return this.log.apply(this, args)
 		}
@@ -138,7 +138,7 @@ Prudence.Logging = Prudence.Logging || function() {
 	    Public.fine = function(message/*, arguments */) {
 			var args = [java.util.logging.Level.FINE, message]
 			if (arguments.length > 1) {
-				args = args.concat(Savory.Objects.slice(arguments, 1))
+				args = args.concat(Sincerity.Objects.slice(arguments, 1))
 			}
 			return this.log.apply(this, args)
 		}
@@ -151,7 +151,7 @@ Prudence.Logging = Prudence.Logging || function() {
 	    Public.finer = function(message/*, arguments */) {
 			var args = [java.util.logging.Level.FINER, message]
 			if (arguments.length > 1) {
-				args = args.concat(Savory.Objects.slice(arguments, 1))
+				args = args.concat(Sincerity.Objects.slice(arguments, 1))
 			}
 			return this.log.apply(this, args)
 		}
@@ -164,7 +164,7 @@ Prudence.Logging = Prudence.Logging || function() {
 	    Public.finest = function(message/*, arguments */) {
 			var args = [java.util.logging.Level.FINEST, message]
 			if (arguments.length > 1) {
-				args = args.concat(Savory.Objects.slice(arguments, 1))
+				args = args.concat(Sincerity.Objects.slice(arguments, 1))
 			}
 			this.log.apply(this, args)
 		}
@@ -177,7 +177,7 @@ Prudence.Logging = Prudence.Logging || function() {
 	    Public.warning = function(message/*, arguments */) {
 			var args = [java.util.logging.Level.WARNING, message]
 			if (arguments.length > 1) {
-				args = args.concat(Savory.Objects.slice(arguments, 1))
+				args = args.concat(Sincerity.Objects.slice(arguments, 1))
 			}
 			return this.log.apply(this, args)
 		}
@@ -190,7 +190,7 @@ Prudence.Logging = Prudence.Logging || function() {
 	    Public.severe = function(message/*, arguments */) {
 			var args = [java.util.logging.Level.SEVERE, message]
 			if (arguments.length > 1) {
-				args = args.concat(Savory.Objects.slice(arguments, 1))
+				args = args.concat(Sincerity.Objects.slice(arguments, 1))
 			}
 			return this.log.apply(this, args)
 		}
@@ -210,7 +210,7 @@ Prudence.Logging = Prudence.Logging || function() {
 			// We'll remove at least the first line (it's this very location)
 			skip += 1
 			return this.log(level, function() {
-				var details = Savory.Rhino.getExceptionDetails(exception, skip)
+				var details = Sincerity.Rhino.getExceptionDetails(exception, skip)
 				return details.message + '\n' + details.stackTrace
 			})
 		}
@@ -226,7 +226,7 @@ Prudence.Logging = Prudence.Logging || function() {
 	    Public.dumpShort = function(obj, description, level) {
 			level = level || java.util.logging.Level.INFO
 			if (this.logger.isLoggable(level)) {
-				var dump = Savory.Objects.isObject(obj) ? Savory.JSON.to(obj) : String(obj)
+				var dump = Sincerity.Objects.isObject(obj) ? Sincerity.JSON.to(obj) : String(obj)
 				if (description) {
 					return this.log(level, description.capitalize() + ' dump: ' + dump)
 				}
@@ -248,7 +248,7 @@ Prudence.Logging = Prudence.Logging || function() {
 	    Public.dumpLong = function(obj, description, level) {
 			level = level || java.util.logging.Level.INFO
 			if (this.logger.isLoggable(level)) {
-				var dump = Savory.Objects.isObject(obj) ? Savory.JSON.to(obj, true) : String(obj)
+				var dump = Sincerity.Objects.isObject(obj) ? Sincerity.JSON.to(obj, true) : String(obj)
 				if (description) {
 					return this.log(level, description.capitalize() + ' dump:\n' + dump)
 				}
@@ -290,10 +290,10 @@ Prudence.Logging = Prudence.Logging || function() {
 			}
 			
 			if (r === false) {
-				return this.log(level, 'Failed {0} in {1}', description, Savory.Localization.formatDuration(java.lang.System.currentTimeMillis() - start))
+				return this.log(level, 'Failed {0} in {1}', description, Sincerity.Localization.formatDuration(java.lang.System.currentTimeMillis() - start))
 			}
 			else {
-				return this.log(level, 'Finished {0} in {1}', description, Savory.Localization.formatDuration(java.lang.System.currentTimeMillis() - start))
+				return this.log(level, 'Finished {0} in {1}', description, Sincerity.Localization.formatDuration(java.lang.System.currentTimeMillis() - start))
 			}
 		}
 		
@@ -333,7 +333,7 @@ Prudence.Logging = Prudence.Logging || function() {
 /**
  * Sends the string as a log message to the application's root logger.
  * <p>
- * Note that any arguments after 'level' will be sent as arguments to {@link Savory.Templates#cast}
+ * Note that any arguments after 'level' will be sent as arguments to {@link Sincerity.Templates#cast}
  * on the message.
  * 
  * @methodOf String#
@@ -343,7 +343,7 @@ Prudence.Logging = Prudence.Logging || function() {
  */ 
 String.prototype.log = String.prototype.log || function(level/*, arguments */) {
 	if (arguments.length > 1) {
-		var args = [level, this].concat(Savory.Objects.slice(arguments, 1))
+		var args = [level, this].concat(Sincerity.Objects.slice(arguments, 1))
 		var logger = Prudence.Logging.getLogger()
 		return logger.log.apply(logger, args)
 	}

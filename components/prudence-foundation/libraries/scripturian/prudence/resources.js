@@ -18,7 +18,7 @@ document.executeOnce('/sincerity/rhino/')
 document.executeOnce('/sincerity/json/')
 document.executeOnce('/sincerity/jvm/')
 document.executeOnce('/sincerity/validation/')
-document.executeOnce('/sincerity/prudence/logging/')
+document.executeOnce('/prudence/logging/')
 
 var Prudence = Prudence || {}
 
@@ -166,7 +166,7 @@ Prudence.Resources = Prudence.Resources || function() {
     	}
     	
     	var agent = conversation.request.clientInfo.agent
-    	return Savory.Objects.exists(agent) && (agent.toLowerCase().indexOf('mobile') != -1)
+    	return Sincerity.Objects.exists(agent) && (agent.toLowerCase().indexOf('mobile') != -1)
     }
 
 	/**
@@ -246,7 +246,7 @@ Prudence.Resources = Prudence.Resources || function() {
 			if (relative.length && (relative.charAt(0) != '/')) {
 				relative = '/' + relative
 			}
-			prefixes = Savory.Objects.array(prefixes)
+			prefixes = Sincerity.Objects.array(prefixes)
 			for (var p in prefixes) {
 				if (relative.startsWith(prefixes[p])) {
 					return true
@@ -270,7 +270,7 @@ Prudence.Resources = Prudence.Resources || function() {
 	 *        <ul>
 	 *        <li>'object': as is (only for internal=true)</li>
 	 *        <li>'text': converted to string if not one already</li>
-	 *        <li>'json': see {@link Savory.JSON#to}</li>
+	 *        <li>'json': see {@link Sincerity.JSON#to}</li>
 	 *        <li>'xml': see {@link Savory.XML#to}</li>
 	 *        <li>'web': see {@link Savory.Resource#toWebPayload}</li>
 	 *        </ul>
@@ -283,8 +283,8 @@ Prudence.Resources = Prudence.Resources || function() {
 	 *        <li>'entity': the Restlet Representation instance (make sure to release it!)</li>
 	 *        <li>'date': the Date from the response header</li>
 	 *        <li>'object': an arbitrary object (only useful for internal conversations)</li>
-	 *        <li>'json': see {@link Savory.JSON#from}</li>
-	 *        <li>'extendedJson': see {@link Savory.JSON#from}</li>
+	 *        <li>'json': see {@link Sincerity.JSON#from}</li>
+	 *        <li>'extendedJson': see {@link Sincerity.JSON#from}</li>
 	 *        <li>'xml': see {@link Savory.XML#from}</li>
 	 *        <li>'web': see {@link Prudence.Resources#fromQueryString}</li>
 	 *        <li>'properties': see {@link Prudence.Resources#fromPropertySheet} (using params.separator)</li>
@@ -298,18 +298,18 @@ Prudence.Resources = Prudence.Resources || function() {
 	 * @param [params.logLevel='fine'] The log level to use for failed requests
 	 */
 	Public.request = function(params) {
-		params = Savory.Objects.clone(params)
+		params = Sincerity.Objects.clone(params)
 		params.logLevel = params.logLevel || 'fine'
 		params.method = params.method || 'get'
 		params.mediaType = params.mediaType || (params.internal ? 'application/java' : 'text/plain')
 
 		var resultType
 		var resultHeaders
-		if (Savory.Objects.exists(params.result)) {
-			resultType = Savory.Objects.isString(params.result) ? String(params.result) : params.result.type
+		if (Sincerity.Objects.exists(params.result)) {
+			resultType = Sincerity.Objects.isString(params.result) ? String(params.result) : params.result.type
 			resultHeaders = params.result.headers
 		}
-		if (!Savory.Objects.exists(resultType)) {
+		if (!Sincerity.Objects.exists(resultType)) {
 			if (params.mediaType.endsWith('/json') || params.mediaType.endsWith('+json')) {
 				resultType = 'json'
 			}
@@ -323,7 +323,7 @@ Prudence.Resources = Prudence.Resources || function() {
 				resultType = 'text'
 			}
 		}
-		if (!Savory.Objects.exists(resultHeaders) && (params.method == 'head')) {
+		if (!Sincerity.Objects.exists(resultHeaders) && (params.method == 'head')) {
 			resultHeaders = true
 		}
 
@@ -334,7 +334,7 @@ Prudence.Resources = Prudence.Resources || function() {
 					break
 					
 				case 'json':
-					params.payload = Savory.JSON.to(params.payload.value)
+					params.payload = Sincerity.JSON.to(params.payload.value)
 					break
 					
 				case 'xml':
@@ -385,7 +385,7 @@ Prudence.Resources = Prudence.Resources || function() {
 			
 			if (params.authorization) {
 				var scheme = params.authorization.type
-				if (Savory.Objects.isString(scheme)) {
+				if (Sincerity.Objects.isString(scheme)) {
 					// Get registered scheme
 					scheme = org.restlet.data.ChallengeScheme.valueOf(scheme)
 					var helper = org.restlet.engine.Engine.instance.findHelper(scheme, true, false)
@@ -393,7 +393,7 @@ Prudence.Resources = Prudence.Resources || function() {
 				}
 				var challengeResponse = new org.restlet.data.ChallengeResponse(scheme)
 				delete params.authorization.type
-				Savory.Objects.merge(challengeResponse, params.authorization)
+				Sincerity.Objects.merge(challengeResponse, params.authorization)
 				resource.challengeResponse = challengeResponse
 			}
 
@@ -425,7 +425,7 @@ Prudence.Resources = Prudence.Resources || function() {
 						break
 				}
 				
-				if (Savory.Objects.exists(resource.response.locationRef)) {
+				if (Sincerity.Objects.exists(resource.response.locationRef)) {
 					params.uri = String(resource.response.locationRef)
 					Public.logger.fine('Following redirect: ' + params.uri)
 					continue
@@ -446,14 +446,14 @@ Prudence.Resources = Prudence.Resources || function() {
 							representation: result
 						}
 						var headers = resource.response.attributes.get('org.restlet.http.headers')
-						if (Savory.Objects.exists(headers)) {
+						if (Sincerity.Objects.exists(headers)) {
 							result.headers = Public.fromParameterList(headers)
 						}
 					}
 					return result
 				}
 				finally {
-					if (Savory.Objects.exists(representation)) {
+					if (Sincerity.Objects.exists(representation)) {
 						representation.release()
 					}
 				}
@@ -461,7 +461,7 @@ Prudence.Resources = Prudence.Resources || function() {
 			catch (x if x.javaException instanceof org.restlet.resource.ResourceException) {
 				Public.logger.log(params.logLevel, function() {
 					var text = resource.response.entity ? String(resource.response.entity.text).trim() : null
-					return String(x.javaException) + (text ? ': ' + text : '') + '\n' + Savory.Rhino.getStackTrace() + '\nRequest params: ' + Savory.JSON.to(params, true) 
+					return String(x.javaException) + (text ? ': ' + text : '') + '\n' + Sincerity.Rhino.getStackTrace() + '\nRequest params: ' + Sincerity.JSON.to(params, true) 
 				})
 				
 				if (resultType == 'date') {
@@ -470,7 +470,7 @@ Prudence.Resources = Prudence.Resources || function() {
 				
 				if (resultHeaders) {
 					var headers = resource.response.attributes.get('org.restlet.http.headers')
-					if (Savory.Objects.exists(headers)) {
+					if (Sincerity.Objects.exists(headers)) {
 						return {
 							headers: Public.fromParameterList(headers)
 						}
@@ -610,8 +610,8 @@ Prudence.Resources = Prudence.Resources || function() {
 	 * <ul>
 	 * <li>'object': an arbitrary object (only useful for internal conversations)</li>
 	 * <li>'text'</li>
-	 * <li>'json': see {@link Savory.JSON#from}</li>
-	 * <li>'extendedJson': see {@link Savory.JSON#from}</li>
+	 * <li>'json': see {@link Sincerity.JSON#from}</li>
+	 * <li>'extendedJson': see {@link Sincerity.JSON#from}</li>
 	 * <li>'xml': see {@link Savory.XML#from}</li>
 	 * <li>'web': see {@link Prudence.Resources#fromQueryString}</li>
 	 * <li>'properties': see {@link Prudence.Resources#fromPropertySheet} (using params.separator)</li>
@@ -623,23 +623,23 @@ Prudence.Resources = Prudence.Resources || function() {
 		switch (String(type)) {
 			case 'object':
 				var object = representation.object
-				if (Savory.Objects.exists(object)) {
+				if (Sincerity.Objects.exists(object)) {
 					return object
 				}
 				break
 				
 			case 'text':
 				var text = representation.text
-				if (Savory.Objects.exists(text)) {
+				if (Sincerity.Objects.exists(text)) {
 					return String(text)
 				}
 				return ''
 				
 			case 'json':
 				var text = representation.text
-				if (Savory.Objects.exists(text)) {
+				if (Sincerity.Objects.exists(text)) {
 					try {
-						return Savory.JSON.from(text)
+						return Sincerity.JSON.from(text)
 					} 
 					catch (x) {
 						Public.logger.warning('Malformed JSON representation: ' + text)
@@ -649,9 +649,9 @@ Prudence.Resources = Prudence.Resources || function() {
 				
 			case 'extendedJson':
 				var text = representation.text
-				if (Savory.Objects.exists(text)) {
+				if (Sincerity.Objects.exists(text)) {
 					try {
-						return Savory.JSON.from(text, true)
+						return Sincerity.JSON.from(text, true)
 					} 
 					catch (x) {
 						Public.logger.warning('Malformed JSON representation: ' + text)
@@ -661,7 +661,7 @@ Prudence.Resources = Prudence.Resources || function() {
 				
 			case 'xml':
 				var text = representation.text
-				if (Savory.Objects.exists(text)) {
+				if (Sincerity.Objects.exists(text)) {
 					try {
 						return Savory.XML.from(text)
 					} 
@@ -673,14 +673,14 @@ Prudence.Resources = Prudence.Resources || function() {
 				
 			case 'web':
 				var text = representation.text
-				if (Savory.Objects.exists(text)) {
+				if (Sincerity.Objects.exists(text)) {
 					return Public.fromQueryString(text, params ? params.keys : null)
 				}
 				return {}
 				
 			case 'properties':
 				var text = representation.text
-				if (Savory.Objects.exists(text)) {
+				if (Sincerity.Objects.exists(text)) {
 					return Public.fromPropertySheet(text, params.separator || ':')
 				}
 				return {}
@@ -705,8 +705,8 @@ Prudence.Resources = Prudence.Resources || function() {
 	 *        <li>'float': parseFloat</li>
 	 *        <li>'bool': must be 'true' or 'false'</li>
 	 *        <li>'date': Unix timestamp</li>
-	 *        <li>'json': see {@link Savory.JSON#from}</li>
-	 *        <li>'extendedJson': see {@link Savory.JSON#from}</li>
+	 *        <li>'json': see {@link Sincerity.JSON#from}</li>
+	 *        <li>'extendedJson': see {@link Sincerity.JSON#from}</li>
 	 *        <li>'xml': see {@link Savory.XML#from}</li>
 	 *        </ul>
 	 *        Add '[]' to any type to signify that you want an array of all values.
@@ -724,12 +724,12 @@ Prudence.Resources = Prudence.Resources || function() {
 				var isArray = false
 				if (type.endsWith('[]')) {
 					type = type.substring(0, type.length - 2)
-					values = Savory.JVM.fromArray(series.getValuesArray(k))
+					values = Sincerity.JVM.fromArray(series.getValuesArray(k))
 					isArray = true
 				}
 				else {
 					var value = map.get(k)
-					values = Savory.Objects.exists(value) ? [value] : []
+					values = Sincerity.Objects.exists(value) ? [value] : []
 				}
 
 				for (var v in values) {
@@ -774,7 +774,7 @@ Prudence.Resources = Prudence.Resources || function() {
 							
 						case 'json':
 							try {
-								value = Savory.JSON.from(value)
+								value = Sincerity.JSON.from(value)
 							}
 							catch (x) {
 								Public.logger.warning('Malformed JSON attribute: ' + value)
@@ -783,7 +783,7 @@ Prudence.Resources = Prudence.Resources || function() {
 							
 						case 'extendedJson':
 							try {
-								value = Savory.JSON.from(value, true)
+								value = Sincerity.JSON.from(value, true)
 							}
 							catch (x) {
 								Public.logger.warning('Malformed JSON attribute: ' + value)
@@ -801,12 +801,12 @@ Prudence.Resources = Prudence.Resources || function() {
 							
 						case 'string':
 						default:
-							value = Savory.Objects.exists(value) ? String(value) : null
+							value = Sincerity.Objects.exists(value) ? String(value) : null
 							break
 					}
 				}
 				
-				if (Savory.Objects.exists(value)) {
+				if (Sincerity.Objects.exists(value)) {
 					if (isArray) {
 						if (!attributes[k]) {
 							attributes[k] = []
@@ -822,7 +822,7 @@ Prudence.Resources = Prudence.Resources || function() {
 		else {
 			for (var i = map.entrySet().iterator(); i.hasNext(); ) {
 				var entry = i.next()
-				if (Savory.Objects.exists(entry.value)) {
+				if (Sincerity.Objects.exists(entry.value)) {
 					attributes[entry.key] = String(entry.value)
 				}
 			}
@@ -904,7 +904,7 @@ Prudence.Resources = Prudence.Resources || function() {
 	 * @param {Boolean} [config.clientValidation=true] True to enable client-side validation for all fields (this value is not
 	 *        handled directly by this class, but is defined and stored as a convenience for client implementations)
 	 */
-    Public.Form = Savory.Classes.define(function(Module) {
+    Public.Form = Sincerity.Classes.define(function(Module) {
     	/** @exports Public as Prudence.Resources.Form */
     	var Public = {}
     	
@@ -914,14 +914,14 @@ Prudence.Resources = Prudence.Resources || function() {
         /** @ignore */
     	Public._construct = function(config) {
     		this.mode = this.mode || 'none'
-    		this.serverValidation = Savory.Objects.ensure(this.serverValidation, true)
-    		this.clientValidation = Savory.Objects.ensure(this.clientValidation, true)
+    		this.serverValidation = Sincerity.Objects.ensure(this.serverValidation, true)
+    		this.clientValidation = Sincerity.Objects.ensure(this.clientValidation, true)
     		
     		var fields = {}
     		for (var name in this.fields) {
     			var field = this.fields[name]
     			
-    			field = Savory.Objects.isString(field) ? {type: String(field)} : Savory.Objects.clone(field)
+    			field = Sincerity.Objects.isString(field) ? {type: String(field)} : Sincerity.Objects.clone(field)
     			field.label = field.label || name
     			
     			fields[name] = field
@@ -968,13 +968,13 @@ Prudence.Resources = Prudence.Resources || function() {
 				var value = values[name]
     			
     			// Make sure field has its initial value
-    			if (Savory.Objects.exists(field.value) && !Savory.Objects.exists(value)) {
+    			if (Sincerity.Objects.exists(field.value) && !Sincerity.Objects.exists(value)) {
     				value = values[name] = field.value
     			}
     			
         		// Check that all required fields are provided
         		if (this.serverValidation && field.required) {
-    				if (!Savory.Objects.exists(value) || (value == '')) {
+    				if (!Sincerity.Objects.exists(value) || (value == '')) {
     					results.success = false
     					results.errors = results.errors || {} 
     					results.errors[name] = textPack.get('savory.foundation.validation.required', {name: name})
@@ -984,7 +984,7 @@ Prudence.Resources = Prudence.Resources || function() {
     		
     		// Check remaining values
     		for (var name in values) {
-    			if (!results.success && Savory.Objects.exists(results.errors[name])) {
+    			if (!results.success && Sincerity.Objects.exists(results.errors[name])) {
     				// We've already validated this value
     				continue
     			}
@@ -993,7 +993,7 @@ Prudence.Resources = Prudence.Resources || function() {
     			var field = this.fields[name]
     			
     			// Only include defined fields
-    			if (Savory.Objects.exists(field) && Savory.Objects.exists(value)) {
+    			if (Sincerity.Objects.exists(field) && Sincerity.Objects.exists(value)) {
     				var error = null
     				
     				if (this.serverValidation) {
@@ -1001,10 +1001,10 @@ Prudence.Resources = Prudence.Resources || function() {
 						var validation = Savory.Validation[field.type]
         				
         				var allowed = field.serverValidation
-        				if (!Savory.Objects.exists(allowed) && validation) {
+        				if (!Sincerity.Objects.exists(allowed) && validation) {
         					allowed = validation.serverValidation
         				}
-        				if (!Savory.Objects.exists(allowed)) {
+        				if (!Sincerity.Objects.exists(allowed)) {
         					allowed = true
         				}
         				
@@ -1019,10 +1019,10 @@ Prudence.Resources = Prudence.Resources || function() {
 		    					var validity = validator.call(this, value, field, conversation)
 		    					if (validity !== true) {
 		    						error = validity
-		    						/*if (Savory.Objects.exists(textPack)) {
+		    						/*if (Sincerity.Objects.exists(textPack)) {
 	    								error = textPack.get(validity, {name: name})
 		    						}*/
-		    						if (!Savory.Objects.exists(error)) {
+		    						if (!Sincerity.Objects.exists(error)) {
 		    							error = 'Invalid'
 		    						}
 		    					}
@@ -1030,7 +1030,7 @@ Prudence.Resources = Prudence.Resources || function() {
         				}
     				}
     				
-    				if (Savory.Objects.exists(value)) {
+    				if (Sincerity.Objects.exists(value)) {
     					results.values = results.values || {} 
     					results.values[name] = String(value)
     				}
@@ -1082,13 +1082,13 @@ Prudence.Resources = Prudence.Resources || function() {
     	 */
     	Public.handle = function(params) {
     		params = params || {}
-    		var mode = params.mode || (Savory.Objects.exists(params.conversation) ? params.conversation.query.get('mode') : null) || this.mode
+    		var mode = params.mode || (Sincerity.Objects.exists(params.conversation) ? params.conversation.query.get('mode') : null) || this.mode
     		mode = String(mode)
     		
-    		if (!Savory.Objects.exists(params.conversation) || (params.conversation.request.method == 'POST')) {
-	    		var values = params.values || (Savory.Objects.exists(params.conversation) ? Module.getForm(params.conversation) : {})
+    		if (!Sincerity.Objects.exists(params.conversation) || (params.conversation.request.method == 'POST')) {
+	    		var values = params.values || (Sincerity.Objects.exists(params.conversation) ? Module.getForm(params.conversation) : {})
 	    		
-	    		var textPack = params.textPack || (Savory.Objects.exists(params.conversation) ? Savory.Internationalization.getCurrentPack(params.conversation) : null)
+	    		var textPack = params.textPack || (Sincerity.Objects.exists(params.conversation) ? Savory.Internationalization.getCurrentPack(params.conversation) : null)
 	    		var results = this.validate(values, textPack, params.conversation)
 	    		results.mode = mode
 	    		if (this.process(results, params.conversation) !== false) {
@@ -1097,11 +1097,11 @@ Prudence.Resources = Prudence.Resources || function() {
 		    	    		conversation.mediaTypeName = 'application/json'
 		    	    		var printResults = results
 	    		    		if (printResults.success) {
-	    		    			printResults = Savory.Objects.clone(printResults)
+	    		    			printResults = Sincerity.Objects.clone(printResults)
 	    		    			delete printResults.values
 	    		    		}
-		    	    		var human = Savory.Objects.exists(params.conversation) ? (params.conversation.query.get('human') == 'true') : false
-	    		    		print(Savory.JSON.to(printResults, human))
+		    	    		var human = Sincerity.Objects.exists(params.conversation) ? (params.conversation.query.get('human') == 'true') : false
+	    		    		print(Sincerity.JSON.to(printResults, human))
 	    		    		break
 	    		    		
 		    			case 'include':
@@ -1113,12 +1113,12 @@ Prudence.Resources = Prudence.Resources || function() {
 		    					includeDocumentName = params.includeFailureDocumentName || this.includeFailureDocumentName
 		    				}
 	    					includeDocumentName = includeDocumentName || this.includeDocumentName
-	    					if (Savory.Objects.exists(includeDocumentName)) {
-	    						if (Savory.Objects.exists(params.conversation)) {
+	    					if (Sincerity.Objects.exists(includeDocumentName)) {
+	    						if (Sincerity.Objects.exists(params.conversation)) {
 	    							params.conversation.locals.put('savory.foundation.resources.form', this)
 	    							params.conversation.locals.put('savory.foundation.resources.form.results', results)
 	    						}
-	    						var documentService = Savory.Objects.exists(params.document) ? params.document : document
+	    						var documentService = Sincerity.Objects.exists(params.document) ? params.document : document
 	    						documentService.include(includeDocumentName)
 	    					}
 		    				break
@@ -1132,7 +1132,7 @@ Prudence.Resources = Prudence.Resources || function() {
 		    					redirectUri = params.redirectFailureUri || this.redirectFailureUri
 		    				}
 	    					redirectUri = redirectUri || this.redirectUri
-	    					if (Savory.Objects.exists(redirectUri)) {
+	    					if (Sincerity.Objects.exists(redirectUri)) {
 	    						conversation.response.redirectSeeOther(redirectUri)
 	    					}
 		    				break
@@ -1144,12 +1144,12 @@ Prudence.Resources = Prudence.Resources || function() {
     		
     		if (mode == 'include') {
 				includeDocumentName = params.includeDocumentName || this.includeDocumentName
-				if (Savory.Objects.exists(includeDocumentName)) {
-					if (Savory.Objects.exists(params.conversation)) {
+				if (Sincerity.Objects.exists(includeDocumentName)) {
+					if (Sincerity.Objects.exists(params.conversation)) {
 						params.conversation.locals.put('savory.foundation.resources.form', this)
 						params.conversation.locals.remove('savory.foundation.resources.form.results')
 					}
-					var documentService = Savory.Objects.exists(params.document) ? params.document : document
+					var documentService = Sincerity.Objects.exists(params.document) ? params.document : document
 					documentService.include(includeDocumentName)
 				}
     		}

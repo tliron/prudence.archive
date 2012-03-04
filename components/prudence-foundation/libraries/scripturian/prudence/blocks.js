@@ -104,8 +104,8 @@ Prudence.Blocks = Prudence.Blocks || function() {
 		}
 
 		var existing = conversation.locals.get(name)
-		if (Savory.Objects.exists(existing)) {
-			if (Savory.Objects.isArray(existing)) {
+		if (Sincerity.Objects.exists(existing)) {
+			if (Sincerity.Objects.isArray(existing)) {
 				existing.push(value)
 				return
 			}
@@ -127,10 +127,10 @@ Prudence.Blocks = Prudence.Blocks || function() {
 	 * @returns {String}
 	 */
 	Public.get = function(name/*, arguments */) {
-		var args = arguments.length > 1 ? Savory.Objects.slice(arguments, 1) : null
+		var args = arguments.length > 1 ? Sincerity.Objects.slice(arguments, 1) : null
 
 		var value = conversation.locals.get(name)
-		if (Savory.Objects.isArray(value)) {
+		if (Sincerity.Objects.isArray(value)) {
 			var text = ''
 			for (var v in value) {
 				var entry = value[v]
@@ -145,7 +145,7 @@ Prudence.Blocks = Prudence.Blocks || function() {
 						value[v] = entry
 					}
 				}
-				if (Savory.Objects.exists(entry)) {
+				if (Sincerity.Objects.exists(entry)) {
 					text += String(entry)
 				}
 			}
@@ -163,7 +163,7 @@ Prudence.Blocks = Prudence.Blocks || function() {
 			}
 		}
 		
-		return Savory.Objects.exists(value) ? String(value) : ''
+		return Sincerity.Objects.exists(value) ? String(value) : ''
 	}
 	
 	/**
