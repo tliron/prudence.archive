@@ -2,6 +2,7 @@
 document.executeOnce('/sincerity/classes/')
 document.executeOnce('/sincerity/objects/')
 document.executeOnce('/sincerity/templates/')
+document.executeOnce('/sincerity/jvm/')
 document.executeOnce('/restlet/')
 
 var Prudence = Prudence || {}
@@ -248,7 +249,7 @@ Prudence.Routing = Prudence.Routing || function() {
     		if (true == this.settings.code.sourceViewable) {
     			this.sourceViewableDocumentSources = new CopyOnWriteArrayList()
 				this.globals['com.threecrickets.prudence.SourceCodeResource.documentSources'] = this.sourceViewableDocumentSources
-				var sourceViewer = new Finder(this.context, Sincerity.Container.getClass('com.threecrickets.prudence.SourceCodeResource'))
+				var sourceViewer = new Finder(this.context, Sincerity.JVM.getClass('com.threecrickets.prudence.SourceCodeResource'))
 				this.instance.inboundRoot.attach('/source/', sourceViewer).matchingMode = Template.MODE_EQUALS
 				println('Attaching "/source/" to "{0}"'.cast(sourceViewer['class'].simpleName))
     		}
@@ -572,7 +573,7 @@ Prudence.Routing = Prudence.Routing || function() {
     		// Defrost
     		app.defrost(generatedTextResource.documentSource)
     		
-    		return new Finder(app.context, Sincerity.Container.getClass('com.threecrickets.prudence.GeneratedTextResource'))
+    		return new Finder(app.context, Sincerity.JVM.getClass('com.threecrickets.prudence.GeneratedTextResource'))
     	}
     	
     	return Public
@@ -649,7 +650,7 @@ Prudence.Routing = Prudence.Routing || function() {
     		// Defrost
     		app.defrost(dispatchdResource.documentSource)
 
-    		return new Finder(app.context, Sincerity.Container.getClass('com.threecrickets.prudence.DelegatedResource'))
+    		return new Finder(app.context, Sincerity.JVM.getClass('com.threecrickets.prudence.DelegatedResource'))
     	}
     	
     	return Public
