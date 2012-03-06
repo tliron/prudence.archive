@@ -538,7 +538,8 @@ Prudence.Routing = Prudence.Routing || function() {
     			languageManager: executable.manager,
 	    		sourceViewable: app.settings.code.sourceViewable,
 	    		fileUploadDirectory: app.settings.uploads.root,
-	    		fileUploadSizeThreshold: app.settings.uploads.sizeThreshold
+	    		fileUploadSizeThreshold: app.settings.uploads.sizeThreshold,
+	    		scriptletPlugins: new ConcurrentHashMap()
     		}
 
     		// Fragments
@@ -567,6 +568,14 @@ Prudence.Routing = Prudence.Routing || function() {
 	    		for (var i in this.passThroughs) {
 	    			println('Pass through: "{0}"'.cast(this.passThroughs[i]))
 	    			generatedTextResource.passThroughDocuments.add(this.passThroughs[i])
+	    		}
+    		}
+    		
+    		// Scriptlet plugins
+    		if (Sincerity.Objects.exists(app.settings.scriptletPlugins)) {
+	    		for (var code in app.settings.scriptletPlugins) {
+	    			println('Scriptlet plugin {0} - "{1}"'.cast(code, app.settings.scriptletPlugins[code]))
+	    			generatedTextResource.scriptletPlugins.put(code, app.settings.scriptletPlugins[code])
 	    		}
     		}
     		
