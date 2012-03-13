@@ -452,7 +452,9 @@ Prudence.Routing = Prudence.Routing || function() {
     		directory.negotiatingContent = Sincerity.Objects.ensure(this.negotiate, true)
     		
     		if (Sincerity.Objects.ensure(this.compress, true)) {
-    			var encoder = new Encoder(app.context)
+    			// TODO: There is a bug in Restlet 2.1-rc3 with encoding small CSS files
+    			// https://github.com/restlet/restlet-framework-java/issues/447
+    			var encoder = new Encoder(app.context, false, false, app.instance.encoderService)
     			encoder.next = directory
     			directory = encoder
     		}

@@ -17,6 +17,7 @@ import org.restlet.Restlet;
 import org.restlet.routing.Route;
 import org.restlet.routing.Router;
 import org.restlet.routing.Template;
+import org.restlet.routing.TemplateRoute;
 
 /**
  * A {@link Route} that always scores 0.0 for captured requests. Useful for
@@ -25,8 +26,7 @@ import org.restlet.routing.Template;
  * @author Tal Liron
  * @see CapturingRouter
  */
-@SuppressWarnings("deprecation")
-public class CapturingRoute extends Route
+public class CapturingRoute extends TemplateRoute
 {
 	//
 	// Construction

@@ -18,7 +18,7 @@ import org.restlet.data.CacheDirective;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Tag;
-import org.restlet.engine.http.header.HeaderConstants;
+import org.restlet.engine.header.HeaderConstants;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 

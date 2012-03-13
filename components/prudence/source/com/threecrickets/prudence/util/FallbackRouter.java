@@ -16,6 +16,7 @@ import org.restlet.Restlet;
 import org.restlet.routing.Filter;
 import org.restlet.routing.Route;
 import org.restlet.routing.Router;
+import org.restlet.routing.TemplateRoute;
 
 /**
  * A {@link Router} that takes care to bunch identical routes under
@@ -30,7 +31,6 @@ import org.restlet.routing.Router;
  * 
  * @author Tal Liron
  */
-@SuppressWarnings("deprecation")
 public class FallbackRouter extends CapturingRouter
 {
 	//
@@ -108,17 +108,20 @@ public class FallbackRouter extends CapturingRouter
 	 *        The target restlet to filter
 	 * @return The route or null if target was not found
 	 */
-	public Route filter( String pathTemplate, Filter filter, Restlet target )
+	public TemplateRoute filter( String pathTemplate, Filter filter, Restlet target )
 	{
 		filter.setNext( target );
 
-		Route existingRoute = null;
+		TemplateRoute existingRoute = null;
 		for( Route route : getRoutes() )
 		{
-			if( route.getTemplate().getPattern().equals( pathTemplate ) )
+			if( route instanceof TemplateRoute )
 			{
-				existingRoute = route;
-				break;
+				if( ( (TemplateRoute) route ).getTemplate().getPattern().equals( pathTemplate ) )
+				{
+					existingRoute = (TemplateRoute) route;
+					break;
+				}
 			}
 		}
 
@@ -154,15 +157,18 @@ public class FallbackRouter extends CapturingRouter
 	//
 
 	@Override
-	public Route attach( String pathTemplate, Restlet target )
+	public TemplateRoute attach( String pathTemplate, Restlet target )
 	{
-		Route existingRoute = null;
+		TemplateRoute existingRoute = null;
 		for( Route route : getRoutes() )
 		{
-			if( route.getTemplate().getPattern().equals( pathTemplate ) )
+			if( route instanceof TemplateRoute )
 			{
-				existingRoute = route;
-				break;
+				if( ( (TemplateRoute) route ).getTemplate().getPattern().equals( pathTemplate ) )
+				{
+					existingRoute = (TemplateRoute) route;
+					break;
+				}
 			}
 		}
 

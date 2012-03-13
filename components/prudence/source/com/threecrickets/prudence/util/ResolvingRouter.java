@@ -13,8 +13,8 @@ package com.threecrickets.prudence.util;
 
 import org.restlet.Context;
 import org.restlet.Restlet;
-import org.restlet.routing.Route;
 import org.restlet.routing.Router;
+import org.restlet.routing.TemplateRoute;
 import org.restlet.routing.Variable;
 
 /**
@@ -22,7 +22,6 @@ import org.restlet.routing.Variable;
  * 
  * @author Tal Liron
  */
-@SuppressWarnings("deprecation")
 public class ResolvingRouter extends Router
 {
 	//
@@ -58,9 +57,9 @@ public class ResolvingRouter extends Router
 	//
 
 	@Override
-	protected Route createRoute( String uriPattern, Restlet target, int matchingMode )
+	protected TemplateRoute createRoute( String uriPattern, Restlet target, int matchingMode )
 	{
-		Route result = new Route( this, new ResolvingTemplate( uriPattern, matchingMode, Variable.TYPE_URI_SEGMENT, "", true, false ), target );
+		TemplateRoute result = new TemplateRoute( this, new ResolvingTemplate( uriPattern, matchingMode, Variable.TYPE_URI_SEGMENT, "", true, false ), target );
 		result.setMatchingQuery( getDefaultMatchingQuery() );
 		return result;
 	}
