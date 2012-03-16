@@ -317,7 +317,7 @@ public class Fallback extends Restlet
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "Fallback" );
 		setDescription( "Delegates to a series of targets in sequence, stopping at the first target that handles the request" );
 	}

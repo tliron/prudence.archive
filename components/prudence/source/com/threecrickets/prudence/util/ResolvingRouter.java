@@ -71,7 +71,7 @@ public class ResolvingRouter extends Router
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "ResolvingRouter" );
 		setDescription( "A router that uses ResolvingTemplate for all routes" );
 	}

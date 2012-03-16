@@ -13,7 +13,6 @@ package com.threecrickets.prudence.util;
 
 import org.restlet.Context;
 import org.restlet.Restlet;
-import org.restlet.routing.Filter;
 import org.restlet.routing.Route;
 import org.restlet.routing.Router;
 
@@ -91,62 +90,6 @@ public class FallbackRouter extends CapturingRouter
 	public void setCacheDuration( int cacheDuration )
 	{
 		this.cacheDuration = cacheDuration;
-	}
-
-	//
-	// Operations
-	//
-
-	/**
-	 * Installs a filter before a target restlet at a specific path.
-	 * 
-	 * @param pathTemplate
-	 *        The path where the target restlet should be
-	 * @param filter
-	 *        The filter
-	 * @param target
-	 *        The target restlet to filter
-	 * @return The route or null if target was not found
-	 */
-	public Route filter( String pathTemplate, Filter filter, Restlet target )
-	{
-		filter.setNext( target );
-
-		Route existingRoute = null;
-		for( Route route : getRoutes() )
-		{
-			if( route.getTemplate().getPattern().equals( pathTemplate ) )
-			{
-				existingRoute = route;
-				break;
-			}
-		}
-
-		if( existingRoute != null )
-		{
-			Restlet current = existingRoute.getNext();
-			if( current == target )
-			{
-				// Replace current target
-				existingRoute.setNext( filter );
-
-				// Make sure our route is still relevant
-				if( getRoutes().contains( existingRoute ) )
-					return existingRoute;
-			}
-			else if( current instanceof Fallback )
-			{
-				// Replace in current Fallback
-				if( ( (Fallback) current ).replaceTarget( target, filter ) )
-				{
-					// Make sure our route is still relevant
-					if( getRoutes().contains( existingRoute ) && ( existingRoute.getNext() == current ) )
-						return existingRoute;
-				}
-			}
-		}
-
-		return null;
 	}
 
 	//
@@ -244,7 +187,7 @@ public class FallbackRouter extends CapturingRouter
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "FallbackRouter" );
 		setDescription( "A router that takes care to bunch identical routes under Fallback restlets" );
 	}

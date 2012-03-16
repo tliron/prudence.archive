@@ -63,7 +63,7 @@ public class StatusRestlet extends Restlet
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "StatusRestlet" );
 		setDescription( "A restlet that sets a specific status" );
 	}

@@ -210,7 +210,7 @@ public class DelegatedFilter extends Filter
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "DelegatedFilter" );
 		setDescription( "A filter that wraps an underlying DelegatedHandler" );
 	}

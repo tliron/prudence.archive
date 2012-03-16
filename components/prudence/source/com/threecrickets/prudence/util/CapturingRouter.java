@@ -123,7 +123,7 @@ public class CapturingRouter extends ResolvingRouter
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "CapturingRouter" );
 		setDescription( "A router that uses CapturingRedirector and CapturingRoute to allow for URI capturing" );
 	}

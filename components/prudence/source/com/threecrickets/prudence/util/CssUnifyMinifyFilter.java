@@ -103,7 +103,7 @@ public class CssUnifyMinifyFilter extends UnifyMinifyFilter
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "CssUnifyMinifyFilter" );
 		setDescription( "A filter that automatically unifies and/or compresses CSS source files" );
 	}

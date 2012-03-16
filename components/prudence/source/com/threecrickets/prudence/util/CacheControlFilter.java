@@ -96,7 +96,7 @@ public class CacheControlFilter extends Filter
 	{
 		super( context, next );
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "CacheControlFilter" );
 		setDescription( "A Filter that adds cache-control headers to responses" );
 		this.defaultMaxAge = defaultMaxAge;

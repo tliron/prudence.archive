@@ -139,7 +139,7 @@ public class CapturingRedirector extends ResolvingRedirector
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "CapturingRedirector" );
 		setDescription( "A redirector that keeps track of the captured reference" );
 	}

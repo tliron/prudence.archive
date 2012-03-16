@@ -89,7 +89,7 @@ public class NormalizingRedirector extends ResolvingRedirector
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "NormalizingRedirector" );
 		setDescription( "A redirector that normalized relative paths" );
 	}

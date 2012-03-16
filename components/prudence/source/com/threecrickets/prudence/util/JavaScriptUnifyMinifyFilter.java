@@ -109,7 +109,7 @@ public class JavaScriptUnifyMinifyFilter extends UnifyMinifyFilter
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "JavaScriptUnifyMinifyFilter" );
 		setDescription( "A filter that automatically unifies and/or compresses JavaScript source files" );
 	}

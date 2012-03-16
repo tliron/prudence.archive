@@ -78,7 +78,7 @@ public class PrudenceApplication extends Application
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "PrudenceApplication" );
 		setDescription( "A an application that does not route requests when it is stopped" );
 	}

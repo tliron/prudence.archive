@@ -91,7 +91,7 @@ public class CapturingRoute extends Route
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "CapturingRoute" );
 		setDescription( "A route that always scored 0.0 for captured requests" );
 	}

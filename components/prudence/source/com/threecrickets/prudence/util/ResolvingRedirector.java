@@ -129,7 +129,7 @@ public class ResolvingRedirector extends Redirector
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "ResolvingRedirector" );
 		setDescription( "A redirector that uses ResolvingTemplate" );
 	}

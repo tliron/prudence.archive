@@ -20,7 +20,6 @@ import org.restlet.Restlet;
 import org.restlet.data.Protocol;
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
-import org.restlet.routing.Filter;
 import org.restlet.routing.Redirector;
 import org.restlet.routing.Route;
 import org.restlet.routing.Router;
@@ -168,66 +167,6 @@ public class PrudenceRouter extends FallbackRouter
 		Route route = reattach( uriTemplate, target );
 		route.setMatchingMode( Template.MODE_STARTS_WITH );
 		return route;
-	}
-
-	/**
-	 * As {@link #filter(String, Filter, Restlet)}, but internally uses a
-	 * {@link DelegatedFilter}.
-	 * 
-	 * @param uriTemplate
-	 *        The URI path template that must match the relative part of the
-	 *        resource URI
-	 * @param documentName
-	 *        The filter document name
-	 * @param context
-	 *        The context for the delegated filter
-	 * @param target
-	 *        The target Restlet to attach
-	 * @return The created route
-	 */
-	public Route filter( String uriTemplate, String documentName, Context context, Restlet target )
-	{
-		return filter( uriTemplate, new DelegatedFilter( context, documentName ), target );
-	}
-
-	/**
-	 * As {@link #filter(String, Filter, Restlet)}, but enforces matching mode
-	 * {@link Template#MODE_STARTS_WITH}.
-	 * 
-	 * @param uriTemplate
-	 *        The URI path template that must match the relative part of the
-	 *        resource URI
-	 * @param filter
-	 *        The filter
-	 * @param target
-	 *        The target Restlet to attach
-	 * @return The created route
-	 */
-	public Route filterBase( String uriTemplate, Filter filter, Restlet target )
-	{
-		Route route = filter( uriTemplate, filter, target );
-		route.setMatchingMode( Template.MODE_STARTS_WITH );
-		return route;
-	}
-
-	/**
-	 * As {@link #filter(String, String, Context, Restlet)}, but enforces
-	 * matching mode {@link Template#MODE_STARTS_WITH}.
-	 * 
-	 * @param uriTemplate
-	 *        The URI path template that must match the relative part of the
-	 *        resource URI
-	 * @param documentName
-	 *        The filter document name
-	 * @param context
-	 *        The context for the delegated filter
-	 * @param target
-	 *        The target Restlet to attach
-	 * @return The created route
-	 */
-	public Route filterBase( String uriTemplate, String documentName, Context context, Restlet target )
-	{
-		return filterBase( uriTemplate, new DelegatedFilter( context, documentName ), target );
 	}
 
 	/**
@@ -512,7 +451,7 @@ public class PrudenceRouter extends FallbackRouter
 	private void describe()
 	{
 		setOwner( "Prudence" );
-		setAuthor( "Tal Liron" );
+		setAuthor( "Three Crickets" );
 		setName( "PrudenceRouter" );
 		setDescription( "A router with shortcut methods, inheriting functionality of FallbackRouter, CapturingRouter and ResolvingRouter" );
 	}
