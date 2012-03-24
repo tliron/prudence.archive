@@ -49,7 +49,7 @@
 
 	<modules>
 		<module>prudence</module>
-		<module>prudence-foundation</module>
+		<module>prudence-javascript-library</module>
 		<module>skeleton</module>
 		<module>distributed</module>
 		<module>cache-h2</module>

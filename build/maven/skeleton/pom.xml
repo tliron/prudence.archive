@@ -55,7 +55,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.threecrickets.prudence</groupId>
-			<artifactId>prudence-foundation</artifactId>
+			<artifactId>prudence-javascript-library</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
