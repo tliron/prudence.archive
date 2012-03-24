@@ -50,6 +50,14 @@
 		</javac>
 	</target>
 
+	<target name="version">
+		<mkdir dir="${cache.classes}" />
+		<propertyfile file="${cache.classes}/com/threecrickets/prudence/version.conf">
+			<entry key="version" value="${version}" />
+			<entry key="built" type="date" value="now" pattern="MMM dd yyyy, HH:mm:ss, 'TZ'Z" />
+		</propertyfile>
+	</target>
+
 	<target name="javadocs" description="Create API documentation if not present">
 		<available file="${distribution.api}" property="javadocs-present" />
 		<antcall target="javadocs-overwrite" />
@@ -114,7 +122,7 @@
 		</exec>
 	</target>
 
-	<target name="libraries" depends="classes" description="Create jar">
+	<target name="libraries" depends="classes, version" description="Create jar">
 		<mkdir dir="${distribution.jars}" />
 		<jar destfile="${distribution.jars}/${maven.group}/${maven.artifact}/${version}/${maven.artifact}.jar" basedir="${cache.classes}" />
 	</target>
