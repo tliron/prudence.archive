@@ -3851,6 +3851,66 @@ reference "../tasks/"
 \end_layout
 
 \begin_layout Section
+2.0
+\end_layout
+
+\begin_layout Subsection
+default.js
+\end_layout
+
+\begin_layout Subsection
+settings.js
+\end_layout
+
+\begin_layout Standard
+app.settings.description
+\end_layout
+
+\begin_layout Standard
+app.settings.errors
+\end_layout
+
+\begin_layout Standard
+app.settings.code
+\end_layout
+
+\begin_layout Standard
+app.settings.uploads
+\end_layout
+
+\begin_layout Standard
+app.settings.mediaTypes
+\end_layout
+
+\begin_layout Standard
+app.globals
+\end_layout
+
+\begin_layout Standard
+app.sharedGlobals
+\end_layout
+
+\begin_layout Subsection
+routing.js
+\end_layout
+
+\begin_layout Standard
+app.hosts
+\end_layout
+
+\begin_layout Standard
+app.routes
+\end_layout
+
+\begin_layout Standard
+app.dispatch
+\end_layout
+
+\begin_layout Subsection
+crontab
+\end_layout
+
+\begin_layout Section
 The Prudence Instance
 \begin_inset CommandInset label
 LatexCommand label

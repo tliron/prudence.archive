@@ -20,10 +20,12 @@ Prudence.Routing = Prudence.Routing || function() {
     		// Always at the beginning
     		uri = '/' + uri
     	}
+    	/*
     	if ((uri != '/') && (uri[uri.length - 1] != '/')) {
     		// Always at the end
     		uri += '/'
     	}
+    	*/
     	return uri
     }
 
@@ -55,6 +57,7 @@ Prudence.Routing = Prudence.Routing || function() {
     		this.root = Sincerity.Container.here
         	this.settings = {}
         	this.globals = {}
+        	this.sharedGlobals = {}
     		this.hosts = {}
         	this.routes = {}
         	this.dispatch = {}
@@ -107,17 +110,6 @@ Prudence.Routing = Prudence.Routing || function() {
     		// Logger
     		this.context.logger = LoggingUtil.getRestletLogger(this.settings.logger)
     		
-    		// Status service
-    		this.instance.statusService = new DelegatedStatusService(this.settings.code.sourceViewable ? '/source/' : null)
-			this.instance.statusService.debugging = true == this.settings.errors.debug
-			if (Sincerity.Objects.exists(this.settings.errors.homeUrl)) {
-				println('Home URL: "{0}"'.cast(this.settings.errors.homeUrl))
-				this.instance.statusService.homeRef = new Reference(this.settings.errors.homeUrl)
-			}
-			if (Sincerity.Objects.exists(this.settings.errors.contactEmail)) {
-				this.instance.statusService.contactEmail = this.settings.errors.contactEmail
-			}
-
     		// Description
 			if (Sincerity.Objects.exists(this.settings.description.name)) {
 				this.instance.name = this.settings.description.name
@@ -142,7 +134,7 @@ Prudence.Routing = Prudence.Routing || function() {
 			}
 
 			// Trailing-slash redirector
-		    var addTrailingSlashRedirector = new Redirector(this.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)
+		    this.addTrailingSlashRedirector = new Redirector(this.context, '{ri}/', Redirector.MODE_CLIENT_PERMANENT)
 
     		// Default internal host to subdirectory name
     		if (!Sincerity.Objects.exists(this.hosts.internal)) {
@@ -156,12 +148,34 @@ Prudence.Routing = Prudence.Routing || function() {
         			throw new SavoryException('Unknown host: ' + name)
         		}
         		var uri = Module.cleanBaseUri(this.hosts[name])
+        		if (name == 'internal') {
+        			this.internalName = uri.substring(1)
+        		}
         		println('Attaching application to "{0}" on host "{1}"'.cast(uri, name))
         		if (uri != '') {
-        			host.attach(uri, addTrailingSlashRedirector).matchingMode = Template.MODE_EQUALS
+        			host.attach(uri, this.addTrailingSlashRedirector).matchingMode = Template.MODE_EQUALS
         		}
         		host.attach(uri, this.instance)
         	}
+
+    		// Status service
+    		this.instance.statusService = new DelegatedStatusService(this.settings.code.sourceViewable ? '/source/' : null)
+			this.instance.statusService.debugging = true == this.settings.errors.debug
+			delete this.settings.errors.debug
+			if (Sincerity.Objects.exists(this.settings.errors.homeUrl)) {
+				println('Home URL: "{0}"'.cast(this.settings.errors.homeUrl))
+				this.instance.statusService.homeRef = new Reference(this.settings.errors.homeUrl)
+				delete this.settings.errors.homeUrl
+			}
+			if (Sincerity.Objects.exists(this.settings.errors.contactEmail)) {
+				this.instance.statusService.contactEmail = this.settings.errors.contactEmail
+				delete this.settings.errors.contactEmail
+			}
+			for (var code in this.settings.errors) {
+				var uri = this.settings.errors[code]
+				println('Capturing error code: {0} to "{1}"'.cast(code, uri))
+				this.instance.statusService.capture(code, this.internalName, uri, this.context)
+			}
 
         	// Inbound root
         	this.instance.inboundRoot = new PrudenceRouter(this.context)
@@ -272,7 +286,11 @@ Prudence.Routing = Prudence.Routing || function() {
 
         		restlet = this.createRestlet(restlet, uri)
         		if (Sincerity.Objects.exists(restlet)) {
-	        		if (attachBase) {
+        			if (restlet == 'hidden') {
+                		println('Hiding "{0}"'.cast(uri))
+        				this.instance.inboundRoot.hide(uri)
+        			}
+        			else if (attachBase) {
 	            		println('Attaching "{0}*" to {1}'.cast(uri, restlet['class'].simpleName))
 	        			this.instance.inboundRoot.attachBase(uri, restlet)
 	        		}
@@ -280,6 +298,9 @@ Prudence.Routing = Prudence.Routing || function() {
 	            		println('Attaching "{0}" to {1}'.cast(uri, restlet['class'].simpleName))
 	        			this.instance.inboundRoot.attach(uri, restlet).matchingMode = Template.MODE_EQUALS
 	        		}
+        		}
+        		else {
+        			throw new SincerityException('Unsupported restlet for "{0}"'.cast(uri))
         		}
         	}
 
@@ -298,15 +319,23 @@ Prudence.Routing = Prudence.Routing || function() {
 			}
 
 			// Allow access to component
-			// (This can be considered a security breach, because it allows applications to access other applications)
-			this.globals['com.threecrickets.prudence.component'] = component
+			if (!Sincerity.Objects.ensure(this.settings.isolate, false)) {
+				// (This can be considered a security breach, because it allows applications to access other applications)
+				this.globals['com.threecrickets.prudence.component'] = component
+			}
 			
 			// Apply globals
         	var globals = Sincerity.Objects.flatten(this.globals)
         	for (var name in globals) {
         		this.context.attributes.put(name, globals[name])
         	}
-			
+
+			// Apply shared globals
+        	var sharedGlobals = Sincerity.Objects.flatten(this.sharedGlobals)
+        	for (var name in sharedGlobals) {
+        		component.context.attributes.put(name, sharedGlobals[name])
+        	}
+
 			// Preheat tasks
 			var internal = String(this.hosts.internal).replace(/\//g, '')
 			for (var p in this.preheat) {
@@ -334,9 +363,7 @@ Prudence.Routing = Prudence.Routing || function() {
     		}
     		else if (Sincerity.Objects.isString(restlet)) {
     			if (restlet == 'hidden') {
-            		println('Hiding "{0}"'.cast(uri))
-    				this.instance.inboundRoot.hide(uri)
-    				return null
+    				return restlet
     			}
     			else if (restlet[0] == '/') {
     				/*for (var i = this.instance.inboundRoot.routes.iterator(); i.hasNext(); ) {
@@ -406,20 +433,6 @@ Prudence.Routing = Prudence.Routing || function() {
     	
     	return Public    
     }(Public))
-
-	/**
-	 * @class
-	 * @name Prudence.Restlet
-	 */
-    Public.Resource = Sincerity.Classes.define(function() {
-		/** @exports Public as Prudence.Restlet */
-    	var Public = {}
-    	
-    	Public.create = function(app, uri) {
-    	}
-    	
-    	return Public
-    }())
 
 	/**
 	 * @class
@@ -791,6 +804,53 @@ Prudence.Routing = Prudence.Routing || function() {
     	return Public
     }(Public))
     
+	/**
+	 * @class
+	 * @name Prudence.Resource
+	 * @augments Prudence.Restlet 
+	 */
+    Public.Resource = Sincerity.Classes.define(function(Module) {
+		/** @exports Public as Prudence.Resource */
+    	var Public = {}
+    	
+	    /** @ignore */
+    	Public._inherit = Module.Restlet
+
+		/** @ignore */
+    	Public._configure = ['class']
+
+    	Public.create = function(app, uri) {
+    		importClass(org.restlet.resource.Finder)
+    		
+    		var theClass = Sincerity.JVM.getClass(this['class'])
+    		if (null === theClass) {
+    			throw new SavoryException('Cannot load class: ' + this['class'])
+    		}
+    		return new Finder(app.context, theClass)
+    	}
+    	
+    	return Public
+    }(Public))
+
+	/**
+	 * @class
+	 * @name Prudence.AddSlash
+	 * @augments Prudence.Restlet 
+	 */
+    Public.AddSlash = Sincerity.Classes.define(function(Module) {
+		/** @exports Public as Prudence.AddSlash */
+    	var Public = {}
+    	
+	    /** @ignore */
+    	Public._inherit = Module.Restlet
+
+    	Public.create = function(app, uri) {
+    		return app.addTrailingSlashRedirector
+    	}
+    	
+    	return Public
+    }(Public))
+
     /**
 	 * @class
 	 * @name Prudence.Filter
