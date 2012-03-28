@@ -327,13 +327,17 @@ Prudence.Routing = Prudence.Routing || function() {
 			// Apply globals
         	var globals = Sincerity.Objects.flatten(this.globals)
         	for (var name in globals) {
-        		this.context.attributes.put(name, globals[name])
+        		if (null !== globals[name]) {
+        			this.context.attributes.put(name, globals[name])
+        		}
         	}
 
 			// Apply shared globals
         	var sharedGlobals = Sincerity.Objects.flatten(this.sharedGlobals)
         	for (var name in sharedGlobals) {
-        		component.context.attributes.put(name, sharedGlobals[name])
+        		if (null !== sharedGlobals[name]) {
+        			component.context.attributes.put(name, sharedGlobals[name])
+        		}
         	}
 
 			// Preheat tasks
