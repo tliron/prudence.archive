@@ -167,7 +167,7 @@
 	
 	<target name="package" depends="distribution" description="Create distribution package">
 		<zip destfile="${distribution}/${component}-${version}.zip">
-			<fileset dir="${distribution.content}" />
+			<fileset dir="${distribution.content}" excludes="cache/, logs/" />
 		</zip>
 	</target>
 	
