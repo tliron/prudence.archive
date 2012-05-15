@@ -16,6 +16,12 @@
 	<property name="component.source" value="../components/${component}/source" />
 	<property name="component.notices" value="../components/notices" />
 	<property name="reference" value="../components/reference" />
+	<property name="javascript-library" value="../components/prudence-javascript-library" />
+	<property name="skeleton" value="../components/skeleton" />
+	<property name="example" value="../components/example" />
+	<property name="admin" value="../components/admin" />
+	<property name="stickstick-common" value="../components/stickstick-common" />
+	<property name="stickstick-javascript" value="../components/stickstick-javascript" />
 	
 	<property name="dependencies" value="../dependencies" />
 
@@ -45,7 +51,7 @@
 
 	<target name="classes" depends="dependencies" description="Compile Java code">
 		<mkdir dir="${cache.classes}" />
-		<javac srcdir="${component.source}" destdir="${cache.classes}" source="${jvm.version}" target="${jvm.version}" includeAntRuntime="false" debug="${compile.debug}">
+		<javac srcdir="${component.source}" destdir="${cache.classes}" source="${jvm.version}" target="${jvm.version}" includeAntRuntime="no" debug="${compile.debug}">
 			<classpath refid="dependencies" />
 		</javac>
 	</target>
@@ -127,12 +133,35 @@
 		<jar destfile="${distribution.jars}/${maven.artifact}.jar" basedir="${cache.classes}" />
 	</target>
 
-	<target name="distribution" depends="libraries, javadocs, manual" description="Assemble distribution">
+	<target name="sincerity" description="Create Sincerity container">
+		<copy todir="${distribution.content}/configuration/sincerity">
+			<fileset dir="sincerity" />
+		</copy>
+		<exec executable="${sincerity.home}/sincerity">
+			<arg value="container:create" />
+			<arg value="--force" />
+			<arg value="${distribution.content}" />
+			<arg value="${sincerity.template}" />
+			<arg value=":" />
+			<arg value="repositories:attach" />
+			<arg value="three-crickets" />
+			<arg value=":" />
+			<arg value="install" />
+		</exec>
+	</target>
+
+	<target name="distribution" depends="sincerity, libraries, javadocs, manual" description="Assemble distribution">
 		<copy todir="${distribution.source}">
 			<fileset dir="${component.source}" />
 		</copy>
 		<copy todir="${distribution.content}">
 			<fileset dir="${component.notices}" />
+			<fileset dir="${javascript-library}" />
+			<fileset dir="${skeleton}" />
+			<fileset dir="${example}" />
+			<fileset dir="${admin}" />
+			<fileset dir="${stickstick-common}" />
+			<fileset dir="${stickstick-javascript}" />
 		</copy>
 	</target>
 	

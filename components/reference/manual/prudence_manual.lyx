@@ -855,193 +855,6 @@ reference "../manual/tutorial/"
 \end_layout
 
 \begin_layout Section
-Overview
-\end_layout
-
-\begin_layout Subsection
-Prudence Is Really REST
-\end_layout
-
-\begin_layout Standard
-Most frameworks are function-oriented: they connect a URL to a function
- that processes the user's request and generates a representation.
- The most minimal frameworks do this directly.
- The more elaborate provide you with a functional dispatching layer that
- enforces a standard, configurable space.
- This layer is often called a 
-\begin_inset Quotes eld
-\end_inset
-
-controller,
-\begin_inset Quotes erd
-\end_inset
-
- and is the core of the Model-View-Controller pattern: on the one side you
- have 
-\begin_inset Quotes eld
-\end_inset
-
-models,
-\begin_inset Quotes erd
-\end_inset
-
- and on the other there are 
-\begin_inset Quotes eld
-\end_inset
-
-views,
-\begin_inset Quotes erd
-\end_inset
-
- which are the dynamically generated representations sent to the client.
- MVC is attractive because the plumbing is all handle by the controller:
- you just have to configure it.
- But it's also not very attractive, because configuration can only take
- you so far.
- In any non-trivial application you 
-\emph on
-do
-\emph default
- care about the plumbing, and may find yourself having to hack deep into
- the controller implementation of your framework.
- This is not fun, and the results are often awkward compromises.
- It's indeed from this perspective that extreme minimalist frameworks, such
- as Sinatra and Node.js are rising in popularity: developers would rather
- implement the plumbing on their own rather than have to fight with someone
- else's.
-\end_layout
-
-\begin_layout Standard
-But the plumbing is anything but trivial.
- More often than not, the do-it-yourself approach conveniently passes over
- the hard parts of HTTP, even though they are very rewarding: content negotiatio
-n, conditional requests, linking client-side caching to server-side cache
- backends.
- Minimalism is aesthetically, but you end up throwing the baby out with
- the bathwater.
- 
-\end_layout
-
-\begin_layout Standard
-Prudence takes a fresh look at the problem.
- In some ways, it's more like the 
-\begin_inset Quotes eld
-\end_inset
-
-big
-\begin_inset Quotes erd
-\end_inset
-
- frameworks, in that it implements a configurable controller layer of sorts.
- But, it's 
-\emph on
-not
-\emph default
- MVC: in Prudence, the 
-\emph on
-model is the view
-\emph default
-.
- This singular concept is called a 
-\begin_inset Quotes eld
-\end_inset
-
-resource,
-\begin_inset Quotes erd
-\end_inset
-
- and we call working with resources a 
-\begin_inset Quotes eld
-\end_inset
-
-resource-oriented architecture.
-\begin_inset Quotes erd
-\end_inset
-
- You may have heard this called REST, but the two concepts are one and the
- same: 
-\begin_inset Quotes eld
-\end_inset
-
-resource-oriented
-\begin_inset Quotes erd
-\end_inset
-
- comes at it from the application level, while REST looks at the same architectu
-re from its infrastructure.
-\end_layout
-
-\begin_layout Standard
-This doesn't mean that Prudence can't do traditional MVC.
- In fact, this manual includes a whole chapter on how to do MVC with Prudence,
- without losing most of the benefits of REST.
- At the same time, it encourages you to take a step back and look at your
- problem from a resource-oriented approach.
- Mixing both approaches for different parts of your application can work
- very well.
-\end_layout
-
-\begin_layout Standard
-One of the consequences of REST is that a function-oriented paradigm isn't
- good enough, because a 
-\begin_inset Quotes eld
-\end_inset
-
-resource
-\begin_inset Quotes erd
-\end_inset
-
- is conceptually stateful, not functional.
- 
-\begin_inset Quotes eld
-\end_inset
-
-Functions
-\begin_inset Quotes erd
-\end_inset
-
- in REST are no more and no less than the limited set of HTTP verbs: GET,
- POST, PUT, DELETE (and a few minor others), which act upon your resources.
- It ends up being more like simple edge case of 
-\begin_inset Quotes eld
-\end_inset
-
-object,
-\begin_inset Quotes erd
-\end_inset
-
- as the term is used in object-oriented architecture: we're encapsulating
- state with functionality, but the functionality is always the same.
- What this means is that Prudence is actually very minimal after all: you
- connect a URL to a 
-\begin_inset Quotes eld
-\end_inset
-
-resource
-\begin_inset Quotes erd
-\end_inset
-
- (instead of a function) with a standard, simple interface, and the entire
- Prudence framework -- and, indeed, the entire infrastructure of the internet
- -- is optimized for that one task.
-\end_layout
-
-\begin_layout Standard
-It's that last part that makes REST especially exciting: instead of abstracting
- away HTTP, like so many conventional web development frameworks have attempted
- with mixed success, in Prudence you are embracing HTTP.
- Out in the open, not hidden away from you from your framework, you might
- be surprised to discover how well thought-out, rich and scalable this protocol
- is.
- After all, it runs the biggest application ever created: the world wide
- web.
-\end_layout
-
-\begin_layout Section
-Different Kinds of Resources
-\end_layout
-
-\begin_layout Section
 How to Choose a Flavor?
 \begin_inset CommandInset label
 LatexCommand label
@@ -3851,63 +3664,960 @@ reference "../tasks/"
 \end_layout
 
 \begin_layout Section
-2.0
+Overview 2.0
+\end_layout
+
+\begin_layout Standard
+This section will provide you with a bird's-eye view of all of Prudence's
+ aspects and features, with links to the in-depth documentation.
+\end_layout
+
+\begin_layout Standard
+For a hands-on approach to building an application from the ground up, see
+ the tutorial.
 \end_layout
 
 \begin_layout Subsection
+Prudence Is Really REST
+\end_layout
+
+\begin_layout Standard
+Most frameworks are function-oriented: they connect a URL to a function
+ that processes the user's request and generates a representation.
+ The most minimal frameworks do this directly.
+ The more elaborate provide you with a functional dispatching layer that
+ enforces a standard, configurable space.
+ This layer is often called a 
+\begin_inset Quotes eld
+\end_inset
+
+controller,
+\begin_inset Quotes erd
+\end_inset
+
+ and is the core of the Model-View-Controller pattern: on the one side you
+ have 
+\begin_inset Quotes eld
+\end_inset
+
+models,
+\begin_inset Quotes erd
+\end_inset
+
+ and on the other there are 
+\begin_inset Quotes eld
+\end_inset
+
+views,
+\begin_inset Quotes erd
+\end_inset
+
+ which are the dynamically generated representations sent to the client.
+ MVC is attractive because the plumbing is all handle by the controller:
+ you just have to configure it.
+ But it's also not very attractive, because configuration can only take
+ you so far.
+ In any non-trivial application you 
+\emph on
+do
+\emph default
+ care about the plumbing, and may find yourself having to hack deep into
+ the controller implementation of your framework.
+ This is not fun, and the results are often awkward compromises.
+ It's indeed from this perspective that extreme minimalist frameworks, such
+ as Sinatra and Node.js are rising in popularity: developers would rather
+ implement the plumbing on their own rather than have to fight with someone
+ else's.
+\end_layout
+
+\begin_layout Standard
+But the plumbing is anything but trivial.
+ More often than not, the do-it-yourself approach conveniently passes over
+ the hard parts of HTTP, even though they are very rewarding: content negotiatio
+n, conditional requests, linking client-side caching to server-side cache
+ backends.
+ Minimalism is aesthetically, but you end up throwing the baby out with
+ the bathwater.
+ 
+\end_layout
+
+\begin_layout Standard
+Prudence takes a fresh look at the problem.
+ In some ways, it's more like the 
+\begin_inset Quotes eld
+\end_inset
+
+big
+\begin_inset Quotes erd
+\end_inset
+
+ frameworks, in that it implements a configurable controller layer of sorts.
+ But, it's 
+\emph on
+not
+\emph default
+ MVC: in Prudence, the 
+\emph on
+model is the view
+\emph default
+.
+ This singular concept is called a 
+\begin_inset Quotes eld
+\end_inset
+
+resource,
+\begin_inset Quotes erd
+\end_inset
+
+ and we call working with resources a 
+\begin_inset Quotes eld
+\end_inset
+
+resource-oriented architecture.
+\begin_inset Quotes erd
+\end_inset
+
+ You may have heard this called REST, but the two concepts are one and the
+ same: 
+\begin_inset Quotes eld
+\end_inset
+
+resource-oriented
+\begin_inset Quotes erd
+\end_inset
+
+ comes at it from the application level, while REST looks at the same architectu
+re from its infrastructure.
+\end_layout
+
+\begin_layout Standard
+This doesn't mean that Prudence can't do traditional MVC.
+ In fact, this manual includes a whole chapter on how to do MVC with Prudence,
+ without losing most of the benefits of REST.
+ At the same time, it encourages you to take a step back and look at your
+ problem from a resource-oriented approach.
+ Mixing both approaches for different parts of your application can work
+ very well.
+\end_layout
+
+\begin_layout Standard
+One of the consequences of REST is that a function-oriented paradigm isn't
+ good enough, because a 
+\begin_inset Quotes eld
+\end_inset
+
+resource
+\begin_inset Quotes erd
+\end_inset
+
+ is conceptually stateful, not functional.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Functions
+\begin_inset Quotes erd
+\end_inset
+
+ in REST are no more and no less than the limited set of HTTP verbs: GET,
+ POST, PUT, DELETE (and a few minor others), which act upon your resources.
+ It ends up being more like simple edge case of 
+\begin_inset Quotes eld
+\end_inset
+
+object,
+\begin_inset Quotes erd
+\end_inset
+
+ as the term is used in object-oriented architecture: we're encapsulating
+ state with functionality, but the functionality is always the same.
+ What this means is that Prudence is actually very minimal after all: you
+ connect a URL to a 
+\begin_inset Quotes eld
+\end_inset
+
+resource
+\begin_inset Quotes erd
+\end_inset
+
+ (instead of a function) with a standard, simple interface, and the entire
+ Prudence framework -- and, indeed, the entire infrastructure of the Internet
+ -- is optimized for that one task.
+\end_layout
+
+\begin_layout Standard
+It's that last part that makes REST especially exciting: instead of abstracting
+ away HTTP, like so many conventional web development frameworks have attempted
+ with mixed success, in Prudence you are embracing HTTP.
+ Out in the open, not hidden away from you from your framework, you might
+ be surprised to discover how well thought-out, rich and scalable this protocol
+ is.
+ After all, it runs the biggest application ever created: the world wide
+ web.
+\end_layout
+
+\begin_layout Subsection
+Installing and Running
+\end_layout
+
+\begin_layout Standard
+A single Prudence instance is called a 
+\begin_inset Quotes eld
+\end_inset
+
+container,
+\begin_inset Quotes erd
+\end_inset
+
+ and it is installed and managed by a tool called Sincerity.
+ With Sincerity, you can install Prudence into any directory, manage additional
+ features, and add third-party libraries.
+ You can create as many containers as you want: simply delete them the directory
+ if you have no need for them anymore.
+ Containers make it easy to test new ideas, develop and deploy your final
+ product.
+\end_layout
+
+\begin_layout Standard
+A Prudence container runs as a single multithreaded JVM process.
+ In runtime, it is manifested as a single REST 
+\begin_inset Quotes eld
+\end_inset
+
+component.
+\begin_inset Quotes erd
+\end_inset
+
+ It's important to understand that a single component can be attached to
+ several HTTP servers, running on different ports, and support many applications
+ running on many virtual hosts (domain names).
+ This means that a single Prudence container, indeed a single process, can
+ happily handle many sites and services simultaneously.
+ The RAM and CPU footprint is so slim that you may be surprised at how much
+ you can do with a single Prudence instance.
+\end_layout
+
+\begin_layout Standard
+That said, Prudence provides tools for letting you easily hook up many running
+ instances into a cluster.
+ This lets you share data and farm tasks between several running instances,
+ whether they are running in a single machine or in a grid (
+\begin_inset Quotes eld
+\end_inset
+
+cloud
+\begin_inset Quotes erd
+\end_inset
+
+).
+ This feature is crucial, of course, for scalability and robustness.
+\end_layout
+
+\begin_layout Standard
+Here's an example of a deployment topology for a high-volume web service:
+\end_layout
+
+\begin_layout Standard
+[Drawing: several components, each with multiple servers and apps, distributed
+ globals and tasks.]
+\end_layout
+
+\begin_layout Subsection
+The Structure of a Container
+\end_layout
+
+\begin_layout Standard
+After you install the Prudence skeleton into a container, you will have
+ the following directory structure:
+\end_layout
+
+\begin_layout Subsubsection
+/component/
+\end_layout
+
+\begin_layout Subsubsection
+/component/servers/
+\end_layout
+
+\begin_layout Subsubsection
+/component/clients/
+\end_layout
+
+\begin_layout Subsubsection
+/component/services/
+\end_layout
+
+\begin_layout Subsubsection
+/component/applications/
+\end_layout
+
+\begin_layout Subsubsection
+/libraries/jars/
+\end_layout
+
+\begin_layout Subsubsection
+/libraries/scripturian/
+\end_layout
+
+\begin_layout Subsubsection
+/libraries/web/
+\end_layout
+
+\begin_layout Standard
+/configuration/logging/
+\end_layout
+
+\begin_layout Standard
+/configuration/service/
+\end_layout
+
+\begin_layout Standard
+/configuration/hazelcast.conf
+\end_layout
+
+\begin_layout Subsection
+The Structure of an Application
+\end_layout
+
+\begin_layout Subsubsection
 default.js
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+document.executeOnce('/sincerity/container/')
+\end_layout
+
+\begin_layout Plain Layout
+
+document.executeOnce('/prudence/routing/')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+var app = new Prudence.Routing.Application()
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Sincerity.Container.execute('settings')
+\end_layout
+
+\begin_layout Plain Layout
+
+Sincerity.Container.execute('routing')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+app = app.create(component)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// Restlets
+\end_layout
+
+\begin_layout Plain Layout
+
+Sincerity.Container.executeAll('restlets') 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
 settings.js
 \end_layout
 
 \begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+app.settings = {
+\end_layout
+
+\begin_layout Plain Layout
+
+	description: {
+\end_layout
+
+\begin_layout Plain Layout
+
+		name: 'Prudence Example',
+\end_layout
+
+\begin_layout Plain Layout
+
+		description: 'The example application for the Prudence skeleton',
+\end_layout
+
+\begin_layout Plain Layout
+
+		author: 'Three Crickets',
+\end_layout
+
+\begin_layout Plain Layout
+
+		owner: 'Prudence'
+\end_layout
+
+\begin_layout Plain Layout
+
+	},
+\end_layout
+
+\begin_layout Plain Layout
+
+	errors: {
+\end_layout
+
+\begin_layout Plain Layout
+
+		debug: true,
+\end_layout
+
+\begin_layout Plain Layout
+
+		homeUrl: 'http://threecrickets/prudence/', // Only used when debug=false
+\end_layout
+
+\begin_layout Plain Layout
+
+		contactEmail: 'info@threecrickets.com' // Only used when debug=false
+\end_layout
+
+\begin_layout Plain Layout
+
+	}, 
+\end_layout
+
+\begin_layout Plain Layout
+
+	code: {
+\end_layout
+
+\begin_layout Plain Layout
+
+		libraries: ['libraries'], // Handlers and tasks will be found here
+\end_layout
+
+\begin_layout Plain Layout
+
+		defrost: true,
+\end_layout
+
+\begin_layout Plain Layout
+
+		minimumTimeBetweenValidityChecks: 1000,
+\end_layout
+
+\begin_layout Plain Layout
+
+		defaultDocumentName: 'default',
+\end_layout
+
+\begin_layout Plain Layout
+
+		defaultExtension: 'js',
+\end_layout
+
+\begin_layout Plain Layout
+
+		defaultLanguageTag: 'javascript',
+\end_layout
+
+\begin_layout Plain Layout
+
+		sourceViewable: true
+\end_layout
+
+\begin_layout Plain Layout
+
+	}, 
+\end_layout
+
+\begin_layout Plain Layout
+
+	uploads: {
+\end_layout
+
+\begin_layout Plain Layout
+
+		root: 'uploads'
+\end_layout
+
+\begin_layout Plain Layout
+
+		sizeThreshold: 0
+\end_layout
+
+\begin_layout Plain Layout
+
+	}, 
+\end_layout
+
+\begin_layout Plain Layout
+
+	mediaTypes: {
+\end_layout
+
+\begin_layout Plain Layout
+
+		php: 'text/html'
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+} 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
 app.settings.description
 \end_layout
 
-\begin_layout Standard
+\begin_layout Paragraph
 app.settings.errors
 \end_layout
 
-\begin_layout Standard
+\begin_layout Paragraph
 app.settings.code
 \end_layout
 
-\begin_layout Standard
+\begin_layout Paragraph
 app.settings.uploads
 \end_layout
 
-\begin_layout Standard
+\begin_layout Paragraph
 app.settings.mediaTypes
 \end_layout
 
-\begin_layout Standard
+\begin_layout Paragraph
 app.globals
 \end_layout
 
-\begin_layout Standard
+\begin_layout Paragraph
 app.sharedGlobals
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 routing.js
 \end_layout
 
 \begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+app.hosts = {
+\end_layout
+
+\begin_layout Plain Layout
+
+	'default': '/scripturian/',
+\end_layout
+
+\begin_layout Plain Layout
+
+	internal: '/scripturian/'
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+app.routes = {
+\end_layout
+
+\begin_layout Plain Layout
+
+	'/*': [
+\end_layout
+
+\begin_layout Plain Layout
+
+		'explicit',
+\end_layout
+
+\begin_layout Plain Layout
+
+		'dynamicWeb',
+\end_layout
+
+\begin_layout Plain Layout
+
+		{type: 'cacheControl', mediaTypes: {'image/png': 60*5, 'image/jpeg': 60*5},
+ next: [
+\end_layout
+
+\begin_layout Plain Layout
+
+			'staticWeb',
+\end_layout
+
+\begin_layout Plain Layout
+
+			{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}
+\end_layout
+
+\begin_layout Plain Layout
+
+		]}
+\end_layout
+
+\begin_layout Plain Layout
+
+	]
+\end_layout
+
+\begin_layout Plain Layout
+
+} 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Reserved strings: 
+\begin_inset Quotes eld
+\end_inset
+
+hidden
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+explicit
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+dynamicWeb
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+staticWeb
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+cacheControl
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+javaScriptUnifyMinify
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+cssUnifyMinify
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+filter
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+addSlash
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+resource
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+chain
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+capture
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+implicit
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There can be only one 
+\begin_inset Quotes eld
+\end_inset
+
+explicit
+\begin_inset Quotes erd
+\end_inset
+
+ and one 
+\begin_inset Quotes eld
+\end_inset
+
+dynamicWeb
+\begin_inset Quotes erd
+\end_inset
+
+, but there can be many 
+\begin_inset Quotes eld
+\end_inset
+
+staticWeb
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Paragraph
 app.hosts
 \end_layout
 
-\begin_layout Standard
+\begin_layout Paragraph
 app.routes
 \end_layout
 
-\begin_layout Standard
+\begin_layout Paragraph
 app.dispatch
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Paragraph
+app.preheat
+\end_layout
+
+\begin_layout Subsubsection
 crontab
+\end_layout
+
+\begin_layout Subsubsection
+/libraries/
+\end_layout
+
+\begin_layout Subsubsection
+/mapped/
+\end_layout
+
+\begin_layout Subsubsection
+/fragments/
+\end_layout
+
+\begin_layout Subsection
+Resources
+\end_layout
+
+\begin_layout Standard
+There are three kinds of resources in Prudence:
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Explicit resources.
+
+\series default
+ You provide straightforward hooks for the REST verbs, and leave it to Prudence
+ encapsulate them into a unified resource.
+ Prudence supports resources written in JavaScript, Python, Ruby, PHP, Groovy
+ and Clojure, and provides a rich API to help you create and parse representatio
+ns.
+ There are two ways to route explicit resources:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+You can write your own dispatch code, giving you full control over which
+ resource handles which request.
+\end_layout
+
+\begin_layout Itemize
+Just put your code in a single file in the 
+\begin_inset Quotes eld
+\end_inset
+
+/mapped/
+\begin_inset Quotes erd
+\end_inset
+
+ directory, and let Prudence hook it directly to a URI.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\series bold
+Static resources.
+
+\series default
+ These are files that are served 
+\begin_inset Quotes eld
+\end_inset
+
+as is
+\begin_inset Quotes erd
+\end_inset
+
+ to clients, meaning only GET is supported, and there is only one representation.
+ With static resources, Prudence behaves essentially like a regular web
+ server: you put the files in the 
+\begin_inset Quotes eld
+\end_inset
+
+/mapped/
+\begin_inset Quotes erd
+\end_inset
+
+ directory, and Prudence hooks each to a URI.
+ That said, static resources are not entirely trivial, since they may be
+ cached on the client, and thus support conditional requests.
+ Prudence includes tools to help you control client-side caching, as well
+ as configuration of the MIME types reported to the client.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Text-with-scriptlets resources.
+
+\series default
+ These files seem like static textual resources, except that they can contain
+ specially demarcated sections of code known as 
+\begin_inset Quotes eld
+\end_inset
+
+scriptlets
+\begin_inset Quotes erd
+\end_inset
+
+ (even though they are typically compiled).
+ This is a powerful way to generate HTML dynamically.
+ Prudence provides a powerful system for caching your representations, so
+ that scriptlets will not have to be run every time the resource is accessed.
+ It supports scriptlets written in JavaScript, Python, Ruby, PHP, Groovy,
+ Clojure and Velocity, and even lets you mix scriptlets of different languages
+ in the same document.
+\end_layout
+
+\begin_layout Subsection
+MVC in Prudence
+\end_layout
+
+\begin_layout Standard
+Though the MVC (Model-View-Controller) pattern, in the strict sense, fits
+ rather awkwardly with the REST paradigm, Prudence does make it easy to
+ separate your HTML 
+\begin_inset Quotes eld
+\end_inset
+
+view
+\begin_inset Quotes erd
+\end_inset
+
+ code from the code that handles your data 
+\begin_inset Quotes eld
+\end_inset
+
+model
+\begin_inset Quotes erd
+\end_inset
+
+ and its logic.
+ This can lead to more manageable code.
+\end_layout
+
+\begin_layout Subsection
+Prudence JavaScript Library
 \end_layout
 
 \begin_layout Section

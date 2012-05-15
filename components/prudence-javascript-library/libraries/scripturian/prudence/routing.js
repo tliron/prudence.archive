@@ -567,7 +567,7 @@ Prudence.Routing = Prudence.Routing || function() {
         	// Common fragments
         	var commonFragmentsDocumentSource = app.component.context.attributes.get('prudence.fragmentsDocumentSource')
         	if (!Sincerity.Objects.exists(commonFragmentsDocumentSource)) {
-	    		var library = sincerity.container.getFile('component', 'fragments')
+	    		var library = sincerity.container.getFile('libraries', 'prudence')
 				commonFragmentsDocumentSource = app.createDocumentSource(library, null, this.defaultDocumentName, this.defaultExtenion)
 	    		app.component.context.attributes.put('prudence.fragmentsDocumentSource', commonFragmentsDocumentSource)
         	}
