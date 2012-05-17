@@ -1,18 +1,13 @@
 
-importClass(
-	java.lang.Runtime,
-	java.lang.System,
-	java.util.concurrent.Executors)
-
 var executorTasks = []
-var executor = Executors.newScheduledThreadPool(Runtime.runtime.availableProcessors() * 2 + 1)
+var executor = java.util.concurrent.Executors.newScheduledThreadPool(java.lang.Runtime.runtime.availableProcessors() * 2 + 1)
 component.context.attributes.put('com.threecrickets.prudence.executor', executor)
 
 initializers.push(function() {
-	var fixedExecutor = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors() * 2 + 1)
+	var fixedExecutor = java.util.concurrent.Executors.newFixedThreadPool(java.lang.Runtime.runtime.availableProcessors() * 2 + 1)
 	if (executorTasks.length > 0) {
 		var futures = []
-		var startTime = System.currentTimeMillis()
+		var startTime = java.lang.System.currentTimeMillis()
 		println('Executing ' + executorTasks.length + ' startup tasks...')
 		for (var t in executorTasks) {
 			futures.push(fixedExecutor.submit(executorTasks[t]))
@@ -22,7 +17,7 @@ initializers.push(function() {
 				futures[f].get()
 			} catch(x) {}
 		}
-		println('Finished all startup tasks in ' + ((System.currentTimeMillis() - startTime) / 1000) + ' seconds.')
+		println('Finished all startup tasks in ' + ((java.lang.System.currentTimeMillis() - startTime) / 1000) + ' seconds.')
 	}
 	
 	/*for (var i = applications.iterator(); i.hasNext(); ) {
