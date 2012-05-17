@@ -97,6 +97,9 @@ public class CssUnifyMinifyFilter extends UnifyMinifyFilter
 		}
 	}
 
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
 	/**
 	 * Add description.
 	 */

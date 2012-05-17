@@ -9,7 +9,7 @@ body {
 	margin-bottom: 0px;
 	__background-color: #e0ffe0;
 	background: url(../media/background.png); /* From: http://www.eosdev.com/Backgrounds/Back_Tilework/EosTilework2h.htm */
-	font-family: 'Lucida Sans Unicode', 'Lucida Grande', Verdana, Arial, sans-serif;
+	font-family: Lucida Sans Unicode, Lucida Grande, Verdana, Arial, sans-serif;
 	font-size: 12px;
 }
 
@@ -25,16 +25,16 @@ div#main-content {
 }
 
 h1 {
-	font-family: Georgia, Palatino, 'Times New Roman', serif;
+	font-family: Georgia, Palatino, Times New Roman, serif;
 	font-size: 28px;
 }
 h2 {
-	font-family: Georgia, Palatino, 'Times New Roman', serif;
+	font-family: Georgia, Palatino, Times New Roman, serif;
 	font-size: 22px;
 	margin-top: 42px;
 }
 h3 {
-	font-family: Georgia, Palatino, 'Times New Roman', serif;
+	font-family: Georgia, Palatino, Times New Roman, serif;
 	font-style: italic;
 	font-size: 14px;
 	margin-top: 28px;

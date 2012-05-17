@@ -92,6 +92,7 @@
 			<link href="http://threecrickets.com/scripturian/api/" />
 			<link href="http://docs.oracle.com/cd/E17802_01/products/products/servlet/2.5/docs/servlet-2_5-mr2/" />
 			<link href="http://dustin.github.com/java-memcached-client/apidocs/" />
+			<link href="http://www.zkoss.org/javadoc/latest/zuss/" />
 			<classpath refid="dependencies" />
 			<bottom>
 				<![CDATA[<i>${documentation.copyright}</i>]]>

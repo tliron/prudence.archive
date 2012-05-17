@@ -103,6 +103,9 @@ public class JavaScriptUnifyMinifyFilter extends UnifyMinifyFilter
 		}
 	}
 
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
 	/**
 	 * Add description.
 	 */

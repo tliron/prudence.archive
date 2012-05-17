@@ -954,6 +954,40 @@ Prudence.Routing = Prudence.Routing || function() {
 
     /**
 	 * @class
+	 * @name Prudence.Zuss
+	 * @augments Prudence.Restlet 
+	 */
+    Public.Zuss = Sincerity.Classes.define(function(Module) {
+		/** @exports Public as Prudence.Zuss */
+    	var Public = {}
+    	
+	    /** @ignore */
+    	Public._inherit = Module.Restlet
+
+		/** @ignore */
+    	Public._configure = ['root', 'next']
+
+    	Public.create = function(app, uri) {
+    		importClass(
+    			com.threecrickets.prudence.util.ZussFilter,
+    			java.io.File)
+   
+    		this.root = Sincerity.Objects.ensure(this.root, 'mapped')
+    		if (!(this.root instanceof File)) {
+    			this.root = new File(app.root, this.root).absoluteFile
+    		}
+
+    		this.next = app.createRestlet(this.next, uri)
+    		var filter = new ZussFilter(app.context, this.next, this.root, app.settings.code.minimumTimeBetweenValidityChecks)
+    		
+    		return filter
+    	}
+    	
+    	return Public
+    }(Public))
+
+    /**
+	 * @class
 	 * @name Prudence.CacheControl
 	 * @augments Prudence.Restlet 
 	 */

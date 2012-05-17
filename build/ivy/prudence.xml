@@ -26,5 +26,6 @@
 		<dependency org="com.threecrickets.scripturian" name="scripturian" rev="1.0.1" transitive="false" />
 		<dependency org="javax.servlet" name="servlet-api" rev="2.5" transitive="false" />
 		<dependency org="net.spy" name="spymemcached" rev="2.7.3" transitive="false" />
+		<dependency org="org.zkoss.zuss" name="zuss" rev="1.0.0" transitive="false"/>
 	</dependencies>
 </ivy-module>

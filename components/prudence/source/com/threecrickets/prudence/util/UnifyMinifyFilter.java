@@ -247,7 +247,10 @@ public abstract class UnifyMinifyFilter extends Filter
 						File file = new File( sourceDirectory, path ).getParentFile();
 
 						if( !file.isDirectory() )
+						{
 							response.setStatus( Status.CLIENT_ERROR_NOT_FOUND );
+							return Filter.STOP;
+						}
 
 						unify( file, minify );
 					}
