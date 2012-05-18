@@ -115,12 +115,12 @@
 			<fileset dir="${reference}/manual" excludes="*~" />
 		</copy>
 		<replace dir="${distribution.manual}" includes="${component}_manual.lyx" token="%VERSION%" value="${version}" />
-		<exec executable="lyx" failifexecutionfails="false">
+		<exec executable="${lyx}" failifexecutionfails="false">
 			<arg value="--export" />
 			<arg value="pdf" />
 			<arg value="${distribution.manual}/${component}_manual.lyx" />
 		</exec>
-		<exec executable="elyxer" failifexecutionfails="false">
+		<exec executable="${elyxer}" failifexecutionfails="false">
 			<arg value="--unicode" />
 			<arg value="--title" />
 			<arg value="${documentation.title} Manual" />
@@ -172,8 +172,47 @@
 			<zipfileset dir="${distribution.content}" includes="sincerity" filemode="755" />
 		</zip>
 	</target>
-	
-	<target name="build" depends="package" description="Build distribution" />
+
+	<target name="installer-installbuilder" depends="package" description="Create InstallBuilder installer">
+		<exec executable="${installbuilder}">
+			<arg value="build" />
+			<arg value="./installbuilder/${component}.xml" />
+			<arg value="linux-x64" />
+			<arg value="--license" />
+			<arg value="./installbuilder/license.xml" />
+		</exec>
+		<exec executable="${installbuilder}">
+			<arg value="build" />
+			<arg value="./installbuilder/${component}.xml" />
+			<arg value="linux" />
+				<arg value="--license" />
+				<arg value="./installbuilder/license.xml" />
+		</exec>
+		<exec executable="${installbuilder}">
+			<arg value="build" />
+			<arg value="./installbuilder/${component}.xml" />
+			<arg value="windows" />
+			<arg value="--license" />
+			<arg value="./installbuilder/license.xml" />
+		</exec>
+		<exec executable="${installbuilder}">
+			<arg value="build" />
+			<arg value="./installbuilder/${component}.xml" />
+			<arg value="osx" />
+			<arg value="--license" />
+			<arg value="./installbuilder/license.xml" />
+			<arg value="--setvars" />
+			<arg value="project.outputDirectory=${cache}" />
+		</exec>
+		<zip destfile="${distribution}/${component}-${version}-osx-installer.zip">
+			<zipfileset dir="${cache}/${component}-${version}-osx-installer.app" prefix="${component}-${version}-osx-installer.app" />
+		</zip>
+		<chmod perm="ugo+rx">
+			<fileset dir="${distribution}" includes="*.run" />
+		</chmod>
+	</target>
+
+	<target name="build" depends="distribution" description="Build distribution" />
 	
 	<target name="clean" description="Clean">
 		<delete dir="${cache}" />
