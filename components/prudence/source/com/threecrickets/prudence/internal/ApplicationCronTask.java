@@ -55,6 +55,21 @@ public class ApplicationCronTask extends Task
 	/**
 	 * Constructor.
 	 * 
+	 * @param application
+	 *        The Restlet application in which this task will execute
+	 * @param documentName
+	 *        The document name
+	 * @param code
+	 *        The code to execute
+	 */
+	public ApplicationCronTask( Application application, String code )
+	{
+		this( new ApplicationTask<Void>( application, code ) );
+	}
+
+	/**
+	 * Constructor.
+	 * 
 	 * @param applicationTask
 	 *        The application task
 	 */

@@ -14,6 +14,7 @@ package com.threecrickets.prudence;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
@@ -140,6 +141,36 @@ public class ApplicationTask<T> implements Callable<T>, Runnable
 		this.documentName = documentName;
 		this.entryPointName = entryPointName;
 		this.context = context;
+		code = null;
+	}
+
+	/**
+	 * Constructor using current Restlet application.
+	 * 
+	 * @param code
+	 *        The code to execute
+	 */
+	public ApplicationTask( String code )
+	{
+		this( Application.getCurrent(), code );
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param application
+	 *        The Restlet application in which this task will execute
+	 * @param code
+	 *        The code to execute
+	 */
+	public ApplicationTask( Application application, String code )
+	{
+		attributes = new ApplicationTaskAttributes( application );
+		this.application = application;
+		this.code = code;
+		documentName = getOnTheFlyName( code );
+		entryPointName = null;
+		context = null;
 	}
 
 	//
@@ -211,7 +242,12 @@ public class ApplicationTask<T> implements Callable<T>, Runnable
 
 			try
 			{
-				DocumentDescriptor<Executable> documentDescriptor = attributes.createDocumentOnce( documentName, false, true, true, false );
+				DocumentDescriptor<Executable> documentDescriptor;
+				if( code != null )
+					documentDescriptor = attributes.createDocumentOnce( documentName, code );
+				else
+					documentDescriptor = attributes.createDocumentOnce( documentName, false, true, true, false );
+
 				Executable executable = documentDescriptor.getDocument();
 
 				if( entryPointName == null )
@@ -354,4 +390,24 @@ public class ApplicationTask<T> implements Callable<T>, Runnable
 	 * The context made available to the task.
 	 */
 	private final Object context;
+
+	/**
+	 * The code to execute.
+	 */
+	private final String code;
+
+	private static final ConcurrentHashMap<String, String> onTheFlyNames = new ConcurrentHashMap<String, String>();
+
+	private static String getOnTheFlyName( String code )
+	{
+		String name = onTheFlyNames.get( code );
+		if( name == null )
+		{
+			name = Executable.createOnTheFlyName();
+			String existing = onTheFlyNames.putIfAbsent( code, name );
+			if( existing != null )
+				name = existing;
+		}
+		return name;
+	}
 }

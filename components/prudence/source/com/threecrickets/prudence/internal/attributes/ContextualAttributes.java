@@ -228,8 +228,8 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 	// DocumentExecutionAttributes
 	//
 
-	public DocumentDescriptor<Executable> createDocumentOnce( String documentName, boolean isTextWithScriptlets, boolean includeMainSource, boolean includeExtraSources, boolean includeLibrarySources ) throws ParsingException,
-		DocumentException
+	public DocumentDescriptor<Executable> createDocumentOnce( String documentName, boolean isTextWithScriptlets, boolean includeMainSource, boolean includeExtraSources, boolean includeLibrarySources )
+		throws ParsingException, DocumentException
 	{
 		ParsingContext parsingContext = new ParsingContext();
 		parsingContext.setLanguageManager( getLanguageManager() );
@@ -269,6 +269,27 @@ public abstract class ContextualAttributes implements DocumentExecutionAttribute
 
 				parsingContext.setDocumentSource( iterator.next() );
 			}
+		}
+	}
+
+	public DocumentDescriptor<Executable> createDocumentOnce( String documentName, String code ) throws ParsingException, DocumentException
+	{
+		DocumentSource<Executable> documentSource = getDocumentSource();
+		try
+		{
+			return documentSource.getDocument( documentName );
+		}
+		catch( DocumentNotFoundException x )
+		{
+			ParsingContext parsingContext = new ParsingContext();
+			parsingContext.setLanguageManager( getLanguageManager() );
+			parsingContext.setDefaultLanguageTag( getDefaultLanguageTag() );
+			parsingContext.setPrepare( isPrepare() );
+			parsingContext.setDocumentSource( documentSource );
+
+			Executable executable = new Executable( documentName, System.currentTimeMillis(), code, true, parsingContext );
+			documentSource.setDocument( documentName, code, "", executable );
+			return documentSource.getDocument( documentName );
 		}
 	}
 

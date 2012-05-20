@@ -1,1 +1,2 @@
 * * * * * /tasks/scheduled/
+* * * * * <% application.getSubLogger('scheduled').info('This task will also repeat itself every minute') %>

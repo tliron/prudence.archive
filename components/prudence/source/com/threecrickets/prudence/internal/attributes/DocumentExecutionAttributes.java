@@ -173,4 +173,17 @@ public interface DocumentExecutionAttributes
 	 */
 	public DocumentDescriptor<Executable> createDocumentOnce( String documentName, boolean isTextWithScriptlets, boolean includeMainSource, boolean includeExtraSources, boolean includeLibrarySources )
 		throws ParsingException, DocumentException;
+
+	/**
+	 * Creates an on-the-fly document, or retrieves it if it already exists.
+	 * 
+	 * @param documentName
+	 *        The document name
+	 * @param code
+	 *        The code to execute
+	 * @return A document descriptor with a valid executable as its document
+	 * @throws ParsingException
+	 * @throws DocumentException
+	 */
+	public DocumentDescriptor<Executable> createDocumentOnce( String documentName, String code ) throws ParsingException, DocumentException;
 }
