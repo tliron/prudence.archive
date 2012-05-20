@@ -27,6 +27,7 @@ case "$1" in
 		ln -fsT /var/cache/prudence /usr/lib/prudence/cache
 
 		chmod a+w -R /var/lib/prudence
+		chmod a+w -R /etc/prudence
 		
 		ln -fsT /var/lib/prudence/programs /usr/lib/prudence/programs 
 		ln -fsT /var/lib/prudence/libraries /usr/lib/prudence/libraries 

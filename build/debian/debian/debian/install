@@ -1,4 +1,5 @@
 sincerity            /usr/lib/prudence/
+sincerity.bat        /usr/lib/prudence/
 *.jar                /usr/lib/prudence/
 *.txt                /usr/lib/prudence/
 programs/*           /var/lib/prudence/programs/
