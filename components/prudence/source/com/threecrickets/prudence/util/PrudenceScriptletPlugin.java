@@ -32,12 +32,6 @@ import com.threecrickets.scripturian.internal.ScripturianUtil;
 public class PrudenceScriptletPlugin implements ScriptletPlugin
 {
 	//
-	// Constants
-	//
-
-	public static final String CONVERSATION_LOCATION_PREFIX = "blocks.";
-
-	//
 	// ScriptletPlugin
 	//
 
@@ -46,29 +40,67 @@ public class PrudenceScriptletPlugin implements ScriptletPlugin
 		if( "==".equals( code ) )
 		{
 			String language = (String) languageAdapter.getAttributes().get( LanguageAdapter.LANGUAGE_NAME );
-			if( "JavaScript".equals( language ) )
-			{
-				return "print(conversation.locals.get(" + ScripturianUtil.doubleQuotedLiteral( CONVERSATION_LOCATION_PREFIX + content.trim() ) + "));";
-			}
+			if( JAVASCRIPT.equals( language ) )
+				return "print(conversation.locals.get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + "));";
+			else if( PYTHON.equals( language ) )
+				return "sys.stdout.write(conversation.locals.get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + "));";
+			else if( RUBY.equals( language ) )
+				return "print($conversation.locals.get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + "));";
+			else if( GROOVY.equals( language ) )
+				return "print(conversation.locals.get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + "));";
+			else if( CLOJURE.equals( language ) )
+				return "(print (.. conversation getLocals (get " + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ")))";
+			else if( PHP.equals( language ) )
+				return "print($conversation->locals->get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + "));";
 		}
 		else if( "{{".equals( code ) )
 		{
 			String language = (String) languageAdapter.getAttributes().get( LanguageAdapter.LANGUAGE_NAME );
-			if( "JavaScript".equals( language ) )
-			{
-				return "document.startCapture(" + ScripturianUtil.doubleQuotedLiteral( CONVERSATION_LOCATION_PREFIX + content.trim() ) + ");";
-			}
+			if( JAVASCRIPT.equals( language ) )
+				return "document.startCapture(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ");";
+			else if( PYTHON.equals( language ) )
+				return "document.startCapture(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ");";
+			else if( RUBY.equals( language ) )
+				return "$document.start_capture(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ");";
+			else if( GROOVY.equals( language ) )
+				return "document.startCapture(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ");";
+			else if( CLOJURE.equals( language ) )
+				return "(.startCapture document " + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ")";
+			else if( PHP.equals( language ) )
+				return "$document->startCapture(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ");";
 		}
 		else if( "}}".equals( code ) )
 		{
 			String language = (String) languageAdapter.getAttributes().get( LanguageAdapter.LANGUAGE_NAME );
-			if( "JavaScript".equals( language ) )
-			{
+			if( JAVASCRIPT.equals( language ) )
 				return "document.endCapture();";
-			}
+			else if( PYTHON.equals( language ) )
+				return "document.endCapture();";
+			else if( RUBY.equals( language ) )
+				return "$document.end_capture();";
+			else if( GROOVY.equals( language ) )
+				return "document.endCapture();";
+			else if( CLOJURE.equals( language ) )
+				return "(.endCapture document)";
+			else if( PHP.equals( language ) )
+				return "$document->endCapture();";
 		}
 
 		return "";
 	}
 
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	private static final String JAVASCRIPT = "JavaScript";
+
+	private static final String PYTHON = "Python";
+
+	private static final String RUBY = "Ruby";
+
+	private static final String GROOVY = "Groovy";
+
+	private static final String CLOJURE = "Clojure";
+
+	private static final String PHP = "PHP";
 }

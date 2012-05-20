@@ -7785,6 +7785,82 @@ You WILL see this text!
 
 \end_layout
 
+\begin_layout Subsubsection
+Captures
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%{{ myblock %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p>This is a block.</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%}}%>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<%== myblock %>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Closures
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<% function myblock(first,last) { %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p>Hello, <%= first %> <%= last %>.</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<% } %>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<%= myblock('Isaac','Newton') %>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Paragraph
 Special Note for Python
 \begin_inset CommandInset label

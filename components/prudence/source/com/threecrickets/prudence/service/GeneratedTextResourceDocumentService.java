@@ -13,7 +13,6 @@ package com.threecrickets.prudence.service;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -42,9 +41,11 @@ import com.threecrickets.prudence.GeneratedTextResource;
 import com.threecrickets.prudence.cache.Cache;
 import com.threecrickets.prudence.cache.CacheEntry;
 import com.threecrickets.prudence.internal.CacheKeyPatternResolver;
+import com.threecrickets.prudence.internal.CaptureWriter;
 import com.threecrickets.prudence.internal.GeneratedTextDeferredRepresentation;
 import com.threecrickets.prudence.internal.attributes.GeneratedTextResourceAttributes;
 import com.threecrickets.prudence.util.CapturingRedirector;
+import com.threecrickets.prudence.util.PrudenceScriptletPlugin;
 import com.threecrickets.scripturian.Executable;
 import com.threecrickets.scripturian.ExecutionContext;
 import com.threecrickets.scripturian.document.DocumentDescriptor;
@@ -338,12 +339,37 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		return null;
 	}
 
+	/**
+	 * Start capturing the generated text output, until {@link #endCapture()} is
+	 * called. The captured text will automatically be stored as a string in a
+	 * conversation.local.
+	 * <p>
+	 * Note that captures can be nested, but you do need to call endCapture as
+	 * many times as you called startCapture if you want the regular output to
+	 * continue.
+	 * 
+	 * @param name
+	 *        The name of the conversation.local into which the captured text
+	 *        will go
+	 * @see PrudenceScriptletPlugin
+	 */
 	public void startCapture( String name )
 	{
 		getWriterStack().add( 0, executionContext.getWriter() );
 		executionContext.setWriter( new CaptureWriter( name ) );
 	}
 
+	/**
+	 * Ends a capture started with {@link #startCapture(String)}, storing the
+	 * captured text in a conversation.local, as well as returning it.
+	 * <p>
+	 * Note that captures can be nested, but you do need to call endCapture as
+	 * many times as you called startCapture if you want the regular output to
+	 * continue.
+	 * 
+	 * @return The captured text
+	 * @see PrudenceScriptletPlugin
+	 */
 	public String endCapture()
 	{
 		Writer currentWriter = executionContext.getWriter();
@@ -361,36 +387,6 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		}
 
 		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	private CopyOnWriteArrayList<Writer> getWriterStack()
-	{
-		Map<String, Object> attributes = resource.getRequest().getAttributes();
-		CopyOnWriteArrayList<Writer> writerStack = (CopyOnWriteArrayList<Writer>) attributes.get( WRITER_STACK_ATTRIBUTE );
-		if( writerStack == null )
-		{
-			writerStack = new CopyOnWriteArrayList<Writer>();
-			attributes.put( WRITER_STACK_ATTRIBUTE, writerStack );
-		}
-		return writerStack;
-	}
-
-	private static class CaptureWriter extends PrintWriter
-	{
-		public CaptureWriter( String name )
-		{
-			super( new StringWriter(), false );
-			this.name = name;
-		}
-
-		public final String name;
-
-		@Override
-		public String toString()
-		{
-			return ( (StringWriter) out ).toString();
-		}
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -589,6 +585,33 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 			return cacheKey;
 	}
 
+	/**
+	 * The writer stack used for nesting in {@link #startCapture(String)} and
+	 * {@link #endCapture()}.
+	 * 
+	 * @return The writer stack
+	 */
+	@SuppressWarnings("unchecked")
+	private CopyOnWriteArrayList<Writer> getWriterStack()
+	{
+		Map<String, Object> attributes = resource.getRequest().getAttributes();
+		CopyOnWriteArrayList<Writer> writerStack = (CopyOnWriteArrayList<Writer>) attributes.get( WRITER_STACK_ATTRIBUTE );
+		if( writerStack == null )
+		{
+			writerStack = new CopyOnWriteArrayList<Writer>();
+			attributes.put( WRITER_STACK_ATTRIBUTE, writerStack );
+		}
+		return writerStack;
+	}
+
+	/**
+	 * Calls all installed cache key pattern handlers for the cache key pattern.
+	 * 
+	 * @param template
+	 *        The cache key pattern template
+	 * @param documentDescriptor
+	 *        The document descriptor
+	 */
 	private void callCacheKeyPatternHandlers( Template template, DocumentDescriptor<Executable> documentDescriptor )
 	{
 		Map<String, String> resourceCacheKeyPatternHandlers = attributes.getCacheKeyPatternHandlers();
