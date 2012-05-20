@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Start Prudence
+Comment=Start Prudence
+Terminal=false
+Exec=/usr/lib/prudence/sincerity use /usr/lib/prudence : start component
+Icon=/usr/lib/prudence/prudence.png
+Categories=Application;Development

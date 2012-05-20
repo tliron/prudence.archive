@@ -1,0 +1,9 @@
+sincerity            /usr/lib/prudence/
+*.jar                /usr/lib/prudence/
+*.txt                /usr/lib/prudence/
+programs/*           /var/lib/prudence/programs/
+component/*          /var/lib/prudence/component/
+configuration/*      /etc/prudence/
+libraries/*          /var/lib/prudence/libraries/
+prudence.desktop     /usr/share/applications
+prudence.png         /usr/lib/prudence
