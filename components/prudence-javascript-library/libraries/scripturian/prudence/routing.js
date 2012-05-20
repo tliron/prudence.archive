@@ -262,10 +262,12 @@ Prudence.Routing = Prudence.Routing || function() {
 	    			sincerityLibraryDocumentSource = existing
 	    		}
         	}
-			println('    Sincerity library: "{0}"'.cast(sincerityLibraryDocumentSource.basePath))
-			this.libraryDocumentSources.add(sincerityLibraryDocumentSource)
+			if (sincerityLibraryDocumentSource.basePath != containerLibraryDocumentSource.basePath) {
+				println('    Sincerity library: "{0}"'.cast(sincerityLibraryDocumentSource.basePath))
+				this.libraryDocumentSources.add(sincerityLibraryDocumentSource)
+			}
 			
-			println('  Restlets:')
+			println('  URI-space:')
 
     		// Source viewer
     		if (true == this.settings.code.sourceViewable) {
@@ -295,7 +297,7 @@ Prudence.Routing = Prudence.Routing || function() {
         		restlet = this.createRestlet(restlet, uri)
         		if (Sincerity.Objects.exists(restlet)) {
         			if (restlet == 'hidden') {
-                		println('    "{0}" -> hidden'.cast(uri))
+                		println('    "{0}" hidden'.cast(uri))
         				this.instance.inboundRoot.hide(uri)
         			}
         			else if (attachBase) {
@@ -1043,11 +1045,12 @@ Prudence.Routing = Prudence.Routing || function() {
     		var filter = new CacheControlFilter(app.context, this.next, this['default'])
     		
     		if (Sincerity.Objects.exists(this.mediaTypes)) {
+				println('    CacheControl:')
     			for (var mediaType in this.mediaTypes) {
     				var maxAge = this.mediaTypes[mediaType]
     				mediaType = MediaType.valueOf(mediaType)
     				filter.maxAgeForMediaType.put(mediaType, maxAge)
-    				println('      CacheControl: max age for {0} -> {1}'.cast(mediaType, maxAge))
+    				println('      Max age for {0} -> {1}'.cast(mediaType, maxAge))
     			}
     		}
     		
