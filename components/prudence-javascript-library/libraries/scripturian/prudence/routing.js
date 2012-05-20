@@ -504,6 +504,7 @@ Prudence.Routing = Prudence.Routing || function() {
 
     		importClass(
     			com.threecrickets.prudence.util.PhpExecutionController,
+    			com.threecrickets.prudence.util.PrudenceScriptletPlugin,
     			org.restlet.resource.Finder,
     			java.util.concurrent.CopyOnWriteArrayList,
     			java.util.concurrent.CopyOnWriteArraySet,
@@ -591,6 +592,11 @@ Prudence.Routing = Prudence.Routing || function() {
     		}
     		
     		// Scriptlet plugins
+    		var prudenceScriptletPlugin = new PrudenceScriptletPlugin()
+    		generatedTextResource.scriptletPlugins.put('{{', prudenceScriptletPlugin)
+    		generatedTextResource.scriptletPlugins.put('}}', prudenceScriptletPlugin)
+    		generatedTextResource.scriptletPlugins.put('==', prudenceScriptletPlugin)
+    		
     		if (Sincerity.Objects.exists(app.settings.scriptletPlugins)) {
 	    		for (var code in app.settings.scriptletPlugins) {
 	    			println('  Scriptlet plugin {0} - "{1}"'.cast(code, app.settings.scriptletPlugins[code]))
@@ -965,7 +971,7 @@ Prudence.Routing = Prudence.Routing || function() {
     	Public._inherit = Module.Restlet
 
 		/** @ignore */
-    	Public._configure = ['root', 'next']
+    	Public._configure = ['root', 'next' ,'resolver']
 
     	Public.create = function(app, uri) {
     		importClass(
@@ -978,7 +984,13 @@ Prudence.Routing = Prudence.Routing || function() {
     		}
 
     		this.next = app.createRestlet(this.next, uri)
-    		var filter = new ZussFilter(app.context, this.next, this.root, app.settings.code.minimumTimeBetweenValidityChecks)
+    		var filter
+    		if (Sincerity.Objects.exists(this.resolver)) {
+    			filter = new ZussFilter(app.context, this.next, this.root, app.settings.code.minimumTimeBetweenValidityChecks, resolver)
+    		}
+    		else {
+    			filter = new ZussFilter(app.context, this.next, this.root, app.settings.code.minimumTimeBetweenValidityChecks)
+    		}
     		
     		return filter
     	}

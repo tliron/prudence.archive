@@ -13,6 +13,7 @@ package com.threecrickets.prudence.service;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.restlet.Request;
@@ -336,6 +338,61 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		return null;
 	}
 
+	public void startCapture( String name )
+	{
+		getWriterStack().add( 0, executionContext.getWriter() );
+		executionContext.setWriter( new CaptureWriter( name ) );
+	}
+
+	public String endCapture()
+	{
+		Writer currentWriter = executionContext.getWriter();
+		if( currentWriter instanceof CaptureWriter )
+		{
+			CaptureWriter captureWriter = (CaptureWriter) currentWriter;
+
+			Writer lastWriter = getWriterStack().remove( 0 );
+			if( lastWriter != null )
+				executionContext.setWriter( lastWriter );
+
+			String r = captureWriter.toString();
+			resource.getRequest().getAttributes().put( captureWriter.name, r );
+			return r;
+		}
+
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private CopyOnWriteArrayList<Writer> getWriterStack()
+	{
+		Map<String, Object> attributes = resource.getRequest().getAttributes();
+		CopyOnWriteArrayList<Writer> writerStack = (CopyOnWriteArrayList<Writer>) attributes.get( WRITER_STACK_ATTRIBUTE );
+		if( writerStack == null )
+		{
+			writerStack = new CopyOnWriteArrayList<Writer>();
+			attributes.put( WRITER_STACK_ATTRIBUTE, writerStack );
+		}
+		return writerStack;
+	}
+
+	private static class CaptureWriter extends PrintWriter
+	{
+		public CaptureWriter( String name )
+		{
+			super( new StringWriter(), false );
+			this.name = name;
+		}
+
+		public final String name;
+
+		@Override
+		public String toString()
+		{
+			return ( (StringWriter) out ).toString();
+		}
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// Protected
 
@@ -348,6 +405,11 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
+
+	/**
+	 * Writer stack attribute for an {@link Request}.
+	 */
+	private static final String WRITER_STACK_ATTRIBUTE = "com.threecrickets.prudence.GeneratedTextResource.writerStack";
 
 	/**
 	 * Encoding attribute for an {@link Executable}.
