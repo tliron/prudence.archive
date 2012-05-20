@@ -267,7 +267,7 @@ Prudence.Routing = Prudence.Routing || function() {
 				this.libraryDocumentSources.add(sincerityLibraryDocumentSource)
 			}
 			
-			println('  URI-space:')
+			println('  Routing:')
 
     		// Source viewer
     		if (true == this.settings.code.sourceViewable) {
