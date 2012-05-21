@@ -7785,82 +7785,6 @@ You WILL see this text!
 
 \end_layout
 
-\begin_layout Subsubsection
-Captures
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<%{{ myblock %>
-\end_layout
-
-\begin_layout Plain Layout
-
-<p>This is a block.</p>
-\end_layout
-
-\begin_layout Plain Layout
-
-<%}}%>
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-<%== myblock %>
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection
-Closures
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-<% function myblock(first,last) { %>
-\end_layout
-
-\begin_layout Plain Layout
-
-<p>Hello, <%= first %> <%= last %>.</p>
-\end_layout
-
-\begin_layout Plain Layout
-
-<% } %>
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-<%= myblock('Isaac','Newton') %>
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Paragraph
 Special Note for Python
 \begin_inset CommandInset label
@@ -8595,6 +8519,231 @@ target "http://threecrickets.com/scripturian/"
 \end_inset
 
 -based templating engine.
+\end_layout
+
+\begin_layout Subsubsection
+Captures
+\end_layout
+
+\begin_layout Standard
+One of the challenges of generating HTML is that order matters in HTML,
+ but the way we think of composing the page may be different from what the
+ rules demand.
+\end_layout
+
+\begin_layout Standard
+Prudence comes with a friendly scriptlet plugin, which lets you easily define
+ reusable blocks.
+ Here's an example of usage:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%{{ greeting %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p>Hello!</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%}}%>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<%== greeting %>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset Quotes eld
+\end_inset
+
+<%{{%>
+\begin_inset Quotes erd
+\end_inset
+
+ tag specifies the name of a conversation.local into which the block context
+ will be stored, and 
+\begin_inset Quotes eld
+\end_inset
+
+<%}}>
+\begin_inset Quotes erd
+\end_inset
+
+ ends it.
+ (It turns into a call to document.startCapture.) The 
+\begin_inset Quotes eld
+\end_inset
+
+<%==
+\begin_inset Quotes erd
+\end_inset
+
+ tag outputs the conversation.local with that name.
+ And that's it! You can create your own library of blocks in a fragment,
+ which you can then use as many times as you like.
+\end_layout
+
+\begin_layout Standard
+Note that if you include code in the captured block, it will 
+\emph on
+not
+\emph default
+ be re-executed every time you insert the block.
+ If you need that kind of functionality, see 
+\begin_inset Quotes eld
+\end_inset
+
+closures,
+\begin_inset Quotes erd
+\end_inset
+
+ below.
+\end_layout
+
+\begin_layout Standard
+Also note that it's possible to nest your block definitions, like so:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<%{{ welcome %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p>Welcome to our web site!</b>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%{{ greeting %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p>Hello!</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%}}%>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%== greeting %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%}}%>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<%== welcome %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<%== greeting %>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If you do this, just make sure to close all your captures.
+\end_layout
+
+\begin_layout Subsubsection
+Closures
+\end_layout
+
+\begin_layout Standard
+Closures are similar to how 
+\begin_inset Quotes eld
+\end_inset
+
+captures
+\begin_inset Quotes erd
+\end_inset
+
+ work, above.
+ They let you define reusable blocks.
+ The difference is that any code in the block is re-executed every time
+ you insert it, allowing for powerful, dynamic, reusable blocks.
+\end_layout
+
+\begin_layout Standard
+In fact, this feature has nothing to do with Prudence per se: closures are
+ a feature available in all supported languages.
+ Here's an example in JavaScript:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<% function greeting(first, last) { %>
+\end_layout
+
+\begin_layout Plain Layout
+
+<p>Hello, <%= first %> <%= last %>.</p>
+\end_layout
+
+\begin_layout Plain Layout
+
+<% } %>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<%= greeting('Isaac','Newton') %>
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection

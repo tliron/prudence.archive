@@ -3,7 +3,7 @@ Summary:        A RESTful multilingual web development platform for the JVM.
 Version:        2.0beta1
 Release:        0
 Group:          Three Crickets
-License:        ApacheV2
+License:        LGPLv3+
 
 %description 
 A RESTful multilingual web development platform for the JVM.
