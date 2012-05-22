@@ -121,6 +121,10 @@ public class ZussFilter extends Filter implements Locator
 		cssFile = IoUtil.getUniqueFile( cssFile );
 		synchronized( cssFile )
 		{
+			long lastModified = zussFile.lastModified();
+			if( lastModified == cssFile.lastModified() )
+				return;
+
 			BufferedReader reader = new BufferedReader( new FileReader( zussFile ) );
 			try
 			{
@@ -156,6 +160,9 @@ public class ZussFilter extends Filter implements Locator
 			{
 				reader.close();
 			}
+
+			if( !cssFile.setLastModified( lastModified ) )
+				throw new IOException( "Could not update timestamp on file: " + cssFile );
 		}
 	}
 
