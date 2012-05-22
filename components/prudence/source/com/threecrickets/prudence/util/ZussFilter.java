@@ -116,6 +116,19 @@ public class ZussFilter extends Filter implements Locator
 	// Operations
 	//
 
+	/**
+	 * Translate ZUSS to CSS, only if the ZUSS source is newer. Can optionaly
+	 * minify the CSS, too.
+	 * 
+	 * @param zussFile
+	 *        The ZUSS source file
+	 * @param cssFile
+	 *        The CSS target file (will be overwritten)
+	 * @param minify
+	 *        Whether to minify the CSS
+	 * @throws IOException
+	 * @see {@link CSSMin}
+	 */
 	public void translate( File zussFile, File cssFile, boolean minify ) throws IOException
 	{
 		cssFile = IoUtil.getUniqueFile( cssFile );
@@ -131,6 +144,8 @@ public class ZussFilter extends Filter implements Locator
 				ZussDefinition zussDefinition = Zuss.parse( reader, this, zussFile.getName() );
 				if( minify )
 				{
+					getLogger().info( "Translating and minifying ZUSS: \"" + zussFile + "\" into file \"" + cssFile + "\"" );
+
 					StringWriter writer = new StringWriter();
 					Zuss.translate( zussDefinition, writer, resolver );
 					BufferedOutputStream output = new BufferedOutputStream( new FileOutputStream( cssFile ) );
@@ -145,6 +160,8 @@ public class ZussFilter extends Filter implements Locator
 				}
 				else
 				{
+					getLogger().info( "Translating ZUSS: \"" + zussFile + "\" into file \"" + cssFile + "\"" );
+
 					BufferedWriter writer = new BufferedWriter( new FileWriter( cssFile ) );
 					try
 					{

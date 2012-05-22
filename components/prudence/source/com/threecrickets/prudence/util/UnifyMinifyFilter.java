@@ -133,7 +133,13 @@ public abstract class UnifyMinifyFilter extends Filter
 	//
 
 	/**
-	 * Unifies all source files in the directory, or unifies and minifies them.
+	 * Unifies all source files in the directory in they are newer than the
+	 * target, optionally minifying them as
+	 * 
+	 * @param sourceDirectory
+	 * @param minify
+	 *        Whether to minify the result
+	 * @throws IOException
 	 */
 	public void unify( File sourceDirectory, boolean minify ) throws IOException
 	{
