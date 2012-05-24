@@ -65,9 +65,9 @@ function create(command) {
 	}
 	var name = command.arguments[1]
 	var applicationDir = new File(sincerity.container.getFile('component', 'applications', name))
-	/*if (applicationDir.exists()) {
+	if (applicationDir.exists()) {
 		throw new CommandException(command, 'The application directory already exists: ' + applicationDir)		
-	}*/
+	}
 	
 	var resources = [
 	    'default.js',
