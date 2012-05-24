@@ -1040,19 +1040,26 @@ Prudence.Routing = Prudence.Routing || function() {
     		}
     		
     		this['default'] = Sincerity.Objects.ensure(this['default'], CacheControlFilter.FAR_FUTURE)
+    		if (this['default'] == 'farFuture') {
+    			this['default'] = CacheControlFilter.FAR_FUTURE
+    		}
     		
     		this.next = app.createRestlet(this.next, uri)
     		var filter = new CacheControlFilter(app.context, this.next, this['default'])
     		
+			println('    CacheControl:')
     		if (Sincerity.Objects.exists(this.mediaTypes)) {
-				println('    CacheControl:')
     			for (var mediaType in this.mediaTypes) {
     				var maxAge = this.mediaTypes[mediaType]
+    	    		if (maxAge == 'farFuture') {
+    	    			maxAge = CacheControlFilter.FAR_FUTURE
+    	    		}
     				mediaType = MediaType.valueOf(mediaType)
     				filter.maxAgeForMediaType.put(mediaType, maxAge)
     				println('      Max age for {0} -> {1}'.cast(mediaType, maxAge))
     			}
     		}
+			println('      Default max age -> {0}'.cast(this['default']))
     		
     		return filter
     	}
