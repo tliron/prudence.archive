@@ -17,7 +17,6 @@
 	<property name="component.notices" value="../components/notices" />
 	<property name="reference" value="../components/reference" />
 	<property name="javascript-library" value="../components/prudence-javascript-library" />
-	<property name="templates" value="../components/templates" />
 	<property name="skeleton" value="../components/skeleton" />
 	<property name="example" value="../components/example" />
 	<property name="admin" value="../components/admin" />
@@ -155,9 +154,6 @@
 	</target>
 
 	<target name="distribution" depends="sincerity, libraries, javadocs, manual" description="Assemble distribution">
-		<copy todir="${distribution.content}/component/templates">
-			<fileset dir="${templates}" />
-		</copy>
 		<copy todir="${distribution.source}">
 			<fileset dir="${component.source}" />
 		</copy>
