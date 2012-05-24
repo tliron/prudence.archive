@@ -5,7 +5,10 @@ document.executeOnce('/sincerity/files/')
 importClass(
 	com.threecrickets.sincerity.exception.CommandException,
 	com.threecrickets.sincerity.exception.BadArgumentsCommandException,
-	java.io.File)
+	java.io.File,
+	java.io.FileReader,
+	java.io.FileWriter,
+	java.io.StringWriter)
 
 function getInterfaceVersion() {
 	return 1
@@ -24,6 +27,8 @@ function run(command) {
 }
 
 function prudence(command) {
+	command.parse = true
+
 	var prudenceCommand
 	if (command.arguments.length > 0) {
 		prudenceCommand = String(command.arguments[0])
@@ -48,67 +53,59 @@ function prudence(command) {
 }
 
 function help(command) {
-	println('prudence help            Show this help')
-	println('prudence version         Show the installed Prudence version')
-	println('prudence create [name]   Create a skeleton for a new Prudence application using [name] as the directory name')
+	println('prudence help                         Show this help')
+	println('prudence version                      Show the installed Prudence version')
+	println('prudence create [name] [[template]]   Create a skeleton for a new Prudence application using [name] as the directory name')
 }
 
 function version(command) {
-	var version = Sincerity.JVM.fromProperties(Sincerity.JVM.getResourceAsProperties('com/threecrickets/prudence/version.conf'))
+	var version = Sincerity.JVM.fromProperties(Sincerity.JVM.getReinputAsProperties('com/threecrickets/prudence/version.conf'))
 	println('Version: ' + version.version)
 	println('Built: ' + version.built)
 }
 
 function create(command) {
 	if (command.arguments.length < 2) {
-		throw new BadArgumentsCommandException(command, 'name')
+		throw new BadArgumentsCommandException(command, 'name', '[template=application]')
 	}
 	var name = command.arguments[1]
+	var templateName = 'application'
+	if (command.arguments.length > 2) {
+		templateName = command.arguments[2]
+	}
+	var force = command.switches.contains('force')
+	
 	var applicationDir = new File(sincerity.container.getFile('component', 'applications', name))
-	if (applicationDir.exists()) {
+	if (!force && applicationDir.exists()) {
 		throw new CommandException(command, 'The application directory already exists: ' + applicationDir)		
 	}
 	
-	var resources = [
-	    'default.js',
-		'settings.js',
-		'routing.js',
-		'mapped/index.d.html',
-		'mapped/style/site.zuss',
-		'fragments/site/header.html',
-		'fragments/site/footer.html',
-		'libraries/resources/default.js',
-		'libraries/resources/sample.js',
-    ]
-	
-	var base = 'com/threecrickets/prudence/templates/application-skeleton/'
-	var token = /\$\{APPLICATION\}/g
-	for (var r in resources) {
-		var resource = resources[r]
-		writeResource(base + resource, new File(applicationDir, resource), token, name)
+	var templateDir = new File(sincerity.container.getFile('component', 'templates', templateName))
+	if (!templateDir.exists()) {
+		throw new CommandException(command, 'The template does not exist: ' + templateDir)		
 	}
+	
+	copy(templateDir, applicationDir, /\$\{APPLICATION\}/g, name)
 }
 
-function writeResource(name, file, token, value) {
-	var source = new java.io.InputStreamReader(Sincerity.JVM.getResourceAsStream(name), 'UTF-8')
-	try {
-		file.parentFile.mkdirs()
-		var content = new java.io.StringWriter()
-		var buffer = Sincerity.JVM.newArray(1024, 'char')
-		var length
-		while ((length = source.read(buffer)) > 0) {
-			content.write(buffer, 0, length)
-		}
-		content = String(content).replace(token, value)
-		var destination = java.io.FileWriter(file)
-		try {
-			destination.write(content)
-		}
-		finally {
-			destination.close()
+function copy(source, destination, token, value) {
+	if (source.directory) {
+		var sourceFiles = source.listFiles()
+		for (var f in sourceFiles) {
+			sourceFile = sourceFiles[f]
+			copy(sourceFile, new File(destination, sourceFile.name), token, value)
 		}
 	}
-	finally {
-		source.close()
+	else {
+		destination.parentFile.mkdirs()
+		var content = Sincerity.Files.loadText(source, 'UTF-8')
+		content = String(content).replace(token, value)
+		var output = FileWriter(destination)
+		try {
+			output.write(content)
+		}
+		finally {
+			output.close()
+		}
 	}
 }
