@@ -11,7 +11,7 @@ Sincerity.Objects.merge(app.settings, {
 
 	errors: {
 		debug: true,
-		homeUrl: 'http://threecrickets/prudence/',
+		homeUrl: 'http://threecrickets.com/prudence/',
 		contactEmail: 'info@threecrickets.com'
 	},
 	

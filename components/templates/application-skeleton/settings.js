@@ -1,10 +1,10 @@
 
 app.settings = {
 	description: {
-		name: 'Prudence Example',
-		description: 'The example application for the Prudence skeleton',
-		author: 'Three Crickets',
-		owner: 'Prudence'
+		name: '${APPLICATION}',
+		description: 'Skeleton for ${APPLICATION} application',
+		author: 'The Author',
+		owner: 'The Project'
 	},
 
 	errors: {
