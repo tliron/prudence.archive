@@ -49,6 +49,11 @@ public abstract class InstanceUtil
 	 */
 	public static final String CACHE_ATTRIBUTE = "com.threecrickets.prudence.cache";
 
+	/**
+	 * Prudence version attribute for Prudence version {@link Component}.
+	 */
+	public static final String PRUDENCE_VERSION_ATTRIBUTE = "com.threecrickets.prudence.version";
+
 	//
 	// Static attributes
 	//
@@ -57,6 +62,7 @@ public abstract class InstanceUtil
 	 * The component for the current Prudence instance.
 	 * 
 	 * @return The component or null
+	 * @see GlobalScope
 	 */
 	public static Component getComponent()
 	{
@@ -103,6 +109,16 @@ public abstract class InstanceUtil
 		}
 
 		return null;
+	}
+
+	/**
+	 * The Prudence version, based on the current component.
+	 * 
+	 * @return The Prudence version string
+	 */
+	public String getPrudenceVersion()
+	{
+		return (String) getComponent().getContext().getAttributes().get( PRUDENCE_VERSION_ATTRIBUTE );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
