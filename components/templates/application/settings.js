@@ -8,7 +8,7 @@ app.settings = {
 	},
 
 	errors: {
-		debug: true, // TODO: problems with false
+		debug: true,
 		homeUrl: 'http://threecrickets.com/prudence/', // Only used when debug=false
 		contactEmail: 'info@threecrickets.com' // Only used when debug=false
 	},
