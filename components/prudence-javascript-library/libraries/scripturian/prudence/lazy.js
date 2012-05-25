@@ -30,7 +30,7 @@ var Prudence = Prudence || {}
  * this could result in significant savings. With lazy construction, instantiation happens only when the resource is
  * accessed.</li>
  * <li>Third is allowing for a straightforward DSL for object creation. This library lets you define your objects using
- * a simple JSON structure that can be easily stored, edited and marshalled.</li>
+ * a simple JSON structure that can be easily stored, edited and marshaled.</li>
  * </ol>
  * The core of the library is the {@link Prudence.Lazy.LazyEntry} wrapper class, which relies on high-performance JVM read/write
  * locks to make sure that wrapped values are only instantiated once in concurrent situations. Behind the scenes, lazy

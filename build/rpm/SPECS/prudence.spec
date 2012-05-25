@@ -19,9 +19,9 @@ A RESTful multilingual web development platform for the JVM.
 %post
 mkdir -p /usr/lib/prudence/.sincerity
 
-mkdir -p /var/logs/prudence
-chmod a+w /var/logs/prudence
-ln -fsT /var/logs/prudence /usr/lib/prudence/logs
+mkdir -p /var/log/prudence
+chmod a+w /var/log/prudence
+ln -fsT /var/log/prudence /usr/lib/prudence/logs
 
 mkdir -p /var/cache/prudence
 chmod a+w /var/cache/prudence
