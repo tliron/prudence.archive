@@ -54,6 +54,24 @@ public class SerializableApplicationTask<T> implements Callable<T>, Serializable
 		this.context = context;
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param applicationName
+	 *        The full name of the Restlet application in which this task will
+	 *        execute
+	 * @param code
+	 *        The code to execute
+	 * @param context
+	 *        The context made available to the task
+	 */
+	public SerializableApplicationTask( String applicationName, String code, Object context )
+	{
+		this.applicationName = applicationName;
+		this.code = code;
+		this.context = context;
+	}
+
 	//
 	// Attributes
 	//
@@ -70,7 +88,12 @@ public class SerializableApplicationTask<T> implements Callable<T>, Serializable
 		{
 			Application application = InstanceUtil.getApplication( applicationName );
 			if( application != null )
-				applicationTask = new ApplicationTask<T>( application, documentName, entryPointName, context );
+			{
+				if( code != null )
+					applicationTask = new ApplicationTask<T>( application, code, context );
+				else
+					applicationTask = new ApplicationTask<T>( application, documentName, entryPointName, context );
+			}
 		}
 
 		return applicationTask;
@@ -113,6 +136,11 @@ public class SerializableApplicationTask<T> implements Callable<T>, Serializable
 	 * The context made available to the task.
 	 */
 	private Object context;
+
+	/**
+	 * The code to execute.
+	 */
+	private String code;
 
 	/**
 	 * Cache for the generated application task.

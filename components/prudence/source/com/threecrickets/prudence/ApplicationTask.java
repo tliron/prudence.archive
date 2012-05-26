@@ -149,10 +149,12 @@ public class ApplicationTask<T> implements Callable<T>, Runnable
 	 * 
 	 * @param code
 	 *        The code to execute
+	 * @param context
+	 *        The context made available to the task
 	 */
-	public ApplicationTask( String code )
+	public ApplicationTask( String code, Object context )
 	{
-		this( Application.getCurrent(), code );
+		this( Application.getCurrent(), code, context );
 	}
 
 	/**
@@ -162,15 +164,17 @@ public class ApplicationTask<T> implements Callable<T>, Runnable
 	 *        The Restlet application in which this task will execute
 	 * @param code
 	 *        The code to execute
+	 * @param context
+	 *        The context made available to the task
 	 */
-	public ApplicationTask( Application application, String code )
+	public ApplicationTask( Application application, String code, Object context )
 	{
 		attributes = new ApplicationTaskAttributes( application );
 		this.application = application;
 		this.code = code;
+		this.context = context;
 		documentName = getOnTheFlyName( code );
 		entryPointName = null;
-		context = null;
 	}
 
 	//
@@ -396,6 +400,9 @@ public class ApplicationTask<T> implements Callable<T>, Runnable
 	 */
 	private final String code;
 
+	/**
+	 * Cache for on-the-fly names.
+	 */
 	private static final ConcurrentHashMap<String, String> onTheFlyNames = new ConcurrentHashMap<String, String>();
 
 	private static String getOnTheFlyName( String code )

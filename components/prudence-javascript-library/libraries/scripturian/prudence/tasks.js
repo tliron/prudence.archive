@@ -13,7 +13,7 @@
 
 document.executeOnce('/sincerity/objects/')
 document.executeOnce('/sincerity/json/')
-document.executeOnce('/sincerity/prudence/logging/')
+document.executeOnce('/prudence/logging/')
 
 var Prudence = Prudence || {}
 
@@ -51,7 +51,8 @@ Prudence.Tasks = Prudence.Tasks || function() {
 	 * function (which becomes params.fn).
 	 * 
 	 * @param params All params will be merged into the context, as key 'savory.task'
-	 * @param {String} [params.name] The /tasks/ document to execute
+	 * @param {String} [params.code] The code to execute (you must supply either this or params.name)
+	 * @param {String} [params.name] The document to execute (you must supply either this or params.code)
 	 * @param {String} [params.entryPoint=null] An optional entry point in the document (null or undefined to execute
 	 *        the entire document)
 	 * @param {Function|String} [params.fn] The function to call (if not present, params.name will default
@@ -88,16 +89,8 @@ Prudence.Tasks = Prudence.Tasks || function() {
 			params = Sincerity.Objects.clone(params)
 		}
 
-		if (params.fn) {
-			if (typeof params.fn == 'function') {
-				params.fn = String(params.fn)
-			}
-			params.name = params.name || '/savory/call-task-fn/'
-			params.entryPoint = params.entryPoint || 'call'
-		}
-		
 		var extraContext = {
-			'savory.task': Sincerity.Objects.clone(params)
+			'prudence.task': Sincerity.Objects.clone(params)
 		}
 		
 		if (!params.pure) {
@@ -110,18 +103,40 @@ Prudence.Tasks = Prudence.Tasks || function() {
 			params.context = params.context ? Sincerity.JSON.to(params.context) : null
 		}
 
+		if (params.fn) {
+			if (typeof params.fn == 'function') {
+				params.fn = String(params.fn)
+			}
+			if (params.json) {
+				params.code = '<% document.executeOnce(\'/sincerity/json/\'); var _fn=' + params.fn.trim() + '; _fn(Sincerity.JSON.from(document.context)); %>'
+			}
+			else {
+				params.code = '<% var _fn=' + params.fn.trim() + '; _fn(document.context); %>'
+			}
+		}
+
 		var future
 		params.application = params.application || null 
 		if (params.distributed) {
 			params.where = params.where || null
 			params.multi = params.multi || false
-			future = application.distributedTask(params.application, params.name, params.entryPoint || null, params.context, params.where, params.multi)
+			if (Sincerity.Objects.exists(params.code)) {
+				future = application.distributedTask(params.application, params.name, params.entryPoint || null, params.context, params.where, params.multi)
+			}
+			else {
+				future = application.distributedTask(params.application, params.name, params.entryPoint || null, params.context, params.where, params.multi)
+			}
 		}
 		else {
 			params.delay = params.delay || 0
 			params.repeatEvery = params.repeatEvery || 0
 			params.fixedRepeat = params.fixedRepeat || false
-			future = application.task(params.application, params.name, params.entryPoint || null, params.context, params.delay, params.repeatEvery, params.fixedRepeat)
+			if (Sincerity.Objects.exists(params.code)) {
+				future = application.codeTask(params.application, params.code, params.context, params.delay, params.repeatEvery, params.fixedRepeat)
+			}
+			else {
+				future = application.executeTask(params.application, params.name, params.entryPoint || null, params.context, params.delay, params.repeatEvery, params.fixedRepeat)
+			}
 		}
 		if (params.block) {
 			future.get(params.block, java.util.concurrent.TimeUnit.MILLISECONDS)

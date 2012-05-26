@@ -64,7 +64,7 @@ public class ApplicationCronTask extends Task
 	 */
 	public ApplicationCronTask( Application application, String code )
 	{
-		this( new ApplicationTask<Void>( application, code ) );
+		this( new ApplicationTask<Void>( application, code, null ) );
 	}
 
 	/**

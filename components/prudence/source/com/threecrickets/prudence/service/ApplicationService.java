@@ -352,40 +352,45 @@ public class ApplicationService
 	 * @return A future for the task
 	 * @see #getExecutor()
 	 */
-	public <T> Future<T> task( String applicationName, String documentName, String entryPointName, Object context, int delay, int repeatEvery, boolean fixedRepeat )
+	public <T> Future<T> executeTask( String applicationName, String documentName, String entryPointName, Object context, int delay, int repeatEvery, boolean fixedRepeat )
 	{
 		Application application = this.application;
 		if( applicationName != null )
 			application = InstanceUtil.getApplication( applicationName );
 
-		ExecutorService executor = getExecutor();
 		ApplicationTask<T> task = new ApplicationTask<T>( application, documentName, entryPointName, context );
-		if( ( delay > 0 ) || ( repeatEvery > 0 ) )
-		{
-			if( !( executor instanceof ScheduledExecutorService ) )
-				throw new RuntimeException( "Executor must implement the ScheduledExecutorService interface to allow for delayed tasks" );
+		return task( task, delay, repeatEvery, fixedRepeat );
+	}
 
-			ScheduledExecutorService scheduledExecutor = (ScheduledExecutorService) executor;
-			if( repeatEvery > 0 )
-			{
-				if( fixedRepeat )
-				{
-					@SuppressWarnings("unchecked")
-					ScheduledFuture<T> future = (ScheduledFuture<T>) scheduledExecutor.scheduleAtFixedRate( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
-					return future;
-				}
-				else
-				{
-					@SuppressWarnings("unchecked")
-					ScheduledFuture<T> future = (ScheduledFuture<T>) scheduledExecutor.scheduleWithFixedDelay( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
-					return future;
-				}
-			}
-			else
-				return (ScheduledFuture<T>) scheduledExecutor.schedule( (Callable<T>) task, delay, TimeUnit.MILLISECONDS );
-		}
-		else
-			return (Future<T>) executor.submit( (Callable<T>) task );
+	/**
+	 * Submits or schedules an {@link ApplicationTask} on the the shared
+	 * executor service.
+	 * 
+	 * @param applicationName
+	 *        The application's full name, or null to default to current
+	 *        application's name
+	 * @param code
+	 *        The code to execute
+	 * @param context
+	 *        The context made available to the task
+	 * @param delay
+	 *        Initial delay in milliseconds, or zero for ASAP
+	 * @param repeatEvery
+	 *        Repeat delay in milliseconds, or zero for no repetition
+	 * @param fixedRepeat
+	 *        Whether repetitions are at fixed times, or if the repeat delay
+	 *        begins when the task ends
+	 * @return A future for the task
+	 * @see #getExecutor()
+	 */
+	public <T> Future<T> codeTask( String applicationName, String code, Object context, int delay, int repeatEvery, boolean fixedRepeat )
+	{
+		Application application = this.application;
+		if( applicationName != null )
+			application = InstanceUtil.getApplication( applicationName );
+
+		ApplicationTask<T> task = new ApplicationTask<T>( application, code, context );
+		return task( task, delay, repeatEvery, fixedRepeat );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -419,4 +424,50 @@ public class ApplicationService
 	 * The logger.
 	 */
 	private Logger logger;
+
+	/**
+	 * Submits or schedules an {@link ApplicationTask} on the the shared
+	 * executor service.
+	 * 
+	 * @param task
+	 *        The task
+	 * @param delay
+	 *        Initial delay in milliseconds, or zero for ASAP
+	 * @param repeatEvery
+	 *        Repeat delay in milliseconds, or zero for no repetition
+	 * @param fixedRepeat
+	 *        Whether repetitions are at fixed times, or if the repeat delay
+	 *        begins when the task ends
+	 * @return A future for the task
+	 */
+	private <T> Future<T> task( ApplicationTask<T> task, int delay, int repeatEvery, boolean fixedRepeat )
+	{
+		ExecutorService executor = getExecutor();
+		if( ( delay > 0 ) || ( repeatEvery > 0 ) )
+		{
+			if( !( executor instanceof ScheduledExecutorService ) )
+				throw new RuntimeException( "Executor must implement the ScheduledExecutorService interface to allow for delayed tasks" );
+
+			ScheduledExecutorService scheduledExecutor = (ScheduledExecutorService) executor;
+			if( repeatEvery > 0 )
+			{
+				if( fixedRepeat )
+				{
+					@SuppressWarnings("unchecked")
+					ScheduledFuture<T> future = (ScheduledFuture<T>) scheduledExecutor.scheduleAtFixedRate( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
+					return future;
+				}
+				else
+				{
+					@SuppressWarnings("unchecked")
+					ScheduledFuture<T> future = (ScheduledFuture<T>) scheduledExecutor.scheduleWithFixedDelay( task, delay, repeatEvery, TimeUnit.MILLISECONDS );
+					return future;
+				}
+			}
+			else
+				return (ScheduledFuture<T>) scheduledExecutor.schedule( (Callable<T>) task, delay, TimeUnit.MILLISECONDS );
+		}
+		else
+			return (Future<T>) executor.submit( (Callable<T>) task );
+	}
 }
