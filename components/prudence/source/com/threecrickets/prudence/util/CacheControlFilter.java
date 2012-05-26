@@ -150,7 +150,6 @@ public class CacheControlFilter extends Filter
 		{
 			MediaType mediaType = response.getEntity().getMediaType();
 			Number maxAgeNumber = maxAgeForMediaType.get( mediaType );
-			// System.out.println( mediaType );
 
 			if( maxAgeNumber == null )
 				maxAgeNumber = defaultMaxAge;
@@ -162,7 +161,10 @@ public class CacheControlFilter extends Filter
 			if( maxAge < 0 )
 				cacheDirectives.add( CacheDirective.noCache() );
 			else
+			{
 				cacheDirectives.add( CacheDirective.maxAge( maxAge ) );
+				response.getEntity().setExpirationDate( null );
+			}
 		}
 	}
 
