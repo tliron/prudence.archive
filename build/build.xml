@@ -4,7 +4,6 @@
 	<property file="custom.properties" />
 	
 	<property name="component.source" location="../components/${component}/source" />
-	<property name="component.notices" location="../components/notices" />
 	<property name="reference" location="../components/reference" />
 	<property name="javascript-library" location="../components/prudence-javascript-library" />
 	<property name="skeleton" location="../components/skeleton" />
@@ -127,18 +126,6 @@
 	</target>
 
 	<target name="components" depends="libraries, javadocs, manual" description="Assemble components">
-		<!--<copy todir="${distribution.source}">
-			<fileset dir="${component.source}" />
-		</copy>
-		<copy todir="${distribution.content}">
-			<fileset dir="${component.notices}" />
-			<fileset dir="${javascript-library}" />
-			<fileset dir="${skeleton}" />
-			<fileset dir="${example}" />
-			<fileset dir="${admin}" />
-			<fileset dir="${stickstick-common}" />
-			<fileset dir="${stickstick-javascript}" />
-		</copy>-->
 		<exec executable="${maven}" dir="maven" failifexecutionfails="false">
 			<arg value="deploy" />
 			<arg value="-DaltDeploymentRepository=${maven.repo}" />
@@ -202,5 +189,16 @@
 	</target>
 	
 	<target name="rebuild" depends="clean, build" description="First clean and then build distribution" />
-	
+
+	<target name="dirty" description="Quick-and-dirty update of the content">
+		<copy todir="${distribution.content}">
+			<fileset dir="${skeleton}" />
+			<fileset dir="${admin}" />
+			<fileset dir="${example}" />
+			<fileset dir="${javascript-library}" />
+			<fileset dir="${stickstick-common}" />
+			<fileset dir="${stickstick-javascript}" />
+		</copy>
+	</target>
+
 </project>
