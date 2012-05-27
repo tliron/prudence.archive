@@ -1,43 +1,29 @@
 <?xml version="1.0"?>
 <project name="Prudence" default="build" xmlns:ivy="antlib:org.apache.ivy.ant">
 
-	<!--
-	A straightforward Ant build file that can build a distribution for single-component projects,
-	using Ivy to pull in dependencies.
+	<property file="custom.properties" />
 	
-	The distribution's directory structure is compatible with Sincerity containers.
-	See: http://threecrickets.com/sincerity/
+	<property name="component.source" location="../components/${component}/source" />
+	<property name="component.notices" location="../components/notices" />
+	<property name="reference" location="../components/reference" />
+	<property name="javascript-library" location="../components/prudence-javascript-library" />
+	<property name="skeleton" location="../components/skeleton" />
+	<property name="example" location="../components/example" />
+	<property name="admin" location="../components/admin" />
+	<property name="stickstick-common" location="../components/stickstick-common" />
+	<property name="stickstick-javascript" location="../components/stickstick-javascript" />
 	
-	Version: 1.0
-	-->
+	<property name="dependencies" location="../dependencies" />
 
-	<property file="component.properties" />
+	<property name="cache" location="./cache" />
+	<property name="cache.classes" location="${cache}/classes" />
+	<property name="cache.jars" location="${cache}/jars" />
+	<property name="cache.api" location="${cache}/api" />
+	<property name="cache.manual" location="${cache}/skeleton/reference/manuals/${maven.group}/${maven.artifact}/${version}" />
+
+	<property name="distribution" location="./distribution" />
+	<property name="distribution.content" location="${distribution}/content" />
 	
-	<property name="component.source" value="../components/${component}/source" />
-	<property name="component.notices" value="../components/notices" />
-	<property name="reference" value="../components/reference" />
-	<property name="javascript-library" value="../components/prudence-javascript-library" />
-	<property name="skeleton" value="../components/skeleton" />
-	<property name="example" value="../components/example" />
-	<property name="admin" value="../components/admin" />
-	<property name="stickstick-common" value="../components/stickstick-common" />
-	<property name="stickstick-javascript" value="../components/stickstick-javascript" />
-	
-	<property name="dependencies" value="../dependencies" />
-
-	<property name="cache" value="./cache" />
-	<property name="cache.classes" value="${cache}/classes" />
-	<property name="cache.jars" value="${cache}/jars" />
-
-	<property name="distribution" value="./distribution" />
-	<property name="distribution.content" value="${distribution}/content" />
-	<property name="distribution.libraries" value="${distribution.content}/libraries" />
-	<property name="distribution.jars" value="${distribution.libraries}/jars/${maven.group}/${maven.artifact}/${version}/" />
-	<property name="distribution.reference" value="${distribution.content}/reference" />
-	<property name="distribution.api" value="${distribution.reference}/api/${maven.group}/${maven.artifact}/${version}" />
-	<property name="distribution.manual" value="${distribution.reference}/manuals/${maven.group}/${maven.artifact}/${version}" />
-	<property name="distribution.source" value="${distribution.reference}/source/${maven.group}/${maven.artifact}/${version}" />
-
 	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${dependencies}/libraries/jars/org.apache.ivy/ivy/${ivy.version}/ivy.jar" />
 
 	<target name="ivy" description="Settings for Ivy">
@@ -65,13 +51,13 @@
 	</target>
 
 	<target name="javadocs" description="Create API documentation if not present">
-		<available file="${distribution.api}" property="javadocs-present" />
+		<available file="${cache.api}" property="javadocs-present" />
 		<antcall target="javadocs-overwrite" />
 	</target>
 
 	<target name="javadocs-overwrite" depends="dependencies" description="Create API documentation" unless="javadocs-present">
 		<javadoc
-			destdir="${distribution.api}" sourcepath="${component.source}" excludepackagenames="**.internal.*"
+			destdir="${cache.api}" sourcepath="${component.source}" excludepackagenames="**.internal.*"
 			access="protected" source="${jvm.version}"
 			windowtitle="${documentation.title} ${version}" doctitle="${documentation.title} ${version}"
 			author="true" splitindex="true" use="true" version="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false">
@@ -98,45 +84,68 @@
 				<![CDATA[<i>${documentation.copyright}</i>]]>
 			</bottom>
 		</javadoc>
+		<mkdir dir="${cache.jars}" />
+		<jar destfile="${cache.jars}/javadoc.jar" basedir="${cache.api}" />
 	</target>
 
 	<target name="manual" description="Create manual if not present">
-		<available file="${distribution.manual}" property="manual-present" />
+		<available file="${cache.manual}" property="manual-present" />
 		<antcall target="manual-overwrite" />
 	</target>
 	
 	<target name="clean-manual" description="Clean manual">
-		<delete dir="${distribution.manual}" />
+		<delete dir="${cache.manual}" />
 	</target>
 
 	<target name="manual-overwrite" description="Create manual" unless="manual-present">
-		<mkdir dir="${distribution.manual}" />
-		<copy todir="${distribution.manual}">
+		<mkdir dir="${cache.manual}" />
+		<copy todir="${cache.manual}">
 			<fileset dir="${reference}/manual" excludes="*~" />
 		</copy>
-		<replace dir="${distribution.manual}" includes="${component}_manual.lyx" token="%VERSION%" value="${version}" />
+		<!-- LyX to PDF -->
+		<replace dir="${cache.manual}" includes="${component}_manual.lyx" token="%VERSION%" value="${version}" />
 		<exec executable="${lyx}" failifexecutionfails="false">
 			<arg value="--export" />
 			<arg value="pdf" />
-			<arg value="${distribution.manual}/${component}_manual.lyx" />
+			<arg value="${cache.manual}/${component}_manual.lyx" />
 		</exec>
+		<!-- LyX to HTML -->
 		<exec executable="${elyxer}" failifexecutionfails="false">
 			<arg value="--unicode" />
 			<arg value="--title" />
 			<arg value="${documentation.title} Manual" />
 			<arg value="--css" />
 			<arg value="soft-cricket-api.css" />
-			<arg value="${distribution.manual}/${component}_manual.lyx" />
-			<arg value="${distribution.manual}/${component}_manual.html" />
+			<arg value="${cache.manual}/${component}_manual.lyx" />
+			<arg value="${cache.manual}/${component}_manual.html" />
 		</exec>
 	</target>
 
 	<target name="libraries" depends="classes, version" description="Create jar">
-		<mkdir dir="${distribution.jars}" />
-		<jar destfile="${distribution.jars}/${maven.artifact}.jar" basedir="${cache.classes}" />
+		<mkdir dir="${cache.jars}" />
+		<jar destfile="${cache.jars}/${maven.artifact}.jar" basedir="${cache.classes}" />
 	</target>
 
-	<target name="sincerity" description="Create Sincerity container">
+	<target name="components" depends="libraries, javadocs, manual" description="Assemble components">
+		<!--<copy todir="${distribution.source}">
+			<fileset dir="${component.source}" />
+		</copy>
+		<copy todir="${distribution.content}">
+			<fileset dir="${component.notices}" />
+			<fileset dir="${javascript-library}" />
+			<fileset dir="${skeleton}" />
+			<fileset dir="${example}" />
+			<fileset dir="${admin}" />
+			<fileset dir="${stickstick-common}" />
+			<fileset dir="${stickstick-javascript}" />
+		</copy>-->
+		<exec executable="${maven}" dir="maven" failifexecutionfails="false">
+			<arg value="deploy" />
+			<arg value="-DaltDeploymentRepository=${maven.repo}" />
+		</exec>
+	</target>
+
+	<target name="distribution" depends="components" description="Create Sincerity container">
 		<copy todir="${distribution.content}/configuration/sincerity">
 			<fileset dir="sincerity" />
 		</copy>
@@ -153,21 +162,6 @@
 		</exec>
 	</target>
 
-	<target name="distribution" depends="sincerity, libraries, javadocs, manual" description="Assemble distribution">
-		<copy todir="${distribution.source}">
-			<fileset dir="${component.source}" />
-		</copy>
-		<copy todir="${distribution.content}">
-			<fileset dir="${component.notices}" />
-			<fileset dir="${javascript-library}" />
-			<fileset dir="${skeleton}" />
-			<fileset dir="${example}" />
-			<fileset dir="${admin}" />
-			<fileset dir="${stickstick-common}" />
-			<fileset dir="${stickstick-javascript}" />
-		</copy>
-	</target>
-	
 	<target name="package-zip" depends="distribution" description="Create zip distribution package">
 		<zip destfile="${distribution}/${component}-${version}.zip">
 			<zipfileset dir="${distribution.content}" excludes="cache/, logs/, sincerity" />
