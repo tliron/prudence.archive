@@ -1039,7 +1039,7 @@ Prudence.Routing = Prudence.Routing || function() {
     			this.root = new File(app.root, this.root).absoluteFile
     		}
     		
-    		this['default'] = Sincerity.Objects.ensure(this['default'], CacheControlFilter.FAR_FUTURE)
+    		this['default'] = Sincerity.Objects.ensure(this['default'], -1)
     		if (this['default'] == 'farFuture') {
     			this['default'] = CacheControlFilter.FAR_FUTURE
     		}

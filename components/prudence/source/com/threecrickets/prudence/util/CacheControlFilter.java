@@ -11,6 +11,7 @@
 
 package com.threecrickets.prudence.util;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class CacheControlFilter extends Filter
 	//
 
 	/**
-	 * Construction with a default max age of {@link #FAR_FUTURE}.
+	 * Construction with a default max age of -1 (meaning: do nothing).
 	 * 
 	 * @param context
 	 *        The context
@@ -55,7 +56,7 @@ public class CacheControlFilter extends Filter
 	}
 
 	/**
-	 * Construction with a default max age of {@link #FAR_FUTURE}.
+	 * Construction with a default max age of -1 (meaning: do nothing).
 	 * 
 	 * @param context
 	 *        The context
@@ -64,7 +65,7 @@ public class CacheControlFilter extends Filter
 	 */
 	public CacheControlFilter( Context context, Restlet next )
 	{
-		this( context, next, FAR_FUTURE );
+		this( context, next, -1 );
 	}
 
 	/**
@@ -73,8 +74,8 @@ public class CacheControlFilter extends Filter
 	 * @param context
 	 *        The context
 	 * @param defaultMaxAge
-	 *        The default max age, in seconds, or a negative number to signify
-	 *        "no-cache"
+	 *        The default max age, in seconds, or a 0 to signify "no-cache", or
+	 *        a negative number to do nothing
 	 */
 	public CacheControlFilter( Context context, int defaultMaxAge )
 	{
@@ -89,8 +90,8 @@ public class CacheControlFilter extends Filter
 	 * @param next
 	 *        The next restlet
 	 * @param defaultMaxAge
-	 *        The default max age, in seconds, or a negative number to signify
-	 *        "no-cache"
+	 *        The default max age, in seconds, or a 0 to signify "no-cache", or
+	 *        a negative number to do nothing
 	 */
 	public CacheControlFilter( Context context, Restlet next, int defaultMaxAge )
 	{
@@ -107,8 +108,8 @@ public class CacheControlFilter extends Filter
 	//
 
 	/**
-	 * @return A map of media types to their max age, in seconds, or a negative
-	 *         number to signify "no-cache"
+	 * @return A map of media types to their max age, in seconds, or a 0 to
+	 *         signify "no-cache"
 	 */
 	public Map<MediaType, Number> getMaxAgeForMediaType()
 	{
@@ -116,8 +117,8 @@ public class CacheControlFilter extends Filter
 	}
 
 	/**
-	 * @return The default max age, in seconds, or a negative number to signify
-	 *         "no-cache"
+	 * @return The default max age, in seconds, or a 0 to signify "no-cache", or
+	 *         a negative number to do nothing
 	 * @see #setDefaultMaxAge(int)
 	 */
 	public int getDefaultMaxAge()
@@ -127,8 +128,8 @@ public class CacheControlFilter extends Filter
 
 	/**
 	 * @param defaultMaxAge
-	 *        The default max age, in seconds, or a negative number to signify
-	 *        "no-cache"
+	 *        The default max age, in seconds, or a 0 to signify "no-cache", or
+	 *        a negative number to do nothing
 	 * @see #getDefaultMaxAge()
 	 */
 	public void setDefaultMaxAge( int defaultMaxAge )
@@ -156,15 +157,19 @@ public class CacheControlFilter extends Filter
 
 			int maxAge = maxAgeNumber.intValue();
 
+			// Do nothing when negative
+			if( maxAge < 0 )
+				return;
+
 			List<CacheDirective> cacheDirectives = response.getCacheDirectives();
 			cacheDirectives.clear();
-			if( maxAge < 0 )
+			if( maxAge == 0 )
 				cacheDirectives.add( CacheDirective.noCache() );
 			else
-			{
 				cacheDirectives.add( CacheDirective.maxAge( maxAge ) );
-				response.getEntity().setExpirationDate( null );
-			}
+
+			// Set expiration date accordingly
+			response.getEntity().setExpirationDate( new Date(System.currentTimeMillis() + 1000L * maxAge) );
 		}
 	}
 

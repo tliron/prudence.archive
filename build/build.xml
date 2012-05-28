@@ -154,7 +154,7 @@
 			<arg value="repositories:attach" />
 			<arg value="three-crickets" />
 			<arg value=":" />
-			<arg value="install" />
+			<arg value="dependencies:install" />
 		</exec>
 	</target>
 
