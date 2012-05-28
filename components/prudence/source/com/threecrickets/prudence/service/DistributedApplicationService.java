@@ -60,14 +60,74 @@ public class DistributedApplicationService extends ApplicationService
 	 * @return A future for the task
 	 * @see Hazelcast#getExecutorService()
 	 */
-	@SuppressWarnings("unchecked")
-	public <T> Future<T> distributedTask( String applicationName, String documentName, String entryPointName, Object context, Object where, boolean multi )
+	public <T> Future<T> distributedExecuteTask( String applicationName, String documentName, String entryPointName, Object context, Object where, boolean multi )
 	{
 		if( applicationName == null )
 			applicationName = getApplication().getName();
 
+		return task( new SerializableApplicationTask<T>( applicationName, documentName, entryPointName, context ), where, multi );
+	}
+
+	/**
+	 * Submits a task on the Hazelcast cluster.
+	 * 
+	 * @param applicationName
+	 *        The application's full name, or null to default to current
+	 *        application's name
+	 * @param code
+	 *        The code to execute
+	 * @param context
+	 *        The context made available to the task (must be serializable)
+	 * @param where
+	 *        A {@link Member}, an iterable of {@link Member}, any other object
+	 *        (the member key), or null to let Hazelcast decide
+	 * @param multi
+	 *        Whether the task should be executed on all members in the set
+	 * @return A future for the task
+	 * @see Hazelcast#getExecutorService()
+	 */
+	public <T> Future<T> distributedCodeTask( String applicationName, String code, Object context, Object where, boolean multi )
+	{
+		if( applicationName == null )
+			applicationName = getApplication().getName();
+
+		return task( new SerializableApplicationTask<T>( applicationName, code, context ), where, multi );
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Protected
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param application
+	 *        The application
+	 */
+	protected DistributedApplicationService( Application application )
+	{
+		super( application );
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	/**
+	 * Submits a task on the Hazelcast cluster.
+	 * 
+	 * @param task
+	 *        The task
+	 * @param where
+	 *        A {@link Member}, an iterable of {@link Member}, any other object
+	 *        (the member key), or null to let Hazelcast decide
+	 * @param multi
+	 *        Whether the task should be executed on all members in the set
+	 * @return A future for the task
+	 * @see Hazelcast#getExecutorService()
+	 */
+	@SuppressWarnings("unchecked")
+	private <T> Future<T> task( SerializableApplicationTask<T> task, Object where, boolean multi )
+	{
 		ExecutorService executor = Hazelcast.getExecutorService();
-		SerializableApplicationTask<T> task = new SerializableApplicationTask<T>( applicationName, documentName, entryPointName, context );
 
 		DistributedTask<T> distributedTask;
 		if( where == null )
@@ -95,19 +155,5 @@ public class DistributedApplicationService extends ApplicationService
 			distributedTask = new DistributedTask<T>( task, where );
 
 		return (Future<T>) executor.submit( distributedTask );
-	}
-
-	// //////////////////////////////////////////////////////////////////////////
-	// Protected
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param application
-	 *        The application
-	 */
-	protected DistributedApplicationService( Application application )
-	{
-		super( application );
 	}
 }

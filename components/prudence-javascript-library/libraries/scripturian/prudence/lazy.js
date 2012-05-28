@@ -11,6 +11,7 @@
 // at http://threecrickets.com/
 //
 
+document.executeOnce('/prudence/logging/')
 document.executeOnce('/sincerity/classes/')
 document.executeOnce('/sincerity/objects/')
 document.executeOnce('/sincerity/jvm/')
@@ -184,7 +185,7 @@ Prudence.Lazy = Prudence.Lazy || function() {
 		}
 		fn += 'return new ' + config.name + '('
 		if (config.config) {
-			fn += 'Sincerity.JSON.fromExtendedJSON(' + Sincerity.JSON.to(config.config, true) + ')'
+			fn += 'Sincerity.JSON.from(' + Sincerity.JSON.to(config.config, true) + ')'
 		}
 		fn += ');\n}'
 		return fn
@@ -282,7 +283,7 @@ Prudence.Lazy = Prudence.Lazy || function() {
 	    }
 
 	    Public.get = function(createFn, logger) {
-	    	logger = logger || application.logger
+	    	logger = logger || new Prudence.Logging.getLogger()
 	    	this.lock.readLock().lock()
 			try {
 				if (this.instance) {
@@ -358,7 +359,7 @@ Prudence.Lazy = Prudence.Lazy || function() {
 	    /** @ignore */
 	    Public._construct = function(config) {
 			this.list = config.list || Sincerity.JVM.newList(true)
-			this.logger = config.logger || application.logger
+			this.logger = config.logger || new Prudence.Logging.getLogger()
 	    }
 
 	    /**
@@ -474,7 +475,7 @@ Prudence.Lazy = Prudence.Lazy || function() {
 	    /** @ignore */
 	    Public._construct = function(config) {
 			this.map = config.map || Sincerity.JVM.newMap(true)
-			this.logger = config.logger || application.logger
+			this.logger = config.logger || new Prudence.Logging.getLogger()
 	    }
 
 	    /**

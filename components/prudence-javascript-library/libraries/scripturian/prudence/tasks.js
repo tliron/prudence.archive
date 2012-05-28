@@ -108,7 +108,7 @@ Prudence.Tasks = Prudence.Tasks || function() {
 				params.fn = String(params.fn)
 			}
 			if (params.json) {
-				params.code = '<% document.executeOnce(\'/sincerity/json/\'); var _fn=' + params.fn.trim() + '; _fn(Sincerity.JSON.from(document.context)); %>'
+				params.code = "<% document.executeOnce('/sincerity/json/'); var _fn=" + params.fn.trim() + "; _fn(Sincerity.JSON.from(document.context)); %>"
 			}
 			else {
 				params.code = '<% var _fn=' + params.fn.trim() + '; _fn(document.context); %>'
@@ -121,10 +121,10 @@ Prudence.Tasks = Prudence.Tasks || function() {
 			params.where = params.where || null
 			params.multi = params.multi || false
 			if (Sincerity.Objects.exists(params.code)) {
-				future = application.distributedTask(params.application, params.name, params.entryPoint || null, params.context, params.where, params.multi)
+				future = application.distributedCodeTask(params.application, params.code, params.context, params.where, params.multi)
 			}
 			else {
-				future = application.distributedTask(params.application, params.name, params.entryPoint || null, params.context, params.where, params.multi)
+				future = application.distributedExecuteTask(params.application, params.name, params.entryPoint || null, params.context, params.where, params.multi)
 			}
 		}
 		else {
