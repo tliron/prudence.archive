@@ -11,6 +11,8 @@
 
 package com.threecrickets.prudence.service;
 
+import java.util.Set;
+
 import org.restlet.resource.ServerResource;
 
 import com.threecrickets.prudence.internal.attributes.ResourceContextualAttributes;
@@ -39,6 +41,21 @@ public abstract class ResourceDocumentServiceBase<R extends ServerResource, A ex
 	{
 		super( attributes );
 		this.resource = resource;
+	}
+
+	//
+	// Attributes
+	//
+
+	/**
+	 * Pass-through documents can exist in {@link #getLibraryDocumentSources()}
+	 * as well as in {@link #getDocumentSource()}.
+	 * 
+	 * @return The pass-through document names
+	 */
+	public Set<String> getPassThroughDocuments()
+	{
+		return attributes.getPassThroughDocuments();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
