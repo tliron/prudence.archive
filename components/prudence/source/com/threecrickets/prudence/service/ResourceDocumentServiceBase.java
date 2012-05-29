@@ -48,8 +48,7 @@ public abstract class ResourceDocumentServiceBase<R extends ServerResource, A ex
 	//
 
 	/**
-	 * Pass-through documents can exist in {@link #getLibraryDocumentSources()}
-	 * as well as in {@link #getDocumentSource()}.
+	 * Pass-through documents can exist in the extra document sources.
 	 * 
 	 * @return The pass-through document names
 	 */

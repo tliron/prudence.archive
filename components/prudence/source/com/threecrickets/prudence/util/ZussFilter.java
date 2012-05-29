@@ -127,7 +127,7 @@ public class ZussFilter extends Filter implements Locator
 	 * @param minify
 	 *        Whether to minify the CSS
 	 * @throws IOException
-	 * @see {@link CSSMin}
+	 * @see CSSMin
 	 */
 	public void translate( File zussFile, File cssFile, boolean minify ) throws IOException
 	{
