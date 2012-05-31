@@ -21,6 +21,6 @@ app.routes = {
 }
 
 // See /libraries/resources/default.js:
-app.dispatch = {
-	javascript: {explicit: '/prudence/dispatch/javascript/', library: '/resources/'}
+app.dispatchers = {
+	javascript: {library: '/resources/'}
 }

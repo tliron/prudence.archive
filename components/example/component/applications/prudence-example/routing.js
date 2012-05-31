@@ -15,15 +15,15 @@ app.routes = {
 			{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}
 		]
 	],
-	'/person/{id}/': {type: 'implicit', id: 'person', dispatch: 'javascript'},
-	'/pythonperson/{id}/': {type: 'implicit', id: 'person', dispatch: 'python'},
-	'/groovyperson/{id}/': {type: 'implicit', id: 'person', dispatch: 'groovy'},
-	'/phpperson/{id}/': {type: 'implicit', id: 'person', dispatch: 'php'},
-	'/rubyperson/{id}/': {type: 'implicit', id: 'person', dispatch: 'ruby'},
-	'/clojureperson/{id}/': {type: 'implicit', id: 'person', dispatch: 'clojure'}
+	'/person/{id}/': {type: 'implicit', id: 'person', dispatcher: 'javascript'},
+	'/pythonperson/{id}/': {type: 'implicit', id: 'person', dispatcher: 'python'},
+	'/groovyperson/{id}/': {type: 'implicit', id: 'person', dispatcher: 'groovy'},
+	'/phpperson/{id}/': {type: 'implicit', id: 'person', dispatcher: 'php'},
+	'/rubyperson/{id}/': {type: 'implicit', id: 'person', dispatcher: 'ruby'},
+	'/clojureperson/{id}/': {type: 'implicit', id: 'person', dispatcher: 'clojure'}
 }
 
-app.dispatch = {
+app.dispatchers = {
 	javascript: {explicit: '/prudence/dispatch/javascript/', library: '/resources/javascript/'},
 	python: {explicit: '/prudence/dispatch/python/', library: '/resources/python/'},
 	ruby: {explicit: '/prudence/dispatch/ruby/', library: '/resources/ruby/'},

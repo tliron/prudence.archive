@@ -9,6 +9,16 @@ var Prudence = Prudence || {}
 
 importClass(com.threecrickets.sincerity.exception.SincerityException)
 
+/**
+ * Handles the bootstrapping of Prudence applications using a convenient DSL.
+ * This library is meant to be used in the bootstrapping scripts of the
+ * Sincerity Restlet skeleton. * 
+ * 
+ * @namespace
+ * 
+ * @author Tal Liron
+ * @version 1.0
+ */
 Prudence.Routing = Prudence.Routing || function() {
 	/** @exports Public as Prudence.Routing */
     var Public = {}
@@ -46,10 +56,10 @@ Prudence.Routing = Prudence.Routing || function() {
 
 	/**
 	 * @class
-	 * @name Prudence.Application
+	 * @name Prudence.Routing.Application
 	 */
     Public.Application = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.Application */
+		/** @exports Public as Prudence.Routing.Application */
     	var Public = {}
     	
 	    /** @ignore */
@@ -60,7 +70,7 @@ Prudence.Routing = Prudence.Routing || function() {
         	this.sharedGlobals = {}
     		this.hosts = {}
         	this.routes = {}
-        	this.dispatch = {}
+        	this.dispatchers = {}
     		this.preheat = []
     	}
 
@@ -451,11 +461,11 @@ Prudence.Routing = Prudence.Routing || function() {
 
 	/**
 	 * @class
-	 * @name Prudence.StaticWeb
-	 * @augments Prudence.Restlet
+	 * @name Prudence.Routing.StaticWeb
+	 * @augments Prudence.Routing.Restlet
 	 */
     Public.StaticWeb = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.StaticWeb */
+		/** @exports Public as Prudence.Routing.StaticWeb */
     	var Public = {}
     	
 	    /** @ignore */
@@ -493,11 +503,11 @@ Prudence.Routing = Prudence.Routing || function() {
 
 	/**
 	 * @class
-	 * @name Prudence.DynamicWeb
-	 * @augments Prudence.Restlet
+	 * @name Prudence.Routing.DynamicWeb
+	 * @augments Prudence.Routing.Restlet
 	 */
     Public.DynamicWeb = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.DynamicWeb */
+		/** @exports Public as Prudence.Routing.DynamicWeb */
     	var Public = {}
     	
 	    /** @ignore */
@@ -627,11 +637,11 @@ Prudence.Routing = Prudence.Routing || function() {
 
 	/**
 	 * @class
-	 * @name Prudence.Explicit
-	 * @augments Prudence.Restlet
+	 * @name Prudence.Routing.Explicit
+	 * @augments Prudence.Routing.Restlet
 	 */
     Public.Explicit = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.Explicit */
+		/** @exports Public as Prudence.Routing.Explicit */
     	var Public = {}
     	
 	    /** @ignore */
@@ -686,14 +696,14 @@ Prudence.Routing = Prudence.Routing || function() {
     			app.sourceViewableDocumentSources.addAll(app.libraryDocumentSources)
         	}
 
-    		// Pass-through and hide dispatch
-        	var dispatchBaseUri = Module.cleanBaseUri(uri)
-        	for (var name in app.dispatch) {
-        		var dispatch = app.dispatch[name]
-	    		delegatedResource.passThroughDocuments.add(dispatch.explicit)
-	    		dispatch.explicit = dispatchBaseUri + dispatch.explicit
-	    		app.instance.inboundRoot.hide(dispatch.explicit)
-	    		println('      Dispatch "{0}" -> "{1}"'.cast(name, dispatch.explicit))
+    		// Pass-through and hide dispatchers
+        	var dispatcherBaseUri = Module.cleanBaseUri(uri)
+        	for (var name in app.dispatchers) {
+        		var dispatcher = app.dispatchers[name]
+	    		delegatedResource.passThroughDocuments.add(dispatcher.explicit)
+	    		dispatcher.explicit = dispatcherBaseUri + dispatcher.explicit
+	    		app.instance.inboundRoot.hide(dispatcher.explicit)
+	    		println('      Dispatcher "{0}" -> "{1}"'.cast(name, dispatcher.explicit))
         	}
 
     		// Defrost
@@ -707,18 +717,18 @@ Prudence.Routing = Prudence.Routing || function() {
 
 	/**
 	 * @class
-	 * @name Prudence.Implicit
-	 * @augments Prudence.Restlet
+	 * @name Prudence.Routing.Implicit
+	 * @augments Prudence.Routing.Restlet
 	 */
     Public.Implicit = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.Implicit */
+		/** @exports Public as Prudence.Routing.Implicit */
     	var Public = {}
     	
 	    /** @ignore */
     	Public._inherit = Module.Restlet
 
 		/** @ignore */
-    	Public._configure = ['id', 'locals', 'dispatch']
+    	Public._configure = ['id', 'locals', 'dispatcher']
 
     	Public.create = function(app, uri) {
     		importClass(
@@ -729,15 +739,21 @@ Prudence.Routing = Prudence.Routing || function() {
     			throw new SincerityException('An Explicit must be attached before an Implicit can be created')
        		}
     			
-    		this.dispatch = Sincerity.Objects.ensure(this.dispatch, 'javascript')
-    		var dispatch = app.dispatch[this.dispatch]
-    		if (!Sincerity.Objects.exists(dispatch)) {
-    			throw new SincerityException('Undefined dispatch: "{0}"'.cast(this.dispatch))
+    		this.dispatcher = Sincerity.Objects.ensure(this.dispatcher, 'javascript')
+    		if (!Sincerity.Objects.exists(app.dispatchers[this.dispatcher])) {
+    			app.dispatchers[this.dispatcher] = {}
+    		}
+    		var dispatcher = app.dispatchers[this.dispatcher]
+    		if (!Sincerity.Objects.exists(dispatcher.explicit)) {
+    			dispatcher.explicit = '/prudence/dispatch/{0}/'.cast(this.dispatcher)
+    		}
+    		if (!Sincerity.Objects.exists(dispatcher.library)) {
+    			dispatcher.library = '/resources/{0}/'.cast(this.dispatcher)
     		}
 
-        	app.globals['prudence.dispatch.' + this.dispatch + '.library'] = dispatch.library
+        	app.globals['prudence.dispatch.{0}.library'.cast(this.dispatcher)] = dispatcher.library
     		
-       		var capture = new CapturingRedirector(app.context, 'riap://application' + dispatch.explicit + '?{rq}', false)
+       		var capture = new CapturingRedirector(app.context, 'riap://application' + dispatcher.explicit + '?{rq}', false)
     		var injector = new Injector(app.context, capture)
     		injector.values.put('prudence.id', this.id)
 
@@ -756,11 +772,11 @@ Prudence.Routing = Prudence.Routing || function() {
 
 	/**
 	 * @class
-	 * @name Prudence.Capture
-	 * @augments Prudence.Restlet
+	 * @name Prudence.Routing.Capture
+	 * @augments Prudence.Routing.Restlet
 	 */
     Public.Capture = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.Capture */
+		/** @exports Public as Prudence.Routing.Capture */
     	var Public = {}
     	
 	    /** @ignore */
@@ -798,11 +814,11 @@ Prudence.Routing = Prudence.Routing || function() {
 
     /**
 	 * @class
-	 * @name Prudence.Chain
-	 * @augments Prudence.Restlet 
+	 * @name Prudence.Routing.Chain
+	 * @augments Prudence.Routing.Restlet 
 	 */
     Public.Chain = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.Chain */
+		/** @exports Public as Prudence.Routing.Chain */
     	var Public = {}
     	
 	    /** @ignore */
@@ -833,11 +849,11 @@ Prudence.Routing = Prudence.Routing || function() {
     
 	/**
 	 * @class
-	 * @name Prudence.Resource
-	 * @augments Prudence.Restlet 
+	 * @name Prudence.Routing.Resource
+	 * @augments Prudence.Routing.Restlet 
 	 */
     Public.Resource = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.Resource */
+		/** @exports Public as Prudence.Routing.Resource */
     	var Public = {}
     	
 	    /** @ignore */
@@ -861,11 +877,11 @@ Prudence.Routing = Prudence.Routing || function() {
 
 	/**
 	 * @class
-	 * @name Prudence.AddSlash
-	 * @augments Prudence.Restlet 
+	 * @name Prudence.Routing.AddSlash
+	 * @augments Prudence.Routing.Restlet 
 	 */
     Public.AddSlash = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.AddSlash */
+		/** @exports Public as Prudence.Routing.AddSlash */
     	var Public = {}
     	
 	    /** @ignore */
@@ -880,11 +896,11 @@ Prudence.Routing = Prudence.Routing || function() {
 
     /**
 	 * @class
-	 * @name Prudence.Filter
-	 * @augments Prudence.Restlet 
+	 * @name Prudence.Routing.Filter
+	 * @augments Prudence.Routing.Restlet 
 	 */
     Public.Filter = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.Filter */
+		/** @exports Public as Prudence.Routing.Filter */
     	var Public = {}
     	
 	    /** @ignore */
@@ -907,11 +923,11 @@ Prudence.Routing = Prudence.Routing || function() {
 
     /**
 	 * @class
-	 * @name Prudence.JavaScriptUnifyMinify
-	 * @augments Prudence.Restlet 
+	 * @name Prudence.Routing.JavaScriptUnifyMinify
+	 * @augments Prudence.Routing.Restlet 
 	 */
     Public.JavaScriptUnifyMinify = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.JavaScriptUnifyMinify */
+		/** @exports Public as Prudence.Routing.JavaScriptUnifyMinify */
     	var Public = {}
     	
 	    /** @ignore */
@@ -941,11 +957,11 @@ Prudence.Routing = Prudence.Routing || function() {
 
     /**
 	 * @class
-	 * @name Prudence.CssUnifyMinify
-	 * @augments Prudence.Restlet 
+	 * @name Prudence.Routing.CssUnifyMinify
+	 * @augments Prudence.Routing.Restlet 
 	 */
     Public.CssUnifyMinify = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.CssUnifyMinify */
+		/** @exports Public as Prudence.Routing.CssUnifyMinify */
     	var Public = {}
     	
 	    /** @ignore */
@@ -975,11 +991,11 @@ Prudence.Routing = Prudence.Routing || function() {
 
     /**
 	 * @class
-	 * @name Prudence.Zuss
-	 * @augments Prudence.Restlet 
+	 * @name Prudence.Routing.Zuss
+	 * @augments Prudence.Routing.Restlet 
 	 */
     Public.Zuss = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.Zuss */
+		/** @exports Public as Prudence.Routing.Zuss */
     	var Public = {}
     	
 	    /** @ignore */
@@ -1015,11 +1031,11 @@ Prudence.Routing = Prudence.Routing || function() {
 
     /**
 	 * @class
-	 * @name Prudence.CacheControl
-	 * @augments Prudence.Restlet 
+	 * @name Prudence.Routing.CacheControl
+	 * @augments Prudence.Routing.Restlet 
 	 */
     Public.CacheControl = Sincerity.Classes.define(function(Module) {
-		/** @exports Public as Prudence.CacheControl */
+		/** @exports Public as Prudence.Routing.CacheControl */
     	var Public = {}
     	
 	    /** @ignore */
