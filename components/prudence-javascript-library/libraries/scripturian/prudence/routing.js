@@ -164,7 +164,7 @@ Prudence.Routing = Prudence.Routing || function() {
         		if (name == 'internal') {
         			this.internalName = uri.substring(1)
         		}
-        		println('    "{0}" on "{1}"'.cast(uri, name))
+        		println('    "{0}/" on "{1}"'.cast(uri, name))
         		if (uri != '') {
         			host.attach(uri, this.addTrailingSlashRedirector).matchingMode = Template.MODE_EQUALS
         		}
@@ -456,6 +456,21 @@ Prudence.Routing = Prudence.Routing || function() {
     		}
     	}
     	
+    	Public.getDispatcher = function(name) {
+    		var dispatcher = this.dispatchers[name]
+    		if (!Sincerity.Objects.exists(dispatcher)) {
+    			dispatcher = this.dispatchers[name] = {}
+    		}
+    		if (!Sincerity.Objects.exists(dispatcher.explicit)) {
+    			dispatcher.explicit = '/prudence/dispatch/{0}/'.cast(name)
+    		}
+    		if (!Sincerity.Objects.exists(dispatcher.library)) {
+    			dispatcher.library = '/resources/{0}/'.cast(name)
+    		}
+        	this.globals['prudence.dispatch.{0}.library'.cast(name)] = dispatcher.library
+    		return dispatcher
+    	}
+    	
     	return Public    
     }(Public))
 
@@ -699,11 +714,11 @@ Prudence.Routing = Prudence.Routing || function() {
     		// Pass-through and hide dispatchers
         	var dispatcherBaseUri = Module.cleanBaseUri(uri)
         	for (var name in app.dispatchers) {
-        		var dispatcher = app.dispatchers[name]
+        		var dispatcher = app.getDispatcher(name)
 	    		delegatedResource.passThroughDocuments.add(dispatcher.explicit)
-	    		dispatcher.explicit = dispatcherBaseUri + dispatcher.explicit
-	    		app.instance.inboundRoot.hide(dispatcher.explicit)
-	    		println('      Dispatcher "{0}" -> "{1}"'.cast(name, dispatcher.explicit))
+	    		var explicit = dispatcherBaseUri + dispatcher.explicit
+	    		app.instance.inboundRoot.hide(explicit)
+	    		println('      Dispatcher "{0}" -> "{1}"'.cast(name, explicit))
         	}
 
     		// Defrost
@@ -740,19 +755,7 @@ Prudence.Routing = Prudence.Routing || function() {
        		}
     			
     		this.dispatcher = Sincerity.Objects.ensure(this.dispatcher, 'javascript')
-    		if (!Sincerity.Objects.exists(app.dispatchers[this.dispatcher])) {
-    			app.dispatchers[this.dispatcher] = {}
-    		}
-    		var dispatcher = app.dispatchers[this.dispatcher]
-    		if (!Sincerity.Objects.exists(dispatcher.explicit)) {
-    			dispatcher.explicit = '/prudence/dispatch/{0}/'.cast(this.dispatcher)
-    		}
-    		if (!Sincerity.Objects.exists(dispatcher.library)) {
-    			dispatcher.library = '/resources/{0}/'.cast(this.dispatcher)
-    		}
-
-        	app.globals['prudence.dispatch.{0}.library'.cast(this.dispatcher)] = dispatcher.library
-    		
+    		var dispatcher = app.getDispatcher(this.dispatcher)
        		var capture = new CapturingRedirector(app.context, 'riap://application' + dispatcher.explicit + '?{rq}', false)
     		var injector = new Injector(app.context, capture)
     		injector.values.put('prudence.id', this.id)
