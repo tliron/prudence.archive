@@ -27,7 +27,7 @@ function handle(conversation, method) {
 		conversation.statusCode = 405
 		return null
 	}
-	return method(conversation)
+	return method.call(resource, conversation)
 }
 
 function handleInit(conversation) {
