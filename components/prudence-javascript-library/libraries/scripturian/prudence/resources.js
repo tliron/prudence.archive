@@ -440,17 +440,22 @@ Prudence.Resources = Prudence.Resources || function() {
 						return new Date(resource.response.date.time)
 					}
 					
-					var result = Public.fromRepresentation(representation, resultType, params.result)
-					if (resultHeaders) {
-						result = {
-							representation: result
+					if (Sincerity.Objects.exists(representation)) {
+						var result = Public.fromRepresentation(representation, resultType, params.result)
+						if (resultHeaders) {
+							result = {
+								representation: result
+							}
+							var headers = resource.response.attributes.get('org.restlet.http.headers')
+							if (Sincerity.Objects.exists(headers)) {
+								result.headers = Public.fromParameterList(headers)
+							}
 						}
-						var headers = resource.response.attributes.get('org.restlet.http.headers')
-						if (Sincerity.Objects.exists(headers)) {
-							result.headers = Public.fromParameterList(headers)
-						}
+						return result
 					}
-					return result
+					else {
+						return null
+					}
 				}
 				finally {
 					if (Sincerity.Objects.exists(representation)) {
@@ -461,7 +466,7 @@ Prudence.Resources = Prudence.Resources || function() {
 			catch (x if x.javaException instanceof org.restlet.resource.ResourceException) {
 				Public.logger.log(params.logLevel, function() {
 					var text = resource.response.entity ? String(resource.response.entity.text).trim() : null
-					return String(x.javaException) + (text ? ': ' + text : '') + '\n' + Sincerity.Rhino.getStackTrace() + '\nRequest params: ' + Sincerity.JSON.to(params, true) 
+					return String(x.javaException) + (text ? ': ' + text : '') + '\n' + Sincerity.Rhino.getStackTrace(x) + '\nRequest params: ' + Sincerity.JSON.to(params, true) 
 				})
 				
 				if (resultType == 'date') {
