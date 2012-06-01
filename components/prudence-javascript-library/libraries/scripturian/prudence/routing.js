@@ -89,6 +89,7 @@ Prudence.Routing = Prudence.Routing || function() {
     			org.restlet.data.Reference,
     			org.restlet.data.MediaType,
 				java.util.concurrent.CopyOnWriteArrayList,
+    			java.util.concurrent.CopyOnWriteArraySet,
     			java.io.File)
     			
     		this.component = component
@@ -198,6 +199,9 @@ Prudence.Routing = Prudence.Routing || function() {
         	
         	// Libraries
 			this.libraryDocumentSources = new CopyOnWriteArrayList()
+        	
+        	// Pass-through documents
+        	this.passThroughDocuments = new CopyOnWriteArraySet()
 
         	// Container library
         	var containerLibraryDocumentSource = component.context.attributes.get('prudence.containerLibraryDocumentSource')
@@ -584,7 +588,7 @@ Prudence.Routing = Prudence.Routing || function() {
     			documentSource: app.createDocumentSource(this.root, this.preExtension, this.defaultDocumentName, this.defaultExtenion),
 	    		extraDocumentSources: new CopyOnWriteArrayList(),
 	    		libraryDocumentSources: app.libraryDocumentSources,
-	    		passThroughDocuments: new CopyOnWriteArraySet(),
+	    		passThroughDocuments: app.passThroughDocuments,
 	    		cacheKeyPatternHandlers: new ConcurrentHashMap(),
 	    		scriptletPlugins: new ConcurrentHashMap(),
 	    		clientCachingMode: this.clientCachingMode,
@@ -672,7 +676,6 @@ Prudence.Routing = Prudence.Routing || function() {
 
     		importClass(
     			org.restlet.resource.Finder,
-    			java.util.concurrent.CopyOnWriteArraySet,
     			java.io.File)
 
     		this.root = Sincerity.Objects.ensure(this.root, 'mapped')
@@ -688,7 +691,7 @@ Prudence.Routing = Prudence.Routing || function() {
     		var delegatedResource = app.globals['com.threecrickets.prudence.DelegatedResource'] = {
     			documentSource: app.createDocumentSource(this.root, this.preExtension),
 	    		libraryDocumentSources: app.libraryDocumentSources,
-	    		passThroughDocuments: new CopyOnWriteArraySet(),
+	    		passThroughDocuments: app.passThroughDocuments,
 	    		defaultName: app.settings.code.defaultDocumentName,
 	    		defaultLanguageTag: app.settings.code.defaultLanguageTag,
 	    		languageManager: executable.manager,
