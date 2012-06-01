@@ -59,7 +59,7 @@ public class NormalizingRedirector extends ResolvingRedirector
 	 */
 	public NormalizingRedirector( Context context, String targetPattern, int mode )
 	{
-		super( context, targetPattern, mode );
+		super( context, targetPattern, mode, true );
 		describe();
 	}
 

@@ -38,9 +38,10 @@ public class ResolvingRedirector extends Redirector
 	 * @param targetPattern
 	 * @param mode
 	 */
-	public ResolvingRedirector( Context context, String targetPattern, int mode )
+	public ResolvingRedirector( Context context, String targetPattern, int mode, boolean isCleaning )
 	{
 		super( context, targetPattern, mode );
+		this.isCleaning = isCleaning;
 		describe();
 	}
 
@@ -50,9 +51,10 @@ public class ResolvingRedirector extends Redirector
 	 * @param context
 	 * @param targetTemplate
 	 */
-	public ResolvingRedirector( Context context, String targetTemplate )
+	public ResolvingRedirector( Context context, String targetTemplate, boolean isCleaning )
 	{
 		super( context, targetTemplate );
+		this.isCleaning = isCleaning;
 		describe();
 	}
 
@@ -97,12 +99,14 @@ public class ResolvingRedirector extends Redirector
 
 			// Update the request to cleanly go to the target URI
 			request.setResourceRef( targetRef );
-			request.getAttributes().remove( HeaderConstants.ATTRIBUTE_HEADERS );
+			if( isCleaning )
+				request.getAttributes().remove( HeaderConstants.ATTRIBUTE_HEADERS );
 			next.handle( request, response );
 
 			// Allow for response rewriting and clean the headers
 			response.setEntity( rewrite( response.getEntity() ) );
-			response.getAttributes().remove( HeaderConstants.ATTRIBUTE_HEADERS );
+			if( isCleaning )
+				response.getAttributes().remove( HeaderConstants.ATTRIBUTE_HEADERS );
 			request.setResourceRef( resourceRef );
 
 			// In case of redirection, we may have to rewrite the redirect URI
@@ -122,6 +126,14 @@ public class ResolvingRedirector extends Redirector
 			}
 		}
 	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Private
+
+	/**
+	 * True if we are cleaning the headers in the request and response.
+	 */
+	private final boolean isCleaning;
 
 	/**
 	 * Add description.

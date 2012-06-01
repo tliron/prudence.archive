@@ -101,7 +101,7 @@ public class CapturingRedirector extends ResolvingRedirector
 	 */
 	public CapturingRedirector( Context context, String targetPattern, boolean hostRoot, int mode )
 	{
-		super( context, targetPattern, mode );
+		super( context, targetPattern, mode, false );
 		describe();
 		this.hostRoot = hostRoot;
 	}

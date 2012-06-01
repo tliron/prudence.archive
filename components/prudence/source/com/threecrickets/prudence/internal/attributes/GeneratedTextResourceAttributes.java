@@ -171,7 +171,7 @@ public class GeneratedTextResourceAttributes extends ResourceContextualAttribute
 	 * This setting can be configured by setting an attribute named
 	 * <code>negotiateEncoding</code> in the application's {@link Context}.
 	 * 
-	 * @return Whether to allow client caching
+	 * @return Whether to allow content negotiation
 	 */
 	public boolean isNegotiateEncoding()
 	{
