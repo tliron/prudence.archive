@@ -804,17 +804,17 @@ Prudence.Resources = Prudence.Resources || function() {
 							value = Sincerity.Objects.exists(value) ? String(value) : null
 							break
 					}
-				}
 				
-				if (Sincerity.Objects.exists(value)) {
-					if (isArray) {
-						if (!attributes[k]) {
-							attributes[k] = []
+					if (Sincerity.Objects.exists(value)) {
+						if (isArray) {
+							if (!attributes[k]) {
+								attributes[k] = []
+							}
+							attributes[k].push(value)
 						}
-						attributes[k].push(value)
-					}
-					else {
-						attributes[k] = value
+						else {
+							attributes[k] = value
+						}
 					}
 				}
 			}
