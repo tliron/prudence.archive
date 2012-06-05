@@ -54,6 +54,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.threecrickets.style</groupId>
+			<artifactId>three-crickets-style</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json-java</artifactId>
 			<version>1</version>

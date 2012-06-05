@@ -9,6 +9,7 @@
 	<property name="skeleton" location="../components/skeleton" />
 	<property name="example" location="../components/example" />
 	<property name="admin" location="../components/admin" />
+	<property name="three-crickets-style" location="../components/three-crickets-style" />
 	<property name="stickstick-common" location="../components/stickstick-common" />
 	<property name="stickstick-javascript" location="../components/stickstick-javascript" />
 	
@@ -19,6 +20,7 @@
 	<property name="cache.jars" location="${cache}/jars" />
 	<property name="cache.api" location="${cache}/api" />
 	<property name="cache.manual" location="${cache}/skeleton/reference/manuals/${maven.group}/${maven.artifact}/${version}" />
+	<property name="cache.css" location="${cache}/three-crickets-style/libraries/web/style/three-crickets" />
 
 	<property name="distribution" location="./distribution" />
 	<property name="distribution.content" location="${distribution}/content" />
@@ -126,6 +128,17 @@
 		<antcall target="manual-elyxer" />
 	</target>
 
+	<target name="css" description="Create CSS">
+		<mkdir dir="${cache.css}" />
+		<java
+			classpath="${dependencies}/libraries/jars/org.zkoss.zuss/zuss/1.0.0/zuss.jar"
+			classname="org.zkoss.zuss.Zuss">
+			<arg value="-o" />
+			<arg value="${three-crickets-style}/libraries/web/style/three-crickets/soft-cricket.zuss" />
+			<arg value="${cache.css}/soft-cricket.css" />
+		</java>
+	</target>
+
 	<target name="libraries" depends="classes, version" description="Create jar">
 		<mkdir dir="${cache.jars}" />
 		<jar destfile="${cache.jars}/${maven.artifact}.jar" basedir="${cache.classes}" />
@@ -139,7 +152,7 @@
 		</exec>
 	</target>
 
-	<target name="components" depends="libraries, javadocs, manual, deploy" description="Assemble components" />
+	<target name="components" depends="libraries, javadocs, manual, css, deploy" description="Assemble components" />
 
 	<target name="distribution" depends="components" description="Create Sincerity container">
 		<copy todir="${distribution.content}/configuration/sincerity">

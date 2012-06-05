@@ -53,6 +53,11 @@
 			<artifactId>prudence-skeleton</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.threecrickets.style</groupId>
+			<artifactId>three-crickets-style</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -58,6 +58,7 @@
 		<module>cache-mongodb</module>
 		<module>example</module>
 		<module>admin</module>
+		<module>three-crickets-style</module>
 		<module>stickstick/common</module>
 		<module>stickstick/clojure</module>
 		<module>stickstick/groovy</module>
