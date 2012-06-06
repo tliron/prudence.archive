@@ -940,21 +940,35 @@ Prudence.Routing = Prudence.Routing || function() {
     	Public._inherit = Module.Restlet
 
 		/** @ignore */
-    	Public._configure = ['root', 'next']
+    	Public._configure = ['roots', 'next']
 
     	Public.create = function(app, uri) {
     		importClass(
     			com.threecrickets.prudence.util.JavaScriptUnifyMinifyFilter,
     			java.io.File)
    
-    		this.root = Sincerity.Objects.ensure(this.root, 'mapped')
-    		if (!(this.root instanceof File)) {
-    			this.root = new File(app.root, this.root).absoluteFile
+    		this.roots = Sincerity.Objects.array(this.roots)
+    		if (!Sincerity.Objects.exists(this.roots) || (this.roots.length == 0)) {
+    			this.roots = [new File(new File(app.root, 'mapped'), 'scripts'), sincerity.container.getLibrariesFile('web', 'scripts')]
     		}
+			var target = this.roots[0]
+			if (!(target instanceof File)) {
+				target = new File(app.root, target).absoluteFile
+			}
 
     		this.next = app.createRestlet(this.next, uri)
-    		var filter = new JavaScriptUnifyMinifyFilter(app.context, this.next, this.root, app.settings.code.minimumTimeBetweenValidityChecks)
-    		
+    		var filter = new JavaScriptUnifyMinifyFilter(app.context, this.next, target, app.settings.code.minimumTimeBetweenValidityChecks)
+
+			println('    JavaScriptUnifyMinify: {0}'.cast(target))
+    		for (var r in this.roots) {
+    			var root = this.roots[r]
+        		if (!(root instanceof File)) {
+        			root = new File(app.root, root).absoluteFile
+        		}
+    			filter.sourceDirectories.add(root)
+				println('      Directory: {0}'.cast(root))
+    		}
+
     		return filter
     	}
     	
@@ -974,21 +988,35 @@ Prudence.Routing = Prudence.Routing || function() {
     	Public._inherit = Module.Restlet
 
 		/** @ignore */
-    	Public._configure = ['root', 'next']
+    	Public._configure = ['roots', 'next']
 
     	Public.create = function(app, uri) {
     		importClass(
     			com.threecrickets.prudence.util.CssUnifyMinifyFilter,
     			java.io.File)
    
-    		this.root = Sincerity.Objects.ensure(this.root, 'mapped')
-    		if (!(this.root instanceof File)) {
-    			this.root = new File(app.root, this.root).absoluteFile
+    		this.roots = Sincerity.Objects.array(this.roots)
+    		if (!Sincerity.Objects.exists(this.roots) || (this.roots.length == 0)) {
+    			this.roots = [new File(new File(app.root, 'mapped'), 'style'), sincerity.container.getLibrariesFile('web', 'style')]
     		}
+			var target = this.roots[0]
+			if (!(target instanceof File)) {
+				target = new File(app.root, target).absoluteFile
+			}
 
     		this.next = app.createRestlet(this.next, uri)
-    		var filter = new CssUnifyMinifyFilter(app.context, this.next, this.root, app.settings.code.minimumTimeBetweenValidityChecks)
-    		
+    		var filter = new CssUnifyMinifyFilter(app.context, this.next, target, app.settings.code.minimumTimeBetweenValidityChecks)
+
+			println('    CssUnifyMinify: {0}'.cast(target))
+    		for (var r in this.roots) {
+    			var root = this.roots[r]
+        		if (!(root instanceof File)) {
+        			root = new File(app.root, root).absoluteFile
+        		}
+    			filter.sourceDirectories.add(root)
+				println('      Directory: {0}'.cast(root))
+    		}
+
     		return filter
     	}
     	
@@ -1008,25 +1036,39 @@ Prudence.Routing = Prudence.Routing || function() {
     	Public._inherit = Module.Restlet
 
 		/** @ignore */
-    	Public._configure = ['root', 'next' ,'resolver']
+    	Public._configure = ['roots', 'next' ,'resolver']
 
     	Public.create = function(app, uri) {
     		importClass(
     			com.threecrickets.prudence.util.ZussFilter,
     			java.io.File)
    
-    		this.root = Sincerity.Objects.ensure(this.root, 'mapped')
-    		if (!(this.root instanceof File)) {
-    			this.root = new File(app.root, this.root).absoluteFile
+    		this.roots = Sincerity.Objects.array(this.roots)
+    		if (!Sincerity.Objects.exists(this.roots) || (this.roots.length == 0)) {
+    			this.roots = [new File(new File(app.root, 'mapped'), 'style'), sincerity.container.getLibrariesFile('web', 'style')]
     		}
+			var target = this.roots[0]
+			if (!(target instanceof File)) {
+				target = new File(app.root, target).absoluteFile
+			}
 
     		this.next = app.createRestlet(this.next, uri)
     		var filter
     		if (Sincerity.Objects.exists(this.resolver)) {
-    			filter = new ZussFilter(app.context, this.next, this.root, app.settings.code.minimumTimeBetweenValidityChecks, resolver)
+    			filter = new ZussFilter(app.context, this.next, target, app.settings.code.minimumTimeBetweenValidityChecks, resolver)
     		}
     		else {
-    			filter = new ZussFilter(app.context, this.next, this.root, app.settings.code.minimumTimeBetweenValidityChecks)
+    			filter = new ZussFilter(app.context, this.next, target, app.settings.code.minimumTimeBetweenValidityChecks)
+    		}
+    		
+			println('    Zuss: {0}'.cast(target))
+    		for (var r in this.roots) {
+    			var root = this.roots[r]
+        		if (!(root instanceof File)) {
+        			root = new File(app.root, root).absoluteFile
+        		}
+    			filter.sourceDirectories.add(root)
+				println('      Directory: {0}'.cast(root))
     		}
     		
     		return filter

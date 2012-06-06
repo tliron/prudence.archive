@@ -15,12 +15,13 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.SequenceInputStream;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -31,6 +32,8 @@ import org.restlet.Restlet;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.routing.Filter;
+
+import com.hazelcast.util.ConcurrentHashSet;
 
 /**
  * A {@link Filter} that automatically unifies and/or minifies source files,
@@ -57,8 +60,9 @@ public abstract class UnifyMinifyFilter extends Filter
 	 * 
 	 * @param context
 	 *        The context
-	 * @param sourceDirectory
-	 *        The directory where the sources are found
+	 * @param targetDirectory
+	 *        The directory into which unified-minified results should be
+	 *        written
 	 * @param minimumTimeBetweenValidityChecks
 	 *        See {@link #getMinimumTimeBetweenValidityChecks()}
 	 * @param sourceExtension
@@ -69,9 +73,9 @@ public abstract class UnifyMinifyFilter extends Filter
 	 * @param unifiedFilename
 	 *        The unified filename (the source extension is appended to it)
 	 */
-	public UnifyMinifyFilter( Context context, File sourceDirectory, long minimumTimeBetweenValidityChecks, String sourceExtension, String minifiedSourceExtension, String unifiedFilename )
+	public UnifyMinifyFilter( Context context, File targetDirectory, long minimumTimeBetweenValidityChecks, String sourceExtension, String minifiedSourceExtension, String unifiedFilename )
 	{
-		this( context, null, sourceDirectory, minimumTimeBetweenValidityChecks, sourceExtension, minifiedSourceExtension, unifiedFilename );
+		this( context, null, targetDirectory, minimumTimeBetweenValidityChecks, sourceExtension, minifiedSourceExtension, unifiedFilename );
 	}
 
 	/**
@@ -81,8 +85,9 @@ public abstract class UnifyMinifyFilter extends Filter
 	 *        The context
 	 * @param next
 	 *        The next restlet
-	 * @param sourceDirectory
-	 *        The directory where the sources are found
+	 * @param targetDirectory
+	 *        The directory into which unified-minified results should be
+	 *        written
 	 * @param minimumTimeBetweenValidityChecks
 	 *        See {@link #getMinimumTimeBetweenValidityChecks()}
 	 * @param sourceExtension
@@ -93,20 +98,32 @@ public abstract class UnifyMinifyFilter extends Filter
 	 * @param unifiedFilename
 	 *        The unified filename (the source extension is appended to it)
 	 */
-	public UnifyMinifyFilter( Context context, Restlet next, File sourceDirectory, long minimumTimeBetweenValidityChecks, String sourceExtension, String minifiedSourceExtension, String unifiedFilename )
+	public UnifyMinifyFilter( Context context, Restlet next, File targetDirectory, long minimumTimeBetweenValidityChecks, String sourceExtension, String minifiedSourceExtension, String unifiedFilename )
 	{
 		super( context, next );
 		this.sourceExtension = "." + sourceExtension;
 		this.minifiedSourceExtension = "." + minifiedSourceExtension;
 		this.unifiedFilename = unifiedFilename + this.sourceExtension;
 		this.unifiedMinifiedFilename = unifiedFilename + this.minifiedSourceExtension + this.sourceExtension;
-		this.sourceDirectory = sourceDirectory;
+		this.targetDirectory = targetDirectory;
 		this.minimumTimeBetweenValidityChecks = minimumTimeBetweenValidityChecks;
 	}
 
 	//
 	// Attributes
 	//
+
+	/**
+	 * The directories where the sources are found.
+	 * <p>
+	 * The set is thread-safe.
+	 * 
+	 * @return The set of source directories
+	 */
+	public Set<File> getSourceDirectories()
+	{
+		return sourceDirectories;
+	}
 
 	/**
 	 * A value of -1 disables all validity checking.
@@ -136,31 +153,33 @@ public abstract class UnifyMinifyFilter extends Filter
 	 * Unifies all source files in the directory in they are newer than the
 	 * target, optionally minifying them as
 	 * 
-	 * @param sourceDirectory
+	 * @param targetDirectory
+	 *        The directory into which unified-minified results should be
+	 *        written
 	 * @param minify
 	 *        Whether to minify the result
 	 * @throws IOException
 	 */
-	public void unify( File sourceDirectory, boolean minify ) throws IOException
+	public void unify( File targetDirectory, boolean minify ) throws IOException
 	{
-		String[] sourceFilenames = sourceDirectory.list( sourceFilenameFilter );
-		if( sourceFilenames == null )
+		ArrayList<File> sourceFiles = getFiles();
+		if( sourceFiles.isEmpty() )
 			return;
 
-		File unifiedSourceFile = IoUtil.getUniqueFile( new File( sourceDirectory, minify ? unifiedMinifiedFilename : unifiedFilename ) );
+		File unifiedSourceFile = IoUtil.getUniqueFile( new File( targetDirectory, minify ? unifiedMinifiedFilename : unifiedFilename ) );
 
 		synchronized( unifiedSourceFile )
 		{
 			if( minify )
-				getLogger().info( "Unifying and minifying directory \"" + sourceDirectory + "\" into file \"" + unifiedSourceFile + "\"" );
+				getLogger().info( "Unifying and minifying directories into file \"" + unifiedSourceFile + "\"" );
 			else
-				getLogger().info( "Unifying directory \"" + sourceDirectory + "\" into file \"" + unifiedSourceFile + "\"" );
+				getLogger().info( "Unifying directories into file \"" + unifiedSourceFile + "\"" );
 
 			long newLastModified = 0;
 
-			for( String sourceFilename : sourceFilenames )
+			for( File sourceFile : sourceFiles )
 			{
-				long lastModified = new File( sourceDirectory, sourceFilename ).lastModified();
+				long lastModified = sourceFile.lastModified();
 				if( lastModified > newLastModified )
 					newLastModified = lastModified;
 			}
@@ -171,14 +190,14 @@ public abstract class UnifyMinifyFilter extends Filter
 			if( unifiedSourceFile.exists() )
 				if( !unifiedSourceFile.delete() )
 					throw new IOException( "Could not delete file: " + unifiedSourceFile );
+			unifiedSourceFile.getParentFile().mkdirs();
 
-			Arrays.sort( sourceFilenames );
 			Vector<InputStream> ins = new Vector<InputStream>();
-			for( String name : sourceFilenames )
+			for( File sourceFile : sourceFiles )
 			{
 				try
 				{
-					ins.add( new FileInputStream( new File( sourceDirectory, name ) ) );
+					ins.add( new FileInputStream( sourceFile ) );
 					ins.add( new ByteArrayInputStream( NEWLINE_BYTES ) );
 				}
 				catch( IOException x )
@@ -214,10 +233,9 @@ public abstract class UnifyMinifyFilter extends Filter
 				throw new IOException( "Could not update timestamp on file: " + unifiedSourceFile );
 
 			if( minify )
-				getLogger().info( "Unified and minified directory \"" + sourceDirectory + "\" into file \"" + unifiedSourceFile + "\"" );
+				getLogger().info( "Unified and minified directories into file \"" + unifiedSourceFile + "\"" );
 			else
-				getLogger().info( "Unified directory \"" + sourceDirectory + "\" into file \"" + unifiedSourceFile + "\"" );
-
+				getLogger().info( "Unified directories into file \"" + unifiedSourceFile + "\"" );
 		}
 	}
 
@@ -229,14 +247,14 @@ public abstract class UnifyMinifyFilter extends Filter
 	protected int beforeHandle( Request request, Response response )
 	{
 		Reference reference = request.getResourceRef();
-		String path = reference.getRemainingPart( true, false );
+		String name = reference.getLastSegment();
 		try
 		{
 			boolean validate = false;
 			boolean minify = false;
-			if( path.endsWith( unifiedFilename ) )
+			if( name.equals( unifiedFilename ) )
 				validate = true;
-			else if( path.endsWith( unifiedMinifiedFilename ) )
+			else if( name.equals( unifiedMinifiedFilename ) )
 			{
 				validate = true;
 				minify = true;
@@ -249,17 +267,7 @@ public abstract class UnifyMinifyFilter extends Filter
 				if( lastValidityCheck == 0 || ( now - lastValidityCheck > minimumTimeBetweenValidityChecks ) )
 				{
 					if( this.lastValidityCheck.compareAndSet( lastValidityCheck, now ) )
-					{
-						File file = new File( sourceDirectory, path ).getParentFile();
-
-						if( !file.isDirectory() )
-						{
-							response.setStatus( Status.CLIENT_ERROR_NOT_FOUND );
-							return Filter.STOP;
-						}
-
-						unify( file, minify );
-					}
+						unify( targetDirectory, minify );
 				}
 			}
 		}
@@ -312,9 +320,14 @@ public abstract class UnifyMinifyFilter extends Filter
 	public final String unifiedMinifiedFilename;
 
 	/**
-	 * The directory where the sources are found.
+	 * The directory into which unified-minified results should be written.
 	 */
-	private final File sourceDirectory;
+	private final File targetDirectory;
+
+	/**
+	 * The directories where the sources are found.
+	 */
+	private final ConcurrentHashSet<File> sourceDirectories = new ConcurrentHashSet<File>();
 
 	/**
 	 * See {@link #getMinimumTimeBetweenValidityChecks()}
@@ -326,19 +339,27 @@ public abstract class UnifyMinifyFilter extends Filter
 	 */
 	private final AtomicLong lastValidityCheck = new AtomicLong();
 
-	/**
-	 * Filename filter for source files.
-	 */
-	private final SourceFilenameFilter sourceFilenameFilter = new SourceFilenameFilter();
-
-	/**
-	 * Filename filter for source files.
-	 */
-	private class SourceFilenameFilter implements FilenameFilter
+	private ArrayList<File> getFiles()
 	{
-		public boolean accept( File directory, String name )
+		ArrayList<File> sourceFiles = new ArrayList<File>();
+		for( File sourceDirectory : sourceDirectories )
+			addFiles( sourceFiles, sourceDirectory );
+		Collections.sort( sourceFiles );
+		return sourceFiles;
+	}
+
+	private void addFiles( ArrayList<File> sourceFiles, File sourceDirectory )
+	{
+		for( File sourceFile : sourceDirectory.listFiles() )
 		{
-			return name.endsWith( sourceExtension ) && !name.equals( unifiedMinifiedFilename ) && !name.equals( unifiedFilename );
+			if( sourceFile.isDirectory() )
+				addFiles( sourceFiles, sourceFile );
+			else
+			{
+				String name = sourceFile.getName();
+				if( name.endsWith( sourceExtension ) && !name.equals( unifiedMinifiedFilename ) && !name.equals( unifiedFilename ) )
+					sourceFiles.add( sourceFile );
+			}
 		}
 	}
 }

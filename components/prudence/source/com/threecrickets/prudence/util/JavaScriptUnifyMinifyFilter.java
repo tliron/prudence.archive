@@ -52,14 +52,15 @@ public class JavaScriptUnifyMinifyFilter extends UnifyMinifyFilter
 	 * 
 	 * @param context
 	 *        The context
-	 * @param scriptsDirectory
-	 *        The directory where the source scripts are found
+	 * @param targetDirectory
+	 *        The directory into which unified-minified results should be
+	 *        written
 	 * @param minimumTimeBetweenValidityChecks
 	 *        See {@link #getMinimumTimeBetweenValidityChecks()}
 	 */
-	public JavaScriptUnifyMinifyFilter( Context context, File scriptsDirectory, long minimumTimeBetweenValidityChecks )
+	public JavaScriptUnifyMinifyFilter( Context context, File targetDirectory, long minimumTimeBetweenValidityChecks )
 	{
-		this( context, null, scriptsDirectory, minimumTimeBetweenValidityChecks );
+		this( context, null, targetDirectory, minimumTimeBetweenValidityChecks );
 	}
 
 	/**
@@ -69,14 +70,15 @@ public class JavaScriptUnifyMinifyFilter extends UnifyMinifyFilter
 	 *        The context
 	 * @param next
 	 *        The next restlet
-	 * @param scriptsDirectory
-	 *        The directory where the source scripts are found
+	 * @param targetDirectory
+	 *        The directory into which unified-minified results should be
+	 *        written
 	 * @param minimumTimeBetweenValidityChecks
 	 *        See {@link #getMinimumTimeBetweenValidityChecks()}
 	 */
-	public JavaScriptUnifyMinifyFilter( Context context, Restlet next, File scriptsDirectory, long minimumTimeBetweenValidityChecks )
+	public JavaScriptUnifyMinifyFilter( Context context, Restlet next, File targetDirectory, long minimumTimeBetweenValidityChecks )
 	{
-		super( context, next, scriptsDirectory, minimumTimeBetweenValidityChecks, "js", "min", "all" );
+		super( context, next, targetDirectory, minimumTimeBetweenValidityChecks, "js", "min", "all" );
 		describe();
 	}
 

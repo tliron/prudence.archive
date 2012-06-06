@@ -7,10 +7,9 @@ app.routes = {
 	'/*': [
 		'explicit',
 		'dynamicWeb',
-		[
-			{type: 'cssUnifyMinify', next: {type: 'javaScriptUnifyMinify', next: 'staticWeb'}},
-			{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}
-		]
+		{type: 'zuss', next: [
+			'staticWeb',
+			{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}]}
 	],
 	'/data/note/{id}/': '/data/note/',
 	'/data/note/': 'hidden'

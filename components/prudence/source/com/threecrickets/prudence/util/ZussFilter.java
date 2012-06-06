@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.restlet.Context;
@@ -26,7 +28,9 @@ import org.zkoss.zuss.Zuss;
 import org.zkoss.zuss.impl.out.BuiltinResolver;
 import org.zkoss.zuss.metainfo.ZussDefinition;
 
+import com.hazelcast.util.ConcurrentHashSet;
 import com.threecrickets.prudence.internal.CSSMin;
+import com.threecrickets.scripturian.internal.ScripturianUtil;
 
 /**
  * A {@link Filter} that automatically parses <a
@@ -49,20 +53,21 @@ public class ZussFilter extends Filter implements Locator
 	//
 
 	/**
-	 * Constructor using a {@link BuiltinResolver}.
+	 * Constructor using {@link BuiltinResolver}.
 	 * 
 	 * @param context
 	 *        The context
 	 * @param next
 	 *        The next restlet
-	 * @param sourceDirectory
-	 *        The directory where the sources are found
+	 * @param targetDirectory
+	 *        The directory into which unified-minified results should be
+	 *        written
 	 * @param minimumTimeBetweenValidityChecks
 	 *        See {@link #getMinimumTimeBetweenValidityChecks()}
 	 */
-	public ZussFilter( Context context, Restlet next, File sourceDirectory, long minimumTimeBetweenValidityChecks )
+	public ZussFilter( Context context, Restlet next, File targetDirectory, long minimumTimeBetweenValidityChecks )
 	{
-		this( context, next, sourceDirectory, minimumTimeBetweenValidityChecks, new BuiltinResolver() );
+		this( context, next, targetDirectory, minimumTimeBetweenValidityChecks, new BuiltinResolver() );
 	}
 
 	/**
@@ -72,17 +77,18 @@ public class ZussFilter extends Filter implements Locator
 	 *        The context
 	 * @param next
 	 *        The next restlet
-	 * @param sourceDirectory
-	 *        The directory where the sources are found
+	 * @param targetDirectory
+	 *        The directory into which unified-minified results should be
+	 *        written
 	 * @param minimumTimeBetweenValidityChecks
 	 *        See {@link #getMinimumTimeBetweenValidityChecks()}
 	 * @param resolver
 	 *        The ZUSS resolver
 	 */
-	public ZussFilter( Context context, Restlet next, File sourceDirectory, long minimumTimeBetweenValidityChecks, Resolver resolver )
+	public ZussFilter( Context context, Restlet next, File targetDirectory, long minimumTimeBetweenValidityChecks, Resolver resolver )
 	{
 		super( context, next );
-		this.sourceDirectory = sourceDirectory;
+		this.targetDirectory = targetDirectory;
 		this.minimumTimeBetweenValidityChecks = minimumTimeBetweenValidityChecks;
 		this.resolver = resolver;
 		describe();
@@ -91,6 +97,18 @@ public class ZussFilter extends Filter implements Locator
 	//
 	// Attributes
 	//
+
+	/**
+	 * The directories where the sources are found.
+	 * <p>
+	 * The set is thread-safe.
+	 * 
+	 * @return The set of source directories
+	 */
+	public Set<File> getSourceDirectories()
+	{
+		return sourceDirectories;
+	}
 
 	/**
 	 * A value of -1 disables all validity checking.
@@ -213,16 +231,21 @@ public class ZussFilter extends Filter implements Locator
 				{
 					if( this.lastValidityCheck.compareAndSet( lastValidityCheck, now ) )
 					{
-						File zussFile = new File( sourceDirectory, zussName );
-
-						if( !zussFile.exists() )
+						for( File sourceDirectory : sourceDirectories )
 						{
-							response.setStatus( Status.CLIENT_ERROR_NOT_FOUND );
-							return Filter.STOP;
-						}
+							File zussFile = findFile( zussName, sourceDirectory );
+							if( zussFile != null )
+							{
+								File cssFile = new File( new File( targetDirectory, ScripturianUtil.getRelativeFile( zussFile, sourceDirectory ).getParent() ), name );
+								if( cssFile.exists() )
+									if( !cssFile.delete() )
+										throw new IOException( "Could not delete file: " + cssFile );
+								cssFile.getParentFile().mkdirs();
+								translate( zussFile, cssFile, minify );
 
-						File cssFile = new File( sourceDirectory, name );
-						translate( zussFile, cssFile, minify );
+								break;
+							}
+						}
 					}
 				}
 			}
@@ -242,8 +265,10 @@ public class ZussFilter extends Filter implements Locator
 
 	public Reader getResource( String name ) throws IOException
 	{
-		File file = new File( sourceDirectory, name );
-		return new BufferedReader( new FileReader( file ) );
+		File file = findFile( name );
+		if( file != null )
+			return new BufferedReader( new FileReader( file ) );
+		throw new FileNotFoundException( name );
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -260,9 +285,14 @@ public class ZussFilter extends Filter implements Locator
 	private static final String ZUSS_EXTENSION = ".zuss";
 
 	/**
-	 * The directory where the sources are found.
+	 * The directory into which unified-minified results should be written.
 	 */
-	private final File sourceDirectory;
+	private final File targetDirectory;
+
+	/**
+	 * The directories where the sources are found.
+	 */
+	private final ConcurrentHashSet<File> sourceDirectories = new ConcurrentHashSet<File>();
 
 	/**
 	 * See {@link #getMinimumTimeBetweenValidityChecks()}
@@ -291,5 +321,33 @@ public class ZussFilter extends Filter implements Locator
 		setAuthor( "Three Crickets" );
 		setName( "ZussFilter" );
 		setDescription( "A filter that automatically translates ZUSS source files to CSS" );
+	}
+
+	private File findFile( String name )
+	{
+		for( File sourceDirectory : sourceDirectories )
+		{
+			File file = findFile( name, sourceDirectory );
+			if( file != null )
+				return file;
+		}
+		return null;
+	}
+
+	private static File findFile( String name, File dir )
+	{
+		File file = new File( dir, name );
+		if( file.exists() )
+			return file;
+		for( File subDir : dir.listFiles() )
+		{
+			if( subDir.isDirectory() )
+			{
+				file = findFile( name, subDir );
+				if( file != null )
+					return file;
+			}
+		}
+		return null;
 	}
 }

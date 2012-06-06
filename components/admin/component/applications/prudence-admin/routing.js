@@ -8,11 +8,9 @@ app.routes = {
 	'/*': [
 		'explicit',
 		'dynamicWeb',
-		[
-			'staticWeb',
-			{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}
-		]
+		{type: 'javaScriptUnifyMinify', next:
+			{type: 'zuss', next: [
+				'staticWeb',
+				{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}]}}
 	]
 }
-
-app.preheat = ['/person/1/']

@@ -8,10 +8,11 @@ app.routes = {
 	'/*': [
 		'explicit',
 		{type: 'filter', library: '/filters/statistics/', next: 'dynamicWeb'},
-		{type: 'cacheControl', 'default': 10, mediaTypes: {'text/html': 15}, next: [
-			'staticWeb',
-			{type: 'zuss', root: sincerity.container.getLibrariesFile('web', 'style', 'three-crickets'),
-				next: {type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}}]}
+		{type: 'cacheControl', 'default': 10, mediaTypes: {'text/html': 15}, next:
+			{type: 'javaScriptUnifyMinify', next:
+				{type: 'zuss', next: [
+					'staticWeb',
+					{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}]}}}
 	],
 	'/person/{id}/': {type: 'implicit', id: 'person', dispatcher: 'javascript'},
 	'/pythonperson/{id}/': {type: 'implicit', id: 'person', dispatcher: 'python'},

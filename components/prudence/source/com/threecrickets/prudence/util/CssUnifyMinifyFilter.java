@@ -51,14 +51,15 @@ public class CssUnifyMinifyFilter extends UnifyMinifyFilter
 	 * 
 	 * @param context
 	 *        The context
-	 * @param scriptsDirectory
-	 *        The directory where the source scripts are found
+	 * @param targetDirectory
+	 *        The directory into which unified-minified results should be
+	 *        written
 	 * @param minimumTimeBetweenValidityChecks
 	 *        See {@link #getMinimumTimeBetweenValidityChecks()}
 	 */
-	public CssUnifyMinifyFilter( Context context, File scriptsDirectory, long minimumTimeBetweenValidityChecks )
+	public CssUnifyMinifyFilter( Context context, File targetDirectory, long minimumTimeBetweenValidityChecks )
 	{
-		this( context, null, scriptsDirectory, minimumTimeBetweenValidityChecks );
+		this( context, null, targetDirectory, minimumTimeBetweenValidityChecks );
 	}
 
 	/**
@@ -68,14 +69,15 @@ public class CssUnifyMinifyFilter extends UnifyMinifyFilter
 	 *        The context
 	 * @param next
 	 *        The next restlet
-	 * @param scriptsDirectory
-	 *        The directory where the source scripts are found
+	 * @param targetDirectory
+	 *        The directory into which unified-minified results should be
+	 *        written
 	 * @param minimumTimeBetweenValidityChecks
 	 *        See {@link #getMinimumTimeBetweenValidityChecks()}
 	 */
-	public CssUnifyMinifyFilter( Context context, Restlet next, File scriptsDirectory, long minimumTimeBetweenValidityChecks )
+	public CssUnifyMinifyFilter( Context context, Restlet next, File targetDirectory, long minimumTimeBetweenValidityChecks )
 	{
-		super( context, next, scriptsDirectory, minimumTimeBetweenValidityChecks, "css", "min", "all" );
+		super( context, next, targetDirectory, minimumTimeBetweenValidityChecks, "css", "min", "all" );
 		describe();
 	}
 
