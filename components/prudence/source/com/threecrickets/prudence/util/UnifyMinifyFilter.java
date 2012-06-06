@@ -350,15 +350,19 @@ public abstract class UnifyMinifyFilter extends Filter
 
 	private void addFiles( ArrayList<File> sourceFiles, File sourceDirectory )
 	{
-		for( File sourceFile : sourceDirectory.listFiles() )
+		File[] files = sourceDirectory.listFiles();
+		if( files != null )
 		{
-			if( sourceFile.isDirectory() )
-				addFiles( sourceFiles, sourceFile );
-			else
+			for( File sourceFile : files )
 			{
-				String name = sourceFile.getName();
-				if( name.endsWith( sourceExtension ) && !name.equals( unifiedMinifiedFilename ) && !name.equals( unifiedFilename ) )
-					sourceFiles.add( sourceFile );
+				if( sourceFile.isDirectory() )
+					addFiles( sourceFiles, sourceFile );
+				else
+				{
+					String name = sourceFile.getName();
+					if( name.endsWith( sourceExtension ) && !name.equals( unifiedMinifiedFilename ) && !name.equals( unifiedFilename ) )
+						sourceFiles.add( sourceFile );
+				}
 			}
 		}
 	}

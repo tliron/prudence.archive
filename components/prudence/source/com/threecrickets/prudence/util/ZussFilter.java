@@ -339,13 +339,17 @@ public class ZussFilter extends Filter implements Locator
 		File file = new File( dir, name );
 		if( file.exists() )
 			return file;
-		for( File subDir : dir.listFiles() )
+		File[] files = dir.listFiles();
+		if( files != null )
 		{
-			if( subDir.isDirectory() )
+			for( File subDir : files )
 			{
-				file = findFile( name, subDir );
-				if( file != null )
-					return file;
+				if( subDir.isDirectory() )
+				{
+					file = findFile( name, subDir );
+					if( file != null )
+						return file;
+				}
 			}
 		}
 		return null;
