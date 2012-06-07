@@ -1,7 +1,7 @@
 
 app.hosts = {
 	'default': '/',
-	internal: '/skeleton/' // If not provided will default to the application subdirectory name
+	internal: '/prudence-admin/' // If not provided will default to the application subdirectory name
 }
 
 app.routes = {
