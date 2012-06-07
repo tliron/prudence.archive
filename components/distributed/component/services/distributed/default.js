@@ -2,8 +2,7 @@
 document.execute('/sincerity/container/')
 
 importClass(
-	java.lang.System,
-	java.lang.ClassNotFoundException)
+	java.lang.System)
 
 var config = sincerity.container.getConfigurationFile('hazelcast.conf')
 if (config.exists()) {
@@ -11,7 +10,7 @@ if (config.exists()) {
 	try {
 		// Initializes from system property 
 		com.hazelcast.core.Hazelcast.defaultInstance
-	} catch (x if x.javaException instanceof ClassNotFoundException) {}
+	} catch (x) {}
 }
 else
 {
@@ -38,5 +37,5 @@ else
 		Sincerity.Container.executeAll(sincerity.container.getConfigurationFile('hazelcast'))
 	
 		Hazelcast.init(config)
-	} catch (x if x.javaException instanceof ClassNotFoundException) {}
+	} catch (x) {}
 }
