@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.restlet.Context;
@@ -33,8 +34,6 @@ import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.routing.Filter;
 
-import com.hazelcast.util.ConcurrentHashSet;
-
 /**
  * A {@link Filter} that automatically unifies and/or minifies source files,
  * saving them as a single file. Unifying them allows clients to retrieve the
@@ -43,6 +42,9 @@ import com.hazelcast.util.ConcurrentHashSet;
  * <p>
  * This filter can track changes to the source files, updating the result file
  * on-the-fly. This makes it easy to develop and debug a live site.
+ * <p>
+ * Note that the files from the source directories are gathered recursively, so
+ * that files in all subdirectories will also be included.
  * <p>
  * Note that this instances of this class can only guarantee atomic access to
  * the unified/minified version within the current VM.
@@ -327,7 +329,7 @@ public abstract class UnifyMinifyFilter extends Filter
 	/**
 	 * The directories where the sources are found.
 	 */
-	private final ConcurrentHashSet<File> sourceDirectories = new ConcurrentHashSet<File>();
+	private final CopyOnWriteArraySet<File> sourceDirectories = new CopyOnWriteArraySet<File>();
 
 	/**
 	 * See {@link #getMinimumTimeBetweenValidityChecks()}

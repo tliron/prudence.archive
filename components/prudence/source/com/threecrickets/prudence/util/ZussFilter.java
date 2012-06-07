@@ -1,3 +1,14 @@
+/**
+ * Copyright 2009-2012 Three Crickets LLC.
+ * <p>
+ * The contents of this file are subject to the terms of the LGPL version 3.0:
+ * http://www.gnu.org/copyleft/lesser.html
+ * <p>
+ * Alternatively, you can obtain a royalty free commercial license with less
+ * limitations, transferable or non-transferable, directly from Three Crickets
+ * at http://threecrickets.com/
+ */
+
 package com.threecrickets.prudence.util;
 
 import java.io.BufferedOutputStream;
@@ -13,6 +24,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.restlet.Context;
@@ -28,7 +40,6 @@ import org.zkoss.zuss.Zuss;
 import org.zkoss.zuss.impl.out.BuiltinResolver;
 import org.zkoss.zuss.metainfo.ZussDefinition;
 
-import com.hazelcast.util.ConcurrentHashSet;
 import com.threecrickets.prudence.internal.CSSMin;
 import com.threecrickets.scripturian.internal.ScripturianUtil;
 
@@ -292,7 +303,7 @@ public class ZussFilter extends Filter implements Locator
 	/**
 	 * The directories where the sources are found.
 	 */
-	private final ConcurrentHashSet<File> sourceDirectories = new ConcurrentHashSet<File>();
+	private final CopyOnWriteArraySet<File> sourceDirectories = new CopyOnWriteArraySet<File>();
 
 	/**
 	 * See {@link #getMinimumTimeBetweenValidityChecks()}
