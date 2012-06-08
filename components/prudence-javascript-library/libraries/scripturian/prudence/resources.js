@@ -333,10 +333,16 @@ Prudence.Resources = Prudence.Resources || function() {
 					
 				case 'json':
 					params.payload = Sincerity.JSON.to(params.payload.value)
+					if (Sincerity.Objects.exists(params.payload)) {
+						params.payload = new org.restlet.representation.StringRepresentation(params.payload, org.restlet.data.MediaType.valueOf('application/json'))
+					}
 					break
 					
 				case 'xml':
 					params.payload = Sincerity.XML.to(params.payload.value)
+					if (Sincerity.Objects.exists(params.payload)) {
+						params.payload = new org.restlet.representation.StringRepresentation(params.payload, org.restlet.data.MediaType.valueOf('application/xml'))
+					}
 					break
 
 				case 'web':
