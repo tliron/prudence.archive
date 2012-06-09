@@ -41,17 +41,17 @@ public class PrudenceScriptletPlugin implements ScriptletPlugin
 		{
 			String language = (String) languageAdapter.getAttributes().get( LanguageAdapter.LANGUAGE_NAME );
 			if( JAVASCRIPT.equals( language ) )
-				return "print(conversation.locals.get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + "));";
+				return "print(conversation.locals.get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ")||\"\");";
 			else if( PYTHON.equals( language ) )
-				return "sys.stdout.write(conversation.locals.get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + "));";
+				return "sys.stdout.write(conversation.locals.get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ") or \"\");";
 			else if( RUBY.equals( language ) )
-				return "print($conversation.locals.get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + "));";
+				return "print($conversation.locals.get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ")||\"\");";
 			else if( GROOVY.equals( language ) )
-				return "print(conversation.locals.get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + "));";
+				return "print(conversation.locals.get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ")||\"\");";
 			else if( CLOJURE.equals( language ) )
-				return "(print (.. conversation getLocals (get " + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ")))";
+				return "(print (or (.. conversation getLocals (get " + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ")) \"\"))";
 			else if( PHP.equals( language ) )
-				return "print($conversation->locals->get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + "));";
+				return "print($conversation->locals->get(" + ScripturianUtil.doubleQuotedLiteral( content.trim() ) + ")||\"\");";
 		}
 		else if( "{{".equals( code ) )
 		{
