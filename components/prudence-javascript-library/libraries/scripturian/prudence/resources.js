@@ -180,7 +180,7 @@ Prudence.Resources = Prudence.Resources || function() {
 	 * Gets the client's IP address (upstream of any filters, proxies or gateways).
 	 * 
 	 * @param conversation The Prudence conversation
-	 * @returns Dict in the form of {ip: 'ip address', hostName: 'host name'}
+	 * @returns {Object} Dict in the form of {ip: 'ip address', hostName: 'host name'}
 	 */
 	Public.getClientAddress = function(conversation) {
 		var address = {}
@@ -197,7 +197,7 @@ Prudence.Resources = Prudence.Resources || function() {
 	 * 
 	 * @param conversation The Prudence conversation
 	 * @param [keys] See {@link Prudence.Resources#fromAttributeMap}
-	 * @returns A dict of query parameters
+	 * @returns {Object} A dict of query parameters
 	 * @see Visit <a href="http://threecrickets.com/prudence/manual/api/#toc-Paragraph-108">the Prudence API documentation for conversation.query</a>
 	 */
 	Public.getQuery = function(conversation, keys) {
@@ -212,7 +212,7 @@ Prudence.Resources = Prudence.Resources || function() {
 	 * 
 	 * @param conversation The Prudence conversation
 	 * @param [keys] See {@link Prudence.Resources#fromAttributeMap}
-	 * @returns A dict of form parameters
+	 * @returns {Object} A dict of form parameters
 	 * @see Visit <a href="http://threecrickets.com/prudence/manual/api/#toc-Paragraph-107">the Prudence API documentation for conversation.form</a>
 	 */
 	Public.getForm = function(conversation, keys) {
