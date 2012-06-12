@@ -24,6 +24,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -146,7 +147,7 @@ public class ZussFilter extends Filter implements Locator
 	//
 
 	/**
-	 * Translate ZUSS to CSS, only if the ZUSS source is newer. Can optionaly
+	 * Translate ZUSS to CSS, only if the ZUSS source is newer. Can optionally
 	 * minify the CSS, too.
 	 * 
 	 * @param zussFile
@@ -166,6 +167,11 @@ public class ZussFilter extends Filter implements Locator
 			long lastModified = zussFile.lastModified();
 			if( lastModified == cssFile.lastModified() )
 				return;
+
+			if( cssFile.exists() )
+				if( !cssFile.delete() )
+					throw new IOException( "Could not delete file: " + cssFile );
+			cssFile.getParentFile().mkdirs();
 
 			BufferedReader reader = new BufferedReader( new FileReader( zussFile ) );
 			try
@@ -237,10 +243,11 @@ public class ZussFilter extends Filter implements Locator
 			if( zussName != null )
 			{
 				long now = System.currentTimeMillis();
-				long lastValidityCheck = this.lastValidityCheck.get();
+				AtomicLong lastValidityCheckAtomic = getLastValidityCheck( path );
+				long lastValidityCheck = lastValidityCheckAtomic.get();
 				if( lastValidityCheck == 0 || ( now - lastValidityCheck > minimumTimeBetweenValidityChecks ) )
 				{
-					if( this.lastValidityCheck.compareAndSet( lastValidityCheck, now ) )
+					if( lastValidityCheckAtomic.compareAndSet( lastValidityCheck, now ) )
 					{
 						for( File sourceDirectory : sourceDirectories )
 						{
@@ -248,15 +255,14 @@ public class ZussFilter extends Filter implements Locator
 							if( zussFile != null )
 							{
 								File cssFile = new File( new File( targetDirectory, ScripturianUtil.getRelativeFile( zussFile, sourceDirectory ).getParent() ), name );
-								if( cssFile.exists() )
-									if( !cssFile.delete() )
-										throw new IOException( "Could not delete file: " + cssFile );
-								cssFile.getParentFile().mkdirs();
 								translate( zussFile, cssFile, minify );
-
 								break;
 							}
 						}
+
+						// ZUSS file was not found, so don't keep the entry for
+						// it
+						this.lastValidityChecks.remove( zussName );
 					}
 				}
 			}
@@ -318,7 +324,7 @@ public class ZussFilter extends Filter implements Locator
 	/**
 	 * See {@link #getMinimumTimeBetweenValidityChecks()}
 	 */
-	private final AtomicLong lastValidityCheck = new AtomicLong();
+	private final ConcurrentHashMap<String, AtomicLong> lastValidityChecks = new ConcurrentHashMap<String, AtomicLong>();
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
@@ -364,5 +370,18 @@ public class ZussFilter extends Filter implements Locator
 			}
 		}
 		return null;
+	}
+
+	private AtomicLong getLastValidityCheck( String key )
+	{
+		AtomicLong lastValidityCheck = this.lastValidityChecks.get( key );
+		if( lastValidityCheck == null )
+		{
+			lastValidityCheck = new AtomicLong();
+			AtomicLong existing = this.lastValidityChecks.putIfAbsent( key, lastValidityCheck );
+			if( existing != null )
+				lastValidityCheck = existing;
+		}
+		return lastValidityCheck;
 	}
 }
