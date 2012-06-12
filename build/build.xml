@@ -135,7 +135,7 @@
 			classname="org.zkoss.zuss.Zuss">
 			<arg value="-o" />
 			<arg value="${three-crickets-style}/libraries/web/style/three-crickets/soft-cricket.zuss" />
-			<arg value="${cache.css}/soft-cricket.css" />
+			<arg value="${cache.css}/soft-cricket-original.css" />
 		</java>
 	</target>
 
