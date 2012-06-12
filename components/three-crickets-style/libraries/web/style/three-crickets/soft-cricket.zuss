@@ -80,6 +80,7 @@ h2 {
 	font-family: @serif;
 	font-size: 22px;
 	margin-top: 42px;
+	margin-bottom: 18px;
 }
 
 h3 {
