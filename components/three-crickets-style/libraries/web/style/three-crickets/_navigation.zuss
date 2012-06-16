@@ -41,6 +41,7 @@ div.navigation {
 		}
 	}
 	li {
+		list-style-type: none;
 		li a {
 			width: @eval(@navigation-width - @navigation-indent - @navigation-highlight);
 			border-top: none;
