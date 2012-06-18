@@ -382,7 +382,11 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 				executionContext.setWriter( lastWriter );
 
 			String r = captureWriter.toString();
-			resource.getRequest().getAttributes().put( captureWriter.name, r );
+			Map<String, Object> attributes = resource.getRequest().getAttributes();
+			Object existing = attributes.get( captureWriter.name );
+			if( existing != null )
+				r = existing.toString() + r;
+			attributes.put( captureWriter.name, r );
 			return r;
 		}
 
