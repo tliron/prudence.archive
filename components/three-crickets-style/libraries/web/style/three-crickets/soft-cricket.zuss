@@ -67,26 +67,19 @@ div.Indented + div.Indented, div.Unindented + div.Indented, div.Indented + div.U
 }
 
 /* To counteract Ext JS css */
-ol {
-	-moz-padding-start: 40px;
-	margin: 1em 0px;
-	> li {
-    	list-style-type: decimal;
-	}
-}
-ul {
-	-moz-padding-start: 40px;
-	margin: 1em 0px;
-	> li {
-    	list-style-type: disc;
-	}
-}
-div.x-boundlist-list-ct {
-	> ul {
-		-moz-padding-start: 0px;
-		margin: 0px;
+div#main-content {
+	> ol {
+		-moz-padding-start: 40px;
+		margin: 1em 0px;
 		> li {
-			list-style: none outside none;
+	    	list-style-type: decimal;
+		}
+	}
+	> ul {
+		-moz-padding-start: 40px;
+		margin: 1em 0px;
+		> li {
+	    	list-style-type: disc;
 		}
 	}
 }
