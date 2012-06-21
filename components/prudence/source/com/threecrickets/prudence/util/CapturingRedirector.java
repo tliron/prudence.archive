@@ -120,7 +120,8 @@ public class CapturingRedirector extends ResolvingRedirector
 			// The root reference could be null (e.g. in RIAP)
 			rootRef = new Reference( resourceRef.getHostIdentifier() + "/" );
 
-		setCapturedReference( request, new Reference( rootRef, resourceRef ) );
+		if( getCapturedReference( request ) == null )
+			setCapturedReference( request, new Reference( rootRef, resourceRef ) );
 
 		super.handle( request, response );
 	}
