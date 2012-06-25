@@ -1,5 +1,5 @@
 /***********************
- *  Soft Cricket 1.13  *
+ *  Soft Cricket 1.14  *
  *                     *
  *    By: Tal Liron    *
  **********************/
@@ -10,6 +10,8 @@
 @paper: #ffe0d9;
 @link: #b22222;
 @link-hover: #ffffa0;
+
+@font-size: 13px;
 
 @navigation-width: 210px;
 @navigation-indent: 30px;
@@ -26,7 +28,7 @@ body {
 	margin: 0px 8px; /* To counteract Ext JS css */
 	background: url(../../media/three-crickets/soft-cricket/background.png); /* From: http://www.eosdev.com/Backgrounds/Back_Tilework/EosTilework2h.htm */
 	font-family: @sans-serif !important;
-	font-size: 12px !important;
+	font-size: @font-size !important;
 }
 
 div#main {
@@ -59,7 +61,7 @@ p {
 	margin: 12px 0px; /* To counteract Ext JS css */
 }
 p, ul, li, div.Indented, div.Unindented, blockquote.Quote {
-	font-size: 12px;
+	font-size: @font-size;
 	line-height: 180%;
 }
 div.Indented + div.Indented, div.Unindented + div.Indented, div.Indented + div.Unindented, div.Unindented + div.Unindented {
@@ -68,14 +70,14 @@ div.Indented + div.Indented, div.Unindented + div.Indented, div.Indented + div.U
 
 /* To counteract Ext JS css */
 div#main-content {
-	> ol {
+	ol {
 		-moz-padding-start: 40px;
 		margin: 1em 0px;
 		> li {
 	    	list-style-type: decimal;
 		}
 	}
-	> ul {
+	ul {
 		-moz-padding-start: 40px;
 		margin: 1em 0px;
 		> li {
@@ -90,13 +92,13 @@ div#main-content {
 
 h1 {
 	font-family: @serif;
-	font-size: 28px;
+	font-size: @font-size + 16px;
 	margin: 18px 0px;
 }
 
 h2 {
 	font-family: @serif;
-	font-size: 22px;
+	font-size: @font-size + 10px;
 	margin-top: 42px;
 	margin-bottom: 18px; /* To counteract Ext JS css */
 }
@@ -104,7 +106,7 @@ h2 {
 h3 {
 	font-family: @serif;
 	font-style: italic;
-	font-size: 14px;
+	font-size: @font-size + 2px;
 	margin-top: 28px;
 	margin-bottom: 14px; /* To counteract Ext JS css */
 }
