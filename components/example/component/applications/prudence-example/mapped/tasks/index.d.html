@@ -9,7 +9,7 @@
 	
 <%
 if (conversation.request.method == 'POST') {
-	application.task(null, '/tasks/background/', 'run', null, 0, 0, false)
+	application.executeTask(null, '/tasks/background/', 'run', null, 0, 0, false)
 %>
 <p>
 	The task was launched! Check your logs to see.
