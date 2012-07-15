@@ -301,7 +301,7 @@ public class ResourceConversationServiceBase<R extends ServerResource> extends C
 	public Variant getPreferredVariant()
 	{
 		if( preferredVariant == null )
-			preferredVariant = resource.getRequest().getClientInfo().getPreferredVariant( resource.getVariants(), resource.getMetadataService() );
+			preferredVariant = resource.getConnegService().getPreferredVariant( resource.getVariants(), resource.getRequest(), resource.getMetadataService() );
 		return preferredVariant;
 	}
 

@@ -508,6 +508,8 @@ public class CacheEntry implements Externalizable
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * The cache tags.
 	 */

@@ -3,9 +3,9 @@ package com.threecrickets.prudence.util;
 import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.routing.Redirector;
-import org.restlet.routing.Route;
 import org.restlet.routing.Router;
 import org.restlet.routing.Template;
+import org.restlet.routing.TemplateRoute;
 import org.restlet.routing.Variable;
 
 /**
@@ -14,7 +14,6 @@ import org.restlet.routing.Variable;
  * 
  * @author Tal Liron
  */
-@SuppressWarnings("deprecation")
 public class CapturingRouter extends ResolvingRouter
 {
 	//
@@ -56,14 +55,14 @@ public class CapturingRouter extends ResolvingRouter
 	 * @return The created route
 	 * @see CapturingRedirector
 	 */
-	public Route capture( String uriTemplate, String internalUriTemplate, boolean captureQuery )
+	public TemplateRoute capture( String uriTemplate, String internalUriTemplate, boolean captureQuery )
 	{
 		if( !internalUriTemplate.startsWith( "/" ) )
 			internalUriTemplate = "/" + internalUriTemplate;
 		String targetUriTemplate = "riap://application" + internalUriTemplate;
 		if( captureQuery )
 			targetUriTemplate += "?{rq}";
-		Route route = attach( uriTemplate, new CapturingRedirector( getContext(), targetUriTemplate, false ) );
+		TemplateRoute route = attach( uriTemplate, new CapturingRedirector( getContext(), targetUriTemplate, false ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}
@@ -88,14 +87,14 @@ public class CapturingRouter extends ResolvingRouter
 	 *        Whether to capture the query, too
 	 * @return The created route
 	 */
-	public Route captureOther( String uriTemplate, String application, String internalUriTemplate, boolean captureQuery )
+	public TemplateRoute captureOther( String uriTemplate, String application, String internalUriTemplate, boolean captureQuery )
 	{
 		if( !internalUriTemplate.startsWith( "/" ) )
 			internalUriTemplate = "/" + internalUriTemplate;
 		String targetUriTemplate = "riap://component/" + application + internalUriTemplate;
 		if( captureQuery )
 			targetUriTemplate += "?{rq}";
-		Route route = attach( uriTemplate, new CapturingRedirector( getContext(), targetUriTemplate, false ) );
+		TemplateRoute route = attach( uriTemplate, new CapturingRedirector( getContext(), targetUriTemplate, false ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}
@@ -104,12 +103,12 @@ public class CapturingRouter extends ResolvingRouter
 	// Protected
 
 	@Override
-	protected Route createRoute( String uriPattern, Restlet target, int matchingMode )
+	protected TemplateRoute createRoute( String uriPattern, Restlet target, int matchingMode )
 	{
 		if( target instanceof CapturingRedirector )
 		{
 			// Use CapturingRoutes for CapturingRedirectors
-			Route result = new CapturingRoute( this, new ResolvingTemplate( uriPattern, matchingMode, Variable.TYPE_URI_SEGMENT, "", true, false ), target );
+			TemplateRoute result = new CapturingRoute( this, new ResolvingTemplate( uriPattern, matchingMode, Variable.TYPE_URI_SEGMENT, "", true, false ), target );
 			result.setMatchingQuery( getDefaultMatchingQuery() );
 			return result;
 		}

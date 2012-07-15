@@ -465,9 +465,9 @@ public class ApplicationService
 				}
 			}
 			else
-				return (ScheduledFuture<T>) scheduledExecutor.schedule( (Callable<T>) task, delay, TimeUnit.MILLISECONDS );
+				return scheduledExecutor.schedule( (Callable<T>) task, delay, TimeUnit.MILLISECONDS );
 		}
 		else
-			return (Future<T>) executor.submit( (Callable<T>) task );
+			return executor.submit( (Callable<T>) task );
 	}
 }

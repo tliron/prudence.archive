@@ -40,6 +40,7 @@
 		<mkdir dir="${cache.classes}" />
 		<javac srcdir="${component.source}" destdir="${cache.classes}" source="${jvm.version}" target="${jvm.version}" includeAntRuntime="no" debug="${compile.debug}">
 			<classpath refid="dependencies" />
+			<!--<compilerarg line="-Xlint" />-->
 		</javac>
 	</target>
 

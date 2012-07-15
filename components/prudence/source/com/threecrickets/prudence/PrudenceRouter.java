@@ -21,9 +21,9 @@ import org.restlet.data.Protocol;
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
 import org.restlet.routing.Redirector;
-import org.restlet.routing.Route;
 import org.restlet.routing.Router;
 import org.restlet.routing.Template;
+import org.restlet.routing.TemplateRoute;
 
 import com.threecrickets.prudence.util.CapturingRouter;
 import com.threecrickets.prudence.util.Fallback;
@@ -37,7 +37,6 @@ import com.threecrickets.prudence.util.ResolvingRouter;
  * 
  * @author Tal Liron
  */
-@SuppressWarnings("deprecation")
 public class PrudenceRouter extends FallbackRouter
 {
 	//
@@ -88,11 +87,17 @@ public class PrudenceRouter extends FallbackRouter
 	 * @return The created route
 	 * @throws ClassNotFoundException
 	 *         If the named class was not found
-	 * @see #attach(String, Class)
+	 * @throws ClassCastException
+	 *         If the class does not extend ServerResource
+	 * @see #attach(String, Class<? extends ServerResource>)
 	 */
-	public Route attach( String uriTemplate, String targetClassName ) throws ClassNotFoundException
+	@SuppressWarnings("unchecked")
+	public TemplateRoute attach( String uriTemplate, String targetClassName ) throws ClassNotFoundException, ClassCastException
 	{
-		return attach( uriTemplate, getClass().getClassLoader().loadClass( targetClassName ) );
+		Class<?> theClass = getClass().getClassLoader().loadClass( targetClassName );
+		if( !ServerResource.class.isAssignableFrom( theClass ) )
+			throw new ClassCastException( targetClassName + " does not extend ServerResource" );
+		return attach( uriTemplate, (Class<? extends ServerResource>) theClass );
 	}
 
 	/**
@@ -109,9 +114,9 @@ public class PrudenceRouter extends FallbackRouter
 	 *         If the named class was not found
 	 * @see #attach(String, Class)
 	 */
-	public Route attachBase( String uriTemplate, String targetClassName ) throws ClassNotFoundException
+	public TemplateRoute attachBase( String uriTemplate, String targetClassName ) throws ClassNotFoundException
 	{
-		Route route = attach( uriTemplate, targetClassName );
+		TemplateRoute route = attach( uriTemplate, targetClassName );
 		route.setMatchingMode( Template.MODE_STARTS_WITH );
 		return route;
 	}
@@ -127,9 +132,9 @@ public class PrudenceRouter extends FallbackRouter
 	 *        The target Restlet to attach
 	 * @return The created route
 	 */
-	public Route attachBase( String uriTemplate, Restlet target )
+	public TemplateRoute attachBase( String uriTemplate, Restlet target )
 	{
-		Route route = attach( uriTemplate, target );
+		TemplateRoute route = attach( uriTemplate, target );
 		route.setMatchingMode( Template.MODE_STARTS_WITH );
 		return route;
 	}
@@ -145,7 +150,7 @@ public class PrudenceRouter extends FallbackRouter
 	 *        The target Restlet to attach
 	 * @return The created route
 	 */
-	public Route reattach( String uriTemplate, Restlet target )
+	public TemplateRoute reattach( String uriTemplate, Restlet target )
 	{
 		detach( target );
 		return attach( uriTemplate, target );
@@ -162,9 +167,9 @@ public class PrudenceRouter extends FallbackRouter
 	 *        The target Restlet to attach
 	 * @return The created route
 	 */
-	public Route reattachBase( String uriTemplate, Restlet target )
+	public TemplateRoute reattachBase( String uriTemplate, Restlet target )
 	{
-		Route route = reattach( uriTemplate, target );
+		TemplateRoute route = reattach( uriTemplate, target );
 		route.setMatchingMode( Template.MODE_STARTS_WITH );
 		return route;
 	}
@@ -185,7 +190,7 @@ public class PrudenceRouter extends FallbackRouter
 	 * @return The created route
 	 * @see NormalizingRedirector
 	 */
-	public Route redirectClient( String uriTemplate, String targetUriTemplate )
+	public TemplateRoute redirectClient( String uriTemplate, String targetUriTemplate )
 	{
 		return redirectClient( uriTemplate, targetUriTemplate, 307 );
 	}
@@ -202,9 +207,9 @@ public class PrudenceRouter extends FallbackRouter
 	 * @return The created route
 	 * @see NormalizingRedirector
 	 */
-	public Route redirectClientBase( String uriTemplate, String targetUriTemplate )
+	public TemplateRoute redirectClientBase( String uriTemplate, String targetUriTemplate )
 	{
-		Route route = redirectClient( uriTemplate, targetUriTemplate );
+		TemplateRoute route = redirectClient( uriTemplate, targetUriTemplate );
 		route.setMatchingMode( Template.MODE_STARTS_WITH );
 		return route;
 	}
@@ -226,7 +231,7 @@ public class PrudenceRouter extends FallbackRouter
 	 * @return The created route
 	 * @see NormalizingRedirector
 	 */
-	public Route redirectClient( String uriTemplate, String targetUriTemplate, int statusCode )
+	public TemplateRoute redirectClient( String uriTemplate, String targetUriTemplate, int statusCode )
 	{
 		int mode;
 		switch( statusCode )
@@ -247,7 +252,7 @@ public class PrudenceRouter extends FallbackRouter
 				throw new IllegalArgumentException( "Unsupported status code: " + statusCode );
 		}
 
-		Route route = attach( uriTemplate, new NormalizingRedirector( getContext(), targetUriTemplate, mode ) );
+		TemplateRoute route = attach( uriTemplate, new NormalizingRedirector( getContext(), targetUriTemplate, mode ) );
 		route.setMatchingMode( Template.MODE_EQUALS );
 		return route;
 	}
@@ -266,9 +271,9 @@ public class PrudenceRouter extends FallbackRouter
 	 * @return The created route
 	 * @see NormalizingRedirector
 	 */
-	public Route redirectClientBase( String uriTemplate, String targetUriTemplate, int statusCode )
+	public TemplateRoute redirectClientBase( String uriTemplate, String targetUriTemplate, int statusCode )
 	{
-		Route route = redirectClient( uriTemplate, targetUriTemplate, statusCode );
+		TemplateRoute route = redirectClient( uriTemplate, targetUriTemplate, statusCode );
 		route.setMatchingMode( Template.MODE_STARTS_WITH );
 		return route;
 	}
@@ -283,7 +288,7 @@ public class PrudenceRouter extends FallbackRouter
 	 *        The internal URI path to which we will redirect
 	 * @return The created route
 	 */
-	public Route capture( String uriTemplate, String internalUriTemplate )
+	public TemplateRoute capture( String uriTemplate, String internalUriTemplate )
 	{
 		return capture( uriTemplate, internalUriTemplate, true );
 	}
@@ -301,9 +306,9 @@ public class PrudenceRouter extends FallbackRouter
 	 *        Whether to capture the query, too
 	 * @return The created route
 	 */
-	public Route captureBase( String uriTemplate, String internalUriTemplate, boolean captureQuery )
+	public TemplateRoute captureBase( String uriTemplate, String internalUriTemplate, boolean captureQuery )
 	{
-		Route route = capture( uriTemplate, internalUriTemplate );
+		TemplateRoute route = capture( uriTemplate, internalUriTemplate );
 		route.setMatchingMode( Template.MODE_STARTS_WITH );
 		return route;
 	}
@@ -319,7 +324,7 @@ public class PrudenceRouter extends FallbackRouter
 	 *        The internal URI path to which we will redirect
 	 * @return The created route
 	 */
-	public Route captureBase( String uriTemplate, String internalUriTemplate )
+	public TemplateRoute captureBase( String uriTemplate, String internalUriTemplate )
 	{
 		return captureBase( uriTemplate, internalUriTemplate, true );
 	}
@@ -337,9 +342,9 @@ public class PrudenceRouter extends FallbackRouter
 	 *        Whether to capture the query, too
 	 * @return The created route (for the capture, not the hide)
 	 */
-	public Route captureAndHide( String uriTemplate, String internalUriTemplate, boolean captureQuery )
+	public TemplateRoute captureAndHide( String uriTemplate, String internalUriTemplate, boolean captureQuery )
 	{
-		Route route = capture( uriTemplate, internalUriTemplate, captureQuery );
+		TemplateRoute route = capture( uriTemplate, internalUriTemplate, captureQuery );
 		hide( internalUriTemplate );
 		return route;
 	}
@@ -355,7 +360,7 @@ public class PrudenceRouter extends FallbackRouter
 	 *        The internal URI path to which we will redirect
 	 * @return The created route
 	 */
-	public Route captureAndHide( String uriTemplate, String internalUriTemplate )
+	public TemplateRoute captureAndHide( String uriTemplate, String internalUriTemplate )
 	{
 		return captureAndHide( uriTemplate, internalUriTemplate, true );
 	}
@@ -373,7 +378,7 @@ public class PrudenceRouter extends FallbackRouter
 	 *        The internal URI path to which we will redirect
 	 * @return The created route
 	 */
-	public Route captureOther( String uriTemplate, String application, String internalUriTemplate )
+	public TemplateRoute captureOther( String uriTemplate, String application, String internalUriTemplate )
 	{
 		return captureOther( uriTemplate, application, internalUriTemplate, true );
 	}
@@ -391,9 +396,9 @@ public class PrudenceRouter extends FallbackRouter
 	 *        The internal URI path to which we will redirect
 	 * @return The created route
 	 */
-	public Route captureOtherAndHide( String uriTemplate, String application, String internalUriTemplate )
+	public TemplateRoute captureOtherAndHide( String uriTemplate, String application, String internalUriTemplate )
 	{
-		Route route = captureOther( uriTemplate, application, internalUriTemplate );
+		TemplateRoute route = captureOther( uriTemplate, application, internalUriTemplate );
 		hide( internalUriTemplate );
 		return route;
 	}

@@ -92,7 +92,7 @@ public abstract class HazelcastMongoDbMapStore<K, V> implements MapStore<K, V>
 				Mongo mongo = (Mongo) component.getContext().getAttributes().get( MONGODB_DEFAULT_CONNECTION_ATTRIBUTE );
 				if( mongo != null )
 				{
-					DB db = (DB) mongo.getDB( "prudence" );
+					DB db = mongo.getDB( "prudence" );
 					if( db != null )
 						collection = db.getCollection( collectionName );
 				}
