@@ -384,7 +384,7 @@ Prudence.Resources = Prudence.Resources || function() {
 			}
 			
 			if (params.headers) {
-				resource.request.attributes.put('org.restlet.http.headers', Public.toForm(params.headers))
+				resource.request.attributes.put('org.restlet.http.headers', Public.toHeaders(params.headers))
 			}
 			
 			if (params.authorization) {
@@ -452,7 +452,7 @@ Prudence.Resources = Prudence.Resources || function() {
 							}
 							var headers = resource.response.attributes.get('org.restlet.http.headers')
 							if (Sincerity.Objects.exists(headers)) {
-								result.headers = Public.fromParameterList(headers)
+								result.headers = Public.fromNamedValueList(headers)
 							}
 						}
 						return result
@@ -481,7 +481,7 @@ Prudence.Resources = Prudence.Resources || function() {
 					var headers = resource.response.attributes.get('org.restlet.http.headers')
 					if (Sincerity.Objects.exists(headers)) {
 						return {
-							headers: Public.fromParameterList(headers)
+							headers: Public.fromNamedValueList(headers)
 						}
 					}
 				}
@@ -578,18 +578,18 @@ Prudence.Resources = Prudence.Resources || function() {
 	}
 
 	/**
-	 * Converts a Restlet Parameter list into a dict.
+	 * Converts a Restlet NamedValue list into a dict.
 	 * 
-	 * @param list The Parameter list
+	 * @param list The NamedValue list
 	 * @returns A dict
 	 */
-	Public.fromParameterList = function(list) {
-		var parameters = {}
+	Public.fromNamedValueList = function(list) {
+		var namedValues = {}
 		for (var i = list.iterator(); i.hasNext(); ) {
-			var parameter = i.next()
-			parameters[parameter.name] = String(parameter.value)
+			var namedValue = i.next()
+			namedValues[namedValue.name] = String(namedValue.value)
 		}
-		return parameters
+		return namedValues
 	}
 	
 	/**
@@ -855,6 +855,24 @@ Prudence.Resources = Prudence.Resources || function() {
 			}
 		}
 		return form
+	}
+
+	/**
+	 * Converts a dict into a Restlet's headers format.
+	 * 
+	 * @param dict
+	 * @returns {org.restlet.util.Series}
+	 */
+	Public.toHeaders = function(dict) {
+		importClass(org.restlet.engine.header.Header)
+		var series = new org.restlet.util.Series()
+		for (var d in dict) {
+			var value = dict[d]
+			if (null !== value) {
+				series.add(new Header(d, String(value)))
+			}
+		}
+		return series
 	}
 
 	/**
