@@ -509,7 +509,7 @@ Prudence.Routing = Prudence.Routing || function() {
     		directory.negotiatingContent = Sincerity.Objects.ensure(this.negotiate, true)
     		
     		if (Sincerity.Objects.ensure(this.compress, true)) {
-    			var encoder = new Encoder(app.context)
+    			var encoder = new Encoder(app.context, false, false, app.instance.encoderService)
     			encoder.next = directory
     			directory = encoder
     		}
