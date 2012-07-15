@@ -1,7 +1,7 @@
 <html>
 <head>
 	<title>PHP Scriptlets Demo</title>
-	<link rel="stylesheet" type="text/css" href="../../style/soft-cricket.css" />
+	<link rel="stylesheet" type="text/css" href="../../style/three-crickets/soft-cricket.min.css" />
 </head>
 <body>
 <table width="100%"><tr valign="top"><td>
