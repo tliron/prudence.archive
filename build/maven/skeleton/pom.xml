@@ -50,7 +50,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.threecrickets.sincerity.skeleton</groupId>
-			<artifactId>sincerity-restlet</artifactId>
+			<artifactId>sincerity-restlet-jetty</artifactId>
 			<version>1.0-beta1</version>
 		</dependency>
 		<dependency>
