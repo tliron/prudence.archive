@@ -86,6 +86,24 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 		return attributes.getDocumentSource();
 	}
 
+	/**
+	 * The descriptor for the currently executing document (the one at the top
+	 * of the stack).
+	 * 
+	 * @return The current document or null
+	 */
+	public DocumentDescriptor<Executable> getDescriptor()
+	{
+		try
+		{
+			return documentDescriptorStack.getLast();
+		}
+		catch( NoSuchElementException x )
+		{
+			return null;
+		}
+	}
+
 	//
 	// Operations
 	//
@@ -106,7 +124,7 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 		DocumentDescriptor<Executable> documentDescriptor = getDocumentDescriptor( documentName );
 
 		// Add dependency
-		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
+		DocumentDescriptor<Executable> currentDocumentDescriptor = getDescriptor();
 		if( currentDocumentDescriptor != null )
 			currentDocumentDescriptor.getDependencies().add( documentDescriptor );
 
@@ -181,7 +199,7 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 	public void addDependency( String documentName ) throws ParsingException, DocumentException
 	{
 		// Add dependency
-		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
+		DocumentDescriptor<Executable> currentDocumentDescriptor = getDescriptor();
 		if( currentDocumentDescriptor != null )
 			currentDocumentDescriptor.getDependencies().add( getDocumentDescriptor( documentName ) );
 	}
@@ -199,7 +217,7 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 	public void addFileDependency( String documentName ) throws ParsingException, DocumentException
 	{
 		// Add dependency
-		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
+		DocumentDescriptor<Executable> currentDocumentDescriptor = getDescriptor();
 		if( currentDocumentDescriptor != null )
 			currentDocumentDescriptor.getDependencies().add( getFileDocumentDescriptor( documentName ) );
 	}
@@ -223,7 +241,7 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 	 */
 	public void invalidateCurrent()
 	{
-		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
+		DocumentDescriptor<Executable> currentDocumentDescriptor = getDescriptor();
 		if( currentDocumentDescriptor != null )
 			currentDocumentDescriptor.invalidate();
 	}
@@ -300,23 +318,6 @@ public class DocumentService<A extends DocumentExecutionAttributes>
 	 * The document stack.
 	 */
 	protected LinkedList<DocumentDescriptor<Executable>> documentDescriptorStack = new LinkedList<DocumentDescriptor<Executable>>();
-
-	/**
-	 * The currently executing document (the one at the top of the stack).
-	 * 
-	 * @return The current document or null
-	 */
-	protected DocumentDescriptor<Executable> getCurrentDocumentDescriptor()
-	{
-		try
-		{
-			return documentDescriptorStack.getLast();
-		}
-		catch( NoSuchElementException x )
-		{
-			return null;
-		}
-	}
 
 	/**
 	 * Add a document to the top of stack.

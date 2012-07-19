@@ -94,7 +94,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	{
 		super( documentService.resource, documentService.attributes );
 		conversationService = documentService.conversationService;
-		pushDocumentDescriptor( documentService.getCurrentDocumentDescriptor() );
+		pushDocumentDescriptor( documentService.getDescriptor() );
 		executionContext = new ExecutionContext();
 		attributes.addLibraryLocations( executionContext );
 
@@ -118,7 +118,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public long getCacheDuration()
 	{
-		Long cacheDuration = (Long) getCurrentDocumentDescriptor().getDocument().getAttributes().get( CACHE_DURATION_ATTRIBUTE );
+		Long cacheDuration = (Long) getDescriptor().getDocument().getAttributes().get( CACHE_DURATION_ATTRIBUTE );
 		return cacheDuration == null ? 0 : cacheDuration;
 	}
 
@@ -129,7 +129,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public void setCacheDuration( long cacheDuration )
 	{
-		getCurrentDocumentDescriptor().getDocument().getAttributes().put( CACHE_DURATION_ATTRIBUTE, cacheDuration );
+		getDescriptor().getDocument().getAttributes().put( CACHE_DURATION_ATTRIBUTE, cacheDuration );
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public String getCacheKeyPattern()
 	{
-		return getCacheKeyPattern( getCurrentDocumentDescriptor().getDocument() );
+		return getCacheKeyPattern( getDescriptor().getDocument() );
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public void setCacheKeyPattern( String cacheKeyPattern )
 	{
-		getCurrentDocumentDescriptor().getDocument().getAttributes().put( CACHE_KEY_PATTERN_ATTRIBUTE, cacheKeyPattern );
+		getDescriptor().getDocument().getAttributes().put( CACHE_KEY_PATTERN_ATTRIBUTE, cacheKeyPattern );
 	}
 
 	/**
@@ -160,7 +160,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public ConcurrentMap<String, String> getCacheKeyPatternHandlers()
 	{
-		return getCacheKeyPatternHandlers( getCurrentDocumentDescriptor().getDocument(), true );
+		return getCacheKeyPatternHandlers( getDescriptor().getDocument(), true );
 	}
 
 	/**
@@ -170,7 +170,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public String getCacheKey()
 	{
-		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
+		DocumentDescriptor<Executable> currentDocumentDescriptor = getDescriptor();
 		return getCacheKeyForEncoding( castCacheKey( currentDocumentDescriptor ), getEncoding( currentDocumentDescriptor.getDocument() ) );
 	}
 
@@ -179,7 +179,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 	 */
 	public Set<String> getCacheTags()
 	{
-		return getCacheTags( getCurrentDocumentDescriptor().getDocument(), true );
+		return getCacheTags( getDescriptor().getDocument(), true );
 	}
 
 	/**
@@ -235,7 +235,7 @@ public class GeneratedTextResourceDocumentService extends ResourceDocumentServic
 		documentName = attributes.validateDocumentName( documentName, attributes.getDefaultIncludedName() );
 
 		// This will be null if we're the initial document
-		DocumentDescriptor<Executable> currentDocumentDescriptor = getCurrentDocumentDescriptor();
+		DocumentDescriptor<Executable> currentDocumentDescriptor = getDescriptor();
 
 		DocumentDescriptor<Executable> documentDescriptor = null;
 
