@@ -5,8 +5,8 @@ var config = sincerity.container.getConfigurationFile('hazelcast.conf')
 if (config.exists()) {
 	try {
 		importClass(
-				com.hazelcast.config.FileSystemXmlConfig,
-				com.hazelcast.core.Hazelcast)
+			com.hazelcast.config.FileSystemXmlConfig,
+			com.hazelcast.core.Hazelcast)
 
 		config = new FileSystemXmlConfig(config)
 		Hazelcast.newHazelcastInstance(config)

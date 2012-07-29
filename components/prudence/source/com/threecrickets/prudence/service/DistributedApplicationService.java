@@ -43,6 +43,21 @@ public class DistributedApplicationService extends ApplicationService
 	//
 
 	/**
+	 * The Hazelcast instance
+	 * 
+	 * @return The Hazelcast instance
+	 * @throw RuntimeException If the Hazelcast instance has not been
+	 *        initialized
+	 */
+	public HazelcastInstance getHazelcast()
+	{
+		HazelcastInstance hazelcast = Hazelcast.getHazelcastInstanceByName( "com.threecrickets.prudence" );
+		if( hazelcast == null )
+			throw new RuntimeException( "Cannot find a Hazelcast instance named \"com.threecrickets.prudence\"" );
+		return hazelcast;
+	}
+
+	/**
 	 * A map of all values global to the Prudence Hazelcast cluster.
 	 * <p>
 	 * This is simply the "com.threecrickets.prudence.distributedGlobals"
@@ -166,21 +181,6 @@ public class DistributedApplicationService extends ApplicationService
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Private
-
-	/**
-	 * The Hazelcast instance
-	 * 
-	 * @return The Hazelcast instance
-	 * @throw RuntimeException If the Hazelcast instance has not been
-	 *        initialized
-	 */
-	private HazelcastInstance getHazelcast()
-	{
-		HazelcastInstance hazelcast = Hazelcast.getHazelcastInstanceByName( "com.threecrickets.prudence" );
-		if( hazelcast == null )
-			throw new RuntimeException( "Cannot find a Hazelcast instance named \"com.threecrickets.prudence\"" );
-		return hazelcast;
-	}
 
 	/**
 	 * Submits a task on the Hazelcast cluster.
