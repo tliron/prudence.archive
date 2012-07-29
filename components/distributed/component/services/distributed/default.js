@@ -1,15 +1,15 @@
 
 document.execute('/sincerity/container/')
 
-importClass(
-	java.lang.System)
-
 var config = sincerity.container.getConfigurationFile('hazelcast.conf')
 if (config.exists()) {
-	System.setProperty('hazelcast.config', String(config))
 	try {
-		// Initializes from system property 
-		com.hazelcast.core.Hazelcast.defaultInstance
+		importClass(
+				com.hazelcast.config.FileSystemXmlConfig,
+				com.hazelcast.core.Hazelcast)
+
+		config = new FileSystemXmlConfig(config)
+		Hazelcast.newHazelcastInstance(config)
 	} catch (x) {}
 }
 else
@@ -32,10 +32,10 @@ else
 			com.hazelcast.config.PartitionGroupConfig,
 			com.hazelcast.core.Hazelcast)
 		
-		var config = new Config()
+		config = new Config()
 		
 		Sincerity.Container.executeAll(sincerity.container.getConfigurationFile('hazelcast'))
-	
-		Hazelcast.init(config)
+		
+		Hazelcast.newHazelcastInstance(config)
 	} catch (x) {}
 }

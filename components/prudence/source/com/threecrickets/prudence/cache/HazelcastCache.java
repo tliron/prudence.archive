@@ -48,7 +48,8 @@ public class HazelcastCache implements Cache
 	 * Constructor.
 	 * 
 	 * @param hazelcast
-	 *        The hazelcast instance or null to use the default instance
+	 *        The hazelcast instance or null to use the instance named
+	 *        "com.threecrickets.prudence"
 	 */
 	public HazelcastCache( HazelcastInstance hazelcast )
 	{
@@ -59,7 +60,8 @@ public class HazelcastCache implements Cache
 	 * Constructor.
 	 * 
 	 * @param hazelcast
-	 *        The Hazelcast instance or null to use the default instance
+	 *        The Hazelcast instance or null to use the instance named
+	 *        "com.threecrickets.prudence"
 	 * @param cacheName
 	 *        The Hazelcast map name for the cache
 	 */
@@ -67,7 +69,13 @@ public class HazelcastCache implements Cache
 	{
 		this.cacheName = cacheName;
 		this.cacheTagsName = tagMapName;
-		this.hazelcast = hazelcast != null ? hazelcast : Hazelcast.getDefaultInstance();
+		if( hazelcast == null )
+		{
+			hazelcast = Hazelcast.getHazelcastInstanceByName( "com.threecrickets.prudence" );
+			if( hazelcast == null )
+				throw new RuntimeException( "Cannot find a Hazelcast instance named \"com.threecrickets.prudence\"" );
+		}
+		this.hazelcast = hazelcast;
 	}
 
 	//

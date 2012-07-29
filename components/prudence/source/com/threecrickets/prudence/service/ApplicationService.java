@@ -195,56 +195,6 @@ public class ApplicationService
 	}
 
 	/**
-	 * A map of all values global to the Prudence Hazelcast cluster.
-	 * <p>
-	 * This is simply the "com.threecrickets.prudence.distributedGlobals"
-	 * Hazelcast map.
-	 * 
-	 * @return The distributed globals or null
-	 */
-	public ConcurrentMap<String, Object> getDistributedGlobals()
-	{
-		return com.hazelcast.core.Hazelcast.getMap( "com.threecrickets.prudence.distributedGlobals" );
-	}
-
-	/**
-	 * Gets a value global to the Prudence Hazelcast cluster, atomically setting
-	 * it to a default value if it doesn't exist.
-	 * <p>
-	 * If distributed globals are not set up, does nothing and returns null.
-	 * 
-	 * @param name
-	 *        The name of the distributed global
-	 * @param defaultValue
-	 *        The default value
-	 * @return The distributed global's current value
-	 */
-	public Object getDistributedGlobal( String name, Object defaultValue )
-	{
-		ConcurrentMap<String, Object> globals = getDistributedGlobals();
-
-		if( globals == null )
-			return null;
-
-		Object value = globals.get( name );
-
-		if( value == null )
-		{
-			if( defaultValue != null )
-			{
-				value = defaultValue;
-				Object existing = globals.putIfAbsent( name, value );
-				if( existing != null )
-					value = existing;
-			}
-			else
-				globals.remove( name );
-		}
-
-		return value;
-	}
-
-	/**
 	 * The application's logger.
 	 * 
 	 * @return The logger

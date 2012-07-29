@@ -959,14 +959,14 @@ Prudence.Routing = Prudence.Routing || function() {
     		this.next = app.createRestlet(this.next, uri)
     		var filter = new JavaScriptUnifyMinifyFilter(app.context, this.next, target, app.settings.code.minimumTimeBetweenValidityChecks)
 
-			println('    JavaScriptUnifyMinify: {0}'.cast(target))
+			println('    JavaScriptUnifyMinify: "{0}"'.cast(target))
     		for (var r in this.roots) {
     			var root = this.roots[r]
         		if (!(root instanceof File)) {
         			root = new File(app.root, root).absoluteFile
         		}
     			filter.sourceDirectories.add(root)
-				println('      Directory: {0}'.cast(root))
+				println('      Directory: "{0}"'.cast(root))
     		}
 
     		return filter
@@ -1007,14 +1007,14 @@ Prudence.Routing = Prudence.Routing || function() {
     		this.next = app.createRestlet(this.next, uri)
     		var filter = new CssUnifyMinifyFilter(app.context, this.next, target, app.settings.code.minimumTimeBetweenValidityChecks)
 
-			println('    CssUnifyMinify: {0}'.cast(target))
+			println('    CssUnifyMinify: "{0}"'.cast(target))
     		for (var r in this.roots) {
     			var root = this.roots[r]
         		if (!(root instanceof File)) {
         			root = new File(app.root, root).absoluteFile
         		}
     			filter.sourceDirectories.add(root)
-				println('      Directory: {0}'.cast(root))
+				println('      Directory: "{0}"'.cast(root))
     		}
 
     		return filter
@@ -1061,14 +1061,14 @@ Prudence.Routing = Prudence.Routing || function() {
     			filter = new ZussFilter(app.context, this.next, target, app.settings.code.minimumTimeBetweenValidityChecks)
     		}
     		
-			println('    Zuss: {0}'.cast(target))
+			println('    Zuss: "{0}"'.cast(target))
     		for (var r in this.roots) {
     			var root = this.roots[r]
         		if (!(root instanceof File)) {
         			root = new File(app.root, root).absoluteFile
         		}
     			filter.sourceDirectories.add(root)
-				println('      Directory: {0}'.cast(root))
+				println('      Directory: "{0}"'.cast(root))
     		}
     		
     		return filter

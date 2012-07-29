@@ -13,6 +13,7 @@ package com.threecrickets.prudence.service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -20,6 +21,7 @@ import org.restlet.Application;
 
 import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.Member;
 import com.hazelcast.core.MultiTask;
 import com.threecrickets.prudence.DelegatedResource;
@@ -36,6 +38,60 @@ import com.threecrickets.prudence.SerializableApplicationTask;
  */
 public class DistributedApplicationService extends ApplicationService
 {
+	//
+	// Attributes
+	//
+
+	/**
+	 * A map of all values global to the Prudence Hazelcast cluster.
+	 * <p>
+	 * This is simply the "com.threecrickets.prudence.distributedGlobals"
+	 * Hazelcast map.
+	 * 
+	 * @return The distributed globals or null
+	 */
+	public ConcurrentMap<String, Object> getDistributedGlobals()
+	{
+		return getHazelcast().getMap( "com.threecrickets.prudence.distributedGlobals" );
+	}
+
+	/**
+	 * Gets a value global to the Prudence Hazelcast cluster, atomically setting
+	 * it to a default value if it doesn't exist.
+	 * <p>
+	 * If distributed globals are not set up, does nothing and returns null.
+	 * 
+	 * @param name
+	 *        The name of the distributed global
+	 * @param defaultValue
+	 *        The default value
+	 * @return The distributed global's current value
+	 */
+	public Object getDistributedGlobal( String name, Object defaultValue )
+	{
+		ConcurrentMap<String, Object> globals = getDistributedGlobals();
+
+		if( globals == null )
+			return null;
+
+		Object value = globals.get( name );
+
+		if( value == null )
+		{
+			if( defaultValue != null )
+			{
+				value = defaultValue;
+				Object existing = globals.putIfAbsent( name, value );
+				if( existing != null )
+					value = existing;
+			}
+			else
+				globals.remove( name );
+		}
+
+		return value;
+	}
+
 	//
 	// Operations
 	//
@@ -112,6 +168,21 @@ public class DistributedApplicationService extends ApplicationService
 	// Private
 
 	/**
+	 * The Hazelcast instance
+	 * 
+	 * @return The Hazelcast instance
+	 * @throw RuntimeException If the Hazelcast instance has not been
+	 *        initialized
+	 */
+	private HazelcastInstance getHazelcast()
+	{
+		HazelcastInstance hazelcast = Hazelcast.getHazelcastInstanceByName( "com.threecrickets.prudence" );
+		if( hazelcast == null )
+			throw new RuntimeException( "Cannot find a Hazelcast instance named \"com.threecrickets.prudence\"" );
+		return hazelcast;
+	}
+
+	/**
 	 * Submits a task on the Hazelcast cluster.
 	 * 
 	 * @param task
@@ -127,7 +198,7 @@ public class DistributedApplicationService extends ApplicationService
 	@SuppressWarnings("unchecked")
 	private <T> Future<T> task( SerializableApplicationTask<T> task, Object where, boolean multi )
 	{
-		ExecutorService executor = Hazelcast.getExecutorService();
+		ExecutorService executor = getHazelcast().getExecutorService();
 
 		DistributedTask<T> distributedTask;
 		if( where == null )

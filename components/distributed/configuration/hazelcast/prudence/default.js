@@ -1,4 +1,6 @@
 
+config.instanceName = 'com.threecrickets.prudence'
+
 var map = new MapConfig()
 map.name = 'com.threecrickets.prudence.cache'
 map.backupCount = 1
