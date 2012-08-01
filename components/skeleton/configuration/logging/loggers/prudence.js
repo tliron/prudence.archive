@@ -1,3 +1,2 @@
 
-var logger = repository.getLogger('prudence')
-logger.level = Level.INFO
+repository.getLogger('prudence').level = Level.INFO

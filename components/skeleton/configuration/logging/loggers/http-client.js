@@ -1,3 +1,2 @@
 
-var logger = repository.getLogger('org.apache.http')
-logger.level = Level.INFO
+repository.getLogger('org.apache.http').level = Level.INFO
