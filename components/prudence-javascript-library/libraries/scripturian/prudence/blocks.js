@@ -16,6 +16,8 @@ document.executeOnce('/sincerity/objects/')
 var Prudence = Prudence || {}
 
 /**
+ * DEPRACATE
+ * 
  * Simple but very useful extension of <a href="http://threecrickets.com/prudence/manual/generating-html/">Prudence's powerful HTML generation</a>.
  * <p>
  * "Blocks" can be defined anywhere in the page or fragment, but are only rendered where (and if) you want them to be rendered.

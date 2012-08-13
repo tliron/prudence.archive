@@ -306,7 +306,7 @@ Prudence.Logging = Prudence.Logging || function() {
 		
 		return Public
 	}())
-	
+
 	//
 	// Initialization
 	//

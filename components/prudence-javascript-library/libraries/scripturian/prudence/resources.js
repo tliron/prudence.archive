@@ -883,6 +883,43 @@ Prudence.Resources = Prudence.Resources || function() {
 	Public.toWebPayload = function(dict) {
 		return Public.toForm(dict).webRepresentation
 	}
-    
+
+	/**
+	 * A logging resource.
+	 * 
+	 * @class
+	 * @name Prudence.Resources.LoggingResource
+	 */
+	Public.LoggingResource = Sincerity.Classes.define(function(Module) {
+		/** @exports Public as Prudence.Logging.Resource */
+		var Public = {}
+		
+		Public.handleInit = function(conversation) {
+			//conversation.addMediaTypeByName('application/json')
+		}
+		
+		Public.handlePost = function(conversation) {
+			var record = Module.getEntity(conversation, 'json')
+			
+			if (!Sincerity.Objects.exists(record) || !Sincerity.Objects.exists(record.message)) {
+				return Module.Status.ClientError.BadRequest
+			}
+			
+			// Default level
+			record.level = record.level || 'info'
+			
+			var args = [record.level, record.message]
+			if (Sincerity.Objects.exists(record.values)) {
+				args = args.concat(record.values)
+			}
+			
+			var logger = Prudence.Logging.getLogger(record.logger)
+			logger.log.apply(logger, args)
+			return null
+		}
+		
+		return Public
+	}(Public))
+
     return Public
 }()

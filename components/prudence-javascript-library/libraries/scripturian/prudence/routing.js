@@ -478,6 +478,17 @@ Prudence.Routing = Prudence.Routing || function() {
     	return Public    
     }(Public))
 
+   	/**
+	 * @class
+	 * @name Prudence.Routing.Restlet
+	 */
+    Public.StaticWeb = Sincerity.Classes.define(function(Module) {
+		/** @exports Public as Prudence.Routing.Restlet */
+    	var Public = {}
+    	
+    	return Public
+    }(Public))
+
 	/**
 	 * @class
 	 * @name Prudence.Routing.StaticWeb

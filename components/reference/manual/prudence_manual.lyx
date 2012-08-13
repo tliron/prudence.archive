@@ -15970,7 +15970,7 @@ For 301: conversation.response.redirectPermanent
 \end_layout
 
 \begin_layout Itemize
-For 305: conversation.response.redirectSeeOther (use this if you've already
+For 303: conversation.response.redirectSeeOther (use this if you've already
  processed the client's request, and want to redirect it to a new location
  in order to GET the results)
 \end_layout
