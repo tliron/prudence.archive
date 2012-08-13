@@ -16,7 +16,7 @@ app.routes = {
 					{type: 'staticWeb', root: sincerity.container.getLibrariesFile('web')}]}}}
 	],
 	// A sample implicit resource, see /libraries/resources/sample.js:
-	'/sample/': {type: 'implicit', id: 'sample'}
+	'/sample/': '#sample'
 }
 
 // See /libraries/resources/default.js:
