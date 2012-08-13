@@ -408,6 +408,10 @@ Prudence.Routing = Prudence.Routing || function() {
     				}*/
     				return new Module.Capture({uri: restlet}).create(this, uri)
     			}
+    			else if (restlet[0] == '#') {
+    				restlet = restlet.substring(1)
+    				return new Module.Implicit({id: restlet}).create(this, uri)
+    			}
 				else {
 					var type = Module[Sincerity.Objects.capitalize(restlet)]
 					if (Sincerity.Objects.exists(type)) {
@@ -485,6 +489,10 @@ Prudence.Routing = Prudence.Routing || function() {
     Public.StaticWeb = Sincerity.Classes.define(function(Module) {
 		/** @exports Public as Prudence.Routing.Restlet */
     	var Public = {}
+    	
+    	Public.create = function(app, uri) {
+    		return null
+    	}
     	
     	return Public
     }(Public))
