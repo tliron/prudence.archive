@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.threecrickets.prudence</groupId>
-	<artifactId>prudence-project</artifactId>
+	<artifactId>prudence-cache-orientdb</artifactId>
 	<version>2.0-beta1</version>
 	<packaging>pom</packaging>
 
-	<name>Prudence</name>
-	<description>A RESTful web development platform.</description>
+	<name>Prudence: OrientDB Cache</name>
+	<description>Adds an OrientDB cache backend to the Prudence skeleton.</description>
 	<url>http://threecrickets.com/prudence/</url>
 	<inceptionYear>2009</inceptionYear>
 
@@ -47,26 +47,50 @@
 		</mailingList>
 	</mailingLists>
 
-	<modules>
-		<module>prudence</module>
-		<module>prudence-javascript-library</module>
-		<module>skeleton</module>
-		<module>distributed</module>
-		<module>cache-h2</module>
-		<module>cache-hazelcast</module>
-		<module>cache-memcached</module>
-		<module>cache-mongodb</module>
-		<module>cache-orientdb</module>
-		<module>example</module>
-		<module>admin</module>
-		<module>three-crickets-style</module>
-		<module>stickstick/common</module>
-		<module>stickstick/clojure</module>
-		<module>stickstick/groovy</module>
-		<module>stickstick/javascript</module>
-		<module>stickstick/php</module>
-		<module>stickstick/python</module>
-		<module>stickstick/ruby</module>
-	</modules>
+	<dependencies>
+		<dependency>
+			<groupId>com.threecrickets.prudence</groupId>
+			<artifactId>prudence-skeleton</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.orientechnologies</groupId>
+			<artifactId>orientdb-core</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<directory>../../cache/maven</directory>
+
+		<plugins>
+			<!-- jar artifact -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<appendAssemblyId>false</appendAssemblyId>
+							<archive>
+								<manifestEntries>
+									<Package-Folders>package</Package-Folders>
+								</manifestEntries>
+							</archive>
+							<descriptors>
+								<descriptor>package.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
