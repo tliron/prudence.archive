@@ -254,8 +254,9 @@ public class ZussFilter extends Filter implements Locator
 							File zussFile = findFile( zussName, sourceDirectory );
 							if( zussFile != null )
 							{
-								targetDirectory.mkdirs();
-								File cssFile = new File( new File( targetDirectory, ScripturianUtil.getRelativeFile( zussFile, sourceDirectory ).getParent() ), name );
+								String relativeDirectory = ScripturianUtil.getRelativeFile( zussFile, sourceDirectory ).getParent();
+								File targetDirectory = relativeDirectory == null ? this.targetDirectory : new File( this.targetDirectory, relativeDirectory );
+								File cssFile = new File( targetDirectory, name );
 								translate( zussFile, cssFile, minify );
 								break;
 							}
