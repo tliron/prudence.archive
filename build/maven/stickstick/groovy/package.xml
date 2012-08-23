@@ -13,7 +13,7 @@
 
 	<fileSets>
 		<fileSet>
-			<directory>../../../../components/stickstick-groovy</directory>
+			<directory>@ROOT@/components/stickstick-groovy</directory>
 			<outputDirectory>.</outputDirectory>
 			<includes>
 				<include>**</include>

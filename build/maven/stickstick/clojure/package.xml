@@ -13,7 +13,7 @@
 
 	<fileSets>
 		<fileSet>
-			<directory>../../../../components/stickstick-clojure</directory>
+			<directory>@ROOT@/components/stickstick-clojure</directory>
 			<outputDirectory>.</outputDirectory>
 			<includes>
 				<include>**</include>

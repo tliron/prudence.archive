@@ -13,7 +13,7 @@
 
 	<fileSets>
 		<fileSet>
-			<directory>../../../components/cache-orientdb</directory>
+			<directory>@ROOT@/components/cache-orientdb</directory>
 			<outputDirectory>.</outputDirectory>
 			<includes>
 				<include>**</include>

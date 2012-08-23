@@ -3,26 +3,29 @@
 
 	<property file="custom.properties" />
 	
-	<property name="component.source" location="../components/${component}/source" />
-	<property name="reference" location="../components/reference" />
-	<property name="javascript-library" location="../components/prudence-javascript-library" />
-	<property name="skeleton" location="../components/skeleton" />
-	<property name="example" location="../components/example" />
-	<property name="admin" location="../components/admin" />
-	<property name="three-crickets-style" location="../components/three-crickets-style" />
-	<property name="stickstick-common" location="../components/stickstick-common" />
-	<property name="stickstick-javascript" location="../components/stickstick-javascript" />
+	<property name="root" location=".." />
+	<property name="component.source" location="${root}/components/${component}/source" />
+	<property name="reference" location="${root}/components/reference" />
+	<property name="javascript-library" location="${root}/components/prudence-javascript-library" />
+	<property name="skeleton" location="${root}/components/skeleton" />
+	<property name="example" location="${root}/components/example" />
+	<property name="admin" location="${root}/components/admin" />
+	<property name="three-crickets-style" location="${root}/components/three-crickets-style" />
+	<property name="stickstick-common" location="${root}/components/stickstick-common" />
+	<property name="stickstick-javascript" location="${root}/components/stickstick-javascript" />
 	
-	<property name="dependencies" location="../dependencies" />
+	<property name="dependencies" location="${root}/dependencies" />
 
-	<property name="cache" location="./cache" />
+	<property name="cache" location="${root}/build/cache" />
 	<property name="cache.classes" location="${cache}/classes" />
 	<property name="cache.jars" location="${cache}/jars" />
 	<property name="cache.api" location="${cache}/api" />
 	<property name="cache.manual" location="${cache}/skeleton/reference/manuals/${maven.group}/${maven.artifact}/${version}" />
 	<property name="cache.css" location="${cache}/three-crickets-style/libraries/web/style/three-crickets" />
+	<property name="cache.maven.pom" location="${cache}/maven/pom" />
+	<property name="cache.maven.build" location="${cache}/maven/build" />
 
-	<property name="distribution" location="./distribution" />
+	<property name="distribution" location="${root}/build/distribution" />
 	<property name="distribution.content" location="${distribution}/content" />
 	
 	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${dependencies}/libraries/jars/org.apache.ivy/ivy/${ivy.version}/ivy.jar" />
@@ -123,8 +126,12 @@
 		<mkdir dir="${cache.manual}" />
 		<copy todir="${cache.manual}">
 			<fileset dir="${reference}/manual" excludes="*~" />
+			<filterchain>
+					<replacetokens>
+						<token key="VERSION" value="${version}" />
+					</replacetokens>
+			</filterchain>
 		</copy>
-		<replace dir="${cache.manual}" includes="${component}_manual.lyx" token="%VERSION%" value="${version}" />
 		<antcall target="manual-lyx" />
 		<antcall target="manual-elyxer" />
 	</target>
@@ -147,7 +154,18 @@
 	</target>
 
 	<target name="deploy" if="maven" description="Deploy to Maven repository">
-		<exec executable="${maven}" dir="maven" failifexecutionfails="false">
+		<copy todir="${cache.maven.pom}">
+			<fileset dir="maven" excludes="*~" />
+			<filterchain>
+					<replacetokens>
+						<token key="VERSION" value="${version}" />
+						<token key="ROOT" value="${root}" />
+						<token key="CACHE" value="${cache.maven.build}" />
+						<token key="JARS" value="${cache.jars}" />
+					</replacetokens>
+			</filterchain>
+		</copy>
+		<exec executable="${maven}" dir="${cache.maven.pom}" failifexecutionfails="false">
 			<arg value="deploy" />
 			<arg value="-DaltDeploymentRepository=${maven.repo}" />
 		</exec>
@@ -158,6 +176,11 @@
 	<target name="distribution" depends="components" description="Create Sincerity container">
 		<copy todir="${distribution.content}/configuration/sincerity">
 			<fileset dir="sincerity" />
+			<filterchain>
+					<replacetokens>
+						<token key="VERSION" value="${version}" />
+					</replacetokens>
+			</filterchain>
 		</copy>
 		<exec executable="${sincerity.home}/sincerity">
 			<arg value="container:create" />

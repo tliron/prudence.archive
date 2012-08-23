@@ -5,7 +5,7 @@
 
 	<groupId>com.threecrickets.prudence</groupId>
 	<artifactId>prudence</artifactId>
-	<version>2.0-beta1</version>
+	<version>@VERSION@</version>
 	<packaging>pom</packaging>
 
 	<name>Prudence</name>
@@ -76,7 +76,7 @@
 	</dependencies>
 
 	<build>
-		<directory>../../cache/maven</directory>
+		<directory>@CACHE@</directory>
 
 		<plugins>
 			<!-- Delegate to the Ant build script -->
@@ -126,12 +126,12 @@
 								<!-- jar artifact -->
 								<artifact>
 									<type>jar</type>
-									<file>../../cache/jars/${project.artifactId}.jar</file>
+									<file>@JARS@/${project.artifactId}.jar</file>
 								</artifact>
 								<!-- javadoc artifact -->
 								<artifact>
 									<type>javadoc</type>
-									<file>../../cache/jars/javadoc.jar</file>
+									<file>@JARS@/javadoc.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>
@@ -147,7 +147,7 @@
 								<!-- sources artifact -->
 								<artifact>
 									<type>sources</type>
-									<file>../../cache/jars/sources.jar</file>
+									<file>@JARS@/sources.jar</file>
 								</artifact>
 							</artifacts>
 						</configuration>

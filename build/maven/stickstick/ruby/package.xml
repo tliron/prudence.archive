@@ -13,7 +13,7 @@
 
 	<fileSets>
 		<fileSet>
-			<directory>../../../../components/stickstick-ruby</directory>
+			<directory>@ROOT@/components/stickstick-ruby</directory>
 			<outputDirectory>.</outputDirectory>
 			<includes>
 				<include>**</include>

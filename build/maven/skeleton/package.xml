@@ -13,14 +13,14 @@
 
 	<fileSets>
 		<fileSet>
-			<directory>../../../components/skeleton</directory>
+			<directory>@ROOT@/components/skeleton</directory>
 			<outputDirectory>.</outputDirectory>
 			<includes>
 				<include>**</include>
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>../../cache/skeleton</directory>
+			<directory>@ROOT@/build/cache/skeleton</directory>
 			<outputDirectory>.</outputDirectory>
 			<includes>
 				<include>**</include>
