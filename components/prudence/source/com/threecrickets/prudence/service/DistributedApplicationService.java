@@ -46,8 +46,8 @@ public class DistributedApplicationService extends ApplicationService
 	 * The Hazelcast instance
 	 * 
 	 * @return The Hazelcast instance
-	 * @throw RuntimeException If the Hazelcast instance has not been
-	 *        initialized
+	 * @throws RuntimeException
+	 *         If the Hazelcast instance has not been initialized
 	 */
 	public HazelcastInstance getHazelcast()
 	{

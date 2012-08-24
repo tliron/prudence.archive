@@ -89,7 +89,7 @@ public class PrudenceRouter extends FallbackRouter
 	 *         If the named class was not found
 	 * @throws ClassCastException
 	 *         If the class does not extend ServerResource
-	 * @see #attach(String, Class<? extends ServerResource>)
+	 * @see #attach(String, Class)
 	 */
 	@SuppressWarnings("unchecked")
 	public TemplateRoute attach( String uriTemplate, String targetClassName ) throws ClassNotFoundException, ClassCastException
