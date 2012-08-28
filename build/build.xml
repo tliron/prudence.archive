@@ -2,6 +2,7 @@
 <project name="Prudence" default="build" xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<property file="custom.properties" />
+	<property file="private.properties" />
 	
 	<property name="root" location=".." />
 	<property name="component.source" location="${root}/components/${component}/source" />
@@ -30,6 +31,23 @@
 	
 	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${dependencies}/libraries/jars/org.apache.ivy/ivy/${ivy.version}/ivy.jar" />
 
+	<property name="googlecode" location="${dependencies}/libraries/python/googlecode_upload.py" />
+	<macrodef name="googlecode">
+		<attribute name="description" />
+		<attribute name="label" />
+		<attribute name="suffix" />
+		<sequential>
+			<exec executable="${googlecode}">
+				<arg value="--project=sincerity" />
+				<arg value="--user=${googlecode.username}" />
+				<arg value="--password=${googlecode.password}" />
+				<arg value="--summary=@{description} for version ${version}" />
+				<arg value="--labels=${version.short},@{label}" />
+				<arg value="${distribution}/${component}-${version}@{suffix}" />
+			</exec>
+		</sequential>
+	</macrodef>
+
 	<target name="ivy" description="Settings for Ivy">
 		<ivy:settings file="ivy/settings.xml" />
 	</target>
@@ -41,7 +59,7 @@
 
 	<target name="classes" depends="dependencies" description="Compile Java code">
 		<mkdir dir="${cache.classes}" />
-		<javac srcdir="${component.source}" destdir="${cache.classes}" source="${jvm.version}" target="${jvm.version}" includeAntRuntime="no" debug="${compile.debug}">
+		<javac srcdir="${component.source}" destdir="${cache.classes}" source="${compile.version}" target="${compile.version}" includeAntRuntime="no" debug="${compile.debug}">
 			<classpath refid="dependencies" />
 			<!--<compilerarg line="-Xlint" />-->
 		</javac>
@@ -63,23 +81,24 @@
 	<target name="javadocs-overwrite" depends="dependencies" description="Create API documentation" unless="javadocs-present">
 		<javadoc
 			destdir="${cache.api}" sourcepath="${component.source}" excludepackagenames="**.internal.*"
-			access="protected" source="${jvm.version}"
+			access="protected" source="${compile.version}"
 			windowtitle="${documentation.title} ${version}" doctitle="${documentation.title} ${version}"
 			author="true" splitindex="true" use="true" version="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false">
 
-			<link href="${jvm.docs}" />
+			<link href="${documentation.jvm}" />
 			<link href="http://commons.apache.org/daemon/apidocs/" />
 			<link href="http://commons.apache.org/dbcp/api-1.3/" />
 			<link href="http://commons.apache.org/fileupload/apidocs/" />
-			<link href="http://commons.apache.org/pool/api-1.5.7/" />
+			<link href="http://commons.apache.org/pool/api-1.6/" />
 			<link href="http://www.sauronsoftware.it/projects/cron4j/api/" />
 			<link href="http://groboutils.sourceforge.net/docs/projects/5/api/" />
 			<link href="http://www.hazelcast.com/javadoc/" />
 			<link href="http://www.h2database.com/javadoc/" />
 			<link href="http://junit.sourceforge.net/javadoc/" />
 			<!-- Jygments has no online javadocs -->
-			<link href="http://api.mongodb.org/java/2.7.2/" />
-			<link href="http://www.restlet.org/documentation/2.0/jse/api/" />
+			<link href="http://api.mongodb.org/java/2.8.0/" />
+			<link href="http://www.orientdb.org/releases/latest/javadoc" />
+			<link href="http://www.restlet.org/documentation/2.1/jse/api/" />
 			<link href="http://threecrickets.com/scripturian/api/" />
 			<link href="http://docs.oracle.com/cd/E17802_01/products/products/servlet/2.5/docs/servlet-2_5-mr2/" />
 			<link href="http://dustin.github.com/java-memcached-client/apidocs/" />
@@ -103,7 +122,7 @@
 	</target>
 
 	<target name="manual-lyx" if="lyx">
-		<exec executable="${lyx}" failifexecutionfails="false">
+		<exec executable="${lyx}">
 			<arg value="--export" />
 			<arg value="pdf" />
 			<arg value="${cache.manual}/${component}_manual.lyx" />
@@ -111,7 +130,7 @@
 	</target>
 
 	<target name="manual-elyxer" if="elyxer">
-		<exec executable="${elyxer}" failifexecutionfails="false">
+		<exec executable="${elyxer}">
 			<arg value="--unicode" />
 			<arg value="--title" />
 			<arg value="${documentation.title} Manual" />
@@ -127,9 +146,9 @@
 		<copy todir="${cache.manual}">
 			<fileset dir="${reference}/manual" excludes="*~" />
 			<filterchain>
-					<replacetokens>
-						<token key="VERSION" value="${version}" />
-					</replacetokens>
+				<replacetokens>
+					<token key="VERSION" value="${version}" />
+				</replacetokens>
 			</filterchain>
 		</copy>
 		<antcall target="manual-lyx" />
@@ -139,7 +158,7 @@
 	<target name="css" description="Create CSS">
 		<mkdir dir="${cache.css}" />
 		<java
-			classpath="${dependencies}/libraries/jars/org.zkoss.zuss/zuss/1.0.0/zuss.jar"
+			classpath="${dependencies}/libraries/jars/org.zkoss.zuss/zuss/${zuss.version}/zuss.jar"
 			classname="org.zkoss.zuss.Zuss">
 			<arg value="-o" />
 			<arg value="${three-crickets-style}/libraries/web/style/three-crickets/soft-cricket.zuss" />
@@ -153,33 +172,15 @@
 		<jar destfile="${cache.jars}/sources.jar" basedir="${component.source}" />
 	</target>
 
-	<target name="deploy" if="maven" description="Deploy to Maven repository">
-		<copy todir="${cache.maven.pom}">
-			<fileset dir="maven" excludes="*~" />
-			<filterchain>
-					<replacetokens>
-						<token key="VERSION" value="${version}" />
-						<token key="ROOT" value="${root}" />
-						<token key="CACHE" value="${cache.maven.build}" />
-						<token key="JARS" value="${cache.jars}" />
-					</replacetokens>
-			</filterchain>
-		</copy>
-		<exec executable="${maven}" dir="${cache.maven.pom}" failifexecutionfails="false">
-			<arg value="deploy" />
-			<arg value="-DaltDeploymentRepository=${maven.repo}" />
-		</exec>
-	</target>
-
-	<target name="components" depends="libraries, javadocs, manual, css, deploy" description="Assemble components" />
+	<target name="components" depends="libraries, javadocs, manual, css" description="Assemble components" />
 
 	<target name="distribution" depends="components" description="Create Sincerity container">
 		<copy todir="${distribution.content}/configuration/sincerity">
 			<fileset dir="sincerity" />
 			<filterchain>
-					<replacetokens>
-						<token key="VERSION" value="${version}" />
-					</replacetokens>
+				<replacetokens>
+					<token key="VERSION" value="${version}" />
+				</replacetokens>
 			</filterchain>
 		</copy>
 		<exec executable="${sincerity.home}/sincerity">
@@ -227,6 +228,33 @@
 		</chmod>
 	</target>
 
+	<target name="deploy-maven" if="maven" depends="components" description="Deploy to Maven repository">
+		<copy todir="${cache.maven.pom}">
+			<fileset dir="maven" excludes="*~" />
+			<filterchain>
+				<replacetokens>
+					<token key="VERSION" value="${version}" />
+					<token key="ROOT" value="${root}" />
+					<token key="CACHE" value="${cache.maven.build}" />
+					<token key="JARS" value="${cache.jars}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+		<exec executable="${maven}" dir="${cache.maven.pom}">
+			<arg value="deploy" />
+			<arg value="-DaltDeploymentRepository=${maven.repo}" />
+		</exec>
+	</target>
+
+	<target name="deploy-googlecode" if="googlecode.password" description="Deploy to Google Code">
+		<googlecode description="Universal installer" label="universal" suffix="-installer.jar" />
+		<googlecode description="Zip distribution" label="zip" suffix=".zip" />
+		<googlecode description="RPM package" label="rpm" suffix=".rpm" />
+		<googlecode description="Debian package" label="deb" suffix=".deb" />
+		<googlecode description="Mac OS X installer" label="mac" suffix="-osx-installer.zip" />
+		<googlecode description="Windows installer" label="windows" suffix="-windows-installer.exe" />
+	</target>
+	
 	<target name="build" depends="distribution" description="Build distribution" />
 	
 	<target name="clean" description="Clean">
