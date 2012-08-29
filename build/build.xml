@@ -96,7 +96,7 @@
 			<link href="http://www.h2database.com/javadoc/" />
 			<link href="http://junit.sourceforge.net/javadoc/" />
 			<!-- Jygments has no online javadocs -->
-			<link href="http://api.mongodb.org/java/2.8.0/" />
+			<link href="http://api.mongodb.org/java/2.9.0/" />
 			<link href="http://www.orientdb.org/releases/latest/javadoc" />
 			<link href="http://www.restlet.org/documentation/2.1/jse/api/" />
 			<link href="http://threecrickets.com/scripturian/api/" />
